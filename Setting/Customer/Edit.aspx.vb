@@ -1,5 +1,4 @@
-﻿Imports System.ComponentModel.Design
-Imports System.Data
+﻿Imports System.Data
 Imports System.Data.SqlClient
 
 Partial Class Setting_Customer_Edit

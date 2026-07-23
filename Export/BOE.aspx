@@ -104,7 +104,10 @@
 
             If type = "header" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand(String.Format("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.DebtorCode AS DebtorCode, Logins.UserName AS UserName FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id INNER JOIN Logins ON OrderHeaders.CreatedBy=Logins.Id WHERE OrderHeaders.Active=1 AND OrderHeaders.Download='Yes' {0} ORDER BY OrderHeaders.Id DESC", stringCompany), thisConn)
+                    Using thisCmd As New SqlCommand("sp_OrderHeaders_Download", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+                        thisCmd.Parameters.AddWithValue("@Company", company)
+
                         thisConn.Open()
                         Using reader As SqlDataReader = thisCmd.ExecuteReader()
                             DataHeader(reader)
@@ -115,7 +118,9 @@
 
             If type = "detail" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand(String.Format("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindId, Designs.Name AS DesignName, Blinds.Name AS BlindName, Products.Name AS ProductName, ProductTubes.Name AS TubeName, ProductControls.Name AS ControlName, ProductColours.Name AS ColourName FROM OrderDetails INNER JOIN OrderHeaders ON OrderDetails.HeaderId=OrderHeaders.Id INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id LEFT JOIN ProductTubes ON Products.TubeType=ProductTubes.Id LEFT JOIN ProductControls ON Products.ControlType=ProductControls.Id LEFT JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE OrderDetails.Active=1 AND OrderHeaders.Active=1 AND OrderHeaders.Download='Yes' {0} ORDER BY OrderDetails.Id ASC", stringCompany), thisConn)
+                    Using thisCmd As New SqlCommand("sp_OrderDetails_Download", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+                        thisCmd.Parameters.AddWithValue("@Company", company)
                         thisConn.Open()
                         Using reader As SqlDataReader = thisCmd.ExecuteReader()
                             DataDetail(reader)

@@ -16,24 +16,21 @@ Partial Class Setting_Price_Surcharge_Default
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindDesign()
-            ddlDesign.SelectedValue = Session("DesignSurcharge")
-            BindBlind(ddlDesign.SelectedValue)
-            ddlBlind.SelectedValue = Session("BlindSurcharge")
+            MessageError_ChangeValue(False, String.Empty)
+            BindDesignType()
             BindPriceGroup()
+
+            ddlDesignType.SelectedValue = Session("DesignSurcharge")
             ddlPriceGroup.SelectedValue = Session("PriceGroupSurcharge")
-            ddlActive.SelectedValue = Session("ActiveSurcharge")
             txtSearch.Text = Session("SearchSurcharge")
-            BindData(ddlDesign.SelectedValue, ddlBlind.SelectedValue, ddlPriceGroup.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
+            BindData(txtSearch.Text, ddlDesignType.SelectedValue, ddlPriceGroup.SelectedValue)
         End If
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
-        Session("DesignSurcharge") = ddlDesign.SelectedValue
-        Session("BlindSurcharge") = ddlBlind.SelectedValue
-        Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
-        Session("ActiveSurcharge") = ddlActive.SelectedValue
         Session("SearchSurcharge") = txtSearch.Text
+        Session("DesignSurcharge") = ddlDesignType.SelectedValue
+        Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
 
         Response.Redirect("~/setting/price/surcharge/add", False)
     End Sub
@@ -42,65 +39,30 @@ Partial Class Setting_Price_Surcharge_Default
         gvList.PageIndex = 0
 
         MessageError(False, String.Empty)
-        BindData(ddlDesign.SelectedValue, ddlBlind.SelectedValue, ddlPriceGroup.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
+        BindData(txtSearch.Text, ddlDesignType.SelectedValue, ddlPriceGroup.SelectedValue)
 
-        Session("DesignSurcharge") = ddlDesign.SelectedValue
-        Session("BlindSurcharge") = ddlBlind.SelectedValue
-        Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
-        Session("ActiveSurcharge") = ddlActive.SelectedValue
         Session("SearchSurcharge") = txtSearch.Text
+        Session("DesignSurcharge") = ddlDesignType.SelectedValue
+        Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
     End Sub
 
-    Protected Sub ddlDesign_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Protected Sub ddlDesignType_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 
         MessageError(False, String.Empty)
-        BindBlind(ddlDesign.SelectedValue)
-        BindData(ddlDesign.SelectedValue, ddlBlind.SelectedValue, ddlPriceGroup.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
+        BindData(txtSearch.Text, ddlDesignType.SelectedValue, ddlPriceGroup.SelectedValue)
 
-        Session("DesignSurcharge") = ddlDesign.SelectedValue
-        Session("BlindSurcharge") = ddlBlind.SelectedValue
-        Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
-        Session("ActiveSurcharge") = ddlActive.SelectedValue
         Session("SearchSurcharge") = txtSearch.Text
-    End Sub
-
-    Protected Sub ddlBlind_SelectedIndexChanged(sender As Object, e As EventArgs)
-        gvList.PageIndex = 0
-
-        MessageError(False, String.Empty)
-        BindData(ddlDesign.SelectedValue, ddlBlind.SelectedValue, ddlPriceGroup.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
-
-        Session("DesignSurcharge") = ddlDesign.SelectedValue
-        Session("BlindSurcharge") = ddlBlind.SelectedValue
+        Session("DesignSurcharge") = ddlDesignType.SelectedValue
         Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
-        Session("ActiveSurcharge") = ddlActive.SelectedValue
-        Session("SearchSurcharge") = txtSearch.Text
     End Sub
 
     Protected Sub ddlPriceGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 
         MessageError(False, String.Empty)
-        BindData(ddlDesign.SelectedValue, ddlBlind.SelectedValue, ddlPriceGroup.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
+        BindData(txtSearch.Text, ddlDesignType.SelectedValue, ddlPriceGroup.SelectedValue)
 
-        Session("DesignSurcharge") = ddlDesign.SelectedValue
-        Session("BlindSurcharge") = ddlBlind.SelectedValue
-        Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
-        Session("ActiveSurcharge") = ddlActive.SelectedValue
-        Session("SearchSurcharge") = txtSearch.Text
-    End Sub
-
-    Protected Sub ddlActive_SelectedIndexChanged(sender As Object, e As EventArgs)
-        gvList.PageIndex = 0
-
-        MessageError(False, String.Empty)
-        BindData(ddlDesign.SelectedValue, ddlBlind.SelectedValue, ddlPriceGroup.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
-
-        Session("DesignSurcharge") = ddlDesign.SelectedValue
-        Session("BlindSurcharge") = ddlBlind.SelectedValue
-        Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
-        Session("ActiveSurcharge") = ddlActive.SelectedValue
         Session("SearchSurcharge") = txtSearch.Text
     End Sub
 
@@ -108,13 +70,13 @@ Partial Class Setting_Price_Surcharge_Default
         gvList.PageIndex = e.NewPageIndex
 
         MessageError(False, String.Empty)
-        BindData(ddlDesign.SelectedValue, ddlBlind.SelectedValue, ddlPriceGroup.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
+        BindData(txtSearch.Text, ddlDesignType.SelectedValue, ddlPriceGroup.SelectedValue)
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
         If e.CommandName = "Page" Then
             gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-            BindData(ddlDesign.SelectedValue, ddlBlind.SelectedValue, ddlPriceGroup.SelectedValue, ddlActive.SelectedValue, txtSearch.Text)
+            BindData(txtSearch.Text, ddlDesignType.SelectedValue, ddlPriceGroup.SelectedValue)
         End If
     End Sub
 
@@ -122,42 +84,44 @@ Partial Class Setting_Price_Surcharge_Default
         BuildPager()
     End Sub
 
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
+    Protected Sub btnChangeValue_Click(sender As Object, e As EventArgs)
+        MessageError_ChangeValue(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showChangeValue(); };"
         Try
-            Dim thisId As String = txtIdDelete.Text
+            Dim thisId As String = txtChangeValueId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM PriceSurcharges WHERE Id=@Id; DELETE FROM Logs WHERE Type='PriceSurcharges' AND DataId=@Id;", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceSurcharges SET BuyCharge=@BuyCharge, SellCharge=@SellCharge WHERE Id=@Id;", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@BuyCharge", txtBuy.Text)
+                    thisCmd.Parameters.AddWithValue("@SellCharge", txtSell.Text)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Session("DesignSurcharge") = ddlDesign.SelectedValue
-            Session("BlindSurcharge") = ddlBlind.SelectedValue
-            Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
-            Session("ActiveSurcharge") = ddlActive.SelectedValue
             Session("SearchSurcharge") = txtSearch.Text
+            Session("DesignSurcharge") = ddlDesignType.SelectedValue
+            Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
 
             Response.Redirect("~/setting/price/surcharge", False)
         Catch ex As Exception
-            MessageError(True, ex.ToString())
+            MessageError_ChangeValue(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                MessageError_ChangeValue(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showChangeValue", thisScript, True)
         End Try
     End Sub
 
     Protected Sub btnCopy_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdCopy.Text
+            Dim thisId As String = txtCopyId.Text
             Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceSurcharges ORDER BY Id DESC")
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges SELECT @NewId, DesignId, BlindId, BlindNumber, PriceGroupId, 'Copy - ' + Name, FieldName, Formula, BuyCharge, SellCharge, Description, Active FROM PriceSurcharges WHERE Id=@Id", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges SELECT @NewId, DesignId, PriceGroupId, Name + ' - Copy', Type, Formula, BuyCharge, SellCharge, Description, Active FROM PriceSurcharges WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisCmd.Parameters.AddWithValue("@NewId", newId)
                     thisConn.Open()
@@ -168,11 +132,9 @@ Partial Class Setting_Price_Surcharge_Default
             Dim dataLog As Object() = {"PriceSurcharges", newId, Session("LoginId").ToString(), "Surcharge Createad | Duplicate from ID : " & thisId}
             settingClass.Logs(dataLog)
 
-            Session("DesignSurcharge") = ddlDesign.SelectedValue
-            Session("BlindSurcharge") = ddlBlind.SelectedValue
-            Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
-            Session("ActiveSurcharge") = ddlActive.SelectedValue
             Session("SearchSurcharge") = txtSearch.Text
+            Session("DesignSurcharge") = ddlDesignType.SelectedValue
+            Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
 
             Response.Redirect("~/setting/price/surcharge", False)
         Catch ex As Exception
@@ -183,42 +145,40 @@ Partial Class Setting_Price_Surcharge_Default
         End Try
     End Sub
 
-    Protected Sub BindData(designText As String, blindText As String, priceGroupText As String, activeText As String, searchText As String)
-        Session("DesignSurcharge") = String.Empty
-        Session("BlindSurcharge") = String.Empty
-        Session("PriceGroupSurcharge") = String.Empty
-        Session("ActiveSurcharge") = String.Empty
-        Session("SearchSurcharge") = String.Empty
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
         Try
-            Dim designString As String = ""
-            Dim blindString As String = ""
-            Dim priceGroupString As String = String.Empty
-            Dim activeString As String = "WHERE PriceSurcharges.Active=1"
-            Dim searchString As String = ""
+            Dim thisId As String = txtDeleteId.Text
 
-            If activeText = 0 Then
-                activeString = "WHERE PriceSurcharges.Active=0"
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM PriceSurcharges WHERE Id=@Id; DELETE FROM Logs WHERE Type='PriceSurcharges' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Session("SearchSurcharge") = txtSearch.Text
+            Session("DesignSurcharge") = ddlDesignType.SelectedValue
+            Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
+
+            Response.Redirect("~/setting/price/surcharge", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
+        End Try
+    End Sub
 
-            If Not designText = "" Then
-                designString = "AND PriceSurcharges.DesignId='" & designText & "'"
-            End If
-
-            If Not blindText = "" Then
-                blindString = "AND PriceSurcharges.BlindId='" & blindText & "'"
-            End If
-
-            If Not priceGroupText = "" Then
-                priceGroupString = "AND PriceGroupId='" & priceGroupText & "'"
-            End If
-
-            If Not searchText = "" Then
-                searchString = " AND (PriceSurcharges.Name LIKE '%" & searchText.Trim() & "%' OR PriceSurcharges.FieldName LIKE '%" & searchText.Trim() & "%' OR PriceSurcharges.Formula LIKE '%" & searchText.Trim() & "%' OR PriceSurcharges.Description LIKE '%" & searchText.Trim() & "%' OR PriceGroups.Name LIKE '%" & searchText.Trim() & "%')"
-            End If
-
-            Dim thisQuery As String = String.Format("SELECT PriceSurcharges.*, PriceGroups.Name AS PriceGroupName, Designs.Name + ' | ' + Blinds.Name AS Product FROM PriceSurcharges INNER JOIN Designs ON PriceSurcharges.DesignId=Designs.Id INNER JOIN Blinds ON PriceSurcharges.BlindId=Blinds.Id LEFT JOIN PriceGroups ON PriceSurcharges.PriceGroupId=PriceGroups.Id {0} {1} {2} {3} {4} ORDER BY PriceSurcharges.FieldName, PriceSurcharges.Name, PriceSurcharges.PriceGroupId, PriceSurcharges.BlindNumber ASC", activeString, designString, blindString, priceGroupString, searchString)
-
-            gvList.DataSource = settingClass.GetDataTable(thisQuery)
+    Protected Sub BindData(searchText As String, designId As String, priceGroupId As String)
+        Try
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText)),
+                New SqlParameter("@DesignId", If(String.IsNullOrEmpty(designId), CType(DBNull.Value, Object), designId)),
+                New SqlParameter("@PriceGroupId", If(String.IsNullOrEmpty(priceGroupId), CType(DBNull.Value, Object), priceGroupId))
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_PriceSurcharges_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
@@ -231,45 +191,23 @@ Partial Class Setting_Price_Surcharge_Default
         End Try
     End Sub
 
-    Protected Sub BindDesign()
-        ddlDesign.Items.Clear()
+    Protected Sub BindDesignType()
+        ddlDesignType.Items.Clear()
         Try
-            ddlDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
-            ddlDesign.DataTextField = "Name"
-            ddlDesign.DataValueField = "Id"
-            ddlDesign.DataBind()
+            ddlDesignType.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
+            ddlDesignType.DataTextField = "Name"
+            ddlDesignType.DataValueField = "Id"
+            ddlDesignType.DataBind()
 
-            ddlDesign.Items.Insert(0, New ListItem("", ""))
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindBlind(designId As String)
-        ddlBlind.Items.Clear()
-        Try
-            If Not designId = "" Then
-                ddlBlind.DataSource = settingClass.GetDataTable("SELECT * FROM Blinds WHERE DesignId='" & designId & "' ORDER BY Name ASC")
-                ddlBlind.DataTextField = "Name"
-                ddlBlind.DataValueField = "Id"
-                ddlBlind.DataBind()
-
-                If ddlBlind.Items.Count > 1 Then
-                    ddlBlind.Items.Insert(0, New ListItem("", ""))
-                End If
+            If ddlDesignType.Items.Count > 1 Then
+                ddlDesignType.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
         End Try
     End Sub
 
-    Protected Sub BindPriceGroup(Optional isEdit As Boolean = False)
+    Protected Sub BindPriceGroup()
         ddlPriceGroup.Items.Clear()
         Try
             ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups ORDER BY Name ASC")
@@ -282,9 +220,6 @@ Partial Class Setting_Price_Surcharge_Default
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
         End Try
     End Sub
 
@@ -326,6 +261,10 @@ Partial Class Setting_Price_Surcharge_Default
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_ChangeValue(visible As Boolean, message As String)
+        divErrorChangeValue.Visible = visible : msgErrorChangeValue.InnerText = message
     End Sub
 
     Protected Function LoginAccess(action As String) As Boolean

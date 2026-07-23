@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_General_Company_Default
     Inherits Page
@@ -23,115 +24,72 @@ Partial Class Setting_General_Company_Default
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Session("SearchCompany") = txtSearch.Text
-
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
-        Try
-            lblAction.Text = "Add"
-            titleProcess.InnerText = "Add Company"
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
+        Response.Redirect("~/setting/general/company/add", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
+
+        Session("SearchCompany") = txtSearch.Text
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         gvList.PageIndex = e.NewPageIndex
+
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
     End Sub
 
-    Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
-        Try
-            If txtName.Text = "" Then
-                MessageError_Process(True, "COMPANY NAME IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-            If txtAlias.Text = "" Then
-                MessageError_Process(True, "COMPANY ALIAS IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-            If msgErrorProcess.InnerText = "" Then
-                Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        BuildPager()
+    End Sub
 
-                If lblAction.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Companys ORDER BY Id DESC")
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Companys VALUES (@Id, @Name, @Alias, NULL, @Description, @Active)", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", thisId)
-                            thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            thisCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
-                            thisCmd.Parameters.AddWithValue("@Description", descText)
-                            thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"Companys", thisId, Session("LoginId").ToString(), "Company Created"}
-                    settingClass.Logs(dataLog)
-
-                    Session("SearchCompany") = txtSearch.Text
-                    url = String.Format("~/setting/general/company/detail?companyid={0}", thisId)
-                    Response.Redirect(url, False)
-                End If
-
-                If lblAction.Text = "Edit" Then
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE Companys SET Name=@Name, Alias=@Alias, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                            thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            thisCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
-                            thisCmd.Parameters.AddWithValue("@Description", descText)
-                            thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"Companys", lblId.Text, Session("LoginId").ToString(), "Company Updated"}
-                    settingClass.Logs(dataLog)
-
-                    Session("SearchCompany") = txtSearch.Text
-                    Response.Redirect("~/setting/general/company", False)
-                End If
-            End If
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        If e.CommandName = "Page" Then
+            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindData(txtSearch.Text)
+        End If
     End Sub
 
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtDeleteId.Text
+            Dim companyId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", thisId)
-                    thisConn.Open()
+                thisConn.Open()
+
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Companys WHERE Id=@Id; DELETE FROM Logs WHERE Type='Companys' AND DataId=@Id; UPDATE Mailings SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Newsletters SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Notifications SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE PriceGroups SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Sales SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Tutorials SET CompanyId=NULL WHERE CompanyId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", companyId)
                     thisCmd.ExecuteNonQuery()
                 End Using
+
+                ' TABLE DESIGNS
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE D SET CompanyId = STUFF((SELECT ',' + S.value FROM STRING_SPLIT(D.CompanyId, ',') S WHERE TRY_CAST(S.value AS INT) <> " & companyId & " FOR XML PATH(''), TYPE).value('.', 'nvarchar(max)'),1,1,'') FROM Designs D WHERE EXISTS (SELECT 1 FROM STRING_SPLIT(D.CompanyId, ',') S WHERE TRY_CAST(S.value AS INT) = " & companyId & ");", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", companyId)
+                    thisCmd.ExecuteNonQuery()
+                End Using
+
+                thisConn.Close()
             End Using
+
+            Dim companyDetail As DataTable = settingClass.GetDataTable("SELECT Id FROM Companys WHERE CompanyId='" & companyId & "'")
+            If companyDetail.Rows.Count > 0 Then
+                For i As Integer = 0 To companyDetail.Rows.Count - 1
+                    Dim companyDetailId As String = companyDetail.Rows(i)("Id").ToString()
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id;", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", companyDetailId)
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+                Next
+            End If
 
             Session("SearchCompany") = txtSearch.Text
             Response.Redirect("~/setting/general/company", False)
@@ -144,7 +102,6 @@ Partial Class Setting_General_Company_Default
     End Sub
 
     Protected Sub BindData(searchText As String)
-        Session("SearchCompany") = String.Empty
         Try
             Dim search As String = String.Empty
             If Not String.IsNullOrEmpty(searchText) Then
@@ -166,12 +123,44 @@ Partial Class Setting_General_Company_Default
         End Try
     End Sub
 
-    Protected Sub MessageError(visible As Boolean, message As String)
-        divError.Visible = visible : msgError.InnerText = message
+    Protected Sub BuildPager()
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
+            navPager.Visible = False
+        End Try
     End Sub
 
-    Protected Sub MessageError_Process(visible As Boolean, message As String)
-        divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
     End Sub
 
     Protected Function LoginAccess(action As String) As Boolean

@@ -1321,6 +1321,7 @@ Public Class MailingClass
             Dim orderId As String = orderData("OrderId").ToString()
             Dim orderNumber As String = orderData("OrderNumber").ToString()
             Dim orderName As String = orderData("OrderName").ToString()
+            Dim orderStatus As String = orderData("Status").ToString()
             Dim invoiceNumber As String = orderData("InvoiceNumber").ToString()
 
             Dim customerName As String = orderData("CustomerName").ToString()
@@ -1368,8 +1369,17 @@ Public Class MailingClass
             mailBody &= "<br />"
             mailBody &= "<a href='https://pay.b2bpay.com.au/JPMDi'>https://pay.b2bpay.com.au/JPMDi</a>"
 
-            mailBody &= "<br /><br />"
-            mailBody &= "<i>Please note that if payment is not confirmed within 14 days, this order will automatically be reverted to an unsubmitted order. You will need to resubmit the order if you wish to proceed</i>."
+            If orderStatus = "Proforma Sent" Then
+                mailBody &= "<br /><br /><br />"
+                mailBody &= "<table cellpadding='10' cellspacing='0' style='width:100%; border-left:4px solid #808080; background:#f8f8f8; font-family:Cambria, serif; font-size:16px; color:#555;'>"
+                mailBody &= "<tr><td><i>"
+                mailBody &= "<b>Please note that if payment is not confirmed within 14 days, this order will automatically be reverted to a <b>Pending Payment</b> order.</b><br /><br />"
+                mailBody &= "Once the order has been reverted, any subsequent payment or resubmission may be processed using our latest pricing."
+                mailBody &= "<br />"
+                mailBody &= "If our prices have changed, the order value will be adjusted accordingly."
+                mailBody &= "</i></td></tr>"
+                mailBody &= "</table>"
+            End If
 
             mailBody &= "<br /><br />"
             mailBody &= "Once the payment has been completed, please send your payment confirmation to the following email address:"
@@ -1906,11 +1916,13 @@ Public Class MailingClass
             mailBody &= "<br /><br /><br />"
             mailBody &= "Dear Valued Customer,"
             mailBody &= "<br /><br />"
-            mailBody &= "We would like to inform you that your order has been reverted to an <b><u>unsubmitted order</u></b>."
+            mailBody &= "This order has been moved to <b>Pending Payment</b>.</u></b>."
             mailBody &= "<br /><br />"
-            mailBody &= "Please disregard any invoice you have previously received for this order, as it is no longer valid."
+            mailBody &= "Please note that if payment is received after a price change has taken effect, the order will be processed using our <b>latest pricing</b>."
+            mailBody &= "<br /><br />"
+            mailBody &= "If our pricing changes before your payment is received, the order status will be <b>automatically updated to Unsubmitted</b>."
             mailBody &= "<br />"
-            mailBody &= "If you wish to proceed with this order to production, kindly re-submit the order to obtain a valid invoice."
+            mailBody &= "The order will be repriced according to our <b>current price list</b>, and you will be <b>required to review and resubmit the order</b> before processing can continue."
             mailBody &= "<br /><br />"
             mailBody &= "Thank you for your understanding."
             mailBody &= "</span>"

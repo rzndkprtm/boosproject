@@ -37,14 +37,10 @@ Partial Class Order_Edit
         Try
             If ddlCustomer.SelectedValue = "" Then
                 MessageError(True, "CUSTOMER NAME IS REQUIRED !")
-                ddlCustomer.BackColor = Drawing.Color.Red
-                ddlCustomer.Focus()
                 Exit Sub
             End If
             If txtOrderNumber.Text = "" Then
                 MessageError(True, "ORDER NUMBER IS REQUIRED !")
-                txtOrderNumber.BackColor = Drawing.Color.Red
-                txtOrderNumber.Focus()
                 Exit Sub
             End If
             If InStr(txtOrderNumber.Text, ",") > 0 OrElse InStr(txtOrderNumber.Text, "'") > 0 OrElse InStr(txtOrderNumber.Text, ";") > 0 Then
@@ -53,14 +49,10 @@ Partial Class Order_Edit
             End If
             If Trim(txtOrderNumber.Text).Length > 20 Then
                 MessageError(True, "MAXIMUM 20 CHARACTERS FOR RETAILER ORDER NUMBER !")
-                txtOrderNumber.BackColor = Drawing.Color.Red
-                txtOrderNumber.Focus()
                 Exit Sub
             End If
             If txtOrderName.Text = "" Then
                 MessageError(True, "ORDER NAME IS REQUIRED !")
-                txtOrderName.BackColor = Drawing.Color.Red
-                txtOrderName.Focus()
                 Exit Sub
             End If
             If InStr(txtOrderName.Text, ",") > 0 OrElse InStr(txtOrderName.Text, "'") > 0 OrElse InStr(txtOrderName.Text, ";") > 0 Then
@@ -70,8 +62,6 @@ Partial Class Order_Edit
             If txtOrderNumber.Text <> lblOrderNo.Text Then
                 If txtOrderNumber.Text = orderClass.IsOrderExist(ddlCustomer.SelectedValue, txtOrderNumber.Text.Trim()) Then
                     MessageError(True, "ORDER NUMBER ALREADY EXISTS !")
-                    txtOrderNumber.BackColor = Drawing.Color.Red
-                    txtOrderNumber.Focus()
                     Exit Sub
                 End If
             End If

@@ -597,5 +597,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/Gabuts/Curtain.js?v=2.0.2"></script>
+    <script src="/Scripts/RisaSolihah/Curtain.js?v=1.0.1"></script>
 </asp:Content>

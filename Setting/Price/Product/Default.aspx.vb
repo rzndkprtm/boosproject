@@ -1,4 +1,5 @@
 ﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_Price_Product_Default
     Inherits Page
@@ -53,28 +54,14 @@ Partial Class Setting_Price_Product_Default
 
     Protected Sub BindData(searchText As String)
         Try
-            Dim conditions As New List(Of String)
-            If Not String.IsNullOrEmpty(searchText) Then
-                conditions.Add("(PriceProductGroups.Id LIKE '%" & searchText & "%' OR PriceProductGroups.Name LIKE '%" & searchText & "%' OR PriceProductGroups.Description LIKE '%" & searchText & "%' OR Designs.Name LIKE '%" & searchText & "%')")
-            End If
-
-            Dim stringSplit As String = String.Empty
-            If Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" Then
-                stringSplit = "CROSS APPLY STRING_SPLIT(PriceProductGroups.CompanyDetailId, ',') AS companyArray"
-                conditions.Add("companyArray.VALUE='" & Session("CompanyDetailId").ToString() & "'")
-            End If
-
-            Dim whereClause As String = String.Empty
-            If conditions.Count > 0 Then
-                whereClause = "WHERE " & String.Join(" AND ", conditions)
-            End If
-
-            Dim thisString As String = String.Format("SELECT PriceProductGroups.*, Designs.Name AS DesignName, CASE WHEN PriceProductGroups.Active=1 THEN 'Yes' WHEN PriceProductGroups.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM PriceProductGroups {0} LEFT JOIN Designs ON PriceProductGroups.DesignId=Designs.Id {1} ORDER BY Designs.Name, PriceProductGroups.Name ASC", stringSplit, whereClause)
-
-            gvList.DataSource = settingClass.GetDataTable(thisString)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)),
+                New SqlParameter("@RoleName", Session("RoleName").ToString())
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_PriceProductGroups_List", params)
             gvList.DataBind()
-            gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
+            gvList.Columns(1).Visible = LoginAccess("Visible ID")
             btnAdd.Visible = LoginAccess("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())

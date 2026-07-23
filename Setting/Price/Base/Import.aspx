@@ -36,27 +36,111 @@
                     <div class="card-header">
                         <h4 class="card-title">Import Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label>Upload File</label>
-                                                <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                <label class="form-label">Price Group</label>
+                                                <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                <label class="form-label">Method</label>
+                                                <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
                                         </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Product Group</label>
+                                                <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                                <div class="row mb-2">
+                                    <div class="col-12 form-group">
+                                        <label>Upload File</label>
+                                        <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <label class="form-label">Include Buy Price</label>
+                                        <asp:DropDownList runat="server" ID="ddlIncludeBuy" CssClass="choices form-select">
+                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                            <asp:ListItem Value="Yes" Text="Yes"></asp:ListItem>
+                                        </asp:DropDownList>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer d-flex justify-content-between">
+                    <div class="card-footer text-center">
                         <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
+                        <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title text-center">Information</h4>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body"></div>
                     </div>
                 </div>
             </div>
         </section>
     </div>
+
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) loading.style.display = "none";
+        });
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
+            });
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
+                initChoices();
+            });
+        }
+        function initChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.choices) {
+                    el.choices.destroy();
+                }
+                el.choices = new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false
+                });
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            initChoices();
+        });
+        window.history.replaceState(null, null, window.location.href);
+    </script>
 </asp:Content>

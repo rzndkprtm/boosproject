@@ -540,5 +540,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/Gabuts/Door.js?v=2.0.0"></script>
+    <script src="/Scripts/RisaSolihah/Door.js?v=1.0.0"></script>
 </asp:Content>

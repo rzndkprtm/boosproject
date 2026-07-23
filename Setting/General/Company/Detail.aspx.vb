@@ -82,45 +82,6 @@ Partial Class Setting_General_Company_Detail
         End If
     End Sub
 
-    Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
-        Try
-            If txtName.Text = "" Then
-                MessageError(True, "COMPANY NAME IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-            If msgError.InnerText = "" Then
-                Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Companys SET Name=@Name, Alias=@Alias, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-                        thisConn.Open()
-                        thisCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                dataLog = {"Companys", lblId.Text, Session("LoginId").ToString(), "Company Updated"}
-                settingClass.Logs(dataLog)
-
-                url = String.Format("~/setting/general/company/detail?cid={0}", lblId.Text)
-                Response.Redirect(url, False)
-            End If
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
-    End Sub
-
     Protected Sub btnProcessDetail_Click(sender As Object, e As EventArgs)
         MessageError_ProcessDetail(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showProcessDetail(); };"
@@ -185,38 +146,22 @@ Partial Class Setting_General_Company_Detail
 
     Protected Sub BindData(companyId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Companys WHERE Id='" & companyId & "'")
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS ActiveData FROM Companys WHERE Id='" & companyId & "'")
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/general/company", False)
                 Exit Sub
             End If
 
-            txtName.Text = thisData("Name").ToString()
-            txtAlias.Text = thisData("Alias").ToString()
-            txtDescription.Text = thisData("Description").ToString()
-            ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
-
-            divEdit.Visible = LoginAccess("Edit")
-
-            txtName.ReadOnly = True
-            txtAlias.ReadOnly = True
-            txtDescription.ReadOnly = True
-            ddlActive.Enabled = False
-
-            Dim editAccess As Boolean = LoginAccess("Edit")
-            If editAccess = True Then
-                txtName.ReadOnly = False
-                txtAlias.ReadOnly = False
-                txtDescription.ReadOnly = False
-                ddlActive.Enabled = True
-            End If
+            lblName.Text = thisData("Name").ToString()
+            lblAlias.Text = thisData("Alias").ToString()
+            lblDescription.Text = thisData("Description").ToString()
+            lblActive.Text = thisData("ActiveData").ToString()
 
             gvList.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM CompanyDetails WHERE CompanyId='" & companyId & "'")
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID Detail")
 
             btnAddDetail.Visible = LoginAccess("Add Detail")
-
         Catch ex As Exception
             MessageError(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then

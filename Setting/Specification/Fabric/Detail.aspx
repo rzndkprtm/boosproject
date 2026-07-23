@@ -85,6 +85,7 @@
                                             <div class="row mb-4">
                                                 <div class="col-4 text-muted">Company Detail</div>
                                                 <div class="col-8 fw-semibold">
+                                                    <asp:Label runat="server" ID="lblCompanyDetail"></asp:Label>
                                                     <asp:Label runat="server" ID="lblCompanyDetailName"></asp:Label>
                                                 </div>
                                             </div>
@@ -136,6 +137,7 @@
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
                                                         <asp:BoundField DataField="Id" HeaderText="ID" />
+                                                        <asp:BoundField DataField="CompanyDetailName" HeaderText="Company Detail Name" />
                                                         <asp:BoundField DataField="BoeId" HeaderText="BOE ID" />
                                                         <asp:BoundField DataField="Factory" HeaderText="Factory" />
                                                         <asp:BoundField DataField="Name" HeaderText="Name" />
@@ -206,6 +208,12 @@
                     <h4 runat="server" class="modal-title" id="titleProcess"></h4>
                 </div>
                 <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Company Detail</label>
+                            <asp:ListBox runat="server" ID="lbCompanyDetail" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                        </div>
+                    </div>
                     <div class="row mb-2">
                         <div class="col-6 form-group">
                             <label class="form-label">BOE ID</label>

@@ -42,6 +42,7 @@
             <div class="col-12 d-flex justify-content-end flex-wrap gap-1">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add" OnClick="btnAdd_Click" />
                 <asp:Button runat="server" ID="btnImport" CssClass="btn btn-secondary" Text="Import" OnClick="btnImport_Click" />
+                <asp:Button runat="server" ID="btnConditional" CssClass="btn btn-info" Text="Update Special Conditional" OnClick="btnConditional_Click" />
             </div>
         </section>
         <section class="row">

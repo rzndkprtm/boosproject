@@ -1,4 +1,4 @@
-﻿let designIdOri = "25";
+﻿let designIdOri = "8";
 let itemAction;
 let headerId;
 let orderId;
@@ -104,7 +104,7 @@ function getFormAction(itemAction) {
             return;
         }
 
-        const actionMap = { create: "Add Item", edit: "Edit Item", view: "View Item", copy: "Copy Item" };
+        const actionMap = {create: "Add Item", edit: "Edit Item", view: "View Item", copy: "Copy Item"};
 
         pageAction.innerText = actionMap[itemAction];
         resolve();
@@ -664,7 +664,7 @@ function bindFabricColour(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType, action: itemAction };
+        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1019,7 +1019,7 @@ function process() {
 
     $.ajax({
         type: "POST",
-        url: "Method.aspx/SoftRomanProcess",
+        url: "Method.aspx/RomanProcess",
         data: JSON.stringify({ data: formData }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",

@@ -1,4 +1,5 @@
-﻿Imports System.Globalization
+﻿Imports System.Data
+Imports System.Globalization
 
 Partial Class Sales_Default
     Inherits Page
@@ -23,6 +24,26 @@ Partial Class Sales_Default
             End If
             BindData(ddlCompany.SelectedValue)
         End If
+    End Sub
+
+    Protected Sub btnRefresh_Click(sender As Object, e As EventArgs)
+        Try
+            Dim dataCompany As DataTable = salesClass.GetDataTable("SELECT Id FROM Companys")
+            If dataCompany.Rows.Count > 0 Then
+                For i As Integer = 0 To dataCompany.Rows.Count - 1
+                    Dim companyId As String = dataCompany.Rows(i)("Id").ToString()
+                    salesClass.RefreshData(companyId)
+                Next
+            End If
+
+            Session("SearchSalesCompany") = ddlCompany.SelectedValue
+            Response.Redirect("~/sales", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)

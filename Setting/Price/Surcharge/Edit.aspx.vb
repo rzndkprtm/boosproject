@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_Price_Surcharge_Add
+Partial Class Setting_Price_Surcharge_Edit
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -14,15 +14,17 @@ Partial Class Setting_Price_Surcharge_Add
             Exit Sub
         End If
 
+        If String.IsNullOrEmpty(Request.QueryString("surchargeid")) Then
+            Response.Redirect("~/setting/price/surcharge", False)
+            Exit Sub
+        End If
+
+        lblId.Text = Request.QueryString("surchargeid").ToString()
+
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindDesign()
-            BindPriceGroup(ddlDesign.SelectedValue)
-            BindFormulaField()
-            BindFormulaData(ddlFormulaField.SelectedValue)
-            BindFormulaDataB(ddlFormulaFieldB.SelectedValue)
 
-            BindPage(ddlFormulaType.SelectedValue)
+            BindData(lblId.Text)
         End If
     End Sub
 
@@ -41,11 +43,6 @@ Partial Class Setting_Price_Surcharge_Add
         BindFormulaData(ddlFormulaField.SelectedValue)
     End Sub
 
-    Protected Sub ddlFormulaFieldB_SelectedIndexChanged(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        BindFormulaDataB(ddlFormulaFieldB.SelectedValue)
-    End Sub
-
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -61,7 +58,6 @@ Partial Class Setting_Price_Surcharge_Add
             End If
 
             If msgError.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceSurcharges ORDER BY Id DESC")
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Dim finalFormula As String = String.Format("{0} = {1}", ddlFormulaField.SelectedValue, ddlFormulaData.SelectedValue)
@@ -73,8 +69,8 @@ Partial Class Setting_Price_Surcharge_Add
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges VALUES (@Id, @DesignId, @PriceGroupId, @Name, @Type, @Formula, @BuyCharge, @SellCharge, @Description, @Active)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceSurcharges SET DesignId=@DesignId, PriceGroupId=@PriceGroupId, Name=@Name, Type=@Type, Formula=@Formula, BuyCharge=@BuyCharge, SellCharge=@SellCharge, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroup)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
@@ -89,7 +85,7 @@ Partial Class Setting_Price_Surcharge_Add
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"PriceSurcharges", thisId, Session("LoginId").ToString(), "Price Surcharge Created"}
+                Dim dataLog As Object() = {"PriceSurcharges", lblId.Text, Session("LoginId").ToString(), "Price Surcharge Updated"}
                 settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/price/surcharge", False)
@@ -101,6 +97,72 @@ Partial Class Setting_Price_Surcharge_Add
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/setting/price/surcharge", False)
+    End Sub
+
+    Protected Sub BindData(surchargeId As String)
+        Try
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM PriceSurcharges WHERE Id='" & surchargeId & "'")
+            If thisData Is Nothing Then Exit Sub
+
+            Dim designId As String = thisData("DesignId").ToString()
+            Dim type As String = thisData("Type").ToString()
+
+            BindDesign()
+            BindPriceGroup(designId)
+            BindFormulaField()
+
+            txtName.Text = thisData("Name").ToString()
+            ddlDesign.SelectedValue = thisData("DesignId").ToString()
+            ddlFormulaType.SelectedValue = type
+            txtBuyCharge.Text = thisData("BuyCharge").ToString()
+            txtSellCharge.Text = thisData("SellCharge").ToString()
+            txtDescription.Text = thisData("Description").ToString()
+            ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
+
+            If Not thisData("PriceGroupId").ToString() = "" Then
+                Dim priceGroupArray() As String = thisData("PriceGroupId").ToString().Split(",")
+                For Each thisI In priceGroupArray
+                    If Not String.IsNullOrEmpty(thisI) Then
+                        Dim item = lbPriceGroup.Items.FindByValue(thisI)
+                        If item IsNot Nothing Then
+                            item.Selected = True
+                        End If
+                    End If
+                Next
+            End If
+
+            Dim formula As String = thisData("Formula").ToString()
+            Dim conditions = formula.Split(New String() {" AND "}, StringSplitOptions.None)
+
+            Dim i As Integer = 0
+
+            For Each c As String In conditions
+                Dim parts = c.Split("="c)
+                Dim field As String = parts(0).Trim()
+
+                Dim data As String = parts(1).Trim()
+                data = data.Trim("'"c)
+                If i = 0 Then
+                    BindFormulaData(field)
+
+                    ddlFormulaField.SelectedValue = field
+                    ddlFormulaData.SelectedValue = data
+                ElseIf i = 1 Then
+                    BindFormulaDataB(field)
+
+                    ddlFormulaFieldB.SelectedValue = field
+                    ddlFormulaDataB.SelectedValue = data
+                End If
+                i += 1
+            Next
+
+            BindPage(type)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub BindDesign()

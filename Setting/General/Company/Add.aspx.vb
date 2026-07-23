@@ -1,6 +1,6 @@
 ﻿Imports System.Data.SqlClient
 
-Partial Class Setting_Price_Promo_Add
+Partial Class Setting_General_Company_Add
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -9,59 +9,36 @@ Partial Class Setting_Price_Promo_Add
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/price/promo", False)
+            Response.Redirect("~/setting/general/company", False)
             Exit Sub
         End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindCompany()
         End If
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If ddlCompany.SelectedValue = "" Then
-                MessageError(True, "COMPANY IS REQUIRED !")
-                Exit Sub
-            End If
-            If ddlType.SelectedValue = "" Then
-                MessageError(True, "TYPE IS REQUIRED !")
-                Exit Sub
-            End If
             If txtName.Text = "" Then
-                MessageError(True, "PROMO NAME IS REQUIRED !")
+                MessageError(True, "COMPANY NAME IS REQUIRED !")
                 Exit Sub
             End If
-            If txtStartDate.Text = "" Then
-                MessageError(True, "START DATE IS REQUIRED !")
+            If txtAlias.Text = "" Then
+                MessageError(True, "COMPANY ALIAS IS REQUIRED !")
                 Exit Sub
             End If
-            If txtEndDate.Text = "" Then
-                MessageError(True, "END DATE IS REQUIRED !")
-                Exit Sub
-            End If
-            Dim startDate As Date = Date.Parse(txtStartDate.Text)
-            Dim endDate As Date = Date.Parse(txtEndDate.Text)
-
-            If startDate > endDate Then
-                MessageError(True, "START DATE MUST NOT BE LATER THAN END DATE !")
-                Exit Sub
-            End If
-
             If msgError.InnerText = "" Then
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Promos ORDER BY Id DESC")
+                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Companys ORDER BY Id DESC")
+
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Promos VALUES (@Id, @CompanyId, @Type, @Name, @StartDate, @EndDate, @Description, @Active)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Companys VALUES (@Id, @Name, @Alias, NULL, @Description, @Active)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
-                        thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text)
-                        thisCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text)
+                        thisCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Description", descText)
                         thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
                         thisConn.Open()
@@ -69,10 +46,10 @@ Partial Class Setting_Price_Promo_Add
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"Promos", thisId, Session("LoginId").ToString(), "Promo Created"}
+                Dim dataLog As Object() = {"Companys", thisId, Session("LoginId").ToString(), "Company Created"}
                 settingClass.Logs(dataLog)
 
-                Dim url As String = String.Format("~/setting/price/promo/detail?promoid={0}", thisId)
+                Dim url As String = String.Format("~/setting/general/company/detail?cid={0}", thisId)
                 Response.Redirect(url, False)
             End If
         Catch ex As Exception
@@ -84,26 +61,7 @@ Partial Class Setting_Price_Promo_Add
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/price/promo", False)
-    End Sub
-
-    Protected Sub BindCompany()
-        ddlCompany.Items.Clear()
-        Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Name ASC")
-            ddlCompany.DataTextField = "Name"
-            ddlCompany.DataValueField = "Id"
-            ddlCompany.DataBind()
-
-            If ddlCompany.Items.Count > 1 Then
-                ddlCompany.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            ddlCompany.Items.Clear()
-            If Session("RoleName") = "Developer" Then
-                MessageError(True, ex.ToString())
-            End If
-        End Try
+        Response.Redirect("~/setting/general/company", False)
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)

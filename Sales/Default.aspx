@@ -27,6 +27,11 @@
                 </div>
             </div>
         </section>
+        <section class="row mb-3">
+            <div class="col-12 d-flex justify-content-end flex-wrap gap-1">
+                <asp:Button runat="server" ID="btnRefresh" CssClass="btn btn-secondary" Text="Refresh Data" OnClick="btnRefresh_Click" />
+            </div>
+        </section>
         <section class="row">
             <div class="col-12">
                 <div class="card">

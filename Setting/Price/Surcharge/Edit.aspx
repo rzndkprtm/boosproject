@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Add.aspx.vb" Inherits="Setting_Price_Surcharge_Add" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Price Surcharge Add" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Edit.aspx.vb" Inherits="Setting_Price_Surcharge_Edit" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Price Surcharge Edit" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -72,7 +72,7 @@
                                             <br />
                                             <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <label class="form-label">Formula Type (ADD)</label>
-                                                <asp:DropDownList runat="server" ID="ddlFormulaFieldB" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlFormulaFieldB_SelectedIndexChanged"></asp:DropDownList>
+                                                <asp:DropDownList runat="server" ID="ddlFormulaFieldB" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <label class="form-label">Formula Data (ADD)</label>
@@ -193,6 +193,10 @@
         </div>
     </div>
 
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
+    </div>
+
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");
@@ -223,10 +227,6 @@
                 });
             });
         }
-        document.addEventListener("DOMContentLoaded", function () {
-            initUpdatePanelLoading();
-            initChoices();
-        });
         function copyRow(btn) {
             var row = btn.closest("tr");
             var txt = row.querySelector("input[type='text']");
@@ -253,6 +253,10 @@
                 alert("Copy gagal.");
             }
         }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            initChoices();
+        });
         ["modalField"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
