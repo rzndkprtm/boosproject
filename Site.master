@@ -211,6 +211,9 @@
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/quote" class="subsubmenu-link">Customer Quote</a>
                                                         </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/custompricing" class="subsubmenu-link">Customer Custom Pricing</a>
+                                                        </li>
                                                     </ul>
                                                 </li>
                                                 <li class="submenu-item has-sub" runat="server" id="liSpecification">

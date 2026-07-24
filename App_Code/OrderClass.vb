@@ -1986,27 +1986,27 @@ Public Class OrderClass
 
                 Dim linearMetre As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetre")) Then
-                    linearMetre = Convert.ToDecimal(thisData("LinearMetre"))
+                    linearMetre = Math.Round(Convert.ToDecimal(thisData("LinearMetre")), 2)
                 End If
                 Dim linearMetreB As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreB")) Then
-                    linearMetreB = Convert.ToDecimal(thisData("LinearMetreB"))
+                    linearMetreB = Math.Round(Convert.ToDecimal(thisData("LinearMetreB")), 2)
                 End If
                 Dim linearMetreC As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreC")) Then
-                    linearMetreC = Convert.ToDecimal(thisData("LinearMetreC"))
+                    linearMetreC = Math.Round(Convert.ToDecimal(thisData("LinearMetreC")), 2)
                 End If
                 Dim linearMetreD As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreD")) Then
-                    linearMetreD = Convert.ToDecimal(thisData("LinearMetreD"))
+                    linearMetreD = Math.Round(Convert.ToDecimal(thisData("LinearMetreD")), 2)
                 End If
                 Dim linearMetreE As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreE")) Then
-                    linearMetreE = Convert.ToDecimal(thisData("LinearMetreE"))
+                    linearMetreE = Math.Round(Convert.ToDecimal(thisData("LinearMetreE")), 2)
                 End If
                 Dim linearMetreF As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreF")) Then
-                    linearMetreF = Convert.ToDecimal(thisData("LinearMetreF"))
+                    linearMetreF = Math.Round(Convert.ToDecimal(thisData("LinearMetreF")), 2)
                 End If
 
                 Dim squareMetre As Decimal = 0D
@@ -2034,7 +2034,7 @@ Public Class OrderClass
                     squareMetreF = Math.Round(Convert.ToDecimal(thisData("SquareMetreF")), 2)
                 End If
 
-                Dim objectArray As Object() = Nothing
+                'Dim objectArray As Object() = Nothing
 
                 Dim itemNumber As Integer = 0
 
@@ -2043,38 +2043,70 @@ Public Class OrderClass
                 Dim thisBuy As Decimal = 0
                 Dim thisBuyAdditional As Decimal = 0
 
-                'Dim customPricing As String = GetItemData("SELECT Description FROM CustomerCustomPricings WHERE CustomerId='" & customerId & "'")
-                'Dim isWithoutGR As Boolean = Not String.IsNullOrEmpty(customPricing) AndAlso customPricing.Contains("Without GR")
+                Dim customPricing As String = GetItemData("SELECT Description FROM CustomerCustomPricings WHERE Id='" & customerId & "'")
+                Dim isWithoutGR As Boolean = Not String.IsNullOrEmpty(customPricing) AndAlso customPricing.Contains("Without GR")
 
                 ' FIRST BLIND
                 If Not String.IsNullOrEmpty(priceProductGroupId) Then
                     itemNumber = 1
 
                     Dim sellArray As Object() = {priceProductGroupId, priceGroup, drop, width, "Sell"}
-                    If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Express" OrElse designName = "Evolve Shutter Ocean" Then
+                    If designName = "Skyline Shutter Express" Then
                         sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
                     End If
-                    If designName = "Window" OrElse designName = "Door" Then
+                    If designName = "Skyline Shutter Ocean" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Door" Then
+                        sellArray = {priceProductGroupId, doorPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Window" Then
                         sellArray = {priceProductGroupId, doorPriceGroup, drop, width, "Sell"}
                     End If
                     If designName = "Outdoor" Then
                         sellArray = {priceProductGroupId, priceGroup, squareMetre, squareMetre, "Sell"}
                     End If
 
+                    Dim buyArray As Object() = {priceProductGroupId, priceGroup, drop, width, "Buy"}
+                    If designName = "Skyline Shutter Express" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Skyline Shutter Ocean" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Door" Then
+                        buyArray = {priceProductGroupId, doorPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Window" Then
+                        buyArray = {priceProductGroupId, doorPriceGroup, drop, width, "Buy"}
+                    End If
+
                     Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
-                    Dim gridSellMethod As String = String.Empty
+                    Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
+
                     Dim gridSellPrice As Decimal = 0D
+                    Dim gridBuyPrice As Decimal = 0D
+
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridBuyMethod As String = String.Empty
+
                     Dim gridSellConditional As String = String.Empty
+                    Dim gridBuyConditional As String = String.Empty
 
                     If dataPriceSell IsNot Nothing Then
                         gridSellMethod = dataPriceSell("Method").ToString()
-                        If Not IsDBNull(dataPriceSell("Price")) Then
-                            gridSellPrice = Convert.ToDecimal(dataPriceSell("Price"))
-                        End If
+                        gridSellPrice = Convert.ToDecimal(dataPriceSell("Price"))
                         gridSellConditional = dataPriceSell("Conditional").ToString()
+                    End If
+                    If dataPriceBuy IsNot Nothing Then
+                        gridBuyMethod = dataPriceBuy("Method").ToString()
+                        gridBuyPrice = Convert.ToDecimal(dataPriceBuy("Price"))
+                        gridBuyConditional = dataPriceBuy("Conditional").ToString()
                     End If
 
                     Dim gridSellAdditional As Decimal = 0D
+                    Dim gridBuyAdditional As Decimal = 0D
+
                     If Not String.IsNullOrEmpty(priceAdditional) Then
                         Dim additionalArray As Object() = {priceAdditional, priceGroup, 0, width, "Sell"}
                         Dim addData As DataRow = GetGridPrice(additionalArray)
@@ -2082,24 +2114,6 @@ Public Class OrderClass
                             gridSellAdditional = addData("Price")
                         End If
                     End If
-
-                    Dim buyArray As Object() = {priceProductGroupId, priceGroup, drop, width, "Buy"}
-                    If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Express" OrElse designName = "Evolve Shutter Ocean" Then
-                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
-                    End If
-                    If designName = "Window" OrElse designName = "Door" Then
-                        buyArray = {priceProductGroupId, doorPriceGroup, drop, width, "Buy"}
-                    End If
-
-                    Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
-                    Dim gridBuyPrice As Decimal = 0D
-                    If dataPriceBuy IsNot Nothing Then
-                        If Not IsDBNull(dataPriceBuy("Price")) Then
-                            gridBuyPrice = Convert.ToDecimal(dataPriceBuy("Price"))
-                        End If
-                    End If
-
-                    Dim gridBuyAdditional As Decimal = 0D
                     If Not String.IsNullOrEmpty(priceAdditional) Then
                         Dim additionalArray As Object() = {priceAdditional, priceGroup, 0, width, "Buy"}
                         Dim addData As DataRow = GetGridPrice(additionalArray)
@@ -2121,62 +2135,33 @@ Public Class OrderClass
                     thisBuyAdditional = costBuyAdditional
 
                     Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
-                    If discountData.Rows.Count > 0 Then
-                        For i As Integer = 0 To discountData.Rows.Count - 1
-                            Dim discountType As String = discountData.Rows(i)("Type").ToString()
-                            Dim dataId As String = discountData.Rows(i)("DataId").ToString()
-                            Dim discountValue As Decimal = discountData.Rows(i)("Discount")
+                    For Each discountRow As DataRow In discountData.Rows
+                        Dim discountType As String = discountRow("Type").ToString()
+                        Dim dataId As String = discountRow("DataId").ToString()
+                        Dim discount As Decimal = CDec(discountRow("Discount"))
 
-                            If discountType = "Designs" Then
-                                If dataId = designId Then
-                                    Dim baseValue As Decimal = Math.Round(costSell * discountValue / 100, 2)
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupId) Then
+                            Continue For
+                        End If
 
-                                    If designName = "Roller Blind" Then
-                                        baseValue = Math.Round(costSell * discountValue / 100, 2)
+                        Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
+                        thisSell = Math.Round(costSell - discountValue, 2)
+                        If (designName = "Roller Blind" OrElse priceProductGroupName.Contains("Gear Reduction")) Then
+                            discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
 
-                                        If tubeName = "Standard" OrElse tubeName.Contains("Gear Reduction") Then
-                                            If gridSellConditional = "Excl. $7 Disc" Then
-                                                baseValue = Math.Round((costSell - 7) * discountValue / 100, 2)
-                                            End If
-
-                                            'If isWithoutGR = True Then
-                                            '    baseValue = Math.Round(costSell * discountValue / 100, 2)
-                                            'End If
-                                        End If
-                                    End If
-
-                                    Dim additionalValue As Decimal = Math.Round(costSellAdditional * discountValue / 100, 2)
-                                    thisSellAdditional = gridSellAdditional - additionalValue
-
-                                    costSell = thisSell
-                                    costSellAdditional = thisSellAdditional
-                                End If
+                            If isWithoutGR Then
+                                thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                            ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
                             End If
+                        End If
 
-                            If discountType = "PriceProductGroups" Then
-                                If dataId = priceProductGroupId Then
-                                    Dim baseValue As Decimal = Math.Round(costSell * discountValue / 100, 2)
+                        costSell = thisSell
 
-                                    If priceProductGroupName.Contains("Gear Reduction") Then
-
-                                    End If
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        baseValue = (costSell - 7) * discountValue / 100
-                                    End If
-                                    Dim additionalValue As Decimal = costSellAdditional * discountValue / 100
-
-                                    thisSell = costSell - baseValue
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        thisSell = (costSell - 7) - baseValue + 7
-                                    End If
-                                    thisSellAdditional = gridSellAdditional - additionalValue
-
-                                    costSell = thisSell
-                                    costSellAdditional = thisSellAdditional
-                                End If
-                            End If
-                        Next
-                    End If
+                        Dim discountAdditionalValue As Decimal = Math.Round(costSellAdditional * discount / 100D, 2)
+                        thisSellAdditional = Math.Round(costSellAdditional - discountAdditionalValue, 2)
+                        costSellAdditional = thisSellAdditional
+                    Next
 
                     If designName = "Curtain" AndAlso orderType = "Builder" Then
                         thisSell = thisSell + 50
@@ -2184,175 +2169,111 @@ Public Class OrderClass
 
                     If gridSellMethod = "Square Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
-                            thisSell = thisSell * squareMetre
+                            thisSell = Math.Round(thisSell * squareMetre, 2)
                         End If
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If squareMetre < 1 Then thisSell = thisSell * 1
-                            If squareMetre >= 1 Then thisSell = thisSell * squareMetre
+                            If squareMetre >= 1 Then thisSell = Math.Round(thisSell * squareMetre, 2)
                         End If
-                        thisBuy = thisBuy * squareMetre
+                        thisBuy = Math.Round(thisBuy * squareMetre, 2)
                     End If
                     If gridSellMethod = "Linear Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
-                            thisSell = thisSell * linearMetre
+                            thisSell = Math.Round(thisSell * linearMetre, 2)
                         End If
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If linearMetre < 1 Then thisSell = thisSell * 1
-                            If linearMetre >= 1 Then thisSell = thisSell * linearMetre
+                            If linearMetre >= 1 Then thisSell = Math.Round(thisSell * linearMetre, 2)
+
                             If designName = "Curtain" AndAlso (blindName = "Complete Set (Single)" OrElse blindName = "Curtain Only") Then
-                                thisSell = cutLength / 1000 * costSell
+                                thisSell = Math.Round(cutLength / 1000 * costSell, 2)
                             End If
                         End If
-                        thisBuy = thisBuy * linearMetre
+                        thisBuy = Math.Round(thisBuy * linearMetre, 2)
                     End If
 
                     If designName = "Skyline Shutter Express" Then
                         If companyId = "2" Then
-                            If squareMetre <= 0.75 Then thisSell = gridSellPrice * 0.75
-                            If squareMetre <= 0.5 Then thisBuy = gridBuyPrice * 0.5
+                            If squareMetre <= 0.75 Then thisSell = Math.Round(gridSellPrice * 0.75, 2)
+                            If squareMetre <= 0.5 Then thisBuy = Math.Round(gridBuyPrice * 0.5, 2)
                         End If
                         If companyId = "3" Then
-                            If squareMetre <= 0.5 Then thisSell = gridSellPrice * 0.5
+                            If squareMetre <= 0.5 Then thisSell = Math.Round(gridSellPrice * 0.5, 2)
                         End If
                     End If
-
                     If designName = "Skyline Shutter Ocean" Then
-                        If squareMetre <= 0.75 Then thisSell = gridSellPrice * 0.75
+                        If squareMetre <= 0.75 Then thisSell = Math.Round(gridSellPrice * 0.75, 2)
                     End If
 
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If buyPromoData.Rows.Count > 0 Then
-                        For i As Integer = 0 To buyPromoData.Rows.Count - 1
-                            Dim promoId As String = buyPromoData.Rows(i)("Id").ToString()
+                    For Each buyPromoRow As DataRow In buyPromoData.Rows
+                        Dim promoId As String = buyPromoRow("Id").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
 
-                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
-                                    Dim discount As Decimal = promoDetailData.Rows(iDetail)("Discount")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim promoType As String = detailRow("Type").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
 
-                                    If promoType = "Designs" Then
-                                        If dataId = designId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If promoType = "Blinds" Then
-                                        If dataId = blindId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If promoType = "Products" Then
-                                        If dataId = productId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If designName = "Roller Blind" Then
-                                        If promoType = "Fabrics" Then
-                                            If dataId = fabricId Then
-                                                thisBuy = costBuy - (costBuy * discount / 100)
-                                                costBuy = thisBuy
-                                            End If
-                                        End If
-                                        If promoType = "FabricColours" Then
-                                            If dataId = fabricColourId Then
-                                                thisBuy = costBuy - (costBuy * discount / 100)
-                                                costBuy = thisBuy
-                                            End If
-                                        End If
-                                    End If
-                                    If promoType = "FrameColours" Then
-                                        If dataId = frameColour Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                Next
-                            End If
+                            Dim isMatch As Boolean = False
+
+                            Select Case promoType
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                Case "Fabrics"
+                                    isMatch = ((designName = "Roller Blind" OrElse designName = "Curtain") AndAlso dataId = fabricId)
+                                Case "FabricColours"
+                                    isMatch = ((designName = "Roller Blind" OrElse designName = "Curtain") AndAlso dataId = fabricColourId)
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim promoValue As Decimal = Math.Round(costBuy * discount / 100D, 2)
+                            thisBuy = Math.Round(costBuy - promoValue, 2)
+                            costBuy = thisBuy
                         Next
-                    End If
+                    Next
 
                     Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If sellPromoData.Rows.Count > 0 Then
-                        For i As Integer = 0 To sellPromoData.Rows.Count - 1
-                            Dim promoId As String = sellPromoData.Rows(i)("PromoId").ToString()
+                    For Each sellPromoRow As DataRow In sellPromoData.Rows
+                        Dim promoId As String = sellPromoRow("PromoId").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
 
-                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
-                                    Dim discount As Decimal = promoDetailData.Rows(iDetail)("Discount")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim promoType As String = detailRow("Type").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
 
-                                    If promoType = "Designs" Then
-                                        If dataId = designId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If promoType = "Blinds" Then
-                                        If dataId = blindId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If promoType = "Products" Then
-                                        If dataId = productId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If designName = "Roller Blind" Then
-                                        If promoType = "Fabrics" Then
-                                            If dataId = fabricId Then
-                                                thisSell = costSell - (costSell * discount / 100)
-                                                costSell = thisSell
+                            Dim compareId As String = ""
 
-                                                'Dim promoSellValue As Decimal = costSell * promoSell / 100
+                            Select Case promoType
+                                Case "Designs"
+                                    compareId = designId
+                                Case "Blinds"
+                                    compareId = blindId
+                                Case "Products"
+                                    compareId = productId
+                                Case "Fabrics"
+                                    If designName = "Roller Blind" OrElse designName = "Curtain" Then compareId = fabricId
+                                Case "FabricColours"
+                                    If designName = "Roller Blind" OrElse designName = "Curtain" Then compareId = fabricColourId
+                                Case "FrameColours"
+                                    compareId = frameColour
+                            End Select
 
-                                                'If gridSellConditional = "Excl. $7 Disc" Then
-                                                '    promoSellValue = (costSell - 7) * promoSell / 100
-                                                'End If
+                            If compareId <> dataId Then Continue For
 
-                                                'thisSell = costSell - (promoSellValue)
-                                                'If gridSellConditional = "Excl. $7 Disc" Then
-                                                '    thisSell = (costSell - 7) - promoSellValue + 7
-                                                'End If
-                                                'costSell = thisSell
-                                            End If
-                                        End If
-                                        If promoType = "FabricColours" Then
-                                            If dataId = fabricColourId Then
-                                                thisSell = costSell - (costSell * discount / 100)
-                                                costSell = thisSell
-
-                                                'Dim promoSellValue As Decimal = costSell * promoSell / 100
-
-                                                'If gridSellConditional = "Excl. $7 Disc" Then
-                                                '    promoSellValue = (costSell - 7) * promoSell / 100
-                                                'End If
-
-                                                'thisSell = costSell - (promoSellValue)
-                                                'If gridSellConditional = "Excl. $7 Disc" Then
-                                                '    thisSell = (costSell - 7) - promoSellValue + 7
-                                                'End If
-                                                'costSell = thisSell
-                                            End If
-                                        End If
-                                    End If
-                                    If promoType = "FrameColours" Then
-                                        If dataId = frameColour Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                Next
-                            End If
+                            Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
+                            thisSell = Math.Round(costSell - discountValue, 2)
+                            costSell = thisSell
                         Next
-                    End If
+                    Next
 
                     Dim costingDescription As String = priceProductGroupName
                     If totalItems > 1 AndAlso Not (designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Express" OrElse designName = "Evolve Shutter Ocean") Then
@@ -2378,18 +2299,30 @@ Public Class OrderClass
                     End If
 
                     costingArray = {headerId, itemId, itemNumber, priceGroup}
-                    If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" Then
+                    If designName = "Skyline Shutter Express" Then
                         costingArray = {headerId, itemId, itemNumber, shutterPriceGroup}
                     End If
-                    If designName = "Window" OrElse designName = "Door" Then
+                    If designName = "Skyline Shutter Ocean" Then
+                        costingArray = {headerId, itemId, itemNumber, shutterPriceGroup}
+                    End If
+                    If designName = "Door" Then
+                        costingArray = {headerId, itemId, itemNumber, doorPriceGroup}
+                    End If
+                    If designName = "Window" Then
                         costingArray = {headerId, itemId, itemNumber, doorPriceGroup}
                     End If
 
                     Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroup}
-                    If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" Then
+                    If designName = "Skyline Shutter Express" Then
                         surchargeArray = {headerId, itemId, designId, itemNumber, shutterPriceGroup}
                     End If
-                    If designName = "Window" OrElse designName = "Door" Then
+                    If designName = "Skyline Shutter Ocean" Then
+                        surchargeArray = {headerId, itemId, designId, itemNumber, shutterPriceGroup}
+                    End If
+                    If designName = "Door" Then
+                        surchargeArray = {headerId, itemId, designId, itemNumber, doorPriceGroup}
+                    End If
+                    If designName = "Window" Then
                         surchargeArray = {headerId, itemId, designId, itemNumber, doorPriceGroup}
                     End If
                     CalculateSurcharge(surchargeArray)
@@ -2399,15 +2332,27 @@ Public Class OrderClass
                 If Not String.IsNullOrEmpty(priceProductGroupIdB) Then
                     itemNumber = 2
 
-                    objectArray = {priceProductGroupIdB, priceGroup, dropB, widthB, "Sell"}
+                    Dim sellArray As Object() = {priceProductGroupIdB, priceGroup, dropB, widthB, "Sell"}
                     If designName = "Door" Then
-                        objectArray = {priceProductGroupIdB, doorPriceGroup, drop, width, "Sell"}
+                        sellArray = {priceProductGroupIdB, doorPriceGroup, drop, width, "Sell"}
                     End If
 
-                    Dim dataPriceSell As DataRow = GetGridPrice(objectArray)
-                    Dim gridSellMethod As String = String.Empty
+                    Dim buyArray As Object() = {priceProductGroupIdB, priceGroup, dropB, widthB, "Buy"}
+                    If designName = "Door" Then
+                        buyArray = {priceProductGroupIdB, doorPriceGroup, drop, width, "Buy"}
+                    End If
+
+                    Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
+
                     Dim gridSellPrice As Decimal = 0D
+                    Dim gridBuyPrice As Decimal = 0D
+
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridBuyMethod As String = String.Empty
+
                     Dim gridSellConditional As String = String.Empty
+                    Dim gridBuyConditional As String = String.Empty
 
                     If Not dataPriceSell Is Nothing Then
                         gridSellMethod = dataPriceSell("Method").ToString()
@@ -2415,62 +2360,70 @@ Public Class OrderClass
                         gridSellConditional = dataPriceSell("Conditional").ToString()
                     End If
 
-                    objectArray = {priceProductGroupIdB, priceGroup, dropB, widthB, "Buy"}
-                    If designName = "Door" Then
-                        objectArray = {priceProductGroupIdB, doorPriceGroup, drop, width, "Buy"}
+                    If Not dataPriceBuy Is Nothing Then
+                        gridBuyMethod = dataPriceSell("Method").ToString()
+                        gridBuyPrice = dataPriceSell("Price")
+                        gridBuyConditional = dataPriceSell("Conditional").ToString()
                     End If
 
-                    Dim dataPriceBuy As DataRow = GetGridPrice(objectArray)
-                    Dim gridBuy As Decimal = 0D
-                    If Not dataPriceBuy Is Nothing Then
-                        gridBuy = dataPriceBuy("Price")
+                    Dim gridSellAdditional As Decimal = 0D
+                    Dim gridBuyAdditional As Decimal = 0D
+
+                    If Not String.IsNullOrEmpty(priceAdditionalB) Then
+                        Dim additionalArray As Object() = {priceAdditionalB, priceGroup, 0, width, "Sell"}
+                        Dim addData As DataRow = GetGridPrice(additionalArray)
+                        If addData IsNot Nothing Then
+                            gridSellAdditional = addData("Price")
+                        End If
+                    End If
+                    If Not String.IsNullOrEmpty(priceAdditionalB) Then
+                        Dim additionalArray As Object() = {priceAdditionalB, priceGroup, 0, width, "Buy"}
+                        Dim addData As DataRow = GetGridPrice(additionalArray)
+                        If addData IsNot Nothing Then
+                            gridBuyAdditional = addData("Price")
+                        End If
                     End If
 
                     Dim costSell As Decimal = gridSellPrice
-                    Dim costBuy As Decimal = gridBuy
+                    Dim costSellAdditional As Decimal = gridSellAdditional
+
+                    Dim costBuy As Decimal = gridBuyPrice
+                    Dim costBuyAdditional As Decimal = gridBuyAdditional
 
                     thisSell = costSell
+                    thisSellAdditional = costSellAdditional
+
                     thisBuy = costBuy
+                    thisBuyAdditional = costBuyAdditional
 
                     Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
-                    If discountData.Rows.Count > 0 Then
-                        For i As Integer = 0 To discountData.Rows.Count - 1
-                            Dim discountType As String = discountData.Rows(i)("Type").ToString()
-                            Dim dataId As String = discountData.Rows(i)("DataId").ToString()
-                            Dim discountValue As Decimal = discountData.Rows(i)("Discount")
+                    For Each discountRow As DataRow In discountData.Rows
+                        Dim discountType As String = discountRow("Type").ToString()
+                        Dim dataId As String = discountRow("DataId").ToString()
+                        Dim discount As Decimal = CDec(discountRow("Discount"))
 
-                            If discountType = "Designs" Then
-                                If dataId = designId Then
-                                    Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        baseValue = (costSell - 7) * discountValue / 100
-                                    End If
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdB) Then
+                            Continue For
+                        End If
 
-                                    thisSell = costSell - baseValue
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        thisSell = (costSell - 7) - baseValue + 7
-                                    End If
+                        Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
+                        thisSell = Math.Round(costSell - discountValue, 2)
+                        If (designName = "Roller Blind" OrElse priceProductGroupNameB.Contains("Gear Reduction")) Then
+                            discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
 
-                                    costSell = thisSell
-                                End If
+                            If isWithoutGR Then
+                                thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                            ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
                             End If
+                        End If
 
-                            If discountType = "PriceProductGroups" Then
-                                If dataId = priceProductGroupIdB Then
-                                    Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        baseValue = (costSell - 7) * discountValue / 100
-                                    End If
+                        costSell = thisSell
 
-                                    thisSell = costSell - baseValue
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        thisSell = (costSell - 7) - baseValue + 7
-                                    End If
-                                    costSell = thisSell
-                                End If
-                            End If
-                        Next
-                    End If
+                        Dim discountAdditionalValue As Decimal = Math.Round(costSellAdditional * discount / 100D, 2)
+                        thisSellAdditional = Math.Round(costSellAdditional - discountAdditionalValue, 2)
+                        costSellAdditional = thisSellAdditional
+                    Next
 
                     If designName = "Curtain" AndAlso orderType = "Builder" Then
                         thisSell = thisSell + 50
@@ -2478,149 +2431,115 @@ Public Class OrderClass
 
                     If gridSellMethod = "Square Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
-                            thisSell = thisSell * squareMetreB
+                            thisSell = Math.Round(thisSell * squareMetreB, 2)
                         End If
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If squareMetre < 1 Then thisSell = thisSell * 1
-                            If squareMetre >= 1 Then thisSell = thisSell * squareMetreB
+                            If squareMetre >= 1 Then thisSell = Math.Round(thisSell * squareMetreB, 2)
                         End If
-                        thisBuy = thisBuy * squareMetreB
+                        thisBuy = Math.Round(thisBuy * squareMetreB, 2)
                     End If
                     If gridSellMethod = "Linear Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
-                            thisSell = thisSell * linearMetreB
+                            thisSell = Math.Round(thisSell * linearMetreB, 2)
                         End If
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If linearMetre < 1 Then thisSell = thisSell * 1
-                            If linearMetre >= 1 Then thisSell = thisSell * linearMetreB
+                            If linearMetre >= 1 Then thisSell = Math.Round(thisSell * linearMetreB, 2)
                         End If
-                        thisBuy = thisBuy * linearMetreB
+                        thisBuy = Math.Round(thisBuy * linearMetreB, 2)
                     End If
 
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If buyPromoData.Rows.Count > 0 Then
-                        For i As Integer = 0 To buyPromoData.Rows.Count - 1
-                            Dim promoId As String = buyPromoData.Rows(i)("Id").ToString()
+                    For Each buyPromoRow As DataRow In buyPromoData.Rows
+                        Dim promoId As String = buyPromoRow("Id").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
 
-                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
-                                    Dim discount As Decimal = promoDetailData.Rows(iDetail)("Discount")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim promoType As String = detailRow("Type").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
 
-                                    If promoType = "Designs" Then
-                                        If dataId = designId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If promoType = "Blinds" Then
-                                        If dataId = blindId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If promoType = "Products" Then
-                                        If dataId = productId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If designName = "Roller Blind" Then
-                                        If promoType = "Fabrics" Then
-                                            If dataId = fabricIdB Then
-                                                thisBuy = costBuy - (costBuy * discount / 100)
-                                                costBuy = thisBuy
-                                            End If
-                                        End If
-                                        If promoType = "FabricColours" Then
-                                            If dataId = fabricColourIdB Then
-                                                thisBuy = costBuy - (costBuy * discount / 100)
-                                                costBuy = thisBuy
-                                            End If
-                                        End If
-                                    End If
-                                    If promoType = "FrameColours" Then
-                                        If dataId = frameColour Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                Next
-                            End If
+                            Dim isMatch As Boolean = False
+
+                            Select Case promoType
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                Case "Fabrics"
+                                    isMatch = ((designName = "Roller Blind" OrElse designName = "Curtain") AndAlso dataId = fabricIdB)
+                                Case "FabricColours"
+                                    isMatch = ((designName = "Roller Blind" OrElse designName = "Curtain") AndAlso dataId = fabricColourIdB)
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim promoValue As Decimal = Math.Round(costBuy * discount / 100D, 2)
+                            thisBuy = Math.Round(costBuy - promoValue, 2)
+                            costBuy = thisBuy
                         Next
-                    End If
+                    Next
 
                     Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If sellPromoData.Rows.Count > 0 Then
-                        For i As Integer = 0 To sellPromoData.Rows.Count - 1
-                            Dim promoId As String = sellPromoData.Rows(i)("PromoId").ToString()
+                    For Each sellPromoRow As DataRow In sellPromoData.Rows
+                        Dim promoId As String = sellPromoRow("PromoId").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
 
-                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
-                                    Dim discount As Decimal = promoDetailData.Rows(iDetail)("Discount")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim promoType As String = detailRow("Type").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
 
-                                    If promoType = "Designs" Then
-                                        If dataId = designId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If promoType = "Blinds" Then
-                                        If dataId = blindId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If promoType = "Products" Then
-                                        If dataId = productId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If designName = "Roller Blind" Then
-                                        If promoType = "Fabrics" Then
-                                            If dataId = fabricIdB Then
-                                                thisSell = costSell - (costSell * discount / 100)
-                                                costSell = thisSell
-                                            End If
-                                        End If
-                                        If promoType = "FabricColours" Then
-                                            If dataId = fabricColourIdB Then
-                                                thisSell = costSell - (costSell * discount / 100)
-                                                costSell = thisSell
-                                            End If
-                                        End If
-                                    End If
-                                Next
-                            End If
+                            Dim compareId As String = ""
+
+                            Select Case promoType
+                                Case "Designs"
+                                    compareId = designId
+                                Case "Blinds"
+                                    compareId = blindId
+                                Case "Products"
+                                    compareId = productId
+                                Case "Fabrics"
+                                    If designName = "Roller Blind" OrElse designName = "Curtain" Then compareId = fabricIdB
+                                Case "FabricColours"
+                                    If designName = "Roller Blind" OrElse designName = "Curtain" Then compareId = fabricColourIdB
+                                Case "FrameColours"
+                                    compareId = frameColour
+                            End Select
+
+                            If compareId <> dataId Then Continue For
+
+                            Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
+                            thisSell = Math.Round(costSell - discountValue, 2)
+                            costSell = thisSell
                         Next
-                    End If
+                    Next
 
                     Dim costingDescription As String = String.Format("#2 {0}", priceProductGroupNameB)
                     If designName = "Cellular Shades" Then
                         costingDescription = priceProductGroupNameB
                     End If
 
-                    objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
-                    OrderCostings(objectArray)
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
+                    OrderCostings(costingArray)
 
                     If designName = "Curtain" AndAlso blindName = "Complete Set (Double)" Then
                         costingDescription = String.Format("#2 {0}", priceAdditionalNameB)
-                        objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuyAdditional, thisSellAdditional}
-                        OrderCostings(objectArray)
+                        costingArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuyAdditional, thisSellAdditional}
+                        OrderCostings(costingArray)
                     End If
 
-                    objectArray = {headerId, itemId, itemNumber, priceGroup}
+                    Dim surchargeArray As Object() = {headerId, itemId, itemNumber, priceGroup}
                     If designName = "Door" Then
-                        objectArray = {headerId, itemId, itemNumber, doorPriceGroup}
+                        surchargeArray = {headerId, itemId, itemNumber, doorPriceGroup}
                     End If
 
-                    Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroup}
+                    surchargeArray = {headerId, itemId, designId, itemNumber, priceGroup}
                     CalculateSurcharge(surchargeArray)
                 End If
 
@@ -2628,12 +2547,20 @@ Public Class OrderClass
                 If Not String.IsNullOrEmpty(priceProductGroupIdC) Then
                     itemNumber = 3
 
-                    objectArray = {priceProductGroupIdC, priceGroup, dropC, widthC, "Sell"}
+                    Dim sellArray As Object() = {priceProductGroupIdC, priceGroup, dropC, widthC, "Sell"}
+                    Dim buyArray As Object() = {priceProductGroupIdC, priceGroup, dropC, widthC, "Buy"}
 
-                    Dim dataPriceSell As DataRow = GetGridPrice(objectArray)
-                    Dim gridSellMethod As String = String.Empty
+                    Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
+
                     Dim gridSellPrice As Decimal = 0D
+                    Dim gridBuyPrice As Decimal = 0D
+
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridBuyMethod As String = String.Empty
+
                     Dim gridSellConditional As String = String.Empty
+                    Dim gridBuyConditional As String = String.Empty
 
                     If Not dataPriceSell Is Nothing Then
                         gridSellMethod = dataPriceSell("Method").ToString()
@@ -2641,191 +2568,135 @@ Public Class OrderClass
                         gridSellConditional = dataPriceSell("Conditional").ToString()
                     End If
 
-                    objectArray = {priceProductGroupIdC, priceGroup, dropC, widthC, "Buy"}
-                    Dim dataPriceBuy As DataRow = GetGridPrice(objectArray)
-                    Dim gridBuy As Decimal = 0D
                     If Not dataPriceBuy Is Nothing Then
-                        gridBuy = dataPriceBuy("Price")
+                        gridBuyMethod = dataPriceBuy("Method").ToString()
+                        gridBuyPrice = dataPriceBuy("Price")
+                        gridBuyConditional = dataPriceBuy("Conditional").ToString()
                     End If
 
                     Dim costSell As Decimal = gridSellPrice
-                    Dim costBuy As Decimal = gridBuy
+                    Dim costBuy As Decimal = gridBuyPrice
 
                     thisSell = costSell
                     thisBuy = costBuy
 
                     Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
-                    If discountData.Rows.Count > 0 Then
-                        For i As Integer = 0 To discountData.Rows.Count - 1
-                            Dim discountType As String = discountData.Rows(i)("Type").ToString()
-                            Dim dataId As String = discountData.Rows(i)("DataId").ToString()
-                            Dim discountValue As Decimal = discountData.Rows(i)("Discount")
+                    For Each discountRow As DataRow In discountData.Rows
+                        Dim discountType As String = discountRow("Type").ToString()
+                        Dim dataId As String = discountRow("DataId").ToString()
+                        Dim discount As Decimal = CDec(discountRow("Discount"))
 
-                            If discountType = "Designs" Then
-                                If dataId = designId Then
-                                    Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        baseValue = (costSell - 7) * discountValue / 100
-                                    End If
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdC) Then
+                            Continue For
+                        End If
 
-                                    thisSell = costSell - baseValue
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        thisSell = (costSell - 7) - baseValue + 7
-                                    End If
-                                    costSell = thisSell
-                                End If
+                        Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
+                        thisSell = Math.Round(costSell - discountValue, 2)
+                        If (designName = "Roller Blind" OrElse priceProductGroupNameC.Contains("Gear Reduction")) Then
+                            discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
+
+                            If isWithoutGR Then
+                                thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                            ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
                             End If
+                        End If
 
-                            If discountType = "PriceProductGroups" Then
-                                If dataId = priceProductGroupId Then
-                                    Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        baseValue = (costSell - 7) * discountValue / 100
-                                    End If
-
-                                    thisSell = costSell - baseValue
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        thisSell = (costSell - 7) - baseValue + 7
-                                    End If
-
-                                    costSell = thisSell
-                                End If
-                            End If
-                        Next
-                    End If
+                        costSell = thisSell
+                    Next
 
                     If gridSellMethod = "Square Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
                             If squareMetreC < 1 Then thisSell = thisSell * 1
-                            If squareMetreC >= 1 Then thisSell = thisSell * squareMetreC
+                            If squareMetreC >= 1 Then thisSell = Math.Round(thisSell * squareMetreC, 2)
                         End If
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
-                            thisSell = thisSell * squareMetreC
+                            thisSell = Math.Round(thisSell * squareMetreC, 2)
                         End If
-                        thisBuy = thisBuy * squareMetreD
+                        thisBuy = Math.Round(thisBuy * squareMetreC, 2)
                     End If
                     If gridSellMethod = "Linear Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
-                            thisSell = thisSell * linearMetreC
+                            thisSell = Math.Round(thisSell * linearMetreC, 2)
                         End If
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If linearMetreC < 1 Then thisSell = thisSell * 1
-                            If linearMetreC < 1 Then thisSell = thisSell * thisSell = thisSell * linearMetreC
+                            If linearMetreC < 1 Then thisSell = Math.Round(thisSell * linearMetreC, 2)
                         End If
-                        thisBuy = thisBuy * linearMetreC
+                        thisBuy = Math.Round(thisBuy * linearMetreC, 2)
                     End If
 
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If buyPromoData.Rows.Count > 0 Then
-                        For i As Integer = 0 To buyPromoData.Rows.Count - 1
-                            Dim promoId As String = buyPromoData.Rows(i)("Id").ToString()
+                    For Each buyPromoRow As DataRow In buyPromoData.Rows
+                        Dim promoId As String = buyPromoRow("Id").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
 
-                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
-                                    Dim discount As Decimal = promoDetailData.Rows(iDetail)("Discount")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim promoType As String = detailRow("Type").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
 
-                                    If promoType = "Designs" Then
-                                        If dataId = designId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If promoType = "Blinds" Then
-                                        If dataId = blindId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If promoType = "Products" Then
-                                        If dataId = productId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If designName = "Roller Blind" Then
-                                        If promoType = "Fabrics" Then
-                                            If dataId = fabricIdC Then
-                                                thisBuy = costBuy - (costBuy * discount / 100)
-                                                costBuy = thisBuy
-                                            End If
-                                        End If
-                                        If promoType = "FabricColours" Then
-                                            If dataId = fabricColourIdC Then
-                                                thisBuy = costBuy - (costBuy * discount / 100)
-                                                costBuy = thisBuy
-                                            End If
-                                        End If
-                                    End If
-                                    If promoType = "FrameColours" Then
-                                        If dataId = frameColour Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                Next
-                            End If
+                            Dim isMatch As Boolean = False
+
+                            Select Case promoType
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                Case "Fabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdC)
+                                Case "FabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdC)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim promoValue As Decimal = Math.Round(costBuy * discount / 100D, 2)
+                            thisBuy = Math.Round(costBuy - promoValue, 2)
+                            costBuy = thisBuy
                         Next
-                    End If
+                    Next
 
-                    Dim promoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If promoData.Rows.Count > 0 Then
-                        For i As Integer = 0 To promoData.Rows.Count - 1
-                            Dim promoId As String = promoData.Rows(i).Item("PromoId").ToString()
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each sellPromoRow As DataRow In sellPromoData.Rows
+                        Dim promoId As String = sellPromoRow("PromoId").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
 
-                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
-                                    Dim discount As Decimal = promoDetailData.Rows(iDetail)("Discount")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim promoType As String = detailRow("Type").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
 
-                                    If promoType = "Designs" Then
-                                        If dataId = designId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If promoType = "Blinds" Then
-                                        If dataId = blindId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If promoType = "Products" Then
-                                        If dataId = productId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If designName = "Roller Blind" Then
-                                        If promoType = "Fabrics" Then
-                                            If dataId = fabricIdC Then
-                                                thisSell = costSell - (costSell * discount / 100)
-                                                costSell = thisSell
-                                            End If
-                                        End If
+                            Dim compareId As String = ""
 
-                                        If promoType = "FabricColours" Then
-                                            If dataId = fabricColourIdC Then
-                                                thisSell = costSell - (costSell * discount / 100)
-                                                costSell = thisSell
-                                            End If
-                                        End If
-                                    End If
-                                Next
-                            End If
+                            Select Case promoType
+                                Case "Designs"
+                                    compareId = designId
+                                Case "Blinds"
+                                    compareId = blindId
+                                Case "Products"
+                                    compareId = productId
+                                Case "Fabrics"
+                                    If designName = "Roller Blind" Then compareId = fabricIdC
+                                Case "FabricColours"
+                                    If designName = "Roller Blind" Then compareId = fabricColourIdC
+                            End Select
+
+                            If compareId <> dataId Then Continue For
+
+                            Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
+                            thisSell = Math.Round(costSell - discountValue, 2)
+                            costSell = thisSell
                         Next
-                    End If
+                    Next
 
                     Dim costingDescription As String = String.Format("#3 {0}", priceProductGroupNameC)
-
-                    objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
-                    OrderCostings(objectArray)
-
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
                     Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroup}
+
+                    OrderCostings(costingArray)
                     CalculateSurcharge(surchargeArray)
                 End If
 
@@ -2833,202 +2704,155 @@ Public Class OrderClass
                 If Not String.IsNullOrEmpty(priceProductGroupIdD) Then
                     itemNumber = 4
 
-                    objectArray = {priceProductGroupIdD, priceGroup, dropD, widthD, "Sell"}
-                    Dim dataPriceSell As DataRow = GetGridPrice(objectArray)
-                    Dim gridSellMethod As String = String.Empty
+                    Dim sellArray As Object() = {priceProductGroupIdD, priceGroup, dropD, widthD, "Sell"}
+                    Dim buyArray As Object() = {priceProductGroupIdD, priceGroup, dropD, widthD, "Buy"}
+
+                    Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
+
                     Dim gridSellPrice As Decimal = 0D
+                    Dim gridBuyPrice As Decimal = 0D
+
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridBuyMethod As String = String.Empty
+
                     Dim gridSellConditional As String = String.Empty
+                    Dim gridBuyConditional As String = String.Empty
 
                     If Not dataPriceSell Is Nothing Then
                         gridSellMethod = dataPriceSell("Method").ToString()
                         gridSellPrice = dataPriceSell("Price")
                         gridSellConditional = dataPriceSell("Conditional").ToString()
                     End If
-
-                    objectArray = {priceProductGroupIdD, priceGroup, dropD, widthD, "Buy"}
-                    Dim dataPriceBuy As DataRow = GetGridPrice(objectArray)
-                    Dim gridBuy As Decimal = 0D
                     If Not dataPriceBuy Is Nothing Then
-                        gridBuy = dataPriceBuy("Price")
+                        gridBuyMethod = dataPriceBuy("Method").ToString()
+                        gridBuyPrice = dataPriceBuy("Price")
+                        gridBuyConditional = dataPriceBuy("Conditional").ToString()
                     End If
 
                     Dim costSell As Decimal = gridSellPrice
-                    Dim costBuy As Decimal = gridBuy
+                    Dim costBuy As Decimal = gridBuyPrice
 
                     thisSell = costSell
                     thisBuy = costBuy
 
                     Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
-                    If discountData.Rows.Count > 0 Then
-                        For i As Integer = 0 To discountData.Rows.Count - 1
-                            Dim discountType As String = discountData.Rows(i)("Type").ToString()
-                            Dim dataId As String = discountData.Rows(i)("DataId").ToString()
-                            Dim discountValue As Decimal = discountData.Rows(i)("Discount")
+                    For Each discountRow As DataRow In discountData.Rows
+                        Dim discountType As String = discountRow("Type").ToString()
+                        Dim dataId As String = discountRow("DataId").ToString()
+                        Dim discount As Decimal = CDec(discountRow("Discount"))
 
-                            If discountType = "Designs" Then
-                                If dataId = designId Then
-                                    Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
-                                        baseValue = (costSell - 7) * discountValue / 100
-                                    End If
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdD) Then
+                            Continue For
+                        End If
 
-                                    thisSell = costSell - baseValue
-                                    If designName = "Roller Blind" AndAlso (tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Sunboss") OrElse tubeName = "Standard") Then
-                                        thisSell = (costSell - 7) - baseValue + 7
-                                    End If
-                                    costSell = thisSell
-                                End If
+                        Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
+                        thisSell = Math.Round(costSell - discountValue, 2)
+                        If (designName = "Roller Blind" OrElse priceProductGroupNameD.Contains("Gear Reduction")) Then
+                            discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
+
+                            If isWithoutGR Then
+                                thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                            ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
                             End If
+                        End If
 
-                            If discountType = "PriceProductGroups" Then
-                                If dataId = priceProductGroupIdD Then
-                                    Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        baseValue = (costSell - 7) * discountValue / 100
-                                    End If
-
-                                    thisSell = costSell - baseValue
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        thisSell = (costSell - 7) - baseValue + 7
-                                    End If
-
-                                    costSell = thisSell
-                                End If
-                            End If
-                        Next
-                    End If
+                        costSell = thisSell
+                    Next
 
                     If gridSellMethod = "Square Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
-                            thisSell = thisSell * squareMetreD
+                            thisSell = Math.Round(thisSell * squareMetreD, 2)
                         End If
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If squareMetreD < 1 Then thisSell = thisSell * 1
-                            If squareMetreD >= 1 Then thisSell = thisSell * squareMetreD
+                            If squareMetreD >= 1 Then thisSell = Math.Round(thisSell * squareMetreD, 2)
                         End If
-                        thisBuy = thisBuy * squareMetreD
+                        thisBuy = Math.Round(thisBuy * squareMetreD, 2)
                     End If
                     If gridSellMethod = "Linear Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
-                            thisSell = thisSell * linearMetreD
+                            thisSell = Math.Round(thisSell * linearMetreD, 2)
                         End If
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If linearMetreD < 1 Then thisSell = thisSell * 1
-                            If linearMetreD >= 1 Then thisSell = thisSell * linearMetreD
+                            If linearMetreD >= 1 Then thisSell = Math.Round(thisSell * linearMetreD, 2)
                         End If
-                        thisBuy = thisBuy * linearMetreD
+                        thisBuy = Math.Round(thisBuy * linearMetreD, 2)
                     End If
 
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If buyPromoData.Rows.Count > 0 Then
-                        For i As Integer = 0 To buyPromoData.Rows.Count - 1
-                            Dim promoId As String = buyPromoData.Rows(i)("Id").ToString()
+                    For Each buyPromoRow As DataRow In buyPromoData.Rows
+                        Dim promoId As String = buyPromoRow("Id").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
 
-                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
-                                    Dim discount As Decimal = promoDetailData.Rows(iDetail)("Discount")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim promoType As String = detailRow("Type").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
 
-                                    If promoType = "Designs" Then
-                                        If dataId = designId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If promoType = "Blinds" Then
-                                        If dataId = blindId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If promoType = "Products" Then
-                                        If dataId = productId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If designName = "Roller Blind" Then
-                                        If promoType = "Fabrics" Then
-                                            If dataId = fabricIdD Then
-                                                thisBuy = costBuy - (costBuy * discount / 100)
-                                                costBuy = thisBuy
-                                            End If
-                                        End If
-                                        If promoType = "FabricColours" Then
-                                            If dataId = fabricColourIdD Then
-                                                thisBuy = costBuy - (costBuy * discount / 100)
-                                                costBuy = thisBuy
-                                            End If
-                                        End If
-                                    End If
-                                    If promoType = "FrameColours" Then
-                                        If dataId = frameColour Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                Next
-                            End If
+                            Dim isMatch As Boolean = False
+
+                            Select Case promoType
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                Case "Fabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdD)
+                                Case "FabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdD)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim promoValue As Decimal = Math.Round(costBuy * discount / 100D, 2)
+                            thisBuy = Math.Round(costBuy - promoValue, 2)
+                            costBuy = thisBuy
                         Next
-                    End If
+                    Next
 
-                    Dim promoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If promoData.Rows.Count > 0 Then
-                        For i As Integer = 0 To promoData.Rows.Count - 1
-                            Dim promoId As String = promoData.Rows(i)("PromoId").ToString()
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each sellPromoRow As DataRow In sellPromoData.Rows
+                        Dim promoId As String = sellPromoRow("PromoId").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
 
-                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
-                                    Dim discount As Decimal = promoDetailData.Rows(iDetail)("Discount")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim promoType As String = detailRow("Type").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
 
-                                    If promoType = "Designs" Then
-                                        If dataId = designId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If promoType = "Blinds" Then
-                                        If dataId = blindId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If promoType = "Products" Then
-                                        If dataId = productId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If designName = "Roller Blind" Then
-                                        If promoType = "Fabrics" Then
-                                            If dataId = fabricIdD Then
-                                                thisSell = costSell - (costSell * discount / 100)
-                                                costSell = thisSell
-                                            End If
-                                        End If
-                                        If promoType = "FabricColours" Then
-                                            If dataId = fabricColourIdD Then
-                                                thisSell = costSell - (costSell * discount / 100)
-                                                costSell = thisSell
-                                            End If
-                                        End If
-                                    End If
-                                Next
-                            End If
+                            Dim compareId As String = ""
+
+                            Select Case promoType
+                                Case "Designs"
+                                    compareId = designId
+                                Case "Blinds"
+                                    compareId = blindId
+                                Case "Products"
+                                    compareId = productId
+                                Case "Fabrics"
+                                    If designName = "Roller Blind" Then compareId = fabricIdD
+                                Case "FabricColours"
+                                    If designName = "Roller Blind" Then compareId = fabricColourIdD
+                            End Select
+
+                            If compareId <> dataId Then Continue For
+
+                            Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
+                            thisSell = Math.Round(costSell - discountValue, 2)
+                            costSell = thisSell
                         Next
-                    End If
+                    Next
 
                     Dim costingDescription As String = String.Format("#4 {0}", priceProductGroupNameD)
-
-                    objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
-                    OrderCostings(objectArray)
-
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
                     Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroup}
+
+                    OrderCostings(costingArray)
                     CalculateSurcharge(surchargeArray)
                 End If
 
@@ -3036,204 +2860,155 @@ Public Class OrderClass
                 If Not String.IsNullOrEmpty(priceProductGroupIdE) Then
                     itemNumber = 5
 
-                    objectArray = {priceProductGroupIdE, priceGroup, dropE, widthE, "Sell"}
+                    Dim sellArray As Object() = {priceProductGroupIdE, priceGroup, dropE, widthE, "Sell"}
+                    Dim buyArray As Object() = {priceProductGroupIdE, priceGroup, dropE, widthE, "Buy"}
 
-                    Dim dataPriceSell As DataRow = GetGridPrice(objectArray)
-                    Dim gridSellMethod As String = String.Empty
+                    Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
+
                     Dim gridSellPrice As Decimal = 0D
+                    Dim gridBuyPrice As Decimal = 0D
+
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridBuyMethod As String = String.Empty
+
                     Dim gridSellConditional As String = String.Empty
+                    Dim gridBuyConditional As String = String.Empty
 
                     If Not dataPriceSell Is Nothing Then
                         gridSellMethod = dataPriceSell("Method").ToString()
                         gridSellPrice = dataPriceSell("Price")
                         gridSellConditional = dataPriceSell("Conditional").ToString()
                     End If
-
-                    objectArray = {priceProductGroupIdE, priceGroup, dropE, widthE, "Buy"}
-
-                    Dim dataPriceBuy As DataRow = GetGridPrice(objectArray)
-                    Dim gridBuy As Decimal = 0D
                     If Not dataPriceBuy Is Nothing Then
-                        gridBuy = dataPriceBuy("Price")
+                        gridBuyMethod = dataPriceBuy("Method").ToString()
+                        gridBuyPrice = dataPriceBuy("Price")
+                        gridBuyConditional = dataPriceBuy("Conditional").ToString()
                     End If
 
                     Dim costSell As Decimal = gridSellPrice
-                    Dim costBuy As Decimal = gridBuy
+                    Dim costBuy As Decimal = gridBuyPrice
 
                     thisSell = costSell
                     thisBuy = costBuy
 
                     Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
-                    If discountData.Rows.Count > 0 Then
-                        For i As Integer = 0 To discountData.Rows.Count - 1
-                            Dim discountType As String = discountData.Rows(i)("Type").ToString()
-                            Dim dataId As String = discountData.Rows(i)("DataId").ToString()
-                            Dim discountValue As Decimal = discountData.Rows(i)("Discount")
+                    For Each discountRow As DataRow In discountData.Rows
+                        Dim discountType As String = discountRow("Type").ToString()
+                        Dim dataId As String = discountRow("DataId").ToString()
+                        Dim discount As Decimal = CDec(discountRow("Discount"))
 
-                            If discountType = "Designs" Then
-                                If dataId = designId Then
-                                    Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        baseValue = (costSell - 7) * discountValue / 100
-                                    End If
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdE) Then
+                            Continue For
+                        End If
 
-                                    thisSell = costSell - baseValue
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        thisSell = (costSell - 7) - baseValue + 7
-                                    End If
-                                    costSell = thisSell
-                                End If
+                        Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
+                        thisSell = Math.Round(costSell - discountValue, 2)
+                        If (designName = "Roller Blind" OrElse priceProductGroupNameE.Contains("Gear Reduction")) Then
+                            discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
+
+                            If isWithoutGR Then
+                                thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                            ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
                             End If
+                        End If
 
-                            If discountType = "PriceProductGroups" Then
-                                If dataId = priceProductGroupId Then
-                                    Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        baseValue = (costSell - 7) * discountValue / 100
-                                    End If
-
-                                    thisSell = costSell - baseValue
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        thisSell = (costSell - 7) - baseValue + 7
-                                    End If
-
-                                    costSell = thisSell
-                                End If
-                            End If
-                        Next
-                    End If
+                        costSell = thisSell
+                    Next
 
                     If gridSellMethod = "Square Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
-                            thisSell = thisSell * squareMetreE
+                            thisSell = Math.Round(thisSell * squareMetreE, 2)
                         End If
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If squareMetreE < 1 Then thisSell = thisSell * 1
-                            If squareMetreE >= 1 Then thisSell = thisSell * squareMetreE
+                            If squareMetreE >= 1 Then thisSell = Math.Round(thisSell * squareMetreE, 2)
                         End If
-                        thisBuy = thisBuy * squareMetreE
+                        thisBuy = Math.Round(thisBuy * squareMetreE, 2)
                     End If
                     If gridSellMethod = "Linear Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
-                            thisSell = thisSell * linearMetreE
+                            thisSell = Math.Round(thisSell * linearMetreE, 2)
                         End If
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If linearMetreE < 1 Then thisSell = thisSell * 1
-                            If linearMetreE >= 1 Then thisSell = thisSell * linearMetreE
+                            If linearMetreE >= 1 Then thisSell = Math.Round(thisSell * linearMetreE, 2)
                         End If
-                        thisBuy = thisBuy * linearMetreE
+                        thisBuy = Math.Round(thisBuy * linearMetreE, 2)
                     End If
 
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If buyPromoData.Rows.Count > 0 Then
-                        For i As Integer = 0 To buyPromoData.Rows.Count - 1
-                            Dim promoId As String = buyPromoData.Rows(i)("Id").ToString()
+                    For Each buyPromoRow As DataRow In buyPromoData.Rows
+                        Dim promoId As String = buyPromoRow("Id").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
 
-                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
-                                    Dim discount As Decimal = promoDetailData.Rows(iDetail)("Discount")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim promoType As String = detailRow("Type").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
 
-                                    If promoType = "Designs" Then
-                                        If dataId = designId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If promoType = "Blinds" Then
-                                        If dataId = blindId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If promoType = "Products" Then
-                                        If dataId = productId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If designName = "Roller Blind" Then
-                                        If promoType = "Fabrics" Then
-                                            If dataId = fabricIdE Then
-                                                thisBuy = costBuy - (costBuy * discount / 100)
-                                                costBuy = thisBuy
-                                            End If
-                                        End If
-                                        If promoType = "FabricColours" Then
-                                            If dataId = fabricColourIdE Then
-                                                thisBuy = costBuy - (costBuy * discount / 100)
-                                                costBuy = thisBuy
-                                            End If
-                                        End If
-                                    End If
-                                    If promoType = "FrameColours" Then
-                                        If dataId = frameColour Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                Next
-                            End If
+                            Dim isMatch As Boolean = False
+
+                            Select Case promoType
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                Case "Fabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdE)
+                                Case "FabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdE)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim promoValue As Decimal = Math.Round(costBuy * discount / 100D, 2)
+                            thisBuy = Math.Round(costBuy - promoValue, 2)
+                            costBuy = thisBuy
                         Next
-                    End If
+                    Next
 
-                    Dim promoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If promoData.Rows.Count > 0 Then
-                        For i As Integer = 0 To promoData.Rows.Count - 1
-                            Dim promoId As String = promoData.Rows(i)("PromoId").ToString()
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each sellPromoRow As DataRow In sellPromoData.Rows
+                        Dim promoId As String = sellPromoRow("PromoId").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
 
-                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
-                                    Dim discount As Decimal = promoDetailData.Rows(iDetail)("Discount")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim promoType As String = detailRow("Type").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
 
-                                    If promoType = "Designs" Then
-                                        If dataId = designId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If promoType = "Blinds" Then
-                                        If dataId = blindId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If promoType = "Products" Then
-                                        If dataId = productId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If designName = "Roller Blind" Then
-                                        If promoType = "Fabrics" Then
-                                            If dataId = fabricIdE Then
-                                                thisSell = costSell - (costSell * discount / 100)
-                                                costSell = thisSell
-                                            End If
-                                        End If
-                                        If promoType = "FabricColours" Then
-                                            If dataId = fabricColourIdE Then
-                                                thisSell = costSell - (costSell * discount / 100)
-                                                costSell = thisSell
-                                            End If
-                                        End If
-                                    End If
-                                Next
-                            End If
+                            Dim compareId As String = ""
+
+                            Select Case promoType
+                                Case "Designs"
+                                    compareId = designId
+                                Case "Blinds"
+                                    compareId = blindId
+                                Case "Products"
+                                    compareId = productId
+                                Case "Fabrics"
+                                    If designName = "Roller Blind" Then compareId = fabricIdE
+                                Case "FabricColours"
+                                    If designName = "Roller Blind" Then compareId = fabricColourIdE
+                            End Select
+
+                            If compareId <> dataId Then Continue For
+
+                            Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
+                            thisSell = Math.Round(costSell - discountValue, 2)
+                            costSell = thisSell
                         Next
-                    End If
+                    Next
 
                     Dim costingDescription As String = String.Format("#5 {0}", priceProductGroupNameE)
-
-                    objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
-                    OrderCostings(objectArray)
-
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
                     Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroup}
+
+                    OrderCostings(costingArray)
                     CalculateSurcharge(surchargeArray)
                 End If
 
@@ -3241,204 +3016,155 @@ Public Class OrderClass
                 If Not String.IsNullOrEmpty(priceProductGroupIdF) Then
                     itemNumber = 6
 
-                    objectArray = {priceProductGroupIdF, priceGroup, dropF, widthF, "Sell"}
+                    Dim sellArray As Object() = {priceProductGroupIdF, priceGroup, dropF, widthF, "Sell"}
+                    Dim buyArray As Object() = {priceProductGroupIdF, priceGroup, dropF, widthF, "Buy"}
 
-                    Dim dataPriceSell As DataRow = GetGridPrice(objectArray)
-                    Dim gridSellMethod As String = String.Empty
+                    Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
+
                     Dim gridSellPrice As Decimal = 0D
+                    Dim gridBuyPrice As Decimal = 0D
+
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridBuyMethod As String = String.Empty
+
                     Dim gridSellConditional As String = String.Empty
+                    Dim gridBuyConditional As String = String.Empty
 
                     If Not dataPriceSell Is Nothing Then
                         gridSellMethod = dataPriceSell("Method").ToString()
                         gridSellPrice = dataPriceSell("Price")
                         gridSellConditional = dataPriceSell("Conditional").ToString()
                     End If
-
-                    objectArray = {priceProductGroupIdF, priceGroup, dropF, widthF, "Buy"}
-                    Dim dataPriceBuy As DataRow = GetGridPrice(objectArray)
-                    Dim gridBuy As Decimal = 0D
                     If Not dataPriceBuy Is Nothing Then
-                        gridBuy = dataPriceBuy("Price")
+                        gridBuyMethod = dataPriceBuy("Method").ToString()
+                        gridBuyPrice = dataPriceBuy("Price")
+                        gridBuyConditional = dataPriceBuy("Conditional").ToString()
                     End If
 
                     Dim costSell As Decimal = gridSellPrice
-                    Dim costBuy As Decimal = gridBuy
+                    Dim costBuy As Decimal = gridBuyPrice
 
                     thisSell = costSell
                     thisBuy = costBuy
 
                     Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
-                    If discountData.Rows.Count > 0 Then
-                        For i As Integer = 0 To discountData.Rows.Count - 1
-                            Dim discountType As String = discountData.Rows(i)("Type").ToString()
-                            Dim dataId As String = discountData.Rows(i)("DataId").ToString()
-                            Dim discountValue As Decimal = discountData.Rows(i)("Discount")
+                    For Each discountRow As DataRow In discountData.Rows
+                        Dim discountType As String = discountRow("Type").ToString()
+                        Dim dataId As String = discountRow("DataId").ToString()
+                        Dim discount As Decimal = CDec(discountRow("Discount"))
 
-                            If discountType = "Designs" Then
-                                If dataId = designId Then
-                                    Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        baseValue = (costSell - 7) * discountValue / 100
-                                    End If
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdF) Then
+                            Continue For
+                        End If
 
-                                    thisSell = costSell - baseValue
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        thisSell = (costSell - 7) - baseValue + 7
-                                    End If
-                                    costSell = thisSell
-                                End If
+                        Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
+                        thisSell = Math.Round(costSell - discountValue, 2)
+                        If (designName = "Roller Blind" OrElse priceProductGroupNameF.Contains("Gear Reduction")) Then
+                            discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
+
+                            If isWithoutGR Then
+                                thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                            ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
                             End If
+                        End If
 
-                            If discountType = "PriceProductGroups" Then
-                                If dataId = priceProductGroupId Then
-                                    Dim baseValue As Decimal = costSell * discountValue / 100
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        baseValue = (costSell - 7) * discountValue / 100
-                                    End If
-
-                                    thisSell = costSell - baseValue
-                                    If gridSellConditional = "Excl. $7 Disc" Then
-                                        thisSell = (costSell - 7) - baseValue + 7
-                                    End If
-
-                                    costSell = thisSell
-                                End If
-                            End If
-                        Next
-                    End If
+                        costSell = thisSell
+                    Next
 
                     If gridSellMethod = "Square Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
-                            thisSell = thisSell * squareMetreE
+                            thisSell = Math.Round(thisSell * squareMetreE, 2)
                         End If
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If squareMetreE < 1 Then thisSell = thisSell * 1
-                            If squareMetreE >= 1 Then thisSell = thisSell * squareMetreE
+                            If squareMetreE >= 1 Then thisSell = Math.Round(thisSell * squareMetreE, 2)
                         End If
-
-                        thisBuy = thisBuy * squareMetreE
+                        thisBuy = Math.Round(thisBuy * squareMetreE, 2)
                     End If
                     If gridSellMethod = "Linear Metre" Then
                         If companyDetailId = "2" OrElse companyDetailId = "3" OrElse companyDetailId = "4" OrElse companyDetailId = "8" Then
-                            thisSell = thisSell * linearMetreE
+                            thisSell = Math.Round(thisSell * linearMetreE, 2)
                         End If
                         If companyDetailId = "5" OrElse companyDetailId = "6" Then
                             If linearMetreE < 1 Then thisSell = thisSell * 1
-                            If linearMetreE >= 1 Then thisSell = thisSell * linearMetreE
+                            If linearMetreE >= 1 Then thisSell = Math.Round(thisSell * linearMetreE, 2)
                         End If
-                        thisBuy = thisBuy * linearMetreE
+                        thisBuy = Math.Round(thisBuy * linearMetreE, 2)
                     End If
 
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If buyPromoData.Rows.Count > 0 Then
-                        For i As Integer = 0 To buyPromoData.Rows.Count - 1
-                            Dim promoId As String = buyPromoData.Rows(i)("Id").ToString()
+                    For Each buyPromoRow As DataRow In buyPromoData.Rows
+                        Dim promoId As String = buyPromoRow("Id").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
 
-                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Rows(iDetail)("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Rows(iDetail)("DataId").ToString()
-                                    Dim discount As Decimal = promoDetailData.Rows(iDetail)("Discount")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim promoType As String = detailRow("Type").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
 
-                                    If promoType = "Designs" Then
-                                        If dataId = designId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If promoType = "Blinds" Then
-                                        If dataId = blindId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If promoType = "Products" Then
-                                        If dataId = productId Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                    If designName = "Roller Blind" Then
-                                        If promoType = "Fabrics" Then
-                                            If dataId = fabricIdF Then
-                                                thisBuy = costBuy - (costBuy * discount / 100)
-                                                costBuy = thisBuy
-                                            End If
-                                        End If
-                                        If promoType = "FabricColours" Then
-                                            If dataId = fabricColourIdF Then
-                                                thisBuy = costBuy - (costBuy * discount / 100)
-                                                costBuy = thisBuy
-                                            End If
-                                        End If
-                                    End If
-                                    If promoType = "FrameColours" Then
-                                        If dataId = frameColour Then
-                                            thisBuy = costBuy - (costBuy * discount / 100)
-                                            costBuy = thisBuy
-                                        End If
-                                    End If
-                                Next
-                            End If
+                            Dim isMatch As Boolean = False
+
+                            Select Case promoType
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                Case "Fabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdF)
+                                Case "FabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdF)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim promoValue As Decimal = Math.Round(costBuy * discount / 100D, 2)
+                            thisBuy = Math.Round(costBuy - promoValue, 2)
+                            costBuy = thisBuy
                         Next
-                    End If
+                    Next
 
-                    Dim promoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
-                    If promoData.Rows.Count > 0 Then
-                        For i As Integer = 0 To promoData.Rows.Count - 1
-                            Dim promoId As String = promoData.Rows(i)("PromoId").ToString()
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each sellPromoRow As DataRow In sellPromoData.Rows
+                        Dim promoId As String = sellPromoRow("PromoId").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
 
-                            Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
-                            If promoDetailData.Rows.Count > 0 Then
-                                For iDetail As Integer = 0 To promoDetailData.Rows.Count - 1
-                                    Dim promoType As String = promoDetailData.Rows(iDetail).Item("Type").ToString()
-                                    Dim dataId As String = promoDetailData.Rows(iDetail).Item("DataId").ToString()
-                                    Dim discount As Decimal = promoDetailData.Rows(iDetail)("Discount")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim promoType As String = detailRow("Type").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
 
-                                    If promoType = "Designs" Then
-                                        If dataId = designId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If promoType = "Blinds" Then
-                                        If dataId = blindId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If promoType = "Products" Then
-                                        If dataId = productId Then
-                                            thisSell = costSell - (costSell * discount / 100)
-                                            costSell = thisSell
-                                        End If
-                                    End If
-                                    If designName = "Roller Blind" Then
-                                        If promoType = "Fabrics" Then
-                                            If dataId = fabricIdF Then
-                                                thisSell = costSell - (costSell * discount / 100)
-                                                costSell = thisSell
-                                            End If
-                                        End If
-                                        If promoType = "FabricColours" Then
-                                            If dataId = fabricColourIdF Then
-                                                thisSell = costSell - (costSell * discount / 100)
-                                                costSell = thisSell
-                                            End If
-                                        End If
-                                    End If
-                                Next
-                            End If
+                            Dim compareId As String = ""
+
+                            Select Case promoType
+                                Case "Designs"
+                                    compareId = designId
+                                Case "Blinds"
+                                    compareId = blindId
+                                Case "Products"
+                                    compareId = productId
+                                Case "Fabrics"
+                                    If designName = "Roller Blind" Then compareId = fabricIdF
+                                Case "FabricColours"
+                                    If designName = "Roller Blind" Then compareId = fabricColourIdF
+                            End Select
+
+                            If compareId <> dataId Then Continue For
+
+                            Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
+                            thisSell = Math.Round(costSell - discountValue, 2)
+                            costSell = thisSell
                         Next
-                    End If
+                    Next
 
                     Dim costingDescription As String = String.Format("#6 {0}", priceProductGroupNameF)
-
-                    objectArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
-                    OrderCostings(objectArray)
-
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisBuy, thisSell}
                     Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroup}
+
+                    OrderCostings(costingArray)
                     CalculateSurcharge(surchargeArray)
                 End If
             End If
