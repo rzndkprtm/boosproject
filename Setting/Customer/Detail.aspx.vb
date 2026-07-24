@@ -267,6 +267,11 @@ Partial Class Setting_Customer_Detail
             lblMinSurcharge.Text = thisData("CustMinSurcharge").ToString()
             lblActive.Text = thisData("CustActive").ToString()
 
+            Dim customPricing As String = settingClass.GetItemData("SELECT Description FROM CustomerCustomPricings WHERE Id='" & customerId & "'")
+            If Not String.IsNullOrEmpty(customPricing) Then
+                lblPriceCustom.Text = "[" & customPricing & "]"
+            End If
+
             aDelete.Visible = LoginAccess("Delete")
             aWelcome.Visible = False
             Dim welcomeStatus As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerWelcomes WHERE CustomerId='" & lblId.Text & "'")
