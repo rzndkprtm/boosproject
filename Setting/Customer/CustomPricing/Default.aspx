@@ -72,10 +72,10 @@
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                     <ul class="dropdown-menu">
-                                                        <li>
+                                                        <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/customer/custompricing/edit?custompricing=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
-                                                        <li>
+                                                        <li runat="server" visible='<%# LoginAccess("Delete") %>'>
                                                             <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                         </li>
                                                         <li>
