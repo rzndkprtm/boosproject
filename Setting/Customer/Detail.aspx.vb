@@ -269,7 +269,7 @@ Partial Class Setting_Customer_Detail
 
             Dim customPricing As String = settingClass.GetItemData("SELECT Description FROM CustomerCustomPricings WHERE Id='" & customerId & "'")
             If Not String.IsNullOrEmpty(customPricing) Then
-                lblPriceCustom.Text = "[" & customPricing & "]"
+                lblPriceCustom.Text = "[ " & customPricing & " ]"
             End If
 
             aDelete.Visible = LoginAccess("Delete")
