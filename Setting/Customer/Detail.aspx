@@ -113,6 +113,7 @@
                                                 <div class="col-4 text-muted">Price Group</div>
                                                 <div class="col-8 fw-semibold">
                                                     <asp:Label runat="server" ID="lblPriceGroup"></asp:Label>
+                                                    <asp:Label runat="server" ID="lblPriceCustom">1</asp:Label>
                                                 </div>
                                             </div>
                                             <div class="row mb-2">
