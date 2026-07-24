@@ -66,11 +66,11 @@ Partial Class Setting_Price_Surcharge_Add
                 finalFormula = txtFormula.Text
             End If
 
-            Dim checkData As DataRow = settingClass.GetDataRow("SELECT TOP 1 * FROM PriceSurcharges WHERE DesignId='" & ddlDesign.SelectedValue & "' AND Formula='" & finalFormula & "' AND Active=1 AND EXISTS (SELECT 1 FROM STRING_SPLIT(PriceGroupId, ',') A INNER JOIN STRING_SPLIT('" & priceGroup & "', ',') B ON A.value = B.value)")
-            If checkData Is Nothing Then
-                MessageError(True, "DATA ALREADY EXISTS !")
-                Exit Sub
-            End If
+            'Dim checkData As DataRow = settingClass.GetDataRow("SELECT TOP 1 * FROM PriceSurcharges WHERE DesignId='" & ddlDesign.SelectedValue & "' AND Formula='" & finalFormula & "' AND Active=1 AND EXISTS (SELECT 1 FROM STRING_SPLIT(PriceGroupId, ',') A INNER JOIN STRING_SPLIT('" & priceGroup & "', ',') B ON A.value = B.value)")
+            'If checkData Is Nothing Then
+            '    MessageError(True, "DATA ALREADY EXISTS !")
+            '    Exit Sub
+            'End If
 
             If msgError.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceSurcharges ORDER BY Id DESC")
