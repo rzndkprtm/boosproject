@@ -50,27 +50,31 @@ Partial Class Setting_Price_Surcharge_Add
         MessageError(False, String.Empty)
         Try
             Dim priceGroup As String = String.Empty
-            For Each item As ListItem In lbPriceGroup.Items
-                If item.Selected Then
-                    priceGroup += item.Value & ","
-                End If
-            Next
+            If lbPriceGroup.SelectedValue <> "" Then
+                priceGroup = String.Join(",", lbPriceGroup.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).OrderBy(Function(i) i.Value).Select(Function(i) i.Value))
+            End If
             If priceGroup = "" Then
                 MessageError(True, "PRICE GROUP IS REQUIRED !")
+                Exit Sub
+            End If
+
+            Dim finalFormula As String = String.Format("{0} = {1}", ddlFormulaField.SelectedValue, ddlFormulaData.SelectedValue)
+            If Not String.IsNullOrEmpty(ddlFormulaFieldB.SelectedValue) Then
+                finalFormula = String.Format("{0} = {1} AND {2} = {3}", ddlFormulaField.SelectedValue, ddlFormulaData.SelectedValue, ddlFormulaFieldB.SelectedValue, ddlFormulaDataB.SelectedValue)
+            End If
+            If ddlFormulaType.SelectedValue = "Custom" Then
+                finalFormula = txtFormula.Text
+            End If
+
+            Dim checkData As DataRow = settingClass.GetDataRow("SELECT TOP 1 * FROM PriceSurcharges WHERE DesignId='" & ddlDesign.SelectedValue & "' AND Formula='" & finalFormula & "' AND Active=1 AND EXISTS (SELECT 1 FROM STRING_SPLIT(PriceGroupId, ',') A INNER JOIN STRING_SPLIT('" & priceGroup & "', ',') B ON A.value = B.value)")
+            If checkData Is Nothing Then
+                MessageError(True, "DATA ALREADY EXISTS !")
                 Exit Sub
             End If
 
             If msgError.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceSurcharges ORDER BY Id DESC")
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
-                Dim finalFormula As String = String.Format("{0} = {1}", ddlFormulaField.SelectedValue, ddlFormulaData.SelectedValue)
-                If Not String.IsNullOrEmpty(ddlFormulaFieldB.SelectedValue) Then
-                    finalFormula = String.Format("{0} = {1} AND {2} = {3}", ddlFormulaField.SelectedValue, ddlFormulaData.SelectedValue, ddlFormulaFieldB.SelectedValue, ddlFormulaDataB.SelectedValue)
-                End If
-                If ddlFormulaType.SelectedValue = "Custom" Then
-                    finalFormula = txtFormula.Text
-                End If
 
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges VALUES (@Id, @DesignId, @PriceGroupId, @Name, @Type, @Formula, @BuyCharge, @SellCharge, @Description, @Active)", thisConn)
