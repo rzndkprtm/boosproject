@@ -68,12 +68,7 @@
                                             <asp:BoundField DataField="LastActiveMinute" HeaderText="Active (Min Ago)" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
-                                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
-                                                    <ul class="dropdown-menu">
-                                                        <li runat="server" visible='<%# LoginAccess("Delete Session") %>'>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteSession" onclick='<%# String.Format("return dataDeleteSession(`{0}`);", Eval("Id").ToString()) %>'>Delete Session</a>
-                                                        </li>
-                                                    </ul>
+                                                    <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteSession" onclick='<%# String.Format("return dataDeleteSession(`{0}`);", Eval("Id").ToString()) %>'>Delete Session</a>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                         </Columns>
