@@ -393,8 +393,8 @@
                 Dim boeFabricId As String = GetItemData("SELECT BoeId FROM FabricColours WHERE Id='" & webFabricId & "'")
 
                 Dim valanceSize As String = String.Empty
-                If tubeName = "Valance 100mm" Then valanceSize = "100"
-                If tubeName = "Valance 140mm" Then valanceSize = "140"
+                If blindName = "Valance 100mm" Then valanceSize = "100"
+                If blindName = "Valance 140mm" Then valanceSize = "140"
 
                 Dim valancePosition As String = thisData("ReturnPosition").ToString()
                 If valancePosition = "Both Sides" Then valancePosition = "RL"
@@ -467,8 +467,8 @@
                 If String.IsNullOrEmpty(kitId) OrElse String.IsNullOrEmpty(boeFabricId) Then Continue While
 
                 Dim drop As String = String.Empty
-                If tubeName = "Pelmet 140mm" Then drop = "140"
-                If tubeName = "Pelmet 200mm" Then drop = "200"
+                If blindName = "Pelmet 140mm" Then drop = "140"
+                If blindName = "Pelmet 200mm" Then drop = "200"
 
                 writer.WriteStartElement("OrderDetails")
                 writer.WriteAttributeString("OrddID", thisData("Id").ToString())

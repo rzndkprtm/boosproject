@@ -629,7 +629,7 @@ Partial Class Order_Method
         If type = "SubType" Then
             Dim blindName As String = orderClass.GetItemData("SELECT Name FROM Blinds WHERE Id='" & blindtype & "'")
 
-            If blindName = "Aluminium 25mm x 0.21mm" Then
+            If blindName = "0.21mm" Then
                 result.Add(New With {.Value = "Single", .Text = "Single Aluminium"})
                 result.Add(New With {.Value = "2 on 1 Left-Left", .Text = "2 on 1 Aluminium (Left-Left)"})
                 result.Add(New With {.Value = "2 on 1 Right-Right", .Text = "2 on 1 Aluminium (Right-Right)"})
@@ -1197,7 +1197,7 @@ Partial Class Order_Method
             If wandlengthb < 450 Then wandlengthb = 450
         End If
 
-        Dim productGroupName As String = String.Format("{0}", blindName)
+        Dim productGroupName As String = String.Format("{0} - {1}", designName, blindName)
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productGroupName, data.designid, data.companydetailid)
         Dim priceProductGroupB As String = String.Empty
 
@@ -3458,10 +3458,10 @@ Partial Class Order_Method
         Dim markup As Integer
 
         Dim designName As String = String.Empty
-        Dim tubeName As String = String.Empty
+        Dim blindName As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-        If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
+        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
@@ -3516,8 +3516,8 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
-        If tubeName = "Valance 140mm" Then drop = 140
-        If tubeName = "Valance 100mm" Then drop = 100
+        If blindName = "Valance 140mm" Then drop = 140
+        If blindName = "Valance 100mm" Then drop = 100
 
         If String.IsNullOrEmpty(data.fabricinsert) Then
             data.fabrictype = String.Empty : data.fabriccolour = String.Empty
@@ -3537,7 +3537,9 @@ Partial Class Order_Method
 
         Dim linearMetre As Decimal = width / 1000
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(tubeName, data.designid, data.companydetailid)
+        Dim priceProductGroupName As String = String.Format("{0} - {1}", designName, blindName)
+
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -4103,10 +4105,10 @@ Partial Class Order_Method
         Dim totalItems As Integer = 1
 
         Dim designName As String = String.Empty
-        Dim tubeName As String = String.Empty
+        Dim blindName As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
-        If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
+        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
         Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
         Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
@@ -4173,8 +4175,8 @@ Partial Class Order_Method
 
         linearMetre = width / 1000
 
-        If tubeName = "Pelmet 140mm" Then drop = 140
-        If tubeName = "Pelmet 200mm" Then drop = 200
+        If blindName = "Pelmet 140mm" Then drop = 140
+        If blindName = "Pelmet 200mm" Then drop = 200
 
         If data.layoutcode = "A" Then
             widthb = 0 : widthc = 0
@@ -4198,12 +4200,11 @@ Partial Class Order_Method
         If data.returnposition = "Left" Then rlvalueb = 0
         If data.returnposition = "Right" Then rlvalue = 0
 
-        Dim sellName As String = designName
-        Dim groupName As String = String.Format("{0}", tubeName)
+        Dim priceProductGroupName As String = String.Format("{0} - {1}", designName, blindName)
         If Not String.IsNullOrEmpty(data.batten) Then
-            groupName = String.Format("{0} - Batten", tubeName)
+            priceProductGroupName = String.Format("{0} - {1} - Batten", designName, blindName)
         End If
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, data.companydetailid)
         Dim priceProductGroupB As String = String.Empty
         Dim priceProductGroupC As String = String.Empty
 
@@ -4401,8 +4402,8 @@ Partial Class Order_Method
         Dim linearMetre As Decimal = width / 1000
         Dim squareMetre As Decimal = width * drop / 1000000
 
-        Dim groupName As String = blindName
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+        Dim priceProductGroupName As String = String.Format("{0} - {1}", designName, blindName)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty

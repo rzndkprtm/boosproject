@@ -32,6 +32,8 @@ Partial Class Setting_Price_Product_Default
 
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
+
+        Session("SearchProductGroup") = txtSearch.Text
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)

@@ -1732,7 +1732,7 @@ Partial Class Order_Upload
                                 Dim designName As String = String.Empty
                                 Dim blindName As String = String.Empty
                                 If blindType = "Aluminium Venetian" OrElse blindType = "Aluminium" Then
-                                    designName = "Aluminium Blind" : blindName = "Aluminium 25mm x 0.21mm"
+                                    designName = "Aluminium Blind" : blindName = "0.21mm"
                                 End If
                                 If blindType = "Basswood Venetian 50mm" OrElse blindType = "Basswood 50mm" Then
                                     designName = "Venetian Blind" : blindName = "Basswood 50mm"
