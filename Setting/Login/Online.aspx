@@ -60,7 +60,7 @@
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <%--<asp:BoundField DataField="Id" HeaderText="Device ID" />--%>
-                                            <asp:BoundField DataField="UserName" HeaderText="UserName" />
+                                            <asp:BoundField DataField="UserName" HeaderText="User" />
                                             <asp:BoundField DataField="IpAddress" HeaderText="IP Address" />
                                             <asp:BoundField DataField="BrowserName" HeaderText="Browser" />
                                             <asp:BoundField DataField="Device" HeaderText="Device" />
