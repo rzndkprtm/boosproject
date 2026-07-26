@@ -1,4 +1,6 @@
-﻿Imports System.Data
+﻿Imports System.ComponentModel.Design
+Imports System.Data
+Imports System.Data.SqlClient
 Imports System.Globalization
 
 Partial Class Sales_Default
@@ -32,12 +34,41 @@ Partial Class Sales_Default
             If dataCompany.Rows.Count > 0 Then
                 For i As Integer = 0 To dataCompany.Rows.Count - 1
                     Dim companyId As String = dataCompany.Rows(i)("Id").ToString()
-                    salesClass.RefreshData(companyId)
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As New SqlCommand("sp_Sales_Refresh", thisConn)
+                            thisCmd.CommandType = CommandType.StoredProcedure
+                            thisCmd.Parameters.AddWithValue("@CompanyId", companyId)
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
                 Next
             End If
 
             Session("SearchSalesCompany") = ddlCompany.SelectedValue
             Response.Redirect("~/sales", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnRefreshById_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim salesId As String = txtRefreshId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("sp_Sales_Refresh_ById", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    thisCmd.Parameters.AddWithValue("@SalesId", salesId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

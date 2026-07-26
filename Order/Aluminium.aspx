@@ -78,7 +78,7 @@
                                             <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                 <label>Aluminium Type</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                 <select id="blindtype" class="form-select"></select>
                                             </div>
                                         </div>

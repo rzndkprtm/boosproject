@@ -73,7 +73,7 @@
                             <div class="card-body">
                                 <div class="form form-horizontal">
                                     <div class="form-body">
-                                        <div class="row" style="display:none;">
+                                        <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Valance Type</label>
                                             </div>
@@ -81,7 +81,7 @@
                                                 <select id="blindtype" class="form-select"></select>
                                             </div>
                                         </div>
-                                        <div class="row">
+                                        <div class="row" style="display:none;">
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Valance Type</label>
                                             </div>
