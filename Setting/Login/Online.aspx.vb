@@ -74,6 +74,7 @@ Partial Class Setting_Login_Online
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_Logins_Online", paramsItem)
             gvList.DataBind()
+            gvList.Columns(7).Visible = LoginAccess("Delete Session")
 
             divMinute.Visible = LoginAccess("Sort Minute")
         Catch ex As Exception
