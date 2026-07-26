@@ -1,6 +1,6 @@
 ﻿Imports System.Data.SqlClient
 
-Partial Class Setting_Login_Online
+Partial Class Setting_Price_Group_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -10,36 +10,40 @@ Partial Class Setting_Login_Online
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/login", False)
+            Response.Redirect("~/setting/price", False)
             Exit Sub
         End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindData(txtSearch.Text, ddlMinute.SelectedValue)
+            txtSearch.Text = Session("SearchPriceGroup")
+            BindData(txtSearch.Text)
         End If
+    End Sub
+
+    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
+        Session("SearchPriceGroup") = txtSearch.Text
+        Response.Redirect("~/setting/price/group/add", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindData(txtSearch.Text, ddlMinute.SelectedValue)
-    End Sub
-
-    Protected Sub ddlMinute_SelectedIndexChanged(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        BindData(txtSearch.Text, ddlMinute.SelectedValue)
+        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         gvList.PageIndex = e.NewPageIndex
+
         MessageError(False, String.Empty)
-        BindData(txtSearch.Text, ddlMinute.SelectedValue)
+        BindData(txtSearch.Text)
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
         If e.CommandName = "Page" Then
             gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-            BindData(txtSearch.Text, ddlMinute.SelectedValue)
+            BindData(txtSearch.Text)
         End If
     End Sub
 
@@ -47,37 +51,22 @@ Partial Class Setting_Login_Online
         BuildPager()
     End Sub
 
-    Protected Sub btnDeleteSession_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
+    Protected Sub BindData(searchText As String)
         Try
-            Dim sessionId As String = txtDeleteId.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Sessions WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", sessionId)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            Response.Redirect("~/setting/login/online", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-        End Try
-    End Sub
-
-    Protected Sub BindData(searchText As String, minuteText As String)
-        Try
-            Dim paramsItem As New List(Of SqlParameter) From {
-                New SqlParameter("@SearchText", searchText),
-                New SqlParameter("@Minutes", minuteText)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)),
+                New SqlParameter("@CompanyId", If(String.IsNullOrWhiteSpace(Session("CompanyId")), CType(DBNull.Value, Object), Session("CompanyId")))
             }
-            gvList.DataSource = settingClass.GetDataTableSP("sp_Logins_Online", paramsItem)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_PriceGroups_List", params)
             gvList.DataBind()
+            gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
-            divMinute.Visible = LoginAccess("Sort Minute")
+            btnAdd.Visible = LoginAccess("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 

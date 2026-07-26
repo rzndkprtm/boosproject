@@ -2,6 +2,7 @@
 Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Security.Cryptography
+Imports Org.BouncyCastle.Asn1.Ocsp
 
 Public Class SettingClass
 
@@ -232,6 +233,19 @@ Public Class SettingClass
         Return result.ToString()
     End Function
 
+    Public Sub UpdateFailedCount(loginId As String)
+        Try
+            Using thisConn As SqlConnection = New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET FailedCount=0 WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", loginId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+        Catch ex As Exception
+        End Try
+    End Sub
+
     Public Function InsertSession() As String
         Dim result As String = String.Empty
         Try
@@ -249,25 +263,22 @@ Public Class SettingClass
         Return result
     End Function
 
-    Public Sub UpdateFailedCount(loginId As String)
-        Try
-            Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET FailedCount=0 WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", loginId)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
-        Catch ex As Exception
-        End Try
-    End Sub
-
     Public Sub UpdateSession(id As String, loginId As String)
+        Dim ip As String = ""
+        Dim browser As String = ""
+        Dim device As String = ""
+        Dim os As String = ""
+
+        GetClientInfo(ip, browser, device, os)
         Try
-            Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Sessions SET LoginId=@LoginId WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", UCase(id).ToString())
-                    thisCmd.Parameters.AddWithValue("@LoginId", loginId)
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("UPDATE Sessions SET LoginId = @LoginId, IpAddress = @IpAddress, BrowserName = @BrowserName, Device = @Device, OS = @OS WHERE Id = @Id", thisConn)
+                    thisCmd.Parameters.Add("@Id", SqlDbType.VarChar).Value = UCase(id)
+                    thisCmd.Parameters.Add("@LoginId", SqlDbType.Int).Value = loginId
+                    thisCmd.Parameters.Add("@IpAddress", SqlDbType.VarChar).Value = ip
+                    thisCmd.Parameters.Add("@BrowserName", SqlDbType.VarChar).Value = browser
+                    thisCmd.Parameters.Add("@Device", SqlDbType.VarChar).Value = device
+                    thisCmd.Parameters.Add("@OS", SqlDbType.VarChar).Value = os
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -287,6 +298,58 @@ Public Class SettingClass
             End Using
         Catch ex As Exception
         End Try
+    End Sub
+
+    Private Sub GetClientInfo(ByRef ip As String, ByRef browser As String, ByRef device As String, ByRef os As String)
+        ip = HttpContext.Current.Request.ServerVariables("HTTP_X_FORWARDED_FOR")
+
+        If String.IsNullOrWhiteSpace(ip) Then
+            ip = HttpContext.Current.Request.ServerVariables("REMOTE_ADDR")
+        Else
+            ip = ip.Split(","c)(0).Trim()
+        End If
+
+        Dim ua As String = If(HttpContext.Current.Request.UserAgent, "")
+
+        If ua.Contains("Edg") Then
+            browser = "Microsoft Edge"
+        ElseIf ua.Contains("Chrome") AndAlso Not ua.Contains("Edg") Then
+            browser = "Google Chrome"
+        ElseIf ua.Contains("Firefox") Then
+            browser = "Mozilla Firefox"
+        ElseIf ua.Contains("Safari") AndAlso Not ua.Contains("Chrome") Then
+            browser = "Safari"
+        ElseIf ua.Contains("OPR") OrElse ua.Contains("Opera") Then
+            browser = "Opera"
+        Else
+            browser = "Unknown"
+        End If
+
+        If ua.Contains("Android") OrElse ua.Contains("iPhone") OrElse ua.Contains("Mobile") Then
+            device = "Mobile"
+        ElseIf ua.Contains("iPad") OrElse ua.Contains("Tablet") Then
+            device = "Tablet"
+        Else
+            device = "Desktop"
+        End If
+
+        If ua.Contains("Windows NT 10.0") Then
+            os = "Windows 10/11"
+        ElseIf ua.Contains("Windows") Then
+            os = "Windows"
+        ElseIf ua.Contains("Android") Then
+            os = "Android"
+        ElseIf ua.Contains("iPhone") Then
+            os = "iOS"
+        ElseIf ua.Contains("iPad") Then
+            os = "iPadOS"
+        ElseIf ua.Contains("Mac OS X") Then
+            os = "macOS"
+        ElseIf ua.Contains("Linux") Then
+            os = "Linux"
+        Else
+            os = "Unknown"
+        End If
     End Sub
 
     Public Function GenerateTicketId(length As Integer) As String

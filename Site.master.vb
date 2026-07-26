@@ -16,10 +16,10 @@ Partial Public Class SiteMaster
             If IsHeartbeatRequest() Then Exit Sub
             If IsAjaxRequest() Then Exit Sub
 
-            CheckSessions()
+            Dim sessionId As String = CheckSessions()
 
             If Not IsPostBack Then
-                MyLoad()
+                MyLoad(sessionId)
                 BindListNavigation()
             End If
         Catch ex As Exception
@@ -28,47 +28,6 @@ Partial Public Class SiteMaster
             Context.ApplicationInstance.CompleteRequest()
         End Try
     End Sub
-
-    Protected Sub CheckSessions()
-        Try
-            If Session("IsLoggedIn") Is Nothing OrElse Session("IsLoggedIn") = False Then
-                HandleRedirectLogin()
-                Exit Sub
-            End If
-
-            Dim sessionId As String = String.Empty
-
-            If Request.Cookies("deviceId") Is Nothing Then
-                HandleRedirectLogin()
-                Exit Sub
-            End If
-
-            sessionId = Request.Cookies("deviceId").Value
-
-            Dim checkData As DataRow = settingClass.GetDataRow("SELECT 1 FROM Sessions WHERE Id='" & UCase(sessionId) & "' AND LoginId='" & Session("LoginId") & "'")
-
-            If checkData Is Nothing Then
-                HandleRedirectLogin()
-                Exit Sub
-            End If
-        Catch ex As Exception
-            HandleRedirectLogin()
-        End Try
-    End Sub
-
-    Protected Sub HandleRedirectLogin()
-        Session.Clear()
-        Response.Redirect("~/account/login", False)
-        Context.ApplicationInstance.CompleteRequest()
-    End Sub
-
-    Protected Function IsAjaxRequest() As Boolean
-        Return Request.Headers("X-Requested-With") = "XMLHttpRequest"
-    End Function
-
-    Protected Function IsHeartbeatRequest() As Boolean
-        Return Request.Url.AbsolutePath.ToLower().Contains("updatesession")
-    End Function
 
     Protected Sub linkLogout_Click(sender As Object, e As EventArgs)
         Dim sessionId As String = String.Empty
@@ -83,7 +42,7 @@ Partial Public Class SiteMaster
         Context.ApplicationInstance.CompleteRequest()
     End Sub
 
-    Protected Sub MyLoad()
+    Protected Sub MyLoad(sessionId As String)
         Try
             Dim loginId As String = Convert.ToString(Session("LoginId"))
 
@@ -199,6 +158,7 @@ Partial Public Class SiteMaster
                     Using thisCmd As New SqlCommand("sp_Logins_Update_LastLogin", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
                         thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = loginId
+                        thisCmd.Parameters.Add("@SessionId", SqlDbType.VarChar).Value = sessionId.ToUpper()
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -354,4 +314,49 @@ Partial Public Class SiteMaster
             HandleRedirectLogin()
         End Try
     End Sub
+
+    Protected Function CheckSessions() As String
+        Try
+            If Session("IsLoggedIn") Is Nothing OrElse Session("IsLoggedIn") = False Then
+                HandleRedirectLogin()
+                Return Nothing
+            End If
+
+            If Request.Cookies("deviceId") Is Nothing Then
+                HandleRedirectLogin()
+                Return Nothing
+            End If
+
+            Dim sessionId As String = Request.Cookies("deviceId").Value
+
+            Dim checkData As DataRow = settingClass.GetDataRow(
+            "SELECT 1 FROM Sessions WHERE Id='" & UCase(sessionId) &
+            "' AND LoginId='" & Session("LoginId") & "'")
+
+            If checkData Is Nothing Then
+                HandleRedirectLogin()
+                Return Nothing
+            End If
+
+            Return sessionId
+
+        Catch ex As Exception
+            HandleRedirectLogin()
+            Return Nothing
+        End Try
+    End Function
+
+    Protected Sub HandleRedirectLogin()
+        Session.Clear()
+        Response.Redirect("~/account/login", False)
+        Context.ApplicationInstance.CompleteRequest()
+    End Sub
+
+    Protected Function IsAjaxRequest() As Boolean
+        Return Request.Headers("X-Requested-With") = "XMLHttpRequest"
+    End Function
+
+    Protected Function IsHeartbeatRequest() As Boolean
+        Return Request.Url.AbsolutePath.ToLower().Contains("updatesession")
+    End Function
 End Class

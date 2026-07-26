@@ -59,20 +59,17 @@
                                                     <%# Container.DataItemIndex + 1 %>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:BoundField DataField="Id" HeaderText="ID" />
+                                            <%--<asp:BoundField DataField="Id" HeaderText="Device ID" />--%>
                                             <asp:BoundField DataField="UserName" HeaderText="UserName" />
-                                            <asp:BoundField DataField="FullName" HeaderText="Full Name" />
-                                            <asp:BoundField DataField="RoleName" HeaderText="Role Access" />
-                                            <asp:BoundField DataField="LastLogin" HeaderText="Last Login" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
-                                            <asp:BoundField DataField="LastActiveMinute" HeaderText="Active (Minute Ago)" />
-                                            <asp:BoundField DataField="TotalSession" HeaderText="Total Session" />
+                                            <asp:BoundField DataField="IpAddress" HeaderText="IP Address" />
+                                            <asp:BoundField DataField="BrowserName" HeaderText="Browser" />
+                                            <asp:BoundField DataField="Device" HeaderText="Device" />
+                                            <asp:BoundField DataField="OS" HeaderText="OS" />
+                                            <asp:BoundField DataField="LastActiveMinute" HeaderText="Active (Min Ago)" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                     <ul class="dropdown-menu">
-                                                        <li>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSendNotif" onclick='<%# String.Format("return idSendNotif(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("RoleId").ToString()) %>'>Send Notification</a>
-                                                        </li>
                                                         <li runat="server" visible='<%# LoginAccess("Delete Session") %>'>
                                                             <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteSession" onclick='<%# String.Format("return dataDeleteSession(`{0}`);", Eval("Id").ToString()) %>'>Delete Session</a>
                                                         </li>
@@ -126,43 +123,6 @@
         </section>
     </div>
 
-    <div class="modal fade text-left" id="modalSendNotif" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Send Notification</h4>
-                </div>
-                <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtLoginId" style="display:none;"></asp:TextBox>
-                    <asp:TextBox runat="server" ID="txtRoleId" style="display:none;"></asp:TextBox>
-
-                    <div class="row mb-2" runat="server" id="divErrorSendNotif">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorSendNotif"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Title</label>
-                            <asp:TextBox runat="server" ID="txtTitle" CssClass="form-control" placeholder="Title ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Message</label>
-                            <div id="summernote"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnSendNotif" CssClass="btn btn-info" Text="Submit" OnClick="btnSendNotif_Click" OnClientClick="return setSummernoteContent();" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalDeleteSession" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -185,34 +145,10 @@
     <asp:HiddenField runat="server" ID="hfMessage" />
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#summernote').summernote({
-                tabsize: 2, height: 350,
-                callbacks: {
-                    onChange: function (contents) {
-                        $('#<%= hfMessage.ClientID %>').val(contents);
-                    }
-                }
-            });
-
-            $('#summernote').summernote('code', $('#<%= hfMessage.ClientID %>').val());
-        });
-        function setSummernoteContent() {
-            var content = $('#summernote').summernote('code');
-            $('#<%= fieldMessage.ClientID %>').val(content);
-            return true;
-        }
-        function showSendNotif() {
-            $("#modalSendNotif").modal("show");
-        }
-        function idSendNotif(loginId, roleId) {
-            document.getElementById("<%=txtLoginId.ClientID %>").value = loginId;
-            document.getElementById("<%=txtRoleId.ClientID %>").value = roleId;
-        }
         function dataDeleteSession(id) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
         }
-        ["modalSendNotif", "modalDeleteSession"].forEach(function (id) {
+        ["modalDeleteSession"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
