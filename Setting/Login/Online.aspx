@@ -68,7 +68,7 @@
                                             <asp:BoundField DataField="LastActiveMinute" HeaderText="Active (Min Ago)" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
-                                                    <a href="javascript:void(0);" runat="server" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteSession" onclick='<%# String.Format("return dataDeleteSession(`{0}`);", Eval("Id").ToString()) %>'>Delete Session</a>
+                                                    <a href="javascript:void(0);" runat="server" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDeleteSession" onclick='<%# String.Format("return dataDeleteSession(`{0}`);", Eval("Id").ToString()) %>'>Delete Session</a>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                         </Columns>
