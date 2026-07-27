@@ -48,7 +48,7 @@
         <section class="row">
             <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                 <ContentTemplate>
-                    <div class="col-12 col-sm-12 col-lg-8 mb-2">
+                    <div class="col-12 col-sm-12 col-lg-9 mb-2">
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title">Filter Form</h4>
