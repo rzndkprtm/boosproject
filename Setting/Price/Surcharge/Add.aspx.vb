@@ -49,15 +49,6 @@ Partial Class Setting_Price_Surcharge_Add
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim priceGroup As String = String.Empty
-            If lbPriceGroup.SelectedValue <> "" Then
-                priceGroup = String.Join(",", lbPriceGroup.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).OrderBy(Function(i) i.Value).Select(Function(i) i.Value))
-            End If
-            If priceGroup = "" Then
-                MessageError(True, "PRICE GROUP IS REQUIRED !")
-                Exit Sub
-            End If
-
             Dim finalFormula As String = String.Format("{0} = {1}", ddlFormulaField.SelectedValue, ddlFormulaData.SelectedValue)
             If Not String.IsNullOrEmpty(ddlFormulaFieldB.SelectedValue) Then
                 finalFormula = String.Format("{0} = {1} AND {2} = {3}", ddlFormulaField.SelectedValue, ddlFormulaData.SelectedValue, ddlFormulaFieldB.SelectedValue, ddlFormulaDataB.SelectedValue)
@@ -66,7 +57,7 @@ Partial Class Setting_Price_Surcharge_Add
                 finalFormula = txtFormula.Text
             End If
 
-            Dim checkData As DataRow = settingClass.GetDataRow("SELECT TOP 1 * FROM PriceSurcharges WHERE DesignId='" & ddlDesign.SelectedValue & "' AND Formula='" & finalFormula & "' AND Active=1 AND EXISTS (SELECT 1 FROM STRING_SPLIT(PriceGroupId, ',') A INNER JOIN STRING_SPLIT('" & priceGroup & "', ',') B ON A.value = B.value)")
+            Dim checkData As DataRow = settingClass.GetDataRow("SELECT TOP 1 * FROM PriceSurcharges WHERE DesignId='" & ddlDesign.SelectedValue & "' AND Formula='" & finalFormula & "' AND Active=1 AND PriceGroupId='" & ddlPriceGroup.SelectedValue & "'")
             If checkData IsNot Nothing Then
                 MessageError(True, "DATA ALREADY EXISTS !")
                 Exit Sub
@@ -80,7 +71,7 @@ Partial Class Setting_Price_Surcharge_Add
                     Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges VALUES (@Id, @DesignId, @PriceGroupId, @Name, @Type, @Formula, @BuyCharge, @SellCharge, @Description, @Active)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroup)
+                        thisCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Type", ddlFormulaType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Formula", finalFormula)
@@ -122,17 +113,17 @@ Partial Class Setting_Price_Surcharge_Add
     End Sub
 
     Protected Sub BindPriceGroup(designId As String)
-        lbPriceGroup.Items.Clear()
+        ddlPriceGroup.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(designId) Then
                 Dim type As String = settingClass.GetItemData("SELECT Type FROM Designs WHERE Id='" & designId & "'")
                 If Not String.IsNullOrEmpty(type) Then
-                    lbPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='" & type & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
-                    lbPriceGroup.DataTextField = "Name"
-                    lbPriceGroup.DataValueField = "Id"
-                    lbPriceGroup.DataBind()
+                    ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='" & type & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
+                    ddlPriceGroup.DataTextField = "Name"
+                    ddlPriceGroup.DataValueField = "Id"
+                    ddlPriceGroup.DataBind()
 
-                    lbPriceGroup.Items.Insert(0, New ListItem("", ""))
+                    ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
                 End If
             End If
         Catch ex As Exception

@@ -41,13 +41,13 @@
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <label class="form-label">Design Type</label>
                                                 <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-7 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <label class="form-label">Price Group</label>
-                                                <asp:ListBox runat="server" ID="lbPriceGroup" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                                <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
