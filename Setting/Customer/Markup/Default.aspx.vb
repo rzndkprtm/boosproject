@@ -1,30 +1,59 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Globalization
+Imports System.Web.Services
 
-Partial Class Setting_Price_Product_Default
+Partial Class Setting_Customer_Markup_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
+    Dim enUS As CultureInfo = New CultureInfo("en-US")
+
+    <WebMethod()>
+    Public Shared Function GetCustomerMarkup(customerId As String) As Object
+        Dim settingClass As New SettingClass
+        Dim dt As DataTable = settingClass.GetDataTable("SELECT Id, Type, DataId, Markup FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
+
+        Dim result As New List(Of Object)
+        For Each r As DataRow In dt.Rows
+            Dim typeName As String = r("Type").ToString()
+            Dim dataId As String = r("DataId").ToString()
+            Dim markup As Decimal = Convert.ToDecimal(r("Markup"))
+            Dim title As String = GetMarkupTitle(typeName, dataId)
+            Dim value As String = If(markup > 0, markup.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%", "-")
+            result.Add(New With {.Id = r("Id").ToString(), .Type = typeName, .Product = title, .Markup = value})
+        Next
+        Return result
+    End Function
+
+    Private Shared Function GetMarkupTitle(type As String, dataId As String) As String
+        If String.IsNullOrEmpty(type) Then Return String.Empty
+        Dim settingClass As New SettingClass
+
+        Dim dataName As String = String.Empty
+        If type = "Designs" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM Designs WHERE Id='" & dataId & "'")
+        End If
+        If type = "PriceProductGroups" Then
+            dataName = settingClass.GetItemData("SELECT CASE WHEN Status='Active' THEN Name ELSE Name + ' [' + UPPER(Status) + ']' END FROM PriceProductGroups WHERE Id='" & dataId & "'")
+        End If
+        Return dataName
+    End Function
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/price", False)
+            Response.Redirect("~/setting/customer", False)
             Exit Sub
         End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            txtSearch.Text = Session("SearchProductGroup")
+            txtSearch.Text = Session("SearchCustomerMarkup")
             BindData(txtSearch.Text)
         End If
-    End Sub
-
-    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
-        Session("SearchProductGroup") = txtSearch.Text
-        Response.Redirect("~/setting/price/product/add", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
@@ -33,7 +62,7 @@ Partial Class Setting_Price_Product_Default
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
 
-        Session("SearchProductGroup") = txtSearch.Text
+        Session("SearchCustomerMarkup") = txtSearch.Text
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
@@ -43,51 +72,39 @@ Partial Class Setting_Price_Product_Default
         End If
     End Sub
 
-    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
-        BuildPager()
-    End Sub
-
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         gvList.PageIndex = e.NewPageIndex
-
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
     End Sub
 
-    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim priceProductGroupId As String = txtDeleteId.Text
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        BuildPager()
+    End Sub
 
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("UPDATE PriceProductGroups SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(priceProductGroupId)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
+    Protected Sub btnAddMarkupA_Click(sender As Object, e As EventArgs)
+        Dim url As String = String.Format("~/setting/customer/markup/add?custid={0}&type=product", txtCustomerId.Text)
+        Response.Redirect(url, False)
+    End Sub
 
-            Session("SearchProductGroup") = txtSearch.Text
-            Response.Redirect("~/setting/price/product")
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
+    Protected Sub btnAddMarkupB_Click(sender As Object, e As EventArgs)
+        Dim url As String = String.Format("~/setting/customer/markup/add?custid={0}&type=productgroup", txtCustomerId.Text)
+        Response.Redirect(url, False)
     End Sub
 
     Protected Sub BindData(searchText As String)
+        Session("SearchCustomerMarkup") = String.Empty
         Try
             Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)),
-                New SqlParameter("@RoleName", Session("RoleName").ToString())
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText.Trim())),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@LoginId", Session("LoginId"))
             }
-            gvList.DataSource = settingClass.GetDataTableSP("sp_PriceProductGroups_List", params)
-            gvList.DataBind()
 
-            gvList.Columns(1).Visible = LoginAccess("Visible ID")
-            btnAdd.Visible = LoginAccess("Add")
+            gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerMarkups_List", params)
+            gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -135,23 +152,6 @@ Partial Class Setting_Price_Product_Default
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
-
-    Protected Function GetCompanyName(dataId As String) As String
-        If Not String.IsNullOrEmpty(dataId) Then
-            Dim myData As DataTable = settingClass.GetDataTable("SELECT CompanyDetails.Name AS CompanyName FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceProductGroups.CompanyDetailId, ',') AS companyArray LEFT JOIN CompanyDetails ON companyArray.VALUE=CompanyDetails.Id WHERE PriceProductGroups.Id='" & dataId & "' ORDER BY CompanyDetails.Id ASC")
-            Dim hasil As String = String.Empty
-            If myData.Rows.Count > 0 Then
-                For i As Integer = 0 To myData.Rows.Count - 1
-                    Dim designName As String = myData.Rows(i)("CompanyName").ToString()
-                    hasil += designName & ","
-                Next
-                Return hasil.Remove(hasil.Length - 1).ToString()
-            Else
-                Return String.Empty
-            End If
-        End If
-        Return "Error"
-    End Function
 
     Protected Function LoginAccess(action As String) As Boolean
         Try

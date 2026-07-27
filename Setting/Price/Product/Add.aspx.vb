@@ -18,8 +18,13 @@ Partial Class Setting_Price_Product_Add
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindDesignType()
-            BindCompanyDetail()
+            BindCompanyDetail(ddlDesign.SelectedValue)
         End If
+    End Sub
+
+    Protected Sub ddlDesign_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindCompanyDetail(ddlDesign.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -44,13 +49,13 @@ Partial Class Setting_Price_Product_Add
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceProductGroups ORDER BY Id DESC")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceProductGroups VALUES (@Id, @Name, @DesignId, @CompanyDetailId, @Description, @Active)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceProductGroups VALUES (@Id, @Name, @DesignId, @CompanyDetailId, @Description, @Status)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -92,16 +97,20 @@ Partial Class Setting_Price_Product_Add
         End Try
     End Sub
 
-    Protected Sub BindCompanyDetail()
+    Protected Sub BindCompanyDetail(designId As String)
         lbCompanyDetail.Items.Clear()
         Try
-            lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails ORDER BY Name ASC")
-            lbCompanyDetail.DataTextField = "Name"
-            lbCompanyDetail.DataValueField = "Id"
-            lbCompanyDetail.DataBind()
+            If Not String.IsNullOrEmpty(designId) Then
+                Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Designs WHERE Id='" & designId & "'")
 
-            If lbCompanyDetail.Items.Count > 0 Then
-                lbCompanyDetail.Items.Insert(0, New ListItem("", ""))
+                lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM CompanyDetails WHERE CompanyId IN (SELECT TRIM(value) FROM STRING_SPLIT('" & companyId & "', ',')) ORDER BY Name ASC")
+                lbCompanyDetail.DataTextField = "Name"
+                lbCompanyDetail.DataValueField = "Id"
+                lbCompanyDetail.DataBind()
+
+                If lbCompanyDetail.Items.Count > 0 Then
+                    lbCompanyDetail.Items.Insert(0, New ListItem("", ""))
+                End If
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

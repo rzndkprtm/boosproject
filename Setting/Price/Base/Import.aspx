@@ -31,7 +31,7 @@
             </div>
         </section>
         <section class="row mt-3">
-            <div class="col-12 col-sm-12 col-lg-6">
+            <div class="col-12 col-sm-12 col-lg-7 mb-2">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Import Form</h4>
@@ -83,7 +83,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-6">
+            <div class="col-12 col-sm-12 col-lg-5">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title text-center">Information</h4>

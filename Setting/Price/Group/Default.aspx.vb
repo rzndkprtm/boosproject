@@ -1,4 +1,6 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports Org.BouncyCastle.Asn1.Cmp
 
 Partial Class Setting_Price_Group_Default
     Inherits Page
@@ -31,6 +33,48 @@ Partial Class Setting_Price_Group_Default
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
+    End Sub
+
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim priceGroupId As String = txtDeleteId.Text
+            Dim priceGroupType As String = txtDeleteType.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("UPDATE PriceGroups SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(priceGroupId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim fieldTable As String = String.Empty
+            If priceGroupType = "Blinds" Then fieldTable = "PriceGroupId"
+            If priceGroupType = "Shutters" Then fieldTable = "ShutterPriceGroupId"
+            If priceGroupType = "Doors" Then fieldTable = "DoorPriceGroupId"
+
+            If Not String.IsNullOrEmpty(fieldTable) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand(String.Format("UPDATE Customers SET {0}=NULL WHERE {1}=@Id", fieldTable, fieldTable), thisConn)
+                        thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(priceGroupId)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+            End If
+
+            Dim dataLog As Object() = {"PriceGroups", priceGroupId, Session("LoginId").ToString(), "Price Group Deleted"}
+            settingClass.Logs(dataLog)
+
+            Session("SearchPriceGroup") = txtSearch.Text
+            Response.Redirect("~/setting/price/group")
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)

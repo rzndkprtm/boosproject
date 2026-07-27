@@ -1455,7 +1455,7 @@ Partial Class Order_Method
         linearMetre = width / 1000
         squareMetre = width * drop / 1000000
 
-        If blindName = "Standard" OrElse blindName = "Top Down Bottom Up" Then
+        If blindName = "Standard" OrElse blindName = "TDBU" Then
             widthb = 0 : dropb = 0
             data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
         End If
@@ -1467,7 +1467,7 @@ Partial Class Order_Method
             squareMetreB = widthb * dropb / 1000000
         End If
 
-        If blindName = "Day & Night" OrElse blindName = "Top Down Bottom Up" Then
+        If blindName = "Day & Night" OrElse blindName = "TDBU" Then
             data.controlposition = "Both Sides"
         End If
 
@@ -1496,23 +1496,22 @@ Partial Class Order_Method
         Dim priceProductGroupB As String = String.Empty
 
         If data.companyid = "2" Then
-            Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", blindName, controlNameGroup, fabricGroup, factory)
+            Dim groupName As String = String.Format("{0} - {1} - {2} - {3} - {4}", designName, blindName, controlNameGroup, fabricGroup, factory)
             priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
-            priceProductGroupB = String.Empty
 
             If blindName = "Day & Night" Then
-                groupName = String.Format("{0} - {1} - {2}", blindName, controlNameGroup, factory)
+                groupName = String.Format("{0} - {1} - {2}- {3}", designName, blindName, controlNameGroup, factory)
                 priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
             End If
         End If
 
         If data.companyid = "3" Then
-            Dim groupName As String = String.Format("Standard - {0} - {1} - {2}", controlNameGroup, fabricGroup, factory)
+            Dim groupName As String = String.Format("Cellular Shades - Standard - {0} - {1} - {2}", controlNameGroup, fabricGroup, factory)
             priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
             priceProductGroupB = String.Empty
 
             If blindName = "Day & Night" Then
-                Dim groupNameB As String = String.Format("Standard - {0} - {1} - {2}", controlNameGroup, fabricGroupB, factoryB)
+                Dim groupNameB As String = String.Format("Cellular Shades - Standard - {0} - {1} - {2}", controlNameGroup, fabricGroupB, factoryB)
                 priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, data.designid, data.companydetailid)
             End If
         End If

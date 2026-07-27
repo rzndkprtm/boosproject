@@ -31,7 +31,15 @@ Partial Class Setting_Customer_Discount_Default
     Private Shared Function GetDiscountTitle(type As String, dataId As String) As String
         If String.IsNullOrEmpty(type) Then Return String.Empty
         Dim settingClass As New SettingClass
-        Return settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
+
+        Dim dataName As String = String.Empty
+        If type = "Designs" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM Designs WHERE Id='" & dataId & "'")
+        End If
+        If type = "PriceProductGroups" Then
+            dataName = settingClass.GetItemData("SELECT CASE WHEN Status='Active' THEN Name ELSE Name + ' [' + UPPER(Status) + ']' END FROM PriceProductGroups WHERE Id='" & dataId & "'")
+        End If
+        Return dataName
     End Function
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -53,6 +61,8 @@ Partial Class Setting_Customer_Discount_Default
 
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
+
+        Session("SearchCustomerDiscount") = txtSearch.Text
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)

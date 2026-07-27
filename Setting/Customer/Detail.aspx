@@ -57,6 +57,7 @@
                                 <a class="list-group-item list-group-item-action" id="listAddress" data-bs-toggle="list" href="#list-address" role="tab">Address</a>
                                 <a class="list-group-item list-group-item-action" id="listBusiness" data-bs-toggle="list" href="#list-business" role="tab">Business</a>
                                 <a class="list-group-item list-group-item-action" id="listLogin" data-bs-toggle="list" href="#list-login" role="tab">Login</a>
+                                <a class="list-group-item list-group-item-action" id="listMarkup" data-bs-toggle="list" href="#list-markup" role="tab">Markup</a>
                                 <a class="list-group-item list-group-item-action" id="listDiscount" data-bs-toggle="list" href="#list-discount" role="tab">Discount</a>
                                 <a class="list-group-item list-group-item-action" id="listPromo" data-bs-toggle="list" href="#list-promo" role="tab">Promo</a>
                                 <a class="list-group-item list-group-item-action" id="listProduct" data-bs-toggle="list" href="#list-product" role="tab">Product</a>
@@ -414,6 +415,74 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="tab-pane fade" id="list-markup" role="tabpanel" aria-labelledby="listMarkup">
+                                    <div class="row mt-5">
+                                        <div class="col-12" runat="server" id="divErrorMarkup">
+                                             <div class="col-12">
+                                                 <div class="alert alert-danger">
+                                                     <span runat="server" id="msgErrorMarkup"></span>
+                                                 </div>
+                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-5">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <asp:GridView runat="server" ID="gvListMarkup" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
+                                                    <Columns>
+                                                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
+                                                            <ItemTemplate>
+                                                                <%# Container.DataItemIndex + 1 %>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:BoundField DataField="Type" HeaderText="Type" />
+                                                        <asp:TemplateField HeaderText="Markup Tile">
+                                                            <ItemTemplate>
+                                                                <%# DiscountTitle(Eval("Type").ToString(), Eval("DataId").ToString()) %>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="Markup">
+                                                            <ItemTemplate>
+                                                                <%# DiscountValue(Eval("Markup")) %>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:BoundField DataField="Description" HeaderText="Description" />
+                                                        <asp:TemplateField ItemStyle-Width="120px">
+                                                            <ItemTemplate>
+                                                                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
+                                                                <ul class="dropdown-menu">
+                                                                    <li>
+                                                                        <a class="dropdown-item" id="aDetailMarkup" href='<%# Page.ResolveUrl("~/setting/customer/markup/edit?markupid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteMarkup" onclick='<%# String.Format("return dataDeleteMarkup(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerMarkups', '<%# Eval("Id") %>')">Log</a>
+                                                                    </li>
+                                                                </ul>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                    </Columns>
+                                                </asp:GridView>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12">
+                                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Add Markup</button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <asp:Button runat="server" ID="btnAddMarkupA" CssClass="dropdown-item" Text="By Product" OnClick="btnAddMarkupA_Click" />
+                                                </li>
+                                                <li>
+                                                    <asp:Button runat="server" ID="btnAddMarkupB" CssClass="dropdown-item" Text="By Product Group" OnClick="btnAddMarkupB_Click" />
+                                                </li>
+                                            </ul>
+                                            <a href="javascript:void(0);" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetMarkup">Reset Markup</a>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="tab-pane fade" id="list-discount" role="tabpanel" aria-labelledby="listDiscount">
                                     <div class="row mt-5">
                                         <div class="col-12" runat="server" id="divErrorDiscount">
@@ -454,7 +523,7 @@
                                                                         <a class="dropdown-item" id="aDetailDiscount" href='<%# Page.ResolveUrl("~/setting/customer/discount/edit?discountid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
                                                                     </li>
                                                                     <li>
-                                                                        <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDiscount" onclick='<%# String.Format("return dataDeleteDiscount(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDiscount" onclick='<%# String.Format("return dataDeleteDiscount(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                     </li>
                                                                     <li>
                                                                         <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerDiscounts', '<%# Eval("Id") %>')">Log</a>
@@ -932,6 +1001,39 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modalResetMarkup" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Reset Markup</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnResetMarkup" CssClass="btn btn-danger" Text="Confirm" OnClick="btnResetMarkup_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalDeleteMarkup" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Customer Markup</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtDeleteMarkupId" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDeleteMarkup" CssClass="btn btn-danger" Text="Confirm" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalResetDiscount" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1036,6 +1138,7 @@
         <asp:Label runat="server" ID="lblIdAddress"></asp:Label>
         <asp:Label runat="server" ID="lblIdBusiness"></asp:Label>
         <asp:Label runat="server" ID="lblIdLogin"></asp:Label>
+        <asp:Label runat="server" ID="lblIdMarkup"></asp:Label>
         <asp:Label runat="server" ID="lblIdDiscount"></asp:Label>
         <asp:Label runat="server" ID="lblIdPromo"></asp:Label>
 
@@ -1066,6 +1169,9 @@
             $("#listLogin").on("click", function () {
                 updateSessionValue("list-login");
             });
+            $("#listMarkup").on("click", function () {
+                updateSessionValue("list-markup");
+            });
             $("#listDiscount").on("click", function () {
                 updateSessionValue("list-discount");
             });
@@ -1085,6 +1191,7 @@
                 { id: '<%= gvListAddress.ClientID %>', link: "aDetailAddress" },
                 { id: '<%= gvListBusiness.ClientID %>', link: "aDetailBusiness" },
                 { id: '<%= gvListLogin.ClientID %>', link: "aDetailLogin" },
+                { id: '<%= gvListMarkup.ClientID %>', link: "aDetailMarkup" },
                 { id: '<%= gvListDiscount.ClientID %>', link: "aDetailDiscount" },
                 { id: '<%= gvListProduct.ClientID %>', link: "aDetailProduct" },
                 { id: '<%= gvListPromo.ClientID %>', link: "aDetailPromo" },
@@ -1218,7 +1325,10 @@
                 result += chars[cryptoArray[i] % chars.length];
             }
             return result;
-        }        
+        }
+        function dataDeleteMarkup(markupid) {
+            document.getElementById("<%=txtDeleteMarkupId.ClientID %>").value = markupid;
+        }
         function dataDeleteDiscount(discountid) {
             document.getElementById("<%=txtDeleteDiscountId.ClientID %>").value = discountid;
         }
@@ -1264,6 +1374,7 @@
             "modalDeleteAddress", "modalPrimaryAddress",
             "modalDeleteBusiness", "modalPrimaryBusiness",
             "modalActiveLogin", "modalSendPersonalLogin", "modalChangePasswordLogin", "modalResetPasswordLogin",
+            "modalResetMarkup", "modalDeleteMarkup",
             "modalResetDiscount", "modalDeleteDiscount",
             "modalDetailPromo", "modalDeletePromo",
             "modalResetProduct"

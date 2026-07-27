@@ -127,7 +127,7 @@ Partial Class Setting_Price_Surcharge_Add
             If Not String.IsNullOrEmpty(designId) Then
                 Dim type As String = settingClass.GetItemData("SELECT Type FROM Designs WHERE Id='" & designId & "'")
                 If Not String.IsNullOrEmpty(type) Then
-                    lbPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Active=1 AND Type='" & type & "' ORDER BY Name ASC")
+                    lbPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='" & type & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
                     lbPriceGroup.DataTextField = "Name"
                     lbPriceGroup.DataValueField = "Id"
                     lbPriceGroup.DataBind()

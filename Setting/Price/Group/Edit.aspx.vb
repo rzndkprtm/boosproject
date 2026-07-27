@@ -58,13 +58,13 @@ Partial Class Setting_Price_Group_Edit
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceGroups SET Name=@Name, Type=@Type, CompanyId=@CompanyId, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceGroups SET Name=@Name, Type=@Type, CompanyId=@CompanyId, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim().ToUpper())
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -99,7 +99,7 @@ Partial Class Setting_Price_Group_Edit
             ddlType.SelectedValue = myData("Type").ToString()
             ddlCompany.SelectedValue = myData("CompanyId").ToString()
             txtDescription.Text = myData("Description").ToString()
-            ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
+            ddlStatus.SelectedValue = myData("Status").ToString()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

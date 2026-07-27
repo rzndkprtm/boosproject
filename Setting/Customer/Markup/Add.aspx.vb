@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_Customer_Discount_Add
+Partial Class Setting_Customer_Markup_Add
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -11,17 +11,17 @@ Partial Class Setting_Customer_Discount_Add
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/customer/discount/", False)
+            Response.Redirect("~/setting/customer/markup/", False)
             Exit Sub
         End If
 
         If String.IsNullOrEmpty(Request.QueryString("custid")) Then
-            Response.Redirect("~/setting/customer/discount/", False)
+            Response.Redirect("~/setting/customer/markup/", False)
             Exit Sub
         End If
 
         If String.IsNullOrEmpty(Request.QueryString("type")) Then
-            Response.Redirect("~/setting/customer/discount/", False)
+            Response.Redirect("~/setting/customer/markup/", False)
             Exit Sub
         End If
 
@@ -46,15 +46,15 @@ Partial Class Setting_Customer_Discount_Add
                 Exit Sub
             End If
             If ddlType.SelectedValue = "" Then
-                MessageError(True, "ACCOUNT IS REQUIRED !")
+                MessageError(True, "TYPE IS REQUIRED !")
                 Exit Sub
             End If
             If ddlType.SelectedValue = "productgroup" AndAlso ddlProduct.SelectedValue = "" Then
-                MessageError(True, "ACCOUNT IS REQUIRED !")
+                MessageError(True, "PRODUCT GROUP IS REQUIRED !")
                 Exit Sub
             End If
-            If txtDiscount.Text = "" Then
-                MessageError(True, "ACCOUNT IS REQUIRED !")
+            If txtMarkup.Text = "" Then
+                MessageError(True, "MARKUP IS REQUIRED !")
                 Exit Sub
             End If
             If msgError.InnerText = "" Then
@@ -64,23 +64,22 @@ Partial Class Setting_Customer_Discount_Add
                 If ddlType.SelectedValue = "product" Then
                     typeDisc = "Designs"
 
-                    sql = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Discounts' AND companyArray.VALUE='" & lblCompanyId.Text & "' ORDER BY Id ASC"
+                    sql = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Markups' AND companyArray.VALUE='" & lblCompanyId.Text & "' ORDER BY Id ASC"
                 ElseIf ddlType.SelectedValue = "productgroup" Then
                     typeDisc = "PriceProductGroups"
-
-                    sql = "SELECT * FROM PriceProductGroups ORDER BY Id ASC"
+                    sql = "SELECT * FROM PriceProductGroups WHERE Status='Active' ORDER BY Id ASC"
                 End If
 
                 If ddlProduct.SelectedValue <> "" Then
-                    SaveDiscount(ddlProduct.SelectedValue, typeDisc)
+                    SaveMarkup(ddlProduct.SelectedValue, typeDisc)
                 Else
                     Dim data As DataTable = settingClass.GetDataTable(sql)
                     For Each row As DataRow In data.Rows
-                        SaveDiscount(row("Id").ToString(), typeDisc)
+                        SaveMarkup(row("Id").ToString(), typeDisc)
                     Next
                 End If
 
-                url = "~/setting/customer/discount"
+                url = "~/setting/customer/markup"
                 If lblReturnPage.Text = "detail" Then
                     url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
                 End If
@@ -95,46 +94,46 @@ Partial Class Setting_Customer_Discount_Add
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        url = "~/setting/customer/discount"
+        url = "~/setting/customer/markup"
         If lblReturnPage.Text = "detail" Then
             url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
         End If
         Response.Redirect(url, False)
     End Sub
 
-    Protected Sub SaveDiscount(dataId As String, typeDisc As String)
-        Dim checkData As DataRow = settingClass.GetDataRow(String.Format("SELECT * FROM CustomerDiscounts WHERE CustomerId='{0}' AND Type='{1}' AND DataId='{2}'", lblCustomerId.Text, typeDisc, dataId))
+    Protected Sub SaveMarkup(dataId As String, typeDisc As String)
+        Dim checkData As DataRow = settingClass.GetDataRow(String.Format("SELECT * FROM CustomerMarkups WHERE CustomerId='{0}' AND Type='{1}' AND DataId='{2}'", lblCustomerId.Text, typeDisc, dataId))
         If checkData IsNot Nothing Then
             Dim thisId As String = checkData("Id").ToString()
-            Dim thisDiscount As Decimal = CDec(checkData("Discount"))
-            Dim newDisc As Decimal = settingClass.GetTotalDiscount(thisDiscount, txtDiscount.Text)
+            Dim thisMarkup As Decimal = CDec(checkData("Markup"))
+            Dim newMarkup As Decimal = settingClass.GetTotalDiscount(thisMarkup, txtMarkup.Text)
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("UPDATE CustomerDiscounts SET Discount=@Discount, Description=@Description WHERE Id=@Id", thisConn)
+                Using thisCmd As New SqlCommand("UPDATE CustomerMarkups SET Markup=@Markup, Description=@Description WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
-                    thisCmd.Parameters.AddWithValue("@Discount", newDisc)
+                    thisCmd.Parameters.AddWithValue("@Markup", newMarkup)
                     thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
-            settingClass.Logs({"CustomerDiscounts", thisId, Session("LoginId").ToString(), "Customer Discount Added"})
+            settingClass.Logs({"CustomerMarkups", thisId, Session("LoginId").ToString(), "Customer Markup Added"})
         Else
-            Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerDiscounts ORDER BY Id DESC")
+            Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerMarkups ORDER BY Id DESC")
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("INSERT INTO CustomerDiscounts VALUES (@Id, @CustomerId, @Type, @DataId, @Discount, @Description)", thisConn)
+                Using thisCmd As New SqlCommand("INSERT INTO CustomerMarkups VALUES (@Id, @CustomerId, @Type, @DataId, @Markup, @Description)", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisCmd.Parameters.AddWithValue("@CustomerId", lblCustomerId.Text)
                     thisCmd.Parameters.AddWithValue("@Type", typeDisc)
                     thisCmd.Parameters.AddWithValue("@DataId", dataId)
-                    thisCmd.Parameters.AddWithValue("@Discount", txtDiscount.Text)
+                    thisCmd.Parameters.AddWithValue("@Markup", txtMarkup.Text)
                     thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            settingClass.Logs({"CustomerDiscounts", thisId, Session("LoginId").ToString(), "Customer Discount Created"})
+            settingClass.Logs({"CustomerMarkups", thisId, Session("LoginId").ToString(), "Customer Markup Created"})
         End If
     End Sub
 
@@ -183,7 +182,7 @@ Partial Class Setting_Customer_Discount_Add
         Try
             Dim thisString As String = String.Empty
             If type = "product" Then
-                thisString = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE companyArray.VALUE='" & companyId & "' AND applyArray.VALUE='Discounts' ORDER BY Name ASC"
+                thisString = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE companyArray.VALUE='" & companyId & "' AND applyArray.VALUE='Markups' ORDER BY Name ASC"
             End If
             If type = "productgroup" Then
                 thisString = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups LEFT JOIN Designs ON PriceProductGroups.DesignId=Designs.Id CROSS APPLY STRING_SPLIT(PriceProductGroups.CompanyDetailId, ',') AS companyArray WHERE companyArray.VALUE='" & companyDetailId & "' AND PriceProductGroups.Status='Active' AND Designs.Type='Blinds' AND PriceProductGroups.Name NOT LIKE '%Panel Glide - Panel Only%' AND PriceProductGroups.Name NOT LIKE '%Panel Glide - Track Only%' ORDER BY PriceProductGroups.Name ASC"

@@ -200,6 +200,9 @@
                                                             <a runat="server" href="~/setting/customer/login" class="subsubmenu-link">Customer Login</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/markup" class="subsubmenu-link">Customer Markup</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/discount" class="subsubmenu-link">Customer Discount</a>
                                                         </li>
                                                         <li class="subsubmenu-item">

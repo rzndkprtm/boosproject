@@ -33,10 +33,7 @@ Partial Class Setting_Customer_Detail
                 title = settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", dr("Type").ToString(), dr("DataId").ToString()))
             End If
             result.Add(
-                    New With {
-                    .Type = title,
-                    .Discount = Convert.ToDecimal(dr("Discount")).ToString("G29") & "%"
-                    }
+                New With {.Type = title, .Discount = Convert.ToDecimal(dr("Discount")).ToString("G29") & "%"}
                 )
         Next
         Return result
@@ -68,6 +65,7 @@ Partial Class Setting_Customer_Detail
             BindDataAddress(lblId.Text)
             BindDataBusiness(lblId.Text)
             BindDataLogin(lblId.Text)
+            BindDataMarkup(lblId.Text)
             BindDataDiscount(lblId.Text)
             BindDataPromo(lblId.Text)
             BindDataProduct(lblId.Text)
@@ -305,9 +303,6 @@ Partial Class Setting_Customer_Detail
             Return False
         End Try
     End Function
-
-
-    ' START CUSTOMER CONTACT
 
     Protected Sub btnAddContact_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-contact"
@@ -768,6 +763,116 @@ Partial Class Setting_Customer_Detail
         divErrorSendPersonalLogin.Visible = visible : msgErrorSendPersonalLogin.InnerText = message
     End Sub
 
+    Protected Sub btnAddMarkupA_Click(sender As Object, e As EventArgs)
+        Session("selectedTabCustomer") = "list-markup"
+        url = String.Format("~/setting/customer/markup/add?custid={0}&type=product&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnAddMarkupB_Click(sender As Object, e As EventArgs)
+        Session("selectedTabCustomer") = "list-markup"
+        url = String.Format("~/setting/customer/markup/add?custid={0}&type=productgroup&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnDeleteMarkup_Click(sender As Object, e As EventArgs)
+        MessageError_Markup(False, String.Empty)
+        Session("selectedTabCustomer") = "list-markup"
+        Try
+            Dim thisId As String = txtDeleteMarkupId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerMarkups WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerMarkups' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Markup(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Markup(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnResetMarkup_Click(sender As Object, e As EventArgs)
+        MessageError_Markup(False, String.Empty)
+        Session("selectedTabCustomer") = "list-markup"
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+
+                Dim MarkupData As DataTable = settingClass.GetDataTable("SELECT * FROM CustomerMarkups WHERE CustomerId='" & lblId.Text & "'")
+                For i As Integer = 0 To MarkupData.Rows.Count - 1
+                    Dim id As String = MarkupData.Rows(i)("Id").ToString()
+
+                    Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Type='CustomerMarkups' AND DataId=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", id)
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                Next
+
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerMarkups WHERE CustomerId=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    thisCmd.ExecuteNonQuery()
+                End Using
+
+                thisConn.Close()
+            End Using
+
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Customer markup has been reset."}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Markup(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Markup(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindDataMarkup(customerId As String)
+        MessageError_Markup(False, String.Empty)
+        Try
+            gvListMarkup.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
+            gvListMarkup.DataBind()
+        Catch ex As Exception
+            MessageError_Markup(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Markup(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Function MarkupTitle(type As String, dataId As String) As String
+        If String.IsNullOrEmpty(type) Then Return String.Empty
+
+        Dim dataName As String = String.Empty
+
+        If type = "Designs" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM Designs WHERE Id='" & dataId & "'")
+        End If
+        If type = "PriceProductGroups" Then
+            dataName = settingClass.GetItemData("SELECT CASE WHEN Status='Active' THEN Name ELSE Name + ' [' + UPPER(Status) + ']' END FROM PriceProductGroups WHERE Id='" & dataId & "'")
+        End If
+        Return dataName
+    End Function
+
+    Protected Function MarkupValue(data As Decimal) As String
+        If data > 0 Then Return data.ToString("G29", enUS) & "%"
+        Return "ERROR"
+    End Function
+
+    Protected Sub MessageError_Markup(visible As Boolean, message As String)
+        divErrorMarkup.Visible = visible : msgErrorMarkup.InnerText = message
+    End Sub
+
     Protected Sub btnAddDiscountA_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-discount"
         url = String.Format("~/setting/customer/discount/add?custid={0}&type=product&returnpage=detail", lblId.Text)
@@ -857,7 +962,16 @@ Partial Class Setting_Customer_Detail
 
     Protected Function DiscountTitle(type As String, dataId As String) As String
         If String.IsNullOrEmpty(type) Then Return String.Empty
-        Return settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
+
+        Dim dataName As String = String.Empty
+
+        If type = "Designs" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM Designs WHERE Id='" & dataId & "'")
+        End If
+        If type = "PriceProductGroups" Then
+            dataName = settingClass.GetItemData("SELECT CASE WHEN Status='Active' THEN Name ELSE Name + ' [' + UPPER(Status) + ']' END FROM PriceProductGroups WHERE Id='" & dataId & "'")
+        End If
+        Return dataName
     End Function
 
     Protected Function DiscountValue(data As Decimal) As String
@@ -922,9 +1036,6 @@ Partial Class Setting_Customer_Detail
         divErrorPromo.Visible = visible : msgErrorPromo.InnerText = message
     End Sub
 
-    ' END CUSTOMER PROMO
-
-    ' START CUSTOMER PRODUCT ACCESS
     Protected Sub gvListProduct_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
             Session("selectedTabCustomer") = "list-product"
@@ -998,10 +1109,6 @@ Partial Class Setting_Customer_Detail
         divErrorProduct.Visible = visible : msgErrorProduct.InnerText = message
     End Sub
 
-    ' END CUSTOMER PRODUCT ACCESS
-
-    ' START CUSTOMER QUOTE
-
     Protected Sub BindDataQuote(customerId As String)
         MessageError_Quote(False, String.Empty)
         Try
@@ -1045,8 +1152,6 @@ Partial Class Setting_Customer_Detail
         divErrorQuote.Visible = visible : msgErrorQuote.InnerText = message
     End Sub
 
-    ' END CUSTOMER QUOTE
-
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
         MessageError_SendLogin(visible, message)
@@ -1055,6 +1160,7 @@ Partial Class Setting_Customer_Detail
         MessageError_Business(visible, message)
         MessageError_Login(visible, message)
         MessageError_SendPersonalLogin(visible, message)
+        MessageError_Markup(visible, message)
         MessageError_Discount(visible, message)
         MessageError_Promo(visible, message)
         MessageError_Product(visible, message)
