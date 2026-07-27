@@ -832,7 +832,7 @@ function bindComponentForm(blindType, controlType, colourType) {
                 toggleDisplay(controlposition, true);
                 toggleDisplay(cordlength, true);
 
-                if (blindName === "Day & Night" || blindName === "Top Down Bottom Up") {
+                if (blindName === "Day & Night" || blindName === "TDBU") {
                     toggleDisplay(controlposition, false);
                     toggleDisplay(controlpositionb, true);
                 }
@@ -840,7 +840,7 @@ function bindComponentForm(blindType, controlType, colourType) {
                 toggleDisplay(remote, true);
                 toggleDisplay(controlposition, true);                
 
-                if (blindName === "Day & Night" || blindName === "Top Down Bottom Up") {
+                if (blindName === "Day & Night" || blindName === "TDBU") {
                     toggleDisplay(controlposition, false);
                     toggleDisplay(controlpositionb, true);
                 }

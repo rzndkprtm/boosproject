@@ -152,6 +152,7 @@
                                 <asp:ListItem Value="Fabrics" Text="Fabrics"></asp:ListItem>
                                 <asp:ListItem Value="Chains" Text="Chains"></asp:ListItem>
                                 <asp:ListItem Value="Bottoms" Text="Bottoms"></asp:ListItem>
+                                <asp:ListItem Value="Markups" Text="Markups"></asp:ListItem>
                                 <asp:ListItem Value="Discounts" Text="Discounts"></asp:ListItem>
                             </asp:ListBox>
                         </div>

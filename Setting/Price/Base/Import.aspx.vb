@@ -80,7 +80,6 @@ Partial Class Setting_Price_Base_Import
                 End Using
 
                 Using package As New ExcelPackage(upload.PostedFile.InputStream)
-
                     If package.Workbook.Worksheets.Count = 0 Then
                         Return "NO WORKSHEET WAS FOUND IN THE EXCEL FILE."
                     End If
@@ -113,21 +112,26 @@ Partial Class Setting_Price_Base_Import
                     Return "NO DATA WAS FOUND TO IMPORT."
                 End If
 
+                Dim newTable As String = "PriceBases_Backup_" & DateTime.Now.ToString("yyyyMMdd_HHmmss") & "_" & Session("RoleName").ToString()
+                Using thisCmd As New SqlCommand("SELECT * INTO [" & newTable & "] FROM [PriceBases]", thisConn)
+                    thisCmd.ExecuteNonQuery()
+                End Using
+
                 Using tran As SqlTransaction = thisConn.BeginTransaction()
                     Try
-                        Using cmd As New SqlCommand("DELETE FROM PriceBases WHERE Category='Sell' AND Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@PriceGroupId", thisConn, tran)
-                            cmd.Parameters.AddWithValue("@Method", method)
-                            cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
-                            cmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
-                            cmd.ExecuteNonQuery()
+                        Using thisCmd As New SqlCommand("DELETE FROM PriceBases WHERE Category='Sell' AND Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@PriceGroupId", thisConn, tran)
+                            thisCmd.Parameters.AddWithValue("@Method", method)
+                            thisCmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
+                            thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
+                            thisCmd.ExecuteNonQuery()
                         End Using
 
                         If dt.Select("Category='Buy'").Length > 0 Then
-                            Using cmd As New SqlCommand("DELETE FROM PriceBases WHERE Category='Buy' AND Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@PriceGroupId", thisConn, tran)
-                                cmd.Parameters.AddWithValue("@Method", method)
-                                cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
-                                cmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
-                                cmd.ExecuteNonQuery()
+                            Using thisCmd As New SqlCommand("DELETE FROM PriceBases WHERE Category='Buy' AND Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@PriceGroupId", thisConn, tran)
+                                thisCmd.Parameters.AddWithValue("@Method", method)
+                                thisCmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
+                                thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
+                                thisCmd.ExecuteNonQuery()
                             End Using
                         End If
 
@@ -163,46 +167,51 @@ Partial Class Setting_Price_Base_Import
         End Try
     End Function
 
-    Private Function ReadSheet(ws As ExcelWorksheet, category As String, method As String, productGroupId As Integer, priceGroupId As Integer, dt As DataTable, ByRef nextId As Integer) As String
-        If ws Is Nothing Then Return ""
+    Protected Function ReadSheet(ws As ExcelWorksheet, category As String, method As String, productGroupId As Integer, priceGroupId As Integer, dt As DataTable, ByRef nextId As Integer) As String
+        Try
+            If ws Is Nothing Then Return ""
 
-        If ws.Dimension Is Nothing Then Return ""
+            If ws.Dimension Is Nothing Then Return ""
 
-        Dim lastRow As Integer = ws.Dimension.End.Row
-        Dim lastCol As Integer = ws.Dimension.End.Column
+            Dim lastRow As Integer = ws.Dimension.End.Row
+            Dim lastCol As Integer = ws.Dimension.End.Column
 
-        For r As Integer = 2 To lastRow
-            If String.IsNullOrWhiteSpace(ws.Cells(r, 1).Text) Then Continue For
+            For r As Integer = 2 To lastRow
+                If String.IsNullOrWhiteSpace(ws.Cells(r, 1).Text) Then Continue For
 
-            Dim height As Integer
-            If Not Integer.TryParse(ws.Cells(r, 1).Text.Trim(), height) Then
-                Return category & " : Height pada baris " & r & " bukan angka."
-            End If
-
-            For c As Integer = 2 To lastCol
-                Dim width As Integer
-                If Not Integer.TryParse(ws.Cells(1, c).Text.Trim(), width) Then
-                    Return category & " : Width pada kolom " & c & " bukan angka."
+                Dim height As Integer
+                If Not Integer.TryParse(ws.Cells(r, 1).Text.Trim(), height) Then
+                    Return category & " : Height pada baris " & r & " bukan angka."
                 End If
 
-                Dim price As Decimal
-                If Not Decimal.TryParse(ws.Cells(r, c).Text.Trim(), price) Then
-                    Return category & " : Price pada baris " & r & ", kolom " & c & " bukan angka."
-                End If
+                For c As Integer = 2 To lastCol
+                    Dim width As Integer
+                    If Not Integer.TryParse(ws.Cells(1, c).Text.Trim(), width) Then
+                        Return category & " : Width pada kolom " & c & " bukan angka."
+                    End If
 
-                price = Decimal.Round(price, 2, MidpointRounding.AwayFromZero)
+                    Dim price As Decimal
+                    If Not Decimal.TryParse(ws.Cells(r, c).Text.Trim(), price) Then
+                        Return category & " : Price pada baris " & r & ", kolom " & c & " bukan angka."
+                    End If
 
-                dt.Rows.Add(nextId, category, method, productGroupId, priceGroupId, height, width, price, DBNull.Value)
-                nextId += 1
+                    price = Decimal.Round(price, 2, MidpointRounding.AwayFromZero)
+
+                    dt.Rows.Add(nextId, category, method, productGroupId, priceGroupId, height, width, price, DBNull.Value)
+                    nextId += 1
+                Next
             Next
-        Next
-        Return ""
+
+            Return ""
+        Catch ex As Exception
+            Return "Error"
+        End Try
     End Function
 
     Protected Sub BindPriceGroup()
         ddlPriceGroup.Items.Clear()
         Try
-            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='Blinds' ORDER BY Id ASC")
+            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='Blinds' AND (Status='Active' OR Status='Inactive') ORDER BY Id ASC")
             ddlPriceGroup.DataTextField = "Name"
             ddlPriceGroup.DataValueField = "Id"
             ddlPriceGroup.DataBind()
@@ -237,7 +246,7 @@ Partial Class Setting_Price_Base_Import
             If Not String.IsNullOrEmpty(priceGroupId) Then
                 Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM PriceGroups WHERE Id='" & priceGroupId & "'")
 
-                ddlProductGroup.DataSource = settingClass.GetDataTable("SELECT PPG.Id, PPG.Name FROM PriceProductGroups PPG WHERE EXISTS (SELECT 1 FROM STRING_SPLIT(PPG.CompanyDetailId, ',') S INNER JOIN CompanyDetails CD ON TRY_CAST(S.value AS INT) = CD.Id WHERE CD.CompanyId = '" & companyId & "');")
+                ddlProductGroup.DataSource = settingClass.GetDataTable("SELECT PPG.Id, PPG.Name FROM PriceProductGroups PPG WHERE PPG.Status='Active' AND EXISTS (SELECT 1 FROM STRING_SPLIT(PPG.CompanyDetailId, ',') S INNER JOIN CompanyDetails CD ON TRY_CAST(S.value AS INT)=CD.Id WHERE CD.CompanyId = '" & companyId & "');")
                 ddlProductGroup.DataTextField = "Name"
                 ddlProductGroup.DataValueField = "Id"
                 ddlProductGroup.DataBind()
@@ -268,6 +277,4 @@ Partial Class Setting_Price_Base_Import
             Return False
         End Try
     End Function
-
-
 End Class

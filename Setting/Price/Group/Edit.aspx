@@ -63,10 +63,10 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                            <label class="form-label">Active</label>
-                                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                                            <label class="form-label">Status</label>
+                                            <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
+                                                <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
+                                                <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
                                     </div>

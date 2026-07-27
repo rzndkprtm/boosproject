@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Price_Product_Default" MaintainScrollPositionOnPostback="true" MasterPageFile="~/Site.Master" Debug="true" Title="Price Product Group" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Customer_Markup_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Customer Markup" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -13,7 +13,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
-                            <li class="breadcrumb-item"><a runat="server" href="~/setting/price">Price</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/customer">Customer</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
@@ -29,11 +29,6 @@
                 </div>
             </div>
         </section>
-        <section class="row mb-3">
-            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
-            </div>
-        </section>
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -42,7 +37,7 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                        <h5 class="card-title">List Product Group</h5>
+                                        <h5 class="card-title">List Markup</h5>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                         <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
@@ -64,28 +59,11 @@
                                                     <%# Container.DataItemIndex + 1 %>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:BoundField DataField="Id" HeaderText="ID" />
-                                            <asp:BoundField DataField="Name" HeaderText="Name" />
-                                            <asp:TemplateField HeaderText="Company Detail">
+                                            <asp:BoundField DataField="DebtorCode" HeaderText="Debtor Code" />
+                                            <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" />
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
-                                                    <%# GetCompanyName(Eval("Id").ToString()) %>
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
-                                            <asp:BoundField DataField="Status" HeaderText="Status" />
-                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="150px">
-                                                <ItemTemplate>
-                                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
-                                                    <ul class="dropdown-menu">
-                                                        <li runat="server" visible='<%# LoginAccess("Detail") %>'>
-                                                            <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/price/product/edit?productgroupid=" & Eval("Id")) %>'>Edit</a>
-                                                        </li>
-                                                        <li runat="server" visible='<%# LoginAccess("Delete") %>'>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('ProductGroups', '<%# Eval("Id") %>')">Log</a>
-                                                        </li>
-                                                    </ul>
+                                                    <a href="javascript:void(0);" id="aView" class="btn btn-sm btn-primary" onclick="openMarkupModal('<%# Eval("Id") %>')">View</a>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                         </Columns>
@@ -112,37 +90,44 @@
         </section>
     </div>
 
-    <div class="modal modal-blur fade" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Price Product Group</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtDeleteId" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal modal-blur fade" id="modalDetailMarkup" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Changelog</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title">Detail Markup</h5>
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Add Markup</button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <asp:Button runat="server" ID="btnAddMarkupA" CssClass="dropdown-item" Text="By Product" OnClick="btnAddMarkupA_Click" />
+                        </li>
+                        <li>
+                            <asp:Button runat="server" ID="btnAddMarkupB" CssClass="dropdown-item" Text="By Product Group" OnClick="btnAddMarkupB_Click" />
+                        </li>
+                    </ul>
                 </div>
                 <div class="modal-body">
-                    <div class="alert alert-danger d-none" id="logError"></div>
-                    <div class="table-responsive">
-                        <table class="table table-vcenter card-table" id="tblLogs">
-                            <tbody></tbody>
-                        </table>
+                    <asp:TextBox runat="server" ID="txtCustomerId" style="display:none;"></asp:TextBox>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Type</th>
+                                            <th>Product</th>
+                                            <th>Markup</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="markupBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>
@@ -156,6 +141,11 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
+        <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
 
     <script type="text/javascript">
@@ -186,7 +176,7 @@
                     if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-                    const btn = this.querySelector("a[id*='aEdit']");
+                    const btn = this.querySelector("a[id*='aView']");
                     if (btn) btn.click();
                 };
             }
@@ -195,43 +185,34 @@
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-        function dataDelete(id) {
-            document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
-        }
-        function showLog(type, dataId) {
-            $("#logError").addClass("d-none").html("");
-            $("#tblLogs tbody").html("");
-            $("#modalLog").modal("show");
-
-            $.ajax({
-                type: "POST",
-                url: "/Setting/Method.aspx/GetLogs",
-                data: JSON.stringify({ type: type, dataId: dataId }),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (res) {
-                    const logs = res.d;
-
-                    if (!logs || logs.length === 0) {
-                        $("#tblLogs tbody").html(
-                            `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
-                        );
-                        return;
-                    }
-
-                    let html = "";
-                    logs.forEach(r => {
-                        html += `<tr><td>${r.TextLog}</td></tr>`;
-                    });
-
-                    $("#tblLogs tbody").html(html);
-                },
-                error: function (err) {
-                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
-                }
+        function openMarkupModal(customerId) {
+            document.getElementById("<%=txtCustomerId.ClientID %>").value = customerId;
+            fetch('Default.aspx/GetCustomerMarkup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                body: JSON.stringify({ customerId: customerId })
+            }).then(res => res.json()).then(res => {
+                const data = res.d;
+                let tbody = "";
+                data.forEach((x, i) => {
+                    tbody += `
+            <tr>
+            <td class="text-center">${i + 1}</td>
+            <td>${x.Type}</td>
+            <td>${x.Product}</td>
+            <td>${x.Markup}</td>
+            <td><a class="btn btn-sm btn-primary" href="/setting/customer/markup/edit?markupid=${x.Id}">Edit</a></td>
+            </tr>
+            `;
+                });
+                document.getElementById("markupBody").innerHTML = tbody;
+                showDetailDiscount();
             });
         }
-        ["modalDelete", "modalLog"].forEach(function (id) {
+        function showDetailDiscount() {
+            $("#modalDetailMarkup").modal("show");
+        }
+        ["modalDetailMarkup"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

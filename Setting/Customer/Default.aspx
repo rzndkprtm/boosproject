@@ -79,6 +79,15 @@
                         Description
                     </div>
                 </a>
+                <a href="/setting/customer/markup" class="dashboard-card">
+                    <div class="dashboard-number">
+                        <%= GetSumData("CustomerMarkups") %>
+                    </div>
+                    <div class="dashboard-title">Markup</div>
+                    <div class="dashboard-desc">
+                        Description
+                    </div>
+                </a>
                 <a href="/setting/customer/discount" class="dashboard-card">
                     <div class="dashboard-number">
                         <%= GetSumData("CustomerDiscounts") %>

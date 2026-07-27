@@ -33,18 +33,22 @@
                         <div class="card-body">
                             <div class="form form-vertical">
                                 <div class="form-body">
-                                    <div class="row mb-2">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Name</label>
-                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Design Type</label>
-                                            <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select"></asp:DropDownList>
-                                        </div>
-                                    </div>
+                                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                                        <ContentTemplate>
+                                            <div class="row mb-2">
+                                                <div class="col-12 form-group">
+                                                    <label class="form-label">Name</label>
+                                                    <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-12 form-group">
+                                                    <label class="form-label">Design Type</label>
+                                                    <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
+                                                </div>
+                                            </div>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
                                     <div class="row mb-2">
                                         <div class="col-12 form-group">
                                             <label class="form-label">Company</label>
@@ -59,10 +63,10 @@
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                            <label class="form-label">Active</label>
-                                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                                            <label class="form-label">Status</label>
+                                            <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
+                                                <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
+                                                <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
                                     </div>
@@ -100,7 +104,51 @@
         <asp:Label runat="server" ID="lblId"></asp:Label>
     </div>
 
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript">
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) loading.style.display = "none";
+        });
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
+            });
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
+                initChoices();
+            });
+        }
+        function initChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.choices) {
+                    el.choices.destroy();
+                }
+                el.choices = new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false
+                });
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            initChoices();
+        });
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

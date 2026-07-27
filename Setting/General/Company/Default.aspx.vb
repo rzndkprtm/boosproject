@@ -62,10 +62,10 @@ Partial Class Setting_General_Company_Default
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Companys WHERE Id=@Id; DELETE FROM Logs WHERE Type='Companys' AND DataId=@Id; UPDATE Mailings SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Newsletters SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Notifications SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE PriceGroups SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Sales SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Tutorials SET CompanyId=NULL WHERE CompanyId=@Id;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", companyId)
-                    thisCmd.ExecuteNonQuery()
-                End Using
+                'Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Companys WHERE Id=@Id; DELETE FROM Logs WHERE Type='Companys' AND DataId=@Id; UPDATE Mailings SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Newsletters SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Notifications SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE PriceGroups SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Sales SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Tutorials SET CompanyId=NULL WHERE CompanyId=@Id;", thisConn)
+                '    thisCmd.Parameters.AddWithValue("@Id", companyId)
+                '    thisCmd.ExecuteNonQuery()
+                'End Using
 
                 ' TABLE DESIGNS
                 Using thisCmd As SqlCommand = New SqlCommand("UPDATE D SET CompanyId = STUFF((SELECT ',' + S.value FROM STRING_SPLIT(D.CompanyId, ',') S WHERE TRY_CAST(S.value AS INT) <> " & companyId & " FOR XML PATH(''), TYPE).value('.', 'nvarchar(max)'),1,1,'') FROM Designs D WHERE EXISTS (SELECT 1 FROM STRING_SPLIT(D.CompanyId, ',') S WHERE TRY_CAST(S.value AS INT) = " & companyId & ");", thisConn)
