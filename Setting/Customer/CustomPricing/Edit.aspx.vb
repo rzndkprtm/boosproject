@@ -51,7 +51,7 @@ Partial Class Setting_Customer_CustomPricing_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerCustomPricings VALUES (@Id, @Tags)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerCustomPricings WHERE Description=@Tags WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", ddlCustomer.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Tags", thisTags)
                         thisConn.Open()
