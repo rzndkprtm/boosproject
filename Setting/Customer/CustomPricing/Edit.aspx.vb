@@ -80,13 +80,13 @@ Partial Class Setting_Customer_CustomPricing_Edit
         Try
             Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerCustomPricings WHERE Id='" & customId & "'")
             If thisData Is Nothing Then
-                Response.Redirect("~/setting/customer/contact/", False)
+                Response.Redirect("~/setting/customer/custompricing", False)
                 Exit Sub
             End If
 
             BindCustomer()
 
-            ddlCustomer.SelectedValue = thisData("CustomerId").ToString()
+            ddlCustomer.SelectedValue = thisData("Id").ToString()
 
             Dim tagsArray() As String = thisData("Description").ToString().Split(",")
             Dim tagsList As List(Of String) = tagsArray.ToList()
