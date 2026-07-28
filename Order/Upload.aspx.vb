@@ -2151,7 +2151,7 @@ Partial Class Order_Upload
 
                                     Dim productgroupName As String = String.Format("{0} - {1}", designName, groupName)
                                     If designName = "Aluminium Blind" Then
-                                        productgroupName = blindName
+                                        productgroupName = designName & " - 0.21mm"
                                     End If
 
                                     Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productgroupName, designId, companyDetailId)
