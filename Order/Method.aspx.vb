@@ -9911,7 +9911,7 @@ Partial Class Order_Method
             clvalue = data.wandlengthvalue
         End If
 
-        If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" OrElse blindName = "Econo 50mm" OrElse blindName = "Econo 63mm" Then
+        If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" OrElse blindName = "Econo 50mm" OrElse blindName = "Econo 63mm" OrElse blindName = "Ultraslat 50mm" OrElse blindName = "Ultraslat 63mm" Then
             If data.subtype = "Single" Then
                 widthb = 0 : dropb = 0
                 widthc = 0 : dropc = 0
@@ -9921,7 +9921,6 @@ Partial Class Order_Method
 
                 clvalueb = 0 : clvaluec = 0
             End If
-
             If data.subtype = "2 on 1 Left-Left" Then
                 data.controlposition = "Left"
                 data.tilterposition = "Left"
@@ -9938,7 +9937,6 @@ Partial Class Order_Method
 
                 totalItems = 2
             End If
-
             If data.subtype = "2 on 1 Right-Right" Then
                 data.controlposition = "Right"
                 data.tilterposition = String.Empty
@@ -9955,7 +9953,6 @@ Partial Class Order_Method
 
                 totalItems = 2
             End If
-
             If data.subtype = "2 on 1 Left-Right" Then
                 data.controlposition = "Left" : data.tilterposition = "Left"
                 controlpositionb = "Right" : tilterpositionb = "Right"
@@ -9970,7 +9967,6 @@ Partial Class Order_Method
 
                 totalItems = 2
             End If
-
             If data.subtype = "3 on 1 Left-Left-Right" Then
                 data.controlposition = "Left" : data.tilterposition = "Left"
                 controlpositionb = "Left" : tilterpositionb = "Left"
@@ -9984,7 +9980,6 @@ Partial Class Order_Method
 
                 totalItems = 3
             End If
-
             If data.subtype = "3 on 1 Left-Right-Right" Then
                 data.controlposition = "Left" : data.tilterposition = "Left"
                 controlpositionb = "Right" : tilterpositionb = "Right"
@@ -9998,22 +9993,18 @@ Partial Class Order_Method
 
                 totalItems = 3
             End If
-
             If data.controllength = "Standard" Then
                 clvalue = Math.Ceiling(drop * 2 / 3)
                 If clvalue < 550 Then clvalue = 550
             End If
-
             If data.controllengthb = "Standard" Then
                 clvalueb = Math.Ceiling(dropb * 2 / 3)
                 If clvalueb < 550 Then clvalueb = 550
             End If
-
             If data.controllengthc = "Standard" Then
                 clvaluec = Math.Ceiling(dropc * 2 / 3)
                 If clvaluec < 550 Then clvaluec = 550
             End If
-
             If String.IsNullOrEmpty(data.returnposition) Then
                 data.returnlength = String.Empty
                 rlvalue = 0
@@ -10037,6 +10028,15 @@ Partial Class Order_Method
         End If
 
         Dim groupName As String = String.Format("{0} - {1}", designName, blindName)
+        If blindName = "Ultraslat 50mm" Then
+            groupName = String.Format("{0} - {1}", designName, "Econo 50mm")
+        End If
+        If blindName = "Ultraslat 63mm" Then
+            groupName = String.Format("{0} - {1}", designName, "Econo 63mm")
+        End If
+        If blindName = "Ultraslat 50mm (Cordless)" Then
+            groupName = String.Format("{0} - {1}", designName, "Econo 50mm (Cordless)")
+        End If
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
         Dim priceProductGroupB As String = String.Empty
         Dim priceProductGroupC As String = String.Empty
