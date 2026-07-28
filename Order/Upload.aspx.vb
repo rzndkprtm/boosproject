@@ -1440,7 +1440,6 @@ Partial Class Order_Upload
                                     Exit For
                                 End If
 
-                                If valanceOption = "Retrousse" Then valanceOption = "No Cover Valance and Cord at Back"
                                 Dim validValanceOption As String() = {"Facade", "Retrousse"}
                                 If Not validValanceOption.Contains(valanceOption) Then
                                     MessageError(True, "PLEASE CHECK YOUR VALANCE OPTION !")
@@ -1462,6 +1461,8 @@ Partial Class Order_Upload
                                     If batten = "Earth" Then battenColour = "Brown"
                                     If batten = "Midnight" Then battenColour = "Black"
                                 End If
+
+                                If valanceOption = "Retrousse" Then valanceOption = "No Cover Valance and Cord at Back"
 
                                 Dim linearMetre As Decimal = width / 1000
                                 Dim squareMetre As Decimal = width * drop / 1000000
