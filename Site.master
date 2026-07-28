@@ -19,7 +19,14 @@
     <link rel="stylesheet" href="/Assets/css/app.css" />
     <link rel="icon" type="image/x-icon" href="/Assets/images/logo/boos.ico" />
 
-    <script src="/Scripts/jquery-3.7.1.min.js"></script>    
+    <script src="/Scripts/jquery-3.7.1.min.js"></script>
+
+    <style>
+        .header-top > .container {
+            max-width: 100%;
+            padding-inline: 3rem;
+        }
+    </style>
 </head>
 <body>
     <form runat="server">
@@ -61,11 +68,11 @@
                                 <a href="javascript:void(0);" class="burger-btn d-block d-xl-none">
                                     <i class="bi bi-justify fs-3"></i>
                                 </a>
-                            </div>
+                            </div>                            
                         </div>
                     </div>
                     <nav class="main-navbar">
-                        <div class="container">
+                        <div class="container-fluid px-5">
                             <ul>
                                 <li class="menu-item">
                                     <a runat="server" href="~/" class='menu-link'>
@@ -322,7 +329,7 @@
                         </div>
                     </nav>
                 </header>
-                <div class="content-wrapper container">
+                <div class="container-fluid px-5">
                     <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
                 </div>
                 <footer class="mt-4 py-3 border-top">
