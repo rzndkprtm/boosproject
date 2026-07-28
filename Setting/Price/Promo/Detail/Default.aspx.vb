@@ -149,6 +149,7 @@ Partial Class Setting_Price_Promo_Detail_Default
             lblName.Text = thisData("Name").ToString()
             lblStartDate.Text = Convert.ToDateTime(thisData("StartDate")).ToString("dd MMM yyyy")
             lblEndDate.Text = Convert.ToDateTime(thisData("EndDate")).ToString("dd MMM yyyy")
+            lblType.Text = thisData("Type").ToString()
             lblDescription.Text = thisData("Description").ToString()
             If String.IsNullOrEmpty(lblDescription.Text) Then
                 lblDescription.Text = "&nbsp;"
@@ -182,6 +183,12 @@ Partial Class Setting_Price_Promo_Detail_Default
     Protected Function DiscountTitle(type As String, dataId As String) As String
         If String.IsNullOrEmpty(type) Then Return String.Empty
         If type = "FrameColours" Then Return dataId
+        If type = "RollerFabrics" OrElse type = "CurtainFabrics" Then
+            Return settingClass.GetItemData(String.Format("SELECT Name FROM Fabrics WHERE Id='{0}'", dataId))
+        End If
+        If type = "RollerFabricColours" OrElse type = "CurtainFabricColours" Then
+            Return settingClass.GetItemData(String.Format("SELECT Name FROM FabricColours WHERE Id='{0}'", dataId))
+        End If
         Return settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
     End Function
 

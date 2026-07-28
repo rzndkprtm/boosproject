@@ -2326,10 +2326,14 @@ Public Class OrderClass
                                     isMatch = (dataId = blindId)
                                 Case "Products"
                                     isMatch = (dataId = productId)
-                                Case "Fabrics"
-                                    isMatch = ((designName = "Roller Blind" OrElse designName = "Curtain") AndAlso dataId = fabricId)
-                                Case "FabricColours"
-                                    isMatch = ((designName = "Roller Blind" OrElse designName = "Curtain") AndAlso dataId = fabricColourId)
+                                Case "RollerFabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricId)
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricId)
+                                Case "RollerFabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourId)
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourId)
                                 Case "FrameColours"
                                     isMatch = (dataId = frameColour)
                             End Select
@@ -2361,10 +2365,14 @@ Public Class OrderClass
                                     compareId = blindId
                                 Case "Products"
                                     compareId = productId
-                                Case "Fabrics"
-                                    If designName = "Roller Blind" OrElse designName = "Curtain" Then compareId = fabricId
-                                Case "FabricColours"
-                                    If designName = "Roller Blind" OrElse designName = "Curtain" Then compareId = fabricColourId
+                                Case "RollerFabrics"
+                                    If designName = "Roller Blind" Then compareId = fabricId
+                                Case "CurtainFabrics"
+                                    If designName = "Curtain" Then compareId = fabricId
+                                Case "RollerFabricColours"
+                                    If designName = "Roller Blind" Then compareId = fabricColourId
+                                Case "CurtainFabricColours"
+                                    If designName = "Curtain" Then compareId = fabricColourId
                                 Case "FrameColours"
                                     compareId = frameColour
                             End Select
@@ -2605,10 +2613,14 @@ Public Class OrderClass
                                     isMatch = (dataId = blindId)
                                 Case "Products"
                                     isMatch = (dataId = productId)
-                                Case "Fabrics"
-                                    isMatch = ((designName = "Roller Blind" OrElse designName = "Curtain") AndAlso dataId = fabricIdB)
-                                Case "FabricColours"
-                                    isMatch = ((designName = "Roller Blind" OrElse designName = "Curtain") AndAlso dataId = fabricColourIdB)
+                                Case "RollerFabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdB)
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdB)
+                                Case "RollerFabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdB)
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdB)
                                 Case "FrameColours"
                                     isMatch = (dataId = frameColour)
                             End Select
@@ -2640,10 +2652,14 @@ Public Class OrderClass
                                     compareId = blindId
                                 Case "Products"
                                     compareId = productId
-                                Case "Fabrics"
-                                    If designName = "Roller Blind" OrElse designName = "Curtain" Then compareId = fabricIdB
-                                Case "FabricColours"
-                                    If designName = "Roller Blind" OrElse designName = "Curtain" Then compareId = fabricColourIdB
+                                Case "RollerFabrics"
+                                    If designName = "Roller Blind" Then compareId = fabricIdB
+                                Case "CurtainFabrics"
+                                    If designName = "Curtain" Then compareId = fabricIdB
+                                Case "RollerFabricColours"
+                                    If designName = "Roller Blind" Then compareId = fabricColourIdB
+                                Case "CurtainFabricColours"
+                                    If designName = "Curtain" Then compareId = fabricColourIdB
                                 Case "FrameColours"
                                     compareId = frameColour
                             End Select
@@ -2812,10 +2828,16 @@ Public Class OrderClass
                                     isMatch = (dataId = blindId)
                                 Case "Products"
                                     isMatch = (dataId = productId)
-                                Case "Fabrics"
+                                Case "RollerFabrics"
                                     isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdC)
-                                Case "FabricColours"
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdC)
+                                Case "RollerFabricColours"
                                     isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdC)
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdC)
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
                             End Select
 
                             If Not isMatch Then Continue For
@@ -2845,10 +2867,16 @@ Public Class OrderClass
                                     compareId = blindId
                                 Case "Products"
                                     compareId = productId
-                                Case "Fabrics"
+                                Case "RollerFabrics"
                                     If designName = "Roller Blind" Then compareId = fabricIdC
-                                Case "FabricColours"
+                                Case "CurtainFabrics"
+                                    If designName = "Curtain" Then compareId = fabricIdC
+                                Case "RollerFabricColours"
                                     If designName = "Roller Blind" Then compareId = fabricColourIdC
+                                Case "CurtainFabricColours"
+                                    If designName = "Curtain" Then compareId = fabricColourIdC
+                                Case "FrameColours"
+                                    compareId = frameColour
                             End Select
 
                             If compareId <> dataId Then Continue For
@@ -2999,10 +3027,16 @@ Public Class OrderClass
                                     isMatch = (dataId = blindId)
                                 Case "Products"
                                     isMatch = (dataId = productId)
-                                Case "Fabrics"
+                                Case "RollerFabrics"
                                     isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdD)
-                                Case "FabricColours"
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdD)
+                                Case "RollerFabricColours"
                                     isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdD)
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdD)
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
                             End Select
 
                             If Not isMatch Then Continue For
@@ -3032,10 +3066,16 @@ Public Class OrderClass
                                     compareId = blindId
                                 Case "Products"
                                     compareId = productId
-                                Case "Fabrics"
+                                Case "RollerFabrics"
                                     If designName = "Roller Blind" Then compareId = fabricIdD
-                                Case "FabricColours"
+                                Case "CurtainFabrics"
+                                    If designName = "Curtain" Then compareId = fabricIdD
+                                Case "RollerFabricColours"
                                     If designName = "Roller Blind" Then compareId = fabricColourIdD
+                                Case "CurtainFabricColours"
+                                    If designName = "Curtain" Then compareId = fabricColourIdD
+                                Case "FrameColours"
+                                    compareId = frameColour
                             End Select
 
                             If compareId <> dataId Then Continue For
@@ -3186,10 +3226,16 @@ Public Class OrderClass
                                     isMatch = (dataId = blindId)
                                 Case "Products"
                                     isMatch = (dataId = productId)
-                                Case "Fabrics"
+                                Case "RollerFabrics"
                                     isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdE)
-                                Case "FabricColours"
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdE)
+                                Case "RollerFabricColours"
                                     isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdE)
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdE)
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
                             End Select
 
                             If Not isMatch Then Continue For
@@ -3219,10 +3265,16 @@ Public Class OrderClass
                                     compareId = blindId
                                 Case "Products"
                                     compareId = productId
-                                Case "Fabrics"
+                                Case "RollerFabrics"
                                     If designName = "Roller Blind" Then compareId = fabricIdE
-                                Case "FabricColours"
+                                Case "CurtainFabrics"
+                                    If designName = "Curtain" Then compareId = fabricIdE
+                                Case "RollerFabricColours"
                                     If designName = "Roller Blind" Then compareId = fabricColourIdE
+                                Case "CurtainFabricColours"
+                                    If designName = "Curtain" Then compareId = fabricColourIdE
+                                Case "FrameColours"
+                                    compareId = frameColour
                             End Select
 
                             If compareId <> dataId Then Continue For
@@ -3241,7 +3293,7 @@ Public Class OrderClass
                     CalculateSurcharge(surchargeArray)
                 End If
 
-                ' FIFTH BLIND
+                ' SIXTH BLIND
                 If Not String.IsNullOrEmpty(priceProductGroupIdF) AndAlso priceProductGroupStatusF = "Active" Then
                     itemNumber = 6
 
@@ -3373,10 +3425,16 @@ Public Class OrderClass
                                     isMatch = (dataId = blindId)
                                 Case "Products"
                                     isMatch = (dataId = productId)
-                                Case "Fabrics"
+                                Case "RollerFabrics"
                                     isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdF)
-                                Case "FabricColours"
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdF)
+                                Case "RollerFabricColours"
                                     isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdF)
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdF)
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
                             End Select
 
                             If Not isMatch Then Continue For
@@ -3406,10 +3464,16 @@ Public Class OrderClass
                                     compareId = blindId
                                 Case "Products"
                                     compareId = productId
-                                Case "Fabrics"
+                                Case "RollerFabrics"
                                     If designName = "Roller Blind" Then compareId = fabricIdF
-                                Case "FabricColours"
+                                Case "CurtainFabrics"
+                                    If designName = "Curtain" Then compareId = fabricIdF
+                                Case "RollerFabricColours"
                                     If designName = "Roller Blind" Then compareId = fabricColourIdF
+                                Case "CurtainFabricColours"
+                                    If designName = "Curtain" Then compareId = fabricColourIdF
+                                Case "FrameColours"
+                                    compareId = frameColour
                             End Select
 
                             If compareId <> dataId Then Continue For
