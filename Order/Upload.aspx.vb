@@ -1440,9 +1440,10 @@ Partial Class Order_Upload
                                     Exit For
                                 End If
 
+                                If valanceOption = "Retrousse" Then valanceOption = "No Cover Valance and Cord at Back"
                                 Dim validValanceOption As String() = {"Facade", "Retrousse"}
                                 If Not validValanceOption.Contains(valanceOption) Then
-                                    MessageError(True, "PLEASE CHECK YOUR SIZE TYPE !")
+                                    MessageError(True, "PLEASE CHECK YOUR VALANCE OPTION !")
                                     Exit For
                                 End If
 
