@@ -11,14 +11,12 @@ Partial Class Setting_Price_Promo_Detail_Add
     Private Property PromoTable As DataTable
         Get
             If Session("PromoTable") Is Nothing Then
-
                 Dim dt As New DataTable
                 dt.Columns.Add("Type")
                 dt.Columns.Add("Data")
                 dt.Columns.Add("Discount")
 
                 Session("PromoTable") = dt
-
             End If
 
             Return DirectCast(Session("PromoTable"), DataTable)
@@ -174,7 +172,6 @@ Partial Class Setting_Price_Promo_Detail_Add
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PromoDetails ORDER BY Id DESC")
 
                 Using thisConn As New SqlConnection(myConn)
-
                     Using thisCmd As New SqlCommand("INSERT INTO PromoDetails VALUES (@Id, @PromoId, @Type, @DataId, @Discount)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@PromoId", ddlPromo.SelectedValue)
@@ -224,15 +221,19 @@ Partial Class Setting_Price_Promo_Detail_Add
             Dim dt As DataTable
             Select Case type
                 Case "Designs"
-                    dt = settingClass.GetDataTable("SELECT * FROM Designs")
+                    dt = settingClass.GetDataTable("SELECT Id, Name FROM Designs")
                 Case "Blinds"
                     dt = settingClass.GetDataTable("SELECT Blinds.Id, '[' + Designs.Name + '] ' + Blinds.Name AS Name FROM Blinds INNER JOIN Designs ON Blinds.DesignId=Designs.Id ORDER BY Designs.Name, Blinds.Name ASC")
                 Case "Products"
-                    dt = settingClass.GetDataTable("SELECT * FROM Products")
-                Case "Fabrics"
-                    dt = settingClass.GetDataTable("SELECT * FROM Fabrics")
-                Case "FabricColours"
-                    dt = settingClass.GetDataTable("SELECT * FROM FabricColours")
+                    dt = settingClass.GetDataTable("SELECT Id, Name FROM Products")
+                Case "RollerFabrics"
+                    dt = settingClass.GetDataTable("SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE designArray.VALUE='12' AND (Status='In Stock' OR Status='Limited Stock')")
+                Case "CurtainFabrics"
+                    dt = settingClass.GetDataTable("SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE designArray.VALUE='3' AND (Status='In Stock' OR Status='Limited Stock')")
+                Case "RollerFabricColours"
+                    dt = settingClass.GetDataTable("SELECT FabricColours.Id AS Id, FabricColours.Name AS Name FROM FabricColours LEFT JOIN Fabrics CROSS APPLY STRING_SPLIT(Fabrics.DesignId, ',') AS designArray ON FabricColours.FabricId=Fabrics.Id WHERE designArray.VALUE='12'")
+                Case "CurtainFabricColours"
+                    dt = settingClass.GetDataTable("SELECT FabricColours.Id AS Id, FabricColours.Name AS Name FROM FabricColours LEFT JOIN Fabrics CROSS APPLY STRING_SPLIT(Fabrics.DesignId, ',') AS designArray ON FabricColours.FabricId=Fabrics.Id WHERE designArray.VALUE='3'")
                 Case "FrameColours"
                     dt = New DataTable()
 

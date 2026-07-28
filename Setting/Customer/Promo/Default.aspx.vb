@@ -33,6 +33,10 @@ Partial Class Setting_Customer_Promo_Default
                 typeName = ""
             ElseIf typeValue = "FrameColours" Then
                 typeName = dataId
+            ElseIf typeValue = "RollerFabrics" OrElse typeValue = "CurtainFabrics" Then
+                typeName = settingClass.GetItemData(String.Format("SELECT Name FROM Fabrics WHERE Id='{0}'", dataId))
+            ElseIf typeValue = "RollerFabricColours" OrElse typeValue = "CurtainFabricColours" Then
+                typeName = settingClass.GetItemData(String.Format("SELECT Name FROM FabricColours WHERE Id='{0}'", dataId))
             Else
                 typeName = settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", typeValue, dataId.Replace("'", "''")))
             End If

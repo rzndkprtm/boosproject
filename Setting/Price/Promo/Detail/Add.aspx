@@ -66,8 +66,10 @@
                                                             <asp:ListItem Value="Designs">Design Type</asp:ListItem>
                                                             <asp:ListItem Value="Blinds">Blind Type</asp:ListItem>
                                                             <asp:ListItem Value="Products">Product</asp:ListItem>
-                                                            <asp:ListItem Value="Fabrics">Fabric Type</asp:ListItem>
-                                                            <asp:ListItem Value="FabricColours">Fabric Colour</asp:ListItem>
+                                                            <asp:ListItem Value="RollerFabrics">Fabric Type [Roller]</asp:ListItem>
+                                                            <asp:ListItem Value="RollerFabricColours">Fabric Colour [Roller]</asp:ListItem>
+                                                            <asp:ListItem Value="CurtainFabrics">Fabric Type [Curtain]</asp:ListItem>
+                                                            <asp:ListItem Value="CurtainFabricColours">Fabric Colour [Curtain]</asp:ListItem>
                                                             <asp:ListItem Value="FrameColours">Frame Colour</asp:ListItem>
                                                         </asp:DropDownList>
                                                     </td>

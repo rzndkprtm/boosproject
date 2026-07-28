@@ -29,6 +29,10 @@ Partial Class Setting_Customer_Detail
             Dim title As String = String.Empty
             If dr("Type").ToString() = "FrameColours" Then
                 title = dr("DataId").ToString()
+            ElseIf dr("Type").ToString() = "RollerFabrics" OrElse dr("Type").ToString() = "CurtainFabrics" Then
+                title = settingClass.GetItemData(String.Format("SELECT Name FROM Fabrics WHERE Id='{0}'", dr("DataId").ToString()))
+            ElseIf dr("Type").ToString() = "RollerFabricColours" OrElse dr("Type").ToString() = "CurtainFabricColours" Then
+                title = settingClass.GetItemData(String.Format("SELECT Name FROM FabricColours WHERE Id='{0}'", dr("DataId").ToString()))
             Else
                 title = settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", dr("Type").ToString(), dr("DataId").ToString()))
             End If
