@@ -50,7 +50,7 @@ Partial Class Setting_Customer_CustomPricing_Add
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"CustomerContacts", ddlCustomer.SelectedValue, Session("LoginId").ToString(), "Customer Contact Created"}
+                Dim dataLog As Object() = {"CustomerCustomPricings", ddlCustomer.SelectedValue, Session("LoginId").ToString(), "Customer Custom Pricing Created"}
                 settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/customer/custompricing", False)

@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_Customer_CustomPricing_Edit
 
@@ -15,9 +16,16 @@ Partial Class Setting_Customer_CustomPricing_Edit
             Exit Sub
         End If
 
+        If String.IsNullOrEmpty(Request.QueryString("customid")) Then
+            Response.Redirect("~/setting/customer/custompricing/", False)
+            Exit Sub
+        End If
+
+        lblId.Text = Request.QueryString("customid").ToString()
+
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindCustomer()
+            BindData(lblId.Text)
         End If
     End Sub
 
@@ -51,7 +59,7 @@ Partial Class Setting_Customer_CustomPricing_Edit
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"CustomerContacts", ddlCustomer.SelectedValue, Session("LoginId").ToString(), "Customer Contact Created"}
+                Dim dataLog As Object() = {"CustomerCustomPricings", ddlCustomer.SelectedValue, Session("LoginId").ToString(), "Customer Custom Pricing Updated"}
                 settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/customer/custompricing", False)
@@ -66,6 +74,36 @@ Partial Class Setting_Customer_CustomPricing_Edit
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/setting/customer/custompricing", False)
+    End Sub
+
+    Protected Sub BindData(customId As String)
+        Try
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerCustomPricings WHERE Id='" & customId & "'")
+            If thisData Is Nothing Then
+                Response.Redirect("~/setting/customer/contact/", False)
+                Exit Sub
+            End If
+
+            BindCustomer()
+
+            ddlCustomer.SelectedValue = thisData("CustomerId").ToString()
+
+            Dim tagsArray() As String = thisData("Description").ToString().Split(",")
+            Dim tagsList As List(Of String) = tagsArray.ToList()
+
+            For Each i In tagsArray
+                If Not (i.Equals(String.Empty)) Then
+                    lbTags.Items.FindByValue(i).Selected = True
+                End If
+            Next
+
+            ddlCustomer.Enabled = False
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub BindCustomer()
