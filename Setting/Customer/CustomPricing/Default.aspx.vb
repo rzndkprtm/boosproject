@@ -82,6 +82,8 @@ Partial Class Setting_Customer_CustomPricing_Default
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerCustomPricings_List", params)
             gvList.DataBind()
+
+            btnAdd.Visible = LoginAccess("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
