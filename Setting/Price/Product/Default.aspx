@@ -65,14 +65,14 @@
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
-                                            <asp:BoundField DataField="Name" HeaderText="Name" />
+                                            <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-Width="500px" />
                                             <asp:TemplateField HeaderText="Price Group">
                                                 <ItemTemplate>
                                                     <%# GetPriceGroupName(Eval("Id").ToString()) %>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Description" HeaderText="Description" />
-                                            <asp:BoundField DataField="Status" HeaderText="Status" />
+                                            <asp:BoundField DataField="Status" HeaderText="Status" ItemStyle-Width="90px" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="150px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>

@@ -115,16 +115,22 @@
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:BoundField DataField="Id" HeaderText="ID" />
+                                <asp:BoundField DataField="Name" HeaderText="Name" />
                             </Columns>
                         </asp:GridView>
                     </div>
                 </div>
                 <div class="modal-footer ">
-                    <asp:Button runat="server" ID="btnClose" CssClass="btn btn-light-secondary" Text="Close" />
-                    <asp:Button runat="server" ID="btnAddItem" CssClass="btn btn-danger" Text="Submit" />
+                    <asp:Button runat="server" ID="btnClose" CssClass="btn btn-light-secondary" Text="Close" OnClick="btnClose_Click" />
+                    <asp:Button runat="server" ID="btnProductGroup" CssClass="btn btn-danger" Text="Submit" OnClick="btnProductGroup_Click" />
                 </div>
             </div>
         </div>
+    </div>
+
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
+        <asp:Label runat="server" ID="lblType"></asp:Label>
     </div>
 
     <script type="text/javascript">
