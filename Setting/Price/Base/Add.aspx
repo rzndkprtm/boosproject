@@ -13,7 +13,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
-                            <li class="breadcrumb-item"><a runat="server" href="~/setting/price">Login</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/price">Price</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting/price/base">Base</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
@@ -33,27 +33,27 @@
                         <div class="card-body">
                             <div class="form form-vertical">
                                 <div class="form-body">
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Category</label>
-                                            <asp:DropDownList runat="server" ID="ddlCategory" CssClass="choices form-select">
-                                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
-                                                <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Method</label>
-                                            <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select">
-                                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
-                                                <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
-                                                <asp:ListItem Value="Linear Metre" Text="Linear Metre"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
-                                    </div>
                                     <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                                         <ContentTemplate>
+                                            <div class="row mb-2">
+                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                    <label class="form-label">Category</label>
+                                                    <asp:DropDownList runat="server" ID="ddlCategory" CssClass="choices form-select">
+                                                        <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                        <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
+                                                        <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
+                                                    </asp:DropDownList>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                    <label class="form-label">Method</label>
+                                                    <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select">
+                                                        <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                        <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
+                                                        <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
+                                                        <asp:ListItem Value="Linear Metre" Text="Linear Metre"></asp:ListItem>
+                                                    </asp:DropDownList>
+                                                </div>
+                                            </div>
                                             <div class="row mb-2">
                                                 <div class="col-12 form-group">
                                                     <label class="form-label">Price Group</label>
