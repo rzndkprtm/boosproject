@@ -244,9 +244,9 @@ Partial Class Setting_Price_Base_Import
         ddlProductGroup.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(priceGroupId) Then
-                Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM PriceGroups WHERE Id='" & priceGroupId & "'")
+                Dim query As String = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'"
 
-                ddlProductGroup.DataSource = settingClass.GetDataTable("SELECT PPG.Id, PPG.Name FROM PriceProductGroups PPG WHERE PPG.Status='Active' AND EXISTS (SELECT 1 FROM STRING_SPLIT(PPG.CompanyDetailId, ',') S INNER JOIN CompanyDetails CD ON TRY_CAST(S.value AS INT)=CD.Id WHERE CD.CompanyId = '" & companyId & "')")
+                ddlProductGroup.DataSource = settingClass.GetDataTable(query)
                 ddlProductGroup.DataTextField = "Name"
                 ddlProductGroup.DataValueField = "Id"
                 ddlProductGroup.DataBind()
