@@ -820,7 +820,7 @@ Partial Class Order_Detail
             Dim reworkId As String = orderClass.GetNewOrderReworkId()
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderReworks VALUES (@Id, @HeaderId, NULL, 'Unsubmitted', @CreatedBy, GETDATE(), NULL, 1)", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderReworks VALUES (@Id, @HeaderId, NULL, 'Unsubmitted', '', @CreatedBy, GETDATE(), NULL, 1)", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", reworkId)
                     thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
                     thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
@@ -1798,7 +1798,7 @@ Partial Class Order_Detail
                 Dim designId As String = "16"
 
                 Dim productName As String = orderClass.GetProductName(ddlAddService.SelectedValue)
-                Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productName, designId, lblCompanyDetailId.Text)
+                Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productName, designId, "")
 
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 

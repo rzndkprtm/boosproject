@@ -114,6 +114,12 @@
                                             </span>
                                         </span>
                                     </div>
+                                    <div class="info-row">
+                                        <span class="info-label">📝 Description</span>
+                                        <span class="info-value">
+                                            <asp:Label runat="server" ID="lblDescription"></asp:Label>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

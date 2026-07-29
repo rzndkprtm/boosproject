@@ -562,6 +562,7 @@ Partial Class Order_Rework_Detail
             lblOrderNumber.Text = reworkData("OrderNumber").ToString()
             lblOrderName.Text = reworkData("OrderName").ToString()
             lblStatus.Text = reworkData("Status").ToString()
+            lblDescription.Text = reworkData("Description").ToString()
 
             lblCreatedDate.Text = "-"
             If Not String.IsNullOrEmpty(reworkData("CreatedDate").ToString()) Then

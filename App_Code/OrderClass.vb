@@ -439,6 +439,69 @@ Public Class OrderClass
         Return result
     End Function
 
+    Public Function GetPriceGroupByCustomer(customerId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT PriceGroupId FROM Customers WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", customerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetShutterPriceGroupByCustomer(customerId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT ShutterPriceGroupId FROM Customers WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", customerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetDoorPriceGroupByCustomer(customerId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT DoorPriceGroupId FROM Customers WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", customerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
     Public Function GetPriceGroupByOrder(orderId As String) As String
         Dim result As String = String.Empty
         Try
@@ -502,15 +565,15 @@ Public Class OrderClass
         Return result
     End Function
 
-    Public Function GetPriceProductGroupId(groupName As String, designId As String, companyDetailId As String) As String
+    Public Function GetPriceProductGroupId(groupName As String, designId As String, priceGroupId As String) As String
         Dim result As String = String.Empty
         Try
             If Not String.IsNullOrEmpty(groupName) OrElse String.IsNullOrEmpty(designId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand("SELECT Id FROM PriceProductGroups CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS thisArray WHERE Name=@Name AND DesignId=@DesignId AND thisArray.VALUE=@CompanyDetailId AND (Status='Active' OR Status='Inactive')", thisConn)
+                    Using thisCmd As New SqlCommand("SELECT Id FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE Name=@Name AND DesignId=@DesignId AND thisArray.VALUE=@PriceGroupId AND (Status='Active' OR Status='Inactive')", thisConn)
                         thisCmd.Parameters.AddWithValue("@Name", groupName)
                         thisCmd.Parameters.AddWithValue("@DesignId", designId)
-                        thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
+                        thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
                         thisConn.Open()
                         Dim obj = thisCmd.ExecuteScalar()
                         If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then

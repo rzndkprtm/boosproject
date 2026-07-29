@@ -80,8 +80,7 @@ Partial Class Setting_Price_Product_Default
     Protected Sub BindData(searchText As String)
         Try
             Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)),
-                New SqlParameter("@RoleName", Session("RoleName").ToString())
+                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText))
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_PriceProductGroups_List", params)
             gvList.DataBind()
@@ -136,13 +135,13 @@ Partial Class Setting_Price_Product_Default
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Function GetCompanyName(dataId As String) As String
+    Protected Function GetPriceGroupName(dataId As String) As String
         If Not String.IsNullOrEmpty(dataId) Then
-            Dim myData As DataTable = settingClass.GetDataTable("SELECT CompanyDetails.Name AS CompanyName FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceProductGroups.CompanyDetailId, ',') AS companyArray LEFT JOIN CompanyDetails ON companyArray.VALUE=CompanyDetails.Id WHERE PriceProductGroups.Id='" & dataId & "' ORDER BY CompanyDetails.Id ASC")
+            Dim myData As DataTable = settingClass.GetDataTable("SELECT PriceGroups.Name AS PriceGroupName FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceProductGroups.PriceGroupId, ',') AS priceGroupsArray LEFT JOIN PriceGroups ON priceGroupsArray.VALUE=PriceGroups.Id WHERE PriceProductGroups.Id='" & dataId & "'")
             Dim hasil As String = String.Empty
             If myData.Rows.Count > 0 Then
                 For i As Integer = 0 To myData.Rows.Count - 1
-                    Dim designName As String = myData.Rows(i)("CompanyName").ToString()
+                    Dim designName As String = myData.Rows(i)("PriceGroupName").ToString()
                     hasil += designName & ","
                 Next
                 Return hasil.Remove(hasil.Length - 1).ToString()

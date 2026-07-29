@@ -1,4 +1,5 @@
-﻿Imports System.Data
+﻿Imports System.ComponentModel.Design
+Imports System.Data
 Imports System.Data.SqlClient
 
 Partial Class Setting_Price_Product_Edit
@@ -29,32 +30,34 @@ Partial Class Setting_Price_Product_Edit
 
     Protected Sub ddlDesign_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindCompanyDetail(ddlDesign.SelectedValue)
+        BindPriceGroup(ddlDesign.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If txtName.Text = "" Then
-                MessageError(True, "NAME IS REQUIRED !")
-                Exit Sub
-            End If
             If ddlDesign.Text = "" Then
                 MessageError(True, "PRODUCT / DESIGN TYPE IS REQUIRED !")
                 Exit Sub
             End If
+
+            If txtName.Text = "" Then
+                MessageError(True, "NAME IS REQUIRED !")
+                Exit Sub
+            End If
+
             If msgError.InnerText = "" Then
-                Dim companyDetail As String = String.Empty
-                If Not lbCompanyDetail.SelectedValue = "" Then
-                    companyDetail = String.Join(",", lbCompanyDetail.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                Dim priceGroupId As String = String.Empty
+                If Not lbPriceGroup.SelectedValue = "" Then
+                    priceGroupId = String.Join(",", lbPriceGroup.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
 
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceProductGroups SET Name=@Name, DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceProductGroups SET Name=@Name, DesignId=@DesignId, PriceGroupId=@PriceGroupId, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
+                        thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Description", descText)
                         thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
@@ -89,18 +92,18 @@ Partial Class Setting_Price_Product_Edit
             End If
 
             BindDesignType()
-            BindCompanyDetail(myData("DesignId").ToString())
+            BindPriceGroup(myData("DesignId").ToString())
 
             ddlDesign.SelectedValue = myData("DesignId").ToString()
             txtName.Text = myData("Name").ToString()
             txtDescription.Text = myData("Description").ToString()
             ddlStatus.SelectedValue = myData("Status").ToString()
 
-            If Not myData("CompanyDetailId").ToString() = "" Then
-                Dim companyDetailArray() As String = myData("CompanyDetailId").ToString().Split(",")
-                For Each i In companyDetailArray
+            If Not myData("PriceGroupId").ToString() = "" Then
+                Dim priceGroupArray() As String = myData("PriceGroupId").ToString().Split(",")
+                For Each i In priceGroupArray
                     If Not String.IsNullOrEmpty(i) Then
-                        Dim item = lbCompanyDetail.Items.FindByValue(i)
+                        Dim item = lbPriceGroup.Items.FindByValue(i)
                         If item IsNot Nothing Then
                             item.Selected = True
                         End If
@@ -137,19 +140,19 @@ Partial Class Setting_Price_Product_Edit
         End Try
     End Sub
 
-    Protected Sub BindCompanyDetail(designId As String)
-        lbCompanyDetail.Items.Clear()
+    Protected Sub BindPriceGroup(designId As String)
+        lbPriceGroup.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(designId) Then
-                Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Designs WHERE Id='" & designId & "'")
+                Dim type As String = settingClass.GetItemData("SELECT Type FROM Designs WHERE Id='" & designId & "'")
 
-                lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM CompanyDetails WHERE CompanyId IN (SELECT TRIM(value) FROM STRING_SPLIT('" & companyId & "', ',')) ORDER BY Name ASC")
-                lbCompanyDetail.DataTextField = "Name"
-                lbCompanyDetail.DataValueField = "Id"
-                lbCompanyDetail.DataBind()
+                lbPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND Status='Active' ORDER BY Name ASC")
+                lbPriceGroup.DataTextField = "Name"
+                lbPriceGroup.DataValueField = "Id"
+                lbPriceGroup.DataBind()
 
-                If lbCompanyDetail.Items.Count > 0 Then
-                    lbCompanyDetail.Items.Insert(0, New ListItem("", ""))
+                If lbPriceGroup.Items.Count > 0 Then
+                    lbPriceGroup.Items.Insert(0, New ListItem("", ""))
                 End If
             End If
         Catch ex As Exception

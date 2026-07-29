@@ -1004,6 +1004,7 @@ Partial Class Order_Method
 
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
@@ -1198,7 +1199,7 @@ Partial Class Order_Method
         End If
 
         Dim productGroupName As String = String.Format("{0} - {1}", designName, blindName)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productGroupName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productGroupName, data.designid, priceGroupId)
         Dim priceProductGroupB As String = String.Empty
 
         If data.subtype.Contains("2 on 1") Then priceProductGroupB = priceProductGroup
@@ -1346,6 +1347,8 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
+
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
 
         Dim factory As String = orderClass.GetFabricFactory(data.fabriccolour)
         Dim factoryB As String = orderClass.GetFabricFactory(data.fabriccolourb)
@@ -1497,22 +1500,22 @@ Partial Class Order_Method
 
         If data.companyid = "2" Then
             Dim groupName As String = String.Format("{0} - {1} - {2} - {3} - {4}", designName, blindName, controlNameGroup, fabricGroup, factory)
-            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
             If blindName = "Day & Night" Then
                 groupName = String.Format("{0} - {1} - {2}- {3}", designName, blindName, controlNameGroup, factory)
-                priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+                priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
             End If
         End If
 
         If data.companyid = "3" Then
             Dim groupName As String = String.Format("Cellular Shades - Standard - {0} - {1} - {2}", controlNameGroup, fabricGroup, factory)
-            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
             priceProductGroupB = String.Empty
 
             If blindName = "Day & Night" Then
                 Dim groupNameB As String = String.Format("Cellular Shades - Standard - {0} - {1} - {2}", controlNameGroup, fabricGroupB, factoryB)
-                priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, data.designid, data.companydetailid)
+                priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, data.designid, priceGroupId)
             End If
         End If
 
@@ -1660,9 +1663,8 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then orderClass.GetTubeName(data.tubetype)
 
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
         Dim factory As String = orderClass.GetFabricFactory(data.fabriccolour)
-
-        Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
         Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "CURTAIN TYPE IS REQUIRED !"
@@ -1981,15 +1983,15 @@ Partial Class Order_Method
             trackGroupName = String.Empty
         End If
 
-        priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
-        priceAdditional = orderClass.GetPriceProductGroupId(trackGroupName, data.designid, data.companydetailid)
+        priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
+        priceAdditional = orderClass.GetPriceProductGroupId(trackGroupName, data.designid, priceGroupId)
         If data.companyid = "3" Then
             priceAdditional = String.Empty
         End If
 
         If blindName = "Complete Set (Double)" Then
-            priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, data.designid, data.companydetailid)
-            priceAdditionalB = orderClass.GetPriceProductGroupId(trackGroupNameB, data.designid, data.companydetailid)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, data.designid, priceGroupId)
+            priceAdditionalB = orderClass.GetPriceProductGroupId(trackGroupNameB, data.designid, priceGroupId)
         End If
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
@@ -2192,7 +2194,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
-        Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "PLEASE CONTACT CUSTOMER SERVICE !"
         If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
@@ -2296,7 +2298,7 @@ Partial Class Order_Method
         linearMetre = width / 1000
         squareMetre = width * drop / 1000000
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(designName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(designName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -2418,6 +2420,8 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
+
+        Dim doorPriceGroupId As String = orderClass.GetDoorPriceGroupByCustomer(data.customerid)
 
         Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
@@ -2583,10 +2587,10 @@ Partial Class Order_Method
         If blindName = "Diamond Grille" Then typeDoor = "Standard"
 
         Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", designName, typeDoor, mechanism, factory)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, doorPriceGroupId)
         Dim priceProductGroupB As String = String.Empty
         If tubeName = "Hinged Double" OrElse tubeName = "Sliding Double" Then
-            priceProductGroupB = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(groupName, data.designid, doorPriceGroupId)
         End If
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
@@ -3466,7 +3470,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
-        Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "VALANCE TYPE IS REQUIRED !"
@@ -3541,7 +3545,7 @@ Partial Class Order_Method
         Dim linearMetre As Decimal = width / 1000
 
         Dim priceProductGroupName As String = designName
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -3654,6 +3658,8 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+
         If String.IsNullOrEmpty(data.blindtype) Then Return "OUTDOOR TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !"
@@ -3666,7 +3672,6 @@ Partial Class Order_Method
         End If
 
         If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
-
         If String.IsNullOrEmpty(data.fabrictype) Then Return "FABRIC TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.fabriccolour) Then Return "FABRIC COLOUR IS REQUIRED !"
 
@@ -3724,7 +3729,7 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = width * drop / 1000000
 
         Dim priceProductGroupName As String = String.Format("{0} - {1}", designName, blindName)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -3843,7 +3848,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
 
-        Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "PANEL SYSTEM IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "PANEL STYLE IS REQUIRED !"
@@ -3982,7 +3987,7 @@ Partial Class Order_Method
         Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", designName, blindName, tubeName, groupFabric)
         If blindName = "Track Only" Then groupName = String.Format("{0} - {1}", designName, blindName)
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -4112,7 +4117,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
-        Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
         Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
@@ -4206,7 +4211,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.batten) Then
             priceProductGroupName = String.Format("{0} - {1} - Batten", designName, blindName)
         End If
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, priceGroupId)
         Dim priceProductGroupB As String = String.Empty
         Dim priceProductGroupC As String = String.Empty
 
@@ -4344,7 +4349,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
-        Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "PRIVACY TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PRIVACY COLOUR IS REQUIRED !"
@@ -4405,7 +4410,7 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = width * drop / 1000000
 
         Dim priceProductGroupName As String = String.Format("{0} - {1}", designName, blindName)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -4562,6 +4567,8 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.controltype) Then controlType = orderClass.GetControlType(data.controltype)
         If Not String.IsNullOrEmpty(data.colourtype) Then colourId = orderClass.GetItemData("SELECT ColourType FROM Products WHERE Id='" & data.colourtype & "'")
         If Not String.IsNullOrEmpty(colourId) Then colourName = orderClass.GetColourName(colourId)
+
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
 
         Dim chainLength As String = String.Empty
         Dim chainLengthB As String = String.Empty
@@ -5063,7 +5070,7 @@ Partial Class Order_Method
             Dim tubeIstilah As String = "Standard"
 
             Dim groupName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
-            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
         End If
 
         ' WIRE GUIDE CRUD
@@ -5169,7 +5176,7 @@ Partial Class Order_Method
             Dim tubeIstilah As String = "Standard"
 
             Dim groupName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
-            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
         End If
 
         ' REGULAR CRUD
@@ -5317,7 +5324,7 @@ Partial Class Order_Method
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
         End If
 
         ' Dual Blinds CRUD
@@ -5514,8 +5521,8 @@ Partial Class Order_Method
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
             Dim priceNameDB As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabricDB)
 
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, priceGroupId)
         End If
 
         If blindName = "Link 2 Blinds Dependent" Then
@@ -5685,8 +5692,8 @@ Partial Class Order_Method
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
         End If
 
         If blindName = "Link 2 Blinds Independent" Then
@@ -5890,8 +5897,8 @@ Partial Class Order_Method
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
         End If
 
         If blindName = "Link 3 Blinds Dependent" Then
@@ -6079,9 +6086,9 @@ Partial Class Order_Method
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
-            priceProductGroupC = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+            priceProductGroupC = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
         End If
 
         If blindName = "Link 3 Blinds Independent with Dependent" Then
@@ -6303,9 +6310,9 @@ Partial Class Order_Method
             End If
 
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
-            priceProductGroupC = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+            priceProductGroupC = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
         End If
 
         If blindName = "DB Link 2 Blinds Dependent" Then
@@ -6522,10 +6529,10 @@ Partial Class Order_Method
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
             Dim priceNameDB As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabricDB)
 
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
-            priceProductGroupC = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
-            priceProductGroupD = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+            priceProductGroupC = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, priceGroupId)
+            priceProductGroupD = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, priceGroupId)
         End If
 
         If blindName = "DB Link 2 Blinds Independent" Then
@@ -6807,10 +6814,10 @@ Partial Class Order_Method
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
             Dim priceNameDB As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabricDB)
 
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
-            priceProductGroupC = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
-            priceProductGroupD = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+            priceProductGroupC = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, priceGroupId)
+            priceProductGroupD = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, priceGroupId)
         End If
 
         If blindName = "DB Link 3 Blinds Dependent" Then
@@ -7060,12 +7067,12 @@ Partial Class Order_Method
             Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
             Dim priceNameDB As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabricDB)
 
-            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
-            priceProductGroupC = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
-            priceProductGroupD = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
-            priceProductGroupE = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
-            priceProductGroupF = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, data.companydetailid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+            priceProductGroupC = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+            priceProductGroupD = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, priceGroupId)
+            priceProductGroupE = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, priceGroupId)
+            priceProductGroupF = orderClass.GetPriceProductGroupId(priceNameDB, data.designid, priceGroupId)
         End If
 
         If blindName = "DB Link 3 Blinds Independent with Dependent" Then
@@ -7392,12 +7399,12 @@ Partial Class Order_Method
             Dim groupName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
             Dim groupNameDB As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabricDB)
 
-            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
-            priceProductGroupB = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
-            priceProductGroupC = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
-            priceProductGroupD = orderClass.GetPriceProductGroupId(groupNameDB, data.designid, data.companydetailid)
-            priceProductGroupE = orderClass.GetPriceProductGroupId(groupNameDB, data.designid, data.companydetailid)
-            priceProductGroupF = orderClass.GetPriceProductGroupId(groupNameDB, data.designid, data.companydetailid)
+            priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
+            priceProductGroupB = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
+            priceProductGroupC = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
+            priceProductGroupD = orderClass.GetPriceProductGroupId(groupNameDB, data.designid, priceGroupId)
+            priceProductGroupE = orderClass.GetPriceProductGroupId(groupNameDB, data.designid, priceGroupId)
+            priceProductGroupF = orderClass.GetPriceProductGroupId(groupNameDB, data.designid, priceGroupId)
         End If
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
@@ -7814,8 +7821,9 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
-        Dim priceProductGroup As String = String.Empty
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
 
+        Dim priceProductGroup As String = String.Empty
         Dim groupFabric As String = String.Empty
 
         If width > 1510 OrElse drop > 1510 Then
@@ -7840,7 +7848,7 @@ Partial Class Order_Method
 
         groupFabric = orderClass.GetFabricGroup(data.fabrictype)
         Dim priceName As String = String.Format("{0} - {1}", designName, groupFabric)
-        priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, data.companydetailid)
+        priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -7969,7 +7977,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlType = orderClass.GetControlType(data.controltype)
 
-        Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "ROMAN STYLE IS REQUIRED !"
@@ -8071,7 +8079,7 @@ Partial Class Order_Method
         End If
 
         Dim groupName As String = String.Format("{0} - {1} - {2}", designName, tubeName, groupFabric)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
         If data.controllength = "Standard" Then
             If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then controllength = Math.Ceiling(drop * 2 / 3)
@@ -8209,6 +8217,8 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+
         If String.IsNullOrEmpty(data.blindtype) Then Return "SAMPLE TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !"
 
@@ -8229,7 +8239,7 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(designName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(designName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -8323,7 +8333,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
-        Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "SLAT TYPE IS REQUIRED !"
@@ -8429,7 +8439,7 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = width * drop / 1000000
 
         Dim groupName As String = String.Format("{0} - {1}", designName, blindName)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -8569,8 +8579,6 @@ Partial Class Order_Method
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "SHUTTER TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "COLOUR IS REQUIRED !"
-
-
         If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
         If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
 
@@ -8578,10 +8586,8 @@ Partial Class Order_Method
             Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+"
         End If
         If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
-
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-
         If String.IsNullOrEmpty(data.drop) Then Return "HEIGHT IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR HEIGHT ORDER !"
 
@@ -9200,7 +9206,9 @@ Partial Class Order_Method
             End If
         End If
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+        Dim shutterPriceGroupId As String = orderClass.GetShutterPriceGroupByCustomer(data.customerid)
+
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, shutterPriceGroupId)
 
         Dim squareMetre As Decimal = width * drop / 1000000
         Dim linearMetre As Decimal = width / 1000
@@ -9394,7 +9402,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlType = orderClass.GetControlType(data.controltype)
 
-        Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "ROMAN STYLE IS REQUIRED !"
@@ -9496,7 +9504,7 @@ Partial Class Order_Method
         End If
 
         Dim groupName As String = String.Format("{0} - {1}", designName, tubeName)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
         If data.controllength = "Standard" Then
             If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then controllength = Math.Ceiling(drop * 2 / 3)
@@ -9658,7 +9666,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.colourtype) Then colourId = orderClass.GetItemData("SELECT ColourType FROM Products WHERE Id='" & data.colourtype & "'")
         If Not String.IsNullOrEmpty(colourId) Then colourName = orderClass.GetColourName(colourId)
 
-        Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "VENETIAN TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "VENETIAN COLOUR IS REQUIRED !"
@@ -9958,7 +9966,7 @@ Partial Class Order_Method
         If blindName = "Ultraslat 50mm (Cordless)" Then
             groupName = String.Format("{0} - {1}", designName, "Econo 50mm (Cordless)")
         End If
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
         Dim priceProductGroupB As String = String.Empty
         Dim priceProductGroupC As String = String.Empty
 
@@ -10146,7 +10154,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
-        Dim customerPriceGroup As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "VERTICAL SYSTEM IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "SLAT TYPE IS REQUIRED !"
@@ -10305,7 +10313,7 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = width * drop / 1000000
 
         Dim groupName As String = String.Format("Vertical - {0} - {1}", blindName, tubeName)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -10535,6 +10543,8 @@ Partial Class Order_Method
         linearMetre = width / 1000
         squareMetre = width * drop / 1000000
 
+        Dim doorPriceGroupId As String = orderClass.GetDoorPriceGroupByCustomer(data.customerid)
+
         Dim factory As String = String.Empty
         If data.framecolour.Contains("Express") Then factory = "Express"
         If data.framecolour.Contains("Regular") Then factory = "Regular"
@@ -10546,7 +10556,7 @@ Partial Class Order_Method
         If blindName = "Diamond Grille" AndAlso (data.meshtype = "Fibreglass Mesh" OrElse data.meshtype = "Pawproof" OrElse data.meshtype = "SS Mesh") Then
             groupName = String.Format("{0} - {1} - {2} + Flyscreen Mesh", designName, typeWindow, factory)
         End If
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, doorPriceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty

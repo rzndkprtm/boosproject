@@ -24,48 +24,52 @@ Partial Class Setting_Price_Group_Add
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If txtName.Text = "" Then
-                MessageError(True, "PRICE GROUP NAME IS REQUIRED !")
-                Exit Sub
-            End If
+            'If txtName.Text = "" Then
+            '    MessageError(True, "PRICE GROUP NAME IS REQUIRED !")
+            '    Exit Sub
+            'End If
 
-            Dim checkData As DataRow = settingClass.GetDataRow("SELECT * FROM PriceGroups WHERE Name='" & txtName.Text.Trim().ToUpper() & "'")
-            If checkData IsNot Nothing Then
-                MessageError(True, "PRICE GROUP NAME ALREADY EXISTS !")
-                Exit Sub
-            End If
+            'Dim checkData As DataRow = settingClass.GetDataRow("SELECT * FROM PriceGroups WHERE Name='" & txtName.Text.Trim().ToUpper() & "'")
+            'If checkData IsNot Nothing Then
+            '    MessageError(True, "PRICE GROUP NAME ALREADY EXISTS !")
+            '    Exit Sub
+            'End If
 
-            If ddlCompany.SelectedValue = "" Then
-                MessageError(True, "COMPANY IS REQUIRED !")
-                Exit Sub
-            End If
+            'If ddlCompany.SelectedValue = "" Then
+            '    MessageError(True, "COMPANY IS REQUIRED !")
+            '    Exit Sub
+            'End If
 
-            If ddlType.SelectedValue = "" Then
-                MessageError(True, "TYPE IS REQUIRED !")
-                Exit Sub
-            End If
+            'If ddlType.SelectedValue = "" Then
+            '    MessageError(True, "TYPE IS REQUIRED !")
+            '    Exit Sub
+            'End If
 
             If msgError.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceGroups ORDER BY Id DESC")
-                Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
+                'Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceGroups ORDER BY Id DESC")
+                'Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceGroups VALUES (@Id, @Name, @CompanyId, @Type, @Description, @Status)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", thisId)
-                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim().ToUpper())
-                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
-                        thisConn.Open()
-                        thisCmd.ExecuteNonQuery()
-                    End Using
-                End Using
+                'Using thisConn As New SqlConnection(myConn)
+                '    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceGroups VALUES (@Id, @Name, @CompanyId, @Type, @Description, @Status)", thisConn)
+                '        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                '        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim().ToUpper())
+                '        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                '        thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
+                '        thisCmd.Parameters.AddWithValue("@Description", descText)
+                '        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
+                '        thisConn.Open()
+                '        thisCmd.ExecuteNonQuery()
+                '    End Using
+                'End Using
 
-                Dim dataLog As Object() = {"PriceGroups", thisId, Session("LoginId").ToString(), "Price Group Created"}
-                settingClass.Logs(dataLog)
+                'Dim dataLog As Object() = {"PriceGroups", thisId, Session("LoginId").ToString(), "Price Group Created"}
+                'settingClass.Logs(dataLog)
 
-                Response.Redirect("~/setting/price/group", False)
+                Dim thisScript As String = "window.onload = function() { showProductGroup(); };"
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProductGroup", thisScript, True)
+                Exit Sub
+
+                'Response.Redirect("~/setting/price/group", False)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
