@@ -69,23 +69,17 @@
                                         </ContentTemplate>
                                     </asp:UpdatePanel>
                                     <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                                             <label class="form-label">Height</label>
                                             <asp:TextBox runat="server" ID="txtHeight" CssClass="form-control" placeholder="Height ..."></asp:TextBox>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                                             <label class="form-label">Width</label>
                                             <asp:TextBox runat="server" ID="txtWidth" CssClass="form-control" placeholder="Width ..."></asp:TextBox>
                                         </div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                                             <label class="form-label">Price</label>
                                             <asp:TextBox runat="server" ID="txtPrice" CssClass="form-control" placeholder="Price ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Conditional</label>
-                                            <asp:TextBox runat="server" ID="txtConditional" CssClass="form-control" placeholder="Conditional ..." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="row mt-3" runat="server" id="divError">

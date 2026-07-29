@@ -63,7 +63,7 @@ Partial Class Setting_Price_Base_Edit
             End If
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceBases SET Category=@Category, Method=@Method, ProductGroupId=@ProductGroupId, PriceGroupId=@PriceGroupId, Height=@Height, Width=@Width, Price=@Price, Conditional=@Conditional WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceBases SET Category=@Category, Method=@Method, ProductGroupId=@ProductGroupId, PriceGroupId=@PriceGroupId, Height=@Height, Width=@Width, Price=@Price WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@Category", ddlCategory.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Method", ddlMethod.SelectedValue)
@@ -72,7 +72,6 @@ Partial Class Setting_Price_Base_Edit
                         thisCmd.Parameters.AddWithValue("@Height", txtHeight.Text)
                         thisCmd.Parameters.AddWithValue("@Width", txtWidth.Text)
                         thisCmd.Parameters.AddWithValue("@Price", txtPrice.Text)
-                        thisCmd.Parameters.AddWithValue("@Conditional", txtConditional.Text)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -116,7 +115,6 @@ Partial Class Setting_Price_Base_Edit
             If ddlPriceGroup.SelectedValue = "2" OrElse ddlPriceGroup.SelectedValue = "3" OrElse ddlPriceGroup.SelectedValue = "4" OrElse ddlPriceGroup.SelectedValue = "5" OrElse ddlPriceGroup.SelectedValue = "10" Then
                 txtPrice.Text = Convert.ToDecimal(myData("Price")).ToString("G29", idIDR)
             End If
-            txtConditional.Text = myData("Conditional").ToString()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
