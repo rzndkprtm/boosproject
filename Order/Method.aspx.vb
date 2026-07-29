@@ -3540,8 +3540,7 @@ Partial Class Order_Method
 
         Dim linearMetre As Decimal = width / 1000
 
-        Dim priceProductGroupName As String = String.Format("{0} - {1}", designName, blindName)
-
+        Dim priceProductGroupName As String = designName
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, data.companydetailid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
