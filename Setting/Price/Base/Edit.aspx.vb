@@ -155,8 +155,6 @@ Partial Class Setting_Price_Base_Edit
                 If ddlProductGroup.Items.Count > 0 Then
                     ddlProductGroup.Items.Insert(0, New ListItem("", ""))
                 End If
-
-                MessageError(True, query)
             End If
         Catch ex As Exception
             ddlProductGroup.Items.Clear()
