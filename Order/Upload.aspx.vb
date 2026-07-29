@@ -2523,6 +2523,7 @@ Partial Class Order_Upload
 
                                 If controlType = "Motorized" OrElse controlType = "Motorised" Then
                                     controlType = chainColour
+                                    If controlType = "Battery Wand" Then controlType = "Battery Remote"
                                     chainName = "No Remote"
                                 End If
 
@@ -2606,6 +2607,7 @@ Partial Class Order_Upload
 
                                 If bottomType = "Silent" Then bottomType = "Flat Mohair"
                                 If bottomType = "Fabric Wrap" Then bottomType = "Flat"
+                                If bottomType = "Plain Trim" Then bottomType = "Trim"
 
                                 Dim bottomId As String = orderClass.GetItemData("SELECT Id FROM Bottoms CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE designArray.VALUE='" & designId & "' AND Name = '" & bottomType.Trim() & "' AND companyArray.VALUE='" & companyDetailId & "'")
                                 If String.IsNullOrEmpty(bottomId) Then
@@ -2620,6 +2622,7 @@ Partial Class Order_Upload
 
                                 If bottomColour = "Cream" Then bottomColour = "Ivory"
                                 If bottomColour = "Platinum" Then bottomColour = "Silver"
+                                If bottomType = "Trim" Then bottomColour = "Plain Trim"
 
                                 Dim bottomColourId As String = orderClass.GetItemData("SELECT Id FROM BottomColours WHERE BottomId='" & bottomId & "' AND Colour='" & bottomColour.Trim() & "'")
                                 If String.IsNullOrWhiteSpace(bottomColourId) Then
