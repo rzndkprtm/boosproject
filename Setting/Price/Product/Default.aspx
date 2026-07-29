@@ -71,6 +71,7 @@
                                                     <%# GetCompanyName(Eval("Id").ToString()) %>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                            <asp:BoundField DataField="Description" HeaderText="Description" />
                                             <asp:BoundField DataField="Status" HeaderText="Status" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="150px">
                                                 <ItemTemplate>
