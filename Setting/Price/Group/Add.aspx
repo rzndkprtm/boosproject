@@ -99,7 +99,38 @@
         </section>
     </div>
 
+    <div class="modal fade" id="modalProductGroup" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-full modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Product Group</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <asp:GridView runat="server" ID="gvProductGroup" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" DataKeyNames="Id">
+                            <Columns>
+                                <asp:TemplateField>
+                                    <ItemTemplate>
+                                        <asp:CheckBox ID="chkSelect" runat="server" CssClass="form-check chkSelectItem" />
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:BoundField DataField="Id" HeaderText="ID" />
+                            </Columns>
+                        </asp:GridView>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <asp:Button runat="server" ID="btnClose" CssClass="btn btn-light-secondary" Text="Close" />
+                    <asp:Button runat="server" ID="btnAddItem" CssClass="btn btn-danger" Text="Submit" />
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript">
+        function showProductGroup() {
+            $("#modalProductGroup").modal("show");
+        }
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

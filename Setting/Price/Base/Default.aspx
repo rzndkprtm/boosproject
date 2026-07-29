@@ -57,6 +57,10 @@
                                 <div class="form form-vertical">
                                     <div class="form-body">
                                         <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-9">
+                                                <label class="form-label">Price Group</label>
+                                                <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label class="form-label">Category</label>
                                                 <asp:DropDownList runat="server" ID="ddlCategory" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCategory_SelectedIndexChanged">
@@ -65,13 +69,14 @@
                                                     <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-9">
-                                                <label class="form-label">Price Group</label>
-                                                <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
-                                                
-                                            </div>
                                         </div>
                                         <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-9">
+                                                <div class="form-group">
+                                                    <label class="form-label">Product Group</label>
+                                                    <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlProductGroup_SelectedIndexChanged"></asp:DropDownList>
+                                                </div>
+                                            </div>
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <div class="form-group">
                                                     <label class="form-label">Method</label>
@@ -81,12 +86,6 @@
                                                         <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
                                                         <asp:ListItem Value="Linear Metre" Text="Linear Metre"></asp:ListItem>
                                                     </asp:DropDownList>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-9">
-                                                <div class="form-group">
-                                                    <label class="form-label">Product Group</label>
-                                                    <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlProductGroup_SelectedIndexChanged"></asp:DropDownList>
                                                 </div>
                                             </div>
                                         </div>
@@ -118,10 +117,10 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="Id" HeaderText="ID" />
+                                                <asp:BoundField DataField="PriceGroupName" HeaderText="Price Group" />
+                                                <asp:BoundField DataField="ProductGroupName" HeaderText="Product Group" />
                                                 <asp:BoundField DataField="Category" HeaderText="Category" />
                                                 <asp:BoundField DataField="Method" HeaderText="Method" />
-                                                <asp:BoundField DataField="ProductGroupName" HeaderText="Product Group" />
-                                                <asp:BoundField DataField="PriceGroupName" HeaderText="Price Group" />
                                                 <asp:BoundField DataField="Height" HeaderText="Height" />
                                                 <asp:BoundField DataField="Width" HeaderText="Width" />
                                                 <asp:TemplateField HeaderText="Price">

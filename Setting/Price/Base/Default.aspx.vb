@@ -19,14 +19,13 @@ Partial Class Setting_Price_Base_Default
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
+
             BindPriceGroup()
-            BindProductGroup()
-
-
+            ddlPriceGroup.SelectedValue = Session("PriceBasePriceGroup")
+            BindProductGroup(ddlPriceGroup.SelectedValue)
+            ddlProductGroup.SelectedValue = Session("PriceBaseProductGroup")
             ddlCategory.SelectedValue = Session("PriceBaseCategory")
             ddlMethod.SelectedValue = Session("PriceBaseMethod")
-            ddlPriceGroup.SelectedValue = Session("PriceBasePriceGroup")
-            ddlProductGroup.SelectedValue = Session("PriceBaseProductGroup")
 
             BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
         End If
@@ -105,6 +104,9 @@ Partial Class Setting_Price_Base_Default
         gvList.PageIndex = 0
 
         MessageError(False, String.Empty)
+
+        BindProductGroup(ddlPriceGroup.SelectedValue)
+
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
 
         Session("PriceBaseCategory") = ddlCategory.SelectedValue
@@ -213,21 +215,20 @@ Partial Class Setting_Price_Base_Default
         End Try
     End Sub
 
-    Protected Sub BindProductGroup()
+    Protected Sub BindProductGroup(priceGroupId As String)
         ddlProductGroup.Items.Clear()
         Try
-            Dim thisString As String = "SELECT * FROM PriceProductGroups WHERE Status='Active' ORDER BY Id ASC"
-            If Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" Then
-                thisString = "SELECT * FROM PriceProductGroups CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE companyArray.VALUE='" & Session("CompanyDetailId").ToString() & "' AND Status='Active' ORDER BY Id ASC"
-            End If
+            If Not String.IsNullOrEmpty(priceGroupId) Then
+                Dim query As String = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'"
 
-            ddlProductGroup.DataSource = settingClass.GetDataTable(thisString)
-            ddlProductGroup.DataTextField = "Name"
-            ddlProductGroup.DataValueField = "Id"
-            ddlProductGroup.DataBind()
+                ddlProductGroup.DataSource = settingClass.GetDataTable(query)
+                ddlProductGroup.DataTextField = "Name"
+                ddlProductGroup.DataValueField = "Id"
+                ddlProductGroup.DataBind()
 
-            If ddlProductGroup.Items.Count > 0 Then
-                ddlProductGroup.Items.Insert(0, New ListItem("", ""))
+                If ddlProductGroup.Items.Count > 0 Then
+                    ddlProductGroup.Items.Insert(0, New ListItem("", ""))
+                End If
             End If
         Catch ex As Exception
             ddlProductGroup.Items.Clear()

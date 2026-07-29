@@ -29,6 +29,11 @@ Partial Class Setting_Price_Base_Edit
         End If
     End Sub
 
+    Protected Sub ddlPriceGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindProductGroup(ddlPriceGroup.SelectedValue)
+    End Sub
+
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -99,7 +104,7 @@ Partial Class Setting_Price_Base_Edit
             End If
 
             BindPriceGroup()
-            BindProductGroup()
+            BindProductGroup(myData("PriceGroupId").ToString())
 
             ddlCategory.SelectedValue = myData("Category").ToString()
             ddlMethod.SelectedValue = myData("Method").ToString()
@@ -136,16 +141,22 @@ Partial Class Setting_Price_Base_Edit
         End Try
     End Sub
 
-    Protected Sub BindProductGroup()
+    Protected Sub BindProductGroup(priceGroupId As String)
         ddlProductGroup.Items.Clear()
         Try
-            ddlProductGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceProductGroups WHERE Status='Active' ORDER BY Id ASC")
-            ddlProductGroup.DataTextField = "Name"
-            ddlProductGroup.DataValueField = "Id"
-            ddlProductGroup.DataBind()
+            If Not String.IsNullOrEmpty(priceGroupId) Then
+                Dim query As String = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'"
 
-            If ddlProductGroup.Items.Count > 0 Then
-                ddlProductGroup.Items.Insert(0, New ListItem("", ""))
+                ddlProductGroup.DataSource = settingClass.GetDataTable(query)
+                ddlProductGroup.DataTextField = "Name"
+                ddlProductGroup.DataValueField = "Id"
+                ddlProductGroup.DataBind()
+
+                If ddlProductGroup.Items.Count > 0 Then
+                    ddlProductGroup.Items.Insert(0, New ListItem("", ""))
+                End If
+
+                MessageError(True, query)
             End If
         Catch ex As Exception
             ddlProductGroup.Items.Clear()

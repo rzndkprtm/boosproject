@@ -66,9 +66,9 @@
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                             <asp:BoundField DataField="Name" HeaderText="Name" />
-                                            <asp:TemplateField HeaderText="Company Detail">
+                                            <asp:TemplateField HeaderText="Price Group">
                                                 <ItemTemplate>
-                                                    <%# GetCompanyName(Eval("Id").ToString()) %>
+                                                    <%# GetPriceGroupName(Eval("Id").ToString()) %>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Description" HeaderText="Description" />

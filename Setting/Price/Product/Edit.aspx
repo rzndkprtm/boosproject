@@ -37,22 +37,22 @@
                                         <ContentTemplate>
                                             <div class="row mb-2">
                                                 <div class="col-12 form-group">
-                                                    <label class="form-label">Name</label>
-                                                    <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
+                                                    <label class="form-label">Design Type</label>
+                                                    <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
                                                 </div>
                                             </div>
                                             <div class="row mb-2">
                                                 <div class="col-12 form-group">
-                                                    <label class="form-label">Design Type</label>
-                                                    <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
+                                                    <label class="form-label">Price Group</label>
+                                                    <asp:ListBox runat="server" ID="lbPriceGroup" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                                 </div>
                                             </div>
                                         </ContentTemplate>
                                     </asp:UpdatePanel>
                                     <div class="row mb-2">
                                         <div class="col-12 form-group">
-                                            <label class="form-label">Company</label>
-                                            <asp:ListBox runat="server" ID="lbCompanyDetail" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                            <label class="form-label">Name</label>
+                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                         </div>
                                     </div>
                                     <div class="row mb-2">
@@ -102,17 +102,6 @@
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
-    </div>
-
-    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
-        <div class="position-absolute top-50 start-50 translate-middle">
-            <div class="card shadow">
-                <div class="card-body text-center">
-                    <div class="spinner-border"></div>
-                    <div class="mt-2">Loading...</div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script type="text/javascript">
