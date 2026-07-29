@@ -211,7 +211,7 @@ Partial Class Setting_Price_Base_Import
     Protected Sub BindPriceGroup()
         ddlPriceGroup.Items.Clear()
         Try
-            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='Blinds' AND (Status='Active' OR Status='Inactive') ORDER BY Id ASC")
+            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Type='Blinds' AND (Status='Active' OR Status='Inactive') ORDER BY Id ASC")
             ddlPriceGroup.DataTextField = "Name"
             ddlPriceGroup.DataValueField = "Id"
             ddlPriceGroup.DataBind()
