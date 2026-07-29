@@ -66,11 +66,7 @@
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                             <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-Width="500px" />
-                                            <asp:TemplateField HeaderText="Price Group">
-                                                <ItemTemplate>
-                                                    <%# GetPriceGroupName(Eval("Id").ToString()) %>
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
+                                            <asp:BoundField DataField="PriceGroupName" HeaderText="Price Group" />
                                             <asp:BoundField DataField="Description" HeaderText="Description" />
                                             <asp:BoundField DataField="Status" HeaderText="Status" ItemStyle-Width="90px" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="150px">

@@ -135,23 +135,6 @@ Partial Class Setting_Price_Product_Default
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Function GetPriceGroupName(dataId As String) As String
-        If Not String.IsNullOrEmpty(dataId) Then
-            Dim myData As DataTable = settingClass.GetDataTable("SELECT PriceGroups.Name AS PriceGroupName FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceProductGroups.PriceGroupId, ',') AS priceGroupsArray LEFT JOIN PriceGroups ON priceGroupsArray.VALUE=PriceGroups.Id WHERE PriceProductGroups.Id='" & dataId & "'")
-            Dim hasil As String = String.Empty
-            If myData.Rows.Count > 0 Then
-                For i As Integer = 0 To myData.Rows.Count - 1
-                    Dim designName As String = myData.Rows(i)("PriceGroupName").ToString()
-                    hasil += designName & ","
-                Next
-                Return hasil.Remove(hasil.Length - 1).ToString()
-            Else
-                Return String.Empty
-            End If
-        End If
-        Return "Error"
-    End Function
-
     Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
