@@ -1983,6 +1983,10 @@ Partial Class Order_Method
 
         priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
         priceAdditional = orderClass.GetPriceProductGroupId(trackGroupName, data.designid, data.companydetailid)
+        If data.companyid = "3" Then
+            priceAdditional = String.Empty
+        End If
+
         If blindName = "Complete Set (Double)" Then
             priceProductGroupB = orderClass.GetPriceProductGroupId(groupNameB, data.designid, data.companydetailid)
             priceAdditionalB = orderClass.GetPriceProductGroupId(trackGroupNameB, data.designid, data.companydetailid)
