@@ -16,11 +16,28 @@ Partial Class Setting_Price_Base_Add
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindPriceGroup()
-            BindProductGroup()
+            BindProductGroup(ddlPriceGroup.SelectedValue)
         End If
     End Sub
 
-    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+    Protected Sub ddlPriceGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindProductGroup(ddlPriceGroup.SelectedValue)
+    End Sub
+
+    Protected Sub btnSubmitAdd_Click(sender As Object, e As EventArgs)
+        Process("Add")
+    End Sub
+
+    Protected Sub btnSubmitFinish_Click(sender As Object, e As EventArgs)
+        Process()
+    End Sub
+
+    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/setting/price/base", False)
+    End Sub
+
+    Protected Sub Process(Optional action As String = "")
         MessageError(False, String.Empty)
         Try
             If ddlCategory.SelectedValue = "" Then
@@ -69,7 +86,9 @@ Partial Class Setting_Price_Base_Add
                 Dim dataLog As Object() = {"PriceBases", thisId, Session("LoginId").ToString(), "Price Base Created"}
                 settingClass.Logs(dataLog)
 
-                Response.Redirect("~/setting/price/base", False)
+                Dim url As String = "~/setting/price/base"
+                If action = "Add" Then url = "~/setting/price/base/add"
+                Response.Redirect(url, False)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -77,10 +96,6 @@ Partial Class Setting_Price_Base_Add
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
-    End Sub
-
-    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/price/base", False)
     End Sub
 
     Protected Sub BindPriceGroup()
@@ -99,16 +114,20 @@ Partial Class Setting_Price_Base_Add
         End Try
     End Sub
 
-    Protected Sub BindProductGroup()
+    Protected Sub BindProductGroup(priceGroupId As String)
         ddlProductGroup.Items.Clear()
         Try
-            ddlProductGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceProductGroups WHERE Status='Active' ORDER BY Id ASC")
-            ddlProductGroup.DataTextField = "Name"
-            ddlProductGroup.DataValueField = "Id"
-            ddlProductGroup.DataBind()
+            If Not String.IsNullOrEmpty(priceGroupId) Then
+                Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM PriceGroups WHERE Id='" & priceGroupId & "'")
 
-            If ddlProductGroup.Items.Count > 0 Then
-                ddlProductGroup.Items.Insert(0, New ListItem("", ""))
+                ddlProductGroup.DataSource = settingClass.GetDataTable("SELECT PPG.Id, PPG.Name FROM PriceProductGroups PPG WHERE PPG.Status='Active' AND EXISTS (SELECT 1 FROM STRING_SPLIT(PPG.CompanyDetailId, ',') S INNER JOIN CompanyDetails CD ON TRY_CAST(S.value AS INT)=CD.Id WHERE CD.CompanyId = '" & companyId & "')")
+                ddlProductGroup.DataTextField = "Name"
+                ddlProductGroup.DataValueField = "Id"
+                ddlProductGroup.DataBind()
+
+                If ddlProductGroup.Items.Count > 0 Then
+                    ddlProductGroup.Items.Insert(0, New ListItem("", ""))
+                End If
             End If
         Catch ex As Exception
             ddlProductGroup.Items.Clear()

@@ -19,8 +19,9 @@ Partial Class Setting_Price_Base_Default
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindProductGroup()
             BindPriceGroup()
+            BindProductGroup()
+
 
             ddlCategory.SelectedValue = Session("PriceBaseCategory")
             ddlMethod.SelectedValue = Session("PriceBaseMethod")
@@ -160,8 +161,8 @@ Partial Class Setting_Price_Base_Default
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@Category", If(String.IsNullOrEmpty(category), CType(DBNull.Value, Object), category)),
                 New SqlParameter("@Method", If(String.IsNullOrEmpty(method), CType(DBNull.Value, Object), method)),
-                New SqlParameter("@ProductGroup", If(String.IsNullOrEmpty(productgroup), CType(DBNull.Value, Object), productgroup)),
-                New SqlParameter("@PriceGroup", If(String.IsNullOrEmpty(pricegroup), CType(DBNull.Value, Object), pricegroup))
+                New SqlParameter("@PriceGroup", If(String.IsNullOrEmpty(pricegroup), CType(DBNull.Value, Object), pricegroup)),
+                New SqlParameter("@ProductGroup", If(String.IsNullOrEmpty(productgroup), CType(DBNull.Value, Object), productgroup))
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_PriceBases_List", params)
             gvList.DataBind()
@@ -192,6 +193,26 @@ Partial Class Setting_Price_Base_Default
         End Try
     End Sub
 
+    Protected Sub BindPriceGroup()
+        ddlPriceGroup.Items.Clear()
+        Try
+            Dim thisString As String = "SELECT * FROM PriceGroups WHERE Status='Active' ORDER BY Id ASC"
+            If Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" Then
+                thisString = "SELECT * FROM PriceGroups WHERE CompanyId='" & Session("CompanyId").ToString() & "' AND Status='Active' ORDER BY Id ASC"
+            End If
+            ddlPriceGroup.DataSource = settingClass.GetDataTable(thisString)
+            ddlPriceGroup.DataTextField = "Name"
+            ddlPriceGroup.DataValueField = "Id"
+            ddlPriceGroup.DataBind()
+
+            If ddlPriceGroup.Items.Count > 0 Then
+                ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlPriceGroup.Items.Clear()
+        End Try
+    End Sub
+
     Protected Sub BindProductGroup()
         ddlProductGroup.Items.Clear()
         Try
@@ -210,26 +231,6 @@ Partial Class Setting_Price_Base_Default
             End If
         Catch ex As Exception
             ddlProductGroup.Items.Clear()
-        End Try
-    End Sub
-
-    Protected Sub BindPriceGroup()
-        ddlPriceGroup.Items.Clear()
-        Try
-            Dim thisString As String = "SELECT * FROM PriceGroups WHERE Status='Active' ORDER BY Id ASC"
-            If Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" Then
-                thisString = "SELECT * FROM PriceGroups WHERE CompanyId='" & Session("CompanyId").ToString() & "' AND Status='Active' ORDER BY Id ASC"
-            End If
-            ddlPriceGroup.DataSource = settingClass.GetDataTable(thisString)
-            ddlPriceGroup.DataTextField = "Name"
-            ddlPriceGroup.DataValueField = "Id"
-            ddlPriceGroup.DataBind()
-
-            If ddlPriceGroup.Items.Count > 0 Then
-                ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            ddlPriceGroup.Items.Clear()
         End Try
     End Sub
 
