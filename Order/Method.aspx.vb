@@ -2582,7 +2582,7 @@ Partial Class Order_Method
         Dim typeDoor As String = blindName
         If blindName = "Diamond Grille" Then typeDoor = "Standard"
 
-        Dim groupName As String = String.Format("{0} {1} {2} {3}", designName, typeDoor, mechanism, factory)
+        Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", designName, typeDoor, mechanism, factory)
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
         Dim priceProductGroupB As String = String.Empty
         If tubeName = "Hinged Double" OrElse tubeName = "Sliding Double" Then
@@ -10542,9 +10542,9 @@ Partial Class Order_Method
         Dim typeWindow As String = blindName
         If blindName = "Diamond Grille" Then typeWindow = "Standard"
 
-        Dim groupName As String = String.Format("{0} {1} {2}", designName, typeWindow, factory)
+        Dim groupName As String = String.Format("{0} - {1} - {2}", designName, typeWindow, factory)
         If blindName = "Diamond Grille" AndAlso (data.meshtype = "Fibreglass Mesh" OrElse data.meshtype = "Pawproof" OrElse data.meshtype = "SS Mesh") Then
-            groupName = String.Format("{0} {1} {2} + Flyscreen Mesh", designName, typeWindow, factory)
+            groupName = String.Format("{0} - {1} - {2} + Flyscreen Mesh", designName, typeWindow, factory)
         End If
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, data.companydetailid)
 
