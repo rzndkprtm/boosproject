@@ -3927,6 +3927,8 @@ Partial Class Order_Detail
                 If lblOrderStatus.Text = "Unsubmitted" Then result = True
                 If lblOrderStatus.Text = "New Order" Then result = True
                 If lblOrderStatus.Text = "Waiting Proforma" Then result = True
+                If lblOrderStatus.Text = "Proforma Sent" Then result = True
+                If lblOrderStatus.Text = "Quoted" Then result = True
 
                 If designId = "16" Then Return True
             End If
