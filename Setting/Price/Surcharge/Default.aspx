@@ -31,7 +31,7 @@
         </section>
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
+                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
             </div>
         </section>
         <section class="row">
@@ -70,7 +70,7 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                         <h4 class="card-title">List</h4>
+                                         <h4 class="card-title">List Surcharge</h4>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                         <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
