@@ -4207,9 +4207,9 @@ Partial Class Order_Method
         If data.returnposition = "Left" Then rlvalueb = 0
         If data.returnposition = "Right" Then rlvalue = 0
 
-        Dim priceProductGroupName As String = String.Format("{0} - {1}", designName, blindName)
+        Dim priceProductGroupName As String = String.Format("{0} - Without Battens", designName)
         If Not String.IsNullOrEmpty(data.batten) Then
-            priceProductGroupName = String.Format("{0} - {1} - Batten", designName, blindName)
+            priceProductGroupName = String.Format("{0} - With 2 Battens", designName)
         End If
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, priceGroupId)
         Dim priceProductGroupB As String = String.Empty
