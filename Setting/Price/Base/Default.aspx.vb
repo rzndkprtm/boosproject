@@ -164,7 +164,9 @@ Partial Class Setting_Price_Base_Default
                 New SqlParameter("@Category", If(String.IsNullOrEmpty(category), CType(DBNull.Value, Object), category)),
                 New SqlParameter("@Method", If(String.IsNullOrEmpty(method), CType(DBNull.Value, Object), method)),
                 New SqlParameter("@PriceGroup", If(String.IsNullOrEmpty(pricegroup), CType(DBNull.Value, Object), pricegroup)),
-                New SqlParameter("@ProductGroup", If(String.IsNullOrEmpty(productgroup), CType(DBNull.Value, Object), productgroup))
+                New SqlParameter("@ProductGroup", If(String.IsNullOrEmpty(productgroup), CType(DBNull.Value, Object), productgroup)),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString())
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_PriceBases_List", params)
             gvList.DataBind()
