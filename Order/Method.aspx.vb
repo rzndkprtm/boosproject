@@ -7971,11 +7971,13 @@ Partial Class Order_Method
         Dim tubeName As String = String.Empty
         Dim controlName As String = String.Empty
         Dim controlType As String = String.Empty
+        Dim chainLength As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlType = orderClass.GetControlType(data.controltype)
+        If Not String.IsNullOrEmpty(data.chaincolour) Then chainLength = orderClass.GetChainLength(data.chaincolour)
 
         Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
 
@@ -8029,8 +8031,13 @@ Partial Class Order_Method
 
             If data.controllength = "Custom" Then
                 If controlName = "Chain" Then
-                    If String.IsNullOrEmpty(data.chainlengthvalue) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
-                    If Not Integer.TryParse(data.chainlengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE ORDER !"
+                    If chainLength = "Static" Then
+                        If String.IsNullOrEmpty(data.chainlengthvalue) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
+                    End If
+                    If chainLength = "Flexible" Then
+                        If String.IsNullOrEmpty(data.cordlengthvalue) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
+                        If Not Integer.TryParse(data.cordlengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE ORDER !"
+                    End If
                 End If
                 If controlName = "Reg Cord Lock" Then
                     If String.IsNullOrEmpty(data.cordlengthvalue) Then Return "CORD LENGTH VALUE IS REQUIRED !"
@@ -8084,12 +8091,17 @@ Partial Class Order_Method
         If data.controllength = "Standard" Then
             If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then controllength = Math.Ceiling(drop * 2 / 3)
             If controlName = "Chain" Then
-                controllength = 550
-                Dim thisFormula As Integer = Math.Ceiling(drop * 2 / 3)
-                If thisFormula > 500 Then controllength = 750
-                If thisFormula > 750 Then controllength = 1000
-                If thisFormula > 1000 Then controllength = 1200
-                If thisFormula > 1200 Then controllength = 1500
+                If chainLength = "Static" Then
+                    controllength = 550
+                    Dim thisFormula As Integer = Math.Ceiling(drop * 2 / 3)
+                    If thisFormula > 500 Then controllength = 750
+                    If thisFormula > 750 Then controllength = 1000
+                    If thisFormula > 1000 Then controllength = 1200
+                    If thisFormula > 1200 Then controllength = 1500
+                End If
+                If chainLength = "Flexible" Then
+                    controllength = Math.Ceiling(drop * 2 / 3)
+                End If
             End If
         End If
 

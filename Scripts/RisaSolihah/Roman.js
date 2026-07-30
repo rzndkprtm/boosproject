@@ -14,7 +14,9 @@ let priceAccess;
 initRoman();
 
 $("#submit").on("click", process);
+
 $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+
 $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 
 $("#blindtype").on("change", function () {
@@ -53,9 +55,16 @@ $("#fabrictype").on("change", function () {
     bindFabricColour($(this).val());
 });
 
-$("#controllength").on("change", function () {
+$("#chaincolour").on("change", function () {
+    const text = document.getElementById("controllength").value;
     const controltype = document.getElementById("controltype").value;
-    visibleCustom(controltype, $(this).val());
+    visibleCustom(controltype, text, $(this).val());
+});
+
+$("#controllength").on("change", function () {
+    const chaincolour = document.getElementById("chaincolour").value;
+    const controltype = document.getElementById("controltype").value;
+    visibleCustom(controltype, $(this).val(), chaincolour);
 });
 
 function loader(itemAction) {
@@ -278,6 +287,30 @@ function getControlName(controlType) {
             type: "POST",
             url: "Method.aspx/StringData",
             data: JSON.stringify({ type: type, dataId: controlType }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                resolve(response.d);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+function getChainLength(chainColour) {
+    const type = "ChainLength";
+
+    if (!chainColour) {
+        return Promise.resolve(null);
+    }
+
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/StringData",
+            data: JSON.stringify({ type: type, dataId: chainColour }),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
@@ -867,30 +900,43 @@ function bindComponentForm(tubeType, controlType, colourType) {
     });
 }
 
-function visibleCustom(controlType, text) {
+function visibleCustom(controlType, text, chainColour) {
     return new Promise((resolve) => {
         const chainlength = document.getElementById("divcustomchainlength");
         const cordlength = document.getElementById("divcustomcordlength");
 
         function toggleDisplay(element, show) {
-            if (element) element.style.display = show ? "" : "none";
+            if (element) {
+                element.style.display = show ? "" : "none";
+            }
         }
 
         toggleDisplay(chainlength, false);
         toggleDisplay(cordlength, false);
 
-        if (!controlType) return resolve();
+        if (!controlType) {
+            return resolve();
+        }
 
         getControlName(controlType).then(controlName => {
             if (controlName === "Chain") {
-                toggleDisplay(chainlength, text === "Custom");
+                getChainLength(chainColour).then(chainType => {
+                    if (text === "Custom") {
+                        if (chainType === "Static") {
+                            toggleDisplay(chainlength, true);
+                        } else if (chainType === "Flexible") {
+                            toggleDisplay(cordlength, true);
+                        }
+                    }
+                    resolve();
+                }).catch(() => resolve());
             } else if (controlName === "Reg Cord Lock" || controlName === "Regular Cord Lock") {
                 toggleDisplay(cordlength, text === "Custom");
+                resolve();
+            } else {
+                resolve();
             }
-            resolve();
-        }).catch(error => {
-            resolve();
-        });
+        }).catch(() => resolve());
     });
 }
 
@@ -1120,7 +1166,7 @@ async function bindItemOrder(itemId, companyDetailId, action) {
         setFormValues(data.ItemData);
 
         bindComponentForm(data.ItemData.TubeType, data.ItemData.ControlType, data.ItemData.ProductId);
-        visibleCustom(data.ItemData.ControlType, data.ItemData.ControlLength);
+        visibleCustom(data.ItemData.ControlType, data.ItemData.ControlLength, data.ItemData.ChainId);
     } catch (error) {
         document.getElementById("divloader").style.display = "none";
     }
