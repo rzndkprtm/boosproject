@@ -105,6 +105,8 @@ Partial Class Setting_Customer_Markup_Default
 
             gvList.DataSource = settingClass.GetDataTableSP("sp_CustomerMarkups_List", params)
             gvList.DataBind()
+
+            btnAddMarkup.Visible = LoginAccess("Visible Add Markup")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
