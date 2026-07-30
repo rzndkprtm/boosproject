@@ -68,6 +68,9 @@ Partial Class Sales_Default
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
+
+            Session("SearchSalesCompany") = ddlCompany.SelectedValue
+            Response.Redirect("~/sales", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
