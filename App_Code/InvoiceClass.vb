@@ -197,7 +197,6 @@ Public Class InvoiceClass
             cell.PaddingBottom = 6
 
             Return cell
-
         Catch ex As Exception
             Dim font As New Font(Font.FontFamily.TIMES_ROMAN, 10, If(isBold, Font.BOLD, Font.NORMAL))
             Dim cell As New PdfPCell(New Phrase(If(text, String.Empty), font))
@@ -1099,7 +1098,6 @@ Public Class InvoiceClass
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@HeaderId", headerId)
             }
-
             Dim detailData As DataTable = GetDataTableSP("sp_OrderDetails_List_Invoice", params)
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()

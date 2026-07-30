@@ -831,7 +831,7 @@ Partial Class Order_Default
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = orderClass.GetDataTable("SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC")
+            ddlCompany.DataSource = orderClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Active=1 ORDER BY Name ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()

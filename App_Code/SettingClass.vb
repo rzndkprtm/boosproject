@@ -2,7 +2,6 @@
 Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Security.Cryptography
-Imports Org.BouncyCastle.Asn1.Ocsp
 
 Public Class SettingClass
 

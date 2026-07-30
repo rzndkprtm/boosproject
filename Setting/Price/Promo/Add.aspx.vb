@@ -90,8 +90,8 @@ Partial Class Setting_Price_Promo_Add
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Name ASC")
-            ddlCompany.DataTextField = "Name"
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys ORDER BY Name ASC")
+            ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()
 
