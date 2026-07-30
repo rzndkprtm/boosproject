@@ -193,32 +193,40 @@ Partial Class Setting_Price_Surcharge_Default
         End Try
     End Sub
 
-    Protected Sub BindDesignType()
-        ddlDesignType.Items.Clear()
-        Try
-            ddlDesignType.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
-            ddlDesignType.DataTextField = "Name"
-            ddlDesignType.DataValueField = "Id"
-            ddlDesignType.DataBind()
-
-            If ddlDesignType.Items.Count > 1 Then
-                ddlDesignType.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-        End Try
-    End Sub
-
     Protected Sub BindPriceGroup()
         ddlPriceGroup.Items.Clear()
         Try
-            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups ORDER BY Name ASC")
+            Dim thisQuery As String = "SELECT * FROM PriceGroups ORDER BY Name ASC"
+            If Session("RoleName") = "Sales" OrElse Session("LevelName") = "Account" Then
+                thisQuery = "SELECT * FROM PriceGroups WHERE CompanyId='" & Session("CompanyId").ToString() & "' ORDER BY Name ASC"
+            End If
+            ddlPriceGroup.DataSource = settingClass.GetDataTable(thisQuery)
             ddlPriceGroup.DataTextField = "Name"
             ddlPriceGroup.DataValueField = "Id"
             ddlPriceGroup.DataBind()
 
             If ddlPriceGroup.Items.Count > 1 Then
                 ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindDesignType()
+        ddlDesignType.Items.Clear()
+        Try
+            Dim thisQuery As String = "SELECT * FROM Designs ORDER BY Name ASC"
+            If Session("RoleName") = "Sales" OrElse Session("LevelName") = "Account" Then
+                thisQuery = "SELECT * FROM Designs D WHERE EXISTS (SELECT 1 FROM STRING_SPLIT(D.CompanyId, ',') S WHERE TRY_CAST(S.value AS INT) = '" & Session("CompanyId").ToString() & "' ) ORDER BY D.Name ASC;"
+            End If
+            ddlDesignType.DataSource = settingClass.GetDataTable(thisQuery)
+            ddlDesignType.DataTextField = "Name"
+            ddlDesignType.DataValueField = "Id"
+            ddlDesignType.DataBind()
+
+            If ddlDesignType.Items.Count > 1 Then
+                ddlDesignType.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
