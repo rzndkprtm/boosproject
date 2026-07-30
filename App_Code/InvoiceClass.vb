@@ -798,7 +798,11 @@ Public Class InvoiceClass
                     End If
 
                     If blindName = "Track Only" Then
-                        itemDescription = String.Format("{0} {1} ({2})", invoiceName, width)
+                        itemDescription = String.Format("{0} ({1}))", invoiceName, width)
+                    End If
+
+                    If blindName = "Fabric Only" Then
+                        itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
                     End If
 
                     namaBarang = "Roman Tailored"
