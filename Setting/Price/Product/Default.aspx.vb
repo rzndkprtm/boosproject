@@ -80,12 +80,15 @@ Partial Class Setting_Price_Product_Default
     Protected Sub BindData(searchText As String)
         Try
             Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText))
+                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)),
+                New SqlParameter("@RoleName", If(String.IsNullOrWhiteSpace(Session("RoleName")), CType(DBNull.Value, Object), Session("RoleName").ToString())),
+                New SqlParameter("@CompanyId", If(String.IsNullOrWhiteSpace(Session("CompanyId")), CType(DBNull.Value, Object), Session("CompanyId").ToString()))
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_PriceProductGroups_List", params)
             gvList.DataBind()
 
-            gvList.Columns(1).Visible = LoginAccess("Visible ID")
+            gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
+            gvList.Columns(3).Visible = LoginAccess("Visible Price Group") ' PRICE GROUP NAME
             btnAdd.Visible = LoginAccess("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
