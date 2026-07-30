@@ -4052,6 +4052,7 @@ Partial Class Order_Detail
         If Session("RoleName") = "Developer" Then Return True
         If Session("RoleName") = "IT" Then Return True
         If Session("RoleName") = "Factory Office" Then Return True
+        If Session("RoleName") = "Data Entry" AndAlso lblOrderType.Text = "Builder" Then Return True
         Return False
     End Function
 
