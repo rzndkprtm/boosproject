@@ -176,7 +176,9 @@ Partial Class Setting_Price_Surcharge_Default
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText)),
                 New SqlParameter("@DesignId", If(String.IsNullOrEmpty(designId), CType(DBNull.Value, Object), designId)),
-                New SqlParameter("@PriceGroupId", If(String.IsNullOrEmpty(priceGroupId), CType(DBNull.Value, Object), priceGroupId))
+                New SqlParameter("@PriceGroupId", If(String.IsNullOrEmpty(priceGroupId), CType(DBNull.Value, Object), priceGroupId)),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(Session("CompanyId").ToString()), CType(DBNull.Value, Object), Session("CompanyId").ToString()))
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_PriceSurcharges_List", params)
             gvList.DataBind()
