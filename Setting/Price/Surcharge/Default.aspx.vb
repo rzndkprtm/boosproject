@@ -17,8 +17,9 @@ Partial Class Setting_Price_Surcharge_Default
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             MessageError_ChangeValue(False, String.Empty)
-            BindDesignType()
+
             BindPriceGroup()
+            BindDesignType()
 
             ddlDesignType.SelectedValue = Session("DesignSurcharge")
             ddlPriceGroup.SelectedValue = Session("PriceGroupSurcharge")
