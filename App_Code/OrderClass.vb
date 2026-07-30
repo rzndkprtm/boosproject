@@ -68,8 +68,10 @@ Public Class OrderClass
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(spName, thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-                    If params IsNot Nothing AndAlso params.Count > 0 Then
-                        thisCmd.Parameters.AddRange(params.ToArray())
+                    If params IsNot Nothing Then
+                        If params.Count > 0 Then
+                            thisCmd.Parameters.AddRange(params.ToArray())
+                        End If
                     End If
                     Using thisAdapter As New SqlDataAdapter(thisCmd)
                         thisAdapter.Fill(thisTable)

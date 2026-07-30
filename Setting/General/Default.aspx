@@ -35,27 +35,27 @@
         <section class="row">
             <div class="dashboard-wrapper">
                 <a href="/setting/general/company" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Companys") %></div>
+                    <div class="dashboard-number"><%= Companys %> Data</div>
                     <div class="dashboard-title">Company</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/general/mailing" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Mailings") %></div>
+                    <div class="dashboard-number"><%= Mailings %> Data</div>
                     <div class="dashboard-title">Mailing</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/general/newsletter" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Newsletters") %></div>
+                    <div class="dashboard-number"><%= Newsletters %> Data</div>
                     <div class="dashboard-title">Newsletter</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/general/tutorial" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Tutorials") %></div>
+                    <div class="dashboard-number"><%= Tutorials %> Data</div>
                     <div class="dashboard-title">Tutorial</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/general/notification" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Notifications") %></div>
+                    <div class="dashboard-number"><%= Notifications %> Data</div>
                     <div class="dashboard-title">Notification</div>
                     <div class="dashboard-desc">Description</div>
                 </a>

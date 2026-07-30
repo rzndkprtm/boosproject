@@ -35,42 +35,42 @@
         <section class="row">
             <div class="dashboard-wrapper">
                 <a href="/setting/specification/designtype" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Designs") %></div>
+                    <div class="dashboard-number"><%= Designs %> Data</div>
                     <div class="dashboard-title">Design Type</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/blind" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Blinds") %></div>
+                    <div class="dashboard-number"><%= Blinds %> Data</div>
                     <div class="dashboard-title">Blind Type</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/product" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Products") %></div>
+                    <div class="dashboard-number"><%= Products %> Data</div>
                     <div class="dashboard-title">Product</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/fabric" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Fabrics") %></div>
+                    <div class="dashboard-number"><%= Fabrics %> Data</div>
                     <div class="dashboard-title">Fabric Type</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/chain" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Chains") %></div>
+                    <div class="dashboard-number"><%= Chains %> Data</div>
                     <div class="dashboard-title">Chain</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/remote" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Remotes") %></div>
+                    <div class="dashboard-number"><%= Remotes %> Data</div>
                     <div class="dashboard-title">Remote</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/bottom" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Bottoms") %></div>
+                    <div class="dashboard-number"><%= Bottoms %> Data</div>
                     <div class="dashboard-title">Bottom Type</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/mounting" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Mountings") %></div>
+                    <div class="dashboard-number"><%= Mountings %> Data</div>
                     <div class="dashboard-title">Mounting</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
@@ -80,17 +80,17 @@
         <section class="row mt-2" runat="server" id="divAdditional">
             <div class="dashboard-wrapper">
                 <a href="/setting/specification/tubetype" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("ProductTubes") %></div>
+                    <div class="dashboard-number"><%= ProductTubes %> Data</div>
                     <div class="dashboard-title">Tube Type</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/controltype" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("ProductControls") %></div>
+                    <div class="dashboard-number"><%= ProductControls %> Data</div>
                     <div class="dashboard-title">Control Type</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/specification/colourtype" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("ProductColours") %></div>
+                    <div class="dashboard-number"><%= ProductColours %> Data</div>
                     <div class="dashboard-title">Colour Type</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
@@ -98,3 +98,4 @@
         </section>
     </div>
 </asp:Content>
+

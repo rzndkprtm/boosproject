@@ -50,7 +50,6 @@
                                                 <div class="form-group">
                                                     <label class="form-label">Price Group</label>
                                                     <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
-                                                    
                                                 </div>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-6">

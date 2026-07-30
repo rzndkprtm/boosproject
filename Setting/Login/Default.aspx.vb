@@ -1,7 +1,15 @@
-﻿Partial Class Setting_Login_Default
+﻿Imports System.Data
+
+Partial Class Setting_Login_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
+
+    Protected Logins As Integer
+    Protected LoginRoles As Integer
+    Protected LoginLevels As Integer
+    Protected LoginAccessC As Integer
+    Protected Online As Integer
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -9,23 +17,19 @@
             Response.Redirect("~/setting", False)
             Exit Sub
         End If
-    End Sub
 
-    Protected Function GetSumData(params As String) As String
-        Try
-            If Not String.IsNullOrEmpty(params) Then
-                Dim thisQuery As String = String.Format("SELECT COUNT(*) FROM {0}", params)
-                If params = "Online" Then
-                    thisQuery = "SELECT COUNT(*) AS TotalActiveCustomerLogin FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id WHERE Logins.Active=1 AND Logins.LastLogin IS NOT NULL AND Logins.LastLogin>=DATEADD(MINUTE, -5, GETDATE())"
-                End If
-                Dim sumData As Integer = settingClass.GetItemData_Integer(thisQuery)
-                Return sumData & " Data"
+        If Not IsPostBack Then
+            Dim dt As DataTable = settingClass.GetDataTableSP("sp_Dashboard_Login", Nothing)
+
+            If dt.Rows.Count > 0 Then
+                Logins = CInt(dt.Rows(0)("Logins"))
+                LoginRoles = CInt(dt.Rows(0)("LoginRoles"))
+                LoginLevels = CInt(dt.Rows(0)("LoginLevels"))
+                LoginAccessC = CInt(dt.Rows(0)("LoginAccessC"))
+                Online = CInt(dt.Rows(0)("Online"))
             End If
-            Return String.Empty
-        Catch ex As Exception
-            Return ex.ToString()
-        End Try
-    End Function
+        End If
+    End Sub
 
     Protected Function LoginAccess(action As String) As Boolean
         Try

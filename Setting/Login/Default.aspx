@@ -35,27 +35,27 @@
         <section class="row">
             <div class="dashboard-wrapper">
                 <a href="/setting/login/user" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Logins") %></div>
+                    <div class="dashboard-number"><%= Logins %> Data</div>
                     <div class="dashboard-title">User</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/login/role" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("LoginRoles") %></div>
+                    <div class="dashboard-number"><%= LoginRoles %> Data</div>
                     <div class="dashboard-title">Role</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/login/level" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("LoginLevels") %></div>
+                    <div class="dashboard-number"><%= LoginLevels %> Data</div>
                     <div class="dashboard-title">Level</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/login/access" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("LoginAccess") %></div>
+                    <div class="dashboard-number"><%= LoginAccessC %> Data</div>
                     <div class="dashboard-title">Access</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/login/online" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Online") %></div>
+                    <div class="dashboard-number"><%= Online %> Data</div>
                     <div class="dashboard-title">Online</div>
                     <div class="dashboard-desc">Description</div>
                 </a>

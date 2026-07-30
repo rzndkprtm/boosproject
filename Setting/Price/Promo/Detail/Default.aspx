@@ -128,10 +128,10 @@
                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                             <ul class="dropdown-menu">
                                                 <li runat="server" visible='<%# LoginAccess("Change Detail") %>'>
-                                                    <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeDetail" onclick='<%# String.Format("return dataChangeDetail(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Discount").ToString()) %>'>Change Value</a>
+                                                    <a href="javascript:void(0);" id="aChangeDetail" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeDetail" onclick='<%# String.Format("return dataChangeDetail(`{0}`, `{1}`);", Eval("Id"), CType(Eval("Discount"), Decimal).ToString("G29", New System.Globalization.CultureInfo("en-US"))) %>'>Change Value</a>
                                                 </li>
                                                 <li runat="server" visible='<%# LoginAccess("Delete Detail") %>'>
-                                                    <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDetail" onclick='<%# String.Format("return showDeleteDetail(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDetail" onclick='<%# String.Format("return showDeleteDetail(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                 </li>
                                                 <li>
                                                     <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('PromoDetails', '<%# Eval("Id") %>')">Log</a>
@@ -177,7 +177,7 @@
                     <div class="row">
                         <div class="col-12 form-group">
                             <label class="form-label">Discount</label>
-                            <asp:TextBox runat="server" ID="txtDiscount" CssClass="form-control" placeholder="Discount ..." autocomplete="off"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtDiscount" CssClass="form-control" TextMode="Number" placeholder="Discount ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                 </div>
@@ -282,7 +282,7 @@
                     if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-                    const btn = this.querySelector("a[id*='aEditDetailPromo']");
+                    const btn = this.querySelector("a[id*='aChangeDetail']");
                     if (btn) btn.click();
                 });
             }

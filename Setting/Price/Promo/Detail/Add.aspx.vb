@@ -129,19 +129,6 @@ Partial Class Setting_Price_Promo_Detail_Add
         End Try
     End Sub
 
-    'Protected Sub ddlData_SelectedIndexChanged(sender As Object, e As EventArgs)
-    '    Try
-    '        Dim ddl As DropDownList = CType(sender, DropDownList)
-    '        Dim item As RepeaterItem = CType(ddl.NamingContainer, RepeaterItem)
-    '        PromoTable.Rows(item.ItemIndex)("Data") = ddl.SelectedValue
-    '    Catch ex As Exception
-    '        MessageError(True, ex.ToString())
-    '        If Session("RoleName").ToString() <> "Developer" Then
-    '            MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-    '        End If
-    '    End Try
-    'End Sub
-
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         Try
             SaveGrid()
@@ -165,7 +152,6 @@ Partial Class Setting_Price_Promo_Detail_Add
             If dt.Rows.Count = 0 Then Exit Sub
 
             For Each dr As DataRow In dt.Rows
-
                 If dr("Type").ToString = "" Then Continue For
                 If dr("Data").ToString = "" Then Continue For
 

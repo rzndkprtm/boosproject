@@ -1,13 +1,29 @@
-﻿Partial Class Setting_Database_Default
+﻿Imports System.Data
+
+Partial Class Setting_Database_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
+
+    Protected Tables As Integer
+    Protected Views As Integer
+    Protected Procedures As Integer
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/setting", False)
             Exit Sub
+        End If
+
+        If Not IsPostBack Then
+            Dim dt As DataTable = settingClass.GetDataTableSP("sp_Dashboard_Database", Nothing)
+
+            If dt.Rows.Count > 0 Then
+                Tables = CInt(dt.Rows(0)("Tables"))
+                Views = CInt(dt.Rows(0)("Views"))
+                Procedures = CInt(dt.Rows(0)("Procedures"))
+            End If
         End If
     End Sub
 

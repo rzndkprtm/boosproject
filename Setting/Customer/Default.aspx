@@ -35,94 +35,56 @@
         <section class="row">
             <div class="dashboard-wrapper">
                 <a href="/setting/customer/list" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Customers") %>
-                    </div>
+                    <div class="dashboard-number"><%= Customers %> Data</div>
                     <div class="dashboard-title">List</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/customer/contact" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("CustomerContacts") %>
-                    </div>
+                    <div class="dashboard-number"><%= CustomerContacts %> Data</div>
                     <div class="dashboard-title">Contact</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/customer/address" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("CustomerAddress") %>
-                    </div>
+                    <div class="dashboard-number"><%= CustomerAddress %> Data</div>
                     <div class="dashboard-title">Address</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/customer/business" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("CustomerBusiness") %>
-                    </div>
+                    <div class="dashboard-number"><%= CustomerBusiness %> Data</div>
                     <div class="dashboard-title">Business</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/customer/login" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("Logins") %>
-                    </div>
+                    <div class="dashboard-number"><%= CustomerLogins %> Data</div>
                     <div class="dashboard-title">Login</div>
                     <div class="dashboard-desc">
                         Description
                     </div>
                 </a>
                 <a href="/setting/customer/markup" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("CustomerMarkups") %>
-                    </div>
+                    <div class="dashboard-number"><%= CustomerMarkups %> Data</div>
                     <div class="dashboard-title">Markup</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/customer/discount" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("CustomerDiscounts") %>
-                    </div>
+                    <div class="dashboard-number"><%= CustomerDiscounts %> Data</div>
                     <div class="dashboard-title">Discount</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/customer/promo" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("CustomerPromos") %>
-                    </div>
+                    <div class="dashboard-number"><%= CustomerPromos %> Data</div>
                     <div class="dashboard-title">Promo</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/customer/product" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("CustomerProductAccess") %>
-                    </div>
+                    <div class="dashboard-number"><%= CustomerProductAccess %> Data</div>
                     <div class="dashboard-title">Product Access</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/customer/quote" class="dashboard-card">
-                    <div class="dashboard-number">
-                        <%= GetSumData("CustomerQuotes") %>
-                    </div>
+                    <div class="dashboard-number"><%= CustomerQuotes %> Data</div>
                     <div class="dashboard-title">Quote</div>
-                    <div class="dashboard-desc">
-                        Description
-                    </div>
+                    <div class="dashboard-desc">Description</div>
                 </a>
             </div>
         </section>

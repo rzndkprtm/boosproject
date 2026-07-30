@@ -35,27 +35,27 @@
         <section class="row">
             <div class="dashboard-wrapper">
                 <a href="/setting/price/group" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("PriceGroups") %></div>
+                    <div class="dashboard-number"><%= PriceGroups %> Data</div>
                     <div class="dashboard-title">Price Group</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/price/product" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("PriceProductGroups") %></div>
+                    <div class="dashboard-number"><%= PriceProductGroups %> Data</div>
                     <div class="dashboard-title">Price Product Group</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/price/base" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("PriceBases") %></div>
+                    <div class="dashboard-number"><%= PriceBases %> Data</div>
                     <div class="dashboard-title">Price Base</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/price/surcharge" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("PriceSurcharges") %></div>
+                    <div class="dashboard-number"><%= PriceSurcharges %> Data</div>
                     <div class="dashboard-title">Price Surcharge</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/price/promo" class="dashboard-card">
-                    <div class="dashboard-number"><%= GetSumData("Promos") %></div>
+                    <div class="dashboard-number"><%= Promos %> Data</div>
                     <div class="dashboard-title">Price Promo</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
