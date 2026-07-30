@@ -111,7 +111,8 @@ Partial Class Setting_Price_Product_Edit
             End If
 
             txtName.Enabled = False
-            If Session("RoleName") = "Developer" Then txtName.Enabled = True
+            ddlDesign.Enabled = False
+            If Session("RoleName") = "Developer" Then txtName.Enabled = True : ddlDesign.Enabled = True
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
