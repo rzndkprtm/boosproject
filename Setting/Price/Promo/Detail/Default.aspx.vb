@@ -139,7 +139,17 @@ Partial Class Setting_Price_Promo_Detail_Default
 
     Protected Sub BindData(promoId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT Promos.*, Companys.Name AS CompanyName FROM Promos INNER JOIN Companys ON Promos.CompanyId=Companys.Id WHERE Promos.Id='" & promoId & "'")
+            Dim thisQuery As String = "SELECT Promos.*, Companys.Name AS CompanyName FROM Promos INNER JOIN Companys ON Promos.CompanyId=Companys.Id WHERE Promos.Id='" & promoId & "'"
+            If Session("RoleName") = "Sales" Then
+                thisQuery = "SELECT Promos.*, Companys.Name AS CompanyName FROM Promos INNER JOIN Companys ON Promos.CompanyId=Companys.Id WHERE Promos.Id='" & promoId & "' AND Promos.CompanyId='" & Session("CompanyId") & "'"
+                If Session("LevelName") = "Member" Then
+                    thisQuery = "SELECT Promos.*, Companys.Name AS CompanyName FROM Promos INNER JOIN Companys ON Promos.CompanyId=Companys.Id WHERE Promos.Id='" & promoId & "' AND Promos.CompanyId='" & Session("CompanyId") & "' AND Promos.Type='Sell'"
+                End If
+            End If
+            If Session("RoleName") = "Account" Then
+                thisQuery = "SELECT Promos.*, Companys.Name AS CompanyName FROM Promos INNER JOIN Companys ON Promos.CompanyId=Companys.Id WHERE Promos.Id='" & promoId & "' AND Promos.CompanyId='" & Session("CompanyId") & "'"
+            End If
+            Dim thisData As DataRow = settingClass.GetDataRow(thisQuery)
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/price/promo", False)
                 Exit Sub
