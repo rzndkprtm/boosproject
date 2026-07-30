@@ -1,13 +1,43 @@
-﻿Partial Class Setting_Customer_Default
+﻿Imports System.Data
+
+Partial Class Setting_Customer_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
+
+    Protected Customers As Integer
+    Protected CustomerContacts As Integer
+    Protected CustomerAddress As Integer
+    Protected CustomerBusiness As Integer
+    Protected CustomerLogins As Integer
+    Protected CustomerMarkups As Integer
+    Protected CustomerDiscounts As Integer
+    Protected CustomerPromos As Integer
+    Protected CustomerProductAccess As Integer
+    Protected CustomerQuotes As Integer
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/setting", False)
             Exit Sub
+        End If
+
+        If Not IsPostBack Then
+            Dim dt As DataTable = settingClass.GetDataTableSP("sp_Dashboard_Customer", Nothing)
+
+            If dt.Rows.Count > 0 Then
+                Customers = CInt(dt.Rows(0)("Customers"))
+                CustomerContacts = CInt(dt.Rows(0)("CustomerContacts"))
+                CustomerAddress = CInt(dt.Rows(0)("CustomerAddress"))
+                CustomerBusiness = CInt(dt.Rows(0)("CustomerBusiness"))
+                CustomerLogins = CInt(dt.Rows(0)("CustomerLogins"))
+                CustomerMarkups = CInt(dt.Rows(0)("CustomerMarkups"))
+                CustomerDiscounts = CInt(dt.Rows(0)("CustomerDiscounts"))
+                CustomerPromos = CInt(dt.Rows(0)("CustomerPromos"))
+                CustomerProductAccess = CInt(dt.Rows(0)("CustomerProductAccess"))
+                CustomerQuotes = CInt(dt.Rows(0)("CustomerQuotes"))
+            End If
         End If
     End Sub
 

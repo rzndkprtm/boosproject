@@ -1,8 +1,12 @@
-﻿Partial Class Setting_Job_Default
+﻿Imports System.Data
+
+Partial Class Setting_Job_Default
     Inherits Page
 
-    Dim jobClass As New JobClass
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim settingClass As New SettingClass
+
+    Protected JobSheets As Integer
+    Protected OrderJobs As Integer
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -10,20 +14,16 @@
             Response.Redirect("~/setting", False)
             Exit Sub
         End If
-    End Sub
 
-    Protected Function GetSumData(params As String) As String
-        Try
-            If Not String.IsNullOrEmpty(params) Then
-                Dim thisQuery As String = String.Format("SELECT COUNT(*) FROM {0}", params)
-                Dim sumData As Integer = jobClass.GetItemData_Integer(thisQuery)
-                Return sumData & " Data"
+        If Not IsPostBack Then
+            Dim dt As DataTable = settingClass.GetDataTableSP("sp_Dashboard_Job", Nothing)
+
+            If dt.Rows.Count > 0 Then
+                JobSheets = CInt(dt.Rows(0)("JobSheets"))
+                OrderJobs = CInt(dt.Rows(0)("OrderJobs"))
             End If
-            Return String.Empty
-        Catch ex As Exception
-            Return ex.ToString()
-        End Try
-    End Function
+        End If
+    End Sub
 
     Protected Function LoginAccess(action As String) As Boolean
         Try

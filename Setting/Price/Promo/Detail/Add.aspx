@@ -73,12 +73,10 @@
                                                             <asp:ListItem Value="FrameColours">Frame Colour</asp:ListItem>
                                                         </asp:DropDownList>
                                                     </td>
-                                                    <td>
-                                                        <asp:DropDownList  ID="ddlData" runat="server" CssClass="form-select"></asp:DropDownList>
-                                                    </td>
+                                                    <td><asp:DropDownList  ID="ddlData" runat="server" CssClass="form-select"></asp:DropDownList></td>
                                                     <td>
                                                         <div class="input-group">
-                                                            <asp:TextBox ID="txtDiscount" runat="server" CssClass="form-control" Text='<%# Eval("Discount") %>'></asp:TextBox>
+                                                            <asp:TextBox ID="txtDiscount" runat="server" CssClass="form-control" TextMode="Number" Text='<%# Eval("Discount") %>' autocomplete="off"></asp:TextBox>
                                                             <span class="input-group-text">%</span>
                                                         </div>
                                                     </td>
