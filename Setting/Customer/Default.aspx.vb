@@ -15,6 +15,7 @@ Partial Class Setting_Customer_Default
     Protected CustomerPromos As Integer
     Protected CustomerProductAccess As Integer
     Protected CustomerQuotes As Integer
+    Protected CustomerCustomPricings As Integer
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -37,6 +38,7 @@ Partial Class Setting_Customer_Default
                 CustomerPromos = CInt(dt.Rows(0)("CustomerPromos"))
                 CustomerProductAccess = CInt(dt.Rows(0)("CustomerProductAccess"))
                 CustomerQuotes = CInt(dt.Rows(0)("CustomerQuotes"))
+                CustomerCustomPricings = CInt(dt.Rows(0)("CustomerCustomPricings"))
             End If
         End If
     End Sub
