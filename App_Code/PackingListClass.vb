@@ -48,15 +48,23 @@ Public Class PackingListClass
 
     Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
         Dim thisTable As New DataTable()
-        Using thisConn As New SqlConnection(myConn)
-            Using thisCmd As New SqlCommand(spName, thisConn)
-                thisCmd.CommandType = CommandType.StoredProcedure
-                thisCmd.Parameters.AddRange(params.ToArray())
-                Using thisAdapter As New SqlDataAdapter(thisCmd)
-                    thisAdapter.Fill(thisTable)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    If params IsNot Nothing Then
+                        If params.Count > 0 Then
+                            thisCmd.Parameters.AddRange(params.ToArray())
+                        End If
+                    End If
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        thisAdapter.Fill(thisTable)
+                    End Using
                 End Using
             End Using
-        End Using
+        Catch ex As Exception
+            thisTable = New DataTable()
+        End Try
         Return thisTable
     End Function
 
@@ -197,7 +205,6 @@ Public Class PackingListClass
             cell.PaddingBottom = 6
 
             Return cell
-
         Catch ex As Exception
             Dim font As New Font(Font.FontFamily.TIMES_ROMAN, 10, If(isBold, Font.BOLD, Font.NORMAL))
             Dim cell As New PdfPCell(New Phrase(If(text, String.Empty), font))

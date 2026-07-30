@@ -36,7 +36,7 @@
     Protected Sub BindCompany()
         ddlOrderCompany.Items.Clear()
         Try
-            ddlOrderCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Name ASC")
+            ddlOrderCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys ORDER BY Name ASC")
             ddlOrderCompany.DataTextField = "Alias"
             ddlOrderCompany.DataValueField = "Id"
             ddlOrderCompany.DataBind()

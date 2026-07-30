@@ -513,7 +513,6 @@ Public Class JobEvents
         Dim noteY As Single = document.PageSize.Height - 90
         noteTable.WriteSelectedRows(0, -1, 20, noteY, cb)
 
-        'FOOTER
         Dim footerTable As New PdfPTable(5)
         footerTable.TotalWidth = document.PageSize.Width - 40
         footerTable.LockedWidth = True
