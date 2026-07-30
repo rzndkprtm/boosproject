@@ -169,7 +169,7 @@
                                 <asp:TemplateField HeaderText="Action" ItemStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
                                         <asp:TextBox ID="txtCopy" runat="server" Text='<%# Eval("FieldNameValue") %>' Style="position:absolute; left:-9999px;" ReadOnly="true"></asp:TextBox>
-                                        <button type="button" class="btn btn-sm btn-primary" onclick="copyRow(this)" data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="copyRow(this)" data-bs-dismiss="modal">Copy</button>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
