@@ -2358,9 +2358,9 @@ Public Class OrderClass
                             If squareMetre <= 0.75 Then thisSell = Math.Round(gridSellPrice * 0.75, 2)
                             If squareMetre <= 0.5 Then thisBuy = Math.Round(gridBuyPrice * 0.5, 2)
                         End If
-                        If companyId = "3" Then
-                            If squareMetre <= 0.5 Then thisSell = Math.Round(gridSellPrice * 0.5, 2)
-                        End If
+                        'If companyId = "3" Then
+                        '    If squareMetre <= 0.5 Then thisSell = Math.Round(gridSellPrice * 0.5, 2)
+                        'End If
                     End If
                     If designName = "Skyline Shutter Ocean" Then
                         If squareMetre <= 0.75 Then thisSell = Math.Round(gridSellPrice * 0.75, 2)
