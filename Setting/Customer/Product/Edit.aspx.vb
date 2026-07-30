@@ -6,6 +6,7 @@ Partial Class Setting_Customer_Product_Edit
 
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -17,6 +18,10 @@ Partial Class Setting_Customer_Product_Edit
         If String.IsNullOrEmpty(Request.QueryString("productid")) Then
             Response.Redirect("~/setting/customer/product/", False)
             Exit Sub
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            lblReturnPage.Text = Request.QueryString("returnpage").ToString()
         End If
 
         lblId.Text = Request.QueryString("productid").ToString()
@@ -53,7 +58,10 @@ Partial Class Setting_Customer_Product_Edit
                 Dim dataLog As Object() = {"CustomerProductAccess", lblId.Text, Session("LoginId").ToString(), "Customer Product Access Updated"}
                 settingClass.Logs(dataLog)
 
-                Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+                url = "~/setting/customer/product"
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+                End If
                 Response.Redirect(Url, False)
             End If
         Catch ex As Exception
@@ -65,7 +73,10 @@ Partial Class Setting_Customer_Product_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+        url = "~/setting/customer/product"
+        If lblReturnPage.Text = "detail" Then
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+        End If
         Response.Redirect(url, False)
     End Sub
 

@@ -231,7 +231,11 @@ Partial Class Setting_Customer_Detail
                 Exit Sub
             End If
             If Session("RoleName") = "Sales" AndAlso Session("CustomerId") = customerId Then
-                Response.Redirect("~/setting/customer", False)
+                Response.Redirect("~/setting/customer/list", False)
+                Exit Sub
+            End If
+            If Session("RoleName") = "Account" AndAlso Session("CustomerId") = customerId Then
+                Response.Redirect("~/setting/customer/list", False)
                 Exit Sub
             End If
 
