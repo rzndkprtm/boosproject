@@ -1,5 +1,4 @@
-﻿Imports System.ComponentModel.Design
-Imports System.Data
+﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
 
