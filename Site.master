@@ -195,34 +195,34 @@
                                                             <hr class="dropdown-divider">
                                                         </li>
                                                         <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/customer/contact" class="subsubmenu-link">Customer Contact</a>
+                                                            <a runat="server" href="~/setting/customer/contact" class="subsubmenu-link">Contact</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/customer/address" class="subsubmenu-link">Customer Address</a>
+                                                            <a runat="server" href="~/setting/customer/address" class="subsubmenu-link">Address</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/customer/business" class="subsubmenu-link">Customer Business</a>
+                                                            <a runat="server" href="~/setting/customer/business" class="subsubmenu-link">Business</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/customer/login" class="subsubmenu-link">Customer Login</a>
+                                                            <a runat="server" href="~/setting/customer/login" class="subsubmenu-link">Login</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/customer/markup" class="subsubmenu-link">Customer Markup</a>
+                                                            <a runat="server" href="~/setting/customer/markup" class="subsubmenu-link">Markup</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/customer/discount" class="subsubmenu-link">Customer Discount</a>
+                                                            <a runat="server" href="~/setting/customer/discount" class="subsubmenu-link">Discount</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/customer/promo" class="subsubmenu-link">Customer Promo</a>
+                                                            <a runat="server" href="~/setting/customer/promo" class="subsubmenu-link">Promo</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/customer/product" class="subsubmenu-link">Customer Product Access</a>
+                                                            <a runat="server" href="~/setting/customer/product" class="subsubmenu-link">Product Access</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/customer/quote" class="subsubmenu-link">Customer Quote</a>
+                                                            <a runat="server" href="~/setting/customer/quote" class="subsubmenu-link">Quote</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/customer/custompricing" class="subsubmenu-link">Customer Custom Pricing</a>
+                                                            <a runat="server" href="~/setting/customer/custompricing" class="subsubmenu-link">Custom Pricing</a>
                                                         </li>
                                                     </ul>
                                                 </li>

@@ -59,12 +59,12 @@
                                 <div class="table-responsive">
                                     <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
                                         <Columns>
-                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="50px">
                                                 <ItemTemplate>
                                                     <%# Container.DataItemIndex + 1 %>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:BoundField DataField="Id" HeaderText="ID" />
+                                            <asp:BoundField DataField="Id" HeaderText="ID" ItemStyle-Width="80px" />
                                             <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-Width="500px" />
                                             <asp:BoundField DataField="PriceGroupName" HeaderText="Price Group" />
                                             <asp:BoundField DataField="Description" HeaderText="Description" />
