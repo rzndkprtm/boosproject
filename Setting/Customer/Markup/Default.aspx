@@ -95,7 +95,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Markup</h5>
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Add Markup</button>
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnAddMarkup">Add Markup</button>
                     <ul class="dropdown-menu">
                         <li>
                             <asp:Button runat="server" ID="btnAddMarkupA" CssClass="dropdown-item" Text="By Product" OnClick="btnAddMarkupA_Click" />
