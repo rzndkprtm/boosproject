@@ -122,7 +122,7 @@
                     <h5 class="modal-title white">Refresh</h5>
                 </div>
                 <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtRefreshId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtRefreshId"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
