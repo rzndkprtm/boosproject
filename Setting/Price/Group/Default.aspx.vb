@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports Org.BouncyCastle.Asn1.Cmp
 
 Partial Class Setting_Price_Group_Default
     Inherits Page
@@ -99,7 +98,8 @@ Partial Class Setting_Price_Group_Default
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)),
-                New SqlParameter("@CompanyId", If(String.IsNullOrWhiteSpace(Session("CompanyId")), CType(DBNull.Value, Object), Session("CompanyId")))
+                New SqlParameter("@CompanyId", If(String.IsNullOrWhiteSpace(Session("CompanyId")), CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@RoleName ", Session("RoleName").ToString())
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_PriceGroups_List", params)
             gvList.DataBind()
