@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports System.Runtime.InteropServices
 
 Partial Class Setting_Price_Product_Add
     Inherits Page
@@ -20,16 +19,14 @@ Partial Class Setting_Price_Product_Add
             MessageError(False, String.Empty)
             BindDesignType()
             BindPriceGroup(ddlDesign.SelectedValue)
-
-            ddlStatus.Enabled = False
-            ddlStatus.SelectedValue = "Inactive"
-            If Session("RoleName") = "Developer" Then ddlStatus.Enabled = True
+            BindFormat(ddlDesign.SelectedValue)
         End If
     End Sub
 
     Protected Sub ddlDesign_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindPriceGroup(ddlDesign.SelectedValue)
+        BindFormat(ddlDesign.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -42,6 +39,24 @@ Partial Class Setting_Price_Product_Add
 
             If txtName.Text = "" Then
                 MessageError(True, "NAME IS REQUIRED !")
+                Exit Sub
+            End If
+
+            Dim inputName As String = txtName.Text.Trim()
+
+            Dim dtFormat As DataTable = settingClass.GetDataTable("SELECT Format FROM PriceProductGroupFormats WHERE DesignId = '" & ddlDesign.SelectedValue & "' AND Status='Active'")
+            Dim isValid As Boolean = False
+            For Each dr As DataRow In dtFormat.Rows
+                Dim format As String = dr("Format").ToString()
+
+                If MatchFormat(inputName, format) Then
+                    isValid = True
+                    Exit For
+                End If
+            Next
+
+            If Not isValid Then
+                MessageError(True, "NAME DOESN'T MATCH THE ALLOWED FORMAT !")
                 Exit Sub
             End If
 
@@ -126,6 +141,40 @@ Partial Class Setting_Price_Product_Add
             End If
         End Try
     End Sub
+
+    Protected Sub BindFormat(designId As String)
+        Try
+            If Not String.IsNullOrEmpty(designId) Then
+                gvList.DataSource = settingClass.GetDataTable("SELECT * FROM PriceProductGroupFormats WHERE DesignId='" & designId & "'")
+                gvList.DataBind()
+
+                MessageError(True, "SELECT * FROM PriceProductGroupFormats WHERE DesignId='" & designId & "'")
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Public Function MatchFormat(input As String, format As String) As Boolean
+
+        ' Ganti semua placeholder {....} dengan token sementara
+        Dim temp As String = Regex.Replace(format, "\{[^}]+\}", "__PLACEHOLDER__")
+
+        ' Escape karakter regex
+        temp = Regex.Escape(temp)
+
+        ' Kembalikan token menjadi wildcard
+        temp = temp.Replace("__PLACEHOLDER__", "(.+?)")
+
+        ' Cocokkan seluruh string
+        temp = "^" & temp & "$"
+
+        Return Regex.IsMatch(input.Trim(), temp, RegexOptions.IgnoreCase)
+
+    End Function
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message

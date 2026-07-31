@@ -1,6 +1,12 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Add.aspx.vb" Inherits="Setting_Price_Product_Add" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Add Price Product Group" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <style>
+        .format-guide { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; }
+        .format-item { padding: 5px 0; }
+        .format-item:not(:last-child) { border-bottom: 1px dashed #dee2e6; }
+    </style>
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -45,14 +51,36 @@
                                                     <asp:ListBox runat="server" ID="lbPriceGroup" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                                 </div>
                                             </div>
+                                            <div class="row mb-2">
+                                                <div class="col-12 form-group">
+                                                    <label class="form-label">Name</label>
+                                                    <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
+                                                </div>
+                                            </div>
+                                            <div class="mt-2 mb-2">
+                                                <label class="form-label fw-bold">Format Guide :</label>
+                                                <div class="format-guide p-2 rounded">
+                                                    <asp:GridView runat="server" ID="gvList" AutoGenerateColumns="false" ShowHeader="false" GridLines="None" CssClass="w-100">
+                                                        <Columns>
+                                                            <asp:TemplateField>
+                                                                <ItemTemplate>
+                                                                    <div class="format-item d-flex">
+                                                                        <div class="me-2 text-primary">
+                                                                            <i class="bi bi-info-circle-fill"></i>
+                                                                        </div>
+                                                                        <div>
+                                                                            <div class="small text-muted"><%# Eval("Name") %></div>
+                                                                            <div class="fw-semibold"><%# Eval("Format") %></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </div>
                                         </ContentTemplate>
                                     </asp:UpdatePanel>
-                                    <div class="row mb-2">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Name</label>
-                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                    </div>
                                     <div class="row mb-2">
                                         <div class="col-12 form-group">
                                             <label class="form-label">Description</label>
