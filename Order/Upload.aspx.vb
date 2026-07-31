@@ -65,7 +65,6 @@ Partial Class Order_Upload
                     Dim customerData As DataRow = orderClass.GetDataRow("SELECT Customers.CompanyDetailId AS CompanyDetailId, Companys.Alias AS CompanyAlias FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id WHERE Customers.Id='" & ddlCustomer.SelectedValue & "'")
                     Dim companyAlias As String = customerData("CompanyAlias")
                     Dim companyDetailId As String = customerData("CompanyDetailId")
-                    Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(ddlCustomer.SelectedValue)
 
                     Dim headerId As String = orderClass.GetNewOrderHeaderId
 
@@ -124,6 +123,8 @@ Partial Class Order_Upload
 
                     Dim dataLog As Object() = {"OrderHeaders", headerId, Session("LoginId").ToString(), "Order Created | CSV"}
                     orderClass.Logs(dataLog)
+
+                    Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(headerId)
 
                     Using orderItem As New ExcelPackage(New FileInfo(savePath))
                         Dim sheetDetail As ExcelWorksheet = orderItem.Workbook.Worksheets(0)
