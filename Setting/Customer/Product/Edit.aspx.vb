@@ -121,7 +121,7 @@ Partial Class Setting_Customer_Product_Edit
                 End If
             End If
 
-            Dim thisQuery As String = String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
+            Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
 
             ddlCustomer.DataSource = settingClass.GetDataTable(thisQuery)
             ddlCustomer.DataTextField = "Name"
@@ -143,7 +143,7 @@ Partial Class Setting_Customer_Product_Edit
         lbProduct.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                lbProduct.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & companyId & "' ORDER BY Name ASC")
+                lbProduct.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & companyId & "' ORDER BY Name ASC")
                 lbProduct.DataTextField = "Name"
                 lbProduct.DataValueField = "Id"
                 lbProduct.DataBind()

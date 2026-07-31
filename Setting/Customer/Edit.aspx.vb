@@ -203,7 +203,7 @@ Partial Class Setting_Customer_Edit
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Id ASC")
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys ORDER BY Id ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()
@@ -232,7 +232,7 @@ Partial Class Setting_Customer_Edit
         ddlCompanyDetail.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                ddlCompanyDetail.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails WHERE CompanyId='" & companyId & "' ORDER BY Name ASC")
+                ddlCompanyDetail.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM CompanyDetails WHERE CompanyId='" & companyId & "' ORDER BY Name ASC")
                 ddlCompanyDetail.DataTextField = "Name"
                 ddlCompanyDetail.DataValueField = "Id"
                 ddlCompanyDetail.DataBind()
@@ -253,7 +253,7 @@ Partial Class Setting_Customer_Edit
         lbOperator.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                lbOperator.DataSource = settingClass.GetDataTable("SELECT Logins.* FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Customers.CompanyId='" & companyId & "' AND Logins.RoleId='4' AND Logins.LevelId='2' ORDER BY Logins.UserName ASC")
+                lbOperator.DataSource = settingClass.GetDataTable("SELECT Logins.Id, Logins.FullName FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Customers.CompanyId='" & companyId & "' AND Logins.RoleId='4' AND Logins.LevelId='2' ORDER BY Logins.UserName ASC")
                 lbOperator.DataTextField = "FullName"
                 lbOperator.DataValueField = "Id"
                 lbOperator.DataBind()
@@ -279,7 +279,7 @@ Partial Class Setting_Customer_Edit
     Protected Sub BindPrimary(companyId As String)
         ddlPrimary.Items.Clear()
         Try
-            ddlPrimary.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE [Level]='Primary' AND CompanyId='" & companyId & "' ORDER BY Id ASC")
+            ddlPrimary.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE [Level]='Primary' AND CompanyId='" & companyId & "' ORDER BY Id ASC")
             ddlPrimary.DataTextField = "Name"
             ddlPrimary.DataValueField = "Id"
             ddlPrimary.DataBind()
@@ -299,7 +299,7 @@ Partial Class Setting_Customer_Edit
         ddlPriceGroup.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='Blinds' AND CompanyId='" & companyId & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
+                ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Type='Blinds' AND CompanyId='" & companyId & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
                 ddlPriceGroup.DataTextField = "Name"
                 ddlPriceGroup.DataValueField = "Id"
                 ddlPriceGroup.DataBind()
@@ -320,7 +320,7 @@ Partial Class Setting_Customer_Edit
         ddlPriceGroupShutter.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                ddlPriceGroupShutter.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='Shutters' AND CompanyId='" & companyId & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
+                ddlPriceGroupShutter.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Type='Shutters' AND CompanyId='" & companyId & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
                 ddlPriceGroupShutter.DataTextField = "Name"
                 ddlPriceGroupShutter.DataValueField = "Id"
                 ddlPriceGroupShutter.DataBind()
@@ -341,7 +341,7 @@ Partial Class Setting_Customer_Edit
         ddlPriceGroupDoor.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                ddlPriceGroupDoor.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='Doors' AND CompanyId='" & companyId & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
+                ddlPriceGroupDoor.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Type='Doors' AND CompanyId='" & companyId & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
                 ddlPriceGroupDoor.DataTextField = "Name"
                 ddlPriceGroupDoor.DataValueField = "Id"
                 ddlPriceGroupDoor.DataBind()

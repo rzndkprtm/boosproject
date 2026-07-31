@@ -107,7 +107,7 @@ Partial Class Setting_Login_User_Installer_Edit
     Protected Sub BindInstaller()
         ddlLogin.Items.Clear()
         Try
-            ddlLogin.DataSource = settingClass.GetDataTable("SELECT * FROM Logins WHERE RoleId='10' AND Active=1 ORDER BY FullName ASC")
+            ddlLogin.DataSource = settingClass.GetDataTable("SELECT Id, FullName FROM Logins WHERE RoleId='10' AND Active=1 ORDER BY FullName ASC")
             ddlLogin.DataTextField = "FullName"
             ddlLogin.DataValueField = "Id"
             ddlLogin.DataBind()
@@ -126,7 +126,7 @@ Partial Class Setting_Login_User_Installer_Edit
     Protected Sub BindCustomer()
         lbCustomer.Items.Clear()
         Try
-            lbCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE Active=1 AND CompanyDetailId='3' ORDER BY Name ASC")
+            lbCustomer.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE Active=1 AND CompanyDetailId='3' ORDER BY Name ASC")
             lbCustomer.DataTextField = "Name"
             lbCustomer.DataValueField = "Id"
             lbCustomer.DataBind()

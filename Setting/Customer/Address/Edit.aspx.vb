@@ -146,7 +146,7 @@ Partial Class Setting_Customer_Address_Edit
                 End If
             End If
 
-            ddlCustomer.DataSource = settingClass.GetDataTable(String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role))
+            ddlCustomer.DataSource = settingClass.GetDataTable(String.Format("SELECT Id, Name FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role))
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
