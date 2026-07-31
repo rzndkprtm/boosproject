@@ -1086,6 +1086,12 @@ Partial Class Order_Default
     Protected Function VisibleDownloadBOE(status As String, download As String, active As Boolean) As Boolean
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso (status = "Unsubmitted" OrElse status = "Payment Received" OrElse status = "In Production" OrElse status = "On Hold") AndAlso (download = "No" OrElse download = "Done") Then Return True
+
+            If Session("RoleName") = "IT" AndAlso (status = "Unsubmitted" OrElse status = "Payment Received" OrElse status = "In Production" OrElse status = "On Hold") AndAlso (download = "No" OrElse download = "Done") Then Return True
+
+            If Session("RoleName") = "Factory Office" AndAlso (status = "Unsubmitted" OrElse status = "Payment Received" OrElse status = "In Production" OrElse status = "On Hold") AndAlso (download = "No" OrElse download = "Done") Then Return True
+
+            If Session("RoleName") = "Data Entry" AndAlso (status = "In Production" OrElse status = "On Hold") AndAlso (download = "No" OrElse download = "Done") Then Return True
             Return False
         End If
         Return False
