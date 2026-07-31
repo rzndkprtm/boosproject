@@ -39,10 +39,17 @@
             </div>
         </section>
         <section class="row mb-2">
-            <div class="col-12 d-flex justify-content-end flex-wrap gap-1">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add" OnClick="btnAdd_Click" />
-                <asp:Button runat="server" ID="btnImport" CssClass="btn btn-secondary" Text="Import" OnClick="btnImport_Click" />
-                <asp:Button runat="server" ID="btnConditional" CssClass="btn btn-info" Text="Update Special Conditional" OnClick="btnConditional_Click" />
+            <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="addPrice">Add Price</button>
+                <ul class="dropdown-menu">
+                    <asp:Button runat="server" ID="btnAdd" CssClass="dropdown-item" Text="Add" OnClick="btnAdd_Click" />
+                    <asp:Button runat="server" ID="btnImport" CssClass="dropdown-item" Text="Import" OnClick="btnImport_Click" />
+                </ul>
+                <button class="btn btn-danger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="morePrice">More</button>
+                <ul class="dropdown-menu">
+                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalConditional">Update Special Conditional</a>
+                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRePrice">Re Price</a>
+                </ul>
             </div>
         </section>
         <section class="row">
@@ -187,6 +194,40 @@
         </section>
     </div>
     
+    <div class="modal modal-blur fade" id="modalConditional" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <h5 class="modal-title white">Update Conditional</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />
+                    Teks
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnConditional" CssClass="btn btn-dark" Text="Confirm" OnClick="btnConditional_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalRePrice" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Re Price</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />
+                    Teks
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnRePrice" CssClass="btn btn-danger" Text="Confirm" OnClick="btnRePrice_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -320,7 +361,7 @@
                 }
             });
         }
-        ["modalMatrix", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalRePrice", "modalConditional", "modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

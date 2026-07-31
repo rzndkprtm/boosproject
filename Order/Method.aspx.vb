@@ -4714,9 +4714,9 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.rollb) Then Return "ROLL DIRECTION FOR SECOND BLIND IS REQUIRED !"
             If data.roll = "Standard" AndAlso data.rollb = "Standard" Then Return "STANDARD - STANDARD ROLL DIRECTION CANNOT BE USED !"
             If String.IsNullOrEmpty(data.controlpositionb) Then Return "CONTROL POSITION FOR SECOND BLIND IS REQUIRED !"
-            If tubeName.Contains("Gear Reduction") Then
+            If tubeName.Contains("Gear Reduction") OrElse tubeName.Contains("Acmeda") Then
                 If Not data.controlposition = data.controlpositionb Then
-                    Return "PLEASE CHECK YOUR CONTROL POSITION. THE CONTROL POSITION FOR GEAR REDUCTION MUST BE THE SAME. !"
+                    Return "PLEASE CHECK YOUR CONTROL POSITION. THE CONTROL POSITION MUST BE THE SAME. !"
                 End If
             End If
         End If

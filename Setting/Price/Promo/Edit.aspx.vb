@@ -133,7 +133,7 @@ Partial Class Setting_Price_Promo_Edit
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Name ASC")
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Companys ORDER BY Name ASC")
             ddlCompany.DataTextField = "Name"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()

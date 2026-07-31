@@ -49,21 +49,6 @@ Partial Class Setting_Price_Base_Default
         Response.Redirect("~/setting/price/base/import", False)
     End Sub
 
-    Protected Sub btnConditional_Click(sender As Object, e As EventArgs)
-        Try
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("sp_PriceBases_UpdateConditional", thisConn)
-                    thisCmd.CommandType = CommandType.StoredProcedure
-                    thisCmd.Parameters.AddWithValue("@Conditional", "Excl. $7 Disc")
-
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
-        Catch ex As Exception
-        End Try
-    End Sub
-
     Protected Sub ddlCategory_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 
@@ -131,6 +116,48 @@ Partial Class Setting_Price_Base_Default
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
     End Sub
 
+    Protected Sub btnConditional_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("sp_PriceBases_UpdateConditional", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    thisCmd.Parameters.AddWithValue("@Conditional", "Excl. $7 Disc")
+
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnRePrice_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim dataOrder As DataTable = settingClass.GetDataTable("SELECT Id FROM OrderHeaders WHERE Active=1 AND (Status = 'Unsubmitted' OR Status='Waiting Proforma')")
+            If Not dataOrder.Rows.Count = 0 Then
+                Dim orderClass As New OrderClass
+                For i As Integer = 0 To dataOrder.Rows.Count - 1
+                    Dim orderId As String = dataOrder.Rows(i)("Id").ToString()
+                    orderClass.CalculatePriceByOrder(orderId)
+
+                    Dim dataLog As Object() = {"OrderHeaders", orderId, Session("LoginId").ToString(), "Re Price Order"}
+                    settingClass.Logs(dataLog)
+                Next
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -171,12 +198,10 @@ Partial Class Setting_Price_Base_Default
             gvList.DataSource = settingClass.GetDataTableSP("sp_PriceBases_List", params)
             gvList.DataBind()
 
-            btnAdd.Visible = LoginAccess("Add")
-            btnImport.Visible = LoginAccess("Import")
-            btnConditional.Visible = LoginAccess("Conditional")
+            addPrice.Visible = LoginAccess("Add")
+            morePrice.Visible = LoginAccess("More")
 
             aMatrix.Visible = False
-
             If pricegroup = "1" AndAlso Not String.IsNullOrWhiteSpace(category) AndAlso Not String.IsNullOrWhiteSpace(productgroup) AndAlso Not String.IsNullOrWhiteSpace(method) Then
                 aMatrix.Visible = True
 
@@ -200,9 +225,9 @@ Partial Class Setting_Price_Base_Default
     Protected Sub BindPriceGroup()
         ddlPriceGroup.Items.Clear()
         Try
-            Dim thisString As String = "SELECT * FROM PriceGroups WHERE Status='Active' ORDER BY Id ASC"
+            Dim thisString As String = "SELECT Id, Name FROM PriceGroups WHERE Status='Active' ORDER BY Id ASC"
             If Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" Then
-                thisString = "SELECT * FROM PriceGroups WHERE CompanyId='" & Session("CompanyId").ToString() & "' AND Status='Active' ORDER BY Id ASC"
+                thisString = "SELECT Id, Name FROM PriceGroups WHERE CompanyId='" & Session("CompanyId").ToString() & "' AND Status='Active' ORDER BY Id ASC"
             End If
             ddlPriceGroup.DataSource = settingClass.GetDataTable(thisString)
             ddlPriceGroup.DataTextField = "Name"

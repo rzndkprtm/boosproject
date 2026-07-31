@@ -124,7 +124,7 @@ Partial Class Setting_Price_Product_Edit
     Protected Sub BindDesignType()
         ddlDesign.Items.Clear()
         Try
-            ddlDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs ORDER BY Name ASC")
+            ddlDesign.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Designs ORDER BY Name ASC")
             ddlDesign.DataTextField = "Name"
             ddlDesign.DataValueField = "Id"
             ddlDesign.DataBind()
