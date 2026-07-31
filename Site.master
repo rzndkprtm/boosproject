@@ -22,11 +22,9 @@
     <script src="/Scripts/jquery-3.7.1.min.js"></script>
 
     <style>
-        .header-top > .container {
-            max-width: 100%;
-            padding-inline: clamp(.75rem, 3vw, 3rem);
-        }
+        .header-top > .container { max-width: 100%; padding-inline: clamp(.75rem, 3vw, 3rem); }
     </style>
+
 </head>
 <body>
     <form runat="server">
@@ -450,7 +448,7 @@
         <script src="/Assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
         <script src="/Assets/vendors/choices.js/choices.min.js"></script>
         <script src="/Assets/js/pages/form-element-select.js"></script>
-        <script src="/Assets/js/pages/horizontal-layout.js"></script>
+        <script src="/Assets/js/pages/horizontal-layout.js?v=1.0.0"></script>
         <script src="/Assets/vendors/summernote/summernote-lite.min.js"></script>
     </form>
 </body>
