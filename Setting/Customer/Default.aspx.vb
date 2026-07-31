@@ -43,19 +43,6 @@ Partial Class Setting_Customer_Default
         End If
     End Sub
 
-    Protected Function GetSumData(params As String) As String
-        Try
-            If Not String.IsNullOrEmpty(params) Then
-                Dim thisQuery As String = String.Format("SELECT COUNT(*) FROM {0}", params)
-                Dim sumData As Integer = settingClass.GetItemData_Integer(thisQuery)
-                Return sumData & " Data"
-            End If
-            Return String.Empty
-        Catch ex As Exception
-            Return ex.ToString()
-        End Try
-    End Function
-
     Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()

@@ -157,7 +157,7 @@ Partial Class Setting_Customer_Markup_Add
     Protected Sub BindCustomer(customerId As String)
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers ORDER BY Name ASC")
+            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers ORDER BY Name ASC")
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
@@ -182,7 +182,7 @@ Partial Class Setting_Customer_Markup_Add
         Try
             Dim thisString As String = String.Empty
             If type = "product" Then
-                thisString = "SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE companyArray.VALUE='" & companyId & "' AND applyArray.VALUE='Markups' ORDER BY Name ASC"
+                thisString = "SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE companyArray.VALUE='" & companyId & "' AND applyArray.VALUE='Markups' ORDER BY Name ASC"
             End If
             If type = "productgroup" Then
                 thisString = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups LEFT JOIN Designs ON PriceProductGroups.DesignId=Designs.Id CROSS APPLY STRING_SPLIT(PriceProductGroups.CompanyDetailId, ',') AS companyArray WHERE companyArray.VALUE='" & companyDetailId & "' AND PriceProductGroups.Status='Active' AND Designs.Type='Blinds' AND PriceProductGroups.Name NOT LIKE '%Panel Glide - Panel Only%' AND PriceProductGroups.Name NOT LIKE '%Panel Glide - Track Only%' ORDER BY PriceProductGroups.Name ASC"

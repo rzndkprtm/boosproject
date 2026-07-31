@@ -157,7 +157,7 @@ Partial Class Setting_Login_User_Add
                 Case "Developer"
             End Select
 
-            Dim sql As String = "SELECT * FROM LoginRoles WHERE Active=1"
+            Dim sql As String = "SELECT Id, Name FROM LoginRoles WHERE Active=1"
 
             If excludeIds.Count > 0 Then
                 sql &= " AND Id NOT IN ('" & String.Join("','", excludeIds) & "')"
@@ -183,7 +183,7 @@ Partial Class Setting_Login_User_Add
     Protected Sub BindLevel()
         ddlLevel.Items.Clear()
         Try
-            ddlLevel.DataSource = settingClass.GetDataTable("SELECT * FROM LoginLevels WHERE Active=1 ORDER BY Name ASC")
+            ddlLevel.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM LoginLevels WHERE Active=1 ORDER BY Name ASC")
             ddlLevel.DataTextField = "Name"
             ddlLevel.DataValueField = "Id"
             ddlLevel.DataBind()
@@ -202,7 +202,7 @@ Partial Class Setting_Login_User_Add
     Protected Sub BindCustomer()
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT * FROM Customers WHERE Active=1 ORDER BY Name ASC")
+            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE Active=1 ORDER BY Name ASC")
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()

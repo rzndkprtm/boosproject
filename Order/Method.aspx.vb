@@ -1506,6 +1506,10 @@ Partial Class Order_Method
                 groupName = String.Format("{0} - {1} - {2}- {3}", designName, blindName, controlNameGroup, factory)
                 priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
             End If
+
+            If data.rolename = "Developer" Then
+                Return groupName
+            End If
         End If
 
         If data.companyid = "3" Then

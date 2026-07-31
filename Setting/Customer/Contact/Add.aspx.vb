@@ -113,7 +113,7 @@ Partial Class Setting_Customer_Contact_Add
                 End If
             End If
 
-            Dim thisQuery As String = String.Format("SELECT * FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
+            Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
 
             ddlCustomer.DataSource = settingClass.GetDataTable(thisQuery)
             ddlCustomer.DataTextField = "Name"

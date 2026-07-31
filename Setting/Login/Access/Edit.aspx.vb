@@ -97,7 +97,7 @@ Partial Class Setting_Login_Access_Edit
     Protected Sub BindRole()
         ddlRoleId.Items.Clear()
         Try
-            ddlRoleId.DataSource = settingClass.GetDataTable("SELECT * FROM LoginRoles ORDER BY Name ASC")
+            ddlRoleId.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM LoginRoles ORDER BY Name ASC")
             ddlRoleId.DataTextField = "Name"
             ddlRoleId.DataValueField = "Id"
             ddlRoleId.DataBind()
@@ -113,7 +113,7 @@ Partial Class Setting_Login_Access_Edit
     Protected Sub BindLevel()
         ddlLevelId.Items.Clear()
         Try
-            ddlLevelId.DataSource = settingClass.GetDataTable("SELECT * FROM LoginLevels ORDER BY Name ASC")
+            ddlLevelId.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM LoginLevels ORDER BY Name ASC")
             ddlLevelId.DataTextField = "Name"
             ddlLevelId.DataValueField = "Id"
             ddlLevelId.DataBind()
