@@ -77,8 +77,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer text-center">
-                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
+                    <div class="card-footer text-start">
+                        <asp:Button runat="server" ID="btnSubmitAdd" CssClass="btn btn-primary" Text="Submit & Add Another" OnClick="btnSubmitAdd_Click" />
+                        <asp:Button runat="server" ID="btnSubmitFinish" CssClass="btn btn-info me-2" Text="Submit & Finish" OnClick="btnSubmitFinish_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
                     </div>
                 </div>

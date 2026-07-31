@@ -30,7 +30,19 @@ Partial Class Setting_Price_Base_Import
         BindProductGroup(ddlPriceGroup.SelectedValue)
     End Sub
 
-    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+    Protected Sub btnSubmitAdd_Click(sender As Object, e As EventArgs)
+        Process("Add")
+    End Sub
+
+    Protected Sub btnSubmitFinish_Click(sender As Object, e As EventArgs)
+        Process()
+    End Sub
+
+    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/setting/price/base", False)
+    End Sub
+
+    Protected Sub Process(Optional action As String = "")
         MessageError(False, String.Empty)
         Try
             If Not fuFile.HasFile Then
@@ -45,14 +57,12 @@ Partial Class Setting_Price_Base_Import
                 Exit Sub
             End If
 
-            Response.Redirect("~/setting/price/base", False)
+            Dim url As String = "~/setting/price/base"
+            If action = "Add" Then url = "~/setting/price/base/import"
+            Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
-    End Sub
-
-    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/price/base", False)
     End Sub
 
     Protected Function ImportExcel(upload As FileUpload, method As String, productGroupId As Integer, priceGroupId As Integer, includeBuy As String) As String
@@ -181,18 +191,18 @@ Partial Class Setting_Price_Base_Import
 
                 Dim height As Integer
                 If Not Integer.TryParse(ws.Cells(r, 1).Text.Trim(), height) Then
-                    Return category & " : Height pada baris " & r & " bukan angka."
+                    Return category & ": The height value on row " & r & " is not a valid number."
                 End If
 
                 For c As Integer = 2 To lastCol
                     Dim width As Integer
                     If Not Integer.TryParse(ws.Cells(1, c).Text.Trim(), width) Then
-                        Return category & " : Width pada kolom " & c & " bukan angka."
+                        Return category & ": The width value in column " & c & " is not a valid number."
                     End If
 
                     Dim price As Decimal
                     If Not Decimal.TryParse(ws.Cells(r, c).Text.Trim(), price) Then
-                        Return category & " : Price pada baris " & r & ", kolom " & c & " bukan angka."
+                        Return category & ": The price value on row " & r & ", column " & c & " is not a valid number."
                     End If
 
                     price = Decimal.Round(price, 2, MidpointRounding.AwayFromZero)
@@ -204,7 +214,7 @@ Partial Class Setting_Price_Base_Import
 
             Return ""
         Catch ex As Exception
-            Return "Error"
+            Return "An unexpected error occurred while reading the Excel worksheet."
         End Try
     End Function
 

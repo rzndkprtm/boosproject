@@ -49,15 +49,61 @@ Partial Class Setting_Price_Surcharge_Add
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            If txtName.Text = "" Then
+                MessageError(True, "SURCHARGE NAME IS REQURIED !")
+                Exit Sub
+            End If
+            If ddlDesign.SelectedValue = "" Then
+                MessageError(True, "DESIGN TYPE IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlPriceGroup.SelectedValue = "" Then
+                MessageError(True, "PRICE GROUP IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlFormulaType.SelectedValue = "" Then
+                MessageError(True, "FORMULA TYPE IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlFormulaType.SelectedValue = "Standard" Then
+                If ddlFormulaField.SelectedValue = "" Then
+                    MessageError(True, "FORMULA FIELD IS REQUIRED !")
+                    Exit Sub
+                End If
+                If ddlFormulaData.SelectedValue = "" Then
+                    MessageError(True, "FORMULA DATA IS REQUIRED !")
+                    Exit Sub
+                End If
+
+                If ddlFormulaDataB.SelectedValue = "" AndAlso ddlFormulaFieldB.SelectedValue <> "" Then
+                    MessageError(True, "FORMULA DATA (ADD) IS REQUIRED !")
+                    Exit Sub
+                End If
+            End If
+            If ddlFormulaType.SelectedValue = "Custom" Then
+                If txtFormulaCustom.Text = "" Then
+                    MessageError(True, "FORMULA IS REQUIRED !")
+                    Exit Sub
+                End If
+            End If
+            If txtBuyCharge.Text = "" Then
+                MessageError(True, "BUY CHARGE IS REQUIRED !")
+                Exit Sub
+            End If
+            If txtSellCharge.Text = "" Then
+                MessageError(True, "SELL CHARGE IS REQUIRED !")
+                Exit Sub
+            End If
+
             Dim finalFormula As String = String.Format("{0} = {1}", ddlFormulaField.SelectedValue, ddlFormulaData.SelectedValue)
             If Not String.IsNullOrEmpty(ddlFormulaFieldB.SelectedValue) Then
                 finalFormula = String.Format("{0} = {1} AND {2} = {3}", ddlFormulaField.SelectedValue, ddlFormulaData.SelectedValue, ddlFormulaFieldB.SelectedValue, ddlFormulaDataB.SelectedValue)
             End If
             If ddlFormulaType.SelectedValue = "Custom" Then
-                finalFormula = txtFormula.Text
+                finalFormula = txtFormulaCustom.Text
             End If
 
-            Dim checkData As DataRow = settingClass.GetDataRow("SELECT TOP 1 * FROM PriceSurcharges WHERE DesignId='" & ddlDesign.SelectedValue & "' AND Formula='" & finalFormula & "' AND Active=1 AND PriceGroupId='" & ddlPriceGroup.SelectedValue & "'")
+            Dim checkData As DataRow = settingClass.GetDataRow("SELECT * FROM PriceSurcharges WHERE DesignId='" & ddlDesign.SelectedValue & "' AND Formula='" & finalFormula.Replace("'", "''") & "' AND Active=1 AND PriceGroupId='" & ddlPriceGroup.SelectedValue & "' AND Type='" & ddlFormulaType.SelectedValue & "'")
             If checkData IsNot Nothing Then
                 MessageError(True, "DATA ALREADY EXISTS !")
                 Exit Sub
