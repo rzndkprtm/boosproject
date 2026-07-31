@@ -231,12 +231,8 @@ Partial Class Setting_Price_Base_Import
                 If {"1", "9", "17", "11"}.Contains(priceGroupId) Then
                     ddlMethod.Items.Add(New ListItem("Cost", "Cost"))
                 End If
-                'If {"6", "7", "17", "11"}.Contains(priceGroupId) Then
-                '    ddlMethod.Items.Add(New ListItem("Cost", "Cost"))
-                'End If
             End If
         Catch ex As Exception
-
         End Try
     End Sub
 

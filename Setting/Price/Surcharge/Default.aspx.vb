@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_Price_Surcharge_Default
     Inherits Page
@@ -83,6 +84,28 @@ Partial Class Setting_Price_Surcharge_Default
 
     Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
         BuildPager()
+    End Sub
+
+    Protected Sub btnRePrice_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim dataOrder As DataTable = settingClass.GetDataTable("SELECT Id FROM OrderHeaders WHERE Active=1 AND (Status = 'Unsubmitted' OR Status='Waiting Proforma')")
+            If Not dataOrder.Rows.Count = 0 Then
+                Dim orderClass As New OrderClass
+                For i As Integer = 0 To dataOrder.Rows.Count - 1
+                    Dim orderId As String = dataOrder.Rows(i)("Id").ToString()
+                    orderClass.CalculatePriceByOrder(orderId)
+
+                    Dim dataLog As Object() = {"OrderHeaders", orderId, Session("LoginId").ToString(), "Re Price Order"}
+                    settingClass.Logs(dataLog)
+                Next
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub btnChangeValue_Click(sender As Object, e As EventArgs)
@@ -186,6 +209,7 @@ Partial Class Setting_Price_Surcharge_Default
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
             btnAdd.Visible = LoginAccess("Add")
+            aRePrice.Visible = LoginAccess("Re Price")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -197,9 +221,9 @@ Partial Class Setting_Price_Surcharge_Default
     Protected Sub BindPriceGroup()
         ddlPriceGroup.Items.Clear()
         Try
-            Dim thisQuery As String = "SELECT * FROM PriceGroups ORDER BY Name ASC"
+            Dim thisQuery As String = "SELECT Id, Name FROM PriceGroups ORDER BY Name ASC"
             If Session("RoleName") = "Sales" OrElse Session("LevelName") = "Account" Then
-                thisQuery = "SELECT * FROM PriceGroups WHERE CompanyId='" & Session("CompanyId").ToString() & "' ORDER BY Name ASC"
+                thisQuery = "SELECT Id, Name FROM PriceGroups WHERE CompanyId='" & Session("CompanyId").ToString() & "' ORDER BY Name ASC"
             End If
             ddlPriceGroup.DataSource = settingClass.GetDataTable(thisQuery)
             ddlPriceGroup.DataTextField = "Name"
@@ -217,9 +241,9 @@ Partial Class Setting_Price_Surcharge_Default
     Protected Sub BindDesignType()
         ddlDesignType.Items.Clear()
         Try
-            Dim thisQuery As String = "SELECT * FROM Designs ORDER BY Name ASC"
+            Dim thisQuery As String = "SELECT Id, Name FROM Designs ORDER BY Name ASC"
             If Session("RoleName") = "Sales" OrElse Session("LevelName") = "Account" Then
-                thisQuery = "SELECT * FROM Designs D WHERE EXISTS (SELECT 1 FROM STRING_SPLIT(D.CompanyId, ',') S WHERE TRY_CAST(S.value AS INT) = '" & Session("CompanyId").ToString() & "' ) ORDER BY D.Name ASC;"
+                thisQuery = "SELECT Id, Name FROM Designs D WHERE EXISTS (SELECT 1 FROM STRING_SPLIT(D.CompanyId, ',') S WHERE TRY_CAST(S.value AS INT) = '" & Session("CompanyId").ToString() & "' ) ORDER BY D.Name ASC;"
             End If
             ddlDesignType.DataSource = settingClass.GetDataTable(thisQuery)
             ddlDesignType.DataTextField = "Name"

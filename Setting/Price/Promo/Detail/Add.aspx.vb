@@ -193,7 +193,7 @@ Partial Class Setting_Price_Promo_Detail_Add
     Protected Sub BindPromo()
         ddlPromo.Items.Clear()
         Try
-            ddlPromo.DataSource = settingClass.GetDataTable("SELECT * FROM Promos ORDER BY Name ASC")
+            ddlPromo.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Promos ORDER BY Name ASC")
             ddlPromo.DataTextField = "Name"
             ddlPromo.DataValueField = "Id"
             ddlPromo.DataBind()

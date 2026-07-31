@@ -101,7 +101,7 @@ Partial Class Setting_Price_Surcharge_Add
     Protected Sub BindDesign()
         ddlDesign.Items.Clear()
         Try
-            ddlDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs WHERE Active=1 ORDER BY Name ASC")
+            ddlDesign.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Designs WHERE Active=1 ORDER BY Name ASC")
             ddlDesign.DataTextField = "Name"
             ddlDesign.DataValueField = "Id"
             ddlDesign.DataBind()
@@ -118,7 +118,7 @@ Partial Class Setting_Price_Surcharge_Add
             If Not String.IsNullOrEmpty(designId) Then
                 Dim type As String = settingClass.GetItemData("SELECT Type FROM Designs WHERE Id='" & designId & "'")
                 If Not String.IsNullOrEmpty(type) Then
-                    ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups WHERE Type='" & type & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
+                    ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
                     ddlPriceGroup.DataTextField = "Name"
                     ddlPriceGroup.DataValueField = "Id"
                     ddlPriceGroup.DataBind()
@@ -136,10 +136,6 @@ Partial Class Setting_Price_Surcharge_Add
         ddlFormulaFieldB.Items.Clear()
         Try
             Dim thisQuery As String = "SELECT '[' + COLUMN_NAME + ']' AS FieldNameValue, COLUMN_NAME AS FieldNameText FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'viewSurcharge' AND COLUMN_NAME LIKE '% %' ORDER BY COLUMN_NAME;"
-
-            'If Session("RoleName") = "Developer" Then
-            '    thisQuery = "SELECT CASE WHEN COLUMN_NAME LIKE '% %' THEN '[' + COLUMN_NAME + ']' ELSE COLUMN_NAME END AS FieldNameValue, COLUMN_NAME AS FieldNameText FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'viewSurcharge';"
-            'End If
 
             ddlFormulaField.DataSource = settingClass.GetDataTable(thisQuery)
             ddlFormulaField.DataTextField = "FieldNameText"

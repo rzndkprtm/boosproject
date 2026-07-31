@@ -30,8 +30,9 @@
             </div>
         </section>
         <section class="row mb-3">
-            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
+            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-2">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
+                <a href="javascript:void(0);" runat="server" id="aRePrice" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalRePrice">Re Price</a>
             </div>
         </section>
         <section class="row">
@@ -143,6 +144,23 @@
         </section>
     </div>
     
+    <div class="modal modal-blur fade" id="modalRePrice" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Re Price</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />
+                    Teks
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnRePrice" CssClass="btn btn-danger" Text="Confirm" OnClick="btnRePrice_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="modalChangeValue" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -337,7 +355,7 @@
                 }
             });
         }
-        ["modalChangeValue", "modalCopy", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalRePrice", "modalChangeValue", "modalCopy", "modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
