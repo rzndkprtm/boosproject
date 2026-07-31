@@ -62,7 +62,7 @@
                                         </div>
                                         <div class="row mt-3 mb-4" runat="server" id="divFormulaStandard">
                                             <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                                <label class="form-label">Formula Type</label>
+                                                <label class="form-label">Formula Field</label>
                                                 <asp:DropDownList runat="server" ID="ddlFormulaField" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlFormulaField_SelectedIndexChanged"></asp:DropDownList>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-6 form-group">
@@ -71,7 +71,7 @@
                                             </div>
                                             <br />
                                             <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                                <label class="form-label">Formula Type (ADD)</label>
+                                                <label class="form-label">Formula Field (ADD)</label>
                                                 <asp:DropDownList runat="server" ID="ddlFormulaFieldB" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlFormulaFieldB_SelectedIndexChanged"></asp:DropDownList>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-6 form-group">
@@ -82,7 +82,7 @@
                                         <div class="row mb-2" runat="server" id="divFormulaCustom">
                                             <div class="col-12 form-group">
                                                 <label class="form-label">Formula</label>
-                                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtFormula" Height="150px" CssClass="form-control" placeholder="Formula ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtFormulaCustom" Height="150px" CssClass="form-control" placeholder="Formula ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                             </div>
                                         </div>
                                         <div class="row mb-2">

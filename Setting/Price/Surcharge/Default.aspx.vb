@@ -19,11 +19,12 @@ Partial Class Setting_Price_Surcharge_Default
             MessageError(False, String.Empty)
             MessageError_ChangeValue(False, String.Empty)
 
-            BindPriceGroup()
             BindDesignType()
-
             ddlDesignType.SelectedValue = Session("DesignSurcharge")
+
+            BindPriceGroup(ddlDesignType.SelectedValue)
             ddlPriceGroup.SelectedValue = Session("PriceGroupSurcharge")
+
             txtSearch.Text = Session("SearchSurcharge")
             BindData(txtSearch.Text, ddlDesignType.SelectedValue, ddlPriceGroup.SelectedValue)
         End If
@@ -52,6 +53,8 @@ Partial Class Setting_Price_Surcharge_Default
         gvList.PageIndex = 0
 
         MessageError(False, String.Empty)
+        BindPriceGroup(ddlDesignType.SelectedValue)
+
         BindData(txtSearch.Text, ddlDesignType.SelectedValue, ddlPriceGroup.SelectedValue)
 
         Session("SearchSurcharge") = txtSearch.Text
@@ -218,26 +221,6 @@ Partial Class Setting_Price_Surcharge_Default
         End Try
     End Sub
 
-    Protected Sub BindPriceGroup()
-        ddlPriceGroup.Items.Clear()
-        Try
-            Dim thisQuery As String = "SELECT Id, Name FROM PriceGroups ORDER BY Name ASC"
-            If Session("RoleName") = "Sales" OrElse Session("LevelName") = "Account" Then
-                thisQuery = "SELECT Id, Name FROM PriceGroups WHERE CompanyId='" & Session("CompanyId").ToString() & "' ORDER BY Name ASC"
-            End If
-            ddlPriceGroup.DataSource = settingClass.GetDataTable(thisQuery)
-            ddlPriceGroup.DataTextField = "Name"
-            ddlPriceGroup.DataValueField = "Id"
-            ddlPriceGroup.DataBind()
-
-            If ddlPriceGroup.Items.Count > 1 Then
-                ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-        End Try
-    End Sub
-
     Protected Sub BindDesignType()
         ddlDesignType.Items.Clear()
         Try
@@ -252,6 +235,33 @@ Partial Class Setting_Price_Surcharge_Default
 
             If ddlDesignType.Items.Count > 1 Then
                 ddlDesignType.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindPriceGroup(designid As String)
+        ddlPriceGroup.Items.Clear()
+        Try
+            If Not String.IsNullOrEmpty(designid) Then
+                Dim type As String = settingClass.GetItemData("SELECT Type FROM Designs WHERE Id='" & designid & "'")
+                If Not String.IsNullOrEmpty(type) Then
+                    Dim thisQuery As String = "SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC"
+
+                    If Session("RoleName") = "Sales" OrElse Session("LevelName") = "Account" Then
+                        thisQuery = "SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND CompanyId='" & Session("CompanyId").ToString() & "' ORDER BY Name ASC"
+                    End If
+
+                    ddlPriceGroup.DataSource = settingClass.GetDataTable(thisQuery)
+                    ddlPriceGroup.DataTextField = "Name"
+                    ddlPriceGroup.DataValueField = "Id"
+                    ddlPriceGroup.DataBind()
+
+                    If ddlPriceGroup.Items.Count > 1 Then
+                        ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
+                    End If
+                End If
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

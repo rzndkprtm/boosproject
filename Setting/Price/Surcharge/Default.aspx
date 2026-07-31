@@ -49,14 +49,14 @@
                                         <div class="row mb-2">
                                             <div class="col-12 col-sm-12 col-lg-6">
                                                 <div class="form-group">
-                                                    <label class="form-label">Price Group</label>
-                                                    <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
+                                                    <label class="form-label">Design Type</label>
+                                                    <asp:DropDownList runat="server" ID="ddlDesignType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignType_SelectedIndexChanged"></asp:DropDownList>
                                                 </div>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-6">
                                                 <div class="form-group">
-                                                    <label class="form-label">Design Type</label>
-                                                    <asp:DropDownList runat="server" ID="ddlDesignType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignType_SelectedIndexChanged"></asp:DropDownList>
+                                                    <label class="form-label">Price Group</label>
+                                                    <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
                                                 </div>
                                             </div>
                                         </div>
