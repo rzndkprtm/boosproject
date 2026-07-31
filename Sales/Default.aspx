@@ -27,11 +27,6 @@
                 </div>
             </div>
         </section>
-        <section class="row mb-3">
-            <div class="col-12 d-flex justify-content-end flex-wrap gap-1">
-                <asp:Button runat="server" ID="btnRefresh" CssClass="btn btn-secondary" Text="Refresh Data" OnClick="btnRefresh_Click" />
-            </div>
-        </section>
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -122,7 +117,7 @@
                     <h5 class="modal-title white">Refresh</h5>
                 </div>
                 <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtRefreshId"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtRefreshId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
