@@ -3,10 +3,9 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
         .table td,
-        .table th {
-            vertical-align:middle;
-        }
+        .table th { vertical-align:middle; }
     </style>
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
