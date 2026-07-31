@@ -1004,7 +1004,7 @@ Partial Class Order_Method
 
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
@@ -1663,7 +1663,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then orderClass.GetTubeName(data.tubetype)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
         Dim factory As String = orderClass.GetFabricFactory(data.fabriccolour)
         Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
@@ -2194,7 +2194,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "PLEASE CONTACT CUSTOMER SERVICE !"
         If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
@@ -3470,7 +3470,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "VALANCE TYPE IS REQUIRED !"
@@ -3658,7 +3658,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "OUTDOOR TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
@@ -3848,7 +3848,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "PANEL SYSTEM IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "PANEL STYLE IS REQUIRED !"
@@ -4117,7 +4117,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
         Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
@@ -4349,7 +4349,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "PRIVACY TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PRIVACY COLOUR IS REQUIRED !"
@@ -4568,7 +4568,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.colourtype) Then colourId = orderClass.GetItemData("SELECT ColourType FROM Products WHERE Id='" & data.colourtype & "'")
         If Not String.IsNullOrEmpty(colourId) Then colourName = orderClass.GetColourName(colourId)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         Dim chainLength As String = String.Empty
         Dim chainLengthB As String = String.Empty
@@ -7821,7 +7821,7 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         Dim priceProductGroup As String = String.Empty
         Dim groupFabric As String = String.Empty
@@ -7979,7 +7979,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.controltype) Then controlType = orderClass.GetControlType(data.controltype)
         If Not String.IsNullOrEmpty(data.chaincolour) Then chainLength = orderClass.GetChainLength(data.chaincolour)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "ROMAN STYLE IS REQUIRED !"
@@ -8229,7 +8229,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "SAMPLE TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !"
@@ -8345,7 +8345,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "SLAT TYPE IS REQUIRED !"
@@ -9414,7 +9414,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlType = orderClass.GetControlType(data.controltype)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "ROMAN STYLE IS REQUIRED !"
@@ -9678,7 +9678,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.colourtype) Then colourId = orderClass.GetItemData("SELECT ColourType FROM Products WHERE Id='" & data.colourtype & "'")
         If Not String.IsNullOrEmpty(colourId) Then colourName = orderClass.GetColourName(colourId)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "VENETIAN TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "VENETIAN COLOUR IS REQUIRED !"
@@ -10166,7 +10166,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "VERTICAL SYSTEM IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "SLAT TYPE IS REQUIRED !"
