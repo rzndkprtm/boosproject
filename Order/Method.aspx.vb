@@ -1348,7 +1348,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByCustomer(data.customerid)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         Dim factory As String = orderClass.GetFabricFactory(data.fabriccolour)
         Dim factoryB As String = orderClass.GetFabricFactory(data.fabriccolourb)
@@ -1505,10 +1505,6 @@ Partial Class Order_Method
             If blindName = "Day & Night" Then
                 groupName = String.Format("{0} - {1} - {2}- {3}", designName, blindName, controlNameGroup, factory)
                 priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
-            End If
-
-            If data.rolename = "Developer" Then
-                Return groupName & " - " & priceProductGroup & " - " & priceGroupId
             End If
         End If
 
