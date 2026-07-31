@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Runtime.InteropServices
 
 Partial Class Setting_Price_Product_Add
     Inherits Page
@@ -19,6 +20,10 @@ Partial Class Setting_Price_Product_Add
             MessageError(False, String.Empty)
             BindDesignType()
             BindPriceGroup(ddlDesign.SelectedValue)
+
+            ddlStatus.Enabled = False
+            ddlStatus.SelectedValue = "Inactive"
+            If Session("RoleName") = "Developer" Then ddlStatus.Enabled = True
         End If
     End Sub
 

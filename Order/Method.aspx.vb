@@ -2421,7 +2421,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
 
-        Dim doorPriceGroupId As String = orderClass.GetDoorPriceGroupByCustomer(data.customerid)
+        Dim doorPriceGroupId As String = orderClass.GetDoorPriceGroupByOrder(data.customerid)
 
         Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
@@ -9218,7 +9218,7 @@ Partial Class Order_Method
             End If
         End If
 
-        Dim shutterPriceGroupId As String = orderClass.GetShutterPriceGroupByCustomer(data.customerid)
+        Dim shutterPriceGroupId As String = orderClass.GetShutterPriceGroupByOrder(data.customerid)
 
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, shutterPriceGroupId)
 
@@ -10555,7 +10555,7 @@ Partial Class Order_Method
         linearMetre = width / 1000
         squareMetre = width * drop / 1000000
 
-        Dim doorPriceGroupId As String = orderClass.GetDoorPriceGroupByCustomer(data.customerid)
+        Dim doorPriceGroupId As String = orderClass.GetDoorPriceGroupByOrder(data.customerid)
 
         Dim factory As String = String.Empty
         If data.framecolour.Contains("Express") Then factory = "Express"

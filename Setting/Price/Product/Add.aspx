@@ -36,13 +36,11 @@
                                     <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                                         <ContentTemplate>
                                             <div class="row mb-2">
-                                                <div class="col-12 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-5 mb-2 form-group">
                                                     <label class="form-label">Design Type</label>
                                                     <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
                                                 </div>
-                                            </div>
-                                            <div class="row mb-2">
-                                                <div class="col-12 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-7 mb-2 form-group">
                                                     <label class="form-label">Price Group</label>
                                                     <asp:ListBox runat="server" ID="lbPriceGroup" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                                 </div>
@@ -120,13 +118,18 @@
         }
         function initChoices() {
             document.querySelectorAll("select.choices").forEach(function (el) {
+
                 if (el.choices) {
                     el.choices.destroy();
                 }
+
+                var isMultiple = el.multiple;
+
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',
-                    shouldSort: false
+                    shouldSort: false,
+                    removeItemButton: isMultiple
                 });
             });
         }
