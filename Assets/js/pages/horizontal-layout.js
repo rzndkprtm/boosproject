@@ -30,33 +30,64 @@ function checkWindowSize() {
     if(window.innerWidth > 1200) document.querySelector('.main-navbar').style.display = ""
 }
 
+//function listener() {
+//    let menuItems = document.querySelectorAll('.menu-item.has-sub')
+
+//    menuItems.forEach(menuItem => {
+//        let menuLink = menuItem.querySelector('.menu-link')
+//        let submenu = menuItem.querySelector('.submenu')
+
+//        if (menuLink && submenu) {
+//            menuLink.addEventListener('click', (e) => {
+//                e.preventDefault()
+//                submenu.classList.toggle('active')
+//            })
+//        }
+//    })
+
+//    // Three level menu event listener
+//    let submenuItems = document.querySelectorAll('.submenu-item.has-sub')
+
+//    submenuItems.forEach(submenuItem => {
+//        let submenuLink = submenuItem.querySelector('.submenu-link')
+//        let subsubmenu = submenuItem.querySelector('.subsubmenu')
+
+//        if (submenuLink && subsubmenu) {
+//            submenuLink.addEventListener('click', e => {
+//                e.preventDefault()
+//                subsubmenu.classList.toggle('active')
+//            })
+//        }
+//    })
+//}
+
 function listener() {
-    let menuItems = document.querySelectorAll('.menu-item.has-sub')
 
-    menuItems.forEach(menuItem => {
-        let menuLink = menuItem.querySelector('.menu-link')
-        let submenu = menuItem.querySelector('.submenu')
+    document.querySelectorAll(".menu-item.has-sub").forEach(menuItem => {
 
-        if (menuLink && submenu) {
-            menuLink.addEventListener('click', (e) => {
-                e.preventDefault()
-                submenu.classList.toggle('active')
-            })
-        }
-    })
+        let menuLink = menuItem.querySelector(":scope > .menu-link");
+        let submenu = menuItem.querySelector(":scope > .submenu");
 
-    // Three level menu event listener
-    let submenuItems = document.querySelectorAll('.submenu-item.has-sub')
+        if (!menuLink || !submenu) return;
 
-    submenuItems.forEach(submenuItem => {
-        let submenuLink = submenuItem.querySelector('.submenu-link')
-        let subsubmenu = submenuItem.querySelector('.subsubmenu')
+        menuLink.onclick = function (e) {
+            e.preventDefault();
+            submenu.classList.toggle("active");
+        };
+    });
 
-        if (submenuLink && subsubmenu) {
-            submenuLink.addEventListener('click', e => {
-                e.preventDefault()
-                subsubmenu.classList.toggle('active')
-            })
-        }
-    })
+    document.querySelectorAll(".submenu-item.has-sub").forEach(submenuItem => {
+
+        let submenuLink = submenuItem.querySelector(":scope > .submenu-link");
+        let subsubmenu = submenuItem.querySelector(":scope > .subsubmenu");
+
+        if (!submenuLink || !subsubmenu) return;
+
+        submenuLink.onclick = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            subsubmenu.classList.toggle("active");
+        };
+    });
+
 }
