@@ -1508,7 +1508,7 @@ Partial Class Order_Method
             End If
 
             If data.rolename = "Developer" Then
-                Return groupName & " - " & priceProductGroup
+                Return groupName & " - " & priceProductGroup & " - " & priceGroupId
             End If
         End If
 
