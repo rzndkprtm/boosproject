@@ -1,6 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Web.Services
+Imports System.Reflection
 
 Partial Class Order_Method
     Inherits Page
@@ -72,7 +73,7 @@ Partial Class Order_Method
                 New SqlParameter("@CompanyDetail", companydetailid),
                 New SqlParameter("@Action", action)
             }
-            Dim dt As DataTable = orderClass.GetDataTableSP("sp_Blinds_List", param)
+            Dim dt As DataTable = orderClass.GetDataTableSP("sp_Blinds_List_Order", param)
 
             For Each row As DataRow In dt.Rows
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
@@ -86,7 +87,7 @@ Partial Class Order_Method
                 New SqlParameter("@CompanyDetail", companydetailid),
                 New SqlParameter("@Action", action)
             }
-            Dim dt As DataTable = orderClass.GetDataTableSP("sp_Blinds_List", param)
+            Dim dt As DataTable = orderClass.GetDataTableSP("sp_Blinds_List_Order", param)
 
             For Each row As DataRow In dt.Rows
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
@@ -100,7 +101,7 @@ Partial Class Order_Method
                 New SqlParameter("@CompanyDetail", companydetailid),
                 New SqlParameter("@Action", action)
             }
-            Dim dt As DataTable = orderClass.GetDataTableSP("sp_Blinds_List", param)
+            Dim dt As DataTable = orderClass.GetDataTableSP("sp_Blinds_List_Order", param)
 
             For Each row As DataRow In dt.Rows
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
@@ -114,7 +115,7 @@ Partial Class Order_Method
                 New SqlParameter("@CompanyDetail", companydetailid),
                 New SqlParameter("@Action", action)
             }
-            Dim dt As DataTable = orderClass.GetDataTableSP("sp_Blinds_List", param)
+            Dim dt As DataTable = orderClass.GetDataTableSP("sp_Blinds_List_Order", param)
 
             For Each row As DataRow In dt.Rows
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
@@ -976,6 +977,343 @@ Partial Class Order_Method
 
         Return result
     End Function
+
+    '' PROCESS NEW
+
+
+    '<WebMethod()>
+    'Public Shared Function AluminiumProcess(data As ProccessData) As String
+    '    Dim orderClass As New OrderClass
+
+    '    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+
+    '    Dim qty As Integer
+    '    Dim width As Integer : Dim widthb As Integer
+    '    Dim drop As Integer : Dim dropb As Integer
+
+    '    Dim controllength As Integer : Dim controllengthb As Integer
+    '    Dim wandlength As Integer : Dim wandlengthb As Integer
+
+    '    Dim linearmetre As Decimal : Dim linearmetreb As Decimal
+    '    Dim squaremetre As Decimal : Dim squaremetreb As Decimal
+
+    '    Dim markup As Integer
+
+    '    Dim totalItems As Integer = 1
+
+    '    Dim controlpositionb As String = String.Empty
+    '    Dim tilterpositionb As String = String.Empty
+
+    '    Dim designName As String = String.Empty
+    '    Dim blindName As String = String.Empty
+    '    Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+
+    '    If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+    '    If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+
+    '    Dim validation As New ValidationEngine()
+    '    Dim errorMessage As String = validation.Validate(data)
+    '    If errorMessage <> "" Then Return errorMessage
+
+    '    'If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+    '    '    If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
+    '    '    If data.subtype.Contains("2 on 1") AndAlso width < 300 Then Return "MINIMUM WIDTH IS 300MM !"
+    '    'End If
+    '    'If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+    '    '    If width > 3010 Then Return "MAXIMUM WIDTH IS 3010MM !"
+    '    'End If
+
+    '    'If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
+    '    'If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
+    '    'If data.rolename = "Customer" AndAlso data.rolename = "Installer" Then
+    '    '    If drop < 250 Then Return "MINIMUM DROP IS 250MM !"
+    '    'End If
+    '    'If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+    '    '    If drop > 3200 Then Return "MAXIMUM DROP IS 3200MM !"
+    '    'End If
+
+    '    'If data.subtype = "Single" Then
+    '    '    If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED !"
+    '    '    If String.IsNullOrEmpty(data.tilterposition) Then Return "TILTER POSITION IS REQUIRED !"
+    '    'End If
+
+    '    'If data.subtype = "Single" Then
+    '    '    If width > 250 AndAlso width <= 299 AndAlso data.controlposition = data.tilterposition Then
+    '    '        Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS !"
+    '    '    End If
+    '    'End If
+
+    '    'If String.IsNullOrEmpty(data.controllength) Then
+    '    '    If data.subtype.Contains("2 on 1") Then Return "FIRST CORD LENGTH IS REQUIRED !"
+    '    '    Return "CORD LENGTH IS REQUIRED !"
+    '    'End If
+
+    '    'If data.controllength = "Custom" Then
+    '    '    If String.IsNullOrEmpty(data.controllengthvalue) Then
+    '    '        If data.subtype = "2 on 1 Left-Right" Then Return "FIRST CORD LENGTH VALUE IS REQUIRED !"
+    '    '        Return "CORD LENGTH VALUE IS REQUIRED !"
+    '    '    End If
+    '    '    If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then
+    '    '        If data.subtype = "2 on 1 Left-Right" Then Return "PLEASE CHECK YOUR FIRST CORD LENGTH ORDER !"
+    '    '        Return "PLEASE CHECK YOUR CORD LENGTH ORDER !"
+    '    '    End If
+    '    'End If
+
+    '    'If data.subtype = "Single" OrElse data.subtype = "2 on 1 Left-Left" OrElse data.subtype = "2 on 1 Left-Right" Then
+    '    '    If String.IsNullOrEmpty(data.wandlength) Then
+    '    '        If data.subtype = "2 on 1 Left-Right" Then Return "FIRST WAND LENGTH IS REQUIRED !"
+    '    '        Return "WAND LENGTH IS REQUIRED !"
+    '    '    End If
+
+    '    '    If data.wandlength = "Custom" Then
+    '    '        If String.IsNullOrEmpty(data.wandlengthvalue) Then
+    '    '            If data.subtype = "2 on 1 Left-Right" Then Return "FIRST WAND LENGTH VALUE IS REQUIRED !"
+    '    '            Return "WAND LENGTH VALUE IS REQUIRED !"
+    '    '        End If
+    '    '        If Not String.IsNullOrEmpty(data.wandlengthvalue) Then
+    '    '            If Not Integer.TryParse(data.wandlengthvalue, wandlength) OrElse wandlength <= 0 Then
+    '    '                If data.subtype = "2 on 1 Left-Right" Then Return "PLEASE CHECK YOUR FIRST WAND LENGTH ORDER !"
+    '    '                Return "PLEASE CHECK YOUR WAND LENGTH ORDER !"
+    '    '            End If
+    '    '        End If
+    '    '    End If
+    '    'End If
+
+    '    'If data.subtype.Contains("2 on 1") Then
+    '    '    If String.IsNullOrEmpty(data.widthb) Then Return "SECOND WIDTH IS REQUIRED !"
+    '    '    If Not Integer.TryParse(data.widthb, widthb) OrElse widthb <= 0 Then Return "PLEASE CHECK YOUR SECOND WIDTH ORDER !"
+    '    '    If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+    '    '        If widthb < 300 Then Return "MINIMUM WIDTH FOR SECOND BLIND IS 300MM !"
+    '    '    End If
+
+    '    '    If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+    '    '        Dim totalWidth As Integer = width + widthb
+    '    '        If totalWidth > 3010 Then Return "TOTAL WIDTH COULDN'T MORE THAN 3010MM !"
+    '    '    End If
+
+    '    '    If String.IsNullOrEmpty(data.dropb) Then Return "SECOND DROP IS REQUIRED !"
+    '    '    If Not Integer.TryParse(data.dropb, dropb) OrElse dropb <= 0 Then Return "PLEASE CHECK YOUR SECOND DROP ORDER !"
+    '    '    If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+    '    '        If dropb < 250 Then Return "MINIMUM DROP IS 250MM !"
+    '    '    End If
+    '    '    If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+    '    '        If dropb > 3200 Then Return "MAXIMUM DROP FOR SECOND DROP IS 3200MM !"
+    '    '    End If
+
+    '    '    If String.IsNullOrEmpty(data.controllengthb) Then Return "SECOND CORD LENGTH IS REQUIRED !"
+
+    '    '    If data.controllengthb = "Custom" Then
+    '    '        If String.IsNullOrEmpty(data.controllengthvalueb) Then Return "SECOND CORD LENGTH VALUL IS REQUIRED !"
+    '    '        If Not Integer.TryParse(data.controllengthvalueb, controllengthb) OrElse controllengthb <= 0 Then Return "PLEASE CHECK YOUR SECOND CORD LENGTH ORDER !"
+    '    '    End If
+    '    'End If
+
+    '    'If data.subtype = "2 on 1 Right-Right" OrElse data.subtype = "2 on 1 Left-Right" Then
+    '    '    If String.IsNullOrEmpty(data.wandlengthb) Then Return "SECOND WAND LENGTH IS REQUIRED !"
+    '    '    If data.wandlengthb = "Custom" Then
+    '    '        If String.IsNullOrEmpty(data.wandlengthvalueb) Then Return "SECOND WAND LENGTH VALUL IS REQUIRED !"
+    '    '        If Not String.IsNullOrEmpty(data.wandlengthvalueb) Then
+    '    '            If Not Integer.TryParse(data.wandlengthvalueb, wandlengthb) OrElse wandlengthb <= 0 Then Return "PLEASE CHECK YOUR SECOND WAND LENGTH ORDER !"
+    '    '        End If
+    '    '    End If
+    '    'End If
+
+    '    'If Not String.IsNullOrEmpty(data.notes) Then
+    '    '    If data.notes.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.notes.Contains("&=") OrElse data.notes.Contains("&+") Then
+    '    '        Return "SPECIAL INFORMATION MUST NOT CONTAIN: , & ` ' &= &+"
+    '    '    End If
+    '    '    If data.notes.Trim().Length > 1000 Then Return "MAXIMUM 1000 CHARACTERS !"
+    '    'End If
+
+    '    'If Not String.IsNullOrEmpty(data.markup) Then
+    '    '    If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
+    '    'End If
+
+    '    linearmetre = width / 1000
+    '    squaremetre = width * drop / 1000000
+
+    '    If data.subtype = "Single" Then
+    '        widthb = 0 : dropb = 0
+    '        data.controllengthb = String.Empty : data.wandlengthb = String.Empty
+    '        controllengthb = 0 : wandlengthb = 0
+    '    End If
+
+    '    If data.subtype = "2 on 1 Left-Left" Then
+    '        data.controlposition = "Left" : data.tilterposition = "Left"
+    '        controlpositionb = "Left" : tilterpositionb = String.Empty
+    '        data.wandlengthb = String.Empty : wandlengthb = 0
+
+    '        linearmetreb = widthb / 1000
+    '        squaremetreb = widthb * dropb / 1000000
+
+    '        totalItems = 2
+    '    End If
+
+    '    If data.subtype = "2 on 1 Right-Right" Then
+    '        data.controlposition = "Right" : data.tilterposition = String.Empty
+    '        controlpositionb = "Right" : tilterpositionb = "Right"
+    '        data.wandlength = String.Empty : wandlength = 0
+
+    '        linearmetreb = widthb / 1000
+    '        squaremetreb = widthb * dropb / 1000000
+
+    '        totalItems = 2
+    '    End If
+
+    '    If data.subtype = "2 on 1 Left-Right" Then
+    '        data.controlposition = "Left" : data.tilterposition = "Left"
+    '        controlpositionb = "Right" : tilterpositionb = "Right"
+
+    '        linearmetreb = widthb / 1000
+    '        squaremetreb = widthb * dropb / 1000000
+
+    '        totalItems = 2
+    '    End If
+
+    '    If data.controllength = "Standard" Then
+    '        controllength = Math.Ceiling(drop * 2 / 3)
+    '        If controllength < 450 Then controllength = 450
+    '    End If
+
+    '    If data.controllengthb = "Standard" Then
+    '        controllengthb = Math.Ceiling(drop * 2 / 3)
+    '        If controllengthb < 450 Then controllengthb = 450
+    '    End If
+
+    '    If data.wandlength = "Standard" Then
+    '        wandlength = Math.Ceiling(drop * 2 / 3)
+    '        If wandlength < 450 Then wandlength = 450
+    '    End If
+
+    '    If data.wandlengthb = "Standard" Then
+    '        wandlengthb = Math.Ceiling(drop * 2 / 3)
+    '        If wandlengthb < 450 Then wandlengthb = 450
+    '    End If
+
+    '    Dim productGroupName As String = String.Format("{0} - {1}", designName, blindName)
+    '    Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productGroupName, data.designid, priceGroupId)
+    '    Dim priceProductGroupB As String = String.Empty
+
+    '    If data.subtype.Contains("2 on 1") Then priceProductGroupB = priceProductGroup
+
+    '    If data.itemaction = "create" OrElse data.itemaction = "copy" Then
+    '        For i As Integer = 1 To qty
+    '            Dim itemId As String = orderClass.GetNewOrderItemId()
+
+    '            Using thisConn As New SqlConnection(myConn)
+    '                Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Aluminium", thisConn)
+    '                    thisCmd.CommandType = CommandType.StoredProcedure
+
+    '                    thisCmd.Parameters.AddWithValue("@Id", itemId)
+    '                    thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
+    '                    thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
+    '                    thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+    '                    thisCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
+    '                    thisCmd.Parameters.AddWithValue("@Room", data.room)
+    '                    thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
+    '                    thisCmd.Parameters.AddWithValue("@SubType", data.subtype)
+    '                    thisCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
+    '                    thisCmd.Parameters.AddWithValue("@TilterPosition", data.tilterposition)
+    '                    thisCmd.Parameters.AddWithValue("@Width", width)
+    '                    thisCmd.Parameters.AddWithValue("@Drop", drop)
+    '                    thisCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
+    '                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
+    '                    thisCmd.Parameters.AddWithValue("@WandLength", data.wandlength)
+    '                    thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
+    '                    thisCmd.Parameters.AddWithValue("@ControlPositionB", controlpositionb)
+    '                    thisCmd.Parameters.AddWithValue("@TilterPositionB", tilterpositionb)
+    '                    thisCmd.Parameters.AddWithValue("@WidthB", widthb)
+    '                    thisCmd.Parameters.AddWithValue("@DropB", dropb)
+    '                    thisCmd.Parameters.AddWithValue("@ControlLengthB", data.controllengthb)
+    '                    thisCmd.Parameters.AddWithValue("@ControlLengthValueB", controllengthb)
+    '                    thisCmd.Parameters.AddWithValue("@WandLengthB", data.wandlengthb)
+    '                    thisCmd.Parameters.AddWithValue("@WandLengthValueB", wandlengthb)
+    '                    thisCmd.Parameters.AddWithValue("@LinearMetre", linearmetre)
+    '                    thisCmd.Parameters.AddWithValue("@LinearMetreB", linearmetreb)
+    '                    thisCmd.Parameters.AddWithValue("@SquareMetre", squaremetre)
+    '                    thisCmd.Parameters.AddWithValue("@SquareMetreB", squaremetreb)
+    '                    thisCmd.Parameters.AddWithValue("@Supply", data.supply)
+    '                    thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
+    '                    thisCmd.Parameters.AddWithValue("@Notes", data.notes)
+    '                    thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+
+    '                    thisConn.Open()
+    '                    thisCmd.ExecuteNonQuery()
+    '                End Using
+    '            End Using
+
+    '            orderClass.ResetPriceDetail(data.headerid, itemId)
+    '            orderClass.CalculatePrice(data.headerid, itemId)
+    '            orderClass.FinalCostItem(data.headerid, itemId)
+
+    '            Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
+    '            orderClass.Logs(dataLog)
+    '        Next
+    '        orderClass.UpdateOrderFactory(data.headerid)
+
+    '        Return "Success"
+    '    End If
+
+    '    If data.itemaction = "edit" OrElse data.itemaction = "view" Then
+    '        Dim itemId As String = data.itemid
+
+    '        Using thisConn As New SqlConnection(myConn)
+    '            Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Aluminium", thisConn)
+    '                thisCmd.CommandType = CommandType.StoredProcedure
+
+    '                thisCmd.Parameters.AddWithValue("@Id", itemId)
+    '                thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
+    '                thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+    '                thisCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
+    '                thisCmd.Parameters.AddWithValue("@Room", data.room)
+    '                thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
+    '                thisCmd.Parameters.AddWithValue("@SubType", data.subtype)
+    '                thisCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
+    '                thisCmd.Parameters.AddWithValue("@TilterPosition", data.tilterposition)
+    '                thisCmd.Parameters.AddWithValue("@Width", width)
+    '                thisCmd.Parameters.AddWithValue("@Drop", drop)
+    '                thisCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
+    '                thisCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
+    '                thisCmd.Parameters.AddWithValue("@WandLength", data.wandlength)
+    '                thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
+    '                thisCmd.Parameters.AddWithValue("@ControlPositionB", controlpositionb)
+    '                thisCmd.Parameters.AddWithValue("@TilterPositionB", tilterpositionb)
+    '                thisCmd.Parameters.AddWithValue("@WidthB", widthb)
+    '                thisCmd.Parameters.AddWithValue("@DropB", dropb)
+    '                thisCmd.Parameters.AddWithValue("@ControlLengthB", data.controllengthb)
+    '                thisCmd.Parameters.AddWithValue("@ControlLengthValueB", controllengthb)
+    '                thisCmd.Parameters.AddWithValue("@WandLengthB", data.wandlengthb)
+    '                thisCmd.Parameters.AddWithValue("@WandLengthValueB", wandlengthb)
+    '                thisCmd.Parameters.AddWithValue("@LinearMetre", linearmetre)
+    '                thisCmd.Parameters.AddWithValue("@LinearMetreB", linearmetreb)
+    '                thisCmd.Parameters.AddWithValue("@SquareMetre", squaremetre)
+    '                thisCmd.Parameters.AddWithValue("@SquareMetreB", squaremetreb)
+    '                thisCmd.Parameters.AddWithValue("@Supply", data.supply)
+    '                thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
+    '                thisCmd.Parameters.AddWithValue("@Notes", data.notes)
+    '                thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+
+    '                thisConn.Open()
+    '                thisCmd.ExecuteNonQuery()
+    '            End Using
+    '        End Using
+
+    '        orderClass.ResetPriceDetail(data.headerid, itemId)
+    '        orderClass.CalculatePrice(data.headerid, itemId)
+    '        orderClass.FinalCostItem(data.headerid, itemId)
+
+    '        orderClass.UpdateOrderFactory(data.headerid)
+
+    '        Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
+    '        orderClass.Logs(dataLog)
+
+    '        Return "Success"
+    '    End If
+
+    '    Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
+    'End Function
+
+
 
     'PROCESS
 
@@ -12099,4 +12437,170 @@ Public Class HistoryNoteDto
     Public Property FullName As String
     Public Property CreatedDate As String
     Public Property Note As String
+End Class
+
+Public Class ValidationEngine
+
+    Private setting As New SettingClass()
+
+    Public Function Validate(data As ProccessData) As String
+        Dim dtRules As DataTable = setting.GetDataTable("SELECT * FROM Validations WHERE Active = 1 AND DesignId = '" & data.designid & "' ORDER BY SortOrder")
+
+        If dtRules.Rows.Count = 0 Then Return ""
+
+        For Each rule As DataRow In dtRules.Rows
+            Dim dtConditions As DataTable = setting.GetDataTable("SELECT * FROM ValidationDetails WHERE ValidationId = '" & rule("Id").ToString() & "' ORDER BY GroupNo, Id")
+
+            If EvaluateRule(data, dtConditions) Then
+                Return rule("ErrorMessage").ToString()
+            End If
+        Next
+        Return ""
+    End Function
+
+    Private Function EvaluateRule(data As ProccessData, dtConditions As DataTable) As Boolean
+        If dtConditions.Rows.Count = 0 Then Return False
+
+        Dim groups As DataTable = dtConditions.DefaultView.ToTable(True, "GroupNo")
+        For Each grp As DataRow In groups.Rows
+            Dim groupNo As Integer = CInt(grp("GroupNo"))
+
+            Dim conditions() As DataRow = dtConditions.Select("GroupNo=" & groupNo, "Id")
+
+            Dim allMatch As Boolean = True
+            For Each condition As DataRow In conditions
+                If Not EvaluateCondition(data, condition) Then
+                    allMatch = False
+                    Exit For
+                End If
+            Next
+            If allMatch Then
+                Return True
+            End If
+        Next
+        Return False
+    End Function
+
+    Private Function EvaluateCondition(data As ProccessData, condition As DataRow) As Boolean
+        Dim fieldName As String = condition("FieldName").ToString()
+        Dim [operator] As String = condition("Operator").ToString().ToUpper()
+
+        Dim compareValue As String = ""
+        If Not IsDBNull(condition("CompareValue")) Then
+            compareValue = condition("CompareValue").ToString()
+        End If
+
+        Dim dataType As String = ""
+        If Not IsDBNull(condition("DataType")) Then
+            dataType = condition("DataType").ToString().ToUpper()
+        End If
+
+        Dim value As Object = GetPropertyValue(data, fieldName)
+
+        Return Compare(value, [operator], compareValue, dataType)
+    End Function
+
+    Private Function GetPropertyValue(data As ProccessData, propertyName As String) As Object
+        Dim prop As PropertyInfo = GetType(ProccessData).GetProperty(propertyName, BindingFlags.Public Or BindingFlags.Instance Or BindingFlags.IgnoreCase)
+        If prop Is Nothing Then Return Nothing
+
+        Return prop.GetValue(data)
+    End Function
+
+    Private Function Compare(value As Object, op As String, compareValue As String, dataType As String) As Boolean
+        Dim value1 As String = ""
+        If value IsNot Nothing Then
+            value1 = value.ToString().Trim()
+        End If
+
+        Select Case op
+            Case "NOT NULL"
+                Return value1 <> ""
+            Case "NULL"
+                Return value1 = ""
+            Case "="
+                Return String.Equals(value1, compareValue, StringComparison.OrdinalIgnoreCase)
+            Case "<>"
+                Return Not String.Equals(value1, compareValue, StringComparison.OrdinalIgnoreCase)
+            Case "CONTAINS"
+                Return value1.IndexOf(compareValue, StringComparison.OrdinalIgnoreCase) >= 0
+            Case "NOT CONTAINS"
+                Return value1.IndexOf(compareValue, StringComparison.OrdinalIgnoreCase) < 0
+            Case "STARTS WITH"
+                Return value1.StartsWith(compareValue, StringComparison.OrdinalIgnoreCase)
+            Case "ENDS WITH"
+                Return value1.EndsWith(compareValue, StringComparison.OrdinalIgnoreCase)
+            Case "IN"
+                Dim items() As String = compareValue.Split(","c)
+                For Each item As String In items
+                    If String.Equals(value1.Trim(), item.Trim(), StringComparison.OrdinalIgnoreCase) Then
+                        Return True
+                    End If
+                Next
+                Return False
+            Case "NOT IN"
+                Dim items() As String = compareValue.Split(","c)
+                For Each item As String In items
+                    If String.Equals(value1.Trim(), item.Trim(), StringComparison.OrdinalIgnoreCase) Then
+                        Return False
+                    End If
+                Next
+                Return True
+            Case "IS_NUMBER"
+                Select Case dataType
+                    Case "INTEGER"
+                        Dim i As Integer
+                        Return Integer.TryParse(value1, i)
+                    Case "DECIMAL"
+                        Dim d As Decimal
+                        Return Decimal.TryParse(value1, d)
+                    Case Else
+                        Dim n As Decimal
+                        Return Decimal.TryParse(value1, n)
+                End Select
+            Case "POSITIVE_INTEGER"
+                Dim i As Integer
+                Return Not Integer.TryParse(value1, i) OrElse i <= 0
+            Case "POSITIVE_DECIMAL"
+                Dim d As Decimal
+                Return Decimal.TryParse(value1, d) AndAlso d > 0
+            Case ">", ">=", "<", "<="
+                Return CompareNumber(value1, compareValue, op)
+            Case "INVALID_CHARS"
+                Dim invalids() As String = compareValue.Split(";"c)
+
+                For Each s As String In invalids
+                    If value1.Contains(s) Then
+                        Return True
+                    End If
+                Next
+                Return False
+        End Select
+        Return False
+    End Function
+
+    Private Function CompareNumber(value1 As String, value2 As String, op As String) As Boolean
+        Dim n1 As Decimal
+        Dim n2 As Decimal
+
+        If Not Decimal.TryParse(value1, n1) Then
+            Return False
+        End If
+
+        If Not Decimal.TryParse(value2, n2) Then
+            Return False
+        End If
+
+        Select Case op
+            Case ">"
+                Return n1 > n2
+            Case ">="
+                Return n1 >= n2
+            Case "<"
+                Return n1 < n2
+            Case "<="
+                Return n1 <= n2
+        End Select
+        Return False
+    End Function
 End Class

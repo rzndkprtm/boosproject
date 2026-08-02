@@ -1,11 +1,12 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_Specification_Blind_Default
+Partial Class Setting_Specification_Design_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -16,14 +17,14 @@ Partial Class Setting_Specification_Blind_Default
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            txtSearch.Text = Session("SearchBlind")
+            txtSearch.Text = Session("SearchDesign")
             BindData(txtSearch.Text)
         End If
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
-        Session("SearchBlind") = txtSearch.Text
-        Response.Redirect("~/setting/specification/blind/add", False)
+        Session("SearchDesign") = txtSearch.Text
+        Response.Redirect("~/setting/specification/design/add", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
@@ -32,11 +33,12 @@ Partial Class Setting_Specification_Blind_Default
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
 
-        Session("SearchBlind") = txtSearch.Text
+        Session("SearchDesign") = txtSearch.Text
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         gvList.PageIndex = e.NewPageIndex
+
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
     End Sub
@@ -57,7 +59,7 @@ Partial Class Setting_Specification_Blind_Default
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText))
             }
-            gvList.DataSource = settingClass.GetDataTableSP("sp_Blinds_List", params)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_Designs_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 

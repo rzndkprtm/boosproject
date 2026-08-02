@@ -34,7 +34,7 @@
     <div class="page-content">
         <section class="row">
             <div class="dashboard-wrapper">
-                <a href="/setting/specification/designtype" class="dashboard-card">
+                <a href="/setting/specification/design" class="dashboard-card">
                     <div class="dashboard-number"><%= Designs %> Data</div>
                     <div class="dashboard-title">Design Type</div>
                     <div class="dashboard-desc">Description</div>
