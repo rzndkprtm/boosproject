@@ -228,7 +228,7 @@
                                                     <a href="javascript:void(0);" class='submenu-link'>Specification</a>
                                                     <ul class="subsubmenu">
                                                         <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/specification/designtype" class="subsubmenu-link">Design Type</a>
+                                                            <a runat="server" href="~/setting/specification/design" class="subsubmenu-link">Design Type</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/blind" class="subsubmenu-link">Blind Type</a>
