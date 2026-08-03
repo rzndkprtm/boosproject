@@ -9228,6 +9228,10 @@ Partial Class Order_Method
 
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, shutterPriceGroupId)
 
+        If data.rolename = "Developer" Then
+            Return shutterPriceGroupId & " _ " & priceProductGroup
+        End If
+
         Dim squareMetre As Decimal = width * drop / 1000000
         Dim linearMetre As Decimal = width / 1000
 
