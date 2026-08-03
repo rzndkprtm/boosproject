@@ -83,6 +83,22 @@ Public Class SettingClass
         Return thisTable
     End Function
 
+    Public Sub ExecuteSP(spName As String, params As List(Of SqlParameter))
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    If params IsNot Nothing AndAlso params.Count > 0 Then
+                        thisCmd.Parameters.AddRange(params.ToArray())
+                    End If
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+        Catch ex As Exception
+        End Try
+    End Sub
+
     Public Function GetItemData(thisString As String) As String
         Dim result As String = String.Empty
         Try

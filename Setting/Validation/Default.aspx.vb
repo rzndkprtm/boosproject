@@ -48,7 +48,7 @@ Partial Class Setting_Validation_Default
         Response.Redirect("~/setting/validation/add", False)
     End Sub
 
-    Protected Sub btnDetail_Click(sender As Object, e As EventArgs)
+    Protected Sub btnAddDetail_Click(sender As Object, e As EventArgs)
         Dim thisId As String = txtValidationId.Text
         Dim url As String = String.Format("~/setting/validation/detail/add?validationid={0}", thisId)
         Response.Redirect(url, False)
@@ -81,6 +81,29 @@ Partial Class Setting_Validation_Default
         BuildPager()
     End Sub
 
+    Protected Sub btnSortOrder_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtSortOrderId.Text
+            Dim designId As String = txtDesignId.Text
+            Dim sortOrder As String = txtNewSortOrder.Text
+
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@Id", thisId),
+                New SqlParameter("@DesignId", designId),
+                New SqlParameter("@SortOrder", sortOrder)
+            }
+            settingClass.ExecuteSP("sp_Validations_UpdateSortOrder", params)
+
+            Response.Redirect("~/setting/validation", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindData(designId As String)
         Try
             Dim params As New List(Of SqlParameter) From {
@@ -91,6 +114,7 @@ Partial Class Setting_Validation_Default
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
             btnAdd.Visible = LoginAccess("Add")
+            btnAddDetail.Visible = LoginAccess("Add Detail")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
