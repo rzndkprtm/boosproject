@@ -2609,7 +2609,7 @@ Partial Class Order_Upload
 
                                 If bottomType = "Silent" Then bottomType = "Flat Mohair"
                                 If bottomType = "Fabric Wrap" Then bottomType = "Flat"
-                                If bottomType = "Plain Trim" Then bottomType = "Trim"
+                                If bottomType = "Sewn In" Then bottomType = "Trim"
 
                                 Dim bottomId As String = orderClass.GetItemData("SELECT Id FROM Bottoms CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE designArray.VALUE='" & designId & "' AND Name = '" & bottomType.Trim() & "' AND companyArray.VALUE='" & companyDetailId & "'")
                                 If String.IsNullOrEmpty(bottomId) Then
