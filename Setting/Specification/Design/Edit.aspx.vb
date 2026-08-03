@@ -20,7 +20,7 @@ Partial Class Setting_Specification_Design_Edit
             Exit Sub
         End If
 
-        lblId.Text = Request.QueryString("blindid").ToString()
+        lblId.Text = Request.QueryString("designid").ToString()
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
