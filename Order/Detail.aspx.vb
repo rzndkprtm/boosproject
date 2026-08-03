@@ -2326,6 +2326,8 @@ Partial Class Order_Detail
                     btnEditOrder.Visible = True
                     aDeleteOrder.Visible = True
 
+                    btnQuoteAction.Visible = True
+
                     btnUpdateStatus.Visible = True
                     aUnsubmitOrder.Visible = True
                     aHoldOrder.Visible = True
