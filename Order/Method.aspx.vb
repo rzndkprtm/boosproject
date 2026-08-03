@@ -1021,10 +1021,10 @@ Partial Class Order_Method
         If result <> "" Then Return result
 
         If data.subtype.Contains("2 on 1") Then
-            If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-                Dim totalWidth As Integer = width + widthb
-                If totalWidth > 3010 Then Return "TOTAL WIDTH COULDN'T MORE THAN 3010MM !"
-            End If
+            'If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+            '    Dim totalWidth As Integer = width + widthb
+            '    If totalWidth > 3010 Then Return "TOTAL WIDTH COULDN'T MORE THAN 3010MM !"
+            'End If
 
             If String.IsNullOrEmpty(data.dropb) Then Return "SECOND DROP IS REQUIRED !"
             If Not Integer.TryParse(data.dropb, dropb) OrElse dropb <= 0 Then Return "PLEASE CHECK YOUR SECOND DROP ORDER !"
