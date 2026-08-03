@@ -70,7 +70,7 @@
                                                             <a href="javascript:void(0);" id="aDetail" class="dropdown-item" onclick="showDetail('<%# Eval("Id").ToString() %>');">Detail</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Sort Order") %>'>
-                                                            <a href="javascript:void(0);" id="aSortOrder" class="dropdown-item" onclick="showDetail('<%# Eval("Id").ToString() %>');">Detail</a>
+                                                            <a href="javascript:void(0);" id="aSortOrder" class="dropdown-item" onclick="showDetail('<%# Eval("Id").ToString() %>');">Sort Order</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/validation/edit?validationid=" & Eval("Id")) %>'>Edit</a>

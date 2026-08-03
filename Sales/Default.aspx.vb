@@ -27,38 +27,10 @@ Partial Class Sales_Default
         End If
     End Sub
 
-    'Protected Sub btnRefresh_Click(sender As Object, e As EventArgs)
-    '    Try
-    '        Dim dataCompany As DataTable = salesClass.GetDataTable("SELECT Id FROM Companys")
-    '        If dataCompany.Rows.Count > 0 Then
-    '            For i As Integer = 0 To dataCompany.Rows.Count - 1
-    '                Dim companyId As String = dataCompany.Rows(i)("Id").ToString()
-
-    '                Using thisConn As New SqlConnection(myConn)
-    '                    Using thisCmd As New SqlCommand("sp_Sales_Refresh", thisConn)
-    '                        thisCmd.CommandType = CommandType.StoredProcedure
-    '                        thisCmd.Parameters.AddWithValue("@CompanyId", companyId)
-    '                        thisConn.Open()
-    '                        thisCmd.ExecuteNonQuery()
-    '                    End Using
-    '                End Using
-    '            Next
-    '        End If
-
-    '        Session("SearchSalesCompany") = ddlCompany.SelectedValue
-    '        Response.Redirect("~/sales", False)
-    '    Catch ex As Exception
-    '        MessageError(True, ex.ToString())
-    '        If Not Session("RoleName") = "Developer" Then
-    '            MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-    '        End If
-    '    End Try
-    'End Sub
-
-    Protected Sub btnRefreshById_Click(sender As Object, e As EventArgs)
+    Protected Sub btnRefresh_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim salesId As String = txtRefreshId.Text
+            Dim salesId As String = txtRefresh.Text
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_Sales_Refresh_ById", thisConn)
