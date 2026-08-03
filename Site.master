@@ -310,6 +310,9 @@
                                                         </li>
                                                     </ul>
                                                 </li>
+                                                <li runat="server" id="liValidation" class="submenu-item">
+                                                    <a runat="server" href="~/setting/validation" class="subsubmenu-link">Validation</a>
+                                                </li>
                                                 <li runat="server" id="liXero" class="submenu-item">
                                                     <a runat="server" href="~/setting/xero" class="subsubmenu-link">Xero</a>
                                                 </li>

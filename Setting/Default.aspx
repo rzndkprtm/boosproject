@@ -74,6 +74,12 @@
                         Table, View, Function, Query
                     </div>
                 </a>
+                <a href="/setting/validation" class="dashboard-card">
+                    <div class="dashboard-title">Validation</div>
+                    <div class="dashboard-desc">
+                        List, Create, Update, Delete
+                    </div>
+                </a>
                 <a href="/setting/xero" class="dashboard-card">
                     <div class="dashboard-title">Xero</div>
                     <div class="dashboard-desc">
