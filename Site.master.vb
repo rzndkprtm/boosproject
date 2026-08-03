@@ -249,7 +249,6 @@ Partial Public Class SiteMaster
                 liJob.Visible = True
                 liPrice.Visible = True
                 liDatabase.Visible = True
-                liValidation.Visible = True
                 liXero.Visible = True
                 liAKZero.Visible = True
                 liLog.Visible = True
