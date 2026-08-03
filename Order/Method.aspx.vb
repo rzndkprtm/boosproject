@@ -9224,13 +9224,9 @@ Partial Class Order_Method
             End If
         End If
 
-        Dim shutterPriceGroupId As String = orderClass.GetShutterPriceGroupByOrder(data.customerid)
+        Dim shutterPriceGroupId As String = orderClass.GetShutterPriceGroupByOrder(data.headerid)
 
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, shutterPriceGroupId)
-
-        If data.rolename = "Developer" Then
-            Return shutterPriceGroupId & " _ " & priceProductGroup
-        End If
 
         Dim squareMetre As Decimal = width * drop / 1000000
         Dim linearMetre As Decimal = width / 1000
