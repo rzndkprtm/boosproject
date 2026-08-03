@@ -83,7 +83,7 @@
                                             </asp:TemplateField>
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
-                                                    <a href="javascript:void(0);" runat="server" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalRefreshById" onclick='<%# String.Format("return dataRefreshById(`{0}`);", Eval("Id").ToString()) %>'>Refresh</a>
+                                                    <a href="javascript:void(0);" runat="server" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalRefresh" onclick='<%# String.Format("return dataRefresh(`{0}`);", Eval("Id").ToString()) %>'>Refresh</a>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                         </Columns>
@@ -110,19 +110,19 @@
         </section>
     </div>
 
-    <div class="modal fade text-center" id="modalRefreshById" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade text-center" id="modalRefresh" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-info">
                     <h5 class="modal-title white">Refresh</h5>
                 </div>
                 <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtRefreshId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtRefresh" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnRefreshById" CssClass="btn btn-info" Text="Confirm" OnClick="btnRefreshById_Click" />
+                    <asp:Button runat="server" ID="btnRefresh" CssClass="btn btn-info" Text="Confirm" OnClick="btnRefresh_Click" />
                 </div>
             </div>
         </div>
@@ -158,10 +158,10 @@
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
         });
-        function dataRefreshById(id) {
-            document.getElementById("<%=txtRefreshId.ClientID %>").value = id;
+        function dataRefresh(id) {
+            document.getElementById("<%=txtRefresh.ClientID %>").value = id;
         }
-        ["modalRefreshById"].forEach(function (id) {
+        ["modalRefresh"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
