@@ -576,4 +576,24 @@ Public Class SettingClass
         Catch ex As Exception
         End Try
     End Sub
+
+    Public Function GetNewSortOrder(designId As String) As String
+        Dim result As String = String.Empty
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("SELECT TOP 1 SortOrder FROM Validations WHERE DesignId='" & designId & "' ORDER BY Id DESC", thisConn)
+                    thisConn.Open()
+                    Dim lastId As Object = thisCmd.ExecuteScalar()
+                    If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
+                        result = (CInt(lastId) + 1).ToString()
+                    Else
+                        result = "1"
+                    End If
+                End Using
+            End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
 End Class
