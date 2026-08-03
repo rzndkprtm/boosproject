@@ -70,7 +70,7 @@
                                                             <a href="javascript:void(0);" id="aDetail" class="dropdown-item" onclick="showDetail('<%# Eval("Id").ToString() %>');">Detail</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Sort Order") %>'>
-                                                            <a href="javascript:void(0);" id="aSortOrder" class="dropdown-item" onclick="showDetail('<%# Eval("Id").ToString() %>');">Sort Order</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSortOrder" onclick='<%# String.Format("return dataSortOrder(`{0}`, `{1}`);", Eval("Id"), Eval("DesignId")) %>'>Change Sort Order</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/validation/edit?validationid=" & Eval("Id")) %>'>Edit</a>
@@ -110,7 +110,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Validation</h5>
-                    <asp:Button runat="server" ID="btnDetail" CssClass="btn btn-light-danger" Text="Add Detail" OnClick="btnDetail_Click" />
+                    <asp:Button runat="server" ID="btnAddDetail" CssClass="btn btn-light-danger" Text="Add Detail" OnClick="btnAddDetail_Click" />
                 </div>
                 <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtValidationId" style="display:none;"></asp:TextBox>
@@ -135,6 +135,29 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalSortOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Sort Order</h5>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtSortOrderId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDesignId" style="display:none;"></asp:TextBox>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">New Sort Order</label>
+                            <asp:TextBox runat="server" ID="txtNewSortOrder" CssClass="form-control" TextMode="Number" placeholder="New Sort Order ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnSortOrder" CssClass="btn btn-info" Text="Submit" OnClick="btnSortOrder_Click" />
                 </div>
             </div>
         </div>
@@ -265,6 +288,10 @@
                 }
             });
         }
+        function dataSortOrder(id, designid) {
+            document.getElementById("<%=txtSortOrderId.ClientID %>").value = id;
+            document.getElementById("<%=txtDesignId.ClientID %>").value = designid;
+        }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -298,7 +325,7 @@
                 }
             });
         }
-        ["modalDetail", "modalLog"].forEach(function (id) {
+        ["modalDetail", "modalSortOrder", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
