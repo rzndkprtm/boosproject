@@ -1064,8 +1064,8 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
-        linearmetre = width / 1000
-        squaremetre = width * drop / 1000000
+        linearmetre = data.width / 1000
+        squaremetre = data.width * data.drop / 1000000
 
         If data.subtype = "Single" Then
             width = data.width : drop = data.drop
@@ -1081,8 +1081,8 @@ Partial Class Order_Method
             controlpositionb = "Left" : tilterpositionb = String.Empty
             data.wandlengthb = String.Empty : wandlengthb = 0
 
-            linearmetreb = widthb / 1000
-            squaremetreb = widthb * dropb / 1000000
+            linearmetreb = data.widthb / 1000
+            squaremetreb = data.widthb * data.dropb / 1000000
 
             totalItems = 2
         End If
@@ -1095,8 +1095,8 @@ Partial Class Order_Method
             controlpositionb = "Right" : tilterpositionb = "Right"
             data.wandlength = String.Empty : wandlength = 0
 
-            linearmetreb = widthb / 1000
-            squaremetreb = widthb * dropb / 1000000
+            linearmetreb = data.widthb / 1000
+            squaremetreb = data.widthb * data.dropb / 1000000
 
             totalItems = 2
         End If
@@ -1108,22 +1108,22 @@ Partial Class Order_Method
             data.controlposition = "Left" : data.tilterposition = "Left"
             controlpositionb = "Right" : tilterpositionb = "Right"
 
-            linearmetreb = widthb / 1000
-            squaremetreb = widthb * dropb / 1000000
+            linearmetreb = data.widthb / 1000
+            squaremetreb = data.widthb * data.dropb / 1000000
 
             totalItems = 2
         End If
 
         ' CONTROL LENGTH
         If data.controllength = "Standard" Then
-            controllength = Math.Ceiling(drop * 2 / 3)
+            controllength = Math.Ceiling(data.drop * 2 / 3)
             If controllength < 450 Then controllength = 450
         End If
         If data.controllength = "Custom" Then
             controllength = data.controllengthvalue
         End If
         If data.controllengthb = "Standard" Then
-            controllengthb = Math.Ceiling(drop * 2 / 3)
+            controllengthb = Math.Ceiling(data.drop * 2 / 3)
             If controllengthb < 450 Then controllengthb = 450
         End If
         If data.controllengthb = "Custom" Then
@@ -1132,14 +1132,14 @@ Partial Class Order_Method
 
         ' WAND LENGTH
         If data.wandlength = "Standard" Then
-            wandlength = Math.Ceiling(drop * 2 / 3)
+            wandlength = Math.Ceiling(data.drop * 2 / 3)
             If wandlength < 450 Then wandlength = 450
         End If
         If data.wandlength = "Custom" Then
             wandlength = data.wandlengthvalue
         End If
         If data.wandlengthb = "Standard" Then
-            wandlengthb = Math.Ceiling(drop * 2 / 3)
+            wandlengthb = Math.Ceiling(data.drop * 2 / 3)
             If wandlengthb < 450 Then wandlengthb = 450
         End If
         If data.wandlengthb = "Custom" Then
