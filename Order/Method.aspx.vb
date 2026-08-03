@@ -1019,11 +1019,6 @@ Partial Class Order_Method
 
         If result <> "" Then Return result
 
-        If String.IsNullOrEmpty(data.controllength) Then
-            If data.subtype.Contains("2 on 1") Then Return "FIRST CORD LENGTH IS REQUIRED !"
-            Return "CORD LENGTH IS REQUIRED !"
-        End If
-
         If data.controllength = "Custom" Then
             If String.IsNullOrEmpty(data.controllengthvalue) Then
                 If data.subtype = "2 on 1 Left-Right" Then Return "FIRST CORD LENGTH VALUE IS REQUIRED !"
@@ -1150,16 +1145,24 @@ Partial Class Order_Method
             controllength = Math.Ceiling(drop * 2 / 3)
             If controllength < 450 Then controllength = 450
         End If
-
-        If data.controllengthb = "Standard" Then
-            controllengthb = Math.Ceiling(drop * 2 / 3)
-            If controllengthb < 450 Then controllengthb = 450
+        If data.controllength = "Custom" Then
+            controllength = data.controllengthvalue
         End If
 
         If data.wandlength = "Standard" Then
             wandlength = Math.Ceiling(drop * 2 / 3)
             If wandlength < 450 Then wandlength = 450
         End If
+        If data.wandlength = "Custom" Then
+            wandlength = data.wandlengthvalueb
+        End If
+
+        If data.controllengthb = "Standard" Then
+            controllengthb = Math.Ceiling(drop * 2 / 3)
+            If controllengthb < 450 Then controllengthb = 450
+        End If
+
+
 
         If data.wandlengthb = "Standard" Then
             wandlengthb = Math.Ceiling(drop * 2 / 3)
