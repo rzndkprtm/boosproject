@@ -1004,58 +1004,20 @@ Partial Class Order_Method
         Dim controlpositionb As String = String.Empty
         Dim tilterpositionb As String = String.Empty
 
-        Dim designName As String = String.Empty
-        Dim blindName As String = String.Empty
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim designName As String = String.Empty : Dim blindName As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
-        'Dim validation As New ValidationEngine()
-        'Dim errorMessage As String = validation.Validate(data)
-        'If errorMessage <> "" Then Return errorMessage
+        Dim context As New ValidationContext With {
+            .data = data,
+            .pricegroupid = priceGroupId
+        }
+        Dim engine As New ValidationEngine()
+        Dim result As String = engine.Validate(context)
 
-        If String.IsNullOrEmpty(data.blindtype) Then Return "ALUMINIUM TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.colourtype) Then Return "ALUMINIUM COLOUR IS REQUIRED !"
-        If String.IsNullOrEmpty(data.subtype) Then Return "ALUMINIUM SUB TYPE IS REQUIRED !"
-
-        If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
-        If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
-
-        If String.IsNullOrEmpty(data.room) OrElse data.room.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.room.Contains("&=") OrElse data.room.Contains("&+") Then
-            Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+"
-        End If
-        If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
-
-        If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
-        If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
-            If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
-            If data.subtype.Contains("2 on 1") AndAlso width < 300 Then Return "MINIMUM WIDTH IS 300MM !"
-        End If
-        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-            If width > 3010 Then Return "MAXIMUM WIDTH IS 3010MM !"
-        End If
-
-        If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
-        If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
-        If data.rolename = "Customer" AndAlso data.rolename = "Installer" Then
-            If drop < 250 Then Return "MINIMUM DROP IS 250MM !"
-        End If
-        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-            If drop > 3200 Then Return "MAXIMUM DROP IS 3200MM !"
-        End If
-
-        If data.subtype = "Single" Then
-            If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED !"
-            If String.IsNullOrEmpty(data.tilterposition) Then Return "TILTER POSITION IS REQUIRED !"
-        End If
-
-        If data.subtype = "Single" Then
-            If width > 250 AndAlso width <= 299 AndAlso data.controlposition = data.tilterposition Then
-                Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS !"
-            End If
-        End If
+        If result <> "" Then Return result
 
         If String.IsNullOrEmpty(data.controllength) Then
             If data.subtype.Contains("2 on 1") Then Return "FIRST CORD LENGTH IS REQUIRED !"
@@ -2427,7 +2389,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
 
-        Dim doorPriceGroupId As String = orderClass.GetDoorPriceGroupByOrder(data.customerid)
+        Dim doorPriceGroupId As String = orderClass.GetDoorPriceGroupByOrder(data.headerid)
 
         Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
@@ -10561,7 +10523,7 @@ Partial Class Order_Method
         linearMetre = width / 1000
         squareMetre = width * drop / 1000000
 
-        Dim doorPriceGroupId As String = orderClass.GetDoorPriceGroupByOrder(data.customerid)
+        Dim doorPriceGroupId As String = orderClass.GetDoorPriceGroupByOrder(data.headerid)
 
         Dim factory As String = String.Empty
         If data.framecolour.Contains("Express") Then factory = "Express"
@@ -12074,6 +12036,11 @@ Public Class ProccessData
     Public Property buyprice As Decimal
 End Class
 
+Public Class ValidationContext
+    Public Property data As ProccessData
+    Public Property pricegroupid As String
+End Class
+
 Public Class JSONList
     Public Property type As String
     Public Property customtype As String
@@ -12111,22 +12078,22 @@ Public Class ValidationEngine
 
     Private setting As New SettingClass()
 
-    Public Function Validate(data As ProccessData) As String
-        Dim dtRules As DataTable = setting.GetDataTable("SELECT * FROM Validations WHERE DesignId = '" & data.designid & "' ORDER BY SortOrder")
+    Public Function Validate(context As ValidationContext) As String
+        Dim dtRules As DataTable = setting.GetDataTable("SELECT * FROM Validations WHERE DesignId = '" & context.data.designid & "' ORDER BY SortOrder")
 
         If dtRules.Rows.Count = 0 Then Return ""
 
         For Each rule As DataRow In dtRules.Rows
             Dim dtConditions As DataTable = setting.GetDataTable("SELECT * FROM ValidationDetails WHERE ValidationId = '" & rule("Id").ToString() & "' ORDER BY GroupNo, Id")
 
-            If EvaluateRule(data, dtConditions) Then
+            If EvaluateRule(context, dtConditions) Then
                 Return rule("ErrorMessage").ToString()
             End If
         Next
         Return ""
     End Function
 
-    Private Function EvaluateRule(data As ProccessData, dtConditions As DataTable) As Boolean
+    Private Function EvaluateRule(context As ValidationContext, dtConditions As DataTable) As Boolean
         If dtConditions.Rows.Count = 0 Then Return False
 
         Dim groups As DataTable = dtConditions.DefaultView.ToTable(True, "GroupNo")
@@ -12137,7 +12104,7 @@ Public Class ValidationEngine
 
             Dim allMatch As Boolean = True
             For Each condition As DataRow In conditions
-                If Not EvaluateCondition(data, condition) Then
+                If Not EvaluateCondition(context, condition) Then
                     allMatch = False
                     Exit For
                 End If
@@ -12149,7 +12116,7 @@ Public Class ValidationEngine
         Return False
     End Function
 
-    Private Function EvaluateCondition(data As ProccessData, condition As DataRow) As Boolean
+    Private Function EvaluateCondition(context As ValidationContext, condition As DataRow) As Boolean
         Dim fieldName As String = condition("FieldName").ToString()
         Dim [operator] As String = condition("Operator").ToString().ToUpper()
 
@@ -12163,19 +12130,34 @@ Public Class ValidationEngine
             dataType = condition("DataType").ToString().ToUpper()
         End If
 
-        Dim value As Object = GetPropertyValue(data, fieldName)
+        Dim value As Object = GetPropertyValue(context, fieldName)
 
-        Return Compare(data, value, [operator], compareValue, dataType)
+        Return Compare(context, value, [operator], compareValue, dataType)
     End Function
 
-    Private Function GetPropertyValue(data As ProccessData, propertyName As String) As Object
-        Dim prop As PropertyInfo = GetType(ProccessData).GetProperty(propertyName, BindingFlags.Public Or BindingFlags.Instance Or BindingFlags.IgnoreCase)
-        If prop Is Nothing Then Return Nothing
+    Private Function GetPropertyValue(context As ValidationContext, propertyName As String) As Object
+        Dim prop As PropertyInfo = GetType(ValidationContext).GetProperty(propertyName,
+            BindingFlags.Public Or BindingFlags.Instance Or BindingFlags.IgnoreCase)
 
-        Return prop.GetValue(data)
+        If prop IsNot Nothing Then
+            Return prop.GetValue(context)
+        End If
+
+        If context.data Is Nothing Then
+            Return Nothing
+        End If
+
+        prop = GetType(ProccessData).GetProperty(propertyName,
+            BindingFlags.Public Or BindingFlags.Instance Or BindingFlags.IgnoreCase)
+
+        If prop IsNot Nothing Then
+            Return prop.GetValue(context.data)
+        End If
+
+        Return Nothing
     End Function
 
-    Private Function Compare(data As ProccessData, value As Object, op As String, compareValue As String, dataType As String) As Boolean
+    Private Function Compare(context As ValidationContext, value As Object, op As String, compareValue As String, dataType As String) As Boolean
         Dim value1 As String = ""
         If value IsNot Nothing Then
             value1 = value.ToString().Trim()
@@ -12244,19 +12226,20 @@ Public Class ValidationEngine
                 Next
                 Return False
             Case "EQUAL_FIELD"
-                Dim compareObject As Object = GetPropertyValue(data, compareValue)
+                Dim compareObject As Object = GetPropertyValue(context, compareValue)
                 Dim value2 As String = ""
                 If compareObject IsNot Nothing Then
                     value2 = compareObject.ToString().Trim()
                 End If
                 Return String.Equals(value1, value2, StringComparison.OrdinalIgnoreCase)
-            Case "EQUAL_FIELD"
-                Dim compareObject As Object = GetPropertyValue(data, compareValue)
+            Case "NOT_EQUAL_FIELD"
+                Dim compareObject As Object = GetPropertyValue(context, compareValue)
                 Dim value2 As String = ""
+
                 If compareObject IsNot Nothing Then
                     value2 = compareObject.ToString().Trim()
                 End If
-                Return String.Equals(value1, value2, StringComparison.OrdinalIgnoreCase)
+                Return Not String.Equals(value1, value2, StringComparison.OrdinalIgnoreCase)
         End Select
         Return False
     End Function
