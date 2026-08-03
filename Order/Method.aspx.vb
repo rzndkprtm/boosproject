@@ -1010,21 +1010,95 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
-        Dim context As New ValidationContext With {
-            .data = data,
-            .pricegroupid = priceGroupId,
-            .totalwidth = data.width + data.widthb
-        }
-        Dim engine As New ValidationEngine()
-        Dim result As String = engine.Validate(context)
+        If String.IsNullOrEmpty(data.blindtype) Then Return "ALUMINIUM TYPE IS REQUIRED !"
+        If String.IsNullOrEmpty(data.colourtype) Then Return "ALUMINIUM COLOUR IS REQUIRED !"
+        If String.IsNullOrEmpty(data.subtype) Then Return "ALUMINIUM SUB TYPE IS REQUIRED !"
 
-        If result <> "" Then Return result
+        If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
+        If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
+
+        If String.IsNullOrEmpty(data.room) OrElse data.room.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.room.Contains("&=") OrElse data.room.Contains("&+") Then
+            Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+"
+        End If
+        If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
+
+        If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
+        If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
+        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+            If width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
+            If data.subtype.Contains("2 on 1") AndAlso width < 300 Then Return "MINIMUM WIDTH IS 300MM !"
+        End If
+        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+            If width > 3010 Then Return "MAXIMUM WIDTH IS 3010MM !"
+        End If
+
+        If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
+        If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
+        If data.rolename = "Customer" AndAlso data.rolename = "Installer" Then
+            If drop < 250 Then Return "MINIMUM DROP IS 250MM !"
+        End If
+        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+            If drop > 3200 Then Return "MAXIMUM DROP IS 3200MM !"
+        End If
+
+        If data.subtype = "Single" Then
+            If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED !"
+            If String.IsNullOrEmpty(data.tilterposition) Then Return "TILTER POSITION IS REQUIRED !"
+        End If
+
+        If data.subtype = "Single" Then
+            If width > 250 AndAlso width <= 299 AndAlso data.controlposition = data.tilterposition Then
+                Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS !"
+            End If
+        End If
+
+        If String.IsNullOrEmpty(data.controllength) Then
+            If data.subtype.Contains("2 on 1") Then Return "FIRST CORD LENGTH IS REQUIRED !"
+            Return "CORD LENGTH IS REQUIRED !"
+        End If
+
+        If data.controllength = "Custom" Then
+            If String.IsNullOrEmpty(data.controllengthvalue) Then
+                If data.subtype = "2 on 1 Left-Right" Then Return "FIRST CORD LENGTH VALUE IS REQUIRED !"
+                Return "CORD LENGTH VALUE IS REQUIRED !"
+            End If
+            If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then
+                If data.subtype = "2 on 1 Left-Right" Then Return "PLEASE CHECK YOUR FIRST CORD LENGTH ORDER !"
+                Return "PLEASE CHECK YOUR CORD LENGTH ORDER !"
+            End If
+        End If
+
+        If data.subtype = "Single" OrElse data.subtype = "2 on 1 Left-Left" OrElse data.subtype = "2 on 1 Left-Right" Then
+            If String.IsNullOrEmpty(data.wandlength) Then
+                If data.subtype = "2 on 1 Left-Right" Then Return "FIRST WAND LENGTH IS REQUIRED !"
+                Return "WAND LENGTH IS REQUIRED !"
+            End If
+
+            If data.wandlength = "Custom" Then
+                If String.IsNullOrEmpty(data.wandlengthvalue) Then
+                    If data.subtype = "2 on 1 Left-Right" Then Return "FIRST WAND LENGTH VALUE IS REQUIRED !"
+                    Return "WAND LENGTH VALUE IS REQUIRED !"
+                End If
+                If Not String.IsNullOrEmpty(data.wandlengthvalue) Then
+                    If Not Integer.TryParse(data.wandlengthvalue, wandlength) OrElse wandlength <= 0 Then
+                        If data.subtype = "2 on 1 Left-Right" Then Return "PLEASE CHECK YOUR FIRST WAND LENGTH ORDER !"
+                        Return "PLEASE CHECK YOUR WAND LENGTH ORDER !"
+                    End If
+                End If
+            End If
+        End If
 
         If data.subtype.Contains("2 on 1") Then
-            'If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-            '    Dim totalWidth As Integer = width + widthb
-            '    If totalWidth > 3010 Then Return "TOTAL WIDTH COULDN'T MORE THAN 3010MM !"
-            'End If
+            If String.IsNullOrEmpty(data.widthb) Then Return "SECOND WIDTH IS REQUIRED !"
+            If Not Integer.TryParse(data.widthb, widthb) OrElse widthb <= 0 Then Return "PLEASE CHECK YOUR SECOND WIDTH ORDER !"
+            If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+                If widthb < 300 Then Return "MINIMUM WIDTH FOR SECOND BLIND IS 300MM !"
+            End If
+
+            If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+                Dim totalWidth As Integer = width + widthb
+                If totalWidth > 3010 Then Return "TOTAL WIDTH COULDN'T MORE THAN 3010MM !"
+            End If
 
             If String.IsNullOrEmpty(data.dropb) Then Return "SECOND DROP IS REQUIRED !"
             If Not Integer.TryParse(data.dropb, dropb) OrElse dropb <= 0 Then Return "PLEASE CHECK YOUR SECOND DROP ORDER !"
@@ -1064,86 +1138,65 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
-        linearmetre = data.width / 1000
-        squaremetre = data.width * data.drop / 1000000
+        linearmetre = width / 1000
+        squaremetre = width * drop / 1000000
 
         If data.subtype = "Single" Then
-            width = data.width : drop = data.drop
             widthb = 0 : dropb = 0
             data.controllengthb = String.Empty : data.wandlengthb = String.Empty
             controllengthb = 0 : wandlengthb = 0
         End If
 
         If data.subtype = "2 on 1 Left-Left" Then
-            width = data.width : drop = data.drop
-            widthb = data.widthb : dropb = data.dropb
             data.controlposition = "Left" : data.tilterposition = "Left"
             controlpositionb = "Left" : tilterpositionb = String.Empty
             data.wandlengthb = String.Empty : wandlengthb = 0
 
-            linearmetreb = data.widthb / 1000
-            squaremetreb = data.widthb * data.dropb / 1000000
+            linearmetreb = widthb / 1000
+            squaremetreb = widthb * dropb / 1000000
 
             totalItems = 2
         End If
 
         If data.subtype = "2 on 1 Right-Right" Then
-            width = data.width : drop = data.drop
-            widthb = data.widthb : dropb = data.dropb
-
             data.controlposition = "Right" : data.tilterposition = String.Empty
             controlpositionb = "Right" : tilterpositionb = "Right"
             data.wandlength = String.Empty : wandlength = 0
 
-            linearmetreb = data.widthb / 1000
-            squaremetreb = data.widthb * data.dropb / 1000000
+            linearmetreb = widthb / 1000
+            squaremetreb = widthb * dropb / 1000000
 
             totalItems = 2
         End If
 
         If data.subtype = "2 on 1 Left-Right" Then
-            width = data.width : drop = data.drop
-            widthb = data.widthb : dropb = data.dropb
-
             data.controlposition = "Left" : data.tilterposition = "Left"
             controlpositionb = "Right" : tilterpositionb = "Right"
 
-            linearmetreb = data.widthb / 1000
-            squaremetreb = data.widthb * data.dropb / 1000000
+            linearmetreb = widthb / 1000
+            squaremetreb = widthb * dropb / 1000000
 
             totalItems = 2
         End If
 
-        ' CONTROL LENGTH
         If data.controllength = "Standard" Then
-            controllength = Math.Ceiling(data.drop * 2 / 3)
+            controllength = Math.Ceiling(drop * 2 / 3)
             If controllength < 450 Then controllength = 450
         End If
-        If data.controllength = "Custom" Then
-            controllength = data.controllengthvalue
-        End If
+
         If data.controllengthb = "Standard" Then
-            controllengthb = Math.Ceiling(data.drop * 2 / 3)
+            controllengthb = Math.Ceiling(drop * 2 / 3)
             If controllengthb < 450 Then controllengthb = 450
         End If
-        If data.controllengthb = "Custom" Then
-            controllengthb = data.controllengthvalue
-        End If
 
-        ' WAND LENGTH
         If data.wandlength = "Standard" Then
-            wandlength = Math.Ceiling(data.drop * 2 / 3)
+            wandlength = Math.Ceiling(drop * 2 / 3)
             If wandlength < 450 Then wandlength = 450
         End If
-        If data.wandlength = "Custom" Then
-            wandlength = data.wandlengthvalue
-        End If
+
         If data.wandlengthb = "Standard" Then
-            wandlengthb = Math.Ceiling(data.drop * 2 / 3)
+            wandlengthb = Math.Ceiling(drop * 2 / 3)
             If wandlengthb < 450 Then wandlengthb = 450
-        End If
-        If data.wandlengthb = "Custom" Then
-            wandlengthb = data.wandlengthvalueb
         End If
 
         Dim productGroupName As String = String.Format("{0} - {1}", designName, blindName)
