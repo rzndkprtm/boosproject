@@ -1143,7 +1143,7 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@Supply", data.supply)
                         thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
-                        thisCmd.Parameters.AddWithValue("@MarkUp", If(String.IsNullOrEmpty(data.markup), CType(DBNull.Value, Object), data.markup))
+                        thisCmd.Parameters.AddWithValue("@MarkUp", If(String.IsNullOrEmpty(data.markup), CType(0, Object), data.markup))
 
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
@@ -1199,7 +1199,7 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@Supply", data.supply)
                     thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
-                    thisCmd.Parameters.AddWithValue("@MarkUp", If(String.IsNullOrEmpty(data.markup), CType(DBNull.Value, Object), data.markup))
+                    thisCmd.Parameters.AddWithValue("@MarkUp", If(String.IsNullOrEmpty(data.markup), CType(0, Object), data.markup))
 
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
