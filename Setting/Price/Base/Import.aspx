@@ -48,7 +48,10 @@
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <label class="form-label">Method</label>
-                                                <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select"></asp:DropDownList>
+                                                <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
+                                                </asp:DropDownList>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
