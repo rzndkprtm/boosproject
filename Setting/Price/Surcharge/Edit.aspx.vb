@@ -54,7 +54,7 @@ Partial Class Setting_Price_Surcharge_Edit
                 MessageError(True, "DESIGN TYPE IS REQUIRED !")
                 Exit Sub
             End If
-            If lbPriceGroup.SelectedValue = "" Then
+            If ddlPriceGroup.SelectedValue = "" Then
                 MessageError(True, "PRICE GROUP IS REQUIRED !")
                 Exit Sub
             End If
@@ -93,11 +93,6 @@ Partial Class Setting_Price_Surcharge_Edit
             End If
 
             If msgError.InnerText = "" Then
-                Dim priceGroupId As String = String.Empty
-                If Not lbPriceGroup.SelectedValue = "" Then
-                    priceGroupId = String.Join(",", lbPriceGroup.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
-                End If
-
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Dim finalFormula As String = String.Format("{0} = {1}", ddlFormulaField.SelectedValue, ddlFormulaData.SelectedValue)
@@ -112,7 +107,7 @@ Partial Class Setting_Price_Surcharge_Edit
                     Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceSurcharges SET DesignId=@DesignId, PriceGroupId=@PriceGroupId, Name=@Name, Type=@Type, Formula=@Formula, BuyCharge=@BuyCharge, SellCharge=@SellCharge, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
+                        thisCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Type", ddlFormulaType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Formula", finalFormula)
@@ -153,23 +148,12 @@ Partial Class Setting_Price_Surcharge_Edit
 
             txtName.Text = thisData("Name").ToString()
             ddlDesign.SelectedValue = thisData("DesignId").ToString()
+            ddlPriceGroup.SelectedValue = thisData("PriceGroupId").ToString()
             ddlFormulaType.SelectedValue = type
             txtBuyCharge.Text = thisData("BuyCharge").ToString()
             txtSellCharge.Text = thisData("SellCharge").ToString()
             txtDescription.Text = thisData("Description").ToString()
             ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
-
-            If Not thisData("PriceGroupId").ToString() = "" Then
-                Dim priceGroupArray() As String = thisData("PriceGroupId").ToString().Split(",")
-                For Each iPriceGroup In priceGroupArray
-                    If Not String.IsNullOrEmpty(iPriceGroup) Then
-                        Dim item = lbPriceGroup.Items.FindByValue(iPriceGroup)
-                        If item IsNot Nothing Then
-                            item.Selected = True
-                        End If
-                    End If
-                Next
-            End If
 
             Dim formula As String = thisData("Formula").ToString()
             Dim conditions = formula.Split(New String() {" AND "}, StringSplitOptions.None)
@@ -220,17 +204,17 @@ Partial Class Setting_Price_Surcharge_Edit
     End Sub
 
     Protected Sub BindPriceGroup(designId As String)
-        lbPriceGroup.Items.Clear()
+        ddlPriceGroup.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(designId) Then
                 Dim type As String = settingClass.GetItemData("SELECT Type FROM Designs WHERE Id='" & designId & "'")
                 If Not String.IsNullOrEmpty(type) Then
-                    lbPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
-                    lbPriceGroup.DataTextField = "Name"
-                    lbPriceGroup.DataValueField = "Id"
-                    lbPriceGroup.DataBind()
+                    ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
+                    ddlPriceGroup.DataTextField = "Name"
+                    ddlPriceGroup.DataValueField = "Id"
+                    ddlPriceGroup.DataBind()
 
-                    lbPriceGroup.Items.Insert(0, New ListItem("", ""))
+                    ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
                 End If
             End If
         Catch ex As Exception
