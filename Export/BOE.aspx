@@ -475,7 +475,7 @@
                 writer.WriteAttributeString("FKOrdID", thisData("HeaderId").ToString())
                 writer.WriteAttributeString("Qty", thisData("Qty").ToString())
                 writer.WriteAttributeString("Room", thisData("Room").ToString())
-                writer.WriteAttributeString("BlindType", blindName)
+                writer.WriteAttributeString("BlindType", designName)
                 writer.WriteAttributeString("OrderType", "Fabric Pelmet")
                 writer.WriteAttributeString("IDHK", kitId)
                 writer.WriteAttributeString("FabricID", boeFabricId)
