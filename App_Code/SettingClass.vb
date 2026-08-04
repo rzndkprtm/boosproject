@@ -857,7 +857,7 @@ Public Class SettingClass
             "sellprice",
             "buyprice",
             "pricegroupid",
-            "totalwidth"
+            "total"
         }).Select(Function(x) x.ToUpperInvariant()).ToList()
 
     Public Shared ReadOnly ListValidationOperator As New List(Of String) From {
