@@ -121,7 +121,7 @@ Partial Class Setting_Price_Base_Import
                 End If
 
                 Dim newTable As String = "PriceBases_Backup_" & DateTime.Now.ToString("yyyyMMdd_HHmmss") & "_" & Session("RoleName").ToString()
-                Using thisCmd As New SqlCommand("SELECT * INTO [" & newTable & "] FROM [PriceBases]", thisConn)
+                Using thisCmd As New SqlCommand("SELECT * INTO [dbo].[" & newTable & "] FROM [dbo].[PriceBases]", thisConn)
                     thisCmd.ExecuteNonQuery()
                 End Using
 
