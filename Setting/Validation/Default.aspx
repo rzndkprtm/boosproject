@@ -297,7 +297,7 @@
             });
         }
         function editDetail(itemId) {
-            window.location.href = "ValidationDetail.aspx?id=" + itemId;
+            window.location.href = "detail/edit?detailid=" + itemId;
         }
         function dataSortOrder(id, designid) {
             document.getElementById("<%=txtSortOrderId.ClientID %>").value = id;

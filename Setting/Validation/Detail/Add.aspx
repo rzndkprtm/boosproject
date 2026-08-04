@@ -52,7 +52,7 @@
                                         </div>
                                         <div class="col-lg-3 form-group">
                                             <label>Field Name</label>
-                                            <asp:DropDownList ID="ddlFieldName"  runat="server" CssClass="choices form-select"></asp:DropDownList>
+                                            <asp:DropDownList ID="ddlFieldName" runat="server" CssClass="choices form-select"></asp:DropDownList>
                                         </div>
                                         <div class="col-lg-3 form-group">
                                             <label>Operator</label>
