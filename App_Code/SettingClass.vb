@@ -597,7 +597,7 @@ Public Class SettingClass
         Dim result As String = String.Empty
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("SELECT TOP 1 SortOrder FROM Validations WHERE DesignId='" & designId & "' ORDER BY Id DESC", thisConn)
+                Using thisCmd As New SqlCommand("SELECT TOP 1 SortOrder FROM Validations WHERE DesignId='" & designId & "' ORDER BY SortOrder DESC", thisConn)
                     thisConn.Open()
                     Dim lastId As Object = thisCmd.ExecuteScalar()
                     If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
