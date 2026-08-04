@@ -1025,7 +1025,6 @@ Partial Class Order_Method
         width = data.width : drop = data.drop
         linearmetre = data.width / 1000D
         squaremetre = data.width * data.drop / 1000000D
-        markup = data.markup
 
         If data.subtype = "Single" Then
             widthb = 0 : dropb = 0
@@ -1144,7 +1143,7 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@Supply", data.supply)
                         thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
-                        thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+                        thisCmd.Parameters.AddWithValue("@MarkUp", If(String.IsNullOrEmpty(data.markup), CType(DBNull.Value, Object), data.markup))
 
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
@@ -1200,7 +1199,7 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@Supply", data.supply)
                     thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
-                    thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+                    thisCmd.Parameters.AddWithValue("@MarkUp", If(String.IsNullOrEmpty(data.markup), CType(DBNull.Value, Object), data.markup))
 
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
