@@ -69,11 +69,11 @@
                                                         <li runat="server" visible='<%# LoginAccess("Detail") %>'>
                                                             <a href="javascript:void(0);" id="aDetail" class="dropdown-item" onclick="showDetail('<%# Eval("Id").ToString() %>');">Detail</a>
                                                         </li>
-                                                        <li runat="server" visible='<%# LoginAccess("Sort Order") %>'>
-                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSortOrder" onclick='<%# String.Format("return dataSortOrder(`{0}`, `{1}`);", Eval("Id"), Eval("DesignId")) %>'>Change Sort Order</a>
-                                                        </li>
                                                         <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/validation/edit?validationid=" & Eval("Id")) %>'>Edit</a>
+                                                        </li>
+                                                        <li runat="server" visible='<%# LoginAccess("Sort Order") %>'>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSortOrder" onclick='<%# String.Format("return dataSortOrder(`{0}`, `{1}`);", Eval("Id"), Eval("DesignId")) %>'>Change Sort Order</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Validations', '<%# Eval("Id") %>')">Log</a>
@@ -127,6 +127,7 @@
                                     <th>Operator</th>
                                     <th>CompareValue</th>
                                     <th>DataType</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -260,7 +261,7 @@
                     if (data.length === 0) {
                         html = `
                                 <tr>
-                                <td colspan="6" class="text-center">
+                                <td colspan="7" class="text-center">
                                 DATA NOT FOUND :)
                                 </td>
                                 </tr>`;
@@ -275,6 +276,13 @@
                                     <td>${item.Operators}</td>
                                     <td>${item.CompareValue}</td>
                                     <td>${item.DataType}</td>
+                                    <td class="text-center">
+                                    <button type="button" 
+                                        class="btn btn-sm btn-warning"
+                                        onclick="editDetail(${item.Id})">
+                                        Edit
+                                    </button>
+                                </td>
                                 </tr>`;
                         });
                     }
@@ -287,6 +295,9 @@
                     $("#modalDetail").modal("show");
                 }
             });
+        }
+        function editDetail(itemId) {
+            window.location.href = "ValidationDetail.aspx?id=" + itemId;
         }
         function dataSortOrder(id, designid) {
             document.getElementById("<%=txtSortOrderId.ClientID %>").value = id;
