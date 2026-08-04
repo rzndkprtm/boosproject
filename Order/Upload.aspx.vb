@@ -2900,9 +2900,11 @@ Partial Class Order_Upload
                                     If blindName = "Link 3 Blinds Independent with Dependent" Then
                                         controlPosition = "Left" : controlPositionB = "" : controlPositionC = "Right"
                                         If controlText = "ISC" Then
+                                            controlPosition = "Left" : controlPositionB = "" : controlPositionC = "Right"
                                             width = widthData : widthB = widthDataB : widthC = widthDataC
                                         End If
                                         If controlText = "CSI" Then
+                                            controlPosition = "Right" : controlPositionB = "" : controlPositionC = "Left"
                                             width = widthDataC : widthB = widthDataB : widthC = widthData
                                         End If
 
