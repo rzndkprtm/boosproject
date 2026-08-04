@@ -57,7 +57,7 @@ Partial Class Setting_Price_Surcharge_Add
                 MessageError(True, "DESIGN TYPE IS REQUIRED !")
                 Exit Sub
             End If
-            If ddlPriceGroup.SelectedValue = "" Then
+            If lbPriceGroup.SelectedValue = "" Then
                 MessageError(True, "PRICE GROUP IS REQUIRED !")
                 Exit Sub
             End If
@@ -103,21 +103,19 @@ Partial Class Setting_Price_Surcharge_Add
                 finalFormula = txtFormulaCustom.Text
             End If
 
-            Dim checkData As DataRow = settingClass.GetDataRow("SELECT * FROM PriceSurcharges WHERE DesignId='" & ddlDesign.SelectedValue & "' AND Formula='" & finalFormula.Replace("'", "''") & "' AND Active=1 AND PriceGroupId='" & ddlPriceGroup.SelectedValue & "' AND Type='" & ddlFormulaType.SelectedValue & "'")
-            If checkData IsNot Nothing Then
-                MessageError(True, "DATA ALREADY EXISTS !")
-                Exit Sub
-            End If
-
             If msgError.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceSurcharges ORDER BY Id DESC")
+                Dim priceGroupId As String = String.Empty
+                If Not lbPriceGroup.SelectedValue = "" Then
+                    priceGroupId = String.Join(",", lbPriceGroup.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges VALUES (@Id, @DesignId, @PriceGroupId, @Name, @Type, @Formula, @BuyCharge, @SellCharge, @Description, @Active)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Type", ddlFormulaType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Formula", finalFormula)
@@ -159,17 +157,17 @@ Partial Class Setting_Price_Surcharge_Add
     End Sub
 
     Protected Sub BindPriceGroup(designId As String)
-        ddlPriceGroup.Items.Clear()
+        lbPriceGroup.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(designId) Then
                 Dim type As String = settingClass.GetItemData("SELECT Type FROM Designs WHERE Id='" & designId & "'")
                 If Not String.IsNullOrEmpty(type) Then
-                    ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
-                    ddlPriceGroup.DataTextField = "Name"
-                    ddlPriceGroup.DataValueField = "Id"
-                    ddlPriceGroup.DataBind()
+                    lbPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
+                    lbPriceGroup.DataTextField = "Name"
+                    lbPriceGroup.DataValueField = "Id"
+                    lbPriceGroup.DataBind()
 
-                    ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
+                    lbPriceGroup.Items.Insert(0, New ListItem("", ""))
                 End If
             End If
         Catch ex As Exception

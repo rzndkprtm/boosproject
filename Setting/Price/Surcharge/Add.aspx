@@ -47,16 +47,16 @@
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <label class="form-label">Price Group</label>
-                                                <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
+                                                <asp:ListBox runat="server" ID="lbPriceGroup" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                 <label class="form-label">Formula Type</label>
                                                 <asp:DropDownList runat="server" ID="ddlFormulaType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlFormulaType_SelectedIndexChanged">
-                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <%--<asp:ListItem Value="" Text=""></asp:ListItem>--%>
                                                     <asp:ListItem Value="Standard" Text="Standard"></asp:ListItem>
-                                                    <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
+                                                    <%--<asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>--%>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
@@ -213,13 +213,18 @@
         }
         function initChoices() {
             document.querySelectorAll("select.choices").forEach(function (el) {
+
                 if (el.choices) {
                     el.choices.destroy();
                 }
+
+                var isMultiple = el.multiple;
+
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',
-                    shouldSort: false
+                    shouldSort: false,
+                    removeItemButton: isMultiple
                 });
             });
         }
