@@ -237,11 +237,7 @@ Partial Class Setting_Price_Base_Import
     Protected Sub BindMethod(priceGroupId As String)
         ddlMethod.Items.Clear()
         Try
-            If Not String.IsNullOrEmpty(priceGroupId) Then
-                If {"1", "9", "17", "11"}.Contains(priceGroupId) Then
-                    ddlMethod.Items.Add(New ListItem("Cost", "Cost"))
-                End If
-            End If
+            ddlMethod.Items.Add(New ListItem("Cost", "Cost"))
         Catch ex As Exception
         End Try
     End Sub
