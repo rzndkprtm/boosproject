@@ -81,7 +81,7 @@
                             </ItemTemplate>
                         </asp:Repeater>
                         <div class="row mb-2">
-                            <div class="col-12 text-end">
+                            <div class="col-12 text-start">
                                 <asp:Button ID="btnAddRow" runat="server" CssClass="btn btn-success" Text="+ Add Rule" OnClick="btnAddRow_Click" />
                             </div>
                         </div>
