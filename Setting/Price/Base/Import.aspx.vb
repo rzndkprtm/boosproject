@@ -19,14 +19,12 @@ Partial Class Setting_Price_Base_Import
             MessageError(False, String.Empty)
 
             BindPriceGroup()
-            BindMethod(ddlPriceGroup.SelectedValue)
             BindProductGroup(ddlPriceGroup.SelectedValue)
         End If
     End Sub
 
     Protected Sub ddlPriceGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindMethod(ddlPriceGroup.SelectedValue)
         BindProductGroup(ddlPriceGroup.SelectedValue)
     End Sub
 
@@ -231,14 +229,6 @@ Partial Class Setting_Price_Base_Import
             End If
         Catch ex As Exception
             ddlPriceGroup.Items.Clear()
-        End Try
-    End Sub
-
-    Protected Sub BindMethod(priceGroupId As String)
-        ddlMethod.Items.Clear()
-        Try
-            ddlMethod.Items.Add(New ListItem("Cost", "Cost"))
-        Catch ex As Exception
         End Try
     End Sub
 
