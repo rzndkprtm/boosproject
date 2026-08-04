@@ -1322,6 +1322,7 @@ Partial Class Order_Method
     '    Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
     'End Function
 
+
     <WebMethod()>
     Public Shared Function AluminiumProcess(data As ProccessData) As String
         Dim orderClass As New OrderClass
@@ -1361,25 +1362,7 @@ Partial Class Order_Method
 
         If result <> "" Then Return result
 
-        If data.subtype = "2 on 1 Right-Right" OrElse data.subtype = "2 on 1 Left-Right" Then
-            If data.wandlengthb = "Custom" Then
-                If String.IsNullOrEmpty(data.wandlengthvalueb) Then Return "SECOND WAND LENGTH VALUL IS REQUIRED !"
-                If Not String.IsNullOrEmpty(data.wandlengthvalueb) Then
-                    If Not Integer.TryParse(data.wandlengthvalueb, wandlengthb) OrElse wandlengthb <= 0 Then Return "PLEASE CHECK YOUR SECOND WAND LENGTH ORDER !"
-                End If
-            End If
-        End If
-
-        If Not String.IsNullOrEmpty(data.notes) Then
-            If data.notes.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.notes.Contains("&=") OrElse data.notes.Contains("&+") Then
-                Return "SPECIAL INFORMATION MUST NOT CONTAIN: , & ` ' &= &+"
-            End If
-            If data.notes.Trim().Length > 1000 Then Return "MAXIMUM 1000 CHARACTERS !"
-        End If
-
-        If Not String.IsNullOrEmpty(data.markup) Then
-            If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
-        End If
+        'If data.notes.Trim().Length > 1000 Then Return "MAXIMUM 1000 CHARACTERS !"
 
         qty = data.qty
         width = data.width : drop = data.drop

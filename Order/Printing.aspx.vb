@@ -413,6 +413,7 @@ Partial Class Order_Printing
                         divPrinting.Attributes("class") = divPrinting.Attributes("class") & " show active"
 
                         If lblStatus.Text = "Unsubmitted" Then aUpload.Visible = True
+                        If Session("RoleName") = "Developer" Then aUpload.Visible = True
 
                         If Not String.IsNullOrEmpty(printing) Then
                             imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}?v={2}", lblOrderId.Text, printing, DateTime.Now.Ticks)
@@ -432,6 +433,7 @@ Partial Class Order_Printing
                         If lblStatus.Text = "Unsubmitted" Then
                             aUpload.Visible = True : aUploadB.Visible = True
                         End If
+                        If Session("RoleName") = "Developer" Then aUpload.Visible = True : aUploadB.Visible = True
 
                         If Not String.IsNullOrEmpty(printing) Then
                             imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing, DateTime.Now.Ticks)
@@ -450,6 +452,7 @@ Partial Class Order_Printing
                         If Not String.IsNullOrEmpty(printing) Then
                             imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing, DateTime.Now.Ticks)
                             If lblStatus.Text = "Unsubmitted" Then aDelete.Visible = True
+                            If Session("RoleName") = "Developer" Then aUpload.Visible = True : aUploadB.Visible = True
                         End If
                     End If
                     If widthB <= 1510 OrElse dropB <= 1510 Then
@@ -457,10 +460,12 @@ Partial Class Order_Printing
                         If Not String.IsNullOrEmpty(printingb) Then
                             imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb, DateTime.Now.Ticks)
                             If lblStatus.Text = "Unsubmitted" Then aDeleteB.Visible = True
+                            If Session("RoleName") = "Developer" Then aUpload.Visible = True : aUploadB.Visible = True
                         End If
                     End If
 
                     If lblStatus.Text = "Unsubmitted" Then aUpload.Visible = True : aUploadB.Visible = False
+                    If Session("RoleName") = "Developer" Then aUpload.Visible = True : aUploadB.Visible = True
 
                     If aPrinting.Visible AndAlso divPrinting.Visible Then
                         aPrinting.Attributes("class") = (aPrinting.Attributes("class") & " active").Trim()
