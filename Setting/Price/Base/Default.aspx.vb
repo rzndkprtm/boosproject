@@ -202,7 +202,7 @@ Partial Class Setting_Price_Base_Default
             morePrice.Visible = LoginAccess("More")
 
             aMatrix.Visible = False
-            If pricegroup = "1" AndAlso Not String.IsNullOrWhiteSpace(category) AndAlso Not String.IsNullOrWhiteSpace(productgroup) AndAlso Not String.IsNullOrWhiteSpace(method) Then
+            If (pricegroup = "1" OrElse pricegroup = "26") AndAlso Not String.IsNullOrWhiteSpace(category) AndAlso Not String.IsNullOrWhiteSpace(productgroup) AndAlso Not String.IsNullOrWhiteSpace(method) Then
                 aMatrix.Visible = True
 
                 Dim paramMatrixs As New List(Of SqlParameter) From {
