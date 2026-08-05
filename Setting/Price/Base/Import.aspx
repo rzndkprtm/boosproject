@@ -69,7 +69,7 @@
                                         <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Include Buy Price</label>
-                                                <asp:DropDownList runat="server" ID="ddlIncludeBuy" CssClass="form-select">
+                                                <asp:DropDownList runat="server" ID="ddlIncludeBuy" CssClass="choices form-select">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
                                                     <asp:ListItem Value="Yes" Text="Yes"></asp:ListItem>
                                                     <asp:ListItem Value="From Master" Text="Yes"></asp:ListItem>
