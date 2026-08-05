@@ -1153,7 +1153,6 @@ Public Class QuoteClass
 
                 If designName = "Soft Roman" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-
                     itemDescription = String.Format("{0} {1}", productName, fabricColourName)
                 End If
 
