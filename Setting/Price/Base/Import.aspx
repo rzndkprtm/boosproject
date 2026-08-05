@@ -48,10 +48,7 @@
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <label class="form-label">Method</label>
-                                                <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select">
-                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                    <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
-                                                </asp:DropDownList>
+                                                <asp:DropDownList runat="server" ID="ddlUploadType" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
@@ -67,14 +64,6 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                <label class="form-label">Include Buy Price</label>
-                                                <asp:DropDownList runat="server" ID="ddlIncludeBuy" CssClass="choices form-select">
-                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                    <asp:ListItem Value="Yes" Text="Yes"></asp:ListItem>
-                                                    <asp:ListItem Value="From Master" Text="Yes"></asp:ListItem>
-                                                </asp:DropDownList>
-                                            </div>
                                             <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Backup Database</label>
                                                 <asp:DropDownList runat="server" ID="ddlBackup" CssClass="choices form-select">

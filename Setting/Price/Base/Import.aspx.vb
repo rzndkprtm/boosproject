@@ -45,11 +45,11 @@ Partial Class Setting_Price_Base_Import
         MessageError(False, String.Empty)
         Try
             If Not fuFile.HasFile Then
-                MessageError(True, "SORRY. PLEASE UPLOAD FILE")
+                MessageError(True, "SORRY. PLEASE UPLOAD FILE !")
                 Exit Sub
             End If
 
-            Dim msg = ImportExcel(fuFile, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue, ddlIncludeBuy.SelectedValue)
+            Dim msg = ImportExcel(fuFile, "Cost", ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue, ddlUploadType.SelectedValue, ddlBackup.SelectedValue)
 
             If Not String.IsNullOrEmpty(msg) Then
                 MessageError(True, msg)
@@ -64,7 +64,7 @@ Partial Class Setting_Price_Base_Import
         End Try
     End Sub
 
-    Protected Function ImportExcel(upload As FileUpload, method As String, productGroupId As Integer, priceGroupId As Integer, includeBuy As String) As String
+    Protected Function ImportExcel(upload As FileUpload, method As String, productGroupId As Integer, priceGroupId As Integer, uploadType As String, backupData As String) As String
         Try
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial
 
@@ -90,48 +90,84 @@ Partial Class Setting_Price_Base_Import
 
                 Using package As New ExcelPackage(upload.PostedFile.InputStream)
                     If package.Workbook.Worksheets.Count = 0 Then
-                        Return "NO WORKSHEET WAS FOUND IN THE EXCEL FILE."
+                        Return "NO WORKSHEET WAS FOUND IN THE EXCEL FILE !"
                     End If
 
                     Dim result As String = ""
 
-                    Dim sellSheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Sell", StringComparison.OrdinalIgnoreCase))
+                    Select Case uploadType.Trim().ToUpper()
+                        Case "SELL"
+                            Dim sellSheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Sell", StringComparison.OrdinalIgnoreCase))
+                            If sellSheet Is Nothing Then
+                                Return "WORKSHEET 'SELL' COULD NOT BE FOUND !"
+                            End If
 
-                    If sellSheet Is Nothing Then
-                        Return "WORKSHEET 'SELL' COULD NOT BE FOUND."
-                    End If
+                            result = ReadSheet(sellSheet, "Sell", method, productGroupId, priceGroupId, dt, nextId)
+                            If result <> "" Then
+                                Return result
+                            End If
 
-                    result = ReadSheet(sellSheet, "Sell", method, productGroupId, priceGroupId, dt, nextId)
+                        Case "BUY"
+                            Dim buySheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Buy", StringComparison.OrdinalIgnoreCase))
 
-                    If result <> "" Then
-                        Return result
-                    End If
+                            If buySheet Is Nothing Then
+                                Return "WORKSHEET 'BUY' COULD NOT BE FOUND !"
+                            End If
 
-                    If includeBuy.Equals("Yes", StringComparison.OrdinalIgnoreCase) Then
-                        Dim buySheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Buy", StringComparison.OrdinalIgnoreCase))
+                            result = ReadSheet(buySheet, "Buy", method, productGroupId, priceGroupId, dt, nextId)
 
-                        If buySheet Is Nothing Then
-                            Return "WORKSHEET 'BUY' COULD NOT BE FOUND."
-                        End If
+                            If result <> "" Then
+                                Return result
+                            End If
+                        Case "SELL & BUY"
+                            Dim sellSheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Sell", StringComparison.OrdinalIgnoreCase))
 
+                            If sellSheet Is Nothing Then
+                                Return "WORKSHEET 'SELL' COULD NOT BE FOUND !"
+                            End If
 
-                        result = ReadSheet(buySheet, "Buy", method, productGroupId, priceGroupId, dt, nextId)
+                            result = ReadSheet(sellSheet, "Sell", method, productGroupId, priceGroupId, dt, nextId)
 
-                        If result <> "" Then
-                            Return result
-                        End If
-                    ElseIf includeBuy.Equals("From Master", StringComparison.OrdinalIgnoreCase) Then
-                        AddBuyFromMaster(dt, productGroupId, priceGroupId, nextId, thisConn)
+                            If result <> "" Then
+                                Return result
+                            End If
+
+                            Dim buySheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Buy", StringComparison.OrdinalIgnoreCase))
+
+                            If buySheet Is Nothing Then
+                                Return "WORKSHEET 'BUY' COULD NOT BE FOUND !"
+                            End If
+
+                            result = ReadSheet(buySheet, "Buy", method, productGroupId, priceGroupId, dt, nextId)
+
+                            If result <> "" Then
+                                Return result
+                            End If
+                        Case "SELL (BUY AUTO)"
+                            Dim sellSheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Sell", StringComparison.OrdinalIgnoreCase))
+
+                            If sellSheet Is Nothing Then
+                                Return "WORKSHEET 'SELL' COULD NOT BE FOUND !"
+                            End If
+
+                            result = ReadSheet(sellSheet, "Sell", method, productGroupId, priceGroupId, dt, nextId)
+
+                            If result <> "" Then
+                                Return result
+                            End If
+
+                            AddBuyFromMaster(dt, productGroupId, priceGroupId, nextId, thisConn)
+                        Case Else
+                            Return "INVALID UPLOAD TYPE !"
+                    End Select
+
+                    If dt.Rows.Count = 0 Then
+                        Return "NO DATA WAS FOUND TO IMPORT !"
                     End If
                 End Using
 
-                If dt.Rows.Count = 0 Then
-                    Return "NO DATA WAS FOUND TO IMPORT."
-                End If
-
-                If ddlBackup.SelectedValue = "Yes" Then
+                If backupData = "Yes" Then
                     Dim newTable As String = "PriceBases_Backup_" & DateTime.Now.ToString("yyyyMMdd_HHmmss") & "_" & Session("RoleName").ToString()
-
                     Using cmd As New SqlCommand("SELECT * INTO [dbo].[" & newTable & "] FROM [dbo].[PriceBases]",
                     thisConn)
                         cmd.ExecuteNonQuery()
@@ -140,7 +176,23 @@ Partial Class Setting_Price_Base_Import
 
                 Using tran As SqlTransaction = thisConn.BeginTransaction()
                     Try
-                        Using cmd As New SqlCommand("DELETE FROM PriceBases WHERE Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@PriceGroupId", thisConn, tran)
+                        Dim deleteCategories As New List(Of String)
+                        Select Case uploadType.Trim().ToUpper()
+                            Case "SELL"
+                                deleteCategories.Add("Sell")
+                            Case "BUY"
+                                deleteCategories.Add("Buy")
+                            Case "SELL & BUY"
+                                deleteCategories.Add("Sell")
+                                deleteCategories.Add("Buy")
+                            Case "SELL (BUY AUTO)"
+                                deleteCategories.Add("Sell")
+                                deleteCategories.Add("Buy")
+                        End Select
+
+                        Dim sql As String = "DELETE FROM PriceBases WHERE Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@PriceGroupId AND Category IN (" & String.Join(",", deleteCategories.Select(Function(x) "'" & x & "'")) & ")"
+
+                        Using cmd As New SqlCommand(sql, thisConn, tran)
                             cmd.Parameters.AddWithValue("@Method", method)
                             cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
                             cmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
@@ -220,66 +272,69 @@ Partial Class Setting_Price_Base_Import
     End Function
 
     Protected Sub AddBuyFromMaster(dt As DataTable, productGroupId As Integer, priceGroupId As Integer, ByRef nextId As Integer, conn As SqlConnection)
-        Dim masterPriceGroupId As Integer = 0
-        Using cmd As New SqlCommand("SELECT TOP 1 PG2.Id FROM PriceGroups PG1 INNER JOIN PriceGroups PG2 ON PG2.CompanyId = PG1.CompanyId AND PG2.Type = PG1.Type AND PG2.Master='Yes' WHERE PG1.Id=@PriceGroupId",
-        conn)
-            cmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
-            Dim result = cmd.ExecuteScalar()
-            If result IsNot Nothing Then
-                masterPriceGroupId = CInt(result)
-            End If
-        End Using
-
-        If masterPriceGroupId = 0 Then
-            Exit Sub
-        End If
-
-        Using cmd As New SqlCommand("SELECT Method, ProductGroupId, Height, Width, Price, Conditional FROM PriceBases WHERE Category='Buy' AND PriceGroupId=@MasterPriceGroupId AND ProductGroupId=@ProductGroupId", conn)
-            cmd.Parameters.AddWithValue("@MasterPriceGroupId", masterPriceGroupId)
-            cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
-            Using rd = cmd.ExecuteReader()
-                While rd.Read()
-                    Dim row = dt.NewRow()
-
-                    row("Id") = nextId
-                    nextId += 1
-
-                    row("Category") = "Buy"
-                    row("Method") = rd("Method")
-                    row("ProductGroupId") = rd("ProductGroupId")
-                    row("PriceGroupId") = priceGroupId
-                    row("Height") = rd("Height")
-                    row("Width") = rd("Width")
-                    row("Price") = rd("Price")
-                    row("Conditional") = rd("Conditional")
-
-                    dt.Rows.Add(row)
-                End While
+        Try
+            Dim masterPriceGroupId As Integer = 0
+            Using cmd As New SqlCommand("SELECT TOP 1 PG2.Id FROM PriceGroups PG1 INNER JOIN PriceGroups PG2 ON PG2.CompanyId = PG1.CompanyId AND PG2.Type = PG1.Type AND PG2.Master = 'Yes' WHERE PG1.Id = @PriceGroupId", conn)
+                cmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
+                Dim result = cmd.ExecuteScalar()
+                If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
+                    masterPriceGroupId = CInt(result)
+                End If
             End Using
-        End Using
+
+            If masterPriceGroupId = 0 Then
+                Exit Sub
+            End If
+
+            Using cmd As New SqlCommand("SELECT Method, ProductGroupId, Height, Width, Price, Conditional FROM PriceBases WHERE Category = 'Buy' AND PriceGroupId = @MasterPriceGroupId AND ProductGroupId = @ProductGroupId", conn)
+                cmd.Parameters.AddWithValue("@MasterPriceGroupId", masterPriceGroupId)
+                cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
+                Using rd As SqlDataReader = cmd.ExecuteReader()
+                    While rd.Read()
+                        Dim row As DataRow = dt.NewRow()
+
+                        row("Id") = nextId
+                        row("Category") = "Buy"
+                        row("Method") = rd("Method")
+                        row("ProductGroupId") = rd("ProductGroupId")
+                        row("PriceGroupId") = priceGroupId
+                        row("Height") = rd("Height")
+                        row("Width") = rd("Width")
+                        row("Price") = rd("Price")
+                        row("Conditional") = rd("Conditional")
+                        dt.Rows.Add(row)
+                        nextId += 1
+                    End While
+                End Using
+            End Using
+        Catch
+            Throw
+        End Try
     End Sub
 
     Protected Sub bindBuyPrice(priceGroupId As String)
-        ddlIncludeBuy.Items.Clear()
+        ddlUploadType.Items.Clear()
         Try
             Dim master As String = settingClass.GetItemData("SELECT [Master] FROM PriceGroups WHERE Id='" & priceGroupId & "'")
             If master = "Yes" Then
-                ddlIncludeBuy.Items.Add(New ListItem("", ""))
-                ddlIncludeBuy.Items.Add(New ListItem("Yes", "Yes"))
+                ddlUploadType.Items.Add(New ListItem("", ""))
+                ddlUploadType.Items.Add(New ListItem("Sell Only", "Sell"))
+                ddlUploadType.Items.Add(New ListItem("Buy Only", "Buy"))
+                ddlUploadType.Items.Add(New ListItem("Sell & Buy", "Sell & Buy"))
             ElseIf master = "No" Then
-                ddlIncludeBuy.Items.Add(New ListItem("From Master", "From Master"))
+                ddlUploadType.Items.Add(New ListItem("Sell Only (Buy Auto)", "Sell (Buy Auto)"))
             Else
-                ddlIncludeBuy.Items.Add(New ListItem("", ""))
+                ddlUploadType.Items.Add(New ListItem("", ""))
             End If
         Catch ex As Exception
-            ddlIncludeBuy.SelectedValue = ""
+            ddlUploadType.Items.Clear()
         End Try
     End Sub
 
     Protected Sub BindPriceGroup()
         ddlPriceGroup.Items.Clear()
         Try
-            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Type='Blinds' AND (Status='Active' OR Status='Inactive') ORDER BY Id ASC")
+            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Type='Blinds' AND CompanyId='2' AND (Status='Active' OR Status='Inactive') ORDER BY Id ASC")
             ddlPriceGroup.DataTextField = "Name"
             ddlPriceGroup.DataValueField = "Id"
             ddlPriceGroup.DataBind()
