@@ -17,6 +17,9 @@ Partial Class Setting_Price_Base_Add
             MessageError(False, String.Empty)
             BindPriceGroup()
             BindProductGroup(ddlPriceGroup.SelectedValue)
+
+            divConditional.Visible = False
+            If Session("RoleName") = "Developer" Then divConditional.Visible = True
         End If
     End Sub
 
