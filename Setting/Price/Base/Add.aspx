@@ -83,7 +83,7 @@
                                             <label class="form-label">Price</label>
                                             <asp:TextBox runat="server" ID="txtPrice" CssClass="form-control" placeholder="Price ..." autocomplete="off"></asp:TextBox>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divConditional">
                                             <label class="form-label">Conditional</label>
                                             <asp:TextBox runat="server" ID="txtConditional" CssClass="form-control" placeholder="Conditional ..." autocomplete="off"></asp:TextBox>
                                         </div>
