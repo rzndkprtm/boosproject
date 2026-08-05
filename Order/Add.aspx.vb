@@ -72,6 +72,8 @@ Partial Class Order_Add
 
             If msgError.InnerText = "" Then
                 Dim thisId As String = orderClass.GetNewOrderHeaderId()
+                Dim orderState As String = orderClass.GetCustomerState(ddlCustomer.SelectedValue)
+                Dim orderAddress As String = orderClass.GetCustomerPrimaryAddress(ddlCustomer.SelectedValue)
 
                 Dim success As Boolean = False
                 Dim retry As Integer = 0
@@ -88,7 +90,7 @@ Partial Class Order_Add
                     orderId = companyAlias & randomCode
                     Try
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, Status, CreatedBy, CreatedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, @OrderType, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                            Using thisCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, OrderState, OrderAddress, Status, CreatedBy, CreatedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, @OrderType, @OrderState, @OrderAddress, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                                 thisCmd.Parameters.AddWithValue("@Id", thisId)
                                 thisCmd.Parameters.AddWithValue("@OrderId", orderId)
                                 thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
@@ -96,6 +98,8 @@ Partial Class Order_Add
                                 thisCmd.Parameters.AddWithValue("@OrderName", txtOrderName.Text.Trim())
                                 thisCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
                                 thisCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
+                                thisCmd.Parameters.AddWithValue("@OrderState", orderState)
+                                thisCmd.Parameters.AddWithValue("@OrderAddress", orderAddress)
                                 thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
                                 thisConn.Open()
                                 thisCmd.ExecuteNonQuery()

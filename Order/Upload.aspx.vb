@@ -67,6 +67,8 @@ Partial Class Order_Upload
                     Dim companyDetailId As String = customerData("CompanyDetailId")
 
                     Dim headerId As String = orderClass.GetNewOrderHeaderId
+                    Dim orderState As String = orderClass.GetCustomerState(ddlCustomer.SelectedValue)
+                    Dim orderAddress As String = orderClass.GetCustomerPrimaryAddress(ddlCustomer.SelectedValue)
 
                     Dim orderNumber As String = worksheet.Cells(2, 1).Text
                     Dim orderName As String = worksheet.Cells(2, 2).Text
@@ -90,13 +92,15 @@ Partial Class Order_Upload
                         orderId = companyAlias & randomCode
                         Try
                             Using thisConn As New SqlConnection(myConn)
-                                Using thisCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, Status, CreatedBy, CreatedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, 'Regular', 'Unsubmitted', @CreatedBy, GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                                Using thisCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, OrderState, OrderAddress, Status, CreatedBy, CreatedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, 'Regular', @OrderState, @OrderAddress, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                                     thisCmd.Parameters.AddWithValue("@Id", headerId)
                                     thisCmd.Parameters.AddWithValue("@OrderId", orderId)
                                     thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
                                     thisCmd.Parameters.AddWithValue("@OrderNumber", orderNumber)
                                     thisCmd.Parameters.AddWithValue("@OrderName", orderName)
                                     thisCmd.Parameters.AddWithValue("@OrderNote", orderNote)
+                                    thisCmd.Parameters.AddWithValue("@OrderState", orderState)
+                                    thisCmd.Parameters.AddWithValue("@OrderAddress", orderAddress)
                                     thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
                                     thisConn.Open()
                                     thisCmd.ExecuteNonQuery()
@@ -2487,6 +2491,7 @@ Partial Class Order_Upload
                                     chainColour = chainColour.Replace("Cream", "Ivory")
                                     chainColour = chainColour.Replace("Platinum", "Grey")
                                     chainColour = chainColour.Replace("Metal Nickel Plated", "Nickel Plated")
+                                    chainColour = chainColour.Replace("Metal Stainless Steel", "Stainless Steel")
 
                                     chainName = String.Format("Cont {0}", chainColour)
                                     chainType = "Continuous"

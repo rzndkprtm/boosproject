@@ -72,8 +72,18 @@ Partial Class Order_Edit
                     orderFactory = String.Join(",", lbOrderFactory.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
 
+                Dim orderState As String = ddlOrderState.SelectedValue
+                If ddlOrderState.SelectedValue = "" Then
+                    orderState = orderClass.GetCustomerState(ddlCustomer.SelectedValue)
+                End If
+
+                Dim orderAddress As String = txtOrderAddress.Text
+                If ddlOrderState.SelectedValue = "" Then
+                    orderAddress = orderClass.GetCustomerPrimaryAddress(ddlCustomer.SelectedValue)
+                End If
+
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderId=@OrderId, CustomerId=@CustomerId, OrderNumber=@OrderNumber, OrderName=@OrderName, OrderNote=@OrderNote, OrderType=@OrderType, OrderFactory=@OrderFactory, CreatedBy=@CreatedBy WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderId=@OrderId, CustomerId=@CustomerId, OrderNumber=@OrderNumber, OrderName=@OrderName, OrderNote=@OrderNote, OrderType=@OrderType, OrderFactory=@OrderFactory, OrderState=@OrderState, OrderAddress=@OrderAddress, CreatedBy=@CreatedBy WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         thisCmd.Parameters.AddWithValue("@OrderId", txtOrderId.Text)
                         thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
@@ -82,6 +92,8 @@ Partial Class Order_Edit
                         thisCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@OrderFactory", orderFactory)
+                        thisCmd.Parameters.AddWithValue("@OrderState", orderState)
+                        thisCmd.Parameters.AddWithValue("@OrderAddress", orderAddress)
                         thisCmd.Parameters.AddWithValue("@CreatedBy", ddlCreatedBy.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
@@ -205,11 +217,13 @@ Partial Class Order_Edit
                     End If
                 Next
             End If
+            ddlOrderState.SelectedValue = headerData("OrderState").ToString()
+            txtOrderAddress.Text = headerData("OrderAddress").ToString()
 
             divCustomer.Visible = False
             divCreatedBy.Visible = False
-            divOrderType.Visible = False
-            divOrderFactory.Visible = False
+            divOrderTypeFactory.Visible = False
+            divOrderStateAddress.Visible = False
 
             ddlCustomer.Enabled = False
             ddlCreatedBy.Enabled = False
@@ -221,8 +235,8 @@ Partial Class Order_Edit
             If Session("RoleName") = "Developer" Then
                 divCustomer.Visible = True
                 divCreatedBy.Visible = True
-                divOrderType.Visible = True
-                divOrderFactory.Visible = True
+                divOrderTypeFactory.Visible = True
+                divOrderStateAddress.Visible = True
 
                 ddlCustomer.Enabled = True
                 ddlCreatedBy.Enabled = True
@@ -235,8 +249,7 @@ Partial Class Order_Edit
             If Session("RoleName") = "IT" Then
                 divCustomer.Visible = True
                 divCreatedBy.Visible = True
-                divOrderType.Visible = True
-                divOrderFactory.Visible = True
+                divOrderTypeFactory.Visible = True
 
                 ddlCustomer.Enabled = True
                 ddlCreatedBy.Enabled = True

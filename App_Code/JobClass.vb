@@ -248,7 +248,7 @@ Public Class JobClass
 
     Public Function BindContent(headerId As String) As Byte()
         Using ms As New MemoryStream()
-            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.Area AS State, Companys.Name AS CompanyName, OrderJobs.JobNumber, OrderJobs.WorkOrder, OrderJobs.JobNote, OrderJobs.CreatedDate AS ConvertDate, Logins.FullName AS ConvertBy FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId = Customers.Id LEFT JOIN Companys ON Customers.CompanyId = Companys.Id LEFT JOIN OrderJobs ON OrderHeaders.OrderJobId = OrderJobs.Id LEFT JOIN Logins ON OrderJobs.CreatedBy = Logins.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.State AS State, Companys.Name AS CompanyName, OrderJobs.JobNumber, OrderJobs.WorkOrder, OrderJobs.JobNote, OrderJobs.CreatedDate AS ConvertDate, Logins.FullName AS ConvertBy FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId = Customers.Id LEFT JOIN Companys ON Customers.CompanyId = Companys.Id LEFT JOIN OrderJobs ON OrderHeaders.OrderJobId = OrderJobs.Id LEFT JOIN Logins ON OrderJobs.CreatedBy = Logins.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
             Dim customerName As String = headerData("CustomerName").ToString()
             Dim customerState As String = headerData("State").ToString()
