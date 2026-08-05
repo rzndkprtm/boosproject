@@ -1,6 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports OfficeOpenXml
+Imports Org.BouncyCastle.Asn1.Cmp
 
 Partial Class Setting_Price_Base_Import
     Inherits Page
@@ -20,12 +21,14 @@ Partial Class Setting_Price_Base_Import
 
             BindPriceGroup()
             BindProductGroup(ddlPriceGroup.SelectedValue)
+            bindBuyPrice(ddlPriceGroup.SelectedValue)
         End If
     End Sub
 
     Protected Sub ddlPriceGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindProductGroup(ddlPriceGroup.SelectedValue)
+        bindBuyPrice(ddlPriceGroup.SelectedValue)
     End Sub
 
     Protected Sub btnSubmitAdd_Click(sender As Object, e As EventArgs)
@@ -79,10 +82,12 @@ Partial Class Setting_Price_Base_Import
             dt.Columns.Add("Price", GetType(Decimal))
             dt.Columns.Add("Conditional", GetType(String))
 
+
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
                 Dim nextId As Integer
+
                 Using cmd As New SqlCommand("SELECT ISNULL(MAX(Id),0)+1 FROM PriceBases", thisConn)
                     nextId = CInt(cmd.ExecuteScalar())
                 End Using
@@ -92,7 +97,7 @@ Partial Class Setting_Price_Base_Import
                         Return "NO WORKSHEET WAS FOUND IN THE EXCEL FILE."
                     End If
 
-                    Dim result As String
+                    Dim result As String = ""
 
                     Dim sellSheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Sell", StringComparison.OrdinalIgnoreCase))
 
@@ -101,7 +106,10 @@ Partial Class Setting_Price_Base_Import
                     End If
 
                     result = ReadSheet(sellSheet, "Sell", method, productGroupId, priceGroupId, dt, nextId)
-                    If result <> "" Then Return result
+
+                    If result <> "" Then
+                        Return result
+                    End If
 
                     If includeBuy.Equals("Yes", StringComparison.OrdinalIgnoreCase) Then
                         Dim buySheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Buy", StringComparison.OrdinalIgnoreCase))
@@ -110,10 +118,15 @@ Partial Class Setting_Price_Base_Import
                             Return "WORKSHEET 'BUY' COULD NOT BE FOUND."
                         End If
 
-                        result = ReadSheet(buySheet, "Buy", method, productGroupId, priceGroupId, dt, nextId)
-                        If result <> "" Then Return result
-                    End If
 
+                        result = ReadSheet(buySheet, "Buy", method, productGroupId, priceGroupId, dt, nextId)
+
+                        If result <> "" Then
+                            Return result
+                        End If
+                    ElseIf includeBuy.Equals("From Master", StringComparison.OrdinalIgnoreCase) Then
+                        AddBuyFromMaster(dt, productGroupId, priceGroupId, nextId, thisConn)
+                    End If
                 End Using
 
                 If dt.Rows.Count = 0 Then
@@ -121,27 +134,23 @@ Partial Class Setting_Price_Base_Import
                 End If
 
                 Dim newTable As String = "PriceBases_Backup_" & DateTime.Now.ToString("yyyyMMdd_HHmmss") & "_" & Session("RoleName").ToString()
-                Using thisCmd As New SqlCommand("SELECT * INTO [dbo].[" & newTable & "] FROM [dbo].[PriceBases]", thisConn)
-                    thisCmd.ExecuteNonQuery()
+
+
+                Using cmd As New SqlCommand("SELECT * INTO [dbo].[" & newTable & "] FROM [dbo].[PriceBases]",
+                thisConn)
+                    cmd.ExecuteNonQuery()
                 End Using
 
                 Using tran As SqlTransaction = thisConn.BeginTransaction()
                     Try
-                        Using thisCmd As New SqlCommand("DELETE FROM PriceBases WHERE Category='Sell' AND Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@PriceGroupId", thisConn, tran)
-                            thisCmd.Parameters.AddWithValue("@Method", method)
-                            thisCmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
-                            thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
-                            thisCmd.ExecuteNonQuery()
+                        Using cmd As New SqlCommand("DELETE FROM PriceBases WHERE Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@PriceGroupId",
+                        thisConn,
+                        tran)
+                            cmd.Parameters.AddWithValue("@Method", method)
+                            cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
+                            cmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
+                            cmd.ExecuteNonQuery()
                         End Using
-
-                        If dt.Select("Category='Buy'").Length > 0 Then
-                            Using thisCmd As New SqlCommand("DELETE FROM PriceBases WHERE Category='Buy' AND Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@PriceGroupId", thisConn, tran)
-                                thisCmd.Parameters.AddWithValue("@Method", method)
-                                thisCmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
-                                thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
-                                thisCmd.ExecuteNonQuery()
-                            End Using
-                        End If
 
                         Using bulk As New SqlBulkCopy(thisConn, SqlBulkCopyOptions.Default, tran)
                             bulk.DestinationTableName = "PriceBases"
@@ -160,7 +169,6 @@ Partial Class Setting_Price_Base_Import
 
                             bulk.WriteToServer(dt)
                         End Using
-
                         tran.Commit()
                     Catch ex As Exception
                         tran.Rollback()
@@ -215,6 +223,63 @@ Partial Class Setting_Price_Base_Import
             Return "An unexpected error occurred while reading the Excel worksheet."
         End Try
     End Function
+
+    Protected Sub AddBuyFromMaster(dt As DataTable, productGroupId As Integer, priceGroupId As Integer, ByRef nextId As Integer, conn As SqlConnection)
+        Dim masterPriceGroupId As Integer = 0
+        Using cmd As New SqlCommand("SELECT TOP 1 PG2.Id FROM PriceGroups PG1 INNER JOIN PriceGroups PG2 ON PG2.CompanyId = PG1.CompanyId AND PG2.Type = PG1.Type AND PG2.Master='Yes' WHERE PG1.Id=@PriceGroupId",
+        conn)
+            cmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
+            Dim result = cmd.ExecuteScalar()
+            If result IsNot Nothing Then
+                masterPriceGroupId = CInt(result)
+            End If
+        End Using
+
+        If masterPriceGroupId = 0 Then
+            Exit Sub
+        End If
+
+        Using cmd As New SqlCommand("SELECT Method, ProductGroupId, Height, Width, Price, Conditional FROM PriceBases WHERE Category='Buy' AND PriceGroupId=@MasterPriceGroupId AND ProductGroupId=@ProductGroupId", conn)
+            cmd.Parameters.AddWithValue("@MasterPriceGroupId", masterPriceGroupId)
+            cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
+            Using rd = cmd.ExecuteReader()
+                While rd.Read()
+                    Dim row = dt.NewRow()
+
+                    row("Id") = nextId
+                    nextId += 1
+
+                    row("Category") = "Buy"
+                    row("Method") = rd("Method")
+                    row("ProductGroupId") = rd("ProductGroupId")
+                    row("PriceGroupId") = priceGroupId
+                    row("Height") = rd("Height")
+                    row("Width") = rd("Width")
+                    row("Price") = rd("Price")
+                    row("Conditional") = rd("Conditional")
+
+                    dt.Rows.Add(row)
+                End While
+            End Using
+        End Using
+    End Sub
+
+    Protected Sub bindBuyPrice(priceGroupId As String)
+        ddlIncludeBuy.Items.Clear()
+        Try
+            Dim master As String = settingClass.GetItemData("SELECT [Master] FROM PriceGroups WHERE Id='" & priceGroupId & "'")
+            If master = "Yes" Then
+                ddlIncludeBuy.Items.Add(New ListItem("", ""))
+                ddlIncludeBuy.Items.Add(New ListItem("Yes", "Yes"))
+            ElseIf master = "No" Then
+                ddlIncludeBuy.Items.Add(New ListItem("From Master", "From Master"))
+            Else
+                ddlIncludeBuy.Items.Add(New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlIncludeBuy.SelectedValue = ""
+        End Try
+    End Sub
 
     Protected Sub BindPriceGroup()
         ddlPriceGroup.Items.Clear()
