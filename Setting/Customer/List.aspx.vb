@@ -183,14 +183,14 @@ Partial Class Setting_Customer_List
             gvList.Columns(2).Visible = LoginAccess("Visible Debtor Code") ' DEBTOR CODE
             gvList.Columns(4).Visible = LoginAccess("Visible Company") ' COMPANY
             gvList.Columns(5).Visible = LoginAccess("Visible Company Detail") ' COMPANY DETAIL
-            gvList.Columns(6).Visible = LoginAccess("Visible Area") ' AREA
+            gvList.Columns(6).Visible = LoginAccess("Visible State") ' STATE
             gvList.Columns(7).Visible = LoginAccess("Visible Sales") ' OPERATOR
             gvList.Columns(8).Visible = LoginAccess("Visible Cash Sale") ' CASH SALE
             gvList.Columns(9).Visible = LoginAccess("Visible On Stop") ' ON STOP
             gvList.Columns(10).Visible = LoginAccess("Visible Active") ' ACTIVE
 
             btnAdd.Visible = LoginAccess("Add")
-            ddlActive.Visible = LoginAccess("Active")
+            ddlActive.Visible = LoginAccess("Filter Active")
             divCompany.Visible = LoginAccess("Filter Company")
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -203,12 +203,7 @@ Partial Class Setting_Customer_List
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            Dim thisQuery As String = "SELECT Id, Alias FROM Companys ORDER BY Id ASC"
-            If Session("RoleName") = "Developer" Then
-                thisQuery = "SELECT Id, Alias FROM Companys WHERE Active=1 ORDER BY Id ASC"
-            End If
-
-            ddlCompany.DataSource = settingClass.GetDataTable(thisQuery)
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys ORDER BY Id ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()

@@ -260,7 +260,7 @@ Partial Class Setting_Customer_Detail
             lblCompanyName.Text = thisData("CompanyName").ToString()
             lblCompanyDetailId.Text = thisData("CompanyDetailId").ToString()
             lblCompanyDetailName.Text = thisData("CompanyDetailName").ToString()
-            lblArea.Text = thisData("Area").ToString()
+            lblState.Text = thisData("State").ToString()
             lblOperator.Text = thisData("OperatorName").ToString()
             lblLevel.Text = thisData("Level").ToString()
             lblPrimary.Text = primaryName

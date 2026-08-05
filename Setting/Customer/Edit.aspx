@@ -65,8 +65,8 @@
                                             </div>
                                             <div class="row mb-2">
                                                 <div class="col-5 col-sm-12 col-lg-6 mb-2 form-group">
-                                                    <label class="form-label">Area</label>
-                                                    <asp:DropDownList runat="server" ID="ddlArea" CssClass="choices form-select">
+                                                    <label class="form-label">State</label>
+                                                    <asp:DropDownList runat="server" ID="ddlState" CssClass="choices form-select">
                                                         <asp:ListItem Value="" Text=""></asp:ListItem>
                                                         <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
                                                         <asp:ListItem Value="NSW 1" Text="NSW 1"></asp:ListItem>

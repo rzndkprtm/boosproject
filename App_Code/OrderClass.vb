@@ -2280,11 +2280,8 @@ Public Class OrderClass
                             If linearMetre < 1 Then thisSell = thisSell * 1
                             If linearMetre >= 1 Then thisSell = Math.Round(thisSell * linearMetre, 2)
 
-                            If designName = "Curtain" AndAlso (blindName = "Complete Set (Single)" OrElse blindName = "Curtain Only") Then
+                            If designName = "Curtain" Then
                                 thisSell = Math.Round(cutLength / 1000 * costSell, 2)
-                            End If
-                            If designName = "Curtain" AndAlso priceGroup = "23" Then
-                                thisSell = Math.Round(drop / 1000 * costSell, 2)
                             End If
                         End If
                         thisBuy = Math.Round(thisBuy * linearMetre, 2)
@@ -2295,22 +2292,10 @@ Public Class OrderClass
                             If squareMetre <= 0.75 Then thisSell = Math.Round(gridSellPrice * 0.75, 2)
                             If squareMetre <= 0.5 Then thisBuy = Math.Round(gridBuyPrice * 0.5, 2)
                         End If
-                        'If companyId = "3" Then
-                        '    If squareMetre <= 0.5 Then thisSell = Math.Round(gridSellPrice * 0.5, 2)
-                        'End If
                     End If
                     If designName = "Skyline Shutter Ocean" Then
                         If squareMetre <= 0.75 Then thisSell = Math.Round(gridSellPrice * 0.75, 2)
                     End If
-
-                    'If orderType = "Builder" Then
-                    '    If designName = "Aluminium Blind" OrElse designName = "Cellular Shades" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" OrElse designName = "Outdoor" OrElse designName = "Panel Glide" OrElse designName = "Pelmet" OrElse designName = "Privacy Venetian" OrElse designName = "Roller Blind" OrElse designName = "Roman Blind" OrElse designName = "Saphora Drape" OrElse designName = "Soft Roman" OrElse designName = "Venetian Blind" OrElse designName = "Vertical" Then
-                    '        thisSell = thisSell + 30
-                    '    End If
-                    '    If designName = "Curtain" Then
-                    '        thisSell = thisSell + 50
-                    '    End If
-                    'End If
 
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
@@ -2620,15 +2605,6 @@ Public Class OrderClass
                         thisBuy = Math.Round(thisBuy * linearMetreB, 2)
                     End If
 
-                    'If orderType = "Builder" Then
-                    '    If designName = "Aluminium Blind" OrElse designName = "Cellular Shades" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" OrElse designName = "Outdoor" OrElse designName = "Panel Glide" OrElse designName = "Pelmet" OrElse designName = "Privacy Venetian" OrElse designName = "Roller Blind" OrElse designName = "Roman Blind" OrElse designName = "Saphora Drape" OrElse designName = "Soft Roman" OrElse designName = "Venetian Blind" OrElse designName = "Vertical" Then
-                    '        thisSell = thisSell + 30
-                    '    End If
-                    '    If designName = "Curtain" Then
-                    '        thisSell = thisSell + 50
-                    '    End If
-                    'End If
-
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
@@ -2866,12 +2842,6 @@ Public Class OrderClass
                         thisBuy = Math.Round(thisBuy * linearMetreC, 2)
                     End If
 
-                    'If orderType = "Builder" Then
-                    '    If designName = "Aluminium Blind" OrElse designName = "Cellular Shades" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" OrElse designName = "Outdoor" OrElse designName = "Panel Glide" OrElse designName = "Pelmet" OrElse designName = "Privacy Venetian" OrElse designName = "Roller Blind" OrElse designName = "Roman Blind" OrElse designName = "Saphora Drape" OrElse designName = "Soft Roman" OrElse designName = "Venetian Blind" OrElse designName = "Vertical" Then
-                    '        thisSell = thisSell + 30
-                    '    End If
-                    'End If
-
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
@@ -3092,12 +3062,6 @@ Public Class OrderClass
                         End If
                         thisBuy = Math.Round(thisBuy * linearMetreD, 2)
                     End If
-
-                    'If orderType = "Builder" Then
-                    '    If designName = "Aluminium Blind" OrElse designName = "Cellular Shades" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" OrElse designName = "Outdoor" OrElse designName = "Panel Glide" OrElse designName = "Pelmet" OrElse designName = "Privacy Venetian" OrElse designName = "Roller Blind" OrElse designName = "Roman Blind" OrElse designName = "Saphora Drape" OrElse designName = "Soft Roman" OrElse designName = "Venetian Blind" OrElse designName = "Vertical" Then
-                    '        thisSell = thisSell + 30
-                    '    End If
-                    'End If
 
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
@@ -3320,12 +3284,6 @@ Public Class OrderClass
                         thisBuy = Math.Round(thisBuy * linearMetreE, 2)
                     End If
 
-                    'If orderType = "Builder" Then
-                    '    If designName = "Aluminium Blind" OrElse designName = "Cellular Shades" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" OrElse designName = "Outdoor" OrElse designName = "Panel Glide" OrElse designName = "Pelmet" OrElse designName = "Privacy Venetian" OrElse designName = "Roller Blind" OrElse designName = "Roman Blind" OrElse designName = "Saphora Drape" OrElse designName = "Soft Roman" OrElse designName = "Venetian Blind" OrElse designName = "Vertical" Then
-                    '        thisSell = thisSell + 30
-                    '    End If
-                    'End If
-
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
@@ -3546,12 +3504,6 @@ Public Class OrderClass
                         End If
                         thisBuy = Math.Round(thisBuy * linearMetreE, 2)
                     End If
-
-                    'If orderType = "Builder" Then
-                    '    If designName = "Aluminium Blind" OrElse designName = "Cellular Shades" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" OrElse designName = "Outdoor" OrElse designName = "Panel Glide" OrElse designName = "Pelmet" OrElse designName = "Privacy Venetian" OrElse designName = "Roller Blind" OrElse designName = "Roman Blind" OrElse designName = "Saphora Drape" OrElse designName = "Soft Roman" OrElse designName = "Venetian Blind" OrElse designName = "Vertical" Then
-                    '        thisSell = thisSell + 30
-                    '    End If
-                    'End If
 
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
