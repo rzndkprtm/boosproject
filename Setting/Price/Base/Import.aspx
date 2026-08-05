@@ -60,23 +60,24 @@
                                                 <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
                                         </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
+                                                <label>Upload File</label>
+                                                <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Include Buy Price</label>
+                                                <asp:DropDownList runat="server" ID="ddlIncludeBuy" CssClass="form-select">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Yes" Text="Yes"></asp:ListItem>
+                                                    <asp:ListItem Value="From Master" Text="Yes"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
-                                        <label>Upload File</label>
-                                        <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Include Buy Price</label>
-                                        <asp:DropDownList runat="server" ID="ddlIncludeBuy" CssClass="choices form-select">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="Yes" Text="Yes"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
