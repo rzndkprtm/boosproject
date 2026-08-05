@@ -2,7 +2,6 @@
 Imports System.Data.SqlClient
 Imports System.Web.Services
 Imports System.Reflection
-Imports System.Web.UI.WebControls.Expressions
 
 Partial Class Order_Method
     Inherits Page
@@ -11468,8 +11467,7 @@ Partial Class Order_Method
 
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
 
-        Dim fabricReq As New JSONList With {.type = "FabricType", .designtype = designId, .companydetailid = companyDetailId, .tubetype = tubeId, .action = action}
-
+        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
         Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
 
         Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .action = action}

@@ -11,7 +11,7 @@ let loginId;
 let roleAccess;
 let priceAccess;
 
-initRoman();
+initSoftRoman();
 
 $("#submit").on("click", process);
 $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
@@ -26,7 +26,6 @@ $("#tubetype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
 
     bindControlType(blindtype, $(this).val());
-    bindFabricType(designId, $(this).val());
 });
 
 $("#controltype").on("change", function () {
@@ -361,8 +360,7 @@ function bindTubeType(blindType) {
         if (!blindType) {
             const selectedValue = tubetype.value || "";
             Promise.all([
-                bindControlType(blindType, selectedValue),
-                bindFabricType(designId, selectedValue)
+                bindControlType(blindType, selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
@@ -399,14 +397,12 @@ function bindTubeType(blindType) {
 
                     const selectedValue = tubetype.value || "";
                     Promise.all([
-                        bindControlType(blindType, selectedValue),
-                        bindFabricType(designId, selectedValue)
+                        bindControlType(blindType, selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = tubetype.value || "";
                     Promise.all([
-                        bindControlType(blindType, selectedValue),
-                        bindFabricType(designId, selectedValue)
+                        bindControlType(blindType, selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -593,12 +589,12 @@ function bindMounting(blindType) {
     });
 }
 
-function bindFabricType(designType, tubeType) {
+function bindFabricType(designType) {
     return new Promise((resolve, reject) => {
         const fabrictype = document.getElementById("fabrictype");
         fabrictype.innerHTML = "";
 
-        if (!designType || !tubeType) {
+        if (!designType) {
             const selectedValue = fabrictype.value || "";
             Promise.resolve(
                 bindFabricColour(selectedValue)
@@ -606,7 +602,7 @@ function bindFabricType(designType, tubeType) {
             return;
         }
 
-        const listData = { type: "FabricType", designtype: designType, companydetailid: companyDetailId, tubetype: tubeType, action: itemAction };
+        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetailid: companyDetailId, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1041,7 +1037,7 @@ function process() {
     });
 }
 
-async function initRoman() {
+async function initSoftRoman() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
     if (!sessionId) return redirectOrder();
@@ -1085,6 +1081,7 @@ async function initRoman() {
         bindComponentForm("", "", "");
         controlForm(false);
         bindBlindType(designId);
+        bindFabricType(designId);
         loader(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {
         await bindItemOrder(itemId, companyDetailId, itemAction);
@@ -1096,7 +1093,7 @@ async function bindItemOrder(itemId, companyDetailId, action) {
     try {
         const response = await $.ajax({
             type: "POST",
-            url: "Method.aspx/RomanDetail",
+            url: "Method.aspx/SoftRomanDetail",
             data: JSON.stringify({ itemId, companyDetailId, action }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
