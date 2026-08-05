@@ -75,6 +75,13 @@
                                                     <asp:ListItem Value="From Master" Text="Yes"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Backup Database</label>
+                                                <asp:DropDownList runat="server" ID="ddlBackup" CssClass="choices form-select">
+                                                    <asp:ListItem Value="Yes" Text="Yes"></asp:ListItem>
+                                                    <asp:ListItem Value="No" Text="No"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
                                         </div>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>

@@ -24,32 +24,42 @@ Reveal Fit = Inside
 
 Cont Grey 1200
 
-ALTER PROCEDURE [dbo].[sp_Logins_Online]
-(
-    @SearchText NVARCHAR(255) = NULL,
-    @Minutes INT = 5
-)
-AS
-BEGIN
-    SET NOCOUNT ON;
+sp_OrderHeaders_Copy
 
-    SELECT 
-        Logins.*,
-        LoginRoles.Name AS RoleName,
-        DATEDIFF(MINUTE, Logins.LastLogin, GETDATE()) AS LastActiveMinute
-    FROM Logins
-    LEFT JOIN LoginRoles 
-        ON Logins.RoleId = LoginRoles.Id
-    WHERE 
-        Logins.Active = 1
-        AND Logins.LastLogin IS NOT NULL
-        AND Logins.LastLogin >= DATEADD(MINUTE, -@Minutes, GETDATE())
-        AND (
-            @SearchText IS NULL
-            OR @SearchText = ''
-            OR Logins.UserName LIKE '%' + @SearchText + '%'
-        )
-    ORDER BY Logins.UserName ASC
-END
-
-
+INSERT INTO OrderHeaders_New SELECT Id,
+OrderId,
+CustomerId,
+OrderJobId,
+OrderNumber,
+OrderName,
+OrderNote,
+OrderType,
+OrderFactory,
+NULL,
+NULL,
+Status,
+StatusDescription,
+CreatedBy,
+CreatedDate,
+QuotedDate,
+SubmittedDate,
+ProductionDate,
+OnHoldDate,
+CanceledDate,
+ShipmentDate,
+CompletedDate,
+InvoiceDate,
+DueDate,
+ShipmentNumber,
+ContainerNumber,
+ContainerETA,
+Courier,
+InvoiceNumber,
+Collector,
+Payment,
+PaymentDate,
+Amount,
+Download,
+DownloadDate,
+Active
+FROM OrderHeaders

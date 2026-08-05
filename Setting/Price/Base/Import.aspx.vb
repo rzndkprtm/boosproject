@@ -1,8 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports OfficeOpenXml
-Imports Org.BouncyCastle.Asn1.Cmp
-
 Partial Class Setting_Price_Base_Import
     Inherits Page
 
@@ -82,12 +80,10 @@ Partial Class Setting_Price_Base_Import
             dt.Columns.Add("Price", GetType(Decimal))
             dt.Columns.Add("Conditional", GetType(String))
 
-
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
                 Dim nextId As Integer
-
                 Using cmd As New SqlCommand("SELECT ISNULL(MAX(Id),0)+1 FROM PriceBases", thisConn)
                     nextId = CInt(cmd.ExecuteScalar())
                 End Using
@@ -133,19 +129,18 @@ Partial Class Setting_Price_Base_Import
                     Return "NO DATA WAS FOUND TO IMPORT."
                 End If
 
-                Dim newTable As String = "PriceBases_Backup_" & DateTime.Now.ToString("yyyyMMdd_HHmmss") & "_" & Session("RoleName").ToString()
+                If ddlBackup.SelectedValue = "Yes" Then
+                    Dim newTable As String = "PriceBases_Backup_" & DateTime.Now.ToString("yyyyMMdd_HHmmss") & "_" & Session("RoleName").ToString()
 
-
-                Using cmd As New SqlCommand("SELECT * INTO [dbo].[" & newTable & "] FROM [dbo].[PriceBases]",
-                thisConn)
-                    cmd.ExecuteNonQuery()
-                End Using
+                    Using cmd As New SqlCommand("SELECT * INTO [dbo].[" & newTable & "] FROM [dbo].[PriceBases]",
+                    thisConn)
+                        cmd.ExecuteNonQuery()
+                    End Using
+                End If
 
                 Using tran As SqlTransaction = thisConn.BeginTransaction()
                     Try
-                        Using cmd As New SqlCommand("DELETE FROM PriceBases WHERE Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@PriceGroupId",
-                        thisConn,
-                        tran)
+                        Using cmd As New SqlCommand("DELETE FROM PriceBases WHERE Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@PriceGroupId", thisConn, tran)
                             cmd.Parameters.AddWithValue("@Method", method)
                             cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
                             cmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)

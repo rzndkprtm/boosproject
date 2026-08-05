@@ -157,6 +157,8 @@ Public Class PreviewClass
             Dim orderNumber As String = headerData("OrderNumber").ToString()
             Dim orderName As String = headerData("OrderName").ToString()
             Dim orderNote As String = headerData("OrderNote").ToString()
+            Dim orderState As String = headerData("OrderState").ToString()
+            Dim orderAddress As String = headerData("OrderAddress").ToString()
             Dim orderCreatedBy As String = headerData("CreatedName").ToString()
             Dim orderCreatedDate As String = String.Empty
             If Not IsDBNull(headerData("CreatedDate")) Then
@@ -179,7 +181,7 @@ Public Class PreviewClass
                 .PageSubmitDate = submitDate, .PageCustomerName = customerName,
                 .PageOrderNumber = orderNumber, .PageOrderName = orderName,
                 .PageNote = orderNote, .PageTotalItem = pageTotalItem,
-                .pageCompany = companyId, .PageCreatedBy = orderCreatedBy
+                .pageCompany = companyId, .PageCreatedBy = orderCreatedBy, .PageOrderState = orderState, .PageOrderAddress = orderAddress
             }
             writer.PageEvent = pageEvent
 
@@ -2595,6 +2597,8 @@ Public Class PreviewEvents
     Public Property PageOrderNumber As String
     Public Property PageOrderName As String
     Public Property PageNote As String
+    Public Property PageOrderState As String
+    Public Property PageOrderAddress As String
     Public Property PageCreatedBy As String
     Public Property PageCreatedDate As String
     Public Property PageSubmitDate As String
@@ -2611,6 +2615,16 @@ Public Class PreviewEvents
 
     Public Overrides Sub OnEndPage(writer As PdfWriter, document As Document)
         Dim cb As PdfContentByte = writer.DirectContent
+
+        Dim gs As New PdfGState()
+        gs.FillOpacity = 0.35F
+
+        cb.SaveState()
+        cb.SetGState(gs)
+        Dim wmFont As Font = FontFactory.GetFont(FontFactory.TIMES_ROMAN, 140, Font.BOLD)
+        wmFont.Color = BaseColor.LIGHT_GRAY
+        ColumnText.ShowTextAligned(cb, Element.ALIGN_CENTER, New Phrase(PageOrderState, wmFont), document.PageSize.Width / 2, document.PageSize.Height / 2, 0)
+        cb.RestoreState()
 
         If template Is Nothing Then
             template = cb.CreateTemplate(50, 50)

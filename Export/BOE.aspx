@@ -158,6 +158,8 @@
             writer.WriteAttributeString("OrderNumber", myData("OrderNumber").ToString())
             writer.WriteAttributeString("OrderName", myData("OrderName").ToString())
             writer.WriteAttributeString("OrderNote", myData("OrderNote").ToString())
+            writer.WriteAttributeString("OrderState", myData("OrderState").ToString())
+            writer.WriteAttributeString("OrderAddress", myData("OrderAddress").ToString())
             writer.WriteAttributeString("OrdID", myData("Id").ToString())
             writer.WriteAttributeString("StoreOrderNo", myData("OrderNumber").ToString())
             writer.WriteAttributeString("StoreCustomer", myData("OrderName").ToString())

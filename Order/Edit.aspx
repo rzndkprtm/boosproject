@@ -67,17 +67,35 @@
                                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtOrderNote" Height="100px" CssClass="form-control" placeholder="Order Note ...." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
                                     </div>
-                                    <div class="row mb-2" runat="server" id="divOrderType">
-                                        <div class="col-12 form-group">
+                                    <div class="row mb-2" runat="server" id="divOrderStateAddress">
+                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                            <label class="form-label">Order State</label>
+                                            <asp:DropDownList runat="server" ID="ddlOrderState" CssClass="choices form-select">
+                                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                <asp:ListItem Value="WA" Text="WA"></asp:ListItem>
+                                                <asp:ListItem Value="NT" Text="NT"></asp:ListItem>
+                                                <asp:ListItem Value="SA" Text="SA"></asp:ListItem>
+                                                <asp:ListItem Value="QLD" Text="QLD"></asp:ListItem>
+                                                <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
+                                                <asp:ListItem Value="ACT" Text="ACT"></asp:ListItem>
+                                                <asp:ListItem Value="VIC" Text="VIC"></asp:ListItem>
+                                                <asp:ListItem Value="TAS" Text="TAS"></asp:ListItem>
+                                            </asp:DropDownList>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                            <label class="form-label">Order Address</label>
+                                            <asp:TextBox runat="server" ID="txtOrderAddress" Height="45px" CssClass="form-control" placeholder="Order Address ...." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2" runat="server" id="divOrderTypeFactory">
+                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                                             <label class="form-label">Order Type</label>
-                                            <asp:DropDownList runat="server" ID="ddlOrderType" CssClass="form-select">
+                                            <asp:DropDownList runat="server" ID="ddlOrderType" CssClass="choices form-select">
                                                 <asp:ListItem Value="Regular" Text="Regular"></asp:ListItem>
                                                 <asp:ListItem Value="Builder" Text="Builder"></asp:ListItem>
                                             </asp:DropDownList>
                                         </div>
-                                    </div>
-                                    <div class="row" runat="server" id="divOrderFactory">
-                                        <div class="col-12 form-group">
+                                        <div class="col-12 col-sm-12 col-lg-8 form-group">
                                             <label class="form-label">Order Factory</label>
                                             <asp:ListBox runat="server" ID="lbOrderFactory" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
                                                 <asp:ListItem Value="" Text=""></asp:ListItem>
