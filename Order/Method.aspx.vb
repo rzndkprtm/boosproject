@@ -2,6 +2,7 @@
 Imports System.Data.SqlClient
 Imports System.Web.Services
 Imports System.Reflection
+Imports System.Web.UI.WebControls.Expressions
 
 Partial Class Order_Method
     Inherits Page
@@ -1772,7 +1773,6 @@ Partial Class Order_Method
             linearmetre = width / 1000
             squaremetre = width * drop / 1000000
         End If
-
         If blindName = "Complete Set (Double)" Then
             If Not data.trackdrawb = "Flick Stick" Then data.controlcolourb = String.Empty : controllengthB = 0
             If data.tracktypeb = "Express Track" Then returnLengthValueC = 0 : returnLengthValueD = 0
@@ -1784,7 +1784,6 @@ Partial Class Order_Method
             squaremetre = width * drop / 1000000
             squaremetreB = widthb * dropb / 1000000
         End If
-
         If blindName = "Fabric Only" Then
             data.heading = String.Empty
             data.tracktype = String.Empty : data.trackcolour = String.Empty
@@ -1794,6 +1793,8 @@ Partial Class Order_Method
 
             returnLengthValue = 0
             returnLengthValueB = 0
+
+            If data.companydetailid = "9" Then cutlength = drop
 
             linearmetre = width / 1000
             squaremetre = width * drop / 1000000

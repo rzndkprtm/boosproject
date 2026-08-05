@@ -86,9 +86,9 @@
                                                 </div>
                                             </div>
                                             <div class="row mb-2">
-                                                <div class="col-4 text-muted">Area</div>
+                                                <div class="col-4 text-muted">State</div>
                                                 <div class="col-8 fw-semibold">
-                                                    <asp:Label runat="server" ID="lblArea"></asp:Label>
+                                                    <asp:Label runat="server" ID="lblState"></asp:Label>
                                                 </div>
                                             </div>
                                             <div class="row mb-4">

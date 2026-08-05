@@ -91,7 +91,7 @@ Partial Class Setting_Customer_Add
                     operatorReps = String.Join(",", lbSales.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
                 If Not ddlCompany.SelectedValue = "2" Then
-                    ddlArea.SelectedValue = "" : operatorReps = String.Empty
+                    ddlState.SelectedValue = "" : operatorReps = String.Empty
                 End If
 
                 Dim primaryId As String = ddlPrimary.SelectedValue
@@ -102,7 +102,7 @@ Partial Class Setting_Customer_Add
                 Dim dataProductAccess As String = settingClass.GetProductAccess(ddlCompany.SelectedValue)
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Customers VALUES (@Id, @DebtorCode, @Level, @PrimaryId, @Name, @Company, @CompanyDetail, @Area, @Operator, @PriceGroup, @ShutterPriceGroup, @DoorPriceGroup, @OnStop, @CashSale, @Newsletter, @MinSurcharge, @Active); INSERT INTO CustomerQuotes(Id, Logo) VALUES (@Id, @Logo); INSERT INTO CustomerProductAccess VALUES (@Id, @DesignId)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Customers VALUES (@Id, @DebtorCode, @Level, @PrimaryId, @Name, @Company, @CompanyDetail, @State, @Operator, @PriceGroup, @ShutterPriceGroup, @DoorPriceGroup, @OnStop, @CashSale, @Newsletter, @MinSurcharge, @Active); INSERT INTO CustomerQuotes(Id, Logo) VALUES (@Id, @Logo); INSERT INTO CustomerProductAccess VALUES (@Id, @DesignId)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@DebtorCode", txtDebtorCode.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Level", ddlLevel.SelectedValue)
@@ -110,7 +110,7 @@ Partial Class Setting_Customer_Add
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Company", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                         thisCmd.Parameters.AddWithValue("@CompanyDetail", If(String.IsNullOrEmpty(ddlCompanyDetail.SelectedValue), CType(DBNull.Value, Object), ddlCompanyDetail.SelectedValue))
-                        thisCmd.Parameters.AddWithValue("@Area", ddlArea.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@State", ddlState.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Operator", operatorReps)
                         thisCmd.Parameters.AddWithValue("@PriceGroup", ddlPriceGroup.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@ShutterPriceGroup", ddlPriceGroupShutter.SelectedValue)

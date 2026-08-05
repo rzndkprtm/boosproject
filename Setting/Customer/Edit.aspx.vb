@@ -100,7 +100,7 @@ Partial Class Setting_Customer_Edit
                 If ddlLevel.SelectedValue = "Primary" OrElse ddlLevel.SelectedValue = "Standard" Then primaryId = String.Empty
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET DebtorCode=@DebtorCode, Name=@Name, Level=@Level, PrimaryId=@PrimaryId, CompanyId=@Company, CompanyDetailId=@CompanyDetail, Area=@Area, Operator=@Operator, PriceGroupId=@PriceGroup, ShutterPriceGroupId=@ShutterPriceGroup, DoorPriceGroupId=@DoorPriceGroupId, OnStop=@OnStop, CashSale=@CashSale, Newsletter=@Newsletter, MinSurcharge=@MinSurcharge WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET DebtorCode=@DebtorCode, Name=@Name, Level=@Level, PrimaryId=@PrimaryId, CompanyId=@Company, CompanyDetailId=@CompanyDetail, State=@State, Operator=@Operator, PriceGroupId=@PriceGroup, ShutterPriceGroupId=@ShutterPriceGroup, DoorPriceGroupId=@DoorPriceGroupId, OnStop=@OnStop, CashSale=@CashSale, Newsletter=@Newsletter, MinSurcharge=@MinSurcharge WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@DebtorCode", txtDebtorCode.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Level", ddlLevel.SelectedValue)
@@ -108,7 +108,7 @@ Partial Class Setting_Customer_Edit
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Company", If(String.IsNullOrEmpty(ddlCompany.SelectedValue), CType(DBNull.Value, Object), ddlCompany.SelectedValue))
                         thisCmd.Parameters.AddWithValue("@CompanyDetail", If(String.IsNullOrEmpty(ddlCompanyDetail.SelectedValue), CType(DBNull.Value, Object), ddlCompanyDetail.SelectedValue))
-                        thisCmd.Parameters.AddWithValue("@Area", ddlArea.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@State", ddlState.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Operator", operatorReps)
                         thisCmd.Parameters.AddWithValue("@PriceGroup", ddlPriceGroup.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@ShutterPriceGroup", ddlPriceGroupShutter.SelectedValue)
@@ -171,7 +171,7 @@ Partial Class Setting_Customer_Edit
             ddlPrimary.SelectedValue = myData("PrimaryId").ToString()
             ddlCompany.SelectedValue = myData("CompanyId").ToString()
             ddlCompanyDetail.SelectedValue = myData("CompanyDetailId").ToString()
-            ddlArea.SelectedValue = myData("Area").ToString()
+            ddlState.SelectedValue = myData("State").ToString()
             If Not myData("Operator").ToString() = "" Then
                 Dim operatorArray() As String = myData("Operator").ToString().Split(",")
                 For Each i In operatorArray
