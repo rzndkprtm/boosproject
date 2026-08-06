@@ -23,7 +23,6 @@ Partial Class Setting_Price_Surcharge_Edit
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-
             BindData(lblId.Text)
         End If
     End Sub
@@ -159,7 +158,6 @@ Partial Class Setting_Price_Surcharge_Edit
             Dim conditions = formula.Split(New String() {" AND "}, StringSplitOptions.None)
 
             Dim i As Integer = 0
-
             For Each c As String In conditions
                 Dim parts = c.Split("="c)
                 Dim field As String = parts(0).Trim()
