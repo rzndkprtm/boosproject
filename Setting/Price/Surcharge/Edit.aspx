@@ -69,7 +69,7 @@
                                                 <label class="form-label">Formula Data</label>
                                                 <asp:DropDownList runat="server" ID="ddlFormulaData" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
-                                            <br />
+                                            <br /><br />
                                             <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <label class="form-label">Formula Field (ADD)</label>
                                                 <asp:DropDownList runat="server" ID="ddlFormulaFieldB" CssClass="choices form-select"></asp:DropDownList>
