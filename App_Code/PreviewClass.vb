@@ -2617,7 +2617,7 @@ Public Class PreviewEvents
         Dim cb As PdfContentByte = writer.DirectContent
 
         Dim gs As New PdfGState()
-        gs.FillOpacity = 0.35F
+        gs.FillOpacity = 0.3F
 
         cb.SaveState()
         cb.SetGState(gs)
