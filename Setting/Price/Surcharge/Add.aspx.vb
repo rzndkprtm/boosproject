@@ -257,6 +257,32 @@ Partial Class Setting_Price_Surcharge_Add
                         ddlFormulaData.Items.Insert(0, New ListItem("", ""))
                     End If
                 End If
+
+                If fieldName = "[Fabric Type]" Then
+                    ddlFormulaData.Items.Clear()
+
+                    ddlFormulaData.DataSource = settingClass.GetDataTable("SELECT Id, Name AS DataName FROM Fabrics")
+                    ddlFormulaData.DataTextField = "DataName"
+                    ddlFormulaData.DataValueField = "Id"
+                    ddlFormulaData.DataBind()
+
+                    If ddlFormulaData.Items.Count > 0 Then
+                        ddlFormulaData.Items.Insert(0, New ListItem("", ""))
+                    End If
+                End If
+
+                If fieldName = "[Fabric Colour]" Then
+                    ddlFormulaData.Items.Clear()
+
+                    ddlFormulaData.DataSource = settingClass.GetDataTable("SELECT Id, Name AS DataName FROM FabricColours")
+                    ddlFormulaData.DataTextField = "DataName"
+                    ddlFormulaData.DataValueField = "Id"
+                    ddlFormulaData.DataBind()
+
+                    If ddlFormulaData.Items.Count > 0 Then
+                        ddlFormulaData.Items.Insert(0, New ListItem("", ""))
+                    End If
+                End If
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -312,6 +338,32 @@ Partial Class Setting_Price_Surcharge_Add
                     ddlFormulaDataB.Items.Clear()
 
                     ddlFormulaDataB.DataSource = settingClass.GetDataTable("SELECT Id, Name AS DataName FROM Chains WHERE ControlTypeId<>'1'")
+                    ddlFormulaDataB.DataTextField = "DataName"
+                    ddlFormulaDataB.DataValueField = "Id"
+                    ddlFormulaDataB.DataBind()
+
+                    If ddlFormulaDataB.Items.Count > 0 Then
+                        ddlFormulaDataB.Items.Insert(0, New ListItem("", ""))
+                    End If
+                End If
+
+                If fieldName = "[Fabric Type]" Then
+                    ddlFormulaDataB.Items.Clear()
+
+                    ddlFormulaDataB.DataSource = settingClass.GetDataTable("SELECT Id, Name AS DataName FROM Fabrics")
+                    ddlFormulaDataB.DataTextField = "DataName"
+                    ddlFormulaDataB.DataValueField = "Id"
+                    ddlFormulaDataB.DataBind()
+
+                    If ddlFormulaDataB.Items.Count > 0 Then
+                        ddlFormulaDataB.Items.Insert(0, New ListItem("", ""))
+                    End If
+                End If
+
+                If fieldName = "[Fabric Colour]" Then
+                    ddlFormulaDataB.Items.Clear()
+
+                    ddlFormulaDataB.DataSource = settingClass.GetDataTable("SELECT Id, Name AS DataName FROM FabricColours")
                     ddlFormulaDataB.DataTextField = "DataName"
                     ddlFormulaDataB.DataValueField = "Id"
                     ddlFormulaDataB.DataBind()
