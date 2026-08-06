@@ -163,7 +163,7 @@ Partial Class Setting_Price_Surcharge_Default
             Session("DesignSurcharge") = ddlDesignType.SelectedValue
             Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
 
-            Response.Redirect("~/setting/price/surcharge", False)
+            Response.Redirect("~/setting/price/surcharge/edit?surchargeid='" & newId & "'", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
