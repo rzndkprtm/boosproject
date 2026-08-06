@@ -42,6 +42,11 @@ Partial Class Setting_Price_Surcharge_Edit
         BindFormulaData(ddlFormulaField.SelectedValue)
     End Sub
 
+    Protected Sub ddlFormulaFieldB_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindFormulaDataB(ddlFormulaFieldB.SelectedValue)
+    End Sub
+
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
