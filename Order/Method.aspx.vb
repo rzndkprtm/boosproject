@@ -1403,7 +1403,7 @@ Partial Class Order_Method
             priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
             If blindName = "Day & Night" Then
-                groupName = String.Format("{0} - {1} - {2}- {3}", designName, blindName, controlNameGroup, factory)
+                groupName = String.Format("{0} - {1} - {2} - {3}", designName, blindName, controlNameGroup, factory)
                 priceProductGroup = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
             End If
         End If

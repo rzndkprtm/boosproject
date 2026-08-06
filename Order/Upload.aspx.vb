@@ -1164,7 +1164,7 @@ Partial Class Order_Upload
 
                                     Dim factory As String = orderClass.GetFabricFactory(fabricColourId)
 
-                                    Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", blindType, controlType, fabricGroup, factory)
+                                    Dim groupName As String = String.Format("{0} - {1} - {2} - {3} - {4}", designType, blindType, controlType, fabricGroup, factory)
                                     Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, priceGroupId)
 
                                     If blindType = "Day & Night" Then
@@ -1173,7 +1173,7 @@ Partial Class Order_Upload
                                         linearMetreB = width / 1000
                                         squareMetreB = widthB * dropB / 1000000
 
-                                        groupName = String.Format("{0} - {1} - {2}", blindType, controlType, factory)
+                                        groupName = String.Format("{0} - {1} - {2} - {3}", designType, blindType, controlType, factory)
                                         priceProductGroup = orderClass.GetPriceProductGroupId(groupName, designId, priceGroupId)
                                     End If
 
