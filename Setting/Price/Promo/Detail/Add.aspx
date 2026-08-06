@@ -89,7 +89,7 @@
                                     </tbody>
                                 </table>
                                 <div class="row mb-3">
-                                    <div class="col-lg-12 text-end">
+                                    <div class="col-lg-12 text-start">
                                         <asp:Button ID="btnAdd" runat="server" Text="+ Add Row" CssClass="btn btn-success" OnClick="btnAdd_Click" />
                                     </div>
                                 </div>
