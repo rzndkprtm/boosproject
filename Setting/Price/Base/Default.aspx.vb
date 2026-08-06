@@ -49,6 +49,15 @@ Partial Class Setting_Price_Base_Default
         Response.Redirect("~/setting/price/base/import", False)
     End Sub
 
+    Protected Sub btnDeletePricing_Click(sender As Object, e As EventArgs)
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+
+        Response.Redirect("~/setting/price/base/delete", False)
+    End Sub
+
     Protected Sub ddlCategory_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 
@@ -199,6 +208,7 @@ Partial Class Setting_Price_Base_Default
             gvList.DataBind()
 
             addPrice.Visible = LoginAccess("Add")
+            btnDeletePricing.Visible = LoginAccess("Delete Pricing")
             morePrice.Visible = LoginAccess("More")
 
             aMatrix.Visible = False
