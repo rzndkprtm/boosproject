@@ -45,10 +45,12 @@
                     <asp:Button runat="server" ID="btnAdd" CssClass="dropdown-item" Text="Add" OnClick="btnAdd_Click" />
                     <asp:Button runat="server" ID="btnImport" CssClass="dropdown-item" Text="Import" OnClick="btnImport_Click" />
                 </ul>
-                <button class="btn btn-danger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="morePrice">More</button>
+                <asp:Button runat="server" ID="btnDeletePricing" CssClass="btn btn-danger" Text="Delete Pricing" OnClick="btnDeletePricing_Click" />
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="morePrice">More</button>
                 <ul class="dropdown-menu">
                     <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalConditional">Update Special Conditional</a>
                     <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRePrice">Re Price</a>
+                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRePrice">Delete Pricing</a>
                 </ul>
             </div>
         </section>
