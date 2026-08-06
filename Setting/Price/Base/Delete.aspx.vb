@@ -1,6 +1,4 @@
-﻿
-Imports System.Data.SqlClient
-Imports System.Drawing
+﻿Imports System.Data.SqlClient
 
 Partial Class Setting_Price_Base_Delete
     Inherits Page
@@ -9,11 +7,11 @@ Partial Class Setting_Price_Base_Delete
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'Dim pageAccess As Boolean = LoginAccess("Load")
-        'If pageAccess = False Then
-        '    Response.Redirect("~/setting/price/base", False)
-        '    Exit Sub
-        'End If
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/price/base", False)
+            Exit Sub
+        End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
