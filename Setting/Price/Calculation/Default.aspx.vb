@@ -84,7 +84,7 @@ Partial Class Setting_Price_Calculation_Default
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
 
-            'btnAdd.Visible = LoginAccess("Add")
+            btnAdd.Visible = LoginAccess("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
