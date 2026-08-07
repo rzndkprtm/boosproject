@@ -704,8 +704,8 @@
                 If String.IsNullOrEmpty(kitId) Then Continue While
 
                 Dim stackPosition As String = String.Empty
-                If Not String.IsNullOrEmpty(thisData("StackPosition").ToString) Then
-
+                If Not String.IsNullOrEmpty(thisData("StackPosition")) Then
+                    stackPosition = "Stack " & thisData("StackPosition").ToString()
                 End If
 
                 Dim sloping As String = "0"
@@ -724,7 +724,7 @@
                 writer.WriteAttributeString("Width", thisData("Width").ToString())
                 writer.WriteAttributeString("Drop", thisData("Drop").ToString())
                 writer.WriteAttributeString("ControlType", controlName)
-                writer.WriteAttributeString("StackOption", thisData("StackPosition").ToString())
+                writer.WriteAttributeString("StackOption", stackPosition)
                 writer.WriteAttributeString("ControlLength", controlLength)
                 writer.WriteAttributeString("IDChain", boeChainId)
                 writer.WriteAttributeString("FabricID", boeFabricId)
