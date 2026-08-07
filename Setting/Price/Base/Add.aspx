@@ -24,7 +24,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-7">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Price Base Form</h4>
@@ -35,17 +35,21 @@
                                 <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
                                         <div class="row mb-2">
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Price Group</label>
+                                                <asp:DropDownList ID="ddlPriceGroup" runat="server" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Category</label>
-                                                <asp:DropDownList runat="server" ID="ddlCategory" CssClass="choices form-select">
+                                                <asp:DropDownList ID="ddlCategory" runat="server" CssClass="choices form-select">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
                                                     <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
                                                     <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Method</label>
-                                                <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select">
+                                                <asp:DropDownList ID="ddlMethod" runat="server" CssClass="choices form-select">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
                                                     <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
                                                     <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
@@ -53,40 +57,38 @@
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div class="row mb-2">
-                                            <div class="col-12 form-group">
-                                                <label class="form-label">Price Group</label>
-                                                <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-2">
-                                            <div class="col-12 form-group">
-                                                <label class="form-label">Product Group</label>
-                                                <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select"></asp:DropDownList>
-                                            </div>
+                                        <asp:Repeater ID="rptPriceBase" runat="server" OnItemDataBound="rptPriceBase_ItemDataBound" OnItemCommand="rptPriceBase_ItemCommand">
+                                            <ItemTemplate>
+                                                <div class="border rounded p-3 mb-3 bg-light">
+                                                    <div class="row">
+                                                        <div class="col-lg-4 form-group">
+                                                            <label>Product Group</label>
+                                                            <asp:DropDownList ID="ddlProductGroupRow" runat="server" CssClass="choices form-select"></asp:DropDownList>
+                                                        </div>
+                                                        <div class="col-lg-2 form-group">
+                                                            <label>Height</label>
+                                                            <asp:TextBox ID="txtHeightRow" runat="server" CssClass="form-control" placeholder="Height ..."></asp:TextBox>
+                                                        </div>
+                                                        <div class="col-lg-2 form-group">
+                                                            <label>Width</label>
+                                                            <asp:TextBox ID="txtWidthRow" runat="server" CssClass="form-control" placeholder="Width ..."></asp:TextBox>
+                                                        </div>
+                                                        <div class="col-lg-2 form-group">
+                                                            <label>Price</label>
+                                                            <asp:TextBox ID="txtPriceRow" runat="server" CssClass="form-control" placeholder="Price ..." autocomplete="off"></asp:TextBox>
+                                                        </div>
+                                                        <div class="col-lg-2 form-group d-flex align-items-end">
+                                                            <asp:LinkButton ID="btnDelete" runat="server" CssClass="btn btn-danger w-100" CommandName="Delete" CommandArgument="<%# Container.ItemIndex %>" CausesValidation="false">Delete</asp:LinkButton>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </ItemTemplate>
+                                        </asp:Repeater>
+                                        <div class="text-end mb-3">
+                                            <asp:Button ID="btnAddRow" runat="server" Text="+ Add Row" CssClass="btn btn-primary" OnClick="btnAddRow_Click" CausesValidation="false" />
                                         </div>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
-                                <div class="row mb-2">
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                        <label class="form-label">Height</label>
-                                        <asp:TextBox runat="server" ID="txtHeight" CssClass="form-control" placeholder="Height ..."></asp:TextBox>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                        <label class="form-label">Width</label>
-                                        <asp:TextBox runat="server" ID="txtWidth" CssClass="form-control" placeholder="Width ..."></asp:TextBox>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                        <label class="form-label">Price</label>
-                                        <asp:TextBox runat="server" ID="txtPrice" CssClass="form-control" placeholder="Price ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divConditional">
-                                        <label class="form-label">Conditional</label>
-                                        <asp:TextBox runat="server" ID="txtConditional" CssClass="form-control" placeholder="Conditional ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                </div>
                                 <div class="row mt-3" runat="server" id="divError">
                                     <div class="col-12">
                                         <div class="alert alert-danger">
@@ -101,16 +103,6 @@
                         <asp:Button runat="server" ID="btnSubmitAdd" CssClass="btn btn-primary" Text="Submit & Add Another" OnClick="btnSubmitAdd_Click" />
                         <asp:Button runat="server" ID="btnSubmitFinish" CssClass="btn btn-secondary me-2" Text="Submit & Finish" OnClick="btnSubmitFinish_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-5">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title text-center">Information</h4>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-body"></div>
                     </div>
                 </div>
             </div>

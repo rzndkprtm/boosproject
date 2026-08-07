@@ -1,10 +1,30 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_Price_Base_Add
     Inherits Page
 
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+
+    Private Property PriceBaseRows As DataTable
+        Get
+            If ViewState("PriceBaseRows") Is Nothing Then
+                Dim dt As New DataTable()
+
+                dt.Columns.Add("ProductGroupId")
+                dt.Columns.Add("Height")
+                dt.Columns.Add("Width")
+                dt.Columns.Add("Price")
+
+                ViewState("PriceBaseRows") = dt
+            End If
+            Return DirectCast(ViewState("PriceBaseRows"), DataTable)
+        End Get
+        Set(value As DataTable)
+            ViewState("PriceBaseRows") = value
+        End Set
+    End Property
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -16,89 +36,94 @@ Partial Class Setting_Price_Base_Add
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindPriceGroup()
-            BindProductGroup(ddlPriceGroup.SelectedValue)
+            AddRow()
 
-            divConditional.Visible = False
-            If Session("RoleName") = "Developer" Then divConditional.Visible = True
+            BindRepeater()
         End If
     End Sub
 
+    Private Sub AddRow()
+        Dim dt As DataTable = PriceBaseRows
+        Dim row As DataRow = dt.NewRow()
+        row("ProductGroupId") = ""
+        row("Height") = ""
+        row("Width") = ""
+        row("Price") = ""
+        dt.Rows.Add(row)
+        PriceBaseRows = dt
+    End Sub
+
+    Private Sub BindRepeater()
+        rptPriceBase.DataSource = PriceBaseRows
+        rptPriceBase.DataBind()
+    End Sub
+
+    Protected Sub rptPriceBase_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
+        If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
+            Dim ddl As DropDownList = DirectCast(e.Item.FindControl("ddlProductGroupRow"), DropDownList)
+            BindProductGroupRow(ddl, ddlPriceGroup.SelectedValue)
+            Dim index As Integer = e.Item.ItemIndex
+            Dim row As DataRow = PriceBaseRows.Rows(index)
+            If row("ProductGroupId").ToString <> "" Then
+                ddl.SelectedValue =
+                row("ProductGroupId").ToString
+            End If
+
+            DirectCast(e.Item.FindControl("txtHeightRow"), TextBox).Text = row("Height").ToString
+            DirectCast(e.Item.FindControl("txtWidthRow"), TextBox).Text = row("Width").ToString
+            DirectCast(e.Item.FindControl("txtPriceRow"), TextBox).Text = row("Price").ToString
+        End If
+    End Sub
+
+    Private Sub SaveRows()
+        Dim dt As DataTable = PriceBaseRows
+        For i As Integer = 0 To rptPriceBase.Items.Count - 1
+            Dim item As RepeaterItem = rptPriceBase.Items(i)
+            dt.Rows(i)("ProductGroupId") = DirectCast(item.FindControl("ddlProductGroupRow"), DropDownList).SelectedValue
+            dt.Rows(i)("Height") = DirectCast(item.FindControl("txtHeightRow"), TextBox).Text
+            dt.Rows(i)("Width") = DirectCast(item.FindControl("txtWidthRow"), TextBox).Text
+            dt.Rows(i)("Price") = DirectCast(item.FindControl("txtPriceRow"), TextBox).Text
+        Next
+        PriceBaseRows = dt
+    End Sub
+
     Protected Sub ddlPriceGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        BindProductGroup(ddlPriceGroup.SelectedValue)
+        PriceBaseRows = Nothing
+        AddRow()
+        BindRepeater()
+    End Sub
+
+    Protected Sub btnAddRow_Click(sender As Object, e As EventArgs)
+        SaveRows()
+        AddRow()
+        BindRepeater()
+    End Sub
+
+    Protected Sub rptPriceBase_ItemCommand(source As Object, e As RepeaterCommandEventArgs)
+        If e.CommandName = "Delete" Then
+            SaveRows()
+            Dim index As Integer = Convert.ToInt32(e.CommandArgument)
+            Dim dt As DataTable = PriceBaseRows
+            dt.Rows.RemoveAt(index)
+
+            If dt.Rows.Count = 0 Then
+                AddRow()
+            End If
+            PriceBaseRows = dt
+            BindRepeater()
+        End If
     End Sub
 
     Protected Sub btnSubmitAdd_Click(sender As Object, e As EventArgs)
-        Process("Add")
+
     End Sub
 
     Protected Sub btnSubmitFinish_Click(sender As Object, e As EventArgs)
-        Process()
+
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/setting/price/base", False)
-    End Sub
-
-    Protected Sub Process(Optional action As String = "")
-        MessageError(False, String.Empty)
-        Try
-            If ddlCategory.SelectedValue = "" Then
-                MessageError(True, "CATEGORY IS REQUIRED !")
-                Exit Sub
-            End If
-            If ddlMethod.SelectedValue = "" Then
-                MessageError(True, "METHOD IS REQUIRED !")
-                Exit Sub
-            End If
-            If ddlPriceGroup.SelectedValue = "" Then
-                MessageError(True, "PRICE GROUP IS REQUIRED !")
-                Exit Sub
-            End If
-            If ddlProductGroup.SelectedValue = "" Then
-                MessageError(True, "PRODUCT GROUP IS REQUIRED !")
-                Exit Sub
-            End If
-            If txtHeight.Text = "" Then
-                MessageError(True, "HEIGHT IS REQUIRED !")
-                Exit Sub
-            End If
-            If txtWidth.Text = "" Then
-                MessageError(True, "WIDTH IS REQUIRED !")
-                Exit Sub
-            End If
-            If msgError.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceBases ORDER BY Id DESC")
-
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceBases VALUES (@Id, @Category, @Method, @ProductGroupId, @PriceGroupId, @Height, @Width, @Price, @Conditional)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", thisId)
-                        thisCmd.Parameters.AddWithValue("@Category", ddlCategory.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Method", ddlMethod.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@ProductGroupId", ddlProductGroup.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Height", txtHeight.Text)
-                        thisCmd.Parameters.AddWithValue("@Width", txtWidth.Text)
-                        thisCmd.Parameters.AddWithValue("@Price", txtPrice.Text)
-                        thisCmd.Parameters.AddWithValue("@Conditional", txtConditional.Text)
-                        thisConn.Open()
-                        thisCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                Dim dataLog As Object() = {"PriceBases", thisId, Session("LoginId").ToString(), "Price Base Created"}
-                settingClass.Logs(dataLog)
-
-                Dim url As String = "~/setting/price/base"
-                If action = "Add" Then url = "~/setting/price/base/add"
-                Response.Redirect(url, False)
-            End If
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
     End Sub
 
     Protected Sub BindPriceGroup()
@@ -117,23 +142,32 @@ Partial Class Setting_Price_Base_Add
         End Try
     End Sub
 
-    Protected Sub BindProductGroup(priceGroupId As String)
-        ddlProductGroup.Items.Clear()
+    Protected Sub BindProductGroupRow(ddl As DropDownList, priceGroupId As String)
+        ddl.Items.Clear()
         Try
-            If Not String.IsNullOrEmpty(priceGroupId) Then
-                Dim query As String = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'"
-
-                ddlProductGroup.DataSource = settingClass.GetDataTable(query)
-                ddlProductGroup.DataTextField = "Name"
-                ddlProductGroup.DataValueField = "Id"
-                ddlProductGroup.DataBind()
-
-                If ddlProductGroup.Items.Count > 0 Then
-                    ddlProductGroup.Items.Insert(0, New ListItem("", ""))
-                End If
+            If String.IsNullOrEmpty(priceGroupId) Then
+                Exit Sub
             End If
+
+            Dim query As String = "SELECT DISTINCT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE = @PriceGroupId ORDER BY PriceProductGroups.Name"
+            Using conn As New SqlConnection(myConn)
+                Using cmd As New SqlCommand(query, conn)
+                    cmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
+
+                    Using adapter As New SqlDataAdapter(cmd)
+                        Dim dt As New DataTable()
+                        adapter.Fill(dt)
+                        ddl.DataSource = dt
+                        ddl.DataTextField = "Name"
+                        ddl.DataValueField = "Id"
+                        ddl.DataBind()
+                    End Using
+                End Using
+            End Using
+
+            ddl.Items.Insert(0, New ListItem("", ""))
         Catch ex As Exception
-            ddlProductGroup.Items.Clear()
+            ddl.Items.Clear()
         End Try
     End Sub
 
