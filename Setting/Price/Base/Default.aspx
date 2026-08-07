@@ -50,7 +50,6 @@
                 <ul class="dropdown-menu">
                     <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalConditional">Update Special Conditional</a>
                     <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRePrice">Re Price</a>
-                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRePrice">Delete Pricing</a>
                 </ul>
             </div>
         </section>
