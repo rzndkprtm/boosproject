@@ -95,7 +95,7 @@ Partial Class Setting_Price_Product_Default
             gvList.Columns(3).Visible = LoginAccess("Visible Price Group") ' PRICE GROUP NAME
 
             btnAdd.Visible = LoginAccess("Add")
-            'btnFormat.Visible = LoginAccess("Format")
+            btnFormat.Visible = LoginAccess("Format")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
