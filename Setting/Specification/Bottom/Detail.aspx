@@ -37,43 +37,41 @@
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-4">
                 <div class="card">
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="row mb-3">
-                                    <div class="col-12">
-                                        <label>Bottom Name</label>
-                                        <br />
-                                        <asp:Label runat="server" ID="lblName" CssClass="form-label font-bold"></asp:Label>
-                                    </div>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label>Bottom Name</label>
+                                    <br />
+                                    <asp:Label runat="server" ID="lblName" CssClass="form-label font-bold"></asp:Label>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-12">
-                                        <label>Design Type</label>
-                                        <br />
-                                        <asp:Label runat="server" ID="lblDesignType" CssClass="form-label font-bold"></asp:Label>
-                                    </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label>Design Type</label>
+                                    <br />
+                                    <asp:Label runat="server" ID="lblDesignType" CssClass="form-label font-bold"></asp:Label>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-12">
-                                        <label>Company Detail</label>
-                                        <br />
-                                        <asp:Label runat="server" ID="lblCompanyDetail" CssClass="form-label font-bold"></asp:Label>
-                                    </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label>Company Detail</label>
+                                    <br />
+                                    <asp:Label runat="server" ID="lblCompanyDetail" CssClass="form-label font-bold"></asp:Label>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-12">
-                                        <label>Description</label>
-                                        <br />
-                                        <asp:Label runat="server" ID="lblDescription" CssClass="form-label font-bold"></asp:Label>
-                                    </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label>Description</label>
+                                    <br />
+                                    <asp:Label runat="server" ID="lblDescription" CssClass="form-label font-bold"></asp:Label>
                                 </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <label>Status</label>
-                                        <br />
-                                        <asp:Label runat="server" ID="lblStatus" CssClass="form-label font-bold"></asp:Label>
-                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <label>Status</label>
+                                    <br />
+                                    <asp:Label runat="server" ID="lblStatus" CssClass="form-label font-bold"></asp:Label>
                                 </div>
                             </div>
                         </div>

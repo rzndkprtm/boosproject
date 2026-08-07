@@ -33,6 +33,11 @@
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-2">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
                 <a href="javascript:void(0);" runat="server" id="aRePrice" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalRePrice">Re Price</a>
+                <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">More</button>
+                <ul class="dropdown-menu">
+                    <asp:Button runat="server" ID="btnCopyAll" CssClass="dropdown-item" Text="Copy from Price Group" OnClick="btnCopyAll_Click" />
+                    <asp:Button runat="server" ID="btnDeleteAll" CssClass="dropdown-item" Text="Delete by Price Group" OnClick="btnDeleteAll_Click" />
+                </ul>
             </div>
         </section>
         <section class="row">

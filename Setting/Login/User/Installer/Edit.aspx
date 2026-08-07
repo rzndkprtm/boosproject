@@ -30,28 +30,26 @@
                     <div class="card-header">
                         <h4 class="card-title">Installer Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <asp:Label runat="server" ID="lblId" Visible="false"></asp:Label>
-                                    <div class="row mb-2">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Installer</label>
-                                            <asp:DropDownList runat="server" ID="ddlLogin" CssClass="choices form-select"></asp:DropDownList>
-                                        </div>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <asp:Label runat="server" ID="lblId" Visible="false"></asp:Label>
+                                <div class="row mb-2">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Installer</label>
+                                        <asp:DropDownList runat="server" ID="ddlLogin" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Customer Account</label>
-                                            <asp:ListBox runat="server" ID="lbCustomer" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                                        </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Customer Account</label>
+                                        <asp:ListBox runat="server" ID="lbCustomer" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                     </div>
-                                    <div class="row mt-3" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                </div>
+                                <div class="row mt-3" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>

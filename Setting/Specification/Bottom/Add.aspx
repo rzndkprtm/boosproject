@@ -28,61 +28,59 @@
                     <div class="card-header">
                         <h4 class="card-title">Bottom Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-horizontal">
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Name</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                                        </div>
+                    <div class="card-body">
+                        <div class="form form-horizontal">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label>Name</label>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Design Type</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:ListBox runat="server" ID="lbDesign" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                                        </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Company Detail</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:ListBox runat="server" ID="lbCompanyDetail" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label>Design Type</label>
                                     </div>
-                                    <div class="row mb-3">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Description</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-8 form-group">
-                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                                        </div>
+                                    <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                        <asp:ListBox runat="server" ID="lbDesign" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                     </div>
-                                    <div class="row mb-3">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Status</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                            <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
-                                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
-                                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
-                                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
-                                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label>Company Detail</label>
                                     </div>
-                                    <div class="row" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                    <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                        <asp:ListBox runat="server" ID="lbCompanyDetail" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label>Description</label>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                        <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label>Status</label>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
+                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                            <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                            <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                            <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                            <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="row" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>

@@ -10,6 +10,7 @@ Partial Class Setting_Price_Default
     Protected PriceBases As Integer
     Protected PriceSurcharges As Integer
     Protected Promos As Integer
+    Protected Calculations As Integer
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -27,6 +28,7 @@ Partial Class Setting_Price_Default
                 PriceBases = CInt(dt.Rows(0)("PriceBases"))
                 PriceSurcharges = CInt(dt.Rows(0)("PriceSurcharges"))
                 Promos = CInt(dt.Rows(0)("Promos"))
+                Calculations = CInt(dt.Rows(0)("Calculations"))
             End If
         End If
     End Sub

@@ -30,28 +30,26 @@
                     <div class="card-header">
                         <h4 class="card-title">Product Alias Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <asp:Label runat="server" ID="lblId" Visible="false"></asp:Label>
-                                    <div class="row">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">First ID</label>
-                                            <asp:DropDownList runat="server" ID="ddlFirstId" CssClass="choices form-select"></asp:DropDownList>
-                                        </div>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <asp:Label runat="server" ID="lblId" Visible="false"></asp:Label>
+                                <div class="row">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">First ID</label>
+                                        <asp:DropDownList runat="server" ID="ddlFirstId" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Second ID</label>
-                                            <asp:DropDownList runat="server" ID="ddlSecondId" CssClass="choices form-select"></asp:DropDownList>
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Second ID</label>
+                                        <asp:DropDownList runat="server" ID="ddlSecondId" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                    <div class="row" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                </div>
+                                <div class="row" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>

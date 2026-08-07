@@ -36,25 +36,25 @@
         </section>
         <section class="row">
             <div class="col-12">
-                <div class="card">
-                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
-                        <ContentTemplate>
+                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <div class="card">
                             <div class="card-header">
-                                <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                        <h5 class="card-title">List Notification</h5>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
-                                        <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
-                                            <div class="input-group">
-                                                <span class="input-group-text">Search : </span>
-                                                <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
-                                                <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
-                                            </div>
-                                        </asp:Panel>
+                                    <div class="row">
+                                        <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                            <h5 class="card-title">List Notification</h5>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
+                                            <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Search : </span>
+                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
+                                                    <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
+                                                </div>
+                                            </asp:Panel>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
@@ -109,9 +109,9 @@
                                     </nav>
                                 </div>
                             </div>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
-                </div>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
             </div>
         </section>
     </div>

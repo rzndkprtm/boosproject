@@ -29,70 +29,68 @@
                     <div class="card-header">
                         <h4 class="card-title">Price Base Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
-                                        <ContentTemplate>
-                                            <div class="row mb-2">
-                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                                    <label class="form-label">Category</label>
-                                                    <asp:DropDownList runat="server" ID="ddlCategory" CssClass="choices form-select">
-                                                        <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                        <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
-                                                        <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                                    <label class="form-label">Method</label>
-                                                    <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select">
-                                                        <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                        <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
-                                                        <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
-                                                        <asp:ListItem Value="Linear Metre" Text="Linear Metre"></asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                <label class="form-label">Category</label>
+                                                <asp:DropDownList runat="server" ID="ddlCategory" CssClass="choices form-select">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
+                                                    <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
+                                                </asp:DropDownList>
                                             </div>
-                                            <div class="row mb-2">
-                                                <div class="col-12 form-group">
-                                                    <label class="form-label">Price Group</label>
-                                                    <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
-                                                </div>
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                <label class="form-label">Method</label>
+                                                <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
+                                                    <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
+                                                    <asp:ListItem Value="Linear Metre" Text="Linear Metre"></asp:ListItem>
+                                                </asp:DropDownList>
                                             </div>
-                                            <div class="row mb-2">
-                                                <div class="col-12 form-group">
-                                                    <label class="form-label">Product Group</label>
-                                                    <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select"></asp:DropDownList>
-                                                </div>
-                                            </div>
-                                        </ContentTemplate>
-                                    </asp:UpdatePanel>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Height</label>
-                                            <asp:TextBox runat="server" ID="txtHeight" CssClass="form-control" placeholder="Height ..."></asp:TextBox>
                                         </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Width</label>
-                                            <asp:TextBox runat="server" ID="txtWidth" CssClass="form-control" placeholder="Width ..."></asp:TextBox>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Price Group</label>
+                                                <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
                                         </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Product Group</label>
+                                                <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Height</label>
+                                        <asp:TextBox runat="server" ID="txtHeight" CssClass="form-control" placeholder="Height ..."></asp:TextBox>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Price</label>
-                                            <asp:TextBox runat="server" ID="txtPrice" CssClass="form-control" placeholder="Price ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divConditional">
-                                            <label class="form-label">Conditional</label>
-                                            <asp:TextBox runat="server" ID="txtConditional" CssClass="form-control" placeholder="Conditional ..." autocomplete="off"></asp:TextBox>
-                                        </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Width</label>
+                                        <asp:TextBox runat="server" ID="txtWidth" CssClass="form-control" placeholder="Width ..."></asp:TextBox>
                                     </div>
-                                    <div class="row mt-3" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Price</label>
+                                        <asp:TextBox runat="server" ID="txtPrice" CssClass="form-control" placeholder="Price ..." autocomplete="off"></asp:TextBox>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divConditional">
+                                        <label class="form-label">Conditional</label>
+                                        <asp:TextBox runat="server" ID="txtConditional" CssClass="form-control" placeholder="Conditional ..." autocomplete="off"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="row mt-3" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>

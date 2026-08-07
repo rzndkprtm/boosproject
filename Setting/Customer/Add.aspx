@@ -29,149 +29,145 @@
                     <div class="card-header">
                         <h4 class="card-title">Customer Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
-                                        <ContentTemplate>
-                                            <div class="row mb-2">
-                                                <div class="col-12 col-sm-8 col-lg-8 form-group">
-                                                    <label class="form-label">Customer Name</label>
-                                                    <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Customer Name ..." autocomplete="off"></asp:TextBox>
-                                                </div>
-                                                <div class="col-12 col-sm-8 col-lg-4 form-group" runat="server" id="divDebtorCode">
-                                                    <label class="form-label">Debtor Code</label>
-                                                    <asp:TextBox runat="server" ID="txtDebtorCode" CssClass="form-control" placeholder="Debtor Code ..." autocomplete="off"></asp:TextBox>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-8 col-lg-8 form-group">
+                                                <label class="form-label">Customer Name</label>
+                                                <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Customer Name ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                            <div class="col-12 col-sm-8 col-lg-4 form-group" runat="server" id="divDebtorCode">
+                                                <label class="form-label">Debtor Code</label>
+                                                <asp:TextBox runat="server" ID="txtDebtorCode" CssClass="form-control" placeholder="Debtor Code ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-12">
+                                                <div class="divider">
+                                                    <div class="divider-text">Company</div>
                                                 </div>
                                             </div>
-                                            <div class="row mt-3">
-                                                <div class="col-12">
-                                                    <div class="divider">
-                                                        <div class="divider-text">Company</div>
-                                                    </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                                <label class="form-label">Company</label>
+                                                <asp:DropDownList runat="server" ID="ddlCompany" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                <label class="form-label">Sub Company</label>
+                                                <asp:DropDownList runat="server" ID="ddlCompanyDetail" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-5 col-sm-12 col-lg-6 mb-2 form-group">
+                                                <label class="form-label">State</label>
+                                                <asp:DropDownList runat="server" ID="ddlState" CssClass="choices form-select">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
+                                                    <asp:ListItem Value="QLD" Text="QLD"></asp:ListItem>
+                                                    <asp:ListItem Value="SA" Text="SA"></asp:ListItem>
+                                                    <asp:ListItem Value="TAS" Text="TAS"></asp:ListItem>
+                                                    <asp:ListItem Value="NT" Text="NT"></asp:ListItem>
+                                                    <asp:ListItem Value="ACT" Text="ACT"></asp:ListItem>
+                                                    <asp:ListItem Value="VIC" Text="VIC"></asp:ListItem>
+                                                    <asp:ListItem Value="WA" Text="WA"></asp:ListItem>
+                                                    <asp:ListItem Value="JKT" Text="JKT"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                            <div class="col-7 col-sm-12 col-lg-6 form-group">
+                                                <label class="form-label">Sales</label>
+                                                <asp:ListBox runat="server" ID="lbSales" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
+                                                <label class="form-label">Level</label>
+                                                <asp:DropDownList runat="server" ID="ddlLevel" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlLevel_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Master" Text="Master Customer"></asp:ListItem>
+                                                    <asp:ListItem Value="Standard" Text="Standard Customer"></asp:ListItem>
+                                                    <asp:ListItem Value="Primary" Text="Primary Customer"></asp:ListItem>
+                                                    <asp:ListItem Value="Linked" Text="Linked Customer"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-8 mb-2 form-group" runat="server" id="divLinked">
+                                                <label class="form-label">Linked Cutomer to</label>
+                                                <asp:DropDownList runat="server" ID="ddlPrimary" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12"><hr /></div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-12">
+                                                <div class="divider">
+                                                    <div class="divider-text">Pricing</div>
                                                 </div>
                                             </div>
-                                            <div class="row mb-2">
-                                                <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                                    <label class="form-label">Company</label>
-                                                    <asp:DropDownList runat="server" ID="ddlCompany" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                                    <label class="form-label">Sub Company</label>
-                                                    <asp:DropDownList runat="server" ID="ddlCompanyDetail" CssClass="choices form-select"></asp:DropDownList>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
+                                                <label class="form-label">Price Group</label>
+                                                <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Shutter Price Group</label>
+                                                <asp:DropDownList runat="server" ID="ddlPriceGroupShutter" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Door & Window Price Group</label>
+                                                <asp:DropDownList runat="server" ID="ddlPriceGroupDoor" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12"><hr /></div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-12">
+                                                <div class="divider">
+                                                    <div class="divider-text">Status & Setting</div>
                                                 </div>
                                             </div>
-                                            <div class="row mb-2">
-                                                <div class="col-5 col-sm-12 col-lg-6 mb-2 form-group">
-                                                    <label class="form-label">State</label>
-                                                    <asp:DropDownList runat="server" ID="ddlState" CssClass="choices form-select">
-                                                        <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                        <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
-                                                        <asp:ListItem Value="QLD" Text="QLD"></asp:ListItem>
-                                                        <asp:ListItem Value="SA" Text="SA"></asp:ListItem>
-                                                        <asp:ListItem Value="TAS" Text="TAS"></asp:ListItem>
-                                                        <asp:ListItem Value="NT" Text="NT"></asp:ListItem>
-                                                        <asp:ListItem Value="ACT" Text="ACT"></asp:ListItem>
-                                                        <asp:ListItem Value="VIC" Text="VIC"></asp:ListItem>
-                                                        <asp:ListItem Value="WA" Text="WA"></asp:ListItem>
-                                                        <asp:ListItem Value="JKT" Text="JKT"></asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="col-7 col-sm-12 col-lg-6 form-group">
-                                                    <label class="form-label">Sales</label>
-                                                    <asp:ListBox runat="server" ID="lbSales" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                                                </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-6 col-sm-12 col-lg-3 mb-2 form-group">
+                                                <label class="form-label">On Stop</label>
+                                                <asp:DropDownList runat="server" ID="ddlOnStop" CssClass="form-select">
+                                                    <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                                                    <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                                </asp:DropDownList>
                                             </div>
-                                            <div class="row mb-2">
-                                                <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
-                                                    <label class="form-label">Level</label>
-                                                    <asp:DropDownList runat="server" ID="ddlLevel" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlLevel_SelectedIndexChanged">
-                                                        <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                        <asp:ListItem Value="Master" Text="Master Customer"></asp:ListItem>
-                                                        <asp:ListItem Value="Standard" Text="Standard Customer"></asp:ListItem>
-                                                        <asp:ListItem Value="Primary" Text="Primary Customer"></asp:ListItem>
-                                                        <asp:ListItem Value="Linked" Text="Linked Customer"></asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-8 mb-2 form-group" runat="server" id="divLinked">
-                                                    <label class="form-label">Linked Cutomer to</label>
-                                                    <asp:DropDownList runat="server" ID="ddlPrimary" CssClass="choices form-select"></asp:DropDownList>
-                                                </div>
+                                            <div class="col-6 col-sm-12 col-lg-3 mb-2 form-group">
+                                                <label class="form-label">Cash Sale</label>
+                                                <asp:DropDownList runat="server" ID="ddlCashSale" CssClass="form-select">
+                                                    <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                                    <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                                                </asp:DropDownList>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-12"><hr /></div>
+                                            <div class="col-6 col-sm-12 col-lg-3 mb-2 form-group">
+                                                <label class="form-label">Newsletter</label>
+                                                <asp:DropDownList runat="server" ID="ddlNewsletter" CssClass="form-select">
+                                                    <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                                    <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                                                </asp:DropDownList>
                                             </div>
-
-                                            <div class="row mt-3">
-                                                <div class="col-12">
-                                                    <div class="divider">
-                                                        <div class="divider-text">Pricing</div>
-                                                    </div>
-                                                </div>
+                                            <div class="col-6 col-sm-12 col-lg-3 form-group">
+                                                <label class="form-label">Minimum Surcharge</label>
+                                                <asp:DropDownList runat="server" ID="ddlMinSurcharge" CssClass="form-select">
+                                                    <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                                    <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                                                </asp:DropDownList>
                                             </div>
-                                            <div class="row mb-2">
-                                                <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
-                                                    <label class="form-label">Price Group</label>
-                                                    <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                    <label class="form-label">Shutter Price Group</label>
-                                                    <asp:DropDownList runat="server" ID="ddlPriceGroupShutter" CssClass="choices form-select"></asp:DropDownList>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                    <label class="form-label">Door & Window Price Group</label>
-                                                    <asp:DropDownList runat="server" ID="ddlPriceGroupDoor" CssClass="choices form-select"></asp:DropDownList>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-12"><hr /></div>
-                                            </div>
-
-                                            <div class="row mt-3">
-                                                <div class="col-12">
-                                                    <div class="divider">
-                                                        <div class="divider-text">Status & Setting</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-2">
-                                                <div class="col-6 col-sm-12 col-lg-3 mb-2 form-group">
-                                                    <label class="form-label">On Stop</label>
-                                                    <asp:DropDownList runat="server" ID="ddlOnStop" CssClass="form-select">
-                                                        <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                                                        <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="col-6 col-sm-12 col-lg-3 mb-2 form-group">
-                                                    <label class="form-label">Cash Sale</label>
-                                                    <asp:DropDownList runat="server" ID="ddlCashSale" CssClass="form-select">
-                                                        <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                                        <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="col-6 col-sm-12 col-lg-3 mb-2 form-group">
-                                                    <label class="form-label">Newsletter</label>
-                                                    <asp:DropDownList runat="server" ID="ddlNewsletter" CssClass="form-select">
-                                                        <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                                        <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="col-6 col-sm-12 col-lg-3 form-group">
-                                                    <label class="form-label">Minimum Surcharge</label>
-                                                    <asp:DropDownList runat="server" ID="ddlMinSurcharge" CssClass="form-select">
-                                                        <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                                        <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                            </div>
-                                        </ContentTemplate>
-                                    </asp:UpdatePanel>
-                                    <div class="row mb-2" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                        </div>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                                <div class="row mb-2" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -189,11 +185,7 @@
                     <div class="card-header">
                         <h4 class="card-title text-center">Information</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-
-                        </div>
-                    </div>
+                    <div class="card-body"></div>
                 </div>
             </div>
         </section>

@@ -38,6 +38,22 @@ Partial Class Setting_Price_Surcharge_Default
         Response.Redirect("~/setting/price/surcharge/add", False)
     End Sub
 
+    Protected Sub btnCopyAll_Click(sender As Object, e As EventArgs)
+        Session("SearchSurcharge") = txtSearch.Text
+        Session("DesignSurcharge") = ddlDesignType.SelectedValue
+        Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
+
+        Response.Redirect("~/setting/price/surcharge/copy", False)
+    End Sub
+
+    Protected Sub btnDeleteAll_Click(sender As Object, e As EventArgs)
+        Session("SearchSurcharge") = txtSearch.Text
+        Session("DesignSurcharge") = ddlDesignType.SelectedValue
+        Session("PriceGroupSurcharge") = ddlPriceGroup.SelectedValue
+
+        Response.Redirect("~/setting/price/surcharge/delete", False)
+    End Sub
+
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 

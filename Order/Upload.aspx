@@ -27,27 +27,25 @@
                     <div class="card-header">
                         <h4 class="card-title">Order Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <div class="row mb-2" runat="server" id="divCustomer">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Customer Account</label>
-                                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
-                                        </div>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <div class="row mb-2" runat="server" id="divCustomer">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Customer Account</label>
+                                        <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Upload Your File</label>
-                                            <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Upload Your File</label>
+                                        <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
                                     </div>
-                                    <div class="row mt-3" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                </div>
+                                <div class="row mt-3" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>

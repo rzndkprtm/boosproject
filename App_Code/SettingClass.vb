@@ -857,6 +857,8 @@ Public Class SettingClass
             "sellprice",
             "buyprice",
             "pricegroupid",
+            "fabricfactory",
+            "fabricfactoryb",
             "total"
         }).Select(Function(x) x.ToUpperInvariant()).ToList()
 

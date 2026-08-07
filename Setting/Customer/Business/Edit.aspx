@@ -29,33 +29,31 @@
                     <div class="card-header">
                         <h4 class="card-title">Business Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <div class="row mb-2">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Account</label>
-                                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
-                                        </div>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <div class="row mb-2">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Account</label>
+                                        <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Registered Name</label>
-                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Registered Name ..." autocomplete="off"></asp:TextBox>
-                                        </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Registered Name</label>
+                                        <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Registered Name ..." autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">ABN Number</label>
-                                            <asp:TextBox runat="server" ID="txtNumber" CssClass="form-control" placeholder="ABN Number ..." autocomplete="off"></asp:TextBox>
-                                        </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">ABN Number</label>
+                                        <asp:TextBox runat="server" ID="txtNumber" CssClass="form-control" placeholder="ABN Number ..." autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row mt-3" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                </div>
+                                <div class="row mt-3" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -73,9 +71,7 @@
                     <div class="card-header">
                         <h4 class="card-title text-center">Information</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body"></div>
-                    </div>
+                    <div class="card-body"></div>
                 </div>
             </div>
         </section>

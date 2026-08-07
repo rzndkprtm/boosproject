@@ -59,6 +59,11 @@
                     <div class="dashboard-title">Price Promo</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
+                <a href="/setting/price/calculation" class="dashboard-card">
+                    <div class="dashboard-number"><%= Promos %> Data</div>
+                    <div class="dashboard-title">Price Calculation</div>
+                    <div class="dashboard-desc">Description</div>
+                </a>
             </div>
         </section>
     </div>

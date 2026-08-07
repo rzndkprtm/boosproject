@@ -42,9 +42,9 @@
         </section>
         <section class="row">
             <div class="col-12">
-                <div class="card">
-                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
-                        <ContentTemplate>
+                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <div class="card">
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-6 mb-2">
@@ -126,9 +126,9 @@
                                     </div>
                                 </div>
                             </div>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
-                </div>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
             </div>
         </section>
     </div>
