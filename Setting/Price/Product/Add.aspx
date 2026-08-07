@@ -35,72 +35,70 @@
                     <div class="card-header">
                         <h4 class="card-title">Product Group Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
-                                        <ContentTemplate>
-                                            <div class="row mb-2">
-                                                <div class="col-12 col-sm-12 col-lg-5 mb-2 form-group">
-                                                    <label class="form-label">Design Type</label>
-                                                    <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-7 mb-2 form-group">
-                                                    <label class="form-label">Price Group</label>
-                                                    <asp:ListBox runat="server" ID="lbPriceGroup" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                                                </div>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-5 mb-2 form-group">
+                                                <label class="form-label">Design Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
                                             </div>
-                                            <div class="row mb-2">
-                                                <div class="col-12 form-group">
-                                                    <label class="form-label">Name</label>
-                                                    <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                                                </div>
+                                            <div class="col-12 col-sm-12 col-lg-7 mb-2 form-group">
+                                                <label class="form-label">Price Group</label>
+                                                <asp:ListBox runat="server" ID="lbPriceGroup" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                             </div>
-                                            <div class="mt-2 mb-2">
-                                                <label class="form-label fw-bold">Format Guide :</label>
-                                                <div class="format-guide p-2 rounded">
-                                                    <asp:GridView runat="server" ID="gvList" AutoGenerateColumns="false" ShowHeader="false" GridLines="None" CssClass="w-100">
-                                                        <Columns>
-                                                            <asp:TemplateField>
-                                                                <ItemTemplate>
-                                                                    <div class="format-item d-flex">
-                                                                        <div class="me-2 text-primary">
-                                                                            <i class="bi bi-info-circle-fill"></i>
-                                                                        </div>
-                                                                        <div>
-                                                                            <div class="small text-muted"><%# Eval("Name") %></div>
-                                                                            <div class="fw-semibold"><%# Eval("Format") %></div>
-                                                                        </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Name</label>
+                                                <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2 mb-2">
+                                            <label class="form-label fw-bold">Format Guide :</label>
+                                            <div class="format-guide p-2 rounded">
+                                                <asp:GridView runat="server" ID="gvList" AutoGenerateColumns="false" ShowHeader="false" GridLines="None" CssClass="w-100">
+                                                    <Columns>
+                                                        <asp:TemplateField>
+                                                            <ItemTemplate>
+                                                                <div class="format-item d-flex">
+                                                                    <div class="me-2 text-primary">
+                                                                        <i class="bi bi-info-circle-fill"></i>
                                                                     </div>
-                                                                </ItemTemplate>
-                                                            </asp:TemplateField>
-                                                        </Columns>
-                                                    </asp:GridView>
-                                                </div>
+                                                                    <div>
+                                                                        <div class="small text-muted"><%# Eval("Name") %></div>
+                                                                        <div class="fw-semibold"><%# Eval("Format") %></div>
+                                                                    </div>
+                                                                </div>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                    </Columns>
+                                                </asp:GridView>
                                             </div>
-                                        </ContentTemplate>
-                                    </asp:UpdatePanel>
-                                    <div class="row mb-2">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Description</label>
-                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" CssClass="form-control" Height="100px" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                         </div>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                                <div class="row mb-2">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Description</label>
+                                        <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" CssClass="form-control" Height="100px" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                            <label class="form-label">Status</label>
-                                            <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
-                                                <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
-                                                <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <label class="form-label">Status</label>
+                                        <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
+                                            <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
+                                            <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
+                                        </asp:DropDownList>
                                     </div>
-                                    <div class="row mt-3" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                </div>
+                                <div class="row mt-3" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>

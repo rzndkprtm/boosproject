@@ -30,15 +30,16 @@
             </div>
         </section>
         <section class="row mb-3">
-            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
+            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-2">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
+                <asp:Button runat="server" ID="btnFormat" CssClass="btn btn-info" Text="Format Product" OnClick="btnFormat_Click" />
             </div>
         </section>
         <section class="row">
             <div class="col-12">
-                <div class="card">
-                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
-                        <ContentTemplate>
+                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <div class="card">
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-6 mb-2">
@@ -102,9 +103,9 @@
                                     </nav>
                                 </div>
                             </div>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
-                </div>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
             </div>
         </section>
     </div>

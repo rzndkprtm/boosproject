@@ -26,40 +26,38 @@
                     <div class="card-header">
                         <h4 class="card-title">New Password</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-horizontal">
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>New Password</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:TextBox runat="server" ID="txtPassword" TextMode="Password" CssClass="form-control" placeholder="New Password" autocomplete="off"></asp:TextBox>
-                                        </div>
+                    <div class="card-body">
+                        <div class="form form-horizontal">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label>New Password</label>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <label>Confirm Password</label>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                            <asp:TextBox runat="server" ID="txtConfirmPassword" TextMode="Password" CssClass="form-control" placeholder="Confirm Password" autocomplete="off"></asp:TextBox>
-                                        </div>
+                                    <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                        <asp:TextBox runat="server" ID="txtPassword" TextMode="Password" CssClass="form-control" placeholder="New Password" autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row mb-3">
-                                        <div class="col-12 col-sm-12 col-lg-3">&nbsp;</div>
-                                        <div class="col-12 col-sm-12 col-lg-3">
-                                            <input class="form-check-input me-2" type="checkbox" value="" id="chkShowPass" onclick="togglePassword();">
-                                            <label class="form-check-label text-gray-600" for="chkShowPass">
-                                                Show Password
-                                            </label>
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label>Confirm Password</label>
                                     </div>
-                                    <div class="row" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                    <div class="col-12 col-sm-12 col-lg-9 form-group">
+                                        <asp:TextBox runat="server" ID="txtConfirmPassword" TextMode="Password" CssClass="form-control" placeholder="Confirm Password" autocomplete="off"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-12 col-sm-12 col-lg-3">&nbsp;</div>
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <input class="form-check-input me-2" type="checkbox" value="" id="chkShowPass" onclick="togglePassword();">
+                                        <label class="form-check-label text-gray-600" for="chkShowPass">
+                                            Show Password
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>

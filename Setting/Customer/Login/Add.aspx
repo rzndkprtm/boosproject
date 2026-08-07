@@ -29,54 +29,52 @@
                     <div class="card-header">
                         <h4 class="card-title">Login Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <div class="row mb-2">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Account</label>
-                                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
-                                        </div>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <div class="row mb-2">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Account</label>
+                                        <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Role</label>
-                                            <asp:DropDownList runat="server" ID="ddlRole" CssClass="choices form-select"></asp:DropDownList>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Level</label>
-                                            <asp:DropDownList runat="server" ID="ddlLevel" CssClass="choices form-select"></asp:DropDownList>
-                                        </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Role</label>
+                                        <asp:DropDownList runat="server" ID="ddlRole" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">UserName</label>
-                                            <asp:TextBox runat="server" ID="txtUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Password</label>
-                                            <asp:TextBox runat="server" ID="txtPassword" CssClass="form-control" placeholder="Password ..." autocomplete="off"></asp:TextBox>
-                                        </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Level</label>
+                                        <asp:DropDownList runat="server" ID="ddlLevel" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Full Name</label>
-                                            <asp:TextBox runat="server" ID="txtFullName" CssClass="form-control" placeholder="Full Name ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group" >
-                                            <label class="form-label">Pricing</label>
-                                            <asp:DropDownList runat="server" ID="ddlPricing" CssClass="form-select">
-                                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">UserName</label>
+                                        <asp:TextBox runat="server" ID="txtUserName" CssClass="form-control" placeholder="UserName ..." autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row mt-3" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Password</label>
+                                        <asp:TextBox runat="server" ID="txtPassword" CssClass="form-control" placeholder="Password ..." autocomplete="off"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Full Name</label>
+                                        <asp:TextBox runat="server" ID="txtFullName" CssClass="form-control" placeholder="Full Name ..." autocomplete="off"></asp:TextBox>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group" >
+                                        <label class="form-label">Pricing</label>
+                                        <asp:DropDownList runat="server" ID="ddlPricing" CssClass="form-select">
+                                            <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                            <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="row mt-3" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>

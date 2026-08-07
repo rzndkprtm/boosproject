@@ -31,9 +31,9 @@
         </section>
         <section class="row">
             <div class="col-12">
-                <div class="card">
-                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
-                        <ContentTemplate>
+                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <div class="card">
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-6 mb-2">
@@ -99,13 +99,13 @@
                                     </nav>
                                 </div>
                             </div>
-                        </ContentTemplate>
-                    </asp:UpdatePanel>
-                </div>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
             </div>
         </section>
     </div>
-
+    
     <div class="modal fade text-center" id="modalReset" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">

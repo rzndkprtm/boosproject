@@ -30,139 +30,137 @@
                     <div class="card-header">
                         <h4 class="card-title">Sheed Detail Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
-                                        <ContentTemplate>
-                                            <div class="row">
-                                                <div class="col-12 form-group">
-                                                    <label class="form-label">Job Sheet</label>
-                                                    <asp:DropDownList runat="server" ID="ddlJobSheet" CssClass="choices form-select"></asp:DropDownList>
-                                                </div>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
+                                        <div class="row">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Job Sheet</label>
+                                                <asp:DropDownList runat="server" ID="ddlJobSheet" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-12 form-group">
-                                                    <label class="form-label">Name</label>
-                                                    <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                                                </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Name</label>
+                                                <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-4 form-group">
-                                                    <label class="form-label">Type</label>
-                                                    <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
-                                                        <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                        <asp:ListItem Value="Field" Text="Field"></asp:ListItem>
-                                                        <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="col-8 form-group" runat="server" id="divFormulaField">
-                                                    <label class="form-label">Formula</label>
-                                                    <asp:DropDownList runat="server" ID="ddlFormula" CssClass="choices form-select"></asp:DropDownList>
-                                                </div>
-                                                <div class="col-8 form-group" runat="server" id="divFormulaCustom">
-                                                    <label class="form-label">Formula</label>
-                                                    <asp:TextBox runat="server" ID="txtFormula" TextMode="MultiLine" CssClass="form-control" Height="100px" autocomplete="off" style="resize:none;"></asp:TextBox>
-                                                </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4 form-group">
+                                                <label class="form-label">Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Field" Text="Field"></asp:ListItem>
+                                                    <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
+                                                </asp:DropDownList>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-4 form-group">
-                                                    <label class="form-label">Type</label>
-                                                    <asp:DropDownList runat="server" ID="ddlType2" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType2_SelectedIndexChanged">
-                                                        <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                        <asp:ListItem Value="Field" Text="Field"></asp:ListItem>
-                                                        <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="col-8 form-group" runat="server" id="divFormulaField2">
-                                                    <label class="form-label">Formula</label>
-                                                    <asp:DropDownList runat="server" ID="ddlFormula2" CssClass="choices form-select"></asp:DropDownList>
-                                                </div>
-                                                <div class="col-8 form-group" runat="server" id="divFormulaCustom2">
-                                                    <label class="form-label">Formula</label>
-                                                    <asp:TextBox runat="server" ID="txtFormula2" CssClass="form-control" Height="100px" TextMode="MultiLine" autocomplete="off" style="resize:none;"></asp:TextBox>
-                                                </div>
+                                            <div class="col-8 form-group" runat="server" id="divFormulaField">
+                                                <label class="form-label">Formula</label>
+                                                <asp:DropDownList runat="server" ID="ddlFormula" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-4 form-group">
-                                                    <label class="form-label">Type</label>
-                                                    <asp:DropDownList runat="server" ID="ddlType3" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType3_SelectedIndexChanged">
-                                                        <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                        <asp:ListItem Value="Field" Text="Field"></asp:ListItem>
-                                                        <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="col-8 form-group" runat="server" id="divFormulaField3">
-                                                    <label class="form-label">Formula</label>
-                                                    <asp:DropDownList runat="server" ID="ddlFormula3" CssClass="choices form-select"></asp:DropDownList>
-                                                </div>
-                                                <div class="col-8 form-group" runat="server" id="divFormulaCustom3">
-                                                    <label class="form-label">Formula</label>
-                                                    <asp:TextBox runat="server" ID="txtFormula3" TextMode="MultiLine" CssClass="form-control" Height="100px" autocomplete="off" style="resize:none;"></asp:TextBox>
-                                                </div>
+                                            <div class="col-8 form-group" runat="server" id="divFormulaCustom">
+                                                <label class="form-label">Formula</label>
+                                                <asp:TextBox runat="server" ID="txtFormula" TextMode="MultiLine" CssClass="form-control" Height="100px" autocomplete="off" style="resize:none;"></asp:TextBox>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-4 form-group">
-                                                    <label class="form-label">Type</label>
-                                                    <asp:DropDownList runat="server" ID="ddlType4" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType4_SelectedIndexChanged">
-                                                        <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                        <asp:ListItem Value="Field" Text="Field"></asp:ListItem>
-                                                        <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="col-8 form-group" runat="server" id="divFormulaField4">
-                                                    <label class="form-label">Formula</label>
-                                                    <asp:DropDownList runat="server" ID="ddlFormula4" CssClass="choices form-select"></asp:DropDownList>
-                                                </div>
-                                                <div class="col-8 form-group" runat="server" id="divFormulaCustom4">
-                                                    <label class="form-label">Formula</label>
-                                                    <asp:TextBox runat="server" ID="txtFormula4" TextMode="MultiLine" CssClass="form-control" Height="100px" autocomplete="off" style="resize:none;"></asp:TextBox>
-                                                </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4 form-group">
+                                                <label class="form-label">Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlType2" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType2_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Field" Text="Field"></asp:ListItem>
+                                                    <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
+                                                </asp:DropDownList>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-4 form-group">
-                                                    <label class="form-label">Type</label>
-                                                    <asp:DropDownList runat="server" ID="ddlType5" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType5_SelectedIndexChanged">
-                                                        <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                        <asp:ListItem Value="Field" Text="Field"></asp:ListItem>
-                                                        <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="col-8 form-group" runat="server" id="divFormulaField5">
-                                                    <label class="form-label">Formula</label>
-                                                    <asp:DropDownList runat="server" ID="ddlFormula5" CssClass="choices form-select"></asp:DropDownList>
-                                                </div>
-                                                <div class="col-8 form-group" runat="server" id="divFormulaCustom5">
-                                                    <label class="form-label">Formula</label>
-                                                    <asp:TextBox runat="server" ID="txtFormula5" TextMode="MultiLine" CssClass="form-control" Height="100px" autocomplete="off" style="resize:none;"></asp:TextBox>
-                                                </div>
+                                            <div class="col-8 form-group" runat="server" id="divFormulaField2">
+                                                <label class="form-label">Formula</label>
+                                                <asp:DropDownList runat="server" ID="ddlFormula2" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-4 form-group">
-                                                    <label class="form-label">Type</label>
-                                                    <asp:DropDownList runat="server" ID="ddlType6" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType6_SelectedIndexChanged">
-                                                        <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                        <asp:ListItem Value="Field" Text="Field"></asp:ListItem>
-                                                        <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="col-8 form-group" runat="server" id="divFormulaField6">
-                                                    <label class="form-label">Formula</label>
-                                                    <asp:DropDownList runat="server" ID="ddlFormula6" CssClass="choices form-select"></asp:DropDownList>
-                                                </div>
-                                                <div class="col-8 form-group" runat="server" id="divFormulaCustom6">
-                                                    <label class="form-label">Formula</label>
-                                                    <asp:TextBox runat="server" ID="txtFormula6" TextMode="MultiLine" CssClass="form-control" Height="100px" autocomplete="off" style="resize:none;"></asp:TextBox>
-                                                </div>
+                                            <div class="col-8 form-group" runat="server" id="divFormulaCustom2">
+                                                <label class="form-label">Formula</label>
+                                                <asp:TextBox runat="server" ID="txtFormula2" CssClass="form-control" Height="100px" TextMode="MultiLine" autocomplete="off" style="resize:none;"></asp:TextBox>
                                             </div>
-                                        </ContentTemplate>
-                                    </asp:UpdatePanel>
-                                    <div class="row mt-3" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4 form-group">
+                                                <label class="form-label">Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlType3" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType3_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Field" Text="Field"></asp:ListItem>
+                                                    <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
+                                                </asp:DropDownList>
                                             </div>
+                                            <div class="col-8 form-group" runat="server" id="divFormulaField3">
+                                                <label class="form-label">Formula</label>
+                                                <asp:DropDownList runat="server" ID="ddlFormula3" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
+                                            <div class="col-8 form-group" runat="server" id="divFormulaCustom3">
+                                                <label class="form-label">Formula</label>
+                                                <asp:TextBox runat="server" ID="txtFormula3" TextMode="MultiLine" CssClass="form-control" Height="100px" autocomplete="off" style="resize:none;"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4 form-group">
+                                                <label class="form-label">Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlType4" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType4_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Field" Text="Field"></asp:ListItem>
+                                                    <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                            <div class="col-8 form-group" runat="server" id="divFormulaField4">
+                                                <label class="form-label">Formula</label>
+                                                <asp:DropDownList runat="server" ID="ddlFormula4" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
+                                            <div class="col-8 form-group" runat="server" id="divFormulaCustom4">
+                                                <label class="form-label">Formula</label>
+                                                <asp:TextBox runat="server" ID="txtFormula4" TextMode="MultiLine" CssClass="form-control" Height="100px" autocomplete="off" style="resize:none;"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4 form-group">
+                                                <label class="form-label">Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlType5" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType5_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Field" Text="Field"></asp:ListItem>
+                                                    <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                            <div class="col-8 form-group" runat="server" id="divFormulaField5">
+                                                <label class="form-label">Formula</label>
+                                                <asp:DropDownList runat="server" ID="ddlFormula5" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
+                                            <div class="col-8 form-group" runat="server" id="divFormulaCustom5">
+                                                <label class="form-label">Formula</label>
+                                                <asp:TextBox runat="server" ID="txtFormula5" TextMode="MultiLine" CssClass="form-control" Height="100px" autocomplete="off" style="resize:none;"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4 form-group">
+                                                <label class="form-label">Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlType6" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType6_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Field" Text="Field"></asp:ListItem>
+                                                    <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                            <div class="col-8 form-group" runat="server" id="divFormulaField6">
+                                                <label class="form-label">Formula</label>
+                                                <asp:DropDownList runat="server" ID="ddlFormula6" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
+                                            <div class="col-8 form-group" runat="server" id="divFormulaCustom6">
+                                                <label class="form-label">Formula</label>
+                                                <asp:TextBox runat="server" ID="txtFormula6" TextMode="MultiLine" CssClass="form-control" Height="100px" autocomplete="off" style="resize:none;"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                                <div class="row mt-3" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>

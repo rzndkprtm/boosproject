@@ -27,6 +27,11 @@ Partial Class Setting_Price_Product_Default
         Response.Redirect("~/setting/price/product/add", False)
     End Sub
 
+    Protected Sub btnFormat_Click(sender As Object, e As EventArgs)
+        Session("SearchProductGroup") = txtSearch.Text
+        Response.Redirect("~/setting/price/product/format", False)
+    End Sub
+
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 
@@ -86,10 +91,11 @@ Partial Class Setting_Price_Product_Default
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_PriceProductGroups_List", params)
             gvList.DataBind()
-
             gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
             gvList.Columns(3).Visible = LoginAccess("Visible Price Group") ' PRICE GROUP NAME
+
             btnAdd.Visible = LoginAccess("Add")
+            'btnFormat.Visible = LoginAccess("Format")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

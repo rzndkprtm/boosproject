@@ -11970,6 +11970,8 @@ End Class
 Public Class ValidationContext
     Public Property data As ProccessData
     Public Property pricegroupid As String
+    Public Property fabricfactory As String
+    Public Property fabricfactoryb As String
 End Class
 
 Public Class JSONList

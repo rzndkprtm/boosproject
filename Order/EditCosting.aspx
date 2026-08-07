@@ -51,21 +51,22 @@
                                             <%# BindDescription(Eval("DesignName").ToString(), Eval("Description").ToString(), Eval("OrderNote").ToString()) %>
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="New Price (Buy)" ItemStyle-Width="180px">
+                                    <asp:TemplateField HeaderText="Buy Price" ItemStyle-Width="180px">
                                         <ItemTemplate>
                                             <asp:TextBox runat="server" ID="txtNewBuyPrice" CssClass="form-control" Visible='<%# Eval("Type").ToString() <> "Note" %>' Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("BuyPrice")) %>'></asp:TextBox>
                                             <asp:Label runat="server" Text="-" Visible='<%# Eval("Type").ToString() = "Note" %>'></asp:Label>
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="New Price (Sell)" ItemStyle-Width="180px">
+                                    <asp:TemplateField HeaderText="Sell Price" ItemStyle-Width="180px">
                                         <ItemTemplate>
                                             <asp:TextBox runat="server" ID="txtNewSellPrice" CssClass="form-control" Visible='<%# Eval("Type").ToString() <> "Note" %>' Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("SellPrice")) %>'></asp:TextBox>
                                             <asp:Label runat="server" Text="-" Visible='<%# Eval("Type").ToString() = "Note" %>'></asp:Label>
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:TemplateField ItemStyle-Width="100px">
+                                    <asp:TemplateField ItemStyle-Width="150px">
                                         <ItemTemplate>
-                                            <a class="btn btn-danger" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                            <a class="btn btn-success btn-sm" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalUpdate" onclick='<%# String.Format("return showUpdate(`{0}`);", Eval("Id").ToString()) %>'>Update</a>
+                                            <a class="btn btn-danger btn-sm" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                 </Columns>
@@ -76,14 +77,14 @@
                         <div>
                             <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Add Costings</button>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDiscount">Add Discount</a></li>
-                                <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalAdd">Add Surcharge</a></li>
-                                <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalNote">Add Note</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalAddDiscount">Add Discount</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalAddSurcharge">Add Surcharge</a></li>
+                                <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalAddNote">Add Note</a></li>
                             </ul>
+                            <a class="btn btn-warning" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalReset">Reset Costing</a>
                         </div>
                         <div>
-                            <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
-                            <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Close / Finish" OnClick="btnCancel_Click" />
+                            <asp:Button runat="server" ID="btnFinish" CssClass="btn btn-primary" Text="Finish" OnClick="btnFinish_Click" />
                         </div>
                     </div>
                 </div>
@@ -91,7 +92,7 @@
         </section>
     </div>
 
-    <div class="modal fade text-left" id="modalDiscount" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade text-left" id="modalAddDiscount" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -117,12 +118,12 @@
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDiscount" CssClass="btn btn-secondary" Text="Submit" OnClick="btnDiscount_Click" />
+                    <asp:Button runat="server" ID="btnAddDiscount" CssClass="btn btn-secondary" Text="Submit" OnClick="btnAddDiscount_Click" />
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade text-left" id="modalAdd" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade text-left" id="modalAddSurcharge" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -166,7 +167,62 @@
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Submit" OnClick="btnAdd_Click" />
+                    <asp:Button runat="server" ID="btnAddSurcharge" CssClass="btn btn-secondary" Text="Submit" OnClick="btnAddSurcharge_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-left" id="modalAddNote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Note</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Description</label>
+                            <asp:TextBox runat="server" ID="txtNote" CssClass="form-control" placeholder="Description ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnAddNote" CssClass="btn btn-secondary" Text="Submit" OnClick="btnAddNote_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalReset" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title white">Reset Price</h5>
+                </div>
+                <div class="modal-body text-center py-4">                    
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnReset" CssClass="btn btn-warning" Text="Confirm" OnClick="btnReset_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalUpdate" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-success">
+                    <h5 class="modal-title white">Update Item</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtUpdateId" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnUpdate" CssClass="btn btn-success" Text="Confirm" OnClick="btnUpdate_Click" />
                 </div>
             </div>
         </div>
@@ -188,29 +244,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade text-left" id="modalNote" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Add Note</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Description</label>
-                            <asp:TextBox runat="server" ID="txtNote" CssClass="form-control" placeholder="Description ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnNote" CssClass="btn btn-secondary" Text="Submit" OnClick="btnNote_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-
+    
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblHeaderId"></asp:Label>
@@ -220,12 +254,15 @@
     </div>
 
     <script type="text/javascript">
-        ["modalDiscount", "modalAdd", "modalDelete", "modalNote"].forEach(function (id) {
+        ["modalAddDiscount", "modalAddSurcharge", "modalAddNote", "modalReset", "modalUpdate", "modalDelete"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
+        function showUpdate(id) {
+            document.getElementById("<%=txtUpdateId.ClientID %>").value = id;
+        }
         function showDelete(id) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
         }

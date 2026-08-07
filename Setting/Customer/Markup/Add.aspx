@@ -29,50 +29,48 @@
                     <div class="card-header">
                         <h4 class="card-title">Markup Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <div class="row mb-2">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Account</label>
-                                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <div class="row mb-2">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Account</label>
+                                        <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <label class="form-label">Type</label>
+                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select">
+                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                            <asp:ListItem Value="product" Text="Product"></asp:ListItem>
+                                            <asp:ListItem Value="productgroup" Text="Product Group"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                        <label class="form-label">Product</label>
+                                        <asp:DropDownList runat="server" ID="ddlProduct" CssClass="choices form-select"></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                        <label class="form-label">Markup</label>
+                                        <div class="input-group">
+                                            <asp:TextBox runat="server" TextMode="Number" ID="txtMarkup" CssClass="form-control" placeholder="Markup ......" autocomplete="off"></asp:TextBox>
+                                            <span class="input-group-text">%</span>
                                         </div>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                            <label class="form-label">Type</label>
-                                            <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select">
-                                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                <asp:ListItem Value="product" Text="Product"></asp:ListItem>
-                                                <asp:ListItem Value="productgroup" Text="Product Group"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-8 form-group">
-                                            <label class="form-label">Product</label>
-                                            <asp:DropDownList runat="server" ID="ddlProduct" CssClass="choices form-select"></asp:DropDownList>
-                                        </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Description</label>
+                                        <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" CssClass="form-control" Height="100px" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                            <label class="form-label">Markup</label>
-                                            <div class="input-group">
-                                                <asp:TextBox runat="server" TextMode="Number" ID="txtMarkup" CssClass="form-control" placeholder="Markup ......" autocomplete="off"></asp:TextBox>
-                                                <span class="input-group-text">%</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Description</label>
-                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" CssClass="form-control" Height="100px" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-3" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                </div>
+                                <div class="row mt-3" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>

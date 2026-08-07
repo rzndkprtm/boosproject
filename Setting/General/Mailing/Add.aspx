@@ -29,113 +29,111 @@
                     <div class="card-header">
                         <h4 class="card-title">Mailing Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
-                                            <label class="form-label">Company</label>
-                                            <asp:DropDownList runat="server" ID="ddlCompanyId" CssClass="form-select"></asp:DropDownList>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-8 form-group">
-                                            <label class="form-label">Name</label>
-                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Mailing Name ..." autocomplete="off"></asp:TextBox>
-                                        </div>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
+                                        <label class="form-label">Company</label>
+                                        <asp:DropDownList runat="server" ID="ddlCompanyId" CssClass="form-select"></asp:DropDownList>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                            <label class="form-label">Server</label>
-                                            <asp:TextBox runat="server" ID="txtServer" CssClass="form-control" placeholder="Server ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                            <label class="form-label">Host</label>
-                                            <asp:TextBox runat="server" ID="txtHost" CssClass="form-control" placeholder="Host ..." autocomplete="off"></asp:TextBox>
-                                        </div>
+                                    <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                        <label class="form-label">Name</label>
+                                        <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Mailing Name ..." autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                            <label class="form-label">Port</label>
-                                            <asp:TextBox runat="server" ID="txtPort" CssClass="form-control" placeholder="Port ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                            <label class="form-label">Network Credentials</label>
-                                            <asp:DropDownList runat="server" ID="ddlNetworkCredentials" CssClass="form-select">
-                                                <asp:ListItem Value="0" Text="False"></asp:ListItem>
-                                                <asp:ListItem Value="1" Text="True"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                        <label class="form-label">Server</label>
+                                        <asp:TextBox runat="server" ID="txtServer" CssClass="form-control" placeholder="Server ..." autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                            <label class="form-label">Default Credentials</label>
-                                            <asp:DropDownList runat="server" ID="ddlDefaultCredentials" CssClass="form-select">
-                                                <asp:ListItem Value="0" Text="False"></asp:ListItem>
-                                                <asp:ListItem Value="1" Text="True"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                            <label class="form-label">Enable SSL</label>
-                                            <asp:DropDownList runat="server" ID="ddlEnableSSL" CssClass="form-select">
-                                                <asp:ListItem Value="0" Text="False"></asp:ListItem>
-                                                <asp:ListItem Value="1" Text="True"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                        <label class="form-label">Host</label>
+                                        <asp:TextBox runat="server" ID="txtHost" CssClass="form-control" placeholder="Host ..." autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                            <label class="form-label">Mail Account</label>
-                                            <asp:TextBox runat="server" ID="txtAccount" CssClass="form-control" placeholder="Mail Account ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                            <label class="form-label">Mail Password</label>
-                                            <asp:TextBox runat="server" ID="txtPassword" CssClass="form-control" placeholder="Mail Password ..." autocomplete="off"></asp:TextBox>
-                                        </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                        <label class="form-label">Port</label>
+                                        <asp:TextBox runat="server" ID="txtPort" CssClass="form-control" placeholder="Port ..." autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                            <label class="form-label">Mail Alias</label>
-                                            <asp:TextBox runat="server" ID="txtAlias" CssClass="form-control" placeholder="Mail Alias ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                            <label class="form-label">Mail Subject</label>
-                                            <asp:TextBox runat="server" ID="txtSubject" CssClass="form-control" placeholder="Mail Subject ..." autocomplete="off"></asp:TextBox>
-                                        </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                        <label class="form-label">Network Credentials</label>
+                                        <asp:DropDownList runat="server" ID="ddlNetworkCredentials" CssClass="form-select">
+                                            <asp:ListItem Value="0" Text="False"></asp:ListItem>
+                                            <asp:ListItem Value="1" Text="True"></asp:ListItem>
+                                        </asp:DropDownList>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                            <label class="form-label">Mail TO</label>
-                                            <asp:TextBox runat="server" ID="txtTo" CssClass="form-control" placeholder="Mail To ..." autocomplete="off" TextMode="MultiLine" Height="100px" style="resize:none;"></asp:TextBox>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                            <label class="form-label">Mail CC</label>
-                                            <asp:TextBox runat="server" ID="txtCC" CssClass="form-control" TextMode="MultiLine" Height="100px" placeholder="Mail CC ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                                        </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                        <label class="form-label">Default Credentials</label>
+                                        <asp:DropDownList runat="server" ID="ddlDefaultCredentials" CssClass="form-select">
+                                            <asp:ListItem Value="0" Text="False"></asp:ListItem>
+                                            <asp:ListItem Value="1" Text="True"></asp:ListItem>
+                                        </asp:DropDownList>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                            <label class="form-label">Mail BCC</label>
-                                            <asp:TextBox runat="server" ID="txtBcc" CssClass="form-control" placeholder="Mail BCC ..." autocomplete="off" TextMode="MultiLine" Height="100px" style="resize:none;"></asp:TextBox>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
-                                            <label class="form-label">Description</label>
-                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                                        </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                        <label class="form-label">Enable SSL</label>
+                                        <asp:DropDownList runat="server" ID="ddlEnableSSL" CssClass="form-select">
+                                            <asp:ListItem Value="0" Text="False"></asp:ListItem>
+                                            <asp:ListItem Value="1" Text="True"></asp:ListItem>
+                                        </asp:DropDownList>
                                     </div>
-                                    <div class="row mb-2">
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                            <label class="form-label">Active</label>
-                                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                        <label class="form-label">Mail Account</label>
+                                        <asp:TextBox runat="server" ID="txtAccount" CssClass="form-control" placeholder="Mail Account ..." autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row mb-2" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                        <label class="form-label">Mail Password</label>
+                                        <asp:TextBox runat="server" ID="txtPassword" CssClass="form-control" placeholder="Mail Password ..." autocomplete="off"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                        <label class="form-label">Mail Alias</label>
+                                        <asp:TextBox runat="server" ID="txtAlias" CssClass="form-control" placeholder="Mail Alias ..." autocomplete="off"></asp:TextBox>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                        <label class="form-label">Mail Subject</label>
+                                        <asp:TextBox runat="server" ID="txtSubject" CssClass="form-control" placeholder="Mail Subject ..." autocomplete="off"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                        <label class="form-label">Mail TO</label>
+                                        <asp:TextBox runat="server" ID="txtTo" CssClass="form-control" placeholder="Mail To ..." autocomplete="off" TextMode="MultiLine" Height="100px" style="resize:none;"></asp:TextBox>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                        <label class="form-label">Mail CC</label>
+                                        <asp:TextBox runat="server" ID="txtCC" CssClass="form-control" TextMode="MultiLine" Height="100px" placeholder="Mail CC ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                        <label class="form-label">Mail BCC</label>
+                                        <asp:TextBox runat="server" ID="txtBcc" CssClass="form-control" placeholder="Mail BCC ..." autocomplete="off" TextMode="MultiLine" Height="100px" style="resize:none;"></asp:TextBox>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 mb-2 form-group">
+                                        <label class="form-label">Description</label>
+                                        <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                        <label class="form-label">Active</label>
+                                        <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
+                                            <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                            <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="row mb-2" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>

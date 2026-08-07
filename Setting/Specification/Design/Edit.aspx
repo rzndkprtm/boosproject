@@ -29,76 +29,74 @@
                     <div class="card-header">
                         <h4 class="card-title">Design Type Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Name</label>
-                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                                        </div>
-                                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                            <label class="form-label">Alias</label>
-                                            <asp:TextBox runat="server" ID="txtAlias" CssClass="form-control" placeholder="Alias ..." autocomplete="off"></asp:TextBox>
-                                        </div>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Name</label>
+                                        <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-5 form-group">
-                                            <label class="form-label">Type</label>
-                                            <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select">
-                                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                <asp:ListItem Value="Blinds" Text="Blinds"></asp:ListItem>
-                                                <asp:ListItem Value="Components" Text="Components"></asp:ListItem>
-                                                <asp:ListItem Value="Doors" Text="Doors"></asp:ListItem>
-                                                <asp:ListItem Value="Samples" Text="Samples"></asp:ListItem>
-                                                <asp:ListItem Value="Services" Text="Services"></asp:ListItem>
-                                                <asp:ListItem Value="Shutters" Text="Shutters"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
-                                        <div class="col-7 form-group">
-                                            <label class="form-label">Page</label>
-                                            <asp:TextBox runat="server" ID="txtPage" CssClass="form-control" placeholder="Page ..." autocomplete="off"></asp:TextBox>
-                                        </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Alias</label>
+                                        <asp:TextBox runat="server" ID="txtAlias" CssClass="form-control" placeholder="Alias ..." autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Company</label>
-                                            <asp:ListBox runat="server" ID="lbCompany" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-5 form-group">
+                                        <label class="form-label">Type</label>
+                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select">
+                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                            <asp:ListItem Value="Blinds" Text="Blinds"></asp:ListItem>
+                                            <asp:ListItem Value="Components" Text="Components"></asp:ListItem>
+                                            <asp:ListItem Value="Doors" Text="Doors"></asp:ListItem>
+                                            <asp:ListItem Value="Samples" Text="Samples"></asp:ListItem>
+                                            <asp:ListItem Value="Services" Text="Services"></asp:ListItem>
+                                            <asp:ListItem Value="Shutters" Text="Shutters"></asp:ListItem>
+                                        </asp:DropDownList>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Applies To</label>
-                                            <asp:ListBox runat="server" ID="lbApplies" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
-                                                <asp:ListItem Value="Fabrics" Text="Fabrics"></asp:ListItem>
-                                                <asp:ListItem Value="Chains" Text="Chains"></asp:ListItem>
-                                                <asp:ListItem Value="Bottoms" Text="Bottoms"></asp:ListItem>
-                                                <asp:ListItem Value="Markups" Text="Markups"></asp:ListItem>
-                                                <asp:ListItem Value="Discounts" Text="Discounts"></asp:ListItem>
-                                            </asp:ListBox>
-                                        </div>
+                                    <div class="col-7 form-group">
+                                        <label class="form-label">Page</label>
+                                        <asp:TextBox runat="server" ID="txtPage" CssClass="form-control" placeholder="Page ..." autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Description</label>
-                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Company</label>
+                                        <asp:ListBox runat="server" ID="lbCompany" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                            <label class="form-label">Active</label>
-                                            <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Applies To</label>
+                                        <asp:ListBox runat="server" ID="lbApplies" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
+                                            <asp:ListItem Value="Fabrics" Text="Fabrics"></asp:ListItem>
+                                            <asp:ListItem Value="Chains" Text="Chains"></asp:ListItem>
+                                            <asp:ListItem Value="Bottoms" Text="Bottoms"></asp:ListItem>
+                                            <asp:ListItem Value="Markups" Text="Markups"></asp:ListItem>
+                                            <asp:ListItem Value="Discounts" Text="Discounts"></asp:ListItem>
+                                        </asp:ListBox>
                                     </div>
-                                    <div class="row mt-3" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Description</label>
+                                        <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                        <label class="form-label">Active</label>
+                                        <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
+                                            <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                            <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="row mt-3" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>

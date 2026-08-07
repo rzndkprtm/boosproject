@@ -48,15 +48,21 @@ Public Class InvoiceClass
 
     Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
         Dim thisTable As New DataTable()
-        Using thisConn As New SqlConnection(myConn)
-            Using thisCmd As New SqlCommand(spName, thisConn)
-                thisCmd.CommandType = CommandType.StoredProcedure
-                thisCmd.Parameters.AddRange(params.ToArray())
-                Using thisAdapter As New SqlDataAdapter(thisCmd)
-                    thisAdapter.Fill(thisTable)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    If params IsNot Nothing AndAlso params.Count > 0 Then
+                        thisCmd.Parameters.AddRange(params.ToArray())
+                    End If
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        thisAdapter.Fill(thisTable)
+                    End Using
                 End Using
             End Using
-        End Using
+        Catch ex As Exception
+            thisTable = New DataTable()
+        End Try
         Return thisTable
     End Function
 
@@ -462,26 +468,7 @@ Public Class InvoiceClass
                 Dim invoiceName As String = detailData.Rows(i)("InvoiceName").ToString()
                 Dim itemDescription As String = invoiceName
 
-                If designName = "Service" Then
-                    itemDescription = String.Format("{0}", invoiceName)
-                    If Not String.IsNullOrEmpty(itemNote) Then
-                        itemDescription &= vbCrLf
-                        itemDescription &= itemNote
-                    End If
-                End If
                 If designName = "Aluminium Blind" Then
-                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
-                End If
-                If designName = "Privacy Venetian" Then
-                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
-                End If
-                If designName = "Venetian Blind" Then
-                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
-                End If
-                If designName = "Skyline Shutter Express" Then
-                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
-                End If
-                If designName = "Skyline Shutter Ocean" Then
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
                 End If
                 If designName = "Cellular Shades" Then
@@ -497,21 +484,8 @@ Public Class InvoiceClass
                         itemDescription &= fabricColourNameB
                     End If
                 End If
-                If designName = "Design Shades" Then
-                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
-                End If
-                If designName = "Roman Blind" Then
-                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
-                End If
-                If designName = "Soft Roman" Then
-                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
-                End If
-                If designName = "Roller Blind" Then
-                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                If designName = "Component" Then
+                    itemDescription = invoiceName
                 End If
                 If designName = "Curtain" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
@@ -525,6 +499,19 @@ Public Class InvoiceClass
                     If blindName = "Track Only" Then
                         itemDescription = String.Format("{0} {1} ({2}) {3}", invoiceName, width, linearMetreText)
                     End If
+                End If
+                If designName = "Design Shades" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                End If
+                If designName = "Door" Then
+                    itemDescription = invoiceName
+                End If
+                If designName = "Evolve Shutter Express" Then
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                End If
+                If designName = "Evolve Shutter Ocean" Then
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
                 End If
                 If designName = "Linea Valance" Then
                     itemDescription = String.Format("{0} ({1}mm) {2}", invoiceName, width, linearMetreText)
@@ -540,6 +527,48 @@ Public Class InvoiceClass
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, linearMetreText)
                 End If
+                If designName = "Privacy Venetian" Then
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                End If
+                If designName = "Roller Blind" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                End If
+                If designName = "Roller Horizon" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                End If
+                If designName = "Roman Blind" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                End If
+                If designName = "Sample" Then
+                    itemDescription = invoiceName
+                End If
+                If designName = "Saphora Drape" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                End If
+                If designName = "Service" Then
+                    itemDescription = String.Format("{0}", invoiceName)
+                    If Not String.IsNullOrEmpty(itemNote) Then
+                        itemDescription &= vbCrLf
+                        itemDescription &= itemNote
+                    End If
+                End If
+                If designName = "Skyline Shutter Express" Then
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                End If
+                If designName = "Skyline Shutter Ocean" Then
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                End If
+                If designName = "Soft Roman" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                End If
+                If designName = "Venetian Blind" Then
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                End If
                 If designName = "Vertical" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     fabricColourName = fabricColourName.Replace("127mm ", "").Replace("89mm ", "").Trim()
@@ -549,10 +578,10 @@ Public Class InvoiceClass
                         itemDescription = String.Format("{0} ({1}) {2}", invoiceName, width, linearMetreText)
                     End If
                 End If
-                If designName = "Saphora Drape" Then
-                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                If designName = "Window" Then
+                    itemDescription = invoiceName
                 End If
+
                 Dim checkNote As String = GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Type='Note'")
                 If Not String.IsNullOrEmpty(checkNote) Then
                     itemDescription &= vbCrLf
@@ -704,43 +733,10 @@ Public Class InvoiceClass
 
                 Dim namaBarang As String = String.Empty
 
-                If designName = "Service" Then
-                    itemDescription = String.Format("{0}", invoiceName)
-                    If Not String.IsNullOrEmpty(itemNote) Then
-                        itemDescription &= vbCrLf
-                        itemDescription &= itemNote
-                    End If
-                End If
-
                 If designName = "Aluminium Blind" Then
                     itemDescription = String.Format("{0} {1}", invoiceName, size)
-
                     namaBarang = "Aluminium Venetian Blind"
                 End If
-
-                If designName = "Privacy Venetian" Then
-                    itemDescription = String.Format("{0} {1}", invoiceName, size)
-
-                    namaBarang = "Smart Privacy"
-                End If
-
-                If designName = "Venetian Blind" Then
-                    itemDescription = String.Format("{0} {1}", invoiceName, size)
-
-                    If blindName = "Econo 50mm" OrElse blindName = "Econo 63mm" Then
-                        namaBarang = "Ecowood Blind"
-                    End If
-                    If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" Then
-                        namaBarang = "Basswood Blind"
-                    End If
-                End If
-
-                If designName = "Skyline Shutter Express" Then
-                    itemDescription = String.Format("{0} {1}", invoiceName, size)
-
-                    namaBarang = "PVC Shutter"
-                End If
-
                 If designName = "Cellular Shades" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1}", invoiceName, size)
@@ -753,38 +749,12 @@ Public Class InvoiceClass
                         itemDescription &= vbCrLf
                         itemDescription &= fabricColourNameB
                     End If
-
                     namaBarang = designName
                 End If
-
-                If designName = "Design Shades" Then
-                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
-
+                If designName = "Component" Then
+                    itemDescription = invoiceName
                     namaBarang = designName
                 End If
-
-                If designName = "Roman Blind" Then
-                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
-
-                    namaBarang = designName
-                End If
-
-                If designName = "Soft Roman" Then
-                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
-
-                    namaBarang = "Roman Blind"
-                End If
-
-                If designName = "Roller Blind" Then
-                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
-
-                    namaBarang = designName
-                End If
-
                 If designName = "Curtain" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
@@ -805,30 +775,86 @@ Public Class InvoiceClass
 
                     namaBarang = "Roman Tailored"
                 End If
-
-                If designName = "Linea Valance" Then
-                    itemDescription = String.Format("{0} ({1}mm)", invoiceName, width)
-
+                If designName = "Design Shades" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
                     namaBarang = designName
                 End If
-
+                If designName = "Evolve Shutter Express" Then
+                    itemDescription = String.Format("{0} {1}", invoiceName, size)
+                    namaBarang = "Evolve Shutter"
+                End If
+                If designName = "Linea Valance" Then
+                    itemDescription = String.Format("{0} ({1}mm)", invoiceName, width)
+                    namaBarang = designName
+                End If
+                If designName = "Outdoor" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
+                    namaBarang = designName
+                End If
                 If designName = "Panel Glide" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
                     If blindName = "Track Only" Then
                         itemDescription = String.Format("{0} ({1})", invoiceName, width)
                     End If
-
                     namaBarang = designName
                 End If
-
                 If designName = "Pelmet" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
-
                     namaBarang = "Roller Pelmet"
                 End If
-
+                If designName = "Privacy Venetian" Then
+                    itemDescription = String.Format("{0} {1}", invoiceName, size)
+                    namaBarang = "Smart Privacy"
+                End If
+                If designName = "Roller Blind" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
+                    namaBarang = designName
+                End If
+                If designName = "Roman Blind" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
+                    namaBarang = designName
+                End If
+                If designName = "Sample" Then
+                    itemDescription = invoiceName
+                    namaBarang = designName
+                End If
+                If designName = "Saphora Drape" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
+                    namaBarang = "Vertical"
+                End If
+                If designName = "Service" Then
+                    itemDescription = String.Format("{0}", invoiceName)
+                    If Not String.IsNullOrEmpty(itemNote) Then
+                        itemDescription &= vbCrLf
+                        itemDescription &= itemNote
+                    End If
+                    namaBarang = designName
+                End If
+                If designName = "Skyline Shutter Express" Then
+                    itemDescription = String.Format("{0} {1}", invoiceName, size)
+                    namaBarang = "PVC Shutter"
+                End If
+                If designName = "Soft Roman" Then
+                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
+                    namaBarang = "Roman Blind"
+                End If
+                If designName = "Venetian Blind" Then
+                    itemDescription = String.Format("{0} {1}", invoiceName, size)
+                    If blindName = "Econo 50mm" OrElse blindName = "Econo 63mm" Then
+                        namaBarang = "Ecowood Blind"
+                    End If
+                    If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" Then
+                        namaBarang = "Basswood Blind"
+                    End If
+                End If
                 If designName = "Vertical" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     fabricColourName = fabricColourName.Replace("127mm ", "").Replace("89mm ", "").Trim()
@@ -840,12 +866,9 @@ Public Class InvoiceClass
 
                     namaBarang = designName
                 End If
-
-                If designName = "Saphora Drape" Then
-                    Dim fabricColourName As String = GetFabricColourName(fabricColourId)
-                    itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
-
-                    namaBarang = "Vertical"
+                If designName = "Window" Then
+                    itemDescription = invoiceName
+                    namaBarang = designName
                 End If
 
                 Dim checkNote As String = GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Type='Note'")
@@ -1305,9 +1328,7 @@ Public Class InvoiceEvents
         imgCell.VerticalAlignment = Element.ALIGN_TOP
         headerTable.AddCell(imgCell)
 
-        Dim mataUang As String = "AUD"
-
-        Dim finalPrice As String = String.Format("{0} {1}", Me.totalPrice, mataUang)
+        Dim finalPrice As String = String.Format("{0} AUD", Me.totalPrice)
 
         Dim phrase As New Paragraph()
         phrase.Alignment = Element.ALIGN_RIGHT
