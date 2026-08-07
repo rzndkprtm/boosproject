@@ -28,33 +28,31 @@
                     <div class="card-header">
                         <h4 class="card-title">Validation Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Design Type</label>
-                                            <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select"></asp:DropDownList>
-                                        </div>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <div class="row">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Design Type</label>
+                                        <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Name</label>
-                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Name</label>
+                                        <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-12 form-group">
-                                            <label class="form-label">Error Message</label>
-                                            <asp:TextBox runat="server" ID="txtErrorMessage" CssClass="form-control" placeholder="Error Message ..." autocomplete="off"></asp:TextBox>
-                                        </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Error Message</label>
+                                        <asp:TextBox runat="server" ID="txtErrorMessage" CssClass="form-control" placeholder="Error Message ..." autocomplete="off"></asp:TextBox>
                                     </div>
-                                    <div class="row mt-3" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                </div>
+                                <div class="row mt-3" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>

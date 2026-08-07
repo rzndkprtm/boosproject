@@ -29,67 +29,65 @@
                     <div class="card-header">
                         <h4 class="card-title">Create Form</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <div class="form form-vertical">
-                                <div class="form-body">
-                                    <div class="row mb-3 form-group">
-                                        <div class="col-12">
-                                            <label class="form-label">TABLE NAME</label>
-                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Table Name ..." autocomplete="off"></asp:TextBox>
+                    <div class="card-body">
+                        <div class="form form-vertical">
+                            <div class="form-body">
+                                <div class="row mb-3 form-group">
+                                    <div class="col-12">
+                                        <label class="form-label">TABLE NAME</label>
+                                        <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Table Name ..." autocomplete="off"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-12">
+                                        <label class="form-label">FIELDS</label>
+                                        <div class="table-responsive">
+                                            <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" OnRowDataBound="gvList_RowDataBound">
+                                                <Columns>
+                                                    <asp:TemplateField HeaderText="NAME">
+                                                        <ItemTemplate>
+                                                            <asp:TextBox runat="server" ID="txtFieldName" CssClass="form-control"></asp:TextBox>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="TYPE">
+                                                        <ItemTemplate>
+                                                            <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select">
+                                                                <asp:ListItem Value="int" Text="int"></asp:ListItem>
+                                                                <asp:ListItem Value="uniqueidentifier" Text="uniqueidentifier"></asp:ListItem>
+                                                                <asp:ListItem Value="nvarchar(100)" Text="nvarchar(100)"></asp:ListItem>
+                                                                <asp:ListItem Value="nvarchar(255)" Text="nvarchar(255)"></asp:ListItem>
+                                                                <asp:ListItem Value="nvarchar(max)" Text="nvarchar(max)"></asp:ListItem>
+                                                                <asp:ListItem Value="date" Text="date"></asp:ListItem>
+                                                                <asp:ListItem Value="datetime" Text="datetime"></asp:ListItem>
+                                                                <asp:ListItem Value="bit" Text="bit"></asp:ListItem>
+                                                                <asp:ListItem Value="cimal(18,2)" Text="cimal(18,2)"></asp:ListItem>
+                                                            </asp:DropDownList>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="KEY" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:CheckBox runat="server" ID="chkKey" />
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="NOT NULL" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <asp:CheckBox runat="server" ID="chkNotNull" />
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                            </asp:GridView>
                                         </div>
                                     </div>
-                                    <div class="row form-group">
-                                        <div class="col-12">
-                                            <label class="form-label">FIELDS</label>
-                                            <div class="table-responsive">
-                                                <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" OnRowDataBound="gvList_RowDataBound">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="NAME">
-                                                            <ItemTemplate>
-                                                                <asp:TextBox runat="server" ID="txtFieldName" CssClass="form-control"></asp:TextBox>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="TYPE">
-                                                            <ItemTemplate>
-                                                                <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select">
-                                                                    <asp:ListItem Value="int" Text="int"></asp:ListItem>
-                                                                    <asp:ListItem Value="uniqueidentifier" Text="uniqueidentifier"></asp:ListItem>
-                                                                    <asp:ListItem Value="nvarchar(100)" Text="nvarchar(100)"></asp:ListItem>
-                                                                    <asp:ListItem Value="nvarchar(255)" Text="nvarchar(255)"></asp:ListItem>
-                                                                    <asp:ListItem Value="nvarchar(max)" Text="nvarchar(max)"></asp:ListItem>
-                                                                    <asp:ListItem Value="date" Text="date"></asp:ListItem>
-                                                                    <asp:ListItem Value="datetime" Text="datetime"></asp:ListItem>
-                                                                    <asp:ListItem Value="bit" Text="bit"></asp:ListItem>
-                                                                    <asp:ListItem Value="cimal(18,2)" Text="cimal(18,2)"></asp:ListItem>
-                                                                </asp:DropDownList>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="KEY" ItemStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:CheckBox runat="server" ID="chkKey" />
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                        <asp:TemplateField HeaderText="NOT NULL" ItemStyle-HorizontalAlign="Center">
-                                                            <ItemTemplate>
-                                                                <asp:CheckBox runat="server" ID="chkNotNull" />
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-12">
+                                        <asp:Button ID="btnAddRow" runat="server" Text="Add Column" CssClass="btn btn-secondary btn-sm" OnClick="btnAddRow_Click" />
                                     </div>
-                                    <div class="row form-group">
-                                        <div class="col-12">
-                                            <asp:Button ID="btnAddRow" runat="server" Text="Add Column" CssClass="btn btn-secondary btn-sm" OnClick="btnAddRow_Click" />
-                                        </div>
-                                    </div>
-                                    <div class="row" runat="server" id="divError">
-                                        <div class="col-12">
-                                            <div class="alert alert-danger">
-                                                <span runat="server" id="msgError"></span>
-                                            </div>
+                                </div>
+                                <div class="row" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
                                         </div>
                                     </div>
                                 </div>
