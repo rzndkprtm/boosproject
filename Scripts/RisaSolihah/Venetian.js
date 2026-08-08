@@ -27,12 +27,7 @@ $("#blindtype").on("change", function () {
 
 $("#subtype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
-
-    const width = parseFloat(document.getElementById("width").value) || 0;
     const drop = parseFloat(document.getElementById("drop").value) || 0;
-
-    bindControlPosition($(this).val(), width);
-    bindTilterPosition($(this).val(), width);
 
     bindComponentForm(blindtype, $(this).val());
 
@@ -43,23 +38,6 @@ $("#subtype").on("change", function () {
     document.getElementById("controllengthc").value = "";
     document.getElementById("valancesize").value = "";
     document.getElementById("returnlength").value = "";
-});
-
-$("#width").on("input", function () {
-    const subtype = document.getElementById("subtype").value;
-    const width = parseFloat(document.getElementById("width").value) || 0;
-
-    bindControlPosition(subtype, width);
-    bindTilterPosition(subtype, width);
-});
-
-$("#width").on("blur", function () {
-    const subtype = document.getElementById("subtype").value;
-    const width = parseFloat(document.getElementById("width").value) || 0;
-
-    if (subtype === "Single" && roleAccess === "Customer" && width < 300) {
-        isError("PLEASE NOTE THAT YOUR ORDER WIDTH IS NOT COVERED UNDER OUR WARRANTY.");
-    }
 });
 
 $("#drop").on("input", function () {
@@ -243,6 +221,47 @@ function getPriceAccess(loginId) {
     });
 }
 
+function getCompanyName(companyId) {
+    if (!companyId) return;
+
+    const type = "CompanyName";
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/StringData",
+            data: JSON.stringify({ type: type, dataId: companyId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                resolve(response.d);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+function getCompanyDetailName(companyDetailId) {
+    if (!companyDetailId) return;
+
+    const type = "CompanyDetailName";
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/StringData",
+            data: JSON.stringify({ type: type, dataId: companyDetailId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                resolve(response.d);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
 function getDesignName(designType) {
     return new Promise((resolve, reject) => {
         const cardTitle = document.getElementById("cardtitle");
@@ -533,100 +552,6 @@ function bindMounting(blindType) {
                 reject(error);
             }
         });
-    });
-}
-
-function bindControlPosition(subType, width) {
-    return new Promise((resolve) => {
-        const controlposition = document.getElementById("controlposition");
-        controlposition.innerHTML = "";
-
-        if (!subType || width === 0) {
-            resolve();
-            return;
-        }
-
-        let options = [
-            { value: "", text: "" },
-            { value: "Left", text: "Left" },
-            { value: "Right", text: "Right" }
-        ];
-
-        const widthRules = [
-            {
-                subType: "Single",
-                min: 200, max: 310,
-                options: [
-                    { value: "", text: "" }, { value: "N/A", text: "N/A" }
-                ]
-            }
-        ];
-
-        const rule = widthRules.find(r =>
-            r.subType === subType &&
-            width >= r.min &&
-            width <= r.max
-        );
-
-        if (rule) {
-            options = rule.options;
-        }
-
-        options.forEach(opt => {
-            const optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            controlposition.appendChild(optionElement);
-        });
-
-        resolve();
-    });
-}
-
-function bindTilterPosition(subType, width) {
-    return new Promise((resolve) => {
-        const tilterposition = document.getElementById("tilterposition");
-        tilterposition.innerHTML = "";
-
-        if (!subType || width === 0) {
-            resolve();
-            return;
-        }
-
-        let options = [
-            { value: "", text: "" },
-            { value: "Left", text: "Left" },
-            { value: "Right", text: "Right" }
-        ];
-
-        const widthRules = [
-            {
-                subType: "Single",
-                min: 200, max: 310,
-                options: [
-                    { value: "", text: "" }, { value: "Centre", text: "Centre" }
-                ]
-            }
-        ];
-
-        const rule = widthRules.find(r =>
-            r.subType === subType &&
-            width >= r.min &&
-            width <= r.max
-        );
-
-        if (rule) {
-            options = rule.options;
-        }
-
-        options.forEach(opt => {
-            const optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            tilterposition.appendChild(optionElement);
-        });
-
-        resolve();
     });
 }
 
@@ -1040,12 +965,6 @@ async function bindItemOrder(itemId, companyDetailId, action) {
         fillSelect("#subtype", data.SubTypes);
         fillSelect("#valancetype", data.ValanceTypes);
         fillSelect("#returnposition", data.ValancePositions);
-
-        let manual = [
-            bindControlPosition(data.ItemData.SubType, data.ItemData.Width),
-            bindTilterPosition(data.ItemData.SubType, data.ItemData.Width)
-        ];
-        await Promise.all(manual);
 
         setFormValues(data.ItemData);
 

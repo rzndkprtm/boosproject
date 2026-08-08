@@ -431,6 +431,27 @@ function getPriceAccess(loginId) {
     });
 }
 
+function getCompanyName(companyId) {
+    if (!companyId) return;
+
+    const type = "CompanyName";
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/StringData",
+            data: JSON.stringify({ type: type, dataId: companyId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                resolve(response.d);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
 function getCompanyDetailName(companyDetailId) {
     if (!companyDetailId) return;
 
@@ -2036,8 +2057,8 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
             getBlindName(blindType),
             getTubeName(tubeType),
             getControlName(controlType),
-            getCompanyDetailName(companyDetailId)
-        ]).then(([blindName, tubeName, controlName, companyDetailName]) => {
+            getCompanyName(companyId)
+        ]).then(([blindName, tubeName, controlName, companyName]) => {
             const divShow = [];
 
             const textdbfront = document.getElementById("textdbfront");
@@ -2065,7 +2086,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
             if (blindName === "Single Blind") {
                 divShow.push("divfabric", "divroll", "divcontrolposition", "divbottomtype", "divbottomcolour", "divsize");
 
-                if (companyDetailName === "ACCENT" || companyDetailName === "BIG" || companyDetailName === "OASIS") {
+                if (companyName === "PT Bumi Indah Global") {
                     divShow.push("divtoptrack");
                 }
 
@@ -2367,13 +2388,13 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
 
             if (["Alpha DC Motor (1Nm / 30RPM)", "Alpha DC Motor (2Nm / 31RPM)", "Alpha DC Motor (3Nm / 20RPM)"].includes(controlName)) {
                 divShow.push("divcharger");
-                if (companyDetailName === "JPMD" || companyDetailName === "JPMD BP" || companyDetailName === "CWS") {
+                if (companyName === "JPMD") {
                     divShow.push("divextensioncable", "divsupply");
                 }
             }
 
             if (["Somfy Altus 40 RTS 3/30", "Somfy Sonesse 30 WF 2/20 RTS", "LSN40"].includes(controlName)) {
-                if (companyDetailName === "ACCENT" || companyDetailName === "BIG" || companyDetailName === "OASIS") {
+                if (companyName === "PT Bumi Indah Global") {
                     divShow.push("divdrycontact");
                 }
             }
@@ -2508,7 +2529,7 @@ function visibleFlatBottom(bottomType, number) {
         thisDiv.style.display = "none";
 
         getBottomName(bottomType).then(bottomName => {
-            if (bottomName === "Flat" || bottomName === "Fabric Wrap") {
+            if (bottomName === "Flat") {
                 thisDiv.style.display = "";
             }
             resolve();
@@ -2739,7 +2760,7 @@ function controlForm(status, isEditItem, isCopyItem) {
         }
 
         if (isEditItem) {
-            if (id === "qty") {
+            if (id === "qty" || id === "blindtype") {
                 el.disabled = true;
             } else {
                 el.disabled = false;
@@ -3098,9 +3119,8 @@ function showInfo(type) {
     const blindtype = document.getElementById("blindtype");
 
     Promise.all([
-        getBlindName(blindtype.value),
-        getCompanyDetailName(companyDetailId)
-    ]).then(function ([blindName, companyDetailName]) {
+        getBlindName(blindtype.value)
+    ]).then(function ([blindName]) {
         if (type === "STD Roller Components") {
             title = "STD Roller Components";
             info = "<ul>";
@@ -3151,32 +3171,17 @@ function showInfo(type) {
         else if (type === "Bottom") {
             title = "Bottom Rail Information";
 
-            if (companyDetailName === "JPMD" || companyDetailName === "JPMD BP") {
-                info = "<b>- Bottom Type</b> : <span style='color:red;'>Deluxe Flat</span>, <span style='color:red;'>Deluxe Oval</span> & <span style='color:red;'>Flat Mohair</span>";
-                info += "<br />";
-                info += "A surcharge will be applied.";
-            } else if (companyDetailName === "CWS") {
-                info = "<b>- Bottom Type</b> : <span style='color:red;'><span style='color:red;'>Flat Mohair</span>";
-                info += "<br />";
-                info += "A surcharge will be applied.";
-            } else if (companyDetailName === "ACCENT" || companyDetailName === "BIG" || companyDetailName === "OASIS") {
-                info = "<b>- Bottom Type</b> : <span style='color:red;'><span style='color:red;'>Flat Mohair</span>";
-                info += "<br />";
-                info += "A surcharge will be applied.";
-            }
+            info = "<b>- Bottom Type</b> : <span style='color:red;'>Deluxe Flat</span>, <span style='color:red;'>Deluxe Oval</span> & <span style='color:red;'>Flat Mohair</span>";
+            info += "<br />";
+            info += "A surcharge will be applied.";
         }
         else if (type === "Second Bottom" || type === "Third Bottom") {
             title = "Bottom Rail Information";
 
-            if (companyDetailName === "JPMD" || companyDetailName === "JPMD BP") {
-                info = "<b>- Bottom Type</b> : <span style='color:red;'>Deluxe Flat</span>, <span style='color:red;'>Deluxe Oval</span> & <span style='color:red;'>Flat Mohair</span>";
-                info += "<br />";
-                info += "A surcharge will be applied.";
-            } else if (companyDetailName === "ACCENT" || companyDetailName === "BIG" || companyDetailName === "OASIS") {
-                info = "<b>- Bottom Type</b> : <span style='color:red;'><span style='color:red;'>Flat Mohair</span>";
-                info += "<br />";
-                info += "A surcharge will be applied.";
-            }
+            info = "<b>- Bottom Type</b> : <span style='color:red;'>Deluxe Flat</span>, <span style='color:red;'>Deluxe Oval</span> & <span style='color:red;'>Flat Mohair</span>";
+            info += "<br />";
+            info += "A surcharge will be applied.";
+
             info += "<br /><br />";
             info += "<b>- Bottom Type & Colour</b>";
             info += "<br />";

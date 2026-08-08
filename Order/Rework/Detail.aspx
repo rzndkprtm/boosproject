@@ -67,59 +67,56 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            <div class="card-content">
-                                <div class="card-body">
-                                    <h5 class="mb-4">Order Information</h5>
-                                    <div class="info-row">
-                                        <span class="info-label">👤 Customer</span>
-                                        <span class="info-value">
-                                            <asp:Label runat="server" ID="lblCustomerName"></asp:Label>
+                            <div class="card-body">
+                                <h5 class="mb-4">Order Information</h5>
+                                <div class="info-row">
+                                    <span class="info-label">👤 Customer</span>
+                                    <span class="info-value">
+                                        <asp:Label runat="server" ID="lblCustomerName"></asp:Label>
+                                    </span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">📦 Order #</span>
+                                    <span class="info-value">
+                                        <asp:Label runat="server" ID="lblOrderId"></asp:Label>
+                                    </span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">🔖 Order Number</span>
+                                    <span class="info-value">
+                                        <asp:Label runat="server" ID="lblOrderNumber"></asp:Label>
+                                    </span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">📝 Order Name</span>
+                                    <span class="info-value">
+                                        <asp:Label runat="server" ID="lblOrderName"></asp:Label>
+                                    </span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">📅 Created</span>
+                                    <span class="info-value">
+                                        <asp:Label runat="server" ID="lblCreatedDate"></asp:Label>
+                                    </span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">👨 Created By</span>
+                                    <span class="info-value">
+                                        <asp:Label runat="server" ID="lblCreatedBy"></asp:Label>
+                                    </span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">🚦 Status</span>
+                                    <span class="info-value">
+                                        <span class="badge bg-success badge-status">
+                                            <asp:Label runat="server" ID="lblStatus"></asp:Label>
                                         </span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">📦 Order #</span>
-                                        <span class="info-value">
-                                            <asp:Label runat="server" ID="lblOrderId"></asp:Label>
-                                        </span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">🔖 Order Number</span>
-                                        <span class="info-value">
-                                            <asp:Label runat="server" ID="lblOrderNumber"></asp:Label>
-                                        </span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">📝 Order Name</span>
-                                        <span class="info-value">
-                                            <asp:Label runat="server" ID="lblOrderName"></asp:Label>
-                                        </span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">📅 Created</span>
-                                        <span class="info-value">
-                                            <asp:Label runat="server" ID="lblCreatedDate"></asp:Label>
-                                        </span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">👨 Created By</span>
-                                        <span class="info-value">
-                                            <asp:Label runat="server" ID="lblCreatedBy"></asp:Label>
-                                        </span>
-                                    </div>
-                                    <div class="info-row">
-                                        <span class="info-label">🚦 Status</span>
-                                        <span class="info-value">
-                                            <span class="badge bg-success badge-status">
-                                                <asp:Label runat="server" ID="lblStatus"></asp:Label>
-                                            </span>
-                                        </span>
-                                    </div>
-                                    <div class="info-row">
-                                        <%--<span class="info-label">📝 Description</span>--%>
-                                        <span class="info-value">
-                                            <asp:Label runat="server" ID="lblDescription"></asp:Label>
-                                        </span>
-                                    </div>
+                                    </span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-value">
+                                        <asp:Label runat="server" ID="lblDescription"></asp:Label>
+                                    </span>
                                 </div>
                             </div>
                         </div>

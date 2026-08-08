@@ -357,6 +357,27 @@ Public Class OrderClass
         Return result
     End Function
 
+    Public Function GetCompanyName(companyId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(companyId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Companys WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", companyId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
     Public Function GetCompanyDetailName(companyDetailId As String) As String
         Dim result As String = String.Empty
         Try

@@ -303,5 +303,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/RisaSolihah/Privacy.js?v=1.0.0"></script>
+    <script src="/Scripts/RisaSolihah/Privacy.js?v=1.1.1"></script>
 </asp:Content>

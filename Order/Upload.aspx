@@ -63,9 +63,7 @@
                     <div class="card-header">
                         <h4 class="card-title text-center">Information</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body"></div>
-                    </div>
+                    <div class="card-body"></div>
                 </div>
             </div>
         </section>

@@ -38,7 +38,6 @@
                                                 <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
                                             </div>
                                         </div>
-
                                         <div class="row mb-2">
                                             <div class="col-12 form-group">
                                                 <label class="form-label">Order Number</label>
@@ -89,9 +88,7 @@
                     <div class="card-header">
                         <h4 class="card-title text-center">Information</h4>
                     </div>
-                    <div class="card-content">
-                        <div class="card-body"></div>
-                    </div>
+                    <div class="card-body"></div>
                 </div>
             </div>
         </section>

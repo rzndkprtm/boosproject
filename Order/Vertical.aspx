@@ -413,5 +413,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/RisaSolihah/Vertical.js?v=1.0.0"></script>
+    <script src="/Scripts/RisaSolihah/Vertical.js?v=1.1.1"></script>
 </asp:Content>

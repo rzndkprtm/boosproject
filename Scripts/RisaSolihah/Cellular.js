@@ -56,13 +56,10 @@ $("#controllength").on("change", function () {
 });
 
 function loader(itemAction) {
-    return new Promise((resolve) => {
-        if (itemAction === "create") {
-            document.getElementById("divloader").style.display = "none";
-            document.getElementById("divorder").style.display = "";
-        }
-        resolve();
-    });
+    if (itemAction === "create") {
+        document.getElementById("divloader").style.display = "none";
+        document.getElementById("divorder").style.display = "";
+    }
 }
 
 function isError(msg) {
@@ -71,18 +68,17 @@ function isError(msg) {
 }
 
 function getFormAction(itemAction) {
-    return new Promise((resolve) => {
-        const pageAction = document.getElementById("pageaction");
-        if (!pageAction) {
-            resolve();
-            return;
-        }
+    const pageAction = document.getElementById("pageaction");
+    if (!pageAction) return;
 
-        const actionMap = { create: "Add Item", edit: "Edit Item", view: "View Item", copy: "Copy Item" };
+    const actionMap = {
+        create: "Add Item",
+        edit: "Edit Item",
+        view: "View Item",
+        copy: "Copy Item"
+    };
 
-        pageAction.innerText = actionMap[itemAction];
-        resolve();
-    });
+    pageAction.innerText = actionMap[itemAction] || "";
 }
 
 function getOrderHeader(headerId) {
@@ -207,6 +203,48 @@ function getPriceAccess(loginId) {
             success: function (response) {
                 priceAccess = response.d.trim();
                 resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+function getCompanyName(companyId) {
+    if (!companyId) return;
+
+    const type = "CompanyName";
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/StringData",
+            data: JSON.stringify({ type: type, dataId: companyId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                resolve(response.d);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+function getCompanyDetailName(companyDetailId) {
+    if (!companyDetailId) return;
+
+    const type = "CompanyDetailName";
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/StringData",
+            data: JSON.stringify({ type: type, dataId: companyDetailId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                resolve(response.d);
             },
             error: function (error) {
                 reject(error);
@@ -1036,10 +1074,11 @@ async function initCellular() {
         return window.location.href = `/order/detail?orderid=${headerId}`;
     }
 
+    getFormAction(itemAction);
+
     await Promise.all([
         getOrderHeader(headerId),
         getDesignName(designId),
-        getFormAction(itemAction),
         getCompanyOrder(headerId),
         getCompanyDetailOrder(headerId),
         getRoleAccess(loginId),
@@ -1047,7 +1086,7 @@ async function initCellular() {
     ]);
 
     if (itemAction === "create") {
-        bindBlindType(designId);
+        await bindBlindType(designId);
         bindComponentForm("", "", "");
         controlForm(false);
         loader(itemAction);
