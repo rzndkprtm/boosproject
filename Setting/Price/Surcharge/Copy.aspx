@@ -34,13 +34,13 @@
                             <div class="form-body">
                                 <div class="row mb-2">
                                     <div class="col-12 form-group">
-                                        <label class="form-label">Category</label>
+                                        <label class="form-label">From Price Group</label>
                                         <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-12 form-group">
-                                        <label class="form-label">Category</label>
+                                        <label class="form-label">To Price Group</label>
                                         <asp:DropDownList runat="server" ID="ddlPriceGroupNew" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
                                 </div>

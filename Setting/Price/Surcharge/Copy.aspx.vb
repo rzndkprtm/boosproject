@@ -24,25 +24,36 @@ Partial Class Setting_Price_Surcharge_Copy
         MessageError(False, String.Empty)
         Try
             If ddlPriceGroup.SelectedValue = "" Then
-                MessageError(True, "PRICE GROUP IS REQUIRED !")
+                MessageError(True, "FROM PRICE GROUP IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlPriceGroupNew.SelectedValue = "" Then
+                MessageError(True, "TO PRICE GROUP IS REQUIRED !")
                 Exit Sub
             End If
 
             If msgError.InnerText = "" Then
-                Dim surchargeData As DataTable = settingClass.GetDataTable("SELECT * FROM PriceSurcharges WHERE PriceGroupId='" & ddlPriceGroup.SelectedValue & "'")
+                Dim surchargeData As DataTable = settingClass.GetDataTable("SELECT * FROM PriceSurcharges WHERE PriceGroupId='" & ddlPriceGroup.SelectedValue & "' AND Active=1 ORDER BY Id ASC")
                 If surchargeData.Rows.Count > 0 Then
                     For i As Integer = 0 To surchargeData.Rows.Count - 1
                         Dim surchargeId As String = surchargeData.Rows(i)(0).ToString()
 
+                        Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceSurcharges ORDER BY Id DESC")
+
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As New SqlCommand("DELETE FROM PriceSurcharges WHERE Id=@Id; DELETE FROM Logs WHERE Type='PriceSurcharges' AND DataId=@Id;", thisConn)
+                            Using thisCmd As New SqlCommand("INSERT INTO PriceSurcharges SELECT @NewId, DesignId, @NewPriceGroupId, Name, Type, Formula, BuyCharge, SellCharge, Description, Active FROM PriceSurcharges WHERE Id=@Id", thisConn)
                                 thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(surchargeId)
+                                thisCmd.Parameters.Add("@NewId", SqlDbType.Int).Value = CInt(newId)
+                                thisCmd.Parameters.Add("@NewPriceGroupId", SqlDbType.Int).Value = CInt(ddlPriceGroupNew.SelectedValue)
                                 thisConn.Open()
                                 thisCmd.ExecuteNonQuery()
                             End Using
                         End Using
                     Next
                 End If
+
+                Response.Redirect("~/setting/price/surcharge", False)
+                Exit Sub
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -58,17 +69,29 @@ Partial Class Setting_Price_Surcharge_Copy
 
     Protected Sub BindPriceGroup()
         ddlPriceGroup.Items.Clear()
+        ddlPriceGroupNew.Items.Clear()
         Try
-            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Status='Active' ORDER BY Name ASC")
+            Dim thisQuery As String = "SELECT Id, Name FROM PriceGroups WHERE Status='Active' ORDER BY Name ASC"
+
+            ddlPriceGroup.DataSource = settingClass.GetDataTable(thisQuery)
             ddlPriceGroup.DataTextField = "Name"
             ddlPriceGroup.DataValueField = "Id"
             ddlPriceGroup.DataBind()
 
+            ddlPriceGroupNew.DataSource = settingClass.GetDataTable(thisQuery)
+            ddlPriceGroupNew.DataTextField = "Name"
+            ddlPriceGroupNew.DataValueField = "Id"
+            ddlPriceGroupNew.DataBind()
+
             If ddlPriceGroup.Items.Count > 0 Then
                 ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
             End If
+            If ddlPriceGroupNew.Items.Count > 0 Then
+                ddlPriceGroupNew.Items.Insert(0, New ListItem("", ""))
+            End If
         Catch ex As Exception
             ddlPriceGroup.Items.Clear()
+            ddlPriceGroupNew.Items.Clear()
         End Try
     End Sub
 
