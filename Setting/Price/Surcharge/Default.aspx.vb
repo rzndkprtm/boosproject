@@ -229,6 +229,7 @@ Partial Class Setting_Price_Surcharge_Default
 
             btnAdd.Visible = LoginAccess("Add")
             aRePrice.Visible = LoginAccess("Re Price")
+            btnMore.Visible = LoginAccess("More")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
