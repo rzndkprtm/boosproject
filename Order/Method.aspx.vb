@@ -37,6 +37,7 @@ Partial Class Order_Method
         If type = "ColourName" Then resultName = orderClass.GetColourName(dataId)
         If type = "FabricName" Then resultName = orderClass.GetFabricName(dataId)
         If type = "BottomName" Then resultName = orderClass.GetBottomName(dataId)
+        If type = "CompanyName" Then resultName = orderClass.GetCompanyName(dataId)
         If type = "CompanyDetailName" Then resultName = orderClass.GetCompanyDetailName(dataId)
         If type = "ChainLength" Then resultName = orderClass.GetChainLength(dataId)
         If type = "CompanyOrder" Then resultName = orderClass.GetCompanyIdByOrder(dataId)

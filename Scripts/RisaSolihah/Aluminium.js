@@ -13,93 +13,96 @@ let priceAccess;
 
 initAluminium();
 
-$("#submit").on("click", process);
-$("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-$("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+async function initAluminium() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get("boos");
 
-$("#blindtype").on("change", function () {
-    bindMounting($(this).val());
-    bindColourType($(this).val());
-});
+    if (!sessionId) return redirectOrder();
 
-$("#colourtype").on("change", function () {
-    const blindtype = document.getElementById("blindtype").value;
-    bindSubType(blindtype, $(this).val());
-});
+    const response = await fetch("Method.aspx/StringData", {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({ type: "OrderContext", dataId: sessionId })
+    });
 
-$("#subtype").on("change", function () {
-    const colourtype = document.getElementById("colourtype").value;
-    const width = parseFloat(document.getElementById("width").value) || 0;
-    const drop = parseFloat(document.getElementById("drop").value) || 0;
+    const result = await response.json();
+    if (!result?.d) return redirectOrder();
 
-    bindComponentForm(colourtype, $(this).val());
-    bindControlPosition($(this).val(), width);
-    bindTilterPosition($(this).val(), width);
+    const params = new URLSearchParams(result.d);
 
-    otomatisDrop($(this).val(), "1", drop);
+    itemAction = params.get("do");
+    headerId = params.get("orderid");
+    itemId = params.get("itemid");
+    designId = params.get("dtype");
+    loginId = params.get("uid");
 
-    document.getElementById("controllength").value = "";
-    document.getElementById("controllengthb").value = "";
-    document.getElementById("controllengthvalue").value = "";
-    document.getElementById("controllengthvalueb").value = "";
+    if (!headerId) return redirectOrder();
 
-    document.getElementById("wandlength").value = "";
-    document.getElementById("wandlengthb").value = "";
-    document.getElementById("wandlengthvalue").value = "";
-    document.getElementById("wandlengthvalueb").value = "";
-});
+    updateLinkDetail(headerId);
 
-$("#width").on("input", function () {
-    const subtype = document.getElementById("subtype").value;
-    const width = parseFloat(document.getElementById("width").value) || 0;
-
-    bindControlPosition(subtype, width);
-    bindTilterPosition(subtype, width);    
-});
-
-$("#width").on("blur", function () {
-    const subtype = document.getElementById("subtype").value;
-    const width = parseFloat(document.getElementById("width").value) || 0;
-
-    if (subtype === "Single" && roleAccess === "Customer" && width < 300) {
-        isError("PLEASE NOTE THAT YOUR ORDER WIDTH IS NOT COVERED UNDER OUR WARRANTY.");
+    if (!itemAction || !designId || !loginId || designId !== designIdOri) {
+        return window.location.href = `/order/detail?orderid=${headerId}`;
     }
-});
 
-$("#drop").on("input", function () {
-    const subtype = document.getElementById("subtype").value;
-    otomatisDrop(subtype, "1", $(this).val());
-});
+    getFormAction(itemAction);
 
-$("#dropb").on("input", function () {
-    const subtype = document.getElementById("subtype").value;
-    otomatisDrop(subtype, "2", $(this).val());
-});
+    await Promise.all([
+        getOrderHeader(headerId),
+        getDesignName(designId),
+        getCompanyOrder(headerId),
+        getCompanyDetailOrder(headerId),
+        getRoleAccess(loginId),
+        getPriceAccess(loginId)
+    ]);
 
-$("#controllength").on("change", function () {
-    visibleCustom("CordLength", $(this).val(), "1");
-});
+    if (itemAction === "create") {
+        await bindBlindType(designId);
+        bindComponentForm("", "");
+        controlForm(false);
+        loader(itemAction);
+    } else if (["edit", "view", "copy"].includes(itemAction)) {
+        controlForm(itemAction === "view", itemAction === "edit", itemAction === "copy");
+        await bindItemOrder(itemId, companyDetailId, itemAction);
+    }
+}
 
-$("#controllengthb").on("change", function () {
-    visibleCustom("CordLength", $(this).val(), "2");
-});
+async function bindItemOrder(itemId, companyDetailId, action) {
+    try {
+        const response = await $.ajax({
+            type: "POST",
+            url: "Method.aspx/AluminiumDetail",
+            data: JSON.stringify({ itemId, companyDetailId, action }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        });
 
-$("#wandlength").on("change", function () {
-    visibleCustom("WandLength", $(this).val(), "1");
-});
+        const data = response.d;
 
-$("#wandlengthb").on("change", function () {
-    visibleCustom("WandLength", $(this).val(), "2");
-});
+        fillSelect("#blindtype", data.BlindTypes);
+        fillSelect("#colourtype", data.ColourTypes);
+        fillSelect("#mounting", data.Mountings);
+        fillSelect("#subtype", data.SubTypes);
+
+        setFormValues(data.ItemData);
+
+        document.getElementById("divloader").style.display = "none";
+        document.getElementById("divorder").style.display = "";
+
+        bindComponentForm(data.ItemData.ProductId, data.ItemData.SubType);
+        visibleCustom("CordLength", data.ItemData.ControlLength, "1");
+        visibleCustom("CordLength", data.ItemData.ControlLengthB, "2");
+        visibleCustom("WandLength", data.ItemData.WandLength, "1");
+        visibleCustom("WandLength", data.ItemData.WandLengthB, "2");
+    } catch (error) {
+        document.getElementById("divloader").style.display = "none";
+    }
+}
 
 function loader(itemAction) {
-    return new Promise((resolve) => {
-        if (itemAction === "create") {
-            document.getElementById("divloader").style.display = "none";
-            document.getElementById("divorder").style.display = "";
-        }
-        resolve();
-    });
+    if (itemAction === "create") {
+        document.getElementById("divloader").style.display = "none";
+        document.getElementById("divorder").style.display = "";
+    }
 }
 
 function isError(msg) {
@@ -238,6 +241,48 @@ function getPriceAccess(loginId) {
     });
 }
 
+function getCompanyName(companyId) {
+    if (!companyId) return;
+
+    const type = "CompanyName";
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/StringData",
+            data: JSON.stringify({ type: type, dataId: companyId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                resolve(response.d);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+function getCompanyDetailName(companyDetailId) {
+    if (!companyDetailId) return;
+
+    const type = "CompanyDetailName";
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/StringData",
+            data: JSON.stringify({ type: type, dataId: companyDetailId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                resolve(response.d);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
 function getDesignName(designId) {
     return new Promise((resolve, reject) => {
         const cardTitle = document.getElementById("cardtitle");
@@ -268,7 +313,7 @@ function getDesignName(designId) {
 }
 
 function getBlindName(blindType) {
-    if (!blindType) return Promise.resolve(null);;
+    if (!blindType) return Promise.resolve(null);
 
     const type = "BlindName";
     return new Promise((resolve, reject) => {
@@ -289,18 +334,17 @@ function getBlindName(blindType) {
 }
 
 function getFormAction(itemAction) {
-    return new Promise((resolve) => {
-        const pageAction = document.getElementById("pageaction");
-        if (!pageAction) {
-            resolve();
-            return;
-        }
+    const pageAction = document.getElementById("pageaction");
+    if (!pageAction) return;
 
-        const actionMap = { create: "Add Item", edit: "Edit Item", view: "View Item", copy: "Copy Item" };
+    const actionMap = {
+        create: "Add Item",
+        edit: "Edit Item",
+        view: "View Item",
+        copy: "Copy Item"
+    };
 
-        pageAction.innerText = actionMap[itemAction] || "";
-        resolve();
-    });
+    pageAction.innerText = actionMap[itemAction] || "";
 }
 
 function bindBlindType(designType) {
@@ -536,92 +580,6 @@ function bindMounting(blindType) {
     });
 }
 
-function bindControlPosition(subType, width) {
-    return new Promise((resolve) => {
-        const controlposition = document.getElementById("controlposition");
-        controlposition.innerHTML = "";
-
-        if (!subType || width === 0) {
-            resolve();
-            return;
-        }
-
-        let options = [
-            { value: "", text: "" },
-            { value: "Left", text: "Left" },
-            { value: "Right", text: "Right" }
-        ];
-
-        const widthRules = [
-            {
-                subType: "Single",
-                min: 200, max: 250,
-                options: [ { value: "", text: "" }, { value: "N/A", text: "N/A" } ]
-            }
-        ];
-
-        const rule = widthRules.find(r =>
-            r.subType === subType &&
-            width >= r.min &&
-            width <= r.max
-        );
-
-        if (rule) { options = rule.options; }
-
-        options.forEach(opt => {
-            const optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            controlposition.appendChild(optionElement);
-        });
-
-        resolve();
-    });
-}
-
-function bindTilterPosition(subType, width) {
-    return new Promise((resolve) => {
-        const tilterposition = document.getElementById("tilterposition");
-        tilterposition.innerHTML = "";
-
-        if (!subType || width === 0) {
-            resolve();
-            return;
-        }
-
-        let options = [
-            { value: "", text: "" },
-            { value: "Left", text: "Left" },
-            { value: "Right", text: "Right" }
-        ];
-
-        const widthRules = [
-            {
-                subType: "Single",
-                min: 200, max: 250,
-                options: [ { value: "", text: "" }, { value: "Centre", text: "Centre" } ]
-            }
-        ];
-
-        const rule = widthRules.find(r =>
-            r.subType === subType &&
-            width >= r.min &&
-            width <= r.max
-        );
-
-        if (rule) { options = rule.options; }
-
-        options.forEach(opt => {
-            const optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            tilterposition.appendChild(optionElement);
-        });
-
-        resolve();
-    });
-}
-
 function bindComponentForm(colourType, subType) {
     return new Promise((resolve) => {
         const detail = document.getElementById("divdetail");
@@ -739,12 +697,19 @@ function controlForm(status, isEditItem, isCopyItem) {
 
 function fillSelect(selector, list, selected = null) {
     const el = document.querySelector(selector);
+    if (!el) return;
+
     el.innerHTML = "<option value=''></option>";
+
     list.forEach(item => {
         const opt = document.createElement("option");
         opt.value = item.Value;
         opt.textContent = item.Text;
-        if (selected != null && selected == item.Value) opt.selected = true;
+
+        if (selected != null && selected == item.Value) {
+            opt.selected = true;
+        }
+
         el.appendChild(opt);
     });
 }
@@ -833,6 +798,7 @@ function process() {
             }
         },
         error: function () {
+            isError("An error occurred while processing the item.");
             toggleButtonState(false, "Submit");
         }
     });
@@ -927,96 +893,6 @@ function showInfo(type) {
     document.getElementById("spanInfo").innerHTML = info;
 }
 
-async function initAluminium() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const sessionId = urlParams.get("boos");
-
-    if (!sessionId) return redirectOrder();
-
-    const response = await fetch("Method.aspx/StringData", {
-        method: "POST",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify({ type: "OrderContext", dataId: sessionId })
-    });
-
-    const result = await response.json();
-    if (!result?.d) return redirectOrder();
-
-    const params = new URLSearchParams(result.d);
-
-    itemAction = params.get("do");
-    headerId = params.get("orderid");
-    itemId = params.get("itemid");
-    designId = params.get("dtype");
-    loginId = params.get("uid");
-
-    if (!headerId) return redirectOrder();
-
-    updateLinkDetail(headerId);
-
-    if (!itemAction || !designId || !loginId || designId !== designIdOri) {
-        return window.location.href = `/order/detail?orderid=${headerId}`;
-    }
-
-    await Promise.all([
-        getOrderHeader(headerId),
-        getDesignName(designId),
-        getFormAction(itemAction),
-        getCompanyOrder(headerId),
-        getCompanyDetailOrder(headerId),
-        getRoleAccess(loginId),
-        getPriceAccess(loginId)
-    ]);
-
-    if (itemAction === "create") {
-        bindBlindType(designId);
-        bindComponentForm("", "");
-        controlForm(false);
-        loader(itemAction);
-    } else if (["edit", "view", "copy"].includes(itemAction)) {
-        controlForm(itemAction === "view", itemAction === "edit", itemAction === "copy");
-        await bindItemOrder(itemId, companyDetailId, itemAction);
-    }
-}
-
-async function bindItemOrder(itemId, companyDetailId, action) {
-    try {
-        const response = await $.ajax({
-            type: "POST",
-            url: "Method.aspx/AluminiumDetail",
-            data: JSON.stringify({ itemId, companyDetailId, action }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-        });
-
-        const data = response.d;
-
-        fillSelect("#blindtype", data.BlindTypes);
-        fillSelect("#colourtype", data.ColourTypes);        
-        fillSelect("#mounting", data.Mountings);
-        fillSelect("#subtype", data.SubTypes);
-
-        let manual = [
-            bindControlPosition(data.ItemData.SubType, data.ItemData.Width),
-            bindTilterPosition(data.ItemData.SubType, data.ItemData.Width)
-        ];
-        await Promise.all(manual);
-
-        setFormValues(data.ItemData);
-
-        document.getElementById("divloader").style.display = "none";
-        document.getElementById("divorder").style.display = "";
-
-        bindComponentForm(data.ItemData.ProductId, data.ItemData.SubType);
-        visibleCustom("CordLength", data.ItemData.ControlLength, "1");
-        visibleCustom("CordLength", data.ItemData.ControlLengthB, "2");
-        visibleCustom("WandLength", data.ItemData.WandLength, "1");
-        visibleCustom("WandLength", data.ItemData.WandLengthB, "2");
-    } catch (error) {
-        document.getElementById("divloader").style.display = "none";
-    }
-}
-
 function redirectOrder() {
     window.location.replace("/order");
 }
@@ -1027,6 +903,65 @@ function updateLinkDetail(myId) {
 
     link.href = `/order/detail?orderid=${myId}`;
 }
+
+$("#submit").on("click", process);
+$("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+$("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+
+$("#blindtype").on("change", function () {
+    bindMounting($(this).val());
+    bindColourType($(this).val());
+});
+
+$("#colourtype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    bindSubType(blindtype, $(this).val());
+});
+
+$("#subtype").on("change", function () {
+    const colourtype = document.getElementById("colourtype").value;
+    const drop = parseFloat(document.getElementById("drop").value) || 0;
+
+    bindComponentForm(colourtype, $(this).val());
+
+    otomatisDrop($(this).val(), "1", drop);
+
+    document.getElementById("controllength").value = "";
+    document.getElementById("controllengthb").value = "";
+    document.getElementById("controllengthvalue").value = "";
+    document.getElementById("controllengthvalueb").value = "";
+
+    document.getElementById("wandlength").value = "";
+    document.getElementById("wandlengthb").value = "";
+    document.getElementById("wandlengthvalue").value = "";
+    document.getElementById("wandlengthvalueb").value = "";
+});
+
+$("#drop").on("input", function () {
+    const subtype = document.getElementById("subtype").value;
+    otomatisDrop(subtype, "1", $(this).val());
+});
+
+$("#dropb").on("input", function () {
+    const subtype = document.getElementById("subtype").value;
+    otomatisDrop(subtype, "2", $(this).val());
+});
+
+$("#controllength").on("change", function () {
+    visibleCustom("CordLength", $(this).val(), "1");
+});
+
+$("#controllengthb").on("change", function () {
+    visibleCustom("CordLength", $(this).val(), "2");
+});
+
+$("#wandlength").on("change", function () {
+    visibleCustom("WandLength", $(this).val(), "1");
+});
+
+$("#wandlengthb").on("change", function () {
+    visibleCustom("WandLength", $(this).val(), "2");
+});
 
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();

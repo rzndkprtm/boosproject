@@ -349,5 +349,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/Horizon.js?v=1.0.0"></script>
+    <script src="/Scripts/RisaSolihah/Horizon.js?v=1.1.1"></script>
 </asp:Content>

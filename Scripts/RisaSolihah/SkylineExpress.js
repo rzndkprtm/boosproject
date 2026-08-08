@@ -292,6 +292,48 @@ function getPriceAccess(loginId) {
     });
 }
 
+function getCompanyName(companyId) {
+    if (!companyId) return;
+
+    const type = "CompanyName";
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/StringData",
+            data: JSON.stringify({ type: type, dataId: companyId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                resolve(response.d);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+function getCompanyDetailName(companyDetailId) {
+    if (!companyDetailId) return;
+
+    const type = "CompanyDetailName";
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/StringData",
+            data: JSON.stringify({ type: type, dataId: companyDetailId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                resolve(response.d);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
 function getDesignName(designId) {
     return new Promise((resolve, reject) => {
         const cardTitle = document.getElementById("cardtitle");
@@ -1361,7 +1403,7 @@ function controlForm(status, isEditItem, isCopyItem) {
         if (inputElement) {
             if (isCopyItem) {
                 inputElement.disabled = (id === "blindtype");
-            } else if (isEditItem && (id === "qty")) {
+            } else if (isEditItem && (id === "qty" || id === "blindtype")) {
                 inputElement.disabled = true;
             } else {
                 inputElement.disabled = status;

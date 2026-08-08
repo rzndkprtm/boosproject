@@ -289,6 +289,7 @@ Public Class InvoiceClass
 
             Dim orderId As String = headerData("OrderId").ToString()
             Dim customerId As String = headerData("CustomerId").ToString()
+            Dim companyId As String = headerData("CompanyId").ToString()
             Dim customerName As String = headerData("CustomerName").ToString()
             Dim orderNumber As String = headerData("OrderNumber").ToString()
             Dim orderName As String = headerData("OrderName").ToString()
@@ -309,40 +310,13 @@ Public Class InvoiceClass
                 End If
             End If
 
-            Dim fullAddress As String = String.Empty
-            Dim customerAddress As DataRow = GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+            Dim customerAddress As DataRow = GetDataRow("SELECT CONCAT(Customers.Name, CASE WHEN NULLIF(LTRIM(RTRIM(CustomerAddress.Address)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.Suburb)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.State)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.PostCode)), '') IS NOT NULL THEN CONCAT(CHAR(13), CHAR(10), CHAR(13), CHAR(10), CustomerAddress.Address, CHAR(13), CHAR(10), CustomerAddress.Suburb, ', ', CustomerAddress.State, ', ', CustomerAddress.PostCode, CHAR(13), CHAR(10), COALESCE(NULLIF(LTRIM(RTRIM(CustomerAddress.Country)), ''), 'Australia')) ELSE '' END) AS InvoiceTo FROM Customers LEFT JOIN CustomerAddress ON CustomerAddress.CompanyId = Customers.Id AND CustomerAddress.[Primary] = 1 WHERE Customers.Id = '" & customerId & "'")
+            Dim invoiceTo As String = String.Empty
             If customerAddress IsNot Nothing Then
-                Dim address As String = customerAddress("Address").ToString()
-                Dim suburb As String = customerAddress("Suburb").ToString()
-                Dim state As String = customerAddress("State").ToString()
-                Dim postCode As String = customerAddress("PostCode").ToString()
-                Dim country As String = "Australia"
-
-                fullAddress = address
-                fullAddress &= vbCrLf
-                fullAddress &= String.Format("{0}, {1}, {2}", suburb, state, postCode)
-                fullAddress &= vbCrLf
-                fullAddress &= country
+                invoiceTo = customerAddress("InvoiceTo").ToString()
             End If
-
             Dim customerAbn As String = GetItemData("SELECT ABNNumber FROM CustomerBusiness WHERE CustomerId='" & customerId & "' AND [Primary]=1")
-
-            Dim invoiceTo As String = customerName
-            invoiceTo &= vbCrLf
-            invoiceTo &= vbCrLf
-            invoiceTo &= fullAddress
-
-            Dim invoiceFrom As String = "JPM Direct Pty Ltd"
-            invoiceFrom &= vbCrLf
-            invoiceFrom &= "Attention: Matt McCamey"
-            invoiceFrom &= vbCrLf
-            invoiceFrom &= vbCrLf
-            invoiceFrom &= "Ground Floor, 97-99 Bathrust St,"
-            invoiceFrom &= vbCrLf
-            invoiceFrom &= "Sydney NSW 2000"
-            invoiceFrom &= vbCrLf
-            invoiceFrom &= "Australia"
-
+            Dim invoiceFrom As String = GetItemData("SELECT CONCAT(Name, CHAR(13), CHAR(10), 'Attention : ', Attention, CHAR(13), CHAR(10), CHAR(13), CHAR(10), Address) AS FullAddress FROM Companys WHERE Id='" & companyId & "'")
             Dim reference As String = String.Format("{0} - {1}", orderNumber, orderName)
 
             Dim sumPrice As Decimal = GetItemData_Decimal("SELECT SUM(SellPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND Type='Final'")

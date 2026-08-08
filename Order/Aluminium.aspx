@@ -161,7 +161,12 @@
                                                     <label>Control Position</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <select id="controlposition" class="form-select"></select>
+                                                    <select id="controlposition" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Left">Left</option>
+                                                        <option value="Right">Right</option>
+                                                        <option value="N/A">N/A</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="row mb-3" id="divtilterposition">
@@ -169,7 +174,12 @@
                                                     <label>Tilter Position</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <select id="tilterposition" class="form-select"></select>
+                                                    <select id="tilterposition" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Left">Left</option>
+                                                        <option value="Right">Right</option>
+                                                        <option value="Centre">Centre</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="row" id="divcordlength">
@@ -466,5 +476,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/Aluminium.js?v=1.0.0"></script>
+    <script src="/Scripts/RisaSolihah/Aluminium.js?v=1.1.1"></script>
 </asp:Content>
