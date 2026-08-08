@@ -34,7 +34,7 @@
                             <div class="form-body">
                                 <div class="row mb-2">
                                     <div class="col-12 form-group">
-                                        <label class="form-label">Category</label>
+                                        <label class="form-label">Price Group</label>
                                         <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
                                 </div>

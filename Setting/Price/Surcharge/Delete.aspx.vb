@@ -43,6 +43,9 @@ Partial Class Setting_Price_Surcharge_Delete
                         End Using
                     Next
                 End If
+
+                Response.Redirect("~/setting/price/surcharge", False)
+                Exit Sub
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
