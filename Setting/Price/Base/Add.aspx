@@ -85,7 +85,7 @@
                                             </ItemTemplate>
                                         </asp:Repeater>
                                         <div class="text-start">
-                                            <asp:Button ID="btnAddRow" runat="server" Text="+ Add Row" CssClass="btn btn-primary" OnClick="btnAddRow_Click" CausesValidation="false" />
+                                            <asp:Button ID="btnAddRow" runat="server" Text="+ Add Row" CssClass="btn btn-secondary" OnClick="btnAddRow_Click" CausesValidation="false" />
                                         </div>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
