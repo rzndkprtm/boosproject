@@ -30,6 +30,11 @@ Partial Class Setting_Price_Group_Delete
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            If ddlPriceGroup.SelectedValue = "" Then
+                MessageError(True, "NEW PRICE GROUP IS REQUIRED !")
+                Exit Sub
+            End If
+
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("UPDATE PriceGroups SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(lblId.Text)
@@ -67,6 +72,9 @@ Partial Class Setting_Price_Group_Delete
                     Next
                 End If
             End If
+
+            Response.Redirect("~/setting/price/group/", False)
+            Exit Sub
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
