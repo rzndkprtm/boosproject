@@ -61,30 +61,30 @@
                                             <ItemTemplate>
                                                 <div class="border rounded p-3 mb-3 bg-light">
                                                     <div class="row">
-                                                        <div class="col-lg-4 form-group">
+                                                        <div class="col-lg-6 form-group">
                                                             <label>Product Group</label>
                                                             <asp:DropDownList ID="ddlProductGroupRow" runat="server" CssClass="choices form-select"></asp:DropDownList>
                                                         </div>
                                                         <div class="col-lg-2 form-group">
                                                             <label>Height</label>
-                                                            <asp:TextBox ID="txtHeightRow" runat="server" CssClass="form-control" placeholder="Height ..."></asp:TextBox>
+                                                            <asp:TextBox ID="txtHeightRow" runat="server" CssClass="form-control" Height="45px" placeholder="Height ..."></asp:TextBox>
                                                         </div>
                                                         <div class="col-lg-2 form-group">
                                                             <label>Width</label>
-                                                            <asp:TextBox ID="txtWidthRow" runat="server" CssClass="form-control" placeholder="Width ..."></asp:TextBox>
+                                                            <asp:TextBox ID="txtWidthRow" runat="server" CssClass="form-control" Height="45px" placeholder="Width ..."></asp:TextBox>
                                                         </div>
                                                         <div class="col-lg-2 form-group">
                                                             <label>Price</label>
-                                                            <asp:TextBox ID="txtPriceRow" runat="server" CssClass="form-control" placeholder="Price ..." autocomplete="off"></asp:TextBox>
+                                                            <asp:TextBox ID="txtPriceRow" runat="server" CssClass="form-control" Height="45px" placeholder="Price ..." autocomplete="off"></asp:TextBox>
                                                         </div>
-                                                        <div class="col-lg-2 form-group d-flex align-items-end">
-                                                            <asp:LinkButton ID="btnDelete" runat="server" CssClass="btn btn-danger w-100" CommandName="Delete" CommandArgument="<%# Container.ItemIndex %>" CausesValidation="false">Delete</asp:LinkButton>
-                                                        </div>
+                                                    </div>
+                                                    <div class="text-end">
+                                                        <asp:LinkButton ID="btnDelete" runat="server" CssClass="btn btn-danger" CommandName="Delete" CommandArgument="<%# Container.ItemIndex %>" CausesValidation="false">Delete</asp:LinkButton>
                                                     </div>
                                                 </div>
                                             </ItemTemplate>
                                         </asp:Repeater>
-                                        <div class="text-end mb-3">
+                                        <div class="text-start">
                                             <asp:Button ID="btnAddRow" runat="server" Text="+ Add Row" CssClass="btn btn-primary" OnClick="btnAddRow_Click" CausesValidation="false" />
                                         </div>
                                     </ContentTemplate>
@@ -100,8 +100,7 @@
                         </div>
                     </div>
                     <div class="card-footer text-start">
-                        <asp:Button runat="server" ID="btnSubmitAdd" CssClass="btn btn-primary" Text="Submit & Add Another" OnClick="btnSubmitAdd_Click" />
-                        <asp:Button runat="server" ID="btnSubmitFinish" CssClass="btn btn-secondary me-2" Text="Submit & Finish" OnClick="btnSubmitFinish_Click" />
+                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
                     </div>
                 </div>

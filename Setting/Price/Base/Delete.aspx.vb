@@ -28,10 +28,21 @@ Partial Class Setting_Price_Base_Delete
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            If ddlPriceGroup.SelectedValue = "" Then
+                MessageError(True, "PRICE GROUP IS REQUIRED !")
+                Exit Sub
+            End If
+
             If msgError.InnerText = "" Then
-                Dim thisQuery As String = "DELETE FROM PriceBases WHERE PriceGroupId=@PriceGroupId AND ProductGroupId=@ProductGroupId AND Category=@Category"
-                If ddlCategory.SelectedValue = "Sell & Buy" Then
+                Dim thisQuery As String = "DELETE FROM PriceBases WHERE PriceGroupId=@PriceGroupId"
+                If Not String.IsNullOrEmpty(ddlProductGroup.SelectedValue) Then
                     thisQuery = "DELETE FROM PriceBases WHERE PriceGroupId=@PriceGroupId AND ProductGroupId=@ProductGroupId"
+                End If
+                If Not String.IsNullOrEmpty(ddlCategory.SelectedValue) Then
+                    thisQuery = "DELETE FROM PriceBases WHERE PriceGroupId=@PriceGroupId AND ProductGroupId=@ProductGroupId AND Category=@Category"
+                    If ddlCategory.SelectedValue = "Sell & Buy" Then
+                        thisQuery = "DELETE FROM PriceBases WHERE PriceGroupId=@PriceGroupId AND ProductGroupId=@ProductGroupId"
+                    End If
                 End If
 
                 Using thisConn As New SqlConnection(myConn)

@@ -133,7 +133,7 @@
                                                 <asp:BoundField DataField="Width" HeaderText="Width" />
                                                 <asp:TemplateField HeaderText="Price">
                                                     <ItemTemplate>
-                                                        <%# BindCost(Eval("Price"), Eval("PriceGroupId").ToString()) %>
+                                                        <%# BindCost(Eval("Price"), Eval("CompanyId").ToString()) %>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField ItemStyle-Width="120px">
