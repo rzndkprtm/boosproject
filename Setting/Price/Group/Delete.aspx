@@ -52,7 +52,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-12 form-group">
-                                        <div class="alert alert-light-primary color-primary"><i class="bi bi-star"></i> This is primary alert.</div>
+                                        <div class="alert alert-light-primary color-primary"><i class="bi bi-info"></i> PLEASE SELECT A NEW PRICE GROUP FOR THE CUSTOMERS CURRENTLY LINKED TO THE PRICE GROUP YOU ARE ABOUT TO DELETE.</div>
                                     </div>
                                 </div>
                                 <div class="row mt-5" runat="server" id="divError">
