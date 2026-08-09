@@ -1020,8 +1020,6 @@ Partial Class Order_Method
 
         If result <> "" Then Return result
 
-        'If data.notes.Trim().Length > 1000 Then Return "MAXIMUM 1000 CHARACTERS !"
-
         qty = data.qty
         width = data.width : drop = data.drop
         linearmetre = data.width / 1000D
@@ -1254,6 +1252,18 @@ Partial Class Order_Method
         Dim factory As String = orderClass.GetFabricFactory(data.fabriccolour)
         Dim factoryB As String = orderClass.GetFabricFactory(data.fabriccolourb)
 
+        'Dim context As New ValidationContext With {
+        '    .data = data,
+        '    .pricegroupid = priceGroupId,
+        '    .fabricfactory = factory,
+        '    .fabricfactoryb = factoryB
+        '}
+
+        'Dim engine As New ValidationEngine()
+        'Dim result As String = engine.Validate(context)
+
+        If result <> "" Then Return result
+
         If String.IsNullOrEmpty(data.blindtype) Then Return "CELLULAR TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
@@ -1266,9 +1276,7 @@ Partial Class Order_Method
         End If
         If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
         If data.rolename = "Customer" AndAlso controlName = "DC Motor" Then
-            If String.IsNullOrEmpty(data.remote) Then
-                Return "REMOTE TYPE IS REQUIRED !"
-            End If
+            If String.IsNullOrEmpty(data.remote) Then Return "REMOTE TYPE IS REQUIRED !"
         End If
         If String.IsNullOrEmpty(data.fabrictype) Then
             If blindName = "Day & Night" Then Return "TOP FABRIC TYPE IS REQUIRED !"
@@ -1285,7 +1293,7 @@ Partial Class Order_Method
 
         If blindName = "Day & Night" Then
             If String.IsNullOrEmpty(data.fabrictypeb) Then Return "BOTTOM FABRIC TYPE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.fabriccolourb) Then Return "BOTTOM FABRIC COLOUR IS REQUIRED !"
+            If String.IsNullOrEmpty(data.fabriccolourb) Then Return "                           "
             If data.fabriccolour = data.fabriccolourb Then Return "PLEASE CHECK YOUR FABRIC COLOUR !"
             If Not factory = factoryB Then
                 If factory = "Regular" Then
@@ -1305,13 +1313,13 @@ Partial Class Order_Method
             If controlName = "Corded" Then
                 If blindName = "Standard" AndAlso width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
                 If blindName = "TDBU" AndAlso width < 400 Then Return "MINIMUM WIDTH IS 400MM !"
-                If blindName = "TDBU" AndAlso width < 450 Then Return "MINIMUM WIDTH IS 450MM !"
+                If blindName = "Day & Night" AndAlso width < 450 Then Return "MINIMUM WIDTH IS 450MM !"
                 If width > 3000 Then Return "MAXIMUM WIDTH IS 3000MM !"
             End If
             If controlName = "Cordless" Then
                 If blindName = "Standard" AndAlso width < 400 Then Return "MINIMUM WIDTH IS 400MM !"
                 If blindName = "TDBU" AndAlso width < 700 Then Return "MINIMUM WIDTH IS 700MM !"
-                If blindName = "TDBU" AndAlso width < 700 Then Return "MINIMUM WIDTH IS 700MM !"
+                If blindName = "Day & Night" AndAlso width < 700 Then Return "MINIMUM WIDTH IS 700MM !"
                 If width > 2400 Then Return "MAXIMUM WIDTH IS 2400MM !"
             End If
         End If
