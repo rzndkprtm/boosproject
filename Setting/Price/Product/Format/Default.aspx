@@ -115,7 +115,7 @@
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Price Product Group</h5>
+                    <h5 class="modal-title white">Delete Format</h5>
                 </div>
                 <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtDeleteId" style="display:none;"></asp:TextBox>
