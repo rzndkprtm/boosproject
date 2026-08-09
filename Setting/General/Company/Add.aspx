@@ -37,8 +37,30 @@
                                         <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                        <label class="form-label">Name</label>
+                                        <label class="form-label">Alias</label>
                                         <asp:TextBox runat="server" ID="txtAlias" CssClass="form-control" placeholder="Alias ..." autocomplete="off"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Attention</label>
+                                        <asp:TextBox runat="server" ID="txtAttention" CssClass="form-control" placeholder="Attention ..." autocomplete="off"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Address</label>
+                                        <asp:TextBox runat="server" ID="txtAddress" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Phone</label>
+                                        <asp:TextBox runat="server" ID="txtPhone" CssClass="form-control" placeholder="Phone ..." autocomplete="off"></asp:TextBox>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Email</label>
+                                        <asp:TextBox runat="server" ID="txtEmail" CssClass="form-control" placeholder="Email ..." autocomplete="off"></asp:TextBox>
                                     </div>
                                 </div>
                                 <div class="row">

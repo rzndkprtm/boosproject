@@ -71,6 +71,8 @@
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                             <asp:BoundField DataField="Name" HeaderText="Name" />
                                             <asp:BoundField DataField="Alias" HeaderText="Alias" />
+                                            <asp:BoundField DataField="Attention" HeaderText="Attention" />
+                                            <asp:BoundField DataField="Address" HeaderText="Address" ItemStyle-Width="300px" />
                                             <asp:BoundField DataField="Description" HeaderText="Description" />
                                             <asp:BoundField DataField="DataActive" HeaderText="Active" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
