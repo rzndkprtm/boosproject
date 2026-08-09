@@ -75,7 +75,7 @@
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
-                                                        <li runat="server" visible='<%# LoginAccess("Detail") %>'>
+                                                        <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/price/product/format/edit?formatid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Delete") %>'>
