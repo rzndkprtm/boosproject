@@ -25,7 +25,6 @@ Partial Class Setting_General_Company_Edit
         End If
 
         lblId.Text = Request.QueryString("cid").ToString()
-
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindData(lblId.Text)
@@ -97,6 +96,10 @@ Partial Class Setting_General_Company_Edit
 
             txtName.Text = thisData("Name").ToString()
             txtAlias.Text = thisData("Alias").ToString()
+            txtAttention.Text = thisData("Attention").ToString()
+            txtAddress.Text = thisData("Address").ToString()
+            txtPhone.Text = thisData("Phone").ToString()
+            txtEmail.Text = thisData("Email").ToString()
             txtDescription.Text = thisData("Description").ToString()
             ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
         Catch ex As Exception
