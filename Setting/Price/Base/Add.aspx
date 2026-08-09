@@ -34,7 +34,7 @@
                             <div class="form-body">
                                 <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
-                                        <div class="row mb-2">
+                                        <div class="row mb-3">
                                             <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Price Group</label>
                                                 <asp:DropDownList ID="ddlPriceGroup" runat="server" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
@@ -79,7 +79,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="text-end">
-                                                        <asp:LinkButton ID="btnDelete" runat="server" CssClass="btn btn-danger" CommandName="Delete" CommandArgument="<%# Container.ItemIndex %>" CausesValidation="false">Delete</asp:LinkButton>
+                                                        <asp:LinkButton ID="btnDelete" runat="server" CssClass="btn btn-danger btn-sm" CommandName="Delete" CommandArgument="<%# Container.ItemIndex %>" CausesValidation="false">Delete</asp:LinkButton>
                                                     </div>
                                                 </div>
                                             </ItemTemplate>
