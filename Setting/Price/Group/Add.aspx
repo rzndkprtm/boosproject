@@ -55,8 +55,8 @@
                                     <div class="col-12 col-sm-12 col-lg-4 form-group" runat="server" id="divMaster">
                                         <label class="form-label">Master</label>
                                         <asp:DropDownList runat="server" ID="ddlMaster" CssClass="form-select">
-                                            <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                                            <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                            <asp:ListItem Value="No" Text="No"></asp:ListItem>
+                                            <asp:ListItem Value="Yes" Text="Yes"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
