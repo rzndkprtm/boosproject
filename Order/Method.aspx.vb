@@ -1262,7 +1262,7 @@ Partial Class Order_Method
         'Dim engine As New ValidationEngine()
         'Dim result As String = engine.Validate(context)
 
-        If result <> "" Then Return result
+        'If result <> "" Then Return result
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "CELLULAR TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
