@@ -50,7 +50,7 @@
                                 <div class="row">
                                     <div class="col-12 form-group">
                                         <label class="form-label">Address</label>
-                                        <asp:TextBox runat="server" ID="txtAddress" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
+                                        <asp:TextBox runat="server" TextMode="MultiLine" ID="txtAddress" Height="100px" CssClass="form-control" placeholder="Address ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                     </div>
                                 </div>
                                 <div class="row">

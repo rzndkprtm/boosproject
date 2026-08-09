@@ -52,7 +52,7 @@ Partial Class Setting_General_Company_Edit
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Attention", txtAttention.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Address", txtAddress.Text)
                         thisCmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Description", descText)
