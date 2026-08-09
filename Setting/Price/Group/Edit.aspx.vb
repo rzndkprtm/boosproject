@@ -100,7 +100,7 @@ Partial Class Setting_Price_Group_Edit
             ddlType.SelectedValue = myData("Type").ToString()
             ddlCompany.SelectedValue = myData("CompanyId").ToString()
             txtDescription.Text = myData("Description").ToString()
-            ddlMaster.SelectedValue = Convert.ToInt32(myData("Master"))
+            ddlMaster.SelectedValue = myData("Master").ToString()
             ddlStatus.SelectedValue = myData("Status").ToString()
 
             divMaster.Visible = False

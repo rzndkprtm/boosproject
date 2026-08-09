@@ -31,6 +31,8 @@ Partial Class Setting_Price_Group_Default
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
+
+        Session("SearchPriceGroup") = txtSearch.Text
     End Sub
 
     'Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
