@@ -154,6 +154,10 @@ Partial Class Setting_General_Company_Detail
 
             lblName.Text = thisData("Name").ToString()
             lblAlias.Text = thisData("Alias").ToString()
+            lblAttention.Text = thisData("Attention").ToString()
+            lblAddress.Text = thisData("Address").ToString()
+            lblPhone.Text = thisData("Phone").ToString()
+            lblEmail.Text = thisData("Email").ToString()
             lblDescription.Text = thisData("Description").ToString()
             lblActive.Text = thisData("ActiveData").ToString()
 

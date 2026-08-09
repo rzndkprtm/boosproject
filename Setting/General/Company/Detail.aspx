@@ -53,6 +53,34 @@
                         </div>
                         <div class="row mb-2">
                             <div class="col-12 form-group">
+                                <label class="form-label">Attention</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblAttention" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Address</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblAddress" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Phone</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblPhone" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Email</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblEmail" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-12 form-group">
                                 <label class="form-label">Description</label>
                                 <br />
                                 <asp:Label runat="server" CssClass="form-label" ID="lblDescription" Font-Bold="true"></asp:Label>
