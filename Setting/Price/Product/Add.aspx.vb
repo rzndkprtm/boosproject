@@ -159,21 +159,11 @@ Partial Class Setting_Price_Product_Add
     End Sub
 
     Public Function MatchFormat(input As String, format As String) As Boolean
-
-        ' Ganti semua placeholder {....} dengan token sementara
         Dim temp As String = Regex.Replace(format, "\{[^}]+\}", "__PLACEHOLDER__")
-
-        ' Escape karakter regex
         temp = Regex.Escape(temp)
-
-        ' Kembalikan token menjadi wildcard
         temp = temp.Replace("__PLACEHOLDER__", "(.+?)")
-
-        ' Cocokkan seluruh string
         temp = "^" & temp & "$"
-
         Return Regex.IsMatch(input.Trim(), temp, RegexOptions.IgnoreCase)
-
     End Function
 
     Protected Sub MessageError(visible As Boolean, message As String)
