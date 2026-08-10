@@ -146,7 +146,7 @@ Partial Class Setting_Customer_Discount_Add
             lblCompanyId.Text = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
             lblPriceGroupId.Text = settingClass.GetItemData("SELECT PriceGroupId FROM Customers WHERE Id='" & customerId & "'")
 
-            BindProduct(type, lblCompanyId.Text, lblCompanyDetailId.Text)
+            BindProduct(type, lblCompanyId.Text, lblPriceGroupId.Text)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
