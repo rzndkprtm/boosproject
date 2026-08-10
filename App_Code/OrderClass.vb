@@ -2398,6 +2398,10 @@ Public Class OrderClass
                             Continue For
                         End If
 
+                        If discountType = "Designs" AndAlso designName = "Panel Glide" AndAlso blindName = "Track Only" Then
+                            Continue For
+                        End If
+
                         Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
                         thisSell = Math.Round(costSell - discountValue, 2)
                         If (designName = "Roller Blind" OrElse priceProductGroupName.Contains("Gear Reduction")) Then
