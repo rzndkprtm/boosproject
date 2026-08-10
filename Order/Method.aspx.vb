@@ -1226,21 +1226,8 @@ Partial Class Order_Method
 
         Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
-        Dim qty As Integer
-        Dim width As Integer : Dim widthb As Integer
-        Dim drop As Integer : Dim dropb As Integer
-
-        Dim clvalue As Integer
-        Dim markup As Integer
-
-        Dim linearMetre As Decimal : Dim linearMetreB As Decimal
-        Dim squareMetre As Decimal : Dim squareMetreB As Decimal
-
-        Dim totalItems As Integer = 1
-
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
-        Dim tubeName As String = String.Empty
         Dim controlName As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
@@ -1252,143 +1239,45 @@ Partial Class Order_Method
         Dim factory As String = orderClass.GetFabricFactory(data.fabriccolour)
         Dim factoryB As String = orderClass.GetFabricFactory(data.fabriccolourb)
 
-        'Dim context As New ValidationContext With {
-        '    .data = data,
-        '    .pricegroupid = priceGroupId,
-        '    .fabricfactory = factory,
-        '    .fabricfactoryb = factoryB
-        '}
+        Dim context As New ValidationContext With {
+            .data = data,
+            .pricegroupid = priceGroupId,
+            .fabricfactory = factory,
+            .fabricfactoryb = factoryB
+        }
 
-        'Dim engine As New ValidationEngine()
-        'Dim result As String = engine.Validate(context)
+        Dim engine As New ValidationEngine()
+        Dim result As String = engine.Validate(context)
 
-        'If result <> "" Then Return result
+        If result <> "" Then Return result
 
-        If String.IsNullOrEmpty(data.blindtype) Then Return "CELLULAR TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.colourtype) Then Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
+        Dim qty As Integer = CInt(data.qty)
+        Dim width As Integer = CInt(data.width)
+        Dim drop As Integer = CInt(data.drop)
 
-        If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
-        If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
+        Dim clvalue As Integer
 
-        If String.IsNullOrEmpty(data.room) OrElse data.room.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.room.Contains("&=") OrElse data.room.Contains("&+") Then
-            Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+ !"
-        End If
-        If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
-        If data.rolename = "Customer" AndAlso controlName = "DC Motor" Then
-            If String.IsNullOrEmpty(data.remote) Then Return "REMOTE TYPE IS REQUIRED !"
-        End If
-        If String.IsNullOrEmpty(data.fabrictype) Then
-            If blindName = "Day & Night" Then Return "TOP FABRIC TYPE IS REQUIRED !"
-            Return "FABRIC TYPE IS REQUIRED !"
-        End If
-        If String.IsNullOrEmpty(data.fabriccolour) Then
-            If blindName = "Day & Night" Then Return "TOP FABRIC COLOUR IS REQUIRED !"
-            Return "FABRIC COLOUR IS REQUIRED !"
-        End If
+        Dim linearMetre As Decimal = width / 1000
+        Dim squareMetre As Decimal = width * drop / 1000000
 
-        If controlName = "DC Motor" AndAlso factory = "Express" Then
-            Return "MOTORISED CONTROL AND EXPRESS FABRIC CANNOT BE PROCESSED AT THIS TIME. PLEASE REPLACE THE FABRIC WITH A REGULAR OPTION !"
-        End If
-
-        If blindName = "Day & Night" Then
-            If String.IsNullOrEmpty(data.fabrictypeb) Then Return "BOTTOM FABRIC TYPE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.fabriccolourb) Then Return "                           "
-            If data.fabriccolour = data.fabriccolourb Then Return "PLEASE CHECK YOUR FABRIC COLOUR !"
-            If Not factory = factoryB Then
-                If factory = "Regular" Then
-                    Return "THE TOP FABRIC SELECTED IS <b>REGULAR</b>.<br />PLEASE CHOOSE <b>REGULAR</b> AS WELL FOR THE BOTTOM FABRIC. !"
-                End If
-                Return "THE TOP FABRIC SELECTED IS <b>EXPRESS</b>.<br />PLEASE CHOOSE <b>EXPRESS</b> AS WELL FOR THE BOTTOM FABRIC. !"
-            End If
-        End If
-
-        If factory = "Regular" AndAlso data.mounting.Contains("Opening Size") Then
-            Return "FOR REGULAR FABRIC, PLEASE USE MOUNTING WITH MAKE SIZE. !"
-        End If
-
-        If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
-        If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-            If controlName = "Corded" Then
-                If blindName = "Standard" AndAlso width < 200 Then Return "MINIMUM WIDTH IS 200MM !"
-                If blindName = "TDBU" AndAlso width < 400 Then Return "MINIMUM WIDTH IS 400MM !"
-                If blindName = "Day & Night" AndAlso width < 450 Then Return "MINIMUM WIDTH IS 450MM !"
-                If width > 3000 Then Return "MAXIMUM WIDTH IS 3000MM !"
-            End If
-            If controlName = "Cordless" Then
-                If blindName = "Standard" AndAlso width < 400 Then Return "MINIMUM WIDTH IS 400MM !"
-                If blindName = "TDBU" AndAlso width < 700 Then Return "MINIMUM WIDTH IS 700MM !"
-                If blindName = "Day & Night" AndAlso width < 700 Then Return "MINIMUM WIDTH IS 700MM !"
-                If width > 2400 Then Return "MAXIMUM WIDTH IS 2400MM !"
-            End If
-        End If
-
-        If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
-        If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEAS CHECK YOUR DROP ORDER !"
-        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-            If controlName = "Corded" Then
-                If blindName = "Standard" AndAlso drop < 300 Then Return "MINIMUM DROP IS 300MM !"
-                If blindName = "TDBU" AndAlso drop < 400 Then Return "MINIMUM DROP IS 400MM !"
-                If blindName = "Day & Night" AndAlso drop < 750 Then Return "MINIMUM DROP IS 750MM !"
-                If drop > 3600 Then Return "MAXIMUM DROP IS 3600MM !"
-            End If
-            If controlName = "Cordless" Then
-                If blindName = "Standard" AndAlso drop < 400 Then Return "MINIMUM DROP IS 400MM !"
-                If blindName = "TDBU" AndAlso drop < 450 Then Return "MINIMUM DROP IS 450MM !"
-                If blindName = "Day & Night" AndAlso drop < 750 Then Return "MINIMUM DROP IS 750MM !"
-                If drop > 2100 Then Return "MAXIMUM DROP IS 2100MM !"
-            End If
-        End If
-
-        If blindName = "Standard" AndAlso (controlName = "Corded" OrElse controlName = "DC Motor") Then
-            If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED!"
-        End If
-
-        If controlName = "Corded" Then
-            If String.IsNullOrEmpty(data.controllength) Then Return "CORD LENGTH IS REQUIRED !"
-            If data.controllength = "Custom" Then
-                If String.IsNullOrEmpty(data.controllengthvalue) Then Return "CORD LENGTH VALUE IS REQUIRED !"
-                If Not Integer.TryParse(data.controllengthvalue, clvalue) OrElse clvalue <= 0 Then Return "PLEASE CHECK YOUR CORD LENGTH ORDER !"
-            End If
-        End If
-
-        If Not String.IsNullOrEmpty(data.notes) Then
-            If data.notes.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.notes.Contains("&=") OrElse data.notes.Contains("&+") Then
-                Return "SPECIAL INFORMATION MUST NOT CONTAIN: , & ` ' &= &+ !"
-            End If
-            If data.notes.Trim().Length > 1000 Then Return "MAXIMUM 1000 CHARACTERS !"
-        End If
-
-        If Not String.IsNullOrEmpty(data.markup) Then
-            If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
-        End If
-
-        linearMetre = width / 1000
-        squareMetre = width * drop / 1000000
+        Dim totalItems As Integer = 1
 
         If blindName = "Standard" OrElse blindName = "TDBU" Then
-            widthb = 0 : dropb = 0
             data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
         End If
-
-        If blindName = "Day & Night" Then
-            widthb = width : dropb = drop
-
-            linearMetreB = width / 1000
-            squareMetreB = widthb * dropb / 1000000
-        End If
-
         If blindName = "Day & Night" OrElse blindName = "TDBU" Then
             data.controlposition = "Both Sides"
         End If
 
-        If controlName = "Corded" AndAlso data.controllength = "Standard" Then
-            clvalue = Math.Ceiling(drop * 2 / 3)
-        End If
-
         If controlName = "Corded" Then
             data.remote = String.Empty
+
+            If data.controllength = "Standard" Then
+                clvalue = Math.Ceiling(drop * 2 / 3)
+            End If
+            If data.controllength = "Custom" Then
+                clvalue = CInt(data.controllengthvalue)
+            End If
         End If
         If controlName = "Cordless" Then
             data.remote = String.Empty
@@ -1451,19 +1340,15 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                         thisCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
                         thisCmd.Parameters.AddWithValue("@Width", width)
-                        thisCmd.Parameters.AddWithValue("@WidthB", widthb)
                         thisCmd.Parameters.AddWithValue("@Drop", drop)
-                        thisCmd.Parameters.AddWithValue("@DropB", dropb)
                         thisCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
                         thisCmd.Parameters.AddWithValue("@ControlLengthValue", clvalue)
                         thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
-                        thisCmd.Parameters.AddWithValue("@LinearMetreB", linearMetreB)
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
-                        thisCmd.Parameters.AddWithValue("@SquareMetreB", squareMetreB)
                         thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                         thisCmd.Parameters.AddWithValue("@Supply", data.supply)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
-                        thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+                        thisCmd.Parameters.AddWithValue("@MarkUp", If(String.IsNullOrEmpty(data.markup), CType(0, Object), data.markup))
 
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
@@ -1503,19 +1388,15 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                     thisCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
                     thisCmd.Parameters.AddWithValue("@Width", width)
-                    thisCmd.Parameters.AddWithValue("@WidthB", widthb)
                     thisCmd.Parameters.AddWithValue("@Drop", drop)
-                    thisCmd.Parameters.AddWithValue("@DropB", dropb)
                     thisCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
                     thisCmd.Parameters.AddWithValue("@ControlLengthValue", clvalue)
                     thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
-                    thisCmd.Parameters.AddWithValue("@LinearMetreB", linearMetreB)
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
-                    thisCmd.Parameters.AddWithValue("@SquareMetreB", squareMetreB)
                     thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                     thisCmd.Parameters.AddWithValue("@Supply", data.supply)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
-                    thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+                    thisCmd.Parameters.AddWithValue("@MarkUp", If(String.IsNullOrEmpty(data.markup), CType(0, Object), data.markup))
 
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
