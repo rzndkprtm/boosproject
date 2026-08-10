@@ -83,14 +83,17 @@ Partial Class Setting_Validation_Detail_Add
                     End Using
                 Next
             End Using
-            Response.Redirect("~/setting/validation", False)
+
+            Dim url As String = String.Format("~/setting/validation/detail?validationid={0}", ddlValidation.SelectedValue)
+            Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.Message)
         End Try
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/validation", False)
+        Dim url As String = String.Format("~/setting/validation/detail?validationid={0}", ddlValidation.SelectedValue)
+        Response.Redirect(url, False)
     End Sub
 
     Protected Sub rptDetail_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)

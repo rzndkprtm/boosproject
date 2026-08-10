@@ -1,6 +1,4 @@
-﻿Imports System.Data
-Imports System.Data.SqlClient
-Imports System.Web.Services
+﻿Imports System.Data.SqlClient
 
 Partial Class Setting_Validation_Default
     Inherits Page
@@ -8,25 +6,6 @@ Partial Class Setting_Validation_Default
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
-
-    <WebMethod()>
-    Public Shared Function GetValidationDetail(validationId As String) As List(Of ValidationDetailModel)
-        Dim result As New List(Of ValidationDetailModel)
-
-        Dim settingClass As New SettingClass()
-
-        Dim dt As DataTable = settingClass.GetDataTable("SELECT * FROM ValidationDetails WHERE ValidationId='" & validationId & "' ORDER BY GroupNo")
-        For Each dr As DataRow In dt.Rows
-            Dim groupNo As String = dr("GroupNo").ToString()
-            Dim fieldName As String = dr("FieldName").ToString()
-            Dim operators As String = dr("Operator").ToString()
-            Dim compareValue As String = dr("CompareValue").ToString()
-            Dim dataType As String = dr("DataType").ToString()
-
-            result.Add(New ValidationDetailModel With {.Id = dr("Id").ToString(), .ValidationId = validationId, .GroupNo = groupNo, .FieldName = fieldName, .Operators = operators, .CompareValue = compareValue, .DataType = dataType})
-        Next
-        Return result
-    End Function
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -46,12 +25,6 @@ Partial Class Setting_Validation_Default
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         Session("SearchValidation") = ddlDesign.SelectedValue
         Response.Redirect("~/setting/validation/add", False)
-    End Sub
-
-    Protected Sub btnAddDetail_Click(sender As Object, e As EventArgs)
-        Dim thisId As String = txtValidationId.Text
-        Dim url As String = String.Format("~/setting/validation/detail/add?validationid={0}", thisId)
-        Response.Redirect(url, False)
     End Sub
 
     Protected Sub ddlDesign_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -114,7 +87,6 @@ Partial Class Setting_Validation_Default
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
             btnAdd.Visible = LoginAccess("Add")
-            btnAddDetail.Visible = LoginAccess("Add Detail")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
