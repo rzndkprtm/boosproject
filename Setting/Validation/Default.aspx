@@ -58,11 +58,11 @@
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
-                                            <asp:BoundField DataField="DesignName" HeaderText="Design Name" />
+                                            <asp:BoundField DataField="DesignName" HeaderText="Design Name" ItemStyle-Width="200px" />
                                             <asp:BoundField DataField="Name" HeaderText="Name" />
                                             <asp:BoundField DataField="ErrorMessage" HeaderText="Error Message" />
-                                            <asp:BoundField DataField="SortOrder" HeaderText="Sort Order" />
-                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
+                                            <asp:BoundField DataField="SortOrder" HeaderText="Sort Order" ItemStyle-Width="100px" />
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="100px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
