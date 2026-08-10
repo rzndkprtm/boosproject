@@ -81,7 +81,7 @@ Partial Class Setting_Job_Sheet_Detail_Default
 
     Protected Sub BindData(sheetId As String)
         Try
-            Dim thisData As DataRow = jobClass.GetDataRow("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM JobSheets WHERE Id='" & sheetId & "'")
+            Dim thisData As DataRow = jobClass.GetDataRow("SELECT * FROM JobSheets WHERE Id='" & sheetId & "'")
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/job/sheet", False)
                 Exit Sub
@@ -90,7 +90,7 @@ Partial Class Setting_Job_Sheet_Detail_Default
             lblName.Text = thisData("Name").ToString()
             lblAlias.Text = thisData("Alias").ToString()
             lblDescription.Text = thisData("Description").ToString()
-            lblActive.Text = thisData("DataActive").ToString()
+            lblStatus.Text = thisData("Status").ToString()
 
             btnEdit.Visible = LoginAccess("Edit")
         Catch ex As Exception

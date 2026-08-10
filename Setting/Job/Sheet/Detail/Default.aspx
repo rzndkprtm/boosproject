@@ -63,9 +63,9 @@
                             </div>
                             <div class="col-12 col-md-4">
                                 <div class="info-box">
-                                    <label class="form-label text-muted mb-1">Active Status</label>
+                                    <label class="form-label text-muted mb-1">Status</label>
                                     <div class="fw-semibold fs-6 text-dark">
-                                        <asp:Label runat="server" ID="lblActive" CssClass="badge rounded-pill bg-success text-white"></asp:Label>
+                                        <asp:Label runat="server" ID="lblStatus" CssClass="badge rounded-pill bg-success text-white"></asp:Label>
                                     </div>
                                 </div>
                             </div>
