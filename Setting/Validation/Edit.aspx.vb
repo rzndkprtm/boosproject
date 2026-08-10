@@ -54,8 +54,8 @@ Partial Class Setting_Validation_Edit
                     End Using
                 End Using
 
-                dataLog = {"Validations", lblId.Text, Session("LoginId").ToString(), "Validation Updated"}
-                settingClass.Logs(dataLog)
+                'dataLog = {"Validations", lblId.Text, Session("LoginId").ToString(), "Validation Updated"}
+                'settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/validation", False)
             End If
