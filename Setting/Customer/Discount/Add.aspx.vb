@@ -144,7 +144,7 @@ Partial Class Setting_Customer_Discount_Add
             ddlType.Enabled = False
 
             lblCompanyId.Text = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
-            lblCompanyDetailId.Text = settingClass.GetItemData("SELECT CompanyDetailId FROM Customers WHERE Id='" & customerId & "'")
+            lblPriceGroupId.Text = settingClass.GetItemData("SELECT PriceGroupId FROM Customers WHERE Id='" & customerId & "'")
 
             BindProduct(type, lblCompanyId.Text, lblCompanyDetailId.Text)
         Catch ex As Exception
