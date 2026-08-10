@@ -359,7 +359,7 @@ Partial Class Setting_Specification_Product_Edit
     Protected Sub BindJobSheet()
         ddlJobSheet.Items.Clear()
         Try
-            ddlJobSheet.DataSource = settingClass.GetDataTable("SELECT * FROM JobSheets ORDER BY Name ASC")
+            ddlJobSheet.DataSource = settingClass.GetDataTable("SELECT * FROM JobSheets WHERE Status='Active' OR Status='Inactive' ORDER BY Name ASC")
             ddlJobSheet.DataTextField = "Name"
             ddlJobSheet.DataValueField = "Id"
             ddlJobSheet.DataBind()

@@ -1428,7 +1428,10 @@ Partial Class Order_Detail
                     Dim totalItems As Integer = CInt(detailData.Rows(i).Item("TotalItems"))
                     Dim jobSheetId As String = detailData.Rows(i).Item("JobSheetId").ToString()
 
+                    Dim jobSheetStatus As String = orderClass.GetItemData("SELECT Status FROM JobSheets WHERE Id='" & jobSheetId & "'")
+
                     If String.IsNullOrEmpty(jobSheetId) Then Continue For
+                    If String.IsNullOrEmpty(jobSheetStatus) OrElse jobSheetStatus = "Inactive" OrElse jobSheetStatus = "Deleted" Then Continue For
 
                     For j As Integer = 1 To totalItems
                         Dim formulaColumn As String = "Formula1"
