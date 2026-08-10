@@ -103,6 +103,9 @@
                         <li>
                             <asp:Button runat="server" ID="btnAddDiscountB" CssClass="dropdown-item" Text="By Product Group" OnClick="btnAddDiscountB_Click" />
                         </li>
+                        <li>
+                            <asp:Button runat="server" ID="btnAddDiscountC" CssClass="dropdown-item" Text="By Roller Fabric Type" OnClick="btnAddDiscountC_Click" />
+                        </li>
                     </ul>
                 </div>
                 <div class="modal-body">

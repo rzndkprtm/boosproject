@@ -545,6 +545,9 @@
                                             <li>
                                                 <asp:Button runat="server" ID="btnAddDiscountB" CssClass="dropdown-item" Text="By Product Group" OnClick="btnAddDiscountB_Click" />
                                             </li>
+                                            <li>
+                                                <asp:Button runat="server" ID="btnAddDiscountC" CssClass="dropdown-item" Text="By Roller Fabric Type" OnClick="btnAddDiscountC_Click" />
+                                            </li>
                                         </ul>
                                         <a href="javascript:void(0);" runat="server" id="aResetDiscount" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetDiscount">Reset Discount</a>
                                     </div>

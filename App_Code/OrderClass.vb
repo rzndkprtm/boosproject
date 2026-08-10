@@ -2388,29 +2388,35 @@ Public Class OrderClass
                         costSellAdditional = thisSellAdditional
                     Next
 
-                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 WHEN Type='PriceProductGroups' THEN 2 ELSE 3 END ASC")
                     For Each discountRow As DataRow In discountData.Rows
                         Dim discountType As String = discountRow("Type").ToString()
                         Dim dataId As String = discountRow("DataId").ToString()
                         Dim discount As Decimal = CDec(discountRow("Discount"))
 
-                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupId) Then
-                            Continue For
-                        End If
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupId) OrElse (discountType = "RollerFabrics" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricId) Then Continue For
 
-                        If discountType = "Designs" AndAlso designName = "Panel Glide" AndAlso blindName = "Track Only" Then
-                            Continue For
-                        End If
+                        If discountType = "Designs" AndAlso designName = "Panel Glide" AndAlso blindName = "Track Only" Then Continue For
 
                         Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
                         thisSell = Math.Round(costSell - discountValue, 2)
-                        If (designName = "Roller Blind" OrElse priceProductGroupName.Contains("Gear Reduction")) Then
-                            discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
 
-                            If isWithoutGR Then
-                                thisSell = Math.Round(costSell - 7D - discountValue, 2)
-                            ElseIf gridSellConditional = "Excl. $7 Disc" Then
-                                thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                        If designName = "Roller Blind" Then
+                            If priceProductGroupName.Contains("Standard") OrElse priceProductGroupName.Contains("Gear Reduction") OrElse priceProductGroupName.Contains("Sunboss") Then
+                                discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
+
+                                If isWithoutGR Then
+                                    thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                                ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                    thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                                End If
+                            End If
+                            If discountType = "RollerFabrics" Then
+                                If isWithoutGR Then
+                                    thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                                ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                    thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                                End If
                             End If
                         End If
 
@@ -2693,25 +2699,33 @@ Public Class OrderClass
                         costSellAdditional = thisSellAdditional
                     Next
 
-                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 WHEN Type='PriceProductGroups' THEN 2 ELSE 3 END ASC")
                     For Each discountRow As DataRow In discountData.Rows
                         Dim discountType As String = discountRow("Type").ToString()
                         Dim dataId As String = discountRow("DataId").ToString()
                         Dim discount As Decimal = CDec(discountRow("Discount"))
 
-                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdB) Then
-                            Continue For
-                        End If
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdB) OrElse (discountType = "RollerFabrics" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricIdB) Then Continue For
 
                         Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
                         thisSell = Math.Round(costSell - discountValue, 2)
-                        If (designName = "Roller Blind" OrElse priceProductGroupNameB.Contains("Gear Reduction")) Then
-                            discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
 
-                            If isWithoutGR Then
-                                thisSell = Math.Round(costSell - 7D - discountValue, 2)
-                            ElseIf gridSellConditional = "Excl. $7 Disc" Then
-                                thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                        If designName = "Roller Blind" Then
+                            If priceProductGroupNameB.Contains("Standard") OrElse priceProductGroupNameB.Contains("Gear Reduction") OrElse priceProductGroupNameB.Contains("Sunboss") Then
+                                discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
+
+                                If isWithoutGR Then
+                                    thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                                ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                    thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                                End If
+                            End If
+                            If discountType = "RollerFabrics" Then
+                                If isWithoutGR Then
+                                    thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                                ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                    thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                                End If
                             End If
                         End If
 
@@ -2919,25 +2933,33 @@ Public Class OrderClass
                         costSell = thisSell
                     Next
 
-                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 WHEN Type='PriceProductGroups' THEN 2 ELSE 3 END ASC")
                     For Each discountRow As DataRow In discountData.Rows
                         Dim discountType As String = discountRow("Type").ToString()
                         Dim dataId As String = discountRow("DataId").ToString()
                         Dim discount As Decimal = CDec(discountRow("Discount"))
 
-                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdC) Then
-                            Continue For
-                        End If
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdC) OrElse (discountType = "RollerFabrics" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricIdC) Then Continue For
 
                         Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
                         thisSell = Math.Round(costSell - discountValue, 2)
-                        If (designName = "Roller Blind" OrElse priceProductGroupNameC.Contains("Gear Reduction")) Then
-                            discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
 
-                            If isWithoutGR Then
-                                thisSell = Math.Round(costSell - 7D - discountValue, 2)
-                            ElseIf gridSellConditional = "Excl. $7 Disc" Then
-                                thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                        If designName = "Roller Blind" Then
+                            If priceProductGroupNameC.Contains("Standard") OrElse priceProductGroupNameC.Contains("Gear Reduction") OrElse priceProductGroupNameC.Contains("Sunboss") Then
+                                discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
+
+                                If isWithoutGR Then
+                                    thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                                ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                    thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                                End If
+                            End If
+                            If discountType = "RollerFabrics" Then
+                                If isWithoutGR Then
+                                    thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                                ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                    thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                                End If
                             End If
                         End If
 
@@ -3125,25 +3147,33 @@ Public Class OrderClass
                         costSell = thisSell
                     Next
 
-                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 WHEN Type='PriceProductGroups' THEN 2 ELSE 3 END ASC")
                     For Each discountRow As DataRow In discountData.Rows
                         Dim discountType As String = discountRow("Type").ToString()
                         Dim dataId As String = discountRow("DataId").ToString()
                         Dim discount As Decimal = CDec(discountRow("Discount"))
 
-                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdD) Then
-                            Continue For
-                        End If
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdD) OrElse (discountType = "RollerFabrics" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricIdD) Then Continue For
 
                         Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
                         thisSell = Math.Round(costSell - discountValue, 2)
-                        If (designName = "Roller Blind" OrElse priceProductGroupNameD.Contains("Gear Reduction")) Then
-                            discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
 
-                            If isWithoutGR Then
-                                thisSell = Math.Round(costSell - 7D - discountValue, 2)
-                            ElseIf gridSellConditional = "Excl. $7 Disc" Then
-                                thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                        If designName = "Roller Blind" Then
+                            If priceProductGroupNameD.Contains("Standard") OrElse priceProductGroupNameD.Contains("Gear Reduction") OrElse priceProductGroupNameD.Contains("Sunboss") Then
+                                discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
+
+                                If isWithoutGR Then
+                                    thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                                ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                    thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                                End If
+                            End If
+                            If discountType = "RollerFabrics" Then
+                                If isWithoutGR Then
+                                    thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                                ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                    thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                                End If
                             End If
                         End If
 
@@ -3331,25 +3361,33 @@ Public Class OrderClass
                         costSell = thisSell
                     Next
 
-                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 WHEN Type='PriceProductGroups' THEN 2 ELSE 3 END ASC")
                     For Each discountRow As DataRow In discountData.Rows
                         Dim discountType As String = discountRow("Type").ToString()
                         Dim dataId As String = discountRow("DataId").ToString()
                         Dim discount As Decimal = CDec(discountRow("Discount"))
 
-                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdE) Then
-                            Continue For
-                        End If
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdE) OrElse (discountType = "RollerFabrics" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricIdE) Then Continue For
 
                         Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
                         thisSell = Math.Round(costSell - discountValue, 2)
-                        If (designName = "Roller Blind" OrElse priceProductGroupNameE.Contains("Gear Reduction")) Then
-                            discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
 
-                            If isWithoutGR Then
-                                thisSell = Math.Round(costSell - 7D - discountValue, 2)
-                            ElseIf gridSellConditional = "Excl. $7 Disc" Then
-                                thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                        If designName = "Roller Blind" Then
+                            If priceProductGroupNameE.Contains("Standard") OrElse priceProductGroupNameE.Contains("Gear Reduction") OrElse priceProductGroupNameE.Contains("Sunboss") Then
+                                discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
+
+                                If isWithoutGR Then
+                                    thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                                ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                    thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                                End If
+                            End If
+                            If discountType = "RollerFabrics" Then
+                                If isWithoutGR Then
+                                    thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                                ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                    thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                                End If
                             End If
                         End If
 
@@ -3537,25 +3575,33 @@ Public Class OrderClass
                         costSell = thisSell
                     Next
 
-                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 WHEN Type='PriceProductGroups' THEN 2 ELSE 3 END ASC")
                     For Each discountRow As DataRow In discountData.Rows
                         Dim discountType As String = discountRow("Type").ToString()
                         Dim dataId As String = discountRow("DataId").ToString()
                         Dim discount As Decimal = CDec(discountRow("Discount"))
 
-                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdF) Then
-                            Continue For
-                        End If
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdF) OrElse (discountType = "RollerFabrics" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricIdF) Then Continue For
 
                         Dim discountValue As Decimal = Math.Round(costSell * discount / 100D, 2)
                         thisSell = Math.Round(costSell - discountValue, 2)
-                        If (designName = "Roller Blind" OrElse priceProductGroupNameF.Contains("Gear Reduction")) Then
-                            discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
 
-                            If isWithoutGR Then
-                                thisSell = Math.Round(costSell - 7D - discountValue, 2)
-                            ElseIf gridSellConditional = "Excl. $7 Disc" Then
-                                thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                        If designName = "Roller Blind" Then
+                            If priceProductGroupNameF.Contains("Standard") OrElse priceProductGroupNameF.Contains("Gear Reduction") OrElse priceProductGroupNameF.Contains("Sunboss") Then
+                                discountValue = Math.Round((costSell - 7D) * discount / 100D, 2)
+
+                                If isWithoutGR Then
+                                    thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                                ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                    thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                                End If
+                            End If
+                            If discountType = "RollerFabrics" Then
+                                If isWithoutGR Then
+                                    thisSell = Math.Round(costSell - 7D - discountValue, 2)
+                                ElseIf gridSellConditional = "Excl. $7 Disc" Then
+                                    thisSell = Math.Round((costSell - 7D) - discountValue + 7D, 2)
+                                End If
                             End If
                         End If
 

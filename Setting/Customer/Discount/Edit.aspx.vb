@@ -41,11 +41,15 @@ Partial Class Setting_Customer_Discount_Edit
                 Exit Sub
             End If
             If ddlType.SelectedValue = "" Then
-                MessageError(True, "ACCOUNT IS REQUIRED !")
+                MessageError(True, "TYPE IS REQUIRED !")
                 Exit Sub
             End If
-            If ddlType.SelectedValue = "productgroup" AndAlso ddlProduct.SelectedValue = "" Then
-                MessageError(True, "ACCOUNT IS REQUIRED !")
+            If ddlType.SelectedValue = "PriceProductGroups" AndAlso ddlProduct.SelectedValue = "" Then
+                MessageError(True, "PRODUCT GROUP IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlType.SelectedValue = "RollerFabrics" AndAlso ddlProduct.SelectedValue = "" Then
+                MessageError(True, "FABRIC TYPE IS REQUIRED !")
                 Exit Sub
             End If
             If txtDiscount.Text = "" Then
@@ -100,16 +104,15 @@ Partial Class Setting_Customer_Discount_Edit
 
             Dim customerId As String = thisData("CustomerId").ToString()
             Dim type As String = thisData("Type").ToString()
-            Dim aliasType As String = String.Empty
-            If type = "Designs" Then aliasType = "product"
-            If type = "PriceProductGroups" Then aliasType = "productgroup"
+
             lblCompanyId.Text = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
+            lblCompanyDetailId.Text = settingClass.GetItemData("SELECT CompanyDetailId FROM Customers WHERE Id='" & customerId & "'")
             lblPriceGroupId.Text = settingClass.GetItemData("SELECT PriceGroupId FROM Customers WHERE Id='" & customerId & "'")
 
-            BindProduct(aliasType, lblCompanyId.Text, lblPriceGroupId.Text)
+            BindProduct(type, lblCompanyId.Text, lblCompanyDetailId.Text, lblPriceGroupId.Text)
 
             ddlCustomer.SelectedValue = customerId
-            ddlType.SelectedValue = aliasType
+            ddlType.SelectedValue = type
             ddlProduct.SelectedValue = thisData("DataId").ToString()
             txtDiscount.Text = Convert.ToDecimal(thisData("Discount")).ToString("G29", enUS)
             txtDescription.Text = thisData("Description").ToString()
@@ -143,16 +146,20 @@ Partial Class Setting_Customer_Discount_Edit
         End Try
     End Sub
 
-    Protected Sub BindProduct(type As String, companyId As String, priceGroupId As String)
+    Protected Sub BindProduct(type As String, companyId As String, companyDetailId As String, priceGroupId As String)
         ddlProduct.Items.Clear()
         Try
             Dim thisString As String = String.Empty
-            If type = "product" Then
+            If type = "Designs" Then
                 thisString = "SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE companyArray.VALUE='" & companyId & "' AND applyArray.VALUE='Discounts' ORDER BY Name ASC"
             End If
-            If type = "productgroup" Then
+            If type = "PriceProductGroups" Then
                 thisString = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'"
             End If
+            If type = "RollerFabrics" Then
+                thisString = "SELECT Fabrics.Id, Fabrics.Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS thisArray WHERE thisArray.VALUE='" & companyDetailId & "'"
+            End If
+
             ddlProduct.DataSource = settingClass.GetDataTable(thisString)
             ddlProduct.DataTextField = "Name"
             ddlProduct.DataValueField = "Id"

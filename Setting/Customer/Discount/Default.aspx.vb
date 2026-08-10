@@ -39,6 +39,9 @@ Partial Class Setting_Customer_Discount_Default
         If type = "PriceProductGroups" Then
             dataName = settingClass.GetItemData("SELECT CASE WHEN Status='Active' THEN Name ELSE Name + ' [' + UPPER(Status) + ']' END FROM PriceProductGroups WHERE Id='" & dataId & "'")
         End If
+        If type = "RollerFabrics" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM Fabrics WHERE Id='" & dataId & "'")
+        End If
         Return dataName
     End Function
 
@@ -83,13 +86,18 @@ Partial Class Setting_Customer_Discount_Default
     End Sub
 
     Protected Sub btnAddDiscountA_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=product", txtCustomerId.Text)
+        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=Designs", txtCustomerId.Text)
         Response.Redirect(url, False)
     End Sub
 
     Protected Sub btnAddDiscountB_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=productgroup", txtCustomerId.Text)
+        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=PriceProductGroups", txtCustomerId.Text)
         Response.Redirect(Url, False)
+    End Sub
+
+    Protected Sub btnAddDiscountC_Click(sender As Object, e As EventArgs)
+        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=RollerFabrics", txtCustomerId.Text)
+        Response.Redirect(url, False)
     End Sub
 
     Protected Sub BindData(searchText As String)

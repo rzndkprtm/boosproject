@@ -883,13 +883,19 @@ Partial Class Setting_Customer_Detail
 
     Protected Sub btnAddDiscountA_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-discount"
-        url = String.Format("~/setting/customer/discount/add?custid={0}&type=product&returnpage=detail", lblId.Text)
+        url = String.Format("~/setting/customer/discount/add?custid={0}&type=Designs&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
     End Sub
 
     Protected Sub btnAddDiscountB_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-discount"
-        url = String.Format("~/setting/customer/discount/add?custid={0}&type=productgroup&returnpage=detail", lblId.Text)
+        url = String.Format("~/setting/customer/discount/add?custid={0}&type=PriceProductGroups&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnAddDiscountC_Click(sender As Object, e As EventArgs)
+        Session("selectedTabCustomer") = "list-discount"
+        url = String.Format("~/setting/customer/discount/add?custid={0}&type=RollerFabrics&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
     End Sub
 
@@ -978,6 +984,9 @@ Partial Class Setting_Customer_Detail
         End If
         If type = "PriceProductGroups" Then
             dataName = settingClass.GetItemData("SELECT CASE WHEN Status='Active' THEN Name ELSE Name + ' [' + UPPER(Status) + ']' END FROM PriceProductGroups WHERE Id='" & dataId & "'")
+        End If
+        If type = "RollerFabrics" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM Fabrics WHERE Id='" & dataId & "'")
         End If
         Return dataName
     End Function
