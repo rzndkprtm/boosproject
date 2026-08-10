@@ -178,7 +178,7 @@ Partial Class Setting_Customer_Discount_Add
         End Try
     End Sub
 
-    Protected Sub BindProduct(type As String, companyId As String, companyDetailId As String)
+    Protected Sub BindProduct(type As String, companyId As String, priceGroupId As String)
         ddlProduct.Items.Clear()
         Try
             Dim thisString As String = String.Empty
@@ -186,7 +186,7 @@ Partial Class Setting_Customer_Discount_Add
                 thisString = "SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE companyArray.VALUE='" & companyId & "' AND applyArray.VALUE='Discounts' ORDER BY Name ASC"
             End If
             If type = "productgroup" Then
-                thisString = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups LEFT JOIN Designs ON PriceProductGroups.DesignId=Designs.Id CROSS APPLY STRING_SPLIT(PriceProductGroups.CompanyDetailId, ',') AS companyArray WHERE companyArray.VALUE='" & companyDetailId & "' AND PriceProductGroups.Status='Active' AND Designs.Type='Blinds' AND PriceProductGroups.Name NOT LIKE '%Panel Glide - Panel Only%' AND PriceProductGroups.Name NOT LIKE '%Panel Glide - Track Only%' ORDER BY PriceProductGroups.Name ASC"
+                thisString = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'"
             End If
             ddlProduct.DataSource = settingClass.GetDataTable(thisString)
             ddlProduct.DataTextField = "Name"
