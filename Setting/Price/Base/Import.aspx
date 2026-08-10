@@ -58,15 +58,13 @@
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-12 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <label>Upload File</label>
                                                 <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                <label class="form-label">Backup Database</label>
-                                                <asp:DropDownList runat="server" ID="ddlBackup" CssClass="choices form-select">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                <label>Upload File</label>
+                                                <asp:DropDownList runat="server" ID="ddlBackup" CssClass="form-select">
                                                     <asp:ListItem Value="Yes" Text="Yes"></asp:ListItem>
                                                     <asp:ListItem Value="No" Text="No"></asp:ListItem>
                                                 </asp:DropDownList>
