@@ -193,6 +193,8 @@
     </div>
     
     <script type="text/javascript">
+        var canEdit = <%= LoginAccess("Edit Formula").ToString().ToLower() %>;
+
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
@@ -268,6 +270,13 @@
                     }
                     else {
                         $.each(data, function (index, item) {
+                            let editButton = "";
+
+                            if (canEdit) {
+                                editButton = `
+                                    <button type="button" class="btn btn-sm btn-warning" onclick="editDetail(${item.Id})">Edit</button>`;
+                            }
+
                             html += `
                                 <tr>
                                     <td class="text-center">${index + 1}</td>
@@ -276,13 +285,7 @@
                                     <td>${item.Operators}</td>
                                     <td>${item.CompareValue}</td>
                                     <td>${item.DataType}</td>
-                                    <td class="text-center">
-                                    <button type="button" 
-                                        class="btn btn-sm btn-warning"
-                                        onclick="editDetail(${item.Id})">
-                                        Edit
-                                    </button>
-                                </td>
+                                    <td class="text-center">${editButton}</td>
                                 </tr>`;
                         });
                     }
