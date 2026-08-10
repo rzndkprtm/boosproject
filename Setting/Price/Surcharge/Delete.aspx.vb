@@ -29,7 +29,7 @@ Partial Class Setting_Price_Surcharge_Delete
             End If
 
             If msgError.InnerText = "" Then
-                Dim surchargeData As DataTable = settingClass.GetDataTable("SELECT * FROM PriceSurcharges WHERE PriceGroupId='" & ddlPriceGroup.SelectedValue & "'")
+                Dim surchargeData As DataTable = settingClass.GetDataTable("SELECT Id FROM PriceSurcharges WHERE PriceGroupId='" & ddlPriceGroup.SelectedValue & "'")
                 If surchargeData.Rows.Count > 0 Then
                     For i As Integer = 0 To surchargeData.Rows.Count - 1
                         Dim surchargeId As String = surchargeData.Rows(i)(0).ToString()
