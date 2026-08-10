@@ -495,23 +495,25 @@ Partial Class Order_Detail
                 Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Fuel Surcharge' AND (Status='In Stock' OR Status='Limited Stock')")
                 Dim productGroupId As String = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Fuel Surcharge' AND Status='Active'")
 
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", thisId)
-                        thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                        thisCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
-                        thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
-                        thisConn.Open()
-                        thisCmd.ExecuteNonQuery()
+                If lblCompanyDetailId.Text = "2" Then
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                            thisCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
+                            thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
                     End Using
-                End Using
 
-                dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
-                orderClass.Logs(dataLog)
+                    dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
+                    orderClass.Logs(dataLog)
 
-                orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
-                orderClass.CalculatePrice(lblHeaderId.Text, thisId)
-                orderClass.FinalCostItem(lblHeaderId.Text, thisId)
+                    orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
+                    orderClass.CalculatePrice(lblHeaderId.Text, thisId)
+                    orderClass.FinalCostItem(lblHeaderId.Text, thisId)
+                End If
 
                 Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
                 If minSurcharge = True AndAlso totalItems <= 3 Then
