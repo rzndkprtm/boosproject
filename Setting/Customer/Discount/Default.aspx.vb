@@ -39,8 +39,11 @@ Partial Class Setting_Customer_Discount_Default
         If type = "PriceProductGroups" Then
             dataName = settingClass.GetItemData("SELECT CASE WHEN Status='Active' THEN Name ELSE Name + ' [' + UPPER(Status) + ']' END FROM PriceProductGroups WHERE Id='" & dataId & "'")
         End If
-        If type = "RollerFabrics" Then
+        If type = "RollerFabrics" OrElse type = "RomanFabrics" OrElse type = "PanelGlideFabrics" Then
             dataName = settingClass.GetItemData("SELECT Name FROM Fabrics WHERE Id='" & dataId & "'")
+        End If
+        If type = "RollerFabricColours" OrElse type = "RomanFabricColours" OrElse type = "PanelGlideFabricColours" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM FabricColours WHERE Id='" & dataId & "'")
         End If
         Return dataName
     End Function
@@ -100,6 +103,31 @@ Partial Class Setting_Customer_Discount_Default
         Response.Redirect(url, False)
     End Sub
 
+    Protected Sub btnAddDiscountD_Click(sender As Object, e As EventArgs)
+        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=RollerFabricColours", txtCustomerId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnAddDiscountE_Click(sender As Object, e As EventArgs)
+        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=RomanFabrics", txtCustomerId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnAddDiscountF_Click(sender As Object, e As EventArgs)
+        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=RomanFabricColours", txtCustomerId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnAddDiscountG_Click(sender As Object, e As EventArgs)
+        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=PanelGlideFabrics", txtCustomerId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnAddDiscountH_Click(sender As Object, e As EventArgs)
+        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=PanelGlideFabricColours", txtCustomerId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
     Protected Sub BindData(searchText As String)
         Session("SearchCustomerDiscount") = String.Empty
         Try
@@ -156,11 +184,6 @@ Partial Class Setting_Customer_Discount_Default
             navPager.Visible = False
         End Try
     End Sub
-
-    Protected Function DiscountTitle(type As String, dataId As String) As String
-        If String.IsNullOrEmpty(type) Then Return String.Empty
-        Return settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
-    End Function
 
     Protected Function DiscountValue(data As Decimal) As String
         If data > 0 Then Return data.ToString("G29", enUS) & "%"

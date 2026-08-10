@@ -45,7 +45,12 @@
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
                                             <asp:ListItem Value="Designs" Text="Product"></asp:ListItem>
                                             <asp:ListItem Value="PriceProductGroups" Text="Product Group"></asp:ListItem>
-                                            <asp:ListItem Value="RollerFabrics" Text="Roller Fabric Type"></asp:ListItem>
+                                            <asp:ListItem Value="RollerFabrics" Text="Fabric Type (Roller)"></asp:ListItem>
+                                            <asp:ListItem Value="RollerFabricColours" Text="Fabric Colour (Roller)"></asp:ListItem>
+                                            <asp:ListItem Value="RomanFabrics" Text="Fabric Type (Roman)"></asp:ListItem>
+                                            <asp:ListItem Value="RomanFabricColours" Text="Roman Fabric Colour"></asp:ListItem>
+                                            <asp:ListItem Value="PanelGlideFabrics" Text="Panel Glide Fabric Type"></asp:ListItem>
+                                            <asp:ListItem Value="PanelGlideFabricColours" Text="Panel Glide Fabric Colour"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-8 form-group">
