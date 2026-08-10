@@ -218,5 +218,4 @@ Public Class ValidationDetailModel
     Public Property [Operator] As String
     Public Property CompareValue As String
     Public Property DataType As String
-
 End Class

@@ -23,16 +23,16 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-7">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Price Base Form</h4>
+                        <h4 class="card-title">Detail Validation Form</h4>
                     </div>
                     <div class="card-body">
                         <div class="form form-vertical">
                             <div class="form-body">
                                 <div class="row mb-2">
-                                    <div class="col-12 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-1 form-group">
                                         <label class="form-label">Category</label>
                                         <asp:DropDownList ID="ddlGroupNo" runat="server" CssClass="choices form-select">
                                             <asp:ListItem Value=""></asp:ListItem>
@@ -43,27 +43,19 @@
                                             <asp:ListItem Value="5">5</asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
                                         <label class="form-label">Field Name</label>
                                         <asp:DropDownList ID="ddlFieldName" runat="server" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
                                         <label class="form-label">Operator</label>
                                         <asp:DropDownList ID="ddlOperator" runat="server" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
                                         <label class="form-label">Compare Value</label>
-                                        <asp:TextBox ID="txtCompareValue" runat="server" CssClass="form-control"></asp:TextBox>
+                                        <asp:TextBox ID="txtCompareValue" runat="server" CssClass="form-control" Height="45px"></asp:TextBox>
                                     </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-2 form-group">
                                         <label class="form-label">Data Type</label>
                                         <asp:DropDownList ID="ddlDataType" runat="server" CssClass="choices form-select">
                                             <asp:ListItem Value=""></asp:ListItem>
@@ -86,12 +78,15 @@
                         </div>
                     </div>
                     <div class="card-footer text-start">
-                        <asp:Button runat="server" ID="btnSubmitAdd" CssClass="btn btn-primary" Text="Submit & Add Another" />
-                        <asp:Button runat="server" ID="btnSubmitFinish" CssClass="btn btn-secondary me-2" Text="Submit & Finish" />
-                        <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" />
+                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
+                        <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
                     </div>
                 </div>
             </div>
         </section>
+    </div>
+
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
     </div>
 </asp:Content>
