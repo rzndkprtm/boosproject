@@ -104,9 +104,9 @@ Partial Class Setting_Customer_Discount_Edit
             If type = "Designs" Then aliasType = "product"
             If type = "PriceProductGroups" Then aliasType = "productgroup"
             lblCompanyId.Text = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
-            lblCompanyDetailId.Text = settingClass.GetItemData("SELECT CompanyDetailId FROM Customers WHERE Id='" & customerId & "'")
+            lblPriceGroupId.Text = settingClass.GetItemData("SELECT PriceGroupId FROM Customers WHERE Id='" & customerId & "'")
 
-            BindProduct(aliasType, lblCompanyId.Text, lblCompanyDetailId.Text)
+            BindProduct(aliasType, lblCompanyId.Text, lblPriceGroupId.Text)
 
             ddlCustomer.SelectedValue = customerId
             ddlType.SelectedValue = aliasType
@@ -151,7 +151,7 @@ Partial Class Setting_Customer_Discount_Edit
                 thisString = "SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE companyArray.VALUE='" & companyId & "' AND applyArray.VALUE='Discounts' ORDER BY Name ASC"
             End If
             If type = "productgroup" Then
-                thisString = "SELECT PriceProductGroups.Id, CASE WHEN PriceProductGroups.Status='Active' THEN PriceProductGroups.Name ELSE PriceProductGroups.Name + ' [' + UPPER(PriceProductGroups.Status) + ']' END AS Name FROM PriceProductGroups LEFT JOIN Designs ON PriceProductGroups.DesignId=Designs.Id CROSS APPLY STRING_SPLIT(PriceProductGroups.CompanyDetailId, ',') AS companyArray WHERE companyArray.VALUE='" & companyDetailId & "' AND Designs.Type='Blinds' AND PriceProductGroups.Name NOT LIKE '%Panel Glide - Panel Only%' AND PriceProductGroups.Name NOT LIKE '%Panel Glide - Track Only%' AND (PriceProductGroups.Status='Active' OR PriceProductGroups.Status='Inactive') ORDER BY PriceProductGroups.Name ASC"
+                thisString = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'"
             End If
             ddlProduct.DataSource = settingClass.GetDataTable(thisString)
             ddlProduct.DataTextField = "Name"
