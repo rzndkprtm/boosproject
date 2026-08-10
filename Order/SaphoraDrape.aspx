@@ -178,8 +178,6 @@
                                                         <option value=""></option>
                                                         <option value="Left">Left</option>
                                                         <option value="Right">Right</option>
-                                                        <option value="Centre">Centre</option>
-                                                        <option value="Split">Split</option>
                                                     </select>
                                                 </div>
                                             </div>
