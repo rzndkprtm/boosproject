@@ -47,13 +47,25 @@
         BuildPager()
     End Sub
 
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindData(validationId As String)
         Try
             gvList.DataSource = settingClass.GetDataTable("SELECT * FROM ValidationDetails WHERE ValidationId='" & validationId & "'")
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
-            'btnAdd.Visible = LoginAccess("Add")
+            btnAdd.Visible = LoginAccess("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
