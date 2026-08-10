@@ -43,8 +43,9 @@
                                         <label class="form-label">Type</label>
                                         <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select">
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="product" Text="Product"></asp:ListItem>
-                                            <asp:ListItem Value="productgroup" Text="Product Group"></asp:ListItem>
+                                            <asp:ListItem Value="Designs" Text="Product"></asp:ListItem>
+                                            <asp:ListItem Value="PriceProductGroups" Text="Product Group"></asp:ListItem>
+                                            <asp:ListItem Value="RollerFabrics" Text="Fabric Type"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-8 form-group">
@@ -101,8 +102,8 @@
         <asp:Label runat="server" ID="lblCustomerId"></asp:Label>
         <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
         <asp:Label runat="server" ID="lblCompanyDetailId"></asp:Label>
-        <asp:Label runat="server" ID="lblReturnPage"></asp:Label>
         <asp:Label runat="server" ID="lblPriceGroupId"></asp:Label>
+        <asp:Label runat="server" ID="lblReturnPage"></asp:Label>        
     </div>
 
     <script type="text/javascript">
