@@ -43,8 +43,8 @@ Partial Class Setting_Validation_Detail_Edit
                 End Using
             End Using
 
-            dataLog = {"ValidationDetails", lblId.Text, Session("LoginId").ToString(), "Validation Detail Updated"}
-            settingClass.Logs(dataLog)
+            'dataLog = {"ValidationDetails", lblId.Text, Session("LoginId").ToString(), "Validation Detail Updated"}
+            'settingClass.Logs(dataLog)
 
             Response.Redirect("~/setting/validation", False)
         Catch ex As Exception

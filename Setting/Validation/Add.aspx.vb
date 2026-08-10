@@ -51,8 +51,8 @@ Partial Class Setting_Validation_Add
                     End Using
                 End Using
 
-                dataLog = {"Validations", thisId, Session("LoginId").ToString(), "Validation Created"}
-                settingClass.Logs(dataLog)
+                'dataLog = {"Validations", thisId, Session("LoginId").ToString(), "Validation Created"}
+                'settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/validation", False)
             End If
