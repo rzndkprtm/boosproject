@@ -43,7 +43,6 @@ Partial Class Setting_Validation_Edit
                 Exit Sub
             End If
             If msgError.InnerText = "" Then
-
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As SqlCommand = New SqlCommand("UPDATE Validations SET DesignId=@DesignId, Name=@Name, ErrorMessage=@ErrorMessage WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
