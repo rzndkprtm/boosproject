@@ -46,7 +46,8 @@ Partial Class Setting_Validation_Detail_Edit
             'dataLog = {"ValidationDetails", lblId.Text, Session("LoginId").ToString(), "Validation Detail Updated"}
             'settingClass.Logs(dataLog)
 
-            Response.Redirect("~/setting/validation", False)
+            Dim url As String = String.Format("~/setting/validation/detail?validationid={0}", lblId.Text)
+            Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -56,8 +57,8 @@ Partial Class Setting_Validation_Detail_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/validation/detail", False)
-        Exit Sub
+        Dim url As String = String.Format("~/setting/validation/detail?validationid={0}", lblId.Text)
+        Response.Redirect(url, False)
     End Sub
 
     Protected Sub BindData(detailId As String)

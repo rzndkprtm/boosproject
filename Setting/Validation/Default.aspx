@@ -67,7 +67,7 @@
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
                                                         <li runat="server" visible='<%# LoginAccess("Detail") %>'>
-                                                            <a href="javascript:void(0);" id="aDetail" class="dropdown-item" onclick="showDetail('<%# Eval("Id").ToString() %>');">Detail</a>
+                                                            <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/validation/detail/?validationid=" & Eval("Id")) %>'>Detail</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/validation/edit?validationid=" & Eval("Id")) %>'>Edit</a>
@@ -105,41 +105,6 @@
         </section>
     </div>
 
-    <div class="modal modal-blur fade" id="modalDetail" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-full modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Detail Validation</h5>
-                    <asp:Button runat="server" ID="btnAddDetail" CssClass="btn btn-light-danger" Text="Add Detail" OnClick="btnAddDetail_Click" />
-                </div>
-                <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtValidationId" style="display:none;"></asp:TextBox>
-                    <div class="alert alert-danger d-none" id="divErrorDetail">
-                        <span id="msgErrorDetail"></span>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover mb-0" id="tblDetail">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>GroupNo</th>
-                                    <th>FieldName</th>
-                                    <th>Operator</th>
-                                    <th>CompareValue</th>
-                                    <th>DataType</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal fade" id="modalSortOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -193,8 +158,6 @@
     </div>
     
     <script type="text/javascript">
-        var canEdit = <%= LoginAccess("Edit Formula").ToString().ToLower() %>;
-
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
@@ -245,63 +208,6 @@
             initChoices();
             bindGridRowClick();
         });
-        function showDetail(id) {
-            $("#divErrorDetail").addClass("d-none");
-            $("#msgErrorDetail").html("");
-
-            document.getElementById("<%=txtValidationId.ClientID %>").value = id;
-
-            $.ajax({
-                type: "POST",
-                url: "Default.aspx/GetValidationDetail",
-                data: JSON.stringify({ validationId: id }),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-                    let data = response.d;
-                    let html = "";
-                    if (data.length === 0) {
-                        html = `
-                                <tr>
-                                <td colspan="7" class="text-center">
-                                DATA NOT FOUND :)
-                                </td>
-                                </tr>`;
-                    }
-                    else {
-                        $.each(data, function (index, item) {
-                            let editButton = "";
-
-                            if (canEdit) {
-                                editButton = `
-                                    <button type="button" class="btn btn-sm btn-warning" onclick="editDetail(${item.Id})">Edit</button>`;
-                            }
-
-                            html += `
-                                <tr>
-                                    <td class="text-center">${index + 1}</td>
-                                    <td>${item.GroupNo}</td>
-                                    <td>${item.FieldName}</td>
-                                    <td>${item.Operators}</td>
-                                    <td>${item.CompareValue}</td>
-                                    <td>${item.DataType}</td>
-                                    <td class="text-center">${editButton}</td>
-                                </tr>`;
-                        });
-                    }
-                    $("#tblDetail tbody").html(html);
-                    $("#modalDetail").modal("show");
-                },
-                error: function (xhr) {
-                    $("#divErrorDetail").removeClass("d-none");
-                    $("#msgErrorDetail").html(xhr.responseText || "Failed load detail.");
-                    $("#modalDetail").modal("show");
-                }
-            });
-        }
-        function editDetail(itemId) {
-            window.location.href = "detail/edit?detailid=" + itemId;
-        }
         function dataSortOrder(id, designid) {
             document.getElementById("<%=txtSortOrderId.ClientID %>").value = id;
             document.getElementById("<%=txtDesignId.ClientID %>").value = designid;
@@ -339,7 +245,7 @@
                 }
             });
         }
-        ["modalDetail", "modalSortOrder", "modalLog"].forEach(function (id) {
+        ["modalSortOrder", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
