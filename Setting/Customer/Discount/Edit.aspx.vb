@@ -143,7 +143,7 @@ Partial Class Setting_Customer_Discount_Edit
         End Try
     End Sub
 
-    Protected Sub BindProduct(type As String, companyId As String, companyDetailId As String)
+    Protected Sub BindProduct(type As String, companyId As String, priceGroupId As String)
         ddlProduct.Items.Clear()
         Try
             Dim thisString As String = String.Empty
