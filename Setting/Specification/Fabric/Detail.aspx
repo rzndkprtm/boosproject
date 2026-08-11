@@ -84,7 +84,7 @@
                                         <div class="row mb-4">
                                             <div class="col-4 text-muted">Company Detail</div>
                                             <div class="col-8 fw-semibold">
-                                                <asp:Label runat="server" ID="lblCompanyDetail"></asp:Label>
+                                                <asp:Label runat="server" ID="lblCompanyDetail" Visible="false"></asp:Label>
                                                 <asp:Label runat="server" ID="lblCompanyDetailName"></asp:Label>
                                             </div>
                                         </div>
