@@ -1116,17 +1116,17 @@ Partial Class Order_Upload
                                 End If
 
                                 If controlType = "Cordless" Then
-                                    If Not String.IsNullOrEmpty(controlPosition) Then
-                                        Dim thisAlert As String = String.Format("CORD POSITION IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
-                                        MessageError(True, thisAlert)
-                                        Exit For
-                                    End If
+                                    'If Not String.IsNullOrEmpty(controlPosition) Then
+                                    '    Dim thisAlert As String = String.Format("CORD POSITION IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
+                                    '    MessageError(True, thisAlert)
+                                    '    Exit For
+                                    'End If
 
-                                    If Not String.IsNullOrEmpty(cordLengthText) Then
-                                        Dim thisAlert As String = String.Format("CORD LENGTH IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
-                                        MessageError(True, thisAlert)
-                                        Exit For
-                                    End If
+                                    'If Not String.IsNullOrEmpty(cordLengthText) Then
+                                    '    Dim thisAlert As String = String.Format("CORD LENGTH IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
+                                    '    MessageError(True, thisAlert)
+                                    '    Exit For
+                                    'End If
                                 End If
 
                                 If Not String.IsNullOrEmpty(supply) Then
