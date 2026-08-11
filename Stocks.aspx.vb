@@ -65,7 +65,7 @@ Partial Class Stocks
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "12"),
-                New SqlParameter("@CompanyId", companyDetail),
+                New SqlParameter("@CompanyDetailId", companyDetail),
                 New SqlParameter("@Search", searchText)
             }
             gvListRoller.DataSource = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)

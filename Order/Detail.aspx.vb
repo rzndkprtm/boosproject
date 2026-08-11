@@ -546,11 +546,9 @@ Partial Class Order_Detail
 
             If chkSendEmail.Checked = True Then
                 Dim mailingClass As New MailingClass
-                If lblCompanyId.Text = "2" Then
-                    If cashSale = False Then mailingClass.NewOrder(lblHeaderId.Text)
-                    If cashSale = True Then mailingClass.NewOrder_Proforma(lblHeaderId.Text)
-                End If
-                If lblCompanyId.Text = "3" Then mailingClass.NewOrder(lblHeaderId.Text)
+
+                If cashSale = False Then mailingClass.NewOrder(lblHeaderId.Text)
+                If cashSale = True Then mailingClass.NewOrder_Proforma(lblHeaderId.Text)
 
                 Dim checkPrinting As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND (NULLIF(LTRIM(RTRIM(Printing)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingB)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingC)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingD)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingE)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingF)),'') IS NOT NULL)")
                 If checkPrinting > 0 Then

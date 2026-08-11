@@ -2084,14 +2084,14 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
             const textsixth = document.getElementById("textsixth");
 
             if (blindName === "Single Blind") {
-                divShow.push("divfabric", "divroll", "divcontrolposition", "divbottomtype", "divbottomcolour", "divsize");
-
-                if (companyName === "PT Bumi Indah Global") {
-                    divShow.push("divtoptrack");
-                }
+                divShow.push("divfabric", "divroll", "divcontrolposition", "divbottomtype", "divbottomcolour", "divsize");                
 
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");
+
+                    if (companyName === "PT Bumi Indah Global") {
+                        divShow.push("divtoptrack");
+                    }
                 }
 
                 if (controlName === "Chain") {
@@ -2352,7 +2352,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 triggerFlatBottom();
             }
 
-            if (tubeName === "Sunboss 43mm" || tubeName === "Sunboss 50mm") {
+            if (tubeName === "Sunboss 43mm" || tubeName === "Sunboss 50mm" || tubeName === "Sunboss 63mm") {
                 divShow.push("divbracketsize");
                 if (blindName === "Link 2 Blinds Dependent" || blindName === "Link 2 Blinds Independent" || blindName === "Link 3 Blinds Dependent" || blindName === "Link 3 Blinds Independent with Dependent") {
                     divShow.push("divadjusting");

@@ -502,8 +502,8 @@
                                                             <%# Container.DataItemIndex + 1 %>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
-                                                    <asp:BoundField DataField="Type" HeaderText="Type" />
-                                                    <asp:TemplateField HeaderText="Discount Tile">
+                                                    <asp:BoundField DataField="Type" HeaderText="Type" ItemStyle-Width="180px" />
+                                                    <asp:TemplateField HeaderText="Discount Tile" ItemStyle-Width="300px">
                                                         <ItemTemplate>
                                                             <%# DiscountTitle(Eval("Type").ToString(), Eval("DataId").ToString()) %>
                                                         </ItemTemplate>
@@ -514,7 +514,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:BoundField DataField="Description" HeaderText="Description" />
-                                                    <asp:TemplateField ItemStyle-Width="120px">
+                                                    <asp:TemplateField ItemStyle-Width="100px">
                                                         <ItemTemplate>
                                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                             <ul class="dropdown-menu">

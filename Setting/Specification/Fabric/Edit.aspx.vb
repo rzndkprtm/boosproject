@@ -35,7 +35,6 @@ Partial Class Setting_Specification_Fabric_Edit
 
     Protected Sub lbDesign_SelectedIndexChanged(sender As Object, e As EventArgs)
         Dim designIds As New List(Of String)
-
         For Each item As ListItem In lbDesign.Items
             If item.Selected AndAlso Not String.IsNullOrEmpty(item.Value) Then
                 designIds.Add(item.Value)
@@ -69,6 +68,7 @@ Partial Class Setting_Specification_Fabric_Edit
                     Next
                     designType = design.Remove(design.Length - 1).ToString()
                 End If
+
                 Dim tubeType As String = String.Empty
                 If Not lbTube.SelectedValue = "" Then
                     Dim tube As String = String.Empty

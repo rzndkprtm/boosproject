@@ -925,8 +925,6 @@ Public Class MailingClass
             Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='New Order | Proforma' AND Active=1")
             If mailData Is Nothing Then Exit Sub
 
-            If Not companyId = "2" Then Exit Sub
-
             Dim mailServer As String = mailData("Server").ToString()
             Dim mailHost As String = mailData("Host").ToString()
             Dim mailPort As Integer = mailData("Port")
@@ -967,9 +965,7 @@ Public Class MailingClass
 
             mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
             mailBody &= "<br /><br /><br />"
-            mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>Reza Andika Pratama</span><span style='font-family: Cambria; font-size:16px;'> | Developer</span>"
-            mailBody &= "<br />"
-            mailBody &= "<span style='font-family: Cambria; font-size:16px;'>reza@bigblinds.co.id</span>"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>Reza Andika Pratama</span>"
 
             Dim myMail As New MailMessage
 

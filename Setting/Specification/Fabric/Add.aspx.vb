@@ -23,7 +23,6 @@ Partial Class Setting_Specification_Fabric_Add
 
     Protected Sub lbDesign_SelectedIndexChanged(sender As Object, e As EventArgs)
         Dim designIds As New List(Of String)
-
         For Each item As ListItem In lbDesign.Items
             If item.Selected AndAlso Not String.IsNullOrEmpty(item.Value) Then
                 designIds.Add(item.Value)
@@ -140,7 +139,6 @@ Partial Class Setting_Specification_Fabric_Add
         Try
             Dim conditions As New List(Of String)
             For Each designId As String In designIds
-
                 Dim designName As String = settingClass.GetItemData("SELECT Name FROM Designs WHERE Id='" & designId.Replace("'", "''") & "'")
 
                 If InStr(designName, "Roman", CompareMethod.Text) > 0 Then
