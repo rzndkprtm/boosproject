@@ -537,21 +537,7 @@
                                 </div>
                                 <div class="row mt-3">
                                     <div class="col-12">
-                                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnAddDiscount">Add Discount</button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <asp:Button runat="server" ID="btnAddDiscountA" CssClass="dropdown-item" Text="By Product" OnClick="btnAddDiscountA_Click" />
-                                            </li>
-                                            <li>
-                                                <asp:Button runat="server" ID="btnAddDiscountB" CssClass="dropdown-item" Text="By Product Group" OnClick="btnAddDiscountB_Click" />
-                                            </li>
-                                            <li>
-                                                <asp:Button runat="server" ID="btnAddDiscountC" CssClass="dropdown-item" Text="By Roller Fabric Type" OnClick="btnAddDiscountC_Click" />
-                                            </li>
-                                            <li>
-                                                <asp:Button runat="server" ID="btnAddDiscountD" CssClass="dropdown-item" Text="By Roller Fabric Colour" OnClick="btnAddDiscountD_Click" />
-                                            </li>
-                                        </ul>
+                                        <asp:Button runat="server" ID="btnAddDiscount" CssClass="btn btn-primary" Text="Add Discount" OnClick="btnAddDiscount_Click" />
                                         <a href="javascript:void(0);" runat="server" id="aResetDiscount" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetDiscount">Reset Discount</a>
                                     </div>
                                 </div>

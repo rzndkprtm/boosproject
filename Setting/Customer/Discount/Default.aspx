@@ -95,17 +95,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Discount</h5>
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnAddDiscount">Add Discount</button>
-                    <ul class="dropdown-menu">
-                        <li><asp:Button runat="server" ID="btnAddDiscountA" CssClass="dropdown-item" Text="Product" OnClick="btnAddDiscountA_Click" /></li>
-                        <li><asp:Button runat="server" ID="btnAddDiscountB" CssClass="dropdown-item" Text="Product Group" OnClick="btnAddDiscountB_Click" /></li>
-                        <li><asp:Button runat="server" ID="btnAddDiscountC" CssClass="dropdown-item" Text="Fabric Type (Roller Blind)" OnClick="btnAddDiscountC_Click" /></li>
-                        <%--<li><asp:Button runat="server" ID="btnAddDiscountE" CssClass="dropdown-item" Text="Fabric Type (Roman Blind)" OnClick="btnAddDiscountE_Click" /></li>--%>
-                        <%--<li><asp:Button runat="server" ID="btnAddDiscountG" CssClass="dropdown-item" Text="Fabric Type (Panel Glide)" OnClick="btnAddDiscountG_Click" /></li>--%>
-                        <li><asp:Button runat="server" ID="btnAddDiscountD" CssClass="dropdown-item" Text="Fabric Colour (Roller Blind)" OnClick="btnAddDiscountD_Click" /></li>                        
-                        <%--<li><asp:Button runat="server" ID="btnAddDiscountF" CssClass="dropdown-item" Text="Fabric Colour (Roman Blind)" OnClick="btnAddDiscountF_Click" /></li>--%>                        
-                        <%--<li><asp:Button runat="server" ID="btnAddDiscountH" CssClass="dropdown-item" Text="Fabric Colour (Panel Glide)" OnClick="btnAddDiscountH_Click" /></li>--%>
-                    </ul>
+                    <asp:Button runat="server" ID="btnAddDiscount" CssClass="btn btn-primary" Text="Add Discount" OnClick="btnAddDiscount_Click" />
                 </div>
                 <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtCustomerId" style="display:none;"></asp:TextBox>

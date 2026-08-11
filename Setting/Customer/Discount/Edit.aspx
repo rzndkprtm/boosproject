@@ -24,7 +24,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-7">
+            <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Discount Form</h4>
@@ -32,47 +32,51 @@
                     <div class="card-body">
                         <div class="form form-vertical">
                             <div class="form-body">
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Account</label>
-                                        <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Type</label>
-                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="Designs" Text="Product"></asp:ListItem>
-                                            <asp:ListItem Value="PriceProductGroups" Text="Product Group"></asp:ListItem>
-                                            <asp:ListItem Value="RollerFabrics" Text="Roller Fabric Type"></asp:ListItem>
-                                            <asp:ListItem Value="RollerFabricColours" Text="Roller Fabric Colour"></asp:ListItem>
-                                            <asp:ListItem Value="RomanFabrics" Text="Roman Fabric Type"></asp:ListItem>
-                                            <asp:ListItem Value="RomanFabricColours" Text="Roman Fabric Colour"></asp:ListItem>
-                                            <asp:ListItem Value="PanelGlideFabrics" Text="Panel Glide Fabric Type"></asp:ListItem>
-                                            <asp:ListItem Value="PanelGlideFabricColours" Text="Panel Glide Fabric Colour"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-8 form-group">
-                                        <label class="form-label">Product</label>
-                                        <asp:DropDownList runat="server" ID="ddlProduct" CssClass="choices form-select"></asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                        <label class="form-label">Discount</label>
-                                        <div class="input-group">
-                                            <asp:TextBox runat="server" TextMode="Number" ID="txtDiscount" CssClass="form-control" placeholder="Discount ......" autocomplete="off"></asp:TextBox>
-                                            <span class="input-group-text">%</span>
+                                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Account</label>
+                                                <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Description</label>
-                                        <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" CssClass="form-control" Height="100px" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                                    </div>
-                                </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Designs" Text="Product"></asp:ListItem>
+                                                    <asp:ListItem Value="PriceProductGroups" Text="Product Group"></asp:ListItem>
+                                                    <asp:ListItem Value="RollerFabrics" Text="Roller Fabric Type"></asp:ListItem>
+                                                    <asp:ListItem Value="RollerFabricColours" Text="Roller Fabric Colour"></asp:ListItem>
+                                                    <asp:ListItem Value="RomanFabrics" Text="Roman Fabric Type"></asp:ListItem>
+                                                    <asp:ListItem Value="RomanFabricColours" Text="Roman Fabric Colour"></asp:ListItem>
+                                                    <asp:ListItem Value="PanelGlideFabrics" Text="Panel Glide Fabric Type"></asp:ListItem>
+                                                    <asp:ListItem Value="PanelGlideFabricColours" Text="Panel Glide Fabric Colour"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                                <label class="form-label">Product</label>
+                                                <asp:DropDownList runat="server" ID="ddlProduct" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Discount</label>
+                                                <div class="input-group">
+                                                    <asp:TextBox runat="server" TextMode="Number" ID="txtDiscount" CssClass="form-control" placeholder="Discount ......" autocomplete="off"></asp:TextBox>
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Description</label>
+                                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" CssClass="form-control" Height="100px" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
                                 <div class="row mt-3" runat="server" id="divError">
                                     <div class="col-12">
                                         <div class="alert alert-danger">
@@ -89,7 +93,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-5">
+            <div class="col-12 col-sm-12 col-lg-4">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title text-center">Information</h4>
@@ -105,13 +109,43 @@
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblCustomerId"></asp:Label>
-        <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
-        <asp:Label runat="server" ID="lblCompanyDetailId"></asp:Label>
-        <asp:Label runat="server" ID="lblPriceGroupId"></asp:Label>
         <asp:Label runat="server" ID="lblReturnPage"></asp:Label>        
     </div>
 
     <script type="text/javascript">
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) loading.style.display = "none";
+        });
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
+            });
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
+                initChoices();
+            });
+        }
+        function initChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.choices) {
+                    el.choices.destroy();
+                }
+                el.choices = new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false
+                });
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            initChoices();
+        });
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>
