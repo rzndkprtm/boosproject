@@ -20,22 +20,20 @@ Partial Class Setting_Customer_Discount_Add
             Exit Sub
         End If
 
-        If String.IsNullOrEmpty(Request.QueryString("type")) Then
-            Response.Redirect("~/setting/customer/discount/", False)
-            Exit Sub
-        End If
-
         If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
             lblReturnPage.Text = Request.QueryString("returnpage").ToString()
         End If
 
         lblCustomerId.Text = Request.QueryString("custid").ToString()
-        Dim type As String = Request.QueryString("type").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindCustomer(lblCustomerId.Text)
-            BindPage(lblCustomerId.Text, type)
         End If
+    End Sub
+
+    Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindProduct(ddlCustomer.SelectedValue, ddlType.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -69,7 +67,8 @@ Partial Class Setting_Customer_Discount_Add
                 Dim sql As String = String.Empty
 
                 If ddlType.SelectedValue = "Designs" Then
-                    sql = "SELECT Id FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Discounts' AND companyArray.VALUE='" & lblCompanyId.Text & "' ORDER BY Id ASC"
+                    Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & ddlCustomer.SelectedValue & "'")
+                    sql = "SELECT Id FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Discounts' AND companyArray.VALUE='" & companyId & "' ORDER BY Id ASC"
                 End If
 
                 If ddlProduct.SelectedValue <> "" Then
@@ -162,58 +161,45 @@ Partial Class Setting_Customer_Discount_Add
         End Try
     End Sub
 
-    Protected Sub BindPage(customerId As String, type As String)
-        Try
-            ddlType.SelectedValue = type
-            ddlType.Enabled = False
-
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT CompanyId, CompanyDetailId, PriceGroupId FROM Customers WHERE Id='" & customerId & "'")
-            If thisData IsNot Nothing Then
-                lblCompanyId.Text = thisData("CompanyId").ToString().Trim()
-                lblCompanyDetailId.Text = thisData("CompanyDetailId").ToString().Trim()
-                lblPriceGroupId.Text = thisData("PriceGroupId").ToString().Trim()
-
-                BindProduct(type, lblCompanyId.Text, lblCompanyDetailId.Text, lblPriceGroupId.Text)
-            End If
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindProduct(type As String, companyId As String, companyDetailId As String, priceGroupId As String)
+    Protected Sub BindProduct(customerId As String, discType As String)
         ddlProduct.Items.Clear()
         Try
-            Dim thisString As String = String.Empty
-            If type = "Designs" Then
-                thisString = "SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE companyArray.VALUE='" & companyId & "' AND applyArray.VALUE='Discounts' ORDER BY Name ASC"
-            End If
-            If type = "PriceProductGroups" Then
-                thisString = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'"
-            End If
-            If type = "RollerFabrics" Then
-                thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='12' AND (Status='In Stock' OR Status='Limited Stock')"
-            End If
-            If type = "RomanFabrics" Then
-                thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='8' AND (Status='In Stock' OR Status='Limited Stock')"
-            End If
-            If type = "PanelGlideFabrics" Then
-                thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='6' AND (Status='In Stock' OR Status='Limited Stock')"
-            End If
-            If type = "RollerFabricColours" Then
-                thisString = "SELECT FabricColours.Id, FabricColours.Name FROM FabricColours LEFT JOIN Fabrics ON FabricColours.FabricId=Fabrics.Id CROSS APPLY STRING_SPLIT(Fabrics.CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(Fabrics.DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='12' AND (Fabrics.Status='In Stock' OR Fabrics.Status='Limited Stock') AND (FabricColours.Status='In Stock' OR FabricColours.Status='Limited Stock')"
-            End If
+            If Not String.IsNullOrEmpty(discType) Then
+                Dim thisData As DataRow = settingClass.GetDataRow("SELECT CompanyId, CompanyDetailId, PriceGroupId FROM Customers WHERE Id='" & customerId & "'")
+                If thisData IsNot Nothing Then
+                    Dim companyId As String = thisData("CompanyId").ToString().Trim()
+                    Dim companyDetailId As String = thisData("CompanyDetailId").ToString().Trim()
+                    Dim priceGroupId As String = thisData("PriceGroupId").ToString().Trim()
 
+                    Dim thisString As String = String.Empty
+                    If discType = "Designs" Then
+                        thisString = "SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE companyArray.VALUE='" & companyId & "' AND applyArray.VALUE='Discounts' ORDER BY Name ASC"
+                    End If
+                    If discType = "PriceProductGroups" Then
+                        thisString = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'"
+                    End If
+                    If discType = "RollerFabrics" Then
+                        thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='12' AND (Status='In Stock' OR Status='Limited Stock')"
+                    End If
+                    If discType = "RomanFabrics" Then
+                        thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='8' AND (Status='In Stock' OR Status='Limited Stock')"
+                    End If
+                    If discType = "PanelGlideFabrics" Then
+                        thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='6' AND (Status='In Stock' OR Status='Limited Stock')"
+                    End If
+                    If discType = "RollerFabricColours" Then
+                        thisString = "SELECT FabricColours.Id, FabricColours.Name FROM FabricColours LEFT JOIN Fabrics ON FabricColours.FabricId=Fabrics.Id CROSS APPLY STRING_SPLIT(Fabrics.CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(Fabrics.DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='12' AND (Fabrics.Status='In Stock' OR Fabrics.Status='Limited Stock') AND (FabricColours.Status='In Stock' OR FabricColours.Status='Limited Stock')"
+                    End If
 
-            ddlProduct.DataSource = settingClass.GetDataTable(thisString)
-            ddlProduct.DataTextField = "Name"
-            ddlProduct.DataValueField = "Id"
-            ddlProduct.DataBind()
+                    ddlProduct.DataSource = settingClass.GetDataTable(thisString)
+                    ddlProduct.DataTextField = "Name"
+                    ddlProduct.DataValueField = "Id"
+                    ddlProduct.DataBind()
 
-            If ddlProduct.Items.Count > 1 Then
-                ddlProduct.Items.Insert(0, New ListItem("", ""))
+                    If ddlProduct.Items.Count > 1 Then
+                        ddlProduct.Items.Insert(0, New ListItem("", ""))
+                    End If
+                End If
             End If
         Catch ex As Exception
             ddlProduct.Items.Clear()

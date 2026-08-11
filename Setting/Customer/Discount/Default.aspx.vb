@@ -88,43 +88,8 @@ Partial Class Setting_Customer_Discount_Default
         BuildPager()
     End Sub
 
-    Protected Sub btnAddDiscountA_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=Designs", txtCustomerId.Text)
-        Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub btnAddDiscountB_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=PriceProductGroups", txtCustomerId.Text)
-        Response.Redirect(Url, False)
-    End Sub
-
-    Protected Sub btnAddDiscountC_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=RollerFabrics", txtCustomerId.Text)
-        Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub btnAddDiscountD_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=RollerFabricColours", txtCustomerId.Text)
-        Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub btnAddDiscountE_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=RomanFabrics", txtCustomerId.Text)
-        Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub btnAddDiscountF_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=RomanFabricColours", txtCustomerId.Text)
-        Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub btnAddDiscountG_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=PanelGlideFabrics", txtCustomerId.Text)
-        Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub btnAddDiscountH_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}&type=PanelGlideFabricColours", txtCustomerId.Text)
+    Protected Sub btnAddDiscount_Click(sender As Object, e As EventArgs)
+        Dim url As String = String.Format("~/setting/customer/discount/add?custid={0}", txtCustomerId.Text)
         Response.Redirect(url, False)
     End Sub
 

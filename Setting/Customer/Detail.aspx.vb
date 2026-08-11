@@ -881,27 +881,9 @@ Partial Class Setting_Customer_Detail
         divErrorMarkup.Visible = visible : msgErrorMarkup.InnerText = message
     End Sub
 
-    Protected Sub btnAddDiscountA_Click(sender As Object, e As EventArgs)
+    Protected Sub btnAddDiscount_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-discount"
-        url = String.Format("~/setting/customer/discount/add?custid={0}&type=Designs&returnpage=detail", lblId.Text)
-        Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub btnAddDiscountB_Click(sender As Object, e As EventArgs)
-        Session("selectedTabCustomer") = "list-discount"
-        url = String.Format("~/setting/customer/discount/add?custid={0}&type=PriceProductGroups&returnpage=detail", lblId.Text)
-        Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub btnAddDiscountC_Click(sender As Object, e As EventArgs)
-        Session("selectedTabCustomer") = "list-discount"
-        url = String.Format("~/setting/customer/discount/add?custid={0}&type=RollerFabrics&returnpage=detail", lblId.Text)
-        Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub btnAddDiscountD_Click(sender As Object, e As EventArgs)
-        Session("selectedTabCustomer") = "list-discount"
-        url = String.Format("~/setting/customer/discount/add?custid={0}&type=RollerFabricColours&returnpage=detail", lblId.Text)
+        url = String.Format("~/setting/customer/discount/add?custid={0}&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
     End Sub
 
