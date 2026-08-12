@@ -1555,7 +1555,7 @@ Partial Class Order_Method
             End If
         End If
 
-        If data.companydetailid = "5" Then
+        If data.companydetailid = "5" AndAlso (blindName = "Complete Set (Single)" OrElse blindName = "Curtain Only") Then
             If String.IsNullOrEmpty(data.cutlength) Then Return "FABRIC CUT LENGTH IS REQUIRED !"
             If Not Integer.TryParse(data.cutlength, cutlength) OrElse cutlength <= 0 Then
                 Return "PLEASE CHECK YOUR FABRIC CUT LENGTH ORDER !"
