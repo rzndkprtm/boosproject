@@ -1090,6 +1090,9 @@ function bindComponentForm(blindType, colourType) {
 
             if (blindName === "Complete Set (Single)") {
                 divShow.push("divmouting", "divheading", "divfabric", "divtrack", "divstackposition", "divwidth", "divdrop", "divbottomhem", "divtieback");
+                if (companyDetailId === "5") {
+                    divShow.push("divcutlength");
+                }
             } else if (blindName === "Complete Set (Double)") {
                 divShow.push("divfirst", "divfirstend", "divsecond", "divsecondend", "divmouting", "divheading", "divheadingb", "divfabric", "divfabricb", "divtrack", "divtrackb", "divstackposition", "divstackpositionb", "divwidth", "divwidthb", "divdrop", "divdropb", "divbottomhem", "divtieback");
             } else if (blindName === "Curtain Only") {
