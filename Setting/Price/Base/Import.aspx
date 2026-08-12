@@ -23,14 +23,7 @@
         </div>
     </div>
     <div class="page-content">
-        <section class="row" runat="server" id="divError">
-            <div class="col-12">
-                <div class="alert alert-danger">
-                    <span runat="server" id="msgError"></span>
-                </div>
-            </div>
-        </section>
-        <section class="row mt-3">
+        <section class="row">
             <div class="col-12 col-sm-12 col-lg-7 mb-2">
                 <div class="card">
                     <div class="card-header">
@@ -72,6 +65,13 @@
                                         </div>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
+                                <div class="row" runat="server" id="divError">
+                                    <div class="col-12">
+                                        <div class="alert alert-danger">
+                                            <span runat="server" id="msgError"></span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

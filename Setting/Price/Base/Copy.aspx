@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Delete.aspx.vb" Inherits="Setting_Price_Base_Delete" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Delete Price Base" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Copy.aspx.vb" Inherits="Setting_Price_Base_Copy" MaintainScrollPositionOnPostback="true" MasterPageFile="~/Site.Master" Debug="true" Title="Copy Price Base" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -23,18 +23,25 @@
         </div>
     </div>
     <div class="page-content">
-        <section class="row">
-            <div class="col-12 col-sm-12 col-lg-7">
+        <section class="row mt-3">
+            <div class="col-12 col-sm-12 col-lg-7 mb-2">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Price Base Form</h4>
+                        <h4 class="card-title">Copy Form</h4>
                     </div>
                     <div class="card-body">
                         <div class="form form-vertical">
                             <div class="form-body">
                                 <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
-                                        <div class="row mb-2">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="divider">
+                                                    <div class="divider-text">FROM</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <label class="form-label">Price Group</label>
                                                 <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
@@ -43,21 +50,33 @@
                                                 <label class="form-label">Category</label>
                                                 <asp:DropDownList runat="server" ID="ddlCategory" CssClass="choices form-select">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                    <asp:ListItem Value="Sell" Text="Sell Only"></asp:ListItem>
-                                                    <asp:ListItem Value="Buy" Text="Buy Only"></asp:ListItem>
-                                                    <asp:ListItem Value="Sell & Buy" Text="Sell & Buy"></asp:ListItem>
+                                                    <asp:ListItem Value="Sell" Text="Sell"></asp:ListItem>
+                                                    <asp:ListItem Value="Buy" Text="Buy"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div class="row mb-2">
+                                        <div class="row">
                                             <div class="col-12 form-group">
                                                 <label class="form-label">Product Group</label>
-                                                <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select"></asp:DropDownList>
+                                                <asp:ListBox runat="server" ID="lbProductGroup" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="divider">
+                                                    <div class="divider-text">TO</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                <label class="form-label">Price Group</label>
+                                                <asp:DropDownList runat="server" ID="ddlPriceGroupNew" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
                                         </div>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
-                                <div class="row mt-3" runat="server" id="divError">
+                                <div class="row" runat="server" id="divError">
                                     <div class="col-12">
                                         <div class="alert alert-danger">
                                             <span runat="server" id="msgError"></span>

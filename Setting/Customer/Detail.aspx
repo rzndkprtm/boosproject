@@ -36,13 +36,28 @@
                 </div>
             </div>
         </section>
-        <section class="row mb-3">
+        <section class="row mb-5">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnEditCustomer" CssClass="btn btn-primary" Text="Edit" OnClick="btnEditCustomer_Click" />
                 <a href="javascript:void(0);" runat="server" id="aDelete" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete</a>
                 <a href="javascript:void(0);" runat="server" id="aWelcome" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalWelcome">Welcome</a>
                 <a href="javascript:void(0);" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalSendLogin">Send Login</a>
                 <a href="javascript:void(0);" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Re-Price Order</a>
+                <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Setting</button>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalOnStop">Change On Stop</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCashSale">Change Cash Sale</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalNewsletter">Change Newsletter</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalMinimumSurcharge">Change Minimum Surcharge</a>
+                    </li>
+                </ul>
                 <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Customers', '<%= lblId.Text %>')">Log</a>
             </div>
         </section>
@@ -771,6 +786,150 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modalOnStop" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change On Stop</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">On Stop (OLD)</label>
+                            <asp:DropDownList runat="server" ID="ddlOnStopOld" CssClass="choices form-select" Enabled="false">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">On Stop (NEW)</label>
+                            <asp:DropDownList runat="server" ID="ddlOnStopNew" CssClass="choices form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnOnStop" Text="Submit" CssClass="btn btn-info" OnClick="btnOnStop_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalCashSale" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Cash Sale</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Cash Sale (OLD)</label>
+                            <asp:DropDownList runat="server" ID="ddlCashSaleOld" CssClass="choices form-select" Enabled="false">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Cash Sale (NEW)</label>
+                            <asp:DropDownList runat="server" ID="ddlCashSaleNew" CssClass="choices form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnCashSale" Text="Submit" CssClass="btn btn-info" OnClick="btnCashSale_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalNewsletter" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Newsletter</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Newsletter (OLD)</label>
+                            <asp:DropDownList runat="server" ID="ddlNewsletterOld" CssClass="choices form-select" Enabled="false">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Newsletter (NEW)</label>
+                            <asp:DropDownList runat="server" ID="ddlNewsletterNew" CssClass="choices form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnNewsletter" Text="Submit" CssClass="btn btn-info" OnClick="btnNewsletter_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalMinimumSurcharge" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Minimum Surcharge</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Minimum Surcharge (OLD)</label>
+                            <asp:DropDownList runat="server" ID="ddlMinimumSurchargeOld" CssClass="choices form-select" Enabled="false">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Minimum Surcharge (NEW)</label>
+                            <asp:DropDownList runat="server" ID="ddlMinimumSurchargeNew" CssClass="choices form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
+                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnMinimumSurcharge" Text="Submit" CssClass="btn btn-info" OnClick="btnMinimumSurcharge_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1279,7 +1438,6 @@
         function dataActiveLogin(loginid, status) {
             document.getElementById("<%=txtActiveLoginId.ClientID %>").value = loginid;
             document.getElementById("<%=txtActiveLoginStatus.ClientID %>").value = status;
-
             let title = "";
             if (status === "1") {
                 title = "Disable Customer Login";
@@ -1359,7 +1517,9 @@
             document.getElementById("<%=txtDeleteDetailPromoId.ClientID %>").value = detailid;
         }
         [
-            "modalDelete", "modalRecalculate", "modalLog", "modalWelcome", "modalSendLogin", "modalWaiting",
+            "modalDelete", "modalRecalculate", "modalWelcome", "modalSendLogin",
+            "modalOnStop", "modalCashSale", "modalNewsletter", "modalMinimumSurcharge",
+            "modalWaiting", , "modalLog",
             "modalDeleteContact", "modalPrimaryContact",
             "modalDeleteAddress", "modalPrimaryAddress",
             "modalDeleteBusiness", "modalPrimaryBusiness",

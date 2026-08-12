@@ -100,7 +100,7 @@ Partial Class Setting_Customer_Edit
                 If ddlLevel.SelectedValue = "Primary" OrElse ddlLevel.SelectedValue = "Standard" Then primaryId = String.Empty
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET DebtorCode=@DebtorCode, Name=@Name, Level=@Level, PrimaryId=@PrimaryId, CompanyId=@Company, CompanyDetailId=@CompanyDetail, State=@State, Operator=@Operator, PriceGroupId=@PriceGroup, ShutterPriceGroupId=@ShutterPriceGroup, DoorPriceGroupId=@DoorPriceGroupId, OnStop=@OnStop, CashSale=@CashSale, Newsletter=@Newsletter, MinSurcharge=@MinSurcharge WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET DebtorCode=@DebtorCode, Name=@Name, Level=@Level, PrimaryId=@PrimaryId, CompanyId=@Company, CompanyDetailId=@CompanyDetail, State=@State, Operator=@Operator, PriceGroupId=@PriceGroup, ShutterPriceGroupId=@ShutterPriceGroup, DoorPriceGroupId=@DoorPriceGroupId WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@DebtorCode", txtDebtorCode.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Level", ddlLevel.SelectedValue)
@@ -113,10 +113,6 @@ Partial Class Setting_Customer_Edit
                         thisCmd.Parameters.AddWithValue("@PriceGroup", ddlPriceGroup.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@ShutterPriceGroup", ddlPriceGroupShutter.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@DoorPriceGroupId", ddlPriceGroupDoor.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@OnStop", ddlOnStop.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@CashSale", ddlCashSale.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Newsletter", ddlNewsletter.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@MinSurcharge", ddlMinSurcharge.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -186,10 +182,6 @@ Partial Class Setting_Customer_Edit
             ddlPriceGroup.SelectedValue = myData("PriceGroupId").ToString()
             ddlPriceGroupShutter.SelectedValue = myData("ShutterPriceGroupId").ToString()
             ddlPriceGroupDoor.SelectedValue = myData("DoorPriceGroupId").ToString()
-            ddlOnStop.SelectedValue = Convert.ToInt32(myData("OnStop"))
-            ddlCashSale.SelectedValue = Convert.ToInt32(myData("CashSale"))
-            ddlNewsletter.SelectedValue = Convert.ToInt32(myData("Newsletter"))
-            ddlMinSurcharge.SelectedValue = Convert.ToInt32(myData("MinSurcharge"))
 
             BindComponentForm(ddlLevel.SelectedValue)
         Catch ex As Exception

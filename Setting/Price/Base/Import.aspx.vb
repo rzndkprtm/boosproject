@@ -11,7 +11,7 @@ Partial Class Setting_Price_Base_Import
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/price/base/editable", False)
+            Response.Redirect("~/setting/price/base/", False)
             Exit Sub
         End If
 

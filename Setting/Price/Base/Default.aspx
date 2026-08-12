@@ -42,14 +42,28 @@
             <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
                 <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="addPrice">Add Price</button>
                 <ul class="dropdown-menu">
-                    <asp:Button runat="server" ID="btnAdd" CssClass="dropdown-item" Text="Add" OnClick="btnAdd_Click" />
-                    <asp:Button runat="server" ID="btnImport" CssClass="dropdown-item" Text="Import" OnClick="btnImport_Click" />
+                    <li>
+                        <asp:Button runat="server" ID="btnAdd" CssClass="dropdown-item" Text="Add" OnClick="btnAdd_Click" />
+                    </li>
+                    <li>
+                        <asp:Button runat="server" ID="btnImport" CssClass="dropdown-item" Text="Import" OnClick="btnImport_Click" />
+                    </li>
+                    <li>
+                        <asp:Button runat="server" ID="btnCopy" CssClass="dropdown-item" Text="Copy" OnClick="btnCopy_Click" />
+                    </li>
+                    <li>
+                        <asp:Button runat="server" ID="btnDiscount" CssClass="dropdown-item" Text="Discount" OnClick="btnDiscount_Click" />
+                    </li>
                 </ul>
                 <asp:Button runat="server" ID="btnDeletePricing" CssClass="btn btn-danger" Text="Delete Pricing" OnClick="btnDeletePricing_Click" />
                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="morePrice">More</button>
                 <ul class="dropdown-menu">
-                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalConditional">Update Special Conditional</a>
-                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRePrice">Re Price</a>
+                    <li>
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalConditional">Update Conditional</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalRePrice">Re Price</a>
+                    </li>
                 </ul>
             </div>
         </section>

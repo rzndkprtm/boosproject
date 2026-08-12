@@ -142,7 +142,7 @@ Partial Class Stocks
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "4"),
-                New SqlParameter("@CompanyId", companyDetail),
+                New SqlParameter("@CompanyDetailId", companyDetail),
                 New SqlParameter("@Search", String.Empty)
             }
             gvListProfile.DataSource = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
@@ -215,7 +215,7 @@ Partial Class Stocks
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "3"),
-                New SqlParameter("@CompanyId", companyDetail),
+                New SqlParameter("@CompanyDetailId", companyDetail),
                 New SqlParameter("@Search", searchText)
             }
             gvListCurtain.DataSource = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)

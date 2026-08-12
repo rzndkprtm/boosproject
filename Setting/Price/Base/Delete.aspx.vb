@@ -25,7 +25,19 @@ Partial Class Setting_Price_Base_Delete
         BindProductGroup(ddlPriceGroup.SelectedValue)
     End Sub
 
-    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+    Protected Sub btnSubmitAgain_Click(sender As Object, e As EventArgs)
+        Process("Add")
+    End Sub
+
+    Protected Sub btnSubmitFinish_Click(sender As Object, e As EventArgs)
+        Process()
+    End Sub
+
+    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/setting/price/base", False)
+    End Sub
+
+    Protected Sub Process(Optional action As String = "")
         MessageError(False, String.Empty)
         Try
             If ddlPriceGroup.SelectedValue = "" Then
@@ -55,15 +67,13 @@ Partial Class Setting_Price_Base_Delete
                     End Using
                 End Using
 
-                Response.Redirect("~/setting/price/base", False)
+                Dim url As String = "~/setting/price/base"
+                If action = "Add" Then url = "~/setting/price/base/delete"
+                Response.Redirect(url, False)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
-    End Sub
-
-    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/price/base", False)
     End Sub
 
     Protected Sub BindPriceGroup()
