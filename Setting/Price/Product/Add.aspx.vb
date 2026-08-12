@@ -125,7 +125,12 @@ Partial Class Setting_Price_Product_Add
             If Not String.IsNullOrEmpty(designId) Then
                 Dim type As String = settingClass.GetItemData("SELECT Type FROM Designs WHERE Id='" & designId & "'")
 
-                lbPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND Status='Active' ORDER BY Name ASC")
+                Dim thisQuery As String = "SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND Status='Active' ORDER BY Name ASC"
+                If type = "Services" Then
+                    thisQuery = "SELECT Id, Name FROM PriceGroups WHERE Status='Active' ORDER BY Name ASC"
+                End If
+
+                lbPriceGroup.DataSource = settingClass.GetDataTable(thisQuery)
                 lbPriceGroup.DataTextField = "Name"
                 lbPriceGroup.DataValueField = "Id"
                 lbPriceGroup.DataBind()
