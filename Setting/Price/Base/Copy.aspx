@@ -27,7 +27,7 @@
             <div class="col-12 col-sm-12 col-lg-7 mb-2">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Copy Form</h4>
+                        <h4 class="card-title">Price Base Form</h4>
                     </div>
                     <div class="card-body">
                         <div class="form form-vertical">
@@ -130,10 +130,14 @@
                 if (el.choices) {
                     el.choices.destroy();
                 }
+
+                var isMultiple = el.multiple;
+
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',
-                    shouldSort: false
+                    shouldSort: false,
+                    removeItemButton: isMultiple
                 });
             });
         }

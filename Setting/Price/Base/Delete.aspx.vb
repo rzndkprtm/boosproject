@@ -44,28 +44,23 @@ Partial Class Setting_Price_Base_Delete
                 MessageError(True, "PRICE GROUP IS REQUIRED !")
                 Exit Sub
             End If
+            If ddlCategory.SelectedValue = "" Then
+                MessageError(True, "CATEGORY IS REQUIRED !")
+                Exit Sub
+            End If
 
             If msgError.InnerText = "" Then
-                Dim thisQuery As String = "DELETE FROM PriceBases WHERE PriceGroupId=@PriceGroupId"
-                If Not String.IsNullOrEmpty(ddlProductGroup.SelectedValue) Then
-                    thisQuery = "DELETE FROM PriceBases WHERE PriceGroupId=@PriceGroupId AND ProductGroupId=@ProductGroupId"
-                End If
-                If Not String.IsNullOrEmpty(ddlCategory.SelectedValue) Then
-                    thisQuery = "DELETE FROM PriceBases WHERE PriceGroupId=@PriceGroupId AND ProductGroupId=@ProductGroupId AND Category=@Category"
-                    If ddlCategory.SelectedValue = "Sell & Buy" Then
-                        thisQuery = "DELETE FROM PriceBases WHERE PriceGroupId=@PriceGroupId AND ProductGroupId=@ProductGroupId"
-                    End If
+                Dim productGroup As String = String.Empty
+                If Not lbProductGroup.SelectedValue = "" Then
+                    productGroup = String.Join(",", lbProductGroup.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
 
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand(thisQuery, thisConn)
-                        thisCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@ProductGroupId", ddlProductGroup.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Category", ddlCategory.SelectedValue)
-                        thisConn.Open()
-                        thisCmd.ExecuteNonQuery()
-                    End Using
-                End Using
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@PriceGroupId", ddlPriceGroup.SelectedValue),
+                    New SqlParameter("@Category", ddlCategory.SelectedValue),
+                    New SqlParameter("@ProductGroupId", If(String.IsNullOrEmpty(productGroup), CType(DBNull.Value, Object), productGroup))
+                }
+                settingClass.ExecuteSP("sp_PriceBases_Delete", params)
 
                 Dim url As String = "~/setting/price/base"
                 If action = "Add" Then url = "~/setting/price/base/delete"
@@ -93,22 +88,22 @@ Partial Class Setting_Price_Base_Delete
     End Sub
 
     Protected Sub BindProductGroup(priceGroupId As String)
-        ddlProductGroup.Items.Clear()
+        lbProductGroup.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(priceGroupId) Then
                 Dim query As String = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'"
 
-                ddlProductGroup.DataSource = settingClass.GetDataTable(query)
-                ddlProductGroup.DataTextField = "Name"
-                ddlProductGroup.DataValueField = "Id"
-                ddlProductGroup.DataBind()
+                lbProductGroup.DataSource = settingClass.GetDataTable(query)
+                lbProductGroup.DataTextField = "Name"
+                lbProductGroup.DataValueField = "Id"
+                lbProductGroup.DataBind()
 
-                If ddlProductGroup.Items.Count > 0 Then
-                    ddlProductGroup.Items.Insert(0, New ListItem("", ""))
+                If lbProductGroup.Items.Count > 0 Then
+                    lbProductGroup.Items.Insert(0, New ListItem("", ""))
                 End If
             End If
         Catch ex As Exception
-            ddlProductGroup.Items.Clear()
+            lbProductGroup.Items.Clear()
         End Try
     End Sub
 
