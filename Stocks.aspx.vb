@@ -503,7 +503,7 @@ Partial Class Stocks
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "2"),
-                New SqlParameter("@CompanyId", companyDetail)
+                New SqlParameter("@CompanyDetailId", companyDetail)
             }
             gvListCellular.DataSource = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
             gvListCellular.DataBind()
