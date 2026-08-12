@@ -567,8 +567,8 @@ Partial Class Order_Detail
 
             End If
 
-            Dim berhasil As String = String.Format("showSuccessSwal('{0}')", lblHeaderId.Text)
-            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "swalSuccess", berhasil, True)
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
