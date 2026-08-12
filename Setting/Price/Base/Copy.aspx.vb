@@ -54,17 +54,16 @@ Partial Class Setting_Price_Base_Copy
             End If
 
             If msgError.InnerText = "" Then
-                Dim productGrouo As String = String.Empty
-
+                Dim productGroup As String = String.Empty
                 If Not lbProductGroup.SelectedValue = "" Then
-                    productGrouo = String.Join(",", lbProductGroup.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                    productGroup = String.Join(",", lbProductGroup.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
 
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@PriceGroupId", ddlPriceGroup.SelectedValue),
                     New SqlParameter("@NewPriceGroupId", ddlPriceGroupNew.SelectedValue),
-                    New SqlParameter("@Category", ddlPriceGroupNew.SelectedValue),
-                    New SqlParameter("@ProductGroupId", If(String.IsNullOrEmpty(productGrouo), CType(DBNull.Value, Object), productGrouo))
+                    New SqlParameter("@Category", ddlCategory.SelectedValue),
+                    New SqlParameter("@ProductGroupId", If(String.IsNullOrEmpty(productGroup), CType(DBNull.Value, Object), productGroup))
                 }
                 settingClass.ExecuteSP("sp_PriceBases_Copy", params)
 

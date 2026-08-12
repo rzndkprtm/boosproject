@@ -155,7 +155,6 @@
         }
         function initChoices() {
             document.querySelectorAll("select.choices").forEach(function (el) {
-
                 if (el.choices) {
                     el.choices.destroy();
                 }

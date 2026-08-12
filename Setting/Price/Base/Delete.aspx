@@ -43,16 +43,15 @@
                                                 <label class="form-label">Category</label>
                                                 <asp:DropDownList runat="server" ID="ddlCategory" CssClass="choices form-select">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                    <asp:ListItem Value="Sell" Text="Sell Only"></asp:ListItem>
-                                                    <asp:ListItem Value="Buy" Text="Buy Only"></asp:ListItem>
-                                                    <asp:ListItem Value="Sell & Buy" Text="Sell & Buy"></asp:ListItem>
+                                                    <asp:ListItem Value="Sell" Text="Sell"></asp:ListItem>
+                                                    <asp:ListItem Value="Buy" Text="Buy"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col-12 form-group">
                                                 <label class="form-label">Product Group</label>
-                                                <asp:DropDownList runat="server" ID="ddlProductGroup" CssClass="choices form-select"></asp:DropDownList>
+                                                <asp:ListBox runat="server" ID="lbProductGroup" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                             </div>
                                         </div>
                                     </ContentTemplate>
@@ -111,10 +110,14 @@
                 if (el.choices) {
                     el.choices.destroy();
                 }
+
+                var isMultiple = el.multiple;
+
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',
-                    shouldSort: false
+                    shouldSort: false,
+                    removeItemButton: isMultiple
                 });
             });
         }
