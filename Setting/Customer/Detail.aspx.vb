@@ -216,6 +216,150 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
+    Protected Sub btnOnStop_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim oldData As String = ddlOnStopOld.SelectedValue
+            Dim newData As String = ddlOnStopNew.SelectedValue
+
+            If newData = oldData OrElse String.IsNullOrEmpty(newData) Then
+                url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET OnStop=@OnStop WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@OnStop", newData)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim changeDesc As String = String.Format("Change On Stop : {0}", newData)
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), changeDesc}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+            Exit Sub
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnCashSale_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim oldData As String = ddlCashSaleOld.SelectedValue
+            Dim newData As String = ddlCashSaleNew.SelectedValue
+
+            If newData = oldData OrElse String.IsNullOrEmpty(newData) Then
+                url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET CashSale=@CashSale WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@CashSale", newData)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim changeDesc As String = String.Format("Change Cash Sale : {0}", newData)
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), changeDesc}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+            Exit Sub
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnNewsletter_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim oldData As String = ddlNewsletterOld.SelectedValue
+            Dim newData As String = ddlNewsletterNew.SelectedValue
+
+            If newData = oldData OrElse String.IsNullOrEmpty(newData) Then
+                url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Newsletter=@Newsletter WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@Newsletter", newData)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim changeDesc As String = String.Format("Change Newsletter : {0}", newData)
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), changeDesc}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+            Exit Sub
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnMinimumSurcharge_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim oldData As String = ddlMinimumSurchargeOld.SelectedValue
+            Dim newData As String = ddlMinimumSurchargeNew.SelectedValue
+
+            If newData = oldData OrElse String.IsNullOrEmpty(newData) Then
+                url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET MinSurcharge=@MinSurcharge WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@MinSurcharge", newData)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim changeDesc As String = String.Format("Change Minimum Surcharge : {0}", newData)
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), changeDesc}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+            Exit Sub
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindData(customerId As String)
         Try
             Dim params As New List(Of SqlParameter) From {
@@ -267,6 +411,10 @@ Partial Class Setting_Customer_Detail
             lblPriceGroup.Text = priceGroupName
             lblPriceGroupShutter.Text = shutterPriceGroupName
             lblPriceGroupDoor.Text = doorPriceGroupName
+            ddlOnStopOld.SelectedValue = Convert.ToInt32(thisData("OnStop"))
+            ddlCashSaleOld.SelectedValue = Convert.ToInt32(thisData("CashSale"))
+            ddlNewsletterOld.SelectedValue = Convert.ToInt32(thisData("Newsletter"))
+            ddlMinimumSurchargeOld.SelectedValue = Convert.ToInt32(thisData("MinSurcharge"))
             lblOnStop.Text = thisData("CustOnStop").ToString()
             lblCashSale.Text = thisData("CustCashSale").ToString()
             lblNewsletter.Text = thisData("CustNewsletter").ToString()

@@ -58,6 +58,24 @@ Partial Class Setting_Price_Base_Default
         Response.Redirect("~/setting/price/base/delete", False)
     End Sub
 
+    Protected Sub btnCopy_Click(sender As Object, e As EventArgs)
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+
+        Response.Redirect("~/setting/price/base/copy", False)
+    End Sub
+
+    Protected Sub btnDiscount_Click(sender As Object, e As EventArgs)
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+
+        Response.Redirect("~/setting/price/base/discount", False)
+    End Sub
+
     Protected Sub ddlCategory_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 

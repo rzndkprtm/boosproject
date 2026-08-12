@@ -78,36 +78,6 @@ Partial Class Setting_Customer_List
         BuildPager()
     End Sub
 
-    Protected Sub btnCashSale_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtCashSaleId.Text
-            Dim newData As String = ddlCashSaleNew.SelectedValue
-            Dim oldData As String = txtCashSaleOld.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET CashSale=@CashSale WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", thisId)
-                    thisCmd.Parameters.AddWithValue("@CashSale", newData)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            Dim changeDesc As String = String.Format("Change Cash Sale : {0}", newData)
-            dataLog = {"Customers", thisId, Session("LoginId").ToString(), changeDesc}
-            settingClass.Logs(dataLog)
-
-            Session("SearchCustomer") = txtSearch.Text
-            Response.Redirect("~/setting/customer/list", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub btnOnStop_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -125,6 +95,36 @@ Partial Class Setting_Customer_List
             End Using
 
             Dim changeDesc As String = String.Format("Change On Stop : {0}", newData)
+            dataLog = {"Customers", thisId, Session("LoginId").ToString(), changeDesc}
+            settingClass.Logs(dataLog)
+
+            Session("SearchCustomer") = txtSearch.Text
+            Response.Redirect("~/setting/customer/list", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnCashSale_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtCashSaleId.Text
+            Dim newData As String = ddlCashSaleNew.SelectedValue
+            Dim oldData As String = txtCashSaleOld.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET CashSale=@CashSale WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@CashSale", newData)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim changeDesc As String = String.Format("Change Cash Sale : {0}", newData)
             dataLog = {"Customers", thisId, Session("LoginId").ToString(), changeDesc}
             settingClass.Logs(dataLog)
 
