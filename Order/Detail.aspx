@@ -1928,19 +1928,6 @@
                 if (modalObj) modalObj.hide();
             }
         }
-        function showSuccessSwal(orderId) {
-            hideWaitingModal();
-            Swal.fire({
-                icon: 'success',
-                title: 'Order Submitted!',
-                html: 'Your order has been successfully submitted and is now being processed.<br>Thank you!',
-                timer: 3000,
-                timerProgressBar: true,
-                didClose: () => {
-                    window.location = '/order/detail?orderid=' + orderId;
-                }
-            });
-        }
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>
