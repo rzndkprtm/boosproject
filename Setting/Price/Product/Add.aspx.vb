@@ -127,7 +127,7 @@ Partial Class Setting_Price_Product_Add
 
                 Dim thisQuery As String = "SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND Status='Active' ORDER BY Name ASC"
                 If type = "Services" Then
-                    thisQuery = "SELECT Id, Name FROM PriceGroups WHERE Status='Active' ORDER BY Name ASC"
+                    thisQuery = "SELECT Id, Name FROM PriceGroups WHERE Type='Blinds' AND Status='Active' ORDER BY Name ASC"
                 End If
 
                 lbPriceGroup.DataSource = settingClass.GetDataTable(thisQuery)

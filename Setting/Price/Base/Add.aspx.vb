@@ -172,7 +172,7 @@ Partial Class Setting_Price_Base_Add
                                 thisCmd.ExecuteNonQuery()
                             End Using
 
-                            Dim dataLog As Object() = {"PriceBases", thisId, Session("LoginId").ToString(), "Price Base Created"}
+                            Dim dataLog As Object() = {"PriceBases", thisId, Session("LoginId").ToString(), "Price Base Updated"}
                             settingClass.Logs(dataLog)
 
                             nextId += 1
