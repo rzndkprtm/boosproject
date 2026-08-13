@@ -36,7 +36,7 @@
                 <ul class="dropdown-menu">
                     <li><asp:Button runat="server" ID="btnListColour" CssClass="dropdown-item" Text="List Fabric + Colour" OnClick="btnListColour_Click" /></li>
                     <li><asp:Button runat="server" ID="btnAlias" CssClass="dropdown-item" Text="List Fabric Alias" OnClick="btnAlias_Click" /></li>
-                    <li><asp:Button runat="server" ID="btnGroupLocal" CssClass="dropdown-item" Text="List Group JKT" OnClick="btnGroupLocal_Click" /></li>
+                    <li><asp:Button runat="server" ID="btnGroupLocal" CssClass="dropdown-item" Text="List Group Local" OnClick="btnGroupLocal_Click" /></li>
                 </ul>
             </div>
         </section>
