@@ -329,6 +329,7 @@ Partial Class Setting_Price_Base_Default
     Protected Function BindCost(cost As Decimal, companyId As String) As String
         Try
             If cost >= 0 Then
+                cost = Math.Round(cost, 2)
                 If companyId = "3" Then
                     Return cost.ToString("N2", idIDR)
                 End If

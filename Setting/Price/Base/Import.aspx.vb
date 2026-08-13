@@ -45,6 +45,18 @@ Partial Class Setting_Price_Base_Import
     Protected Sub Process(Optional action As String = "")
         MessageError(False, String.Empty)
         Try
+            If ddlPriceGroup.SelectedValue = "" Then
+                MessageError(True, "PRICE GROUP IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlUploadType.SelectedValue = "" Then
+                MessageError(True, "METHOD IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlProductGroup.SelectedValue = "" Then
+                MessageError(True, "PRODUCT GROUP IS REQUIRED !")
+                Exit Sub
+            End If
             If Not fuFile.HasFile Then
                 MessageError(True, "SORRY. PLEASE UPLOAD FILE !")
                 Exit Sub
@@ -262,7 +274,7 @@ Partial Class Setting_Price_Base_Import
                         Return category & ": The price value on row " & r & ", column " & c & " is not a valid number."
                     End If
 
-                    price = Decimal.Round(price, 2, MidpointRounding.AwayFromZero)
+                    price = Decimal.Round(price, 4, MidpointRounding.AwayFromZero)
 
                     dt.Rows.Add(nextId, category, method, productGroupId, priceGroupId, height, width, price, DBNull.Value)
                     nextId += 1
