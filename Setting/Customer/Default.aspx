@@ -82,8 +82,8 @@
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/customer/quote" class="dashboard-card">
-                    <div class="dashboard-number"><%= CustomerQuotes %> Data</div>
-                    <div class="dashboard-title">Quote</div>
+                    <div class="dashboard-number"><%= CustomerServices %> Data</div>
+                    <div class="dashboard-title">Service</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/customer/custompricing" class="dashboard-card">
