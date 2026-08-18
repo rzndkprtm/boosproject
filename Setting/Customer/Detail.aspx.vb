@@ -73,7 +73,6 @@ Partial Class Setting_Customer_Detail
             BindDataDiscount(lblId.Text)
             BindDataPromo(lblId.Text)
             BindDataProduct(lblId.Text)
-            BindDataQuote(lblId.Text)
 
             secDetail.Visible = True
             If Session("CustomerId") = lblId.Text AndAlso (Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account") Then
@@ -1265,19 +1264,6 @@ Partial Class Setting_Customer_Detail
         divErrorProduct.Visible = visible : msgErrorProduct.InnerText = message
     End Sub
 
-    Protected Sub BindDataQuote(customerId As String)
-        MessageError_Quote(False, String.Empty)
-        Try
-            gvListQuote.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
-            gvListQuote.DataBind()
-        Catch ex As Exception
-            MessageError_Quote(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Quote(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Function BindQuoteddress(customerId As String) As String
         Dim result As String = String.Empty
 
@@ -1304,10 +1290,6 @@ Partial Class Setting_Customer_Detail
         Return result
     End Function
 
-    Protected Sub MessageError_Quote(visible As Boolean, message As String)
-        divErrorQuote.Visible = visible : msgErrorQuote.InnerText = message
-    End Sub
-
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
         MessageError_SendLogin(visible, message)
@@ -1320,6 +1302,5 @@ Partial Class Setting_Customer_Detail
         MessageError_Discount(visible, message)
         MessageError_Promo(visible, message)
         MessageError_Product(visible, message)
-        MessageError_Quote(visible, message)
     End Sub
 End Class

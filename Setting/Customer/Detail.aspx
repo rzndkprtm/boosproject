@@ -654,50 +654,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="list-quote" role="tabpanel" aria-labelledby="listQuote">
-                                <div class="row mt-5">
-                                    <div class="col-12" runat="server" id="divErrorQuote">
-                                        <div class="col-12">
-                                             <div class="alert alert-danger">
-                                                 <span runat="server" id="msgErrorQuote"></span>
-                                             </div>
-                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-5">
-                                    <div class="col-12">
-                                        <div class="table-responsive">
-                                            <asp:GridView runat="server" ID="gvListQuote" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" PageSize="50" PagerSettings-Position="TopAndBottom">
-                                                <Columns>
-                                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
-                                                        <ItemTemplate>
-                                                            <%# Container.DataItemIndex + 1 %>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <asp:BoundField DataField="Email" HeaderText="Email" />
-                                                    <asp:BoundField DataField="Phone" HeaderText="Phone" />
-                                                    <asp:TemplateField HeaderText="Address">
-                                                        <ItemTemplate>
-                                                            <%# BindQuoteddress(Eval("Id").ToString()) %>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField HeaderText="Logo">
-                                                        <ItemTemplate>
-                                                            <asp:Image runat="server" ImageUrl='<%# ResolveUrl("~/assets/images/logo/customers/") & Eval("Logo") %>'  Width="220px" Height="70px" />
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <asp:BoundField DataField="Terms" HeaderText="Terms" />
-                                                    <asp:TemplateField>
-                                                        <ItemTemplate>
-                                                            <a href="javascript:void(0);" class="btn btn-sm btn-primary" onclick="showLog('CustomerQuotes', '<%# Eval("Id") %>')">Log</a>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                </Columns>
-                                            </asp:GridView>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -1329,9 +1285,6 @@
             });
             $("#listProduct").on("click", function () {
                 updateSessionValue("list-product");
-            });
-            $("#listQuote").on("click", function () {
-                updateSessionValue("list-quote");
             });
         });
         document.addEventListener('DOMContentLoaded', function () {

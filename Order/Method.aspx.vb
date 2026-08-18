@@ -1555,14 +1555,16 @@ Partial Class Order_Method
             End If
         End If
 
-        If data.companydetailid = "5" AndAlso (blindName = "Complete Set (Single)" OrElse blindName = "Curtain Only") Then
-            If String.IsNullOrEmpty(data.cutlength) Then Return "FABRIC CUT LENGTH IS REQUIRED !"
-            If Not Integer.TryParse(data.cutlength, cutlength) OrElse cutlength <= 0 Then
-                Return "PLEASE CHECK YOUR FABRIC CUT LENGTH ORDER !"
-            End If
-            If cutlength < width Then Return "THE FABRIC CUT LENGTH CANNOT BE LESS THAN WIDTH !"
-        End If
 
+        If blindName = "Complete Set (Single)" OrElse blindName = "Curtain Only" Then
+            If data.companydetailid = "5" OrElse data.companydetailid = "5" Then
+                If String.IsNullOrEmpty(data.cutlength) Then Return "FABRIC CUT LENGTH IS REQUIRED !"
+                If Not Integer.TryParse(data.cutlength, cutlength) OrElse cutlength <= 0 Then
+                    Return "PLEASE CHECK YOUR FABRIC CUT LENGTH ORDER !"
+                End If
+                If cutlength < width Then Return "THE FABRIC CUT LENGTH CANNOT BE LESS THAN WIDTH !"
+            End If
+        End If
         If data.trackdraw = "Flick Stick" Then
             If String.IsNullOrEmpty(data.controlcolour) Then
                 If blindName = "Complete Set (Double)" Then Return "FIRST CONTROL COLOUR IS REQUIRED !"
