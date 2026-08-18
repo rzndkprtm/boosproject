@@ -1097,8 +1097,8 @@ function bindComponentForm(blindType, colourType) {
                 divShow.push("divfirst", "divfirstend", "divsecond", "divsecondend", "divmouting", "divheading", "divheadingb", "divfabric", "divfabricb", "divtrack", "divtrackb", "divstackposition", "divstackpositionb", "divwidth", "divwidthb", "divdrop", "divdropb", "divbottomhem", "divtieback");
             } else if (blindName === "Curtain Only") {
                 divShow.push("divmouting", "divheading", "divfabric", "divwidth", "divdrop", "divstackposition", "divbottomhem", "divtieback");
-                if (companyDetailId === "5") {
-                    divShow.push("divcutlength" || companyDetailId === "9");
+                if (companyDetailId === "5" || companyDetailId === "9") {
+                    divShow.push("divcutlength");
                 }
             } else if (blindName === "Track Only") {
                 divShow.push("divmouting", "divheading", "divtrack", "divstackposition", "divwidth");
