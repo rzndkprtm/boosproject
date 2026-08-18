@@ -291,6 +291,9 @@
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/price/promo" class="subsubmenu-link">Promo</a>
                                                         </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/price/service" class="subsubmenu-link">Service</a>
+                                                        </li>
                                                         <li class="subsubmenu-item" runat="server" id="liPriceCalculation">
                                                             <a runat="server" href="~/setting/price/calculation" class="subsubmenu-link">Calculation</a>
                                                         </li>

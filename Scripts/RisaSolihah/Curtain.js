@@ -1090,7 +1090,7 @@ function bindComponentForm(blindType, colourType) {
 
             if (blindName === "Complete Set (Single)") {
                 divShow.push("divmouting", "divheading", "divfabric", "divtrack", "divstackposition", "divwidth", "divdrop", "divbottomhem", "divtieback");
-                if (companyDetailId === "5") {
+                if (companyDetailId === "5" || companyDetailId === "9") {
                     divShow.push("divcutlength");
                 }
             } else if (blindName === "Complete Set (Double)") {
@@ -1098,7 +1098,7 @@ function bindComponentForm(blindType, colourType) {
             } else if (blindName === "Curtain Only") {
                 divShow.push("divmouting", "divheading", "divfabric", "divwidth", "divdrop", "divstackposition", "divbottomhem", "divtieback");
                 if (companyDetailId === "5") {
-                    divShow.push("divcutlength");
+                    divShow.push("divcutlength" || companyDetailId === "9");
                 }
             } else if (blindName === "Track Only") {
                 divShow.push("divmouting", "divheading", "divtrack", "divstackposition", "divwidth");
