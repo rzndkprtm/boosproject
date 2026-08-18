@@ -14,7 +14,7 @@ Partial Class Setting_Customer_Default
     Protected CustomerDiscounts As Integer
     Protected CustomerPromos As Integer
     Protected CustomerProductAccess As Integer
-    Protected CustomerQuotes As Integer
+    Protected CustomerServices As Integer
     Protected CustomerCustomPricings As Integer
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -37,7 +37,7 @@ Partial Class Setting_Customer_Default
                 CustomerDiscounts = CInt(dt.Rows(0)("CustomerDiscounts"))
                 CustomerPromos = CInt(dt.Rows(0)("CustomerPromos"))
                 CustomerProductAccess = CInt(dt.Rows(0)("CustomerProductAccess"))
-                CustomerQuotes = CInt(dt.Rows(0)("CustomerQuotes"))
+                CustomerServices = CInt(dt.Rows(0)("CustomerServices"))
                 CustomerCustomPricings = CInt(dt.Rows(0)("CustomerCustomPricings"))
             End If
         End If
