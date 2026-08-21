@@ -71,6 +71,11 @@
                     <div class="dashboard-title">Discount</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
+                <a href="/setting/customer/service" class="dashboard-card">
+                    <div class="dashboard-number"><%= CustomerServices %> Data</div>
+                    <div class="dashboard-title">Service</div>
+                    <div class="dashboard-desc">Description</div>
+                </a>
                 <a href="/setting/customer/promo" class="dashboard-card">
                     <div class="dashboard-number"><%= CustomerPromos %> Data</div>
                     <div class="dashboard-title">Promo</div>
@@ -79,11 +84,6 @@
                 <a href="/setting/customer/product" class="dashboard-card">
                     <div class="dashboard-number"><%= CustomerProductAccess %> Data</div>
                     <div class="dashboard-title">Product Access</div>
-                    <div class="dashboard-desc">Description</div>
-                </a>
-                <a href="/setting/customer/quote" class="dashboard-card">
-                    <div class="dashboard-number"><%= CustomerServices %> Data</div>
-                    <div class="dashboard-title">Service</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/customer/custompricing" class="dashboard-card">

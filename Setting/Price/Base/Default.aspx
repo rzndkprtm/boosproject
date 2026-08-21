@@ -54,6 +54,9 @@
                     <li>
                         <asp:Button runat="server" ID="btnDiscount" CssClass="dropdown-item" Text="Discount" OnClick="btnDiscount_Click" />
                     </li>
+                    <li>
+                        <asp:Button runat="server" ID="btnMarkup" CssClass="dropdown-item" Text="Markup" OnClick="btnMarkup_Click" />
+                    </li>
                 </ul>
                 <asp:Button runat="server" ID="btnDeletePricing" CssClass="btn btn-danger" Text="Delete Pricing" OnClick="btnDeletePricing_Click" />
                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="morePrice">More</button>

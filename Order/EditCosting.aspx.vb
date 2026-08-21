@@ -168,7 +168,6 @@ Partial Class Order_EditCosting
                             thisCmd.Parameters.Add("@SellPrice", SqlDbType.Decimal).Value = newSell
                             thisCmd.Parameters.Add("@BuyPrice", SqlDbType.Decimal).Value = newBuy
                             thisCmd.ExecuteNonQuery()
-
                         End Using
 
                         Using delFinal As New SqlCommand("DELETE FROM OrderCostings WHERE ItemId=@ItemId AND Type='Final'", thisConn, tran)

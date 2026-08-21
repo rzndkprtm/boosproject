@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Add.aspx.vb" Inherits="Setting_Price_Service_Add" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Add Price Service" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Edit.aspx.vb" Inherits="Setting_Price_Service_Edit" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Edit Price Service" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -149,7 +149,7 @@
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <label class="form-label">Status</label>
                                                 <asp:DropDownList runat="server" ID="ddlStatus" CssClass="choices form-select">
                                                     <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
@@ -187,6 +187,11 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
+        <asp:Label runat="server" ID="lblAutoCreate"></asp:Label>
     </div>
 
     <script type="text/javascript">

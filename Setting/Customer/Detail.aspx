@@ -54,9 +54,6 @@
                     <li>
                         <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalNewsletter">Change Newsletter</a>
                     </li>
-                    <li>
-                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalMinimumSurcharge">Change Minimum Surcharge</a>
-                    </li>
                 </ul>
                 <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Customers', '<%= lblId.Text %>')">Log</a>
             </div>
@@ -75,7 +72,7 @@
                             <a class="list-group-item list-group-item-action" id="listDiscount" data-bs-toggle="list" href="#list-discount" role="tab">Discount</a>
                             <a class="list-group-item list-group-item-action" id="listPromo" data-bs-toggle="list" href="#list-promo" role="tab">Promo</a>
                             <a class="list-group-item list-group-item-action" id="listProduct" data-bs-toggle="list" href="#list-product" role="tab">Product</a>
-                            <a class="list-group-item list-group-item-action" id="listQuote" data-bs-toggle="list" href="#list-quote" role="tab">Quote</a>
+                            <a class="list-group-item list-group-item-action" id="listService" data-bs-toggle="list" href="#list-service" role="tab">Service</a>
                         </div>
                         <div class="tab-content text-justify">
                             <div class="tab-pane fade show active" id="list-general" role="tabpanel" aria-labelledby="listGeneral">
@@ -162,12 +159,6 @@
                                             <div class="col-4 text-muted">Newsletter</div>
                                             <div class="col-8 fw-semibold">
                                                 <asp:Label runat="server" ID="lblNewsletter"></asp:Label>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-4">
-                                            <div class="col-4 text-muted">Minimum Surcharge</div>
-                                            <div class="col-8 fw-semibold">
-                                                <asp:Label runat="server" ID="lblMinSurcharge"></asp:Label>
                                             </div>
                                         </div>
                                         <h6 class="text-uppercase fw-bold text-secondary mb-3">System Information</h6>
@@ -654,6 +645,54 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="tab-pane fade" id="list-service" role="tabpanel" aria-labelledby="listProduct">
+                                <div class="row mt-5">
+                                    <div class="col-12" runat="server" id="divErrorService">
+                                         <div class="col-12">
+                                             <div class="alert alert-danger">
+                                                 <span runat="server" id="msgErrorService"></span>
+                                             </div>
+                                         </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-5">
+                                    <div class="col-12">
+                                        <div class="table-responsive">
+                                            <asp:GridView runat="server" ID="gvListService" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
+                                                <Columns>
+                                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="60px">
+                                                        <ItemTemplate>
+                                                            <%# Container.DataItemIndex + 1 %>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:BoundField DataField="PriceServiceName" HeaderText="Name" />
+                                                    <asp:BoundField DataField="Type" HeaderText="Type" />
+                                                    <asp:BoundField DataField="BuyPrice" HeaderText="Buy Price" />
+                                                    <asp:BoundField DataField="SellPrice" HeaderText="Sell Price" />
+                                                    <asp:TemplateField>
+                                                        <ItemTemplate>
+                                                            <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
+                                                            <ul class="dropdown-menu">
+                                                                <li>
+                                                                    <a class="dropdown-item" id="aDetailProduct" href='<%# Page.ResolveUrl("~/setting/customer/product/edit?productid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerServices', '<%# Eval("Id") %>')">Log</a>
+                                                                </li>
+                                                            </ul>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                            </asp:GridView>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <asp:Button runat="server" ID="btnAddService" CssClass="btn btn-primary" Text="Add Service" OnClick="btnAddService_Click" />
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -846,42 +885,6 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnNewsletter" Text="Submit" CssClass="btn btn-info" OnClick="btnNewsletter_Click" OnClientClick="return showWaiting();" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal modal-blur fade" id="modalMinimumSurcharge" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Change Minimum Surcharge</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Minimum Surcharge (OLD)</label>
-                            <asp:DropDownList runat="server" ID="ddlMinimumSurchargeOld" CssClass="choices form-select" Enabled="false">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Minimum Surcharge (NEW)</label>
-                            <asp:DropDownList runat="server" ID="ddlMinimumSurchargeNew" CssClass="choices form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnMinimumSurcharge" Text="Submit" CssClass="btn btn-info" OnClick="btnMinimumSurcharge_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>
@@ -1286,6 +1289,9 @@
             $("#listProduct").on("click", function () {
                 updateSessionValue("list-product");
             });
+            $("#listService").on("click", function () {
+                updateSessionValue("list-service");
+            });
         });
         document.addEventListener('DOMContentLoaded', function () {
             const gridConfigs = [
@@ -1297,6 +1303,7 @@
                 { id: '<%= gvListDiscount.ClientID %>', link: "aDetailDiscount" },
                 { id: '<%= gvListProduct.ClientID %>', link: "aDetailProduct" },
                 { id: '<%= gvListPromo.ClientID %>', link: "aDetailPromo" },
+                { id: '<%= gvListService.ClientID %>', link: "aDetailService" },
             ];
             gridConfigs.forEach(cfg => {
                 const gv = document.getElementById(cfg.id);
@@ -1471,7 +1478,7 @@
         }
         [
             "modalDelete", "modalRecalculate", "modalWelcome", "modalSendLogin",
-            "modalOnStop", "modalCashSale", "modalNewsletter", "modalMinimumSurcharge",
+            "modalOnStop", "modalCashSale", "modalNewsletter",
             "modalWaiting", , "modalLog",
             "modalDeleteContact", "modalPrimaryContact",
             "modalDeleteAddress", "modalPrimaryAddress",

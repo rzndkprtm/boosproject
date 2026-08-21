@@ -9,6 +9,7 @@ Partial Class Setting_Price_Default
     Protected PriceProductGroups As Integer
     Protected PriceBases As Integer
     Protected PriceSurcharges As Integer
+    Protected PriceServices As Integer
     Protected Promos As Integer
     Protected Calculations As Integer
 
@@ -27,6 +28,7 @@ Partial Class Setting_Price_Default
                 PriceProductGroups = CInt(dt.Rows(0)("PriceProductGroups"))
                 PriceBases = CInt(dt.Rows(0)("PriceBases"))
                 PriceSurcharges = CInt(dt.Rows(0)("PriceSurcharges"))
+                PriceServices = CInt(dt.Rows(0)("PriceServices"))
                 Promos = CInt(dt.Rows(0)("Promos"))
                 Calculations = CInt(dt.Rows(0)("Calculations"))
             End If

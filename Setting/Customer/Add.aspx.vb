@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_Customer_Add
     Inherits Page
@@ -102,7 +103,7 @@ Partial Class Setting_Customer_Add
                 Dim dataProductAccess As String = settingClass.GetProductAccess(ddlCompany.SelectedValue)
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Customers VALUES (@Id, @DebtorCode, @Level, @PrimaryId, @Name, @Company, @CompanyDetail, @State, @Operator, @PriceGroup, @ShutterPriceGroup, @DoorPriceGroup, @OnStop, @CashSale, @Newsletter, @MinSurcharge, @Active); INSERT INTO CustomerQuotes(Id, Logo) VALUES (@Id, @Logo); INSERT INTO CustomerProductAccess VALUES (@Id, @DesignId)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Customers VALUES (@Id, @DebtorCode, @Level, @PrimaryId, @Name, @Company, @CompanyDetail, @State, @Operator, @PriceGroup, @ShutterPriceGroup, @DoorPriceGroup, @OnStop, @CashSale, @Newsletter, @Active); INSERT INTO CustomerQuotes(Id, Logo) VALUES (@Id, @Logo); INSERT INTO CustomerProductAccess VALUES (@Id, @DesignId)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@DebtorCode", txtDebtorCode.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Level", ddlLevel.SelectedValue)
@@ -118,7 +119,6 @@ Partial Class Setting_Customer_Add
                         thisCmd.Parameters.AddWithValue("@OnStop", ddlOnStop.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CashSale", ddlCashSale.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Newsletter", ddlNewsletter.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@MinSurcharge", ddlMinSurcharge.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Active", 1)
                         thisCmd.Parameters.AddWithValue("@Logo", logoCustomer)
                         thisCmd.Parameters.AddWithValue("@DesignId", dataProductAccess)
@@ -126,6 +126,25 @@ Partial Class Setting_Customer_Add
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
+
+                Dim dataService As DataTable = settingClass.GetDataTable("SELECT * FROM PriceServices CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE companyDetailArray.VALUE='" & ddlCompanyDetail.SelectedValue & "' AND AutoCreate=1 AND Status='Active'")
+                If Not dataService.Rows.Count = 0 Then
+                    For i As Integer = 0 To dataService.Rows.Count - 1
+                        Dim serviceId As String = dataService.Rows(i)("Id").ToString()
+
+                        Dim custServiceId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerServices ORDER BY Id DESC")
+
+                        Using thisConn As New SqlConnection(myConn)
+                            Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerServices SELECT @Id, @CustomerId, @ServiceId, AllowCustom, Type, DefaultBuyPrice, DefaultSellPrice, [Parameter], Operator, BuyValue, SellValue, MinValue, MaxValue, Region FROM PriceServices WHERE Id=@ServiceId", thisConn)
+                                thisCmd.Parameters.AddWithValue("@Id", custServiceId)
+                                thisCmd.Parameters.AddWithValue("@CustomerId", thisId)
+                                thisCmd.Parameters.AddWithValue("@ServiceId", serviceId)
+                                thisConn.Open()
+                                thisCmd.ExecuteNonQuery()
+                            End Using
+                        End Using
+                    Next
+                End If
 
                 Dim dataLog As Object() = {"Customers", thisId, Session("LoginId").ToString(), "Customer Created"}
                 settingClass.Logs(dataLog)

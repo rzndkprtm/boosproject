@@ -55,7 +55,7 @@
                     <div class="dashboard-desc">Description</div>
                 </a>
                 <a href="/setting/price/service" class="dashboard-card">
-                    <div class="dashboard-number"><%= PriceSurcharges %> Data</div>
+                    <div class="dashboard-number"><%= PriceServices %> Data</div>
                     <div class="dashboard-title">Price Service</div>
                     <div class="dashboard-desc">Service</div>
                 </a>

@@ -749,6 +749,7 @@ Public Class OrderClass
             End If
 
             Dim productId As String = thisData("ProductId").ToString()
+            Dim serviceId As String = thisData("ServiceId").ToString()
             Dim productName As String = thisData("ProductName").ToString()
             Dim designName As String = thisData("DesignName").ToString()
             Dim blindName As String = thisData("BlindName").ToString()
@@ -790,8 +791,6 @@ Public Class OrderClass
 
             Dim layoutCode As String = thisData("LayoutCode").ToString()
             Dim frameColour As String = thisData("FrameColour").ToString()
-
-            Dim itemNote As String = thisData("Notes").ToString()
 
             Dim size As String = String.Format("({0}x{1})", width, drop)
             Dim sizeB As String = String.Format("({0}x{1})", widthB, dropB)
@@ -1172,7 +1171,7 @@ Public Class OrderClass
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
             End If
             If designName = "Service" Then
-                result = productName
+                result = GetItemData("SELECT Name FROM PriceServices WHERE Id='" & serviceId & "'")
             End If
 
             Dim checkNote As String = GetItemData("SELECT Description FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Note'")
@@ -1682,27 +1681,6 @@ Public Class OrderClass
         Return result
     End Function
 
-    Public Function GetCustomerMinimum(customerId As String) As Boolean
-        Dim result As Boolean = True
-        Try
-            If Not String.IsNullOrEmpty(customerId) Then
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand("SELECT MinSurcharge FROM Customers WHERE Id=@Id", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", customerId)
-                        thisConn.Open()
-                        Dim obj = thisCmd.ExecuteScalar()
-                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
-                            result = obj
-                        End If
-                    End Using
-                End Using
-            End If
-        Catch ex As Exception
-            result = True
-        End Try
-        Return result
-    End Function
-
     Public Function GetCustomerPrimaryEmail(customerId As String) As String
         Dim result As String = String.Empty
         Try
@@ -1982,7 +1960,7 @@ Public Class OrderClass
 
     Public Sub CalculatePriceByOrder(headerId As String)
         Try
-            Dim thisData As DataTable = GetDataTable("SELECT OrderDetails.Id FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Type<>'Service'")
+            Dim thisData As DataTable = GetDataTable("SELECT OrderDetails.Id FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Type<>'Services'")
             If Not thisData.Rows.Count = 0 Then
                 For i As Integer = 0 To thisData.Rows.Count - 1
                     Dim itemId As String = thisData.Rows(i)("Id").ToString()
@@ -2437,6 +2415,9 @@ Public Class OrderClass
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(width), CInt(drop), squareMetre, linearMetre, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetre, linearMetre)
 
+                    costSell = thisSell
+                    costBuy = thisBuy
+
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
@@ -2749,6 +2730,9 @@ Public Class OrderClass
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreB, linearMetreB)
 
+                    costSell = thisSell
+                    costBuy = thisBuy
+
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
@@ -2983,6 +2967,9 @@ Public Class OrderClass
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthC), CInt(dropC), squareMetreC, linearMetreC, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreC, linearMetreC)
 
+                    costSell = thisSell
+                    costBuy = thisBuy
+
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
@@ -3200,6 +3187,9 @@ Public Class OrderClass
 
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthD), CInt(dropD), squareMetreD, linearMetreD, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreD, linearMetreD)
+
+                    costSell = thisSell
+                    costBuy = thisBuy
 
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
@@ -3419,6 +3409,9 @@ Public Class OrderClass
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthE), CInt(dropE), squareMetreE, linearMetreE, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreE, linearMetreE)
 
+                    costSell = thisSell
+                    costBuy = thisBuy
+
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
@@ -3636,6 +3629,9 @@ Public Class OrderClass
 
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthF), CInt(dropF), squareMetreF, linearMetreF, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreF, linearMetreF)
+
+                    costSell = thisSell
+                    costBuy = thisBuy
 
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows

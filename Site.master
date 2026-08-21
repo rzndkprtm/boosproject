@@ -211,6 +211,9 @@
                                                             <a runat="server" href="~/setting/customer/discount" class="subsubmenu-link">Discount</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/service" class="subsubmenu-link">Service</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/promo" class="subsubmenu-link">Promo</a>
                                                         </li>
                                                         <li class="subsubmenu-item">

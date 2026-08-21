@@ -73,6 +73,7 @@ Partial Class Setting_Customer_Detail
             BindDataDiscount(lblId.Text)
             BindDataPromo(lblId.Text)
             BindDataProduct(lblId.Text)
+            BindDataService(lblId.Text)
 
             secDetail.Visible = True
             If Session("CustomerId") = lblId.Text AndAlso (Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account") Then
@@ -323,42 +324,6 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub btnMinimumSurcharge_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim oldData As String = ddlMinimumSurchargeOld.SelectedValue
-            Dim newData As String = ddlMinimumSurchargeNew.SelectedValue
-
-            If newData = oldData OrElse String.IsNullOrEmpty(newData) Then
-                url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-                Response.Redirect(url, False)
-                Exit Sub
-            End If
-
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET MinSurcharge=@MinSurcharge WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    thisCmd.Parameters.AddWithValue("@MinSurcharge", newData)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            Dim changeDesc As String = String.Format("Change Minimum Surcharge : {0}", newData)
-            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), changeDesc}
-            settingClass.Logs(dataLog)
-
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
-            Exit Sub
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub BindData(customerId As String)
         Try
             Dim params As New List(Of SqlParameter) From {
@@ -413,11 +378,9 @@ Partial Class Setting_Customer_Detail
             ddlOnStopOld.SelectedValue = Convert.ToInt32(thisData("OnStop"))
             ddlCashSaleOld.SelectedValue = Convert.ToInt32(thisData("CashSale"))
             ddlNewsletterOld.SelectedValue = Convert.ToInt32(thisData("Newsletter"))
-            ddlMinimumSurchargeOld.SelectedValue = Convert.ToInt32(thisData("MinSurcharge"))
             lblOnStop.Text = thisData("CustOnStop").ToString()
             lblCashSale.Text = thisData("CustCashSale").ToString()
             lblNewsletter.Text = thisData("CustNewsletter").ToString()
-            lblMinSurcharge.Text = thisData("CustMinSurcharge").ToString()
             lblActive.Text = thisData("CustActive").ToString()
 
             Dim customPricing As String = settingClass.GetItemData("SELECT Description FROM CustomerCustomPricings WHERE Id='" & customerId & "'")
@@ -1264,31 +1227,28 @@ Partial Class Setting_Customer_Detail
         divErrorProduct.Visible = visible : msgErrorProduct.InnerText = message
     End Sub
 
-    Protected Function BindQuoteddress(customerId As String) As String
-        Dim result As String = String.Empty
+    Protected Sub btnAddService_Click(sender As Object, e As EventArgs)
+        Session("selectedTabCustomer") = "list-service"
+        url = String.Format("~/setting/customer/service/add?custid={0}&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
 
-        If Not String.IsNullOrEmpty(customerId) Then
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
-
-            If thisData IsNot Nothing Then
-                Dim parts As New List(Of String)
-
-                Dim address As String = thisData("Address").ToString().Trim()
-                Dim suburb As String = thisData("Suburb").ToString().Trim()
-                Dim state As String = thisData("State").ToString().Trim()
-                Dim postCode As String = thisData("PostCode").ToString().Trim()
-
-                If Not String.IsNullOrEmpty(address) Then parts.Add(address)
-                If Not String.IsNullOrEmpty(suburb) Then parts.Add(suburb)
-
-                Dim statePostCode As String = (state & " " & postCode).Trim()
-                If Not String.IsNullOrEmpty(statePostCode) Then parts.Add(statePostCode)
-
-                result = String.Join(", ", parts)
+    Protected Sub BindDataService(customerId As String)
+        MessageError_Service(False, String.Empty)
+        Try
+            gvListService.DataSource = settingClass.GetDataTable("SELECT CustomerServices.*, PriceServices.Name AS PriceServiceName FROM CustomerServices LEFT JOIN PriceServices ON CustomerServices.ServiceId=PriceServices.Id WHERE CustomerServices.CustomerId='" + customerId + "'")
+            gvListService.DataBind()
+        Catch ex As Exception
+            MessageError_Service(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Service(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
-        End If
-        Return result
-    End Function
+        End Try
+    End Sub
+
+    Protected Sub MessageError_Service(visible As Boolean, message As String)
+        divErrorService.Visible = visible : msgErrorService.InnerText = message
+    End Sub
 
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
@@ -1302,5 +1262,6 @@ Partial Class Setting_Customer_Detail
         MessageError_Discount(visible, message)
         MessageError_Promo(visible, message)
         MessageError_Product(visible, message)
+        MessageError_Service(visible, message)
     End Sub
 End Class

@@ -109,7 +109,7 @@
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-3 mb-2 form-group">
                                                 <label class="form-label">Price Group</label>
                                                 <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
@@ -117,7 +117,7 @@
                                                 <label class="form-label">Shutter Price Group</label>
                                                 <asp:DropDownList runat="server" ID="ddlPriceGroupShutter" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
                                                 <label class="form-label">Door & Window Price Group</label>
                                                 <asp:DropDownList runat="server" ID="ddlPriceGroupDoor" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
@@ -150,13 +150,6 @@
                                             <div class="col-6 col-sm-12 col-lg-3 mb-2 form-group">
                                                 <label class="form-label">Newsletter</label>
                                                 <asp:DropDownList runat="server" ID="ddlNewsletter" CssClass="form-select">
-                                                    <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                                    <asp:ListItem Value="0" Text="No"></asp:ListItem>
-                                                </asp:DropDownList>
-                                            </div>
-                                            <div class="col-6 col-sm-12 col-lg-3 form-group">
-                                                <label class="form-label">Minimum Surcharge</label>
-                                                <asp:DropDownList runat="server" ID="ddlMinSurcharge" CssClass="form-select">
                                                     <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
                                                     <asp:ListItem Value="0" Text="No"></asp:ListItem>
                                                 </asp:DropDownList>
