@@ -76,6 +76,15 @@ Partial Class Setting_Price_Base_Default
         Response.Redirect("~/setting/price/base/discount", False)
     End Sub
 
+    Protected Sub btnMarkup_Click(sender As Object, e As EventArgs)
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+
+        Response.Redirect("~/setting/price/base/markup", False)
+    End Sub
+
     Protected Sub ddlCategory_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 

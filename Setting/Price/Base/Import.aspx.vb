@@ -232,6 +232,11 @@ Partial Class Setting_Price_Base_Import
 
                             bulk.WriteToServer(dt)
                         End Using
+
+                        If uploadType.Trim().ToUpper() = "BUY" Then
+                            CopyBuyToNoMaster(productGroupId, priceGroupId, method, thisConn, tran)
+                        End If
+
                         tran.Commit()
                     Catch ex As Exception
                         tran.Rollback()
@@ -324,6 +329,71 @@ Partial Class Setting_Price_Base_Import
                 End Using
             End Using
         Catch
+            Throw
+        End Try
+    End Sub
+
+    Protected Sub CopyBuyToNoMaster(productGroupId As Integer, masterPriceGroupId As Integer, method As String, conn As SqlConnection, tran As SqlTransaction)
+        Try
+            Dim isMaster As Boolean = False
+
+            Using cmd As New SqlCommand("SELECT CASE WHEN Master = 'Yes' THEN 1 ELSE 0 END FROM PriceGroups WHERE Id=@PriceGroupId", conn, tran)
+                cmd.Parameters.AddWithValue("@PriceGroupId", masterPriceGroupId)
+                Dim result = cmd.ExecuteScalar()
+                If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
+                    isMaster = Convert.ToBoolean(result)
+                End If
+            End Using
+
+            If Not isMaster Then
+                Throw New Exception("BUY CAN ONLY BE UPLOADED TO MASTER PRICE GROUP.")
+            End If
+            Dim companyId As Integer
+            Dim priceGroupType As String
+
+            Using cmd As New SqlCommand("SELECT CompanyId, Type FROM PriceGroups WHERE Id = @PriceGroupId", conn, tran)
+                cmd.Parameters.AddWithValue("@PriceGroupId", masterPriceGroupId)
+                Using rd As SqlDataReader = cmd.ExecuteReader()
+                    If Not rd.Read() Then
+                        Throw New Exception("MASTER PRICE GROUP NOT FOUND.")
+                    End If
+
+                    companyId = Convert.ToInt32(rd("CompanyId"))
+                    priceGroupType = rd("Type").ToString()
+                End Using
+            End Using
+
+            Dim priceGroupIds As New List(Of Integer)
+
+            Using cmd As New SqlCommand("SELECT Id FROM PriceGroups WHERE CompanyId = @CompanyId AND Type = @Type AND Master = 'No'", conn, tran)
+                cmd.Parameters.AddWithValue("@CompanyId", companyId)
+                cmd.Parameters.AddWithValue("@Type", priceGroupType)
+
+                Using rd As SqlDataReader = cmd.ExecuteReader()
+                    While rd.Read()
+                        priceGroupIds.Add(Convert.ToInt32(rd("Id")))
+                    End While
+                End Using
+            End Using
+
+            For Each targetPriceGroupId As Integer In priceGroupIds
+                Using cmd As New SqlCommand("DELETE FROM PriceBases WHERE Method = @Method AND ProductGroupId = @ProductGroupId AND PriceGroupId = @PriceGroupId AND Category = 'Buy'", conn, tran)
+                    cmd.Parameters.AddWithValue("@Method", method)
+                    cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
+                    cmd.Parameters.AddWithValue("@PriceGroupId", targetPriceGroupId)
+                    cmd.ExecuteNonQuery()
+                End Using
+
+                Using cmd As New SqlCommand("INSERT INTO PriceBases (Id, Category, Method, ProductGroupId, PriceGroupId, Height, Width, Price, Conditional) SELECT ISNULL((SELECT MAX(Id) FROM PriceBases), 0) + ROW_NUMBER() OVER (ORDER BY Height, Width), Category, Method, ProductGroupId, @TargetPriceGroupId, Height, Width, Price, Conditional FROM PriceBases WHERE Category = 'Buy' AND Method = @Method AND ProductGroupId = @ProductGroupId AND PriceGroupId = @MasterPriceGroupId", conn, tran)
+                    cmd.Parameters.AddWithValue("@TargetPriceGroupId", targetPriceGroupId)
+                    cmd.Parameters.AddWithValue("@Method", method)
+                    cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
+                    cmd.Parameters.AddWithValue("@MasterPriceGroupId", masterPriceGroupId)
+
+                    cmd.ExecuteNonQuery()
+                End Using
+            Next
+        Catch ex As Exception
             Throw
         End Try
     End Sub

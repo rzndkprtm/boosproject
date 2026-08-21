@@ -1,4 +1,6 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports System.Globalization
 
 Partial Class Setting_Price_Service_Default
     Inherits Page
@@ -6,13 +8,14 @@ Partial Class Setting_Price_Service_Default
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
+    Dim enUS As CultureInfo = New CultureInfo("en-US")
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'Dim pageAccess As Boolean = LoginAccess("Load")
-        'If pageAccess = False Then
-        '    Response.Redirect("~/setting/price", False)
-        '    Exit Sub
-        'End If
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/price", False)
+            Exit Sub
+        End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
@@ -35,48 +38,6 @@ Partial Class Setting_Price_Service_Default
         Session("SearchPriceService") = txtSearch.Text
     End Sub
 
-    'Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
-    '    MessageError(False, String.Empty)
-    '    Try
-    '        Dim priceGroupId As String = txtDeleteId.Text
-    '        Dim priceGroupType As String = txtDeleteType.Text
-
-    '        Using thisConn As New SqlConnection(myConn)
-    '            Using thisCmd As New SqlCommand("UPDATE PriceGroups SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
-    '                thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(priceGroupId)
-    '                thisConn.Open()
-    '                thisCmd.ExecuteNonQuery()
-    '            End Using
-    '        End Using
-
-    '        Dim fieldTable As String = String.Empty
-    '        If priceGroupType = "Blinds" Then fieldTable = "PriceGroupId"
-    '        If priceGroupType = "Shutters" Then fieldTable = "ShutterPriceGroupId"
-    '        If priceGroupType = "Doors" Then fieldTable = "DoorPriceGroupId"
-
-    '        If Not String.IsNullOrEmpty(fieldTable) Then
-    '            Using thisConn As New SqlConnection(myConn)
-    '                Using thisCmd As New SqlCommand(String.Format("UPDATE Customers SET {0}=NULL WHERE {1}=@Id", fieldTable, fieldTable), thisConn)
-    '                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(priceGroupId)
-    '                    thisConn.Open()
-    '                    thisCmd.ExecuteNonQuery()
-    '                End Using
-    '            End Using
-    '        End If
-
-    '        Dim dataLog As Object() = {"PriceGroups", priceGroupId, Session("LoginId").ToString(), "Price Group Deleted"}
-    '        settingClass.Logs(dataLog)
-
-    '        Session("SearchPriceService") = txtSearch.Text
-    '        Response.Redirect("~/setting/price/group")
-    '    Catch ex As Exception
-    '        MessageError(True, ex.ToString())
-    '        If Not Session("RoleName") = "Developer" Then
-    '            MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-    '        End If
-    '    End Try
-    'End Sub
-
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         gvList.PageIndex = e.NewPageIndex
 
@@ -95,16 +56,56 @@ Partial Class Setting_Price_Service_Default
         BuildPager()
     End Sub
 
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim serviceId As String = txtDeleteId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("UPDATE PriceServices SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(serviceId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim dataLog As Object() = {"PriceServices", serviceId, Session("LoginId").ToString(), "Price Service Deleted"}
+            settingClass.Logs(dataLog)
+
+            Dim customerServiceData As DataTable = settingClass.GetDataTable("SELECT Id FROM CustomerServices WHERE ServiceId='" & serviceId & "'")
+            For Each row As DataRow In customerServiceData.Rows
+                Dim custServiceId As Integer = Convert.ToInt32(row("Id"))
+
+                Using thisConn As SqlConnection = New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerServices WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerServices' AND DataId=@Id;", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", custServiceId)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+            Next
+
+            Session("SearchPriceService") = txtSearch.Text
+            Response.Redirect("~/setting/price/service", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindData(searchText As String)
         Try
             Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText))
+                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)),
+                New SqlParameter("@RoleName", Session("RoleName").ToString())
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_PriceServices_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
-            'btnAdd.Visible = LoginAccess("Add")
+            btnAdd.Visible = LoginAccess("Add")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -148,6 +149,18 @@ Partial Class Setting_Price_Service_Default
             navPager.Visible = False
         End Try
     End Sub
+
+    Protected Function BindDecimal(value As Decimal) As String
+        Try
+            If value >= 0 Then
+                value = Math.Round(value, 2)
+                Return value.ToString("N2", enUS)
+            End If
+        Catch ex As Exception
+            Return String.Empty
+        End Try
+        Return String.Empty
+    End Function
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message

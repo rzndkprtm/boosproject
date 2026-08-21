@@ -471,7 +471,6 @@ Partial Class Order_Detail
             End If
 
             Dim cashSale As Boolean = orderClass.GetCustomerCashSale(lblCustomerId.Text)
-            Dim minSurcharge As Boolean = orderClass.GetCustomerMinimum(lblCustomerId.Text)
 
             Dim orderStatus As String = "New Order"
             If cashSale = True Then orderStatus = "Waiting Proforma"
@@ -489,57 +488,36 @@ Partial Class Order_Detail
                 End Using
             End Using
 
-            If lblCompanyId.Text = "2" AndAlso lblOrderType.Text = "Regular" Then
-                Dim thisId As String = orderClass.GetNewOrderItemId()
+            ' SERVICE
+            Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text}}
+            Dim dtService As DataTable = orderClass.GetDataTableSP("sp_CustomerServices_Get", params)
+            For Each row As DataRow In dtService.Rows
+                Dim serviceId As Integer = Convert.ToInt32(row("ServiceId"))
+                Dim serviceName As String = row("Name").ToString()
+                Dim buyPrice As Decimal = Convert.ToDecimal(row("BuyPrice"))
+                Dim sellPrice As Decimal = Convert.ToDecimal(row("SellPrice"))
 
-                Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Fuel Surcharge' AND (Status='In Stock' OR Status='Limited Stock')")
-                Dim productGroupId As String = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Fuel Surcharge' AND Status='Active'")
+                Dim itemId As String = orderClass.GetNewOrderItemId()
 
-                If lblCompanyDetailId.Text = "2" Then
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", thisId)
-                            thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                            thisCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
-                            thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
+                Using thisConn As SqlConnection = New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, ServiceId, Qty, Width, [Drop], LinearMetre, SquareMetre, TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 3711, @ServiceId, 1, 0, 0, 0, 0, 1, 0, 1)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", itemId)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@ServiceId", serviceId)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
                     End Using
+                End Using
 
-                    dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
-                    orderClass.Logs(dataLog)
+                orderClass.ResetPriceDetail(lblHeaderId.Text, itemId)
 
-                    orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
-                    orderClass.CalculatePrice(lblHeaderId.Text, thisId)
-                    orderClass.FinalCostItem(lblHeaderId.Text, thisId)
-                End If
+                Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, buyPrice, sellPrice}
+                orderClass.OrderCostings(costingArray)
+                orderClass.FinalCostItem(lblHeaderId.Text, itemId)
 
-                Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
-                If minSurcharge = True AndAlso totalItems <= 3 Then
-                    thisId = orderClass.GetNewOrderItemId()
-                    productId = orderClass.GetItemData("SELECT Id FROM Products WHERE Name='Minimum Order Surcharge' AND (Status='In Stock' OR Status='Limited Stock')")
-                    productGroupId = orderClass.GetItemData("SELECT Id FROM PriceProductGroups WHERE Name='Minimum Order Surcharge' AND Status='Active'")
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 1, 0, 1)", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", thisId)
-                            thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                            thisCmd.Parameters.AddWithValue("@ProductId", If(String.IsNullOrEmpty(productId), CType(DBNull.Value, Object), productId))
-                            thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(productGroupId), CType(DBNull.Value, Object), productGroupId))
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"OrderDetails", thisId, "2", "Order Item Added"}
-                    orderClass.Logs(dataLog)
-
-                    orderClass.ResetPriceDetail(lblHeaderId.Text, thisId)
-                    orderClass.CalculatePrice(lblHeaderId.Text, thisId)
-                    orderClass.FinalCostItem(lblHeaderId.Text, thisId)
-                End If
-            End If
+                Dim dataLog As Object() = {"OrderDetails", itemId, Session("LoginId"), "Order Item Added"}
+                orderClass.Logs(dataLog)
+            Next
 
             dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Order Submitted"}
             orderClass.Logs(dataLog)
@@ -1798,19 +1776,14 @@ Partial Class Order_Detail
                 Exit Sub
             End If
             If msgErrorAddService.InnerText = "" Then
-                Dim designId As String = "16"
-
-                Dim productName As String = orderClass.GetProductName(ddlAddService.SelectedValue)
-                Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productName, designId, "")
-
                 Dim itemId As String = orderClass.GetNewOrderItemId()
+                Dim serviceName As String = orderClass.GetItemData("SELECT Name FROM PriceServices WHERE Id='" & ddlAddService.SelectedValue & "'")
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, PriceProductGroupId, Qty, Width, [Drop], LinearMetre, SquareMetre, TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, 1, 0, 0, 0, 0, 1, 0, 1)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, ServiceId, Qty, Width, [Drop], LinearMetre, SquareMetre, TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 3711, @ServiceId, 1, 0, 0, 0, 0, 1, 0, 1)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                        thisCmd.Parameters.AddWithValue("@ProductId", ddlAddService.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                        thisCmd.Parameters.AddWithValue("@ServiceId", ddlAddService.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -1818,14 +1791,13 @@ Partial Class Order_Detail
 
                 orderClass.ResetPriceDetail(lblHeaderId.Text, itemId)
 
-                If Not String.IsNullOrEmpty(txtNoteService.Text.Trim()) Then
-                    Dim costingArray As Object() = {lblHeaderId.Text, itemId, 0, "Note", txtNoteService.Text, 0, 0}
-                    orderClass.OrderCostings(costingArray)
-                    orderClass.FinalCostItem(lblHeaderId.Text, itemId)
-                End If
+                Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, txtBuyService.Text, txtSellService.Text}
+                orderClass.OrderCostings(costingArray)
 
-                orderClass.CalculatePrice(lblHeaderId.Text, itemId)
-                orderClass.UpdateServiceItem(lblHeaderId.Text, itemId, txtBuyService.Text, txtSellService.Text)
+                If Not String.IsNullOrEmpty(txtNoteService.Text.Trim()) Then
+                    costingArray = {lblHeaderId.Text, itemId, 0, "Note", txtNoteService.Text, 0, 0}
+                    orderClass.OrderCostings(costingArray)
+                End If
                 orderClass.FinalCostItem(lblHeaderId.Text, itemId)
 
                 Dim dataLog As Object() = {"OrderDetails", itemId, Session("LoginId"), "Order Item Added"}
@@ -3384,7 +3356,9 @@ Partial Class Order_Detail
     Protected Sub BindService()
         ddlAddService.Items.Clear()
         Try
-            ddlAddService.DataSource = orderClass.GetDataTable("SELECT Id, Name FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId=16 AND BlindId=96 AND companyArray.VALUE='" & lblCompanyDetailId.Text & "' AND Status='In Stock' ORDER BY Name ASC")
+            Dim thisQuery As String = "SELECT Id, Name FROM PriceServices CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE companyDetailArray.VALUE = '" & lblCompanyDetailId.Text & "' AND Status='Active'"
+
+            ddlAddService.DataSource = orderClass.GetDataTable(thisQuery)
             ddlAddService.DataTextField = "Name"
             ddlAddService.DataValueField = "Id"
             ddlAddService.DataBind()
@@ -3420,7 +3394,6 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub BindDataItem(status As String)
-        divMinimumOrderSurcharge.Visible = False : divFuelSurcharge.Visible = False
         Try
             Dim param As New List(Of SqlParameter) From {
                 New SqlParameter("@HeaderId", Convert.ToInt32(lblHeaderId.Text))
@@ -3439,11 +3412,9 @@ Partial Class Order_Detail
             gvListItem.Columns(7).Visible = False
             If Session("PriceAccess") = "Yes" Then gvListItem.Columns(7).Visible = True
 
-            Dim totalItems As Integer = orderClass.GetTotalItemOrder(lblHeaderId.Text)
-            If status = "Unsubmitted" AndAlso lblCompanyId.Text = "2" AndAlso totalItems > 0 Then
-                divFuelSurcharge.Visible = True
-                If totalItems <= 3 Then divMinimumOrderSurcharge.Visible = True
-            End If
+            Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text}}
+            rptData.DataSource = orderClass.GetDataTableSP("sp_CustomerServices_Get", params)
+            rptData.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

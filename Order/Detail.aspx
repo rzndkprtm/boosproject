@@ -386,18 +386,21 @@
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
-                            <div class="col-lg-6 mb-2" runat="server" id="divFuelSurcharge">
-                                <div class="border rounded p-3 bg-light h-100">
-                                    <div class="fw-semibold text-warning mb-1">Fuel Surcharge</div>
-                                    <div class="small text-muted">A $4 fuel surcharge will be applied once the order is submitted.</div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 mb-2" runat="server" id="divMinimumOrderSurcharge">
-                                <div class="border rounded p-3 bg-light h-100">
-                                    <div class="fw-semibold text-warning mb-1">Minimum Order Surcharge</div>
-                                    <div class="small text-muted">This order will incur an additional minimum order surcharge of $15 after submission.
-                                    </div>
-                                </div>
+                            <div class="row justify-content-end">
+                                <asp:Repeater ID="rptData" runat="server">
+                                    <ItemTemplate>
+                                        <div class="col-lg-4 mb-2">
+                                            <div class="border rounded p-3 bg-light h-100">
+                                                <div class="fw-semibold text-warning mb-1">
+                                                    <%# Eval("Name") %>
+                                                </div>
+                                                <div class="small text-muted">
+                                                    <%# Eval("Description") %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ItemTemplate>
+                                </asp:Repeater>
                             </div>
                         </div>
                         <div class="border rounded">
@@ -940,13 +943,13 @@
             </div>
         </div>
     </div>
-    <div class="modal fade text-center" id="modalReworkOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal fade" id="modalReworkOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title white">Rework Order</h5>
                 </div>
-                <div class="modal-body text-center py-4">
+                <div class="modal-body">
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                     <br /><br />
                     After confirmation, you will be redirected to the <b>Rework Detail</b> page.

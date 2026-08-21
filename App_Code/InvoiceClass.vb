@@ -525,10 +525,6 @@ Public Class InvoiceClass
                 End If
                 If designName = "Service" Then
                     itemDescription = String.Format("{0}", invoiceName)
-                    If Not String.IsNullOrEmpty(itemNote) Then
-                        itemDescription &= vbCrLf
-                        itemDescription &= itemNote
-                    End If
                 End If
                 If designName = "Skyline Shutter Express" Then
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
