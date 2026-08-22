@@ -187,7 +187,6 @@ Partial Class Setting_Customer_List
             gvList.Columns(7).Visible = LoginAccess("Visible Sales") ' OPERATOR
             gvList.Columns(8).Visible = LoginAccess("Visible Cash Sale") ' CASH SALE
             gvList.Columns(9).Visible = LoginAccess("Visible On Stop") ' ON STOP
-            gvList.Columns(10).Visible = LoginAccess("Visible Active") ' ACTIVE
 
             btnAdd.Visible = LoginAccess("Add")
             ddlActive.Visible = LoginAccess("Filter Active")
