@@ -18,9 +18,6 @@ Partial Class Setting_Price_Group_Add
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindCompany()
-
-            divMaster.Visible = False
-            If Session("RoleName") = "Developer" Then divMaster.Visible = True
         End If
     End Sub
 
@@ -45,6 +42,10 @@ Partial Class Setting_Price_Group_Add
 
             If ddlType.SelectedValue = "" Then
                 MessageError(True, "TYPE IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlMaster.SelectedValue = "" Then
+                MessageError(True, "MASTER IS REQUIRED !")
                 Exit Sub
             End If
 

@@ -52,7 +52,7 @@
                                             <asp:ListItem Value="Doors" Text="Doors"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group" runat="server" id="divMaster">
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
                                         <label class="form-label">Master</label>
                                         <asp:DropDownList runat="server" ID="ddlMaster" CssClass="form-select">
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
