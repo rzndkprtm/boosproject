@@ -77,7 +77,6 @@
                                             <asp:BoundField DataField="OperatorName" HeaderText="Sales" />
                                             <asp:BoundField DataField="CustomerCashSale" HeaderText="Cash Sale" />
                                             <asp:BoundField DataField="CustomerOnStop" HeaderText="On Stop" />
-                                            <asp:BoundField DataField="DataActive" HeaderText="Active" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
