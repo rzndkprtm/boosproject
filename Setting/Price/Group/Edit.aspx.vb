@@ -52,6 +52,10 @@ Partial Class Setting_Price_Group_Edit
                 MessageError(True, "TYPE IS REQUIRED !")
                 Exit Sub
             End If
+            If ddlMaster.SelectedValue = "" Then
+                MessageError(True, "MASTER IS REQUIRED !")
+                Exit Sub
+            End If
 
             If msgError.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceGroups ORDER BY Id DESC")
@@ -102,9 +106,6 @@ Partial Class Setting_Price_Group_Edit
             txtDescription.Text = myData("Description").ToString()
             ddlMaster.SelectedValue = myData("Master").ToString()
             ddlStatus.SelectedValue = myData("Status").ToString()
-
-            divMaster.Visible = False
-            If Session("RoleName") = "Developer" Then divMaster.Visible = True
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
