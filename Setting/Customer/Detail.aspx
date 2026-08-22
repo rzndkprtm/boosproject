@@ -155,7 +155,7 @@
                                                 <asp:Label runat="server" ID="lblCashSale"></asp:Label>
                                             </div>
                                         </div>
-                                        <div class="row mb-2">
+                                        <div class="row mb-3">
                                             <div class="col-4 text-muted">Newsletter</div>
                                             <div class="col-8 fw-semibold">
                                                 <asp:Label runat="server" ID="lblNewsletter"></asp:Label>
