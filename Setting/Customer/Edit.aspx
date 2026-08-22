@@ -109,7 +109,7 @@
                                             </div>
                                         </div>
                                         <div class="row mb-3">
-                                            <div class="col-12 col-sm-12 col-lg-3 mb-2 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                                                 <label class="form-label">Price Group</label>
                                                 <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
@@ -117,7 +117,7 @@
                                                 <label class="form-label">Shutter Price Group</label>
                                                 <asp:DropDownList runat="server" ID="ddlPriceGroupShutter" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-5 mb-2 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 mb-2 form-group">
                                                 <label class="form-label">Door Price Group</label>
                                                 <asp:DropDownList runat="server" ID="ddlPriceGroupDoor" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
