@@ -32,14 +32,14 @@
                     <div class="card-body">
                         <div class="form form-vertical">
                             <div class="form-body">
-                                <div class="row">
+                                <div class="row mb-2">
                                     <div class="col-12 form-group">
                                         <label class="form-label">Name</label>
                                         <asp:Label runat="server" ID="lblName" Visible="false"></asp:Label>
                                         <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Price Group Name ..." autocomplete="off"></asp:TextBox>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-2">
                                     <div class="col-12 col-sm-12 col-lg-4 form-group">
                                         <label class="form-label">Company</label>
                                         <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select"></asp:DropDownList>
@@ -62,13 +62,13 @@
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-2">
                                     <div class="col-12 form-group">
                                         <label class="form-label">Description</label>
                                         <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-2">
                                     <div class="col-12 col-sm-12 col-lg-3 form-group">
                                         <label class="form-label">Status</label>
                                         <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
@@ -77,7 +77,7 @@
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-                                <div class="row mt-3" runat="server" id="divError">
+                                <div class="row" runat="server" id="divError">
                                     <div class="col-12">
                                         <div class="alert alert-danger">
                                             <span runat="server" id="msgError"></span>
