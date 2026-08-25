@@ -67,6 +67,9 @@
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                             <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" />
                                             <asp:BoundField DataField="PromoName" HeaderText="Promo Name" />
+                                            <asp:BoundField DataField="PromoStart" HeaderText="Start Date" DataFormatString="{0:dd MMM yyyy}" />
+                                            <asp:BoundField DataField="PromoEnd" HeaderText="End Date" DataFormatString="{0:dd MMM yyyy}" />
+                                            <asp:BoundField DataField="PromoStatus" HeaderText="Promo Status" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
@@ -75,7 +78,7 @@
                                                             <a href="javascript:void(0);" id="aDetail" class="dropdown-item" onclick="showDetail('<%# Eval("Id").ToString() %>');">Detail</a>
                                                         </li>
                                                         <li>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("CustomerId").ToString()) %>'>Delete</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("CustomerId").ToString()) %>'>Delete</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerPromos', '<%# Eval("Id") %>')">Log</a>
@@ -107,40 +110,6 @@
         </section>
     </div>
 
-    <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add Promo</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-2" runat="server" id="divErrorProcess">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcess"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Customer Account</label>
-                            <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Promo</label>
-                            <asp:DropDownList runat="server" ID="ddlPromo" CssClass="choices form-select"></asp:DropDownList>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcess" Text="Submit" CssClass="btn btn-primary" OnClick="btnProcess_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalDetail" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
@@ -260,9 +229,6 @@
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-        function showProcess() {
-            $("#modalProcess").modal("show");
-        }
         function dataDelete(id, customerid) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
             document.getElementById("<%=txtDeleteCustomerId.ClientID %>").value = customerid;
@@ -342,7 +308,7 @@
             });
         }
 
-        ["modalProcess", "modalDetail", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalDetail", "modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

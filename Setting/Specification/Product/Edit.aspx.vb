@@ -27,150 +27,18 @@ Partial Class Setting_Specification_Product_Edit
 
         lblId.Text = Request.QueryString("productid").ToString()
         If Not IsPostBack Then
-            BackColor()
+            MessageError(False, String.Empty)
             BindData(lblId.Text)
         End If
     End Sub
 
     Protected Sub ddlDesign_SelectedIndexChanged(sender As Object, e As EventArgs)
-        BackColor()
+        MessageError(False, String.Empty)
         BindBlind(ddlDesign.SelectedValue)
     End Sub
 
-    Protected Sub btnAddTube_Click(sender As Object, e As EventArgs)
-        MessageError_Tube(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showTube(); };"
-        Try
-            txtTubeName.Text = String.Empty
-            txtTubeDescription.Text = String.Empty
-            ClientScript.RegisterStartupScript(Me.GetType(), "showTube", thisScript, True)
-        Catch ex As Exception
-            MessageError_Tube(True, ex.ToString())
-            ClientScript.RegisterStartupScript(Me.GetType(), "showTube", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnAddControl_Click(sender As Object, e As EventArgs)
-        MessageError_Control(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showControl(); };"
-        Try
-            txtControlName.Text = String.Empty
-            txtControlDescription.Text = String.Empty
-            ClientScript.RegisterStartupScript(Me.GetType(), "showControl", thisScript, True)
-        Catch ex As Exception
-            MessageError_Control(True, ex.ToString())
-            ClientScript.RegisterStartupScript(Me.GetType(), "showControl", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnAddColour_Click(sender As Object, e As EventArgs)
-        MessageError_Colour(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showColour(); };"
-        Try
-            txtColourName.Text = String.Empty
-            txtColourDescription.Text = String.Empty
-            ClientScript.RegisterStartupScript(Me.GetType(), "showColour", thisScript, True)
-        Catch ex As Exception
-            MessageError_Colour(True, ex.ToString())
-            ClientScript.RegisterStartupScript(Me.GetType(), "showColour", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnSubmitTube_Click(sender As Object, e As EventArgs)
-        MessageError_Tube(False, String.Empty)
-        Try
-            If msgErrorProcessTube.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductTubes ORDER BY Id DESC")
-                Dim descText As String = txtTubeDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductTubes VALUES (@Id, @Name, @Description)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", thisId)
-                        thisCmd.Parameters.AddWithValue("@Name", txtTubeName.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisConn.Open()
-                        thisCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                dataLog = {"ProductTubes", thisId, Session("LoginId").ToString(), "Product Tube Created"}
-                settingClass.Logs(dataLog)
-
-                url = String.Format("~/setting/specification/product/edit?id={0}", lblId.Text)
-                If lblReturnPage.Text = "detail" Then
-                    url = String.Format("~/setting/specification/product/edit?id={0}&returnpage=detail", lblId.Text)
-                End If
-                Response.Redirect(url, False)
-            End If
-        Catch ex As Exception
-            MessageError_Tube(True, ex.ToString())
-        End Try
-    End Sub
-
-    Protected Sub btnSubmitControl_Click(sender As Object, e As EventArgs)
-        MessageError_Control(False, String.Empty)
-        Try
-            If msgErrorProcessControl.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductControls ORDER BY Id DESC")
-                Dim descText As String = txtControlDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Name, @Description, NULL)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", thisId)
-                        thisCmd.Parameters.AddWithValue("@Name", txtControlName.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisConn.Open()
-                        thisCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                dataLog = {"ProductControls", thisId, Session("LoginId").ToString(), "Product Control Created"}
-                settingClass.Logs(dataLog)
-
-                url = String.Format("~/setting/specification/product/edit?id={0}", lblId.Text)
-                If lblReturnPage.Text = "detail" Then
-                    url = String.Format("~/setting/specification/product/edit?id={0}&returnpage=detail", lblId.Text)
-                End If
-                Response.Redirect(url, False)
-            End If
-        Catch ex As Exception
-            MessageError_Control(True, ex.ToString())
-        End Try
-    End Sub
-
-    Protected Sub btnSubmitColour_Click(sender As Object, e As EventArgs)
-        MessageError_Colour(False, String.Empty)
-        Try
-            If msgErrorProcessColour.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductColours ORDER BY Id DESC")
-                Dim descText As String = txtColourDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductColours VALUES (@Id, @Name, @Description)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", thisId)
-                        thisCmd.Parameters.AddWithValue("@Name", txtColourName.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisConn.Open()
-                        thisCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                dataLog = {"ProductColours", thisId, Session("LoginId").ToString(), "Product Colour Created"}
-                settingClass.Logs(dataLog)
-
-                url = String.Format("~/setting/specification/product/edit?id={0}", lblId.Text)
-                If lblReturnPage.Text = "detail" Then
-                    url = String.Format("~/setting/specification/product/edit?id={0}&returnpage=detail", lblId.Text)
-                End If
-                Response.Redirect(url, False)
-            End If
-        Catch ex As Exception
-            MessageError_Colour(True, ex.ToString())
-        End Try
-    End Sub
-
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
-        BackColor()
+        MessageError(False, String.Empty)
         Try
             If ddlDesign.SelectedValue = "" Then
                 MessageError(True, "DESIGN TYPE IS REQUIRED !")
@@ -257,9 +125,8 @@ Partial Class Setting_Specification_Product_Edit
     End Sub
 
     Protected Sub BindData(productId As String)
-        BackColor()
         Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Products WHERE Id='" & productId & "'")
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Products WHERE Id='" & productId & "' AND Status<>'Deleted'")
             If myData Is Nothing Then
                 Response.Redirect("~/setting/specification/product/", False)
                 Exit Sub
@@ -295,10 +162,6 @@ Partial Class Setting_Specification_Product_Edit
                     End If
                 Next
             End If
-
-            btnAddTube.Visible = LoginAccess("Add Tube")
-            btnAddControl.Visible = LoginAccess("Add Control")
-            btnAddColour.Visible = LoginAccess("Add Colour")
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
@@ -342,7 +205,7 @@ Partial Class Setting_Specification_Product_Edit
         lbCompanyDetail.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(blindId) Then
-                lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT CompanyDetails.* FROM Blinds CROSS APPLY STRING_SPLIT(Blinds.CompanyDetailId, ',') AS thisArray JOIN CompanyDetails ON CompanyDetails.Id=CAST(thisArray.value AS INT) WHERE Blinds.Id='" & blindId & "' ORDER BY CompanyDetails.Name ASC;")
+                lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT CompanyDetails.* FROM Blinds CROSS APPLY STRING_SPLIT(Blinds.CompanyDetailId, ',') AS thisArray JOIN CompanyDetails ON CompanyDetails.Id=CAST(thisArray.value AS INT) WHERE Blinds.Id='" & blindId & "' AND (CompanyDetails.Status='Active' OR CompanyDetails.Status='Inactive') ORDER BY CompanyDetails.Name ASC;")
                 lbCompanyDetail.DataTextField = "Name"
                 lbCompanyDetail.DataValueField = "Id"
                 lbCompanyDetail.DataBind()
@@ -421,27 +284,8 @@ Partial Class Setting_Specification_Product_Edit
         End Try
     End Sub
 
-    Protected Sub BackColor()
-        MessageError(False, String.Empty)
-        MessageError_Control(False, String.Empty)
-        MessageError_Tube(False, String.Empty)
-        MessageError_Colour(False, String.Empty)
-    End Sub
-
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Control(visible As Boolean, message As String)
-        divErrorProcessControl.Visible = visible : msgErrorProcessControl.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Tube(visible As Boolean, message As String)
-        divErrorProcessTube.Visible = visible : msgErrorProcessTube.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Colour(visible As Boolean, message As String)
-        divErrorProcessColour.Visible = visible : msgErrorProcessColour.InnerText = message
     End Sub
 
     Protected Function LoginAccess(action As String) As Boolean

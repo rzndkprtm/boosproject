@@ -75,7 +75,7 @@
                                                             <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/login/user/installer/edit?loginid=" & Eval("Id")) %>'>Detail / Edit</a>
                                                         </li>
                                                         <li>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('LoginInstallers', '<%# Eval("Id") %>')">Log</a>

@@ -39,7 +39,6 @@ Partial Class Setting_Price_Group_Add
                 MessageError(True, "COMPANY IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlType.SelectedValue = "" Then
                 MessageError(True, "TYPE IS REQUIRED !")
                 Exit Sub
@@ -47,6 +46,18 @@ Partial Class Setting_Price_Group_Add
             If ddlMaster.SelectedValue = "" Then
                 MessageError(True, "MASTER IS REQUIRED !")
                 Exit Sub
+            End If
+            If ddlMaster.SelectedValue = "Yes" Then
+                If ddlType.SelectedValue = "Shutters" OrElse ddlType.SelectedValue = "Doors" Then
+                    MessageError(True, "PLEASE SET TO NO MASTER FOR THIS RULE PRICE GROUP !")
+                    Exit Sub
+                End If
+
+                Dim masterData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM PriceGroups WHERE CompanyId='" & ddlCompany.SelectedValue & "' AND Type='" & ddlType.SelectedValue & "' AND Master='" & ddlMaster.SelectedValue & "'")
+                If masterData > 0 Then
+                    MessageError(True, "MASTER FORM THIS RULE ALREADY EXISTS !")
+                    Exit Sub
+                End If
             End If
 
             If msgError.InnerText = "" Then
@@ -126,7 +137,7 @@ Partial Class Setting_Price_Group_Add
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Active=1 ORDER BY Id ASC")
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Status='Active' ORDER BY Id ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()

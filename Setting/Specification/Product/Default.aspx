@@ -143,16 +143,16 @@
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                     <ul class="dropdown-menu">
                                                         <li runat="server" visible='<%# LoginAccess("Detail") %>'>
-                                                            <a class="dropdown-item" runat="server" id="aDetail" href='<%# Page.ResolveUrl("~/setting/specification/product/detail?productid=" & Eval("Id")) %>'>Detail</a>
+                                                            <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/specification/product/detail?productid=" & Eval("Id")) %>'>Detail</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Edit") %>'>
-                                                            <a class="dropdown-item" runat="server" id="aEdit" href='<%# Page.ResolveUrl("~/setting/specification/product/edit?productid=" & Eval("Id")) %>'>Edit</a>
+                                                            <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/specification/product/edit?productid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Change Status") %>'>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatus" onclick='<%# String.Format("return dataChangeStatus(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatus" onclick='<%# String.Format("return dataChangeStatus(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Copy") %>'>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Delete") %>'>
                                                             <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>

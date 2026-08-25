@@ -51,7 +51,6 @@ Partial Class Setting_Customer_Add
                 MessageError(True, "CUSTOMER NAME IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlCompany.SelectedValue = "" Then
                 MessageError(True, "COMPANY IS REQUIRED !")
                 Exit Sub
@@ -72,7 +71,6 @@ Partial Class Setting_Customer_Add
                 MessageError(True, "PRIMARY CUSTOMER IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlPriceGroup.SelectedValue = "" Then
                 MessageError(True, "PRICE GROUP IS REQUIRED !")
                 Exit Sub
@@ -103,7 +101,7 @@ Partial Class Setting_Customer_Add
                 Dim dataProductAccess As String = settingClass.GetProductAccess(ddlCompany.SelectedValue)
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Customers VALUES (@Id, @DebtorCode, @Level, @PrimaryId, @Name, @Company, @CompanyDetail, @State, @Operator, @PriceGroup, @ShutterPriceGroup, @DoorPriceGroup, @OnStop, @CashSale, @Newsletter, @Active); INSERT INTO CustomerQuotes(Id, Logo) VALUES (@Id, @Logo); INSERT INTO CustomerProductAccess VALUES (@Id, @DesignId)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Customers VALUES (@Id, @DebtorCode, @Level, @PrimaryId, @Name, @Company, @CompanyDetail, @State, @Operator, @PriceGroup, @ShutterPriceGroup, @DoorPriceGroup, @OnStop, @CashSale, @Newsletter, @Status); INSERT INTO CustomerQuotes(Id, Logo) VALUES (@Id, @Logo); INSERT INTO CustomerProductAccess VALUES (@Id, @DesignId)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@DebtorCode", txtDebtorCode.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Level", ddlLevel.SelectedValue)
@@ -119,7 +117,7 @@ Partial Class Setting_Customer_Add
                         thisCmd.Parameters.AddWithValue("@OnStop", ddlOnStop.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CashSale", ddlCashSale.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Newsletter", ddlNewsletter.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Active", 1)
+                        thisCmd.Parameters.AddWithValue("@Status", "Active")
                         thisCmd.Parameters.AddWithValue("@Logo", logoCustomer)
                         thisCmd.Parameters.AddWithValue("@DesignId", dataProductAccess)
                         thisConn.Open()
@@ -127,11 +125,10 @@ Partial Class Setting_Customer_Add
                     End Using
                 End Using
 
-                Dim dataService As DataTable = settingClass.GetDataTable("SELECT * FROM PriceServices CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE companyDetailArray.VALUE='" & ddlCompanyDetail.SelectedValue & "' AND AutoCreate=1 AND Status='Active'")
+                Dim dataService As DataTable = settingClass.GetDataTable("SELECT Id FROM PriceServices CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE companyDetailArray.VALUE='" & ddlCompanyDetail.SelectedValue & "' AND AutoCreate=1 AND Status='Active'")
                 If Not dataService.Rows.Count = 0 Then
                     For i As Integer = 0 To dataService.Rows.Count - 1
                         Dim serviceId As String = dataService.Rows(i)("Id").ToString()
-
                         Dim custServiceId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerServices ORDER BY Id DESC")
 
                         Using thisConn As New SqlConnection(myConn)
@@ -173,7 +170,7 @@ Partial Class Setting_Customer_Add
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys ORDER BY Id ASC")
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Status='Active' ORDER BY Id ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()
@@ -202,7 +199,7 @@ Partial Class Setting_Customer_Add
         ddlCompanyDetail.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                ddlCompanyDetail.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM CompanyDetails WHERE CompanyId='" & companyId & "' ORDER BY Name ASC")
+                ddlCompanyDetail.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM CompanyDetails WHERE CompanyId='" & companyId & "' AND Status='Active' ORDER BY Name ASC")
                 ddlCompanyDetail.DataTextField = "Name"
                 ddlCompanyDetail.DataValueField = "Id"
                 ddlCompanyDetail.DataBind()
@@ -229,7 +226,7 @@ Partial Class Setting_Customer_Add
         lbSales.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                lbSales.DataSource = settingClass.GetDataTable("SELECT Logins.Id, Logins.FullName FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Customers.CompanyId='" & companyId & "' AND Logins.RoleId='4' AND Logins.LevelId='2' ORDER BY Logins.UserName ASC")
+                lbSales.DataSource = settingClass.GetDataTable("SELECT Logins.Id, Logins.FullName FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Customers.CompanyId='" & companyId & "' AND Logins.RoleId='4' AND Logins.LevelId='2' AND Logins.Status='Active' ORDER BY Logins.UserName ASC")
                 lbSales.DataTextField = "FullName"
                 lbSales.DataValueField = "Id"
                 lbSales.DataBind()
@@ -253,7 +250,7 @@ Partial Class Setting_Customer_Add
     Protected Sub BindPrimary(companyId As String)
         ddlPrimary.Items.Clear()
         Try
-            ddlPrimary.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE [Level]='Primary' AND CompanyId='" & companyId & "' ORDER BY Id ASC")
+            ddlPrimary.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE [Level]='Primary' AND CompanyId='" & companyId & "' AND Status='Active' ORDER BY Id ASC")
             ddlPrimary.DataTextField = "Name"
             ddlPrimary.DataValueField = "Id"
             ddlPrimary.DataBind()

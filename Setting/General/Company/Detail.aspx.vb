@@ -68,7 +68,7 @@ Partial Class Setting_General_Company_Detail
                     txtNameDetail.Text = myData("Name").ToString()
                     txtNameDetail.Text = myData("Name").ToString()
                     txtDescriptionDetail.Text = myData("Description").ToString()
-                    ddlActiveDetail.SelectedValue = Convert.ToInt32(myData("Active"))
+                    ddlStatusDetail.SelectedValue = myData("Status").ToString()
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcessDetail", thisScript, True)
                 Catch ex As Exception
@@ -98,12 +98,12 @@ Partial Class Setting_General_Company_Detail
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CompanyDetails ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CompanyDetails VALUES(@Id, @Name, @CompanyId, @Description, @Active)", thisConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CompanyDetails VALUES(@Id, @Name, @CompanyId, @Description, @Status)", thisConn)
                             thisCmd.Parameters.AddWithValue("@Id", thisId)
                             thisCmd.Parameters.AddWithValue("@Name", txtNameDetail.Text.Trim())
                             thisCmd.Parameters.AddWithValue("@CompanyId", lblId.Text)
                             thisCmd.Parameters.AddWithValue("@Description", descText)
-                            thisCmd.Parameters.AddWithValue("@Active", ddlActiveDetail.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@Status", ddlStatusDetail.SelectedValue)
                             thisConn.Open()
                             thisCmd.ExecuteNonQuery()
                         End Using
@@ -118,11 +118,11 @@ Partial Class Setting_General_Company_Detail
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE CompanyDetails SET Name=@Name, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE CompanyDetails SET Name=@Name, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                             thisCmd.Parameters.AddWithValue("@Id", lblDetailId.Text)
                             thisCmd.Parameters.AddWithValue("@Name", txtNameDetail.Text.Trim())
                             thisCmd.Parameters.AddWithValue("@Description", descText)
-                            thisCmd.Parameters.AddWithValue("@Active", ddlActiveDetail.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@Status", ddlStatusDetail.SelectedValue)
                             thisConn.Open()
                             thisCmd.ExecuteNonQuery()
                         End Using
@@ -146,7 +146,7 @@ Partial Class Setting_General_Company_Detail
 
     Protected Sub BindData(companyId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS ActiveData FROM Companys WHERE Id='" & companyId & "'")
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Companys WHERE Id='" & companyId & "'")
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/general/company", False)
                 Exit Sub
@@ -159,9 +159,9 @@ Partial Class Setting_General_Company_Detail
             lblPhone.Text = thisData("Phone").ToString()
             lblEmail.Text = thisData("Email").ToString()
             lblDescription.Text = thisData("Description").ToString()
-            lblActive.Text = thisData("ActiveData").ToString()
+            lblStatus.Text = thisData("Status").ToString()
 
-            gvList.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM CompanyDetails WHERE CompanyId='" & companyId & "'")
+            gvList.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails WHERE CompanyId='" & companyId & "'")
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID Detail")
 

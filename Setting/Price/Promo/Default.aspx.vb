@@ -52,48 +52,55 @@ Partial Class Setting_Price_Promo_Default
         BuildPager()
     End Sub
 
+    Protected Sub btnStatus_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtStatusId.Text
+            Dim thisStatus As String = txtStatusText.Text
+
+            Dim newStatus As String = "Inactive"
+            If thisStatus = "Inactive" Then : newStatus = "Active" : End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Promos SET Status=@Status WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim statusDesc As String = "Promo Has Been Activated"
+            If newStatus = "Inactive" Then statusDesc = "Promo Has Been Deactivated"
+
+            Dim dataLog As Object() = {"Promos", thisId, Session("LoginId").ToString(), statusDesc}
+            settingClass.Logs(dataLog)
+
+            Session("SearchPromo") = txtSearch.Text
+            Response.Redirect("~/setting/price/promo", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
             Dim promoId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Promos WHERE Id=@Id; DELETE FROM Logs WHERE Type='Promos' AND DataId=@Id;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", promoId)
+                Using thisCmd As New SqlCommand("UPDATE Promos SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(promoId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim customerPromos As DataTable = settingClass.GetDataTable("SELECT Id FROM CustomerPromos WHERE PromoId='" & promoId & "'")
-            If customerPromos.Rows.Count > 0 Then
-                For i As Integer = 0 To customerPromos.Rows.Count - 1
-                    Dim thisId As String = customerPromos.Rows(i)("Id").ToString()
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id;", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", thisId)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-                Next
-            End If
-
-            Dim promoDetail As DataTable = settingClass.GetDataTable("SELECT Id FROM PromoDetails WHERE PromoId='" & promoId & "'")
-            If promoDetail.Rows.Count > 0 Then
-                For i As Integer = 0 To promoDetail.Rows.Count - 1
-                    Dim thisId As String = promoDetail.Rows(i)("Id").ToString()
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM PromoDetails WHERE Id=@Id; DELETE FROM Logs WHERE Type='PromoDetails' AND DataId=@Id;", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", thisId)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-                Next
-            End If
+            Dim dataLog As Object() = {"Promos", promoId, Session("LoginId").ToString(), "Price Promo Deleted"}
+            settingClass.Logs(dataLog)
 
             Session("SearchPromo") = txtSearch.Text
             Response.Redirect("~/setting/price/promo", False)
@@ -165,6 +172,12 @@ Partial Class Setting_Price_Promo_Default
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
+
+    Protected Function TextStatus(status As String) As String
+        Dim result As String = "Activate"
+        If status = "Active" Then : Return "Deactivate" : End If
+        Return result
+    End Function
 
     Protected Function LoginAccess(action As String) As Boolean
         Try

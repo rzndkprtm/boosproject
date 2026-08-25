@@ -348,22 +348,39 @@ function getBlindName(blindType) {
 }
 
 function getFormAction(itemAction) {
-    return new Promise((resolve) => {
-        const pageAction = document.getElementById("pageaction");
-        if (!pageAction) {
-            resolve();
-            return;
-        }
+    const pageAction = document.getElementById("pageaction");
+    const submitButton = document.getElementById("submit");
 
-        const actionMap = {
-            create: "Add Item",
-            edit: "Edit Item",
-            view: "View Item",
-            copy: "Copy Item"
-        };
-        pageAction.innerText = actionMap[itemAction] || "";
-        resolve();
-    });
+    const actionMap = {
+        create: {
+            page: "Add Item",
+            submit: "Save Item"
+        },
+        edit: {
+            page: "Edit Item",
+            submit: "Update Item"
+        },
+        view: {
+            page: "View Item",
+            submit: "Update Item"
+        },
+        copy: {
+            page: "Copy Item",
+            submit: "Save Item (Copy)"
+        }
+    };
+
+    const action = actionMap[itemAction];
+
+    if (!action) return;
+
+    if (pageAction) {
+        pageAction.innerText = action.page;
+    }
+
+    if (submitButton) {
+        submitButton.innerText = action.submit;
+    }
 }
 
 function bindBlindType(designType) {

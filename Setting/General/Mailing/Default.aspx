@@ -35,7 +35,7 @@
         </section>
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
+                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
             </div>
         </section>
         <section class="row">
@@ -77,16 +77,16 @@
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
                                                         <li runat="server" visible='<%# LoginAccess("Detail") %>'>
-                                                            <a runat="server" id="aDetail" class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDetail" onclick='<%# String.Format("return dataDetail(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`, `{5}`, `{6}`,);", Eval("CompanyAlias").ToString(), Eval("Name").ToString(), Eval("Alias").ToString(), Eval("Subject").ToString(), Eval("To").ToString(), Eval("Cc").ToString(), Eval("Bcc").ToString()) %>'>Detail</a>
+                                                            <a id="aDetail" class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDetail" onclick='<%# String.Format("return dataDetail(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`, `{5}`, `{6}`,);", Eval("CompanyAlias").ToString(), Eval("Name").ToString(), Eval("Alias").ToString(), Eval("Subject").ToString(), Eval("To").ToString(), Eval("Cc").ToString(), Eval("Bcc").ToString()) %>'>Detail</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/general/mailing/edit?mailid=" & Eval("Id")) %>'> Edit</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Copy") %>'>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Delete") %>'>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Mailings', '<%# Eval("Id") %>')">Log</a>

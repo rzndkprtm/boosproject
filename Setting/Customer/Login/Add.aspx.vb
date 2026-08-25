@@ -80,7 +80,7 @@ Partial Class Setting_Customer_Login_Add
 
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Logins ORDER BY Id DESC")
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Logins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, NULL, 0, NULL, 1, @Pricing, 1)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Logins VALUES (@Id, @CustomerId, @RoleId, @LevelId, @UserName, @Password, @FullName, NULL, 0, NULL, 1, @Pricing, 'Active')", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
                         thisCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
@@ -130,7 +130,7 @@ Partial Class Setting_Customer_Login_Add
                 End If
             End If
 
-            Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
+            Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Status='Active' {0} ORDER BY Name ASC", role)
 
             ddlCustomer.DataSource = settingClass.GetDataTable(thisQuery)
             ddlCustomer.DataTextField = "Name"
@@ -155,7 +155,7 @@ Partial Class Setting_Customer_Login_Add
     Protected Sub BindRole()
         ddlRole.Items.Clear()
         Try
-            ddlRole.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM LoginRoles WHERE Id='8' ORDER BY Name ASC")
+            ddlRole.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM LoginRoles WHERE Id='8' AND Status='Active' ORDER BY Name ASC")
             ddlRole.DataTextField = "Name"
             ddlRole.DataValueField = "Id"
             ddlRole.DataBind()
@@ -169,7 +169,7 @@ Partial Class Setting_Customer_Login_Add
     Protected Sub BindLevel()
         ddlLevel.Items.Clear()
         Try
-            ddlLevel.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM LoginLevels ORDER BY Name ASC")
+            ddlLevel.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM LoginLevels WHERE Status='Active' ORDER BY Name ASC")
             ddlLevel.DataTextField = "Name"
             ddlLevel.DataValueField = "Id"
             ddlLevel.DataBind()

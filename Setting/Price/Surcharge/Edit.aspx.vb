@@ -108,7 +108,7 @@ Partial Class Setting_Price_Surcharge_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceSurcharges SET DesignId=@DesignId, PriceGroupId=@PriceGroupId, Name=@Name, Type=@Type, Formula=@Formula, BuyCharge=@BuyCharge, SellCharge=@SellCharge, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceSurcharges SET DesignId=@DesignId, PriceGroupId=@PriceGroupId, Name=@Name, Type=@Type, Formula=@Formula, BuyCharge=@BuyCharge, SellCharge=@SellCharge, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
@@ -118,7 +118,7 @@ Partial Class Setting_Price_Surcharge_Edit
                         thisCmd.Parameters.AddWithValue("@BuyCharge", txtBuyCharge.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@SellCharge", txtSellCharge.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -140,7 +140,7 @@ Partial Class Setting_Price_Surcharge_Edit
 
     Protected Sub BindData(surchargeId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM PriceSurcharges WHERE Id='" & surchargeId & "'")
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM PriceSurcharges WHERE Id='" & surchargeId & "' AND (Status='Active' OR Status='Inactive')")
             If thisData Is Nothing Then Exit Sub
 
             Dim designId As String = thisData("DesignId").ToString()
@@ -157,7 +157,7 @@ Partial Class Setting_Price_Surcharge_Edit
             txtBuyCharge.Text = thisData("BuyCharge").ToString()
             txtSellCharge.Text = thisData("SellCharge").ToString()
             txtDescription.Text = thisData("Description").ToString()
-            ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
+            ddlStatus.SelectedValue = thisData("Status").ToString()
 
             Dim formula As String = thisData("Formula").ToString()
             Dim conditions = formula.Split(New String() {" AND "}, StringSplitOptions.None)

@@ -326,30 +326,17 @@ Partial Class Setting_Specification_Product_Default
         MessageError(False, String.Empty)
         Try
             Dim thisId As String = txtIdDelete.Text
-            Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Products ORDER BY Id DESC")
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Products WHERE Id=@Id; DELETE FROM Logs WHERE Type='Products' AND DataId=@Id;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                Using thisCmd As New SqlCommand("UPDATE Products SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(thisId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim dataKit As DataTable = settingClass.GetDataTable("SELECT * FROM ProductKits WHERE ProductId='" & thisId & "'")
-            If Not dataKit.Rows.Count = 0 Then
-                For i As Integer = 0 To dataKit.Rows.Count - 1
-                    Dim kitId As String = dataKit.Rows(i)("Id").ToString()
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM ProductKits WHERE Id=@Id; DELETE FROM Logs WHERE Type='ProductKits' AND DataId=@Id;", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", kitId)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-                Next
-            End If
+            dataLog = {"Products", thisId, Session("LoginId").ToString(), "Products Deleted"}
+            settingClass.Logs(dataLog)
 
             Session("DesignProduct") = ddlDesignSort.SelectedValue
             Session("BlindProduct") = ddlBlindSort.SelectedValue
@@ -360,7 +347,7 @@ Partial Class Setting_Specification_Product_Default
             Session("ActiveProduct") = ddlStatusSort.SelectedValue
             Session("SearchProduct") = txtSearch.Text
 
-            Response.Redirect("~/setting/specification/product/", False)
+            Response.Redirect("~/setting/specification/product", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -379,7 +366,8 @@ Partial Class Setting_Specification_Product_Default
                 New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText)),
                 New SqlParameter("@TubeType", If(String.IsNullOrEmpty(tubeText), CType(DBNull.Value, Object), tubeText)),
                 New SqlParameter("@ControlType", If(String.IsNullOrEmpty(controlText), CType(DBNull.Value, Object), controlText)),
-                New SqlParameter("@ColourType", If(String.IsNullOrEmpty(colourText), CType(DBNull.Value, Object), colourText))
+                New SqlParameter("@ColourType", If(String.IsNullOrEmpty(colourText), CType(DBNull.Value, Object), colourText)),
+                New SqlParameter("@RoleName", Session("RoleName").ToString())
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_Products_List", params)
             gvList.DataBind()

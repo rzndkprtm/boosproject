@@ -386,22 +386,20 @@
                     </div>
                     <div class="card-body">
                         <div class="row mb-3">
-                            <div class="row justify-content-end">
-                                <asp:Repeater ID="rptData" runat="server">
-                                    <ItemTemplate>
-                                        <div class="col-lg-4 mb-2">
-                                            <div class="border rounded p-3 bg-light h-100">
-                                                <div class="fw-semibold text-warning mb-1">
-                                                    <%# Eval("Name") %>
-                                                </div>
-                                                <div class="small text-muted">
-                                                    <%# Eval("Description") %>
-                                                </div>
+                            <asp:Repeater ID="rptData" runat="server" OnItemDataBound="rptData_ItemDataBound">
+                                <ItemTemplate>
+                                    <div id="divCol" runat="server" class="mb-2">
+                                        <div class="border rounded p-3 bg-light h-100">
+                                            <div class="fw-semibold text-warning mb-1">
+                                                <%# Eval("Name") %>
+                                            </div>
+                                            <div class="small text-muted">
+                                                <%# Eval("Description") %>
                                             </div>
                                         </div>
-                                    </ItemTemplate>
-                                </asp:Repeater>
-                            </div>
+                                    </div>
+                                </ItemTemplate>
+                            </asp:Repeater>
                         </div>
                         <div class="border rounded">
                             <div class="table-responsive">

@@ -88,9 +88,9 @@
                         </div>
                         <div class="row">
                             <div class="col-12 form-group">
-                                <label class="form-label">Active</label>
+                                <label class="form-label">Status</label>
                                 <br />
-                                <asp:Label runat="server" CssClass="form-label" ID="lblActive" Font-Bold="true"></asp:Label>
+                                <asp:Label runat="server" CssClass="form-label" ID="lblStatus" Font-Bold="true"></asp:Label>
                             </div>
                         </div>
                     </div>
@@ -120,7 +120,7 @@
                                     <asp:BoundField DataField="Id" HeaderText="ID" />
                                     <asp:BoundField DataField="Name" HeaderText="Name" />
                                     <asp:BoundField DataField="Description" HeaderText="Description" />
-                                    <asp:BoundField DataField="DataActive" HeaderText="Active" />
+                                    <asp:BoundField DataField="Status" HeaderText="Status" />
                                     <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                         <ItemTemplate>
                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
@@ -167,10 +167,10 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-4 form-group">
-                            <label class="form-label">Active</label>
-                            <asp:DropDownList runat="server" ID="ddlActiveDetail" CssClass="form-select">
-                                <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                            <label class="form-label">Status</label>
+                            <asp:DropDownList runat="server" ID="ddlStatusDetail" CssClass="form-select">
+                                <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
+                                <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
                             </asp:DropDownList>
                         </div>
                     </div>

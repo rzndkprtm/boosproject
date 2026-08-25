@@ -103,21 +103,22 @@
                                             <asp:BoundField DataField="Name" HeaderText="Name" />
                                             <asp:BoundField DataField="BuyChargeShort" HeaderText="Buy Charge" />
                                             <asp:BoundField DataField="SellChargeShort" HeaderText="Sell Charge" />
+                                            <asp:BoundField DataField="Status" HeaderText="Status" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
                                                         <li runat="server" visible='<%# LoginAccess("Edit") %>'>
-                                                            <a class="dropdown-item" runat="server" id="aDetail" href='<%# Page.ResolveUrl("~/setting/price/surcharge/edit?surchargeid=" & Eval("Id")) %>'>Edit</a>
+                                                            <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/price/surcharge/edit?surchargeid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Change Value") %>'>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeValue" onclick='<%# String.Format("return dataChangeValue(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("BuyCharge").ToString(), Eval("SellCharge").ToString()) %>'>Change Value</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeValue" onclick='<%# String.Format("return dataChangeValue(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("BuyCharge").ToString(), Eval("SellCharge").ToString()) %>'>Change Value</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Copy") %>'>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Delete") %>'>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('PriceSurcharges', '<%# Eval("Id") %>')">Log</a>

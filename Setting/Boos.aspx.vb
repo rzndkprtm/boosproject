@@ -64,7 +64,7 @@ Partial Class Setting_Boos
         Try
             Dim salesClass As New SalesClass
 
-            Dim dataCompany As DataTable = salesClass.GetDataTable("SELECT Id FROM Companys")
+            Dim dataCompany As DataTable = salesClass.GetDataTable("SELECT Id FROM Companys WHERE Status='Active' OR Status='Inactive'")
             If dataCompany.Rows.Count > 0 Then
                 For i As Integer = 0 To dataCompany.Rows.Count - 1
                     Dim companyId As String = dataCompany.Rows(i)("Id").ToString()
@@ -124,7 +124,7 @@ Partial Class Setting_Boos
     Protected Sub CreateSales()
         Try
             Dim salesClass As New SalesClass
-            Dim companyData As DataTable = salesClass.GetDataTable("SELECT Id FROM Companys WHERE Active=1 ORDER BY Id ASC")
+            Dim companyData As DataTable = salesClass.GetDataTable("SELECT Id FROM Companys WHERE Status='Active' ORDER BY Id ASC")
             If companyData.Rows.Count > 0 Then
                 For i As Integer = 0 To companyData.Rows.Count - 1
                     Dim companyId As String = companyData.Rows(i)("Id").ToString()

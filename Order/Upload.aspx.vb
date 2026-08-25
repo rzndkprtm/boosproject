@@ -975,6 +975,7 @@ Partial Class Order_Upload
                                     Exit For
                                 End If
 
+                                If blindType = "Top Down Bottom Up" Then blindType = "TDBU"
                                 Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND Name='" & blindType & "' AND companyArray.value='" & companyDetailId & "' AND Active=1")
                                 If String.IsNullOrEmpty(blindId) Then
                                     Dim thisAlert As String = String.Format("THE ORDER TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN. !", itemNumber)
@@ -3300,7 +3301,7 @@ Partial Class Order_Upload
                 End If
             End If
 
-            Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
+            Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Status='Active' {0} ORDER BY Name ASC", role)
 
             ddlCustomer.DataSource = orderClass.GetDataTable(thisQuery)
             ddlCustomer.DataTextField = "Name"

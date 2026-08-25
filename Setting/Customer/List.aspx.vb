@@ -21,7 +21,7 @@ Partial Class Setting_Customer_List
             txtSearch.Text = Session("SearchCustomer")
 
             BindCompany()
-            BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+            BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlStatus.SelectedValue)
         End If
     End Sub
 
@@ -29,7 +29,7 @@ Partial Class Setting_Customer_List
         gvList.PageIndex = 0
 
         MessageError(False, String.Empty)
-        BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+        BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlStatus.SelectedValue)
 
         Session("SearchCustomer") = txtSearch.Text
         Session("CompanyCustomer") = ddlCompany.SelectedValue
@@ -39,17 +39,17 @@ Partial Class Setting_Customer_List
         gvList.PageIndex = 0
 
         MessageError(False, String.Empty)
-        BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+        BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlStatus.SelectedValue)
 
         Session("SearchCustomer") = txtSearch.Text
         Session("CompanyCustomer") = ddlCompany.SelectedValue
     End Sub
 
-    Protected Sub ddlActive_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Protected Sub ddlStatus_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 
         MessageError(False, String.Empty)
-        BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+        BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlStatus.SelectedValue)
 
         Session("SearchCustomer") = txtSearch.Text
         Session("CompanyCustomer") = ddlCompany.SelectedValue
@@ -64,14 +64,14 @@ Partial Class Setting_Customer_List
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
         If e.CommandName = "Page" Then
             gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-            BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+            BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlStatus.SelectedValue)
         End If
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         gvList.PageIndex = e.NewPageIndex
         MessageError(False, String.Empty)
-        BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlActive.SelectedValue)
+        BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlStatus.SelectedValue)
     End Sub
 
     Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
@@ -141,15 +141,19 @@ Partial Class Setting_Customer_List
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim dataId As String = txtDeleteId.Text
+            Dim customerId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Active=0 WHERE Id=@Id UPDATE Logins SET Active=0 WHERE CustomerId=@Id;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", dataId)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Status='Deleted' WHERE Id=@Id; UPDATE Logins SET Active=0 WHERE CustomerId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", customerId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
+
+            dataLog = {"Customers", customerId, Session("LoginId").ToString(), "Customer Deleted"}
+            settingClass.Logs(dataLog)
+
 
             Session("SearchCustomer") = txtSearch.Text
             Response.Redirect("~/setting/customer/list", False)
@@ -165,7 +169,7 @@ Partial Class Setting_Customer_List
         Session("SearchCustomer") = String.Empty
         Try
             Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@Active", ddlActive.SelectedValue),
+                New SqlParameter("@Status", ddlStatus.SelectedValue),
                 New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText.Trim())),
                 New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyText), CType(DBNull.Value, Object), companyText)),
                 New SqlParameter("@RoleName", Session("RoleName").ToString()),
@@ -189,7 +193,7 @@ Partial Class Setting_Customer_List
             gvList.Columns(9).Visible = LoginAccess("Visible On Stop") ' ON STOP
 
             btnAdd.Visible = LoginAccess("Add")
-            ddlActive.Visible = LoginAccess("Filter Active")
+            ddlStatus.Visible = LoginAccess("Filter Active")
             divCompany.Visible = LoginAccess("Filter Company")
         Catch ex As Exception
             MessageError(True, ex.ToString())

@@ -32,97 +32,98 @@
                     <div class="card-body">
                         <div class="form form-vertical">
                             <div class="form-body">
-                                <div class="row mb-2">
-                                    <div class="col-12 col-sm-12 col-lg-5 mb-2">
-                                        <div class="form-group">
-                                            <label class="form-label">Design Type</label>
-                                            <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
+                                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-5 mb-2">
+                                                <div class="form-group">
+                                                    <label class="form-label">Design Type</label>
+                                                    <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesign_SelectedIndexChanged"></asp:DropDownList>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-7 mb-2">
+                                                <div class="form-group">
+                                                    <label class="form-label">Blind Type</label>
+                                                    <asp:DropDownList runat="server" ID="ddlBlind" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBlind_SelectedIndexChanged"></asp:DropDownList>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-7 mb-2">
-                                        <div class="form-group">
-                                            <label class="form-label">Blind Type</label>
-                                            <asp:DropDownList runat="server" ID="ddlBlind" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlBlind_SelectedIndexChanged"></asp:DropDownList>
+                                        <div class="row mb-2">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Company Detail</label>
+                                                    <asp:ListBox runat="server" ID="lbCompanyDetail" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="form-label">Company Detail</label>
-                                            <asp:ListBox runat="server" ID="lbCompanyDetail" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Job Sheet Name</label>
+                                                    <asp:DropDownList runat="server" ID="ddlJobSheet" CssClass="choices form-select"></asp:DropDownList>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="form-label">Job Sheet Name</label>
-                                            <asp:DropDownList runat="server" ID="ddlJobSheet" CssClass="choices form-select"></asp:DropDownList>
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Product Name</label>
+                                                    <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Product Name" autocomplete="off"></asp:TextBox>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="form-label">Product Name</label>
-                                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Product Name" autocomplete="off"></asp:TextBox>
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Invoice Name</label>
+                                                    <asp:TextBox runat="server" ID="txtInvoiceName" CssClass="form-control" placeholder="Invoice Name" autocomplete="off"></asp:TextBox>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="form-label">Invoice Name</label>
-                                            <asp:TextBox runat="server" ID="txtInvoiceName" CssClass="form-control" placeholder="Invoice Name" autocomplete="off"></asp:TextBox>
+                                        <div class="row mb-3">
+                                            <div class="col-12 col-sm-12 col-lg-4 mb-2">
+                                                <div class="form-group">
+                                                    <label class="form-label">Tube Type</label>
+                                                    <asp:DropDownList runat="server" ID="ddlTube" CssClass="choices form-select"></asp:DropDownList>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 mb-2">
+                                                <div class="form-group">
+                                                    <label class="form-label">Control Type</label>
+                                                    <asp:DropDownList runat="server" ID="ddlControl" CssClass="choices form-select"></asp:DropDownList>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 mb-2">
+                                                <div class="form-group">
+                                                    <label class="form-label">Colour Type</label>
+                                                    <asp:DropDownList runat="server" ID="ddlColour" CssClass="choices form-select"></asp:DropDownList>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-12 col-sm-12 col-lg-4 mb-2">
-                                        <div class="form-group">
-                                            <label class="form-label">Tube Type</label>
-                                            <asp:DropDownList runat="server" ID="ddlTube" CssClass="choices form-select"></asp:DropDownList>
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label class="form-label">Description</label>
+                                                    <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <asp:Button runat="server" ID="btnAddTube" CssClass="btn btn-sm btn-primary" Text="Add New" OnClick="btnAddTube_Click" />
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-4 mb-2">
-                                        <div class="form-group">
-                                            <label class="form-label">Control Type</label>
-                                            <asp:DropDownList runat="server" ID="ddlControl" CssClass="choices form-select"></asp:DropDownList>
+                                        <div class="row mb-3">
+                                            <div class="col-12 col-sm-12 col-lg-3">
+                                                <div class="form-group">
+                                                    <label class="form-label">Status</label>
+                                                    <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
+                                                        <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                        <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                                        <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                                        <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                                        <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                                                    </asp:DropDownList>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <asp:Button runat="server" ID="btnAddControl" CssClass="btn btn-sm btn-primary" Text="Add New" OnClick="btnAddControl_Click" />
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-4 mb-2">
-                                        <div class="form-group">
-                                            <label class="form-label">Colour Type</label>
-                                            <asp:DropDownList runat="server" ID="ddlColour" CssClass="choices form-select"></asp:DropDownList>
-                                        </div>
-                                        <asp:Button runat="server" ID="btnAddColour" CssClass="btn btn-sm btn-primary" Text="Add New" OnClick="btnAddColour_Click" />
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label class="form-label">Description</label>
-                                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-12 col-sm-12 col-lg-3">
-                                        <div class="form-group">
-                                            <label class="form-label">Status</label>
-                                            <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
-                                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
-                                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
-                                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
-                                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
-                                            </asp:DropDownList>
-                                        </div>
-                                    </div>
-                                </div>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
                                 <div class="row" runat="server" id="divError">
                                     <div class="col-12">
                                         <div class="alert alert-danger">
@@ -142,148 +143,54 @@
         </section>
     </div>
 
-    <div class="modal fade text-left" id="modalTube" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Add Tube Type</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-2">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label">Name</label>
-                                <asp:TextBox runat="server" ID="txtTubeName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label">Description</label>
-                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtTubeDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2" runat="server" id="divErrorProcessTube">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcessTube"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnTube" CssClass="btn btn-primary" Text="Submit" OnClick="btnTube_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade text-left" id="modalControl" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Add Control Type</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Type</label>
-                            <asp:DropDownList runat="server" ID="ddlControlType" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="Chain" Text="Chain"></asp:ListItem>
-                                <asp:ListItem Value="Motorised" Text="Motorised"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Name</label>
-                            <asp:TextBox runat="server" ID="txtControlName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Alias</label>
-                            <asp:TextBox runat="server" ID="txtControlAlias" CssClass="form-control" placeholder="Alias ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Description</label>
-                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtControlDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row" runat="server" id="divErrorProcessControl">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcessControl"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnControl" CssClass="btn btn-primary" Text="Submit" OnClick="btnControl_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade text-left" id="modalColour" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Add Colour Type</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-2">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label">Name</label>
-                                <asp:TextBox runat="server" ID="txtColourName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label class="form-label">Description</label>
-                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtColourDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-2" runat="server" id="divErrorProcessColour">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcessColour"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnSubmitColour" CssClass="btn btn-primary" Text="Submit" OnClick="btnColour_Click" />
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script type="text/javascript">
-        function showTube() {
-            $("#modalTube").modal("show");
-        }
-        function showControl() {
-            $("#modalControl").modal("show");
-        }
-        function showColour() {
-            $("#modalColour").modal("show");
-        }
-        ["modalTube", "modalControl", "modalColour"].forEach(function (id) {
-            document.getElementById(id).addEventListener("hide.bs.modal", function () {
-                document.activeElement.blur();
-                document.body.focus();
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) loading.style.display = "none";
+        });
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
             });
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
+                initChoices();
+            });
+        }
+        function initChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.choices) {
+                    el.choices.destroy();
+                }
+
+                var isMultiple = el.multiple;
+
+                el.choices = new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false,
+                    removeItemButton: isMultiple
+                });
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            initChoices();
         });
         window.history.replaceState(null, null, window.location.href);
     </script>

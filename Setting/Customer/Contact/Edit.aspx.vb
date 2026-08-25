@@ -139,7 +139,7 @@ Partial Class Setting_Customer_Contact_Edit
                     role = "AND (Id = '" & Session("CustomerId") & "' OR EXISTS (SELECT 1 FROM STRING_SPLIT(Operator, ',') WHERE value = '" & Session("LoginId") & "'))"
                 End If
             End If
-            Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
+            Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Status='Active' {0} ORDER BY Name ASC", role)
 
             ddlCustomer.DataSource = settingClass.GetDataTable(thisQuery)
             ddlCustomer.DataTextField = "Name"

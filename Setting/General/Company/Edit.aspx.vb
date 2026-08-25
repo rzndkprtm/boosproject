@@ -46,7 +46,7 @@ Partial Class Setting_General_Company_Edit
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Companys SET Name=@Name, Alias=@Alias, Attention=@Attention, Address=@Address, Phone=@Phone, Email=@Email, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Companys SET Name=@Name, Alias=@Alias, Attention=@Attention, Address=@Address, Phone=@Phone, Email=@Email, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
@@ -55,7 +55,7 @@ Partial Class Setting_General_Company_Edit
                         thisCmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -101,7 +101,7 @@ Partial Class Setting_General_Company_Edit
             txtPhone.Text = thisData("Phone").ToString()
             txtEmail.Text = thisData("Email").ToString()
             txtDescription.Text = thisData("Description").ToString()
-            ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
+            ddlStatus.SelectedValue = thisData("Status").ToString()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

@@ -214,7 +214,7 @@ Partial Class Order_Rework_Detail
             Next
 
             ' SERVICE
-            Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text}}
+            Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = newHeaderId}}
             Dim dtService As DataTable = orderClass.GetDataTableSP("sp_CustomerServices_Get", params)
             For Each row As DataRow In dtService.Rows
                 Dim serviceId As Integer = Convert.ToInt32(row("ServiceId"))
@@ -227,18 +227,18 @@ Partial Class Order_Rework_Detail
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
                     Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, ServiceId, Qty, Width, [Drop], LinearMetre, SquareMetre, TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 3716, @ServiceId, 1, 0, 0, 0, 0, 1, 0, 1)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
-                        thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", newHeaderId)
                         thisCmd.Parameters.AddWithValue("@ServiceId", serviceId)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
-                orderClass.ResetPriceDetail(lblHeaderId.Text, itemId)
+                orderClass.ResetPriceDetail(newHeaderId, itemId)
 
-                Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, buyPrice, sellPrice}
+                Dim costingArray As Object() = {newHeaderId, itemId, 1, "Base", serviceName, buyPrice, sellPrice}
                 orderClass.OrderCostings(costingArray)
-                orderClass.FinalCostItem(lblHeaderId.Text, itemId)
+                orderClass.FinalCostItem(newHeaderId, itemId)
 
                 Dim dataLog As Object() = {"OrderDetails", itemId, Session("LoginId"), "Order Item Added"}
                 orderClass.Logs(dataLog)

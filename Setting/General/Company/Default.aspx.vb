@@ -60,36 +60,15 @@ Partial Class Setting_General_Company_Default
             Dim companyId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                thisConn.Open()
-
-                'Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Companys WHERE Id=@Id; DELETE FROM Logs WHERE Type='Companys' AND DataId=@Id; UPDATE Mailings SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Newsletters SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Notifications SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE PriceGroups SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Sales SET CompanyId=NULL WHERE CompanyId=@Id; UPDATE Tutorials SET CompanyId=NULL WHERE CompanyId=@Id;", thisConn)
-                '    thisCmd.Parameters.AddWithValue("@Id", companyId)
-                '    thisCmd.ExecuteNonQuery()
-                'End Using
-
-                ' TABLE DESIGNS
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE D SET CompanyId = STUFF((SELECT ',' + S.value FROM STRING_SPLIT(D.CompanyId, ',') S WHERE TRY_CAST(S.value AS INT) <> " & companyId & " FOR XML PATH(''), TYPE).value('.', 'nvarchar(max)'),1,1,'') FROM Designs D WHERE EXISTS (SELECT 1 FROM STRING_SPLIT(D.CompanyId, ',') S WHERE TRY_CAST(S.value AS INT) = " & companyId & ");", thisConn)
+                Using thisCmd As New SqlCommand("UPDATE Logins SET Status='Deleted', UserName=CASE WHEN UserName LIKE '%(DELETED)%' THEN UserName ELSE UserName + ' (DELETED)' END, FullName=CASE WHEN FullName LIKE '%(DELETED)%' THEN FullName ELSE FullName + ' (DELETED)' END WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", companyId)
+                    thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
-
-                thisConn.Close()
             End Using
 
-            Dim companyDetail As DataTable = settingClass.GetDataTable("SELECT Id FROM Companys WHERE CompanyId='" & companyId & "'")
-            If companyDetail.Rows.Count > 0 Then
-                For i As Integer = 0 To companyDetail.Rows.Count - 1
-                    Dim companyDetailId As String = companyDetail.Rows(i)("Id").ToString()
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id;", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", companyDetailId)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-                Next
-            End If
+            dataLog = {"Companys", companyId, Session("LoginId").ToString(), "Company Deleted"}
+            settingClass.Logs(dataLog)
 
             Session("SearchCompany") = txtSearch.Text
             Response.Redirect("~/setting/general/company", False)
@@ -103,14 +82,11 @@ Partial Class Setting_General_Company_Default
 
     Protected Sub BindData(searchText As String)
         Try
-            Dim search As String = String.Empty
-            If Not String.IsNullOrEmpty(searchText) Then
-                search = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Alias LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
-            End If
-
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Companys {0} ORDER BY Id ASC", search)
-
-            gvList.DataSource = settingClass.GetDataTable(thisString)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), "", searchText.Trim())),
+                New SqlParameter("@RoleName", Session("RoleName").ToString())
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_Companys_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 

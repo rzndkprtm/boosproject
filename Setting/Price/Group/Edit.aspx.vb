@@ -47,7 +47,6 @@ Partial Class Setting_Price_Group_Edit
                 MessageError(True, "COMPANY IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlType.SelectedValue = "" Then
                 MessageError(True, "TYPE IS REQUIRED !")
                 Exit Sub
@@ -117,7 +116,7 @@ Partial Class Setting_Price_Group_Edit
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Active=1 ORDER BY Id ASC")
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Status='Active' OR Status='Inactive' ORDER BY Id ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()

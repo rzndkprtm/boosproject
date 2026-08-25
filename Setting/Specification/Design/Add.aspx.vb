@@ -65,27 +65,6 @@ Partial Class Setting_Specification_Design_Add
                 settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/specification/design", False)
-
-                'Using thisConn As New SqlConnection(myConn)
-                '    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Designs SET Name=@Name, Alias=@Alias, CompanyId=@CompanyId, Type=@Type, Page=@Page, AppliesTo=@AppliesTo, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
-                '        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                '        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                '        thisCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
-                '        thisCmd.Parameters.AddWithValue("@CompanyId", company)
-                '        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
-                '        thisCmd.Parameters.AddWithValue("@Page", txtPage.Text.Trim())
-                '        thisCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
-                '        thisCmd.Parameters.AddWithValue("@Description", descText)
-                '        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-                '        thisConn.Open()
-                '        thisCmd.ExecuteNonQuery()
-                '    End Using
-                'End Using
-
-                'dataLog = {"Designs", lblId.Text, Session("LoginId").ToString(), "Updated"}
-                'settingClass.Logs(dataLog)
-
-                'Response.Redirect("~/setting/specification/design", False)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -102,7 +81,7 @@ Partial Class Setting_Specification_Design_Add
     Protected Sub BindCompany()
         lbCompany.Items.Clear()
         Try
-            lbCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC")
+            lbCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys WHERE Status='Active' ORDER BY Name ASC")
             lbCompany.DataTextField = "Alias"
             lbCompany.DataValueField = "Id"
             lbCompany.DataBind()

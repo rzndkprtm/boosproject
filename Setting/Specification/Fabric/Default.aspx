@@ -91,7 +91,7 @@
                                                             <a class="dropdown-item" href='<%# Page.ResolveUrl("~/setting/specification/fabric/edit?fabricid=" & Eval("Id").ToString()) %>'>Edit</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Change Status") %>'>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatus" onclick='<%# String.Format("return dataChangeStatus(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatus" onclick='<%# String.Format("return dataChangeStatus(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Fabrics', '<%# Eval("Id") %>')">Log</a>

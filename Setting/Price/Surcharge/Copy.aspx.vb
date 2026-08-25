@@ -33,7 +33,7 @@ Partial Class Setting_Price_Surcharge_Copy
             End If
 
             If msgError.InnerText = "" Then
-                Dim surchargeData As DataTable = settingClass.GetDataTable("SELECT Id FROM PriceSurcharges WHERE PriceGroupId='" & ddlPriceGroup.SelectedValue & "' AND Active=1 ORDER BY Id ASC")
+                Dim surchargeData As DataTable = settingClass.GetDataTable("SELECT Id FROM PriceSurcharges WHERE PriceGroupId='" & ddlPriceGroup.SelectedValue & "' AND Status='Active' ORDER BY Id ASC")
                 If surchargeData.Rows.Count > 0 Then
                     For i As Integer = 0 To surchargeData.Rows.Count - 1
                         Dim surchargeId As String = surchargeData.Rows(i)(0).ToString()
@@ -41,7 +41,7 @@ Partial Class Setting_Price_Surcharge_Copy
                         Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceSurcharges ORDER BY Id DESC")
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As New SqlCommand("INSERT INTO PriceSurcharges SELECT @NewId, DesignId, @NewPriceGroupId, Name, Type, Formula, BuyCharge, SellCharge, Description, Active FROM PriceSurcharges WHERE Id=@Id", thisConn)
+                            Using thisCmd As New SqlCommand("INSERT INTO PriceSurcharges SELECT @NewId, DesignId, @NewPriceGroupId, Name, Type, Formula, BuyCharge, SellCharge, Description, Status FROM PriceSurcharges WHERE Id=@Id", thisConn)
                                 thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(surchargeId)
                                 thisCmd.Parameters.Add("@NewId", SqlDbType.Int).Value = CInt(newId)
                                 thisCmd.Parameters.Add("@NewPriceGroupId", SqlDbType.Int).Value = CInt(ddlPriceGroupNew.SelectedValue)
@@ -53,7 +53,6 @@ Partial Class Setting_Price_Surcharge_Copy
                 End If
 
                 Response.Redirect("~/setting/price/surcharge", False)
-                Exit Sub
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

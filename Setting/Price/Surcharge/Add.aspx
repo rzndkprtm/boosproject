@@ -69,8 +69,7 @@
                                                 <label class="form-label">Formula Data</label>
                                                 <asp:DropDownList runat="server" ID="ddlFormulaData" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
-                                            <br />
-                                            <br />
+                                            <br /><br />
                                             <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <label class="form-label">Formula Field (ADD)</label>
                                                 <asp:DropDownList runat="server" ID="ddlFormulaFieldB" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlFormulaFieldB_SelectedIndexChanged"></asp:DropDownList>
@@ -104,10 +103,10 @@
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <label>Active</label>
-                                                <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select">
-                                                    <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
-                                                    <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                                                <label>Status</label>
+                                                <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
+                                                    <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
+                                                    <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>

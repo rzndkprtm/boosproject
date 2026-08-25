@@ -164,7 +164,7 @@ Partial Class Setting_Price_Surcharge_Default
             Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceSurcharges ORDER BY Id DESC")
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges SELECT @NewId, DesignId, PriceGroupId, Name + ' - Copy', Type, Formula, BuyCharge, SellCharge, Description, Active FROM PriceSurcharges WHERE Id=@Id", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges SELECT @NewId, DesignId, PriceGroupId, Name + ' - Copy', Type, Formula, BuyCharge, SellCharge, Description, Status FROM PriceSurcharges WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisCmd.Parameters.AddWithValue("@NewId", newId)
                     thisConn.Open()
@@ -196,12 +196,15 @@ Partial Class Setting_Price_Surcharge_Default
             Dim thisId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM PriceSurcharges WHERE Id=@Id; DELETE FROM Logs WHERE Type='PriceSurcharges' AND DataId=@Id;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                Using thisCmd As New SqlCommand("UPDATE PriceSurcharges SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(thisId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
+
+            Dim dataLog As Object() = {"PriceSurcharges", thisId, Session("LoginId").ToString(), "Price Surcharges Deleted"}
+            settingClass.Logs(dataLog)
 
             Session("SearchSurcharge") = txtSearch.Text
             Session("DesignSurcharge") = ddlDesignType.SelectedValue
@@ -264,12 +267,12 @@ Partial Class Setting_Price_Surcharge_Default
         ddlPriceGroup.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(designid) Then
-                Dim type As String = settingClass.GetItemData("SELECT Type FROM Designs WHERE Id='" & designid & "'")
+                Dim type As String = settingClass.GetItemData("SELECT Type FROM Designs WHERE Id='" & designid & "' AND Active=1")
                 If Not String.IsNullOrEmpty(type) Then
-                    Dim thisQuery As String = "SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC"
+                    Dim thisQuery As String = "SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND Status='Active' ORDER BY Name ASC"
 
                     If Session("RoleName") = "Sales" OrElse Session("LevelName") = "Account" Then
-                        thisQuery = "SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND CompanyId='" & Session("CompanyId").ToString() & "' ORDER BY Name ASC"
+                        thisQuery = "SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND CompanyId='" & Session("CompanyId").ToString() & "' AND Status='Active' ORDER BY Name ASC"
                     End If
 
                     ddlPriceGroup.DataSource = settingClass.GetDataTable(thisQuery)

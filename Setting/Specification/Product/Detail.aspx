@@ -154,7 +154,7 @@
                                                                     <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                                 </li>
                                                                 <li runat="server" visible='<%# LoginAccess("Delete Kit") %>'>
-                                                                    <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteKit" onclick='<%# String.Format("return showDeleteKit(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteKit" onclick='<%# String.Format("return showDeleteKit(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('ProductKits', '<%# Eval("Id") %>')">Log</a>

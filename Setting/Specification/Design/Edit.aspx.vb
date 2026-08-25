@@ -133,7 +133,7 @@ Partial Class Setting_Specification_Design_Edit
     Protected Sub BindCompany()
         lbCompany.Items.Clear()
         Try
-            lbCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC")
+            lbCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys WHERE Status='Active' OR Status='Inactive' ORDER BY Name ASC")
             lbCompany.DataTextField = "Alias"
             lbCompany.DataValueField = "Id"
             lbCompany.DataBind()

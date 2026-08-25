@@ -190,7 +190,7 @@ Partial Class Order_Add
                 End If
             End If
 
-            ddlCustomer.DataSource = orderClass.GetDataTable(String.Format("SELECT Id, Name FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role))
+            ddlCustomer.DataSource = orderClass.GetDataTable(String.Format("SELECT Id, Name FROM Customers WHERE Status='Active' {0} ORDER BY Name ASC", role))
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()

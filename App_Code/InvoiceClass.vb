@@ -415,6 +415,7 @@ Public Class InvoiceClass
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemNumber As Integer = detailData.Rows(i)("Item").ToString()
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()
+                Dim serviceId As String = detailData.Rows(i)("ServiceId").ToString()
                 Dim designName As String = detailData.Rows(i)("DesignName").ToString()
                 Dim designType As String = detailData.Rows(i)("DesignType").ToString()
                 Dim blindName As String = detailData.Rows(i)("BlindName").ToString()
@@ -422,6 +423,7 @@ Public Class InvoiceClass
                 Dim width As String = detailData.Rows(i)("Width").ToString()
                 Dim drop As String = detailData.Rows(i)("Height").ToString()
                 Dim size As String = String.Format("({0}x{1})", width, drop)
+                Dim frameColour As String = detailData.Rows(i)("FrameColour").ToString()
                 Dim trackType As String = detailData.Rows(i)("TrackType").ToString()
                 Dim trackColour As String = detailData.Rows(i)("TrackColour").ToString()
                 Dim itemNote As String = detailData.Rows(i)("Notes").ToString()
@@ -479,7 +481,7 @@ Public Class InvoiceClass
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
                 End If
                 If designName = "Door" Then
-                    itemDescription = invoiceName
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, frameColour, size, squareMetreText)
                 End If
                 If designName = "Evolve Shutter Express" Then
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
@@ -524,7 +526,7 @@ Public Class InvoiceClass
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
                 End If
                 If designName = "Service" Then
-                    itemDescription = String.Format("{0}", invoiceName)
+                    itemDescription = GetItemData("SELECT Name FROM PriceServices WHERE Id='" & serviceId & "'")
                 End If
                 If designName = "Skyline Shutter Express" Then
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
@@ -549,7 +551,7 @@ Public Class InvoiceClass
                     End If
                 End If
                 If designName = "Window" Then
-                    itemDescription = invoiceName
+                    itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, frameColour, size, squareMetreText)
                 End If
 
                 Dim checkNote As String = GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Type='Note'")
@@ -557,6 +559,7 @@ Public Class InvoiceClass
                     itemDescription &= vbCrLf
                     itemDescription &= String.Format("* <i>{0}</i>", checkNote)
                 End If
+
                 If designType = "Blinds" OrElse designType = "Shutters" Then
                     Dim pricingData As DataTable = GetDataTable("SELECT * FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "' AND Type='Surcharge'")
                     If pricingData.Rows.Count > 0 Then
@@ -1094,7 +1097,7 @@ Public Class InvoiceClass
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()
                 Dim itemNumber As Integer = Convert.ToInt32(detailData.Rows(i)("Item"))
-
+                Dim serviceId As String = detailData.Rows(i)("ServiceId").ToString()
                 Dim designName As String = detailData.Rows(i)("DesignName").ToString()
                 Dim designType As String = detailData.Rows(i)("DesignType").ToString()
                 Dim blindName As String = detailData.Rows(i)("BlindName").ToString()
@@ -1104,7 +1107,7 @@ Public Class InvoiceClass
                 Dim drop As String = detailData.Rows(i)("Height").ToString()
 
                 Dim size As String = String.Format("({0}x{1})", width, drop)
-
+                Dim frameColour As String = detailData.Rows(i)("FrameColour").ToString()
                 Dim trackType As String = detailData.Rows(i)("TrackType").ToString()
                 Dim trackColour As String = detailData.Rows(i)("TrackColour").ToString()
 
@@ -1112,7 +1115,9 @@ Public Class InvoiceClass
                 Dim itemDescription As String = invoiceName
 
                 If designName = "Service" Then
-                    Dim checkNote As String = GetItemData("SELECT Notes FROM OrderDetails WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "'")
+                    itemDescription = GetItemData("SELECT Name FROM PriceServices WHERE Id='" & serviceId & "'")
+
+                    Dim checkNote As String = GetItemData("SELECT Description FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Type='Note'")
                     If Not String.IsNullOrEmpty(checkNote) Then
                         itemDescription &= Chr(10) & checkNote
                     End If
@@ -1150,7 +1155,7 @@ Public Class InvoiceClass
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
                 End If
                 If designName = "Door" Then
-                    itemDescription = String.Format("{0} {1}", invoiceName, size)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, frameColour, size)
                 End If
                 If designName = "Linea Valance" Then
                     itemDescription = String.Format("{0} {1}mm", invoiceName, width)
@@ -1207,7 +1212,7 @@ Public Class InvoiceClass
                     End If
                 End If
                 If designName = "Window" Then
-                    itemDescription = String.Format("{0} {1}", invoiceName, size)
+                    itemDescription = String.Format("{0} {1} {2}", invoiceName, frameColour, size)
                 End If
 
                 If designType = "Blinds" OrElse designType = "Shutters" Then
@@ -1225,7 +1230,9 @@ Public Class InvoiceClass
                 Dim finalCostText As String = finalCost.ToString("N2")
 
                 Dim xeroName As String = designName
-                If designName = "Service" Then xeroName = invoiceName
+                If designName = "Service" Then
+                    xeroName = GetItemData("SELECT Name FROM PriceServices WHERE Id='" & serviceId & "'")
+                End If
 
                 Dim xeroItem As String = GetItemData("SELECT ItemCode FROM Xeros WHERE Name='" & xeroName & "' AND Active=1")
                 Dim xeroAccount As String = GetItemData("SELECT AccountCode FROM Xeros WHERE Name='" & xeroName & "' AND Active=1")

@@ -297,10 +297,11 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Sloping</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                     <select id="sloping" class="form-select">
                                                         <option value=""></option>
-                                                        <option value="Yes">Yes</option>
+                                                        <option value="Top">Top</option>
+                                                        <option value="Bottom">Bottom</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -413,5 +414,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/RisaSolihah/Vertical.js?v=1.1.1"></script>
+    <script src="/Scripts/RisaSolihah/Vertical.js?v=1.1.2"></script>
 </asp:Content>
