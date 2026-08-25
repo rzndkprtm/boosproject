@@ -96,7 +96,7 @@ Partial Class Sales_Default
     Protected Sub BindCompany()
         ddlCompany.Items.Clear() : ddlCompany.Enabled = True
         Try
-            ddlCompany.DataSource = salesClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Active=1 ORDER BY Name ASC")
+            ddlCompany.DataSource = salesClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Status='Active' ORDER BY Name ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()

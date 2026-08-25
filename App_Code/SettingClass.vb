@@ -388,7 +388,7 @@ Public Class SettingClass
             If Not String.IsNullOrEmpty(companyId) Then
                 Dim hasil As String = String.Empty
 
-                Dim cekDesign As DataTable = GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & companyId & "' ORDER BY Name ASC")
+                Dim cekDesign As DataTable = GetDataTable("SELECT Id FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & companyId & "' AND (Type = 'Blinds' OR Type = 'Doors' OR Type = 'Samples' OR Type = 'Shutters') ORDER BY Name ASC")
                 If Not cekDesign.Rows.Count = 0 Then
                     For i As Integer = 0 To cekDesign.Rows.Count - 1
                         Dim id As String = cekDesign.Rows(i)("Id").ToString()

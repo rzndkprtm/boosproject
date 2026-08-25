@@ -55,7 +55,7 @@ Partial Class Setting_Price_Promo_Add
 
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Promos ORDER BY Id DESC")
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Promos VALUES (@Id, @CompanyId, @Type, @Name, @StartDate, @EndDate, @Description, @Active)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Promos VALUES (@Id, @CompanyId, @Type, @Name, @StartDate, @EndDate, @Description, @Status)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
@@ -63,7 +63,7 @@ Partial Class Setting_Price_Promo_Add
                         thisCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text)
                         thisCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text)
                         thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -90,7 +90,7 @@ Partial Class Setting_Price_Promo_Add
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys ORDER BY Name ASC")
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Status='Active' ORDER BY Name ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()

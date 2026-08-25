@@ -114,7 +114,7 @@ Partial Class Setting_General_Mailing_Edit
     Protected Sub BindCompany()
         ddlCompanyId.Items.Clear()
         Try
-            ddlCompanyId.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Name ASC")
+            ddlCompanyId.DataSource = settingClass.GetDataTable("SELECT * FROM Companys WHERE Status='Active' OR Status='Inactive' ORDER BY Name ASC")
             ddlCompanyId.DataTextField = "Alias"
             ddlCompanyId.DataValueField = "Id"
             ddlCompanyId.DataBind()

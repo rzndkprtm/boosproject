@@ -54,31 +54,58 @@ Partial Class Setting_Customer_Login_Default
         BuildPager()
     End Sub
 
-    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
+    Protected Sub btnStatus_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtActiveId.Text
+            Dim thisId As String = txtStatusId.Text
+            Dim thisStatus As String = txtStatusText.Text
 
-            Dim active As Integer = 1
-            If txtActiveStatus.Text = "1" Then : active = 0 : End If
+            Dim newStatus As String = "Inactive"
+            If thisStatus = "Inactive" Then : newStatus = "Active" : End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=@Active WHERE Id=@Id", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Status=@Status WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
-                    thisCmd.Parameters.AddWithValue("@Active", active)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim activeDesc As String = "Login Has Been Activated"
-            If active = 0 Then activeDesc = "Login Has Been Deactivated"
+            Dim statusDesc As String = "Login Has Been Activated"
+            If newStatus = "Inactive" Then statusDesc = "Login Has Been Deactivated"
 
-            dataLog = {"Logins", thisId, Session("LoginId").ToString(), activeDesc}
+            dataLog = {"Logins", thisId, Session("LoginId").ToString(), statusDesc}
             settingClass.Logs(dataLog)
 
-            Session("SearchCustomerLogin") = txtSearch.Text
-            Response.Redirect("~/setting/customer/login", False)
+            Session("SearchLoginUser") = txtSearch.Text
+            Response.Redirect("~/setting/login/user", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtDeleteId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("UPDATE Logins SET Status='Deleted', UserName=CASE WHEN UserName LIKE '%(DELETED)%' THEN UserName ELSE UserName + ' (DELETED)' END, FullName=CASE WHEN FullName LIKE '%(DELETED)%' THEN FullName ELSE FullName + ' (DELETED)' END WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Login Deleted"}
+            settingClass.Logs(dataLog)
+
+            Session("SearchLoginUser") = txtSearch.Text
+            Response.Redirect("~/setting/login/user", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -265,15 +292,19 @@ Partial Class Setting_Customer_Login_Default
     Protected Sub MessageError_Send(visible As Boolean, message As String)
         divErrorSend.Visible = visible : msgErrorSend.InnerText = message
     End Sub
-
-    Protected Function VisibleSend(active As Integer) As Boolean
-        If active = 1 Then Return True
+    Protected Function VisibleSend(status As String) As Boolean
+        If status = "Active" Then Return True
         Return False
     End Function
 
-    Protected Function TextActive(active As Boolean) As String
-        Dim result As String = "Enable"
-        If active = True Then : Return "Disable" : End If
+    Protected Function VisibleStatus(status As String) As Boolean
+        If status = "Active" OrElse status = "Inactive" Then Return True
+        Return False
+    End Function
+
+    Protected Function TextStatus(status As String) As String
+        Dim result As String = "Activate Login"
+        If status = "Active" Then : Return "Deactivate Login" : End If
         Return result
     End Function
 

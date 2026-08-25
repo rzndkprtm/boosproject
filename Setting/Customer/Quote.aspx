@@ -73,10 +73,10 @@
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                     <ul class="dropdown-menu">
                                                         <li>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTerms" onclick='<%# String.Format("return showTerms(`{0}`);", Eval("Terms").ToString()) %>'>Show Terms & Conditions</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalTerms" onclick='<%# String.Format("return showTerms(`{0}`);", Eval("Terms").ToString()) %>'>Show Terms & Conditions</a>
                                                         </li>
                                                         <li>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalLogo" onclick='<%# String.Format("return showLogo(`{0}`);", Eval("Logo").ToString()) %>'>Show Logo</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalLogo" onclick='<%# String.Format("return showLogo(`{0}`);", Eval("Logo").ToString()) %>'>Show Logo</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerQuotes', '<%# Eval("Id") %>')">Log</a>

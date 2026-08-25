@@ -35,7 +35,7 @@ Partial Class Setting_General_Company_Add
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Companys ORDER BY Id DESC")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Companys VALUES (@Id, @Name, @Alias, @Attention, @Address, @Email, NULL, @Description, @Active)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Companys VALUES (@Id, @Name, @Alias, @Attention, @Address, @Phone, @Email, NULL, @Description, @Status)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
@@ -44,7 +44,7 @@ Partial Class Setting_General_Company_Add
                         thisCmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using

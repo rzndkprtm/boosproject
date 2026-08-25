@@ -15,7 +15,7 @@ Partial Class Setting_Specification_Product_Add
         End If
 
         If Not IsPostBack Then
-            BackColor()
+            MessageError(False, String.Empty)
             BindDesign()
             BindBlind(ddlDesign.SelectedValue)
             BindCompanyDetail(ddlBlind.SelectedValue)
@@ -23,142 +23,22 @@ Partial Class Setting_Specification_Product_Add
             BindControl()
             BindTube()
             BindColour()
-
-            btnAddTube.Visible = LoginAccess("Add Tube")
-            btnAddControl.Visible = LoginAccess("Add Control")
-            btnAddColour.Visible = LoginAccess("Add Colour")
         End If
     End Sub
 
     Protected Sub ddlDesign_SelectedIndexChanged(sender As Object, e As EventArgs)
-        BackColor()
+        MessageError(False, String.Empty)
         BindBlind(ddlDesign.SelectedValue)
         BindCompanyDetail(ddlBlind.SelectedValue)
     End Sub
 
     Protected Sub ddlBlind_SelectedIndexChanged(sender As Object, e As EventArgs)
-        BackColor()
+        MessageError(False, String.Empty)
         BindCompanyDetail(ddlBlind.SelectedValue)
     End Sub
 
-    Protected Sub btnAddControl_Click(sender As Object, e As EventArgs)
-        MessageError_Control(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showControl(); };"
-        Try
-            ClientScript.RegisterStartupScript(Me.GetType(), "showControl", thisScript, True)
-        Catch ex As Exception
-            MessageError_Control(True, ex.ToString())
-            ClientScript.RegisterStartupScript(Me.GetType(), "showControl", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnAddTube_Click(sender As Object, e As EventArgs)
-        MessageError_Tube(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showTube(); };"
-        Try
-            ClientScript.RegisterStartupScript(Me.GetType(), "showTube", thisScript, True)
-        Catch ex As Exception
-            MessageError_Tube(True, ex.ToString())
-            ClientScript.RegisterStartupScript(Me.GetType(), "showTube", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnAddColour_Click(sender As Object, e As EventArgs)
-        MessageError_Colour(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showColour(); };"
-        Try
-            ClientScript.RegisterStartupScript(Me.GetType(), "showColour", thisScript, True)
-        Catch ex As Exception
-            MessageError_Colour(True, ex.ToString())
-            ClientScript.RegisterStartupScript(Me.GetType(), "showColour", thisScript, True)
-        End Try
-    End Sub
-
-    Protected Sub btnTube_Click(sender As Object, e As EventArgs)
-        MessageError_Tube(False, String.Empty)
-        Try
-            If msgErrorProcessTube.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductTubes ORDER BY Id DESC")
-                Dim descText As String = txtTubeDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductTubes VALUES (@Id, @Name, @Description)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", thisId)
-                        thisCmd.Parameters.AddWithValue("@Name", txtTubeName.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisConn.Open()
-                        thisCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                dataLog = {"ProductTubes", thisId, Session("LoginId").ToString(), "Product Tube Created"}
-                settingClass.Logs(dataLog)
-
-                Response.Redirect("~/setting/specification/product/add", False)
-            End If
-        Catch ex As Exception
-            MessageError_Tube(True, ex.ToString())
-        End Try
-    End Sub
-
-    Protected Sub btnControl_Click(sender As Object, e As EventArgs)
-        MessageError_Control(False, String.Empty)
-        Try
-            If msgErrorProcessControl.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductControls ORDER BY Id DESC")
-                Dim descText As String = txtControlDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductControls VALUES (@Id, @Type, @Name, @Alias @Description)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", thisId)
-                        thisCmd.Parameters.AddWithValue("@Type", ddlControlType.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Name", txtControlName.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@Alias", txtControlAlias.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisConn.Open()
-                        thisCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                dataLog = {"ProductControls", thisId, Session("LoginId").ToString(), "Product Control Created"}
-                settingClass.Logs(dataLog)
-
-                Response.Redirect("~/setting/specification/product/add", False)
-            End If
-        Catch ex As Exception
-            MessageError_Control(True, ex.ToString())
-        End Try
-    End Sub
-
-    Protected Sub btnColour_Click(sender As Object, e As EventArgs)
-        MessageError_Colour(False, String.Empty)
-        Try
-            If msgErrorProcessColour.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductColours ORDER BY Id DESC")
-                Dim descText As String = txtColourDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductColours VALUES (@Id, @Name, @Description)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", thisId)
-                        thisCmd.Parameters.AddWithValue("@Name", txtColourName.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisConn.Open()
-                        thisCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                dataLog = {"ProductColours", thisId, Session("LoginId").ToString(), "Product Colour Created"}
-                settingClass.Logs(dataLog)
-
-                Response.Redirect("~/setting/specification/product/add", False)
-            End If
-        Catch ex As Exception
-            MessageError_Colour(True, ex.ToString())
-        End Try
-    End Sub
-
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
-        BackColor()
+        MessageError(False, String.Empty)
         Try
             If ddlDesign.SelectedValue = "" Then
                 MessageError(True, "DESIGN TYPE IS REQUIRED !")
@@ -278,7 +158,7 @@ Partial Class Setting_Specification_Product_Add
         lbCompanyDetail.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(blindId) Then
-                lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT CompanyDetails.* FROM Blinds CROSS APPLY STRING_SPLIT(Blinds.CompanyDetailId, ',') AS thisArray JOIN CompanyDetails ON CompanyDetails.Id=CAST(thisArray.value AS INT) WHERE Blinds.Id='" & blindId & "' ORDER BY CompanyDetails.Name ASC;")
+                lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT CompanyDetails.* FROM Blinds CROSS APPLY STRING_SPLIT(Blinds.CompanyDetailId, ',') AS thisArray JOIN CompanyDetails ON CompanyDetails.Id=CAST(thisArray.value AS INT) WHERE Blinds.Id='" & blindId & "' AND CompanyDetails.Status='Active' ORDER BY CompanyDetails.Name ASC;")
                 lbCompanyDetail.DataTextField = "Name"
                 lbCompanyDetail.DataValueField = "Id"
                 lbCompanyDetail.DataBind()
@@ -361,27 +241,8 @@ Partial Class Setting_Specification_Product_Add
         End Try
     End Sub
 
-    Protected Sub BackColor()
-        MessageError(False, String.Empty)
-        MessageError_Control(False, String.Empty)
-        MessageError_Tube(False, String.Empty)
-        MessageError_Colour(False, String.Empty)
-    End Sub
-
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Control(visible As Boolean, message As String)
-        divErrorProcessControl.Visible = visible : msgErrorProcessControl.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Tube(visible As Boolean, message As String)
-        divErrorProcessTube.Visible = visible : msgErrorProcessTube.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Colour(visible As Boolean, message As String)
-        divErrorProcessColour.Visible = visible : msgErrorProcessColour.InnerText = message
     End Sub
 
     Protected Function LoginAccess(action As String) As Boolean

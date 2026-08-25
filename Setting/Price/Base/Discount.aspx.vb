@@ -51,7 +51,6 @@ Partial Class Setting_Price_Base_Discount
 
             If msgError.InnerText = "" Then
                 Dim productGroup As String = String.Empty
-
                 If Not lbProductGroup.SelectedValue = "" Then
                     productGroup = String.Join(",", lbProductGroup.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If

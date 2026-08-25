@@ -69,16 +69,38 @@ function isError(msg) {
 
 function getFormAction(itemAction) {
     const pageAction = document.getElementById("pageaction");
-    if (!pageAction) return;
+    const submitButton = document.getElementById("submit");
 
     const actionMap = {
-        create: "Add Item",
-        edit: "Edit Item",
-        view: "View Item",
-        copy: "Copy Item"
+        create: {
+            page: "Add Item",
+            submit: "Save Item"
+        },
+        edit: {
+            page: "Edit Item",
+            submit: "Update Item"
+        },
+        view: {
+            page: "View Item",
+            submit: "Update Item"
+        },
+        copy: {
+            page: "Copy Item",
+            submit: "Save Item (Copy)"
+        }
     };
 
-    pageAction.innerText = actionMap[itemAction] || "";
+    const action = actionMap[itemAction];
+
+    if (!action) return;
+
+    if (pageAction) {
+        pageAction.innerText = action.page;
+    }
+
+    if (submitButton) {
+        submitButton.innerText = action.submit;
+    }
 }
 
 function getOrderHeader(headerId) {

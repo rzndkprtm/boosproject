@@ -1558,6 +1558,17 @@ Partial Class Order_Detail
         End Try
     End Sub
 
+    Protected Sub rptData_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
+        If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
+            Dim divCol As HtmlGenericControl = CType(e.Item.FindControl("divCol"), HtmlGenericControl)
+            If rptData.Items.Count <= 2 Then
+                divCol.Attributes("class") = "col-lg-6 mb-2"
+            Else
+                divCol.Attributes("class") = "col-lg-4 mb-2"
+            End If
+        End If
+    End Sub
+
     Protected Sub gvListOrderFile_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         Try
             Dim fileName As String = e.CommandArgument.ToString()
@@ -2792,6 +2803,7 @@ Partial Class Order_Detail
                     End If
                 End If
                 If lblOrderStatus.Text = "In Production" Then
+                    btnEditOrder.Visible = True
                     btnUpdateStatus.Visible = True
                     aHoldOrder.Visible = True
                     aCancelOrder.Visible = True
@@ -3412,9 +3424,11 @@ Partial Class Order_Detail
             gvListItem.Columns(7).Visible = False
             If Session("PriceAccess") = "Yes" Then gvListItem.Columns(7).Visible = True
 
-            Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text}}
-            rptData.DataSource = orderClass.GetDataTableSP("sp_CustomerServices_Get", params)
-            rptData.DataBind()
+            If status = "Unsubmitted" Then
+                Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text}}
+                rptData.DataSource = orderClass.GetDataTableSP("sp_CustomerServices_Get", params)
+                rptData.DataBind()
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

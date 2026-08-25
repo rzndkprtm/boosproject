@@ -68,7 +68,7 @@
                                             <asp:BoundField DataField="Description" HeaderText="Description" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                 <ItemTemplate>
-                                                    <a href="javascript:void(0);" runat="server" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                    <a href="javascript:void(0);" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                         </Columns>

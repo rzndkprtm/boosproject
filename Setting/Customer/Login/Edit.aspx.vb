@@ -122,7 +122,7 @@ Partial Class Setting_Customer_Login_Edit
 
     Protected Sub BindData(loginId As String)
         Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Logins WHERE Id='" & loginId & "' AND RoleId='8'")
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Logins WHERE Id='" & loginId & "' AND RoleId='8' AND (Status='Active' OR Status='Inactive')")
             If myData Is Nothing Then
                 Response.Redirect("~/setting/customer/login/", False)
                 Exit Sub
@@ -164,7 +164,7 @@ Partial Class Setting_Customer_Login_Edit
                 End If
             End If
 
-            Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", role)
+            Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Status='Active' {0} ORDER BY Name ASC", role)
 
             ddlCustomer.DataSource = settingClass.GetDataTable(thisQuery)
             ddlCustomer.DataTextField = "Name"
@@ -185,7 +185,7 @@ Partial Class Setting_Customer_Login_Edit
     Protected Sub BindRole()
         ddlRole.Items.Clear()
         Try
-            ddlRole.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM LoginRoles WHERE Id='8' ORDER BY Name ASC")
+            ddlRole.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM LoginRoles WHERE Id='8' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
             ddlRole.DataTextField = "Name"
             ddlRole.DataValueField = "Id"
             ddlRole.DataBind()
@@ -199,7 +199,7 @@ Partial Class Setting_Customer_Login_Edit
     Protected Sub BindLevel()
         ddlLevel.Items.Clear()
         Try
-            ddlLevel.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM LoginLevels ORDER BY Name ASC")
+            ddlLevel.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM LoginLevels WHERE Status='Active' OR Status='Inactive' ORDER BY Name ASC")
             ddlLevel.DataTextField = "Name"
             ddlLevel.DataValueField = "Id"
             ddlLevel.DataBind()

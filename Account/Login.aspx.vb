@@ -23,7 +23,6 @@ Partial Class Account_Login
                 txtUserLogin.Focus()
                 Exit Sub
             End If
-
             If txtPassword.Text = "" Then
                 MessageError(True, "PASSWORD IS REQUIRED !")
                 txtPassword.BackColor = Drawing.Color.Empty
@@ -31,8 +30,7 @@ Partial Class Account_Login
                 Exit Sub
             End If
 
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Logins WHERE UserName='" & txtUserLogin.Text & "'")
-
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Logins WHERE UserName='" & txtUserLogin.Text & "' AND (Status='Active' OR Status='Inactive' OR Status='Blocked')")
             If myData Is Nothing Then
                 MessageError(True, "USERNAME NOT FOUND !")
                 Exit Sub
@@ -42,9 +40,14 @@ Partial Class Account_Login
             Dim userName As String = myData("UserName").ToString()
             Dim password As String = myData("Password").ToString()
             Dim failedCount As Integer = myData("FailedCount")
-            Dim loginActive As Boolean = myData("Active")
+            Dim loginStatus As String = myData("Status").ToString()
 
-            If loginActive = False Then
+            If loginStatus = "Inactive" Then
+                MessageError(True, "YOUR ACCOUNT (LOGIN) IS BEING INACTIVE !")
+                Exit Sub
+            End If
+
+            If loginStatus = "Blocked" Then
                 MessageError(True, "YOUR ACCOUNT (LOGIN) IS BEING BLOCKED !")
                 Exit Sub
             End If
@@ -86,7 +89,7 @@ Partial Class Account_Login
         Dim failedCount As String = settingClass.GetItemData("SELECT FailedCount FROM Logins WHERE Id='" & loginId & "'")
         If failedCount = "5" Then
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Status='Blocked' WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", loginId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()

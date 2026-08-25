@@ -12,10 +12,12 @@ Partial Class Setting_Customer_Detail
     Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing
 
+
     <WebMethod(EnableSession:=True)>
     Public Shared Sub UpdateSession(value As String)
         HttpContext.Current.Session("selectedTabCustomer") = value
     End Sub
+
 
     <WebMethod()>
     Public Shared Function GetPromoDetail(id As String) As Object
@@ -91,7 +93,7 @@ Partial Class Setting_Customer_Detail
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Active=0 WHERE Id=@Id", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
@@ -381,7 +383,7 @@ Partial Class Setting_Customer_Detail
             lblOnStop.Text = thisData("CustOnStop").ToString()
             lblCashSale.Text = thisData("CustCashSale").ToString()
             lblNewsletter.Text = thisData("CustNewsletter").ToString()
-            lblActive.Text = thisData("CustActive").ToString()
+            lblStatus.Text = thisData("Status").ToString()
 
             Dim customPricing As String = settingClass.GetItemData("SELECT Description FROM CustomerCustomPricings WHERE Id='" & customerId & "'")
             If Not String.IsNullOrEmpty(customPricing) Then
@@ -707,28 +709,55 @@ Partial Class Setting_Customer_Detail
         Response.Redirect(url, False)
     End Sub
 
-    Protected Sub btnActiveLogin_Click(sender As Object, e As EventArgs)
+    Protected Sub btnStatusLogin_Click(sender As Object, e As EventArgs)
         MessageError_Login(False, String.Empty)
         Session("selectedTabCustomer") = "list-login"
         Try
-            Dim loginId As String = txtActiveLoginId.Text
+            Dim loginId As String = txtStatusLoginId.Text
 
-            Dim active As Integer = 1
-            If txtActiveLoginStatus.Text = "1" Then : active = 0 : End If
+            Dim newStatus As String = "Active"
+            If txtStatusLoginText.Text = "Active" Then : newStatus = "Inactive" : End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Active=@Active, FailedCount=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Status=@Status, FailedCount=0 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", loginId)
-                    thisCmd.Parameters.AddWithValue("@Active", active)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim activeDesc As String = "Login Has Been Activated"
-            If active = 0 Then activeDesc = "Login Has Been Deactivated"
+            Dim statusDesc As String = "Login Has Been Activated"
+            If newStatus = "Inactive" Then statusDesc = "Login Has Been Deactivated"
 
-            dataLog = {"Logins", loginId, Session("LoginId").ToString(), activeDesc}
+            dataLog = {"Logins", loginId, Session("LoginId").ToString(), statusDesc}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Login(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDeleteLogin_Click(sender As Object, e As EventArgs)
+        MessageError_Login(False, String.Empty)
+        Session("selectedTabCustomer") = "list-login"
+        Try
+            Dim thisId As String = txtDeleteLoginId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("UPDATE Logins SET Status='Deleted', UserName=CASE WHEN UserName LIKE '%(DELETED)%' THEN UserName ELSE UserName + ' (DELETED)' END, FullName=CASE WHEN FullName LIKE '%(DELETED)%' THEN FullName ELSE FullName + ' (DELETED)' END WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Login Deleted"}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -853,7 +882,11 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataLogin(customerId As String)
         MessageError_Login(False, String.Empty)
         Try
-            gvListLogin.DataSource = settingClass.GetDataTable("SELECT Logins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN Logins.Pricing=1 THEN 'Yes' WHEN Logins.Pricing=0 THEN 'No' ELSE 'Error' END AS DataPricing, CASE WHEN Logins.Active=1 THEN 'Enabled' WHEN Logins.Active=0 THEN 'Disabled' ELSE 'Error' END AS DataActive FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON Logins.LevelId=LoginLevels.Id WHERE Logins.CustomerId='" & customerId & "' ORDER BY Logins.RoleId, Logins.Id ASC")
+            Dim thisQuery As String = "SELECT Logins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN Logins.Pricing=1 THEN 'Yes' WHEN Logins.Pricing=0 THEN 'No' ELSE 'Error' END AS DataPricing FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON Logins.LevelId=LoginLevels.Id WHERE Logins.CustomerId='" & customerId & "' AND (Logins.Status='Active' OR Logins.Status='Inactive') ORDER BY Logins.RoleId, Logins.Id ASC"
+            If Session("RoleName") = "Developer" Then
+                thisQuery = "SELECT Logins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN Logins.Pricing=1 THEN 'Yes' WHEN Logins.Pricing=0 THEN 'No' ELSE 'Error' END AS DataPricing FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON Logins.LevelId=LoginLevels.Id WHERE Logins.CustomerId='" & customerId & "' ORDER BY Logins.RoleId, Logins.Id ASC"
+            End If
+            gvListLogin.DataSource = settingClass.GetDataTable(thisQuery)
             gvListLogin.DataBind()
         Catch ex As Exception
             MessageError_Login(True, ex.ToString())
@@ -863,14 +896,19 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Function VisibleSendPersonalLogin(active As Integer) As Boolean
-        If active = 1 Then Return True
+    Protected Function VisibleStatusLogin(status As String) As Boolean
+        If status = "Active" OrElse status = "Inactive" Then Return True
         Return False
     End Function
 
-    Protected Function TextActive_Login(active As Boolean) As String
-        If active = True Then Return "Disable"
-        Return "Enable"
+    Protected Function VisibleSendPersonalLogin(status As String) As Boolean
+        If status = "Active" Then Return True
+        Return False
+    End Function
+
+    Protected Function TextStatus_Login(status As String) As String
+        If status = "Active" Then Return "Deactivate Login"
+        Return "Activate Login"
     End Function
 
     Protected Sub MessageError_Login(visible As Boolean, message As String)
@@ -1140,7 +1178,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataPromo(customerId As String)
         MessageError_Promo(False, String.Empty)
         Try
-            gvListPromo.DataSource = settingClass.GetDataTable("SELECT CustomerPromos.*, Promos.Name AS PromoName, Promos.StartDate AS StartDate, Promos.EndDate AS EndDate FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "'")
+            gvListPromo.DataSource = settingClass.GetDataTable("SELECT CustomerPromos.*, Promos.Name AS PromoName, Promos.StartDate AS StartDate, Promos.EndDate AS EndDate, Promos.Status AS PromoStatus FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status IN ('Active', 'Inactive')")
             gvListPromo.DataBind()
         Catch ex As Exception
             MessageError_Promo(True, ex.ToString())
@@ -1153,6 +1191,18 @@ Partial Class Setting_Customer_Detail
     Protected Sub MessageError_Promo(visible As Boolean, message As String)
         divErrorPromo.Visible = visible : msgErrorPromo.InnerText = message
     End Sub
+
+    Protected Function BindPromoDecimal(value As Decimal) As String
+        Try
+            If value >= 0 Then
+                value = Math.Round(value, 2)
+                Return value.ToString("N2", enUS)
+            End If
+        Catch ex As Exception
+            Return String.Empty
+        End Try
+        Return String.Empty
+    End Function
 
     Protected Sub gvListProduct_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then

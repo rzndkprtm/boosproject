@@ -1,7 +1,6 @@
 ﻿<%@ Import Namespace="System.Xml" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
-<%@ Import Namespace="System.IO.Compression" %>
 <%@ Page Language="VB" Title="Export BOE Result" ContentType="text/xml" Debug="true" %>
 
 <script runat="server">

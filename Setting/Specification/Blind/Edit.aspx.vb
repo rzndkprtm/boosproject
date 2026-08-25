@@ -38,16 +38,16 @@ Partial Class Setting_Specification_Blind_Edit
                 MessageError(True, "DESIGN NAME IS REQUIRED !")
                 Exit Sub
             End If
-            If lbCompany.SelectedValue = "" Then
-                MessageError(True, "COMPANY IS REQUIRED !")
+            If lbCompanyDetail.SelectedValue = "" Then
+                MessageError(True, "SUB COMPANY IS REQUIRED !")
                 Exit Sub
             End If
             If msgError.InnerText = "" Then
                 Dim companyDetail As String = String.Empty
                 Dim aliasName As String = txtAlias.Text.Trim()
 
-                If Not lbCompany.SelectedValue = "" Then
-                    companyDetail = String.Join(",", lbCompany.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                If Not lbCompanyDetail.SelectedValue = "" Then
+                    companyDetail = String.Join(",", lbCompanyDetail.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
                 If String.IsNullOrEmpty(txtAlias.Text) Then
                     aliasName = txtName.Text.Trim()
@@ -92,7 +92,7 @@ Partial Class Setting_Specification_Blind_Edit
             If thisData Is Nothing Then Exit Sub
 
             BindDesign()
-            BindCompany()
+            BindCompanyDetail()
 
             ddlDesign.SelectedValue = thisData("DesignId").ToString()
             txtName.Text = thisData("Name").ToString()
@@ -104,7 +104,7 @@ Partial Class Setting_Specification_Blind_Edit
                 Dim companyArray() As String = thisData("CompanyDetailId").ToString().Split(",")
                 For Each i In companyArray
                     If Not (i.Equals(String.Empty)) Then
-                        lbCompany.Items.FindByValue(i).Selected = True
+                        lbCompanyDetail.Items.FindByValue(i).Selected = True
                     End If
                 Next
             End If
@@ -135,16 +135,16 @@ Partial Class Setting_Specification_Blind_Edit
         End Try
     End Sub
 
-    Protected Sub BindCompany()
-        lbCompany.Items.Clear()
+    Protected Sub BindCompanyDetail()
+        lbCompanyDetail.Items.Clear()
         Try
-            lbCompany.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails WHERE Active=1 ORDER BY Name ASC")
-            lbCompany.DataTextField = "Name"
-            lbCompany.DataValueField = "Id"
-            lbCompany.DataBind()
+            lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails WHERE Status='Active' OR Status='Inactive' ORDER BY Name ASC")
+            lbCompanyDetail.DataTextField = "Name"
+            lbCompanyDetail.DataValueField = "Id"
+            lbCompanyDetail.DataBind()
 
-            If lbCompany.Items.Count > 0 Then
-                lbCompany.Items.Insert(0, New ListItem("", ""))
+            If lbCompanyDetail.Items.Count > 0 Then
+                lbCompanyDetail.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

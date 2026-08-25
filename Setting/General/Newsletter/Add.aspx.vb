@@ -106,7 +106,7 @@ Partial Class Setting_General_Newsletter_Add
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC")
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys WHERE Status='Active' ORDER BY Name ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()

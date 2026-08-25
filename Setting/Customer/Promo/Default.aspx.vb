@@ -66,9 +66,6 @@ Partial Class Setting_Customer_Promo_Default
             MessageError(False, String.Empty)
             txtSearch.Text = Session("SearchCustomerPromo")
             BindData(txtSearch.Text)
-
-            BindDataCustomer()
-            BindDataPromo()
         End If
     End Sub
 
@@ -98,57 +95,6 @@ Partial Class Setting_Customer_Promo_Default
 
     Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
         BuildPager()
-    End Sub
-
-    Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
-        Try
-            If ddlCustomer.SelectedValue = "" Then
-                MessageError_Process(True, "CUSTOMER IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-
-            If ddlPromo.SelectedValue = "" Then
-                MessageError_Process(True, "PROMO IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-
-            Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerPromos WHERE CustomerId='" & lblId.Text & "' AND PromoId='" & ddlPromo.SelectedValue & "'")
-            If checkData > 0 Then
-                MessageError_Process(True, "THIS PROMO IS ALREADY REGISTERED. PLEASE USE A DIFFERENT PROMO !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-
-            If msgErrorProcess.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerPromos ORDER BY Id DESC")
-
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerPromos VALUES (@Id, @CustomerId, @PromoId)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", thisId)
-                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@PromoId", ddlPromo.SelectedValue)
-                        thisConn.Open()
-                        thisCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                dataLog = {"CustomerPromos", thisId, Session("LoginId").ToString(), "Customer Promo Created"}
-                settingClass.Logs(dataLog)
-
-                Session("SearchCustomerPromo") = txtSearch.Text
-                Response.Redirect("~/setting/customer/promo", False)
-            End If
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
     End Sub
 
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
@@ -202,49 +148,6 @@ Partial Class Setting_Customer_Promo_Default
         End Try
     End Sub
 
-    Protected Sub BindDataCustomer()
-        ddlCustomer.Items.Clear()
-        Try
-            Dim thisString As String = "SELECT * FROM Customers ORDER BY Name ASC"
-            If Session("RoleName") = "Account" Then
-                thisString = "SELECT * FROM Customers WHERE CompanyId='" & Session("CompanyId").ToString() & "' ORDER BY Name ASC"
-            End If
-            If Session("RoleName") = "Sales" Then
-                thisString = "SELECT * FROM Customers WHERE CompanyId='" & Session("CompanyId").ToString() & "' ORDER BY Name ASC"
-                If Session("LevelName") = "Member" Then
-                    thisString = "SELECT * FROM Customers CROSS APPLY STRING_SPLIT(Operator, ',') AS operatorArray WHERE CompanyId='" & Session("CompanyId").ToString() & "' AND operatorArray.VALUE='" & Session("LoginId").ToString() & "' ORDER BY Name ASC"
-                End If
-            End If
-
-            ddlCustomer.DataSource = settingClass.GetDataTable(thisString)
-            ddlCustomer.DataTextField = "Name"
-            ddlCustomer.DataValueField = "Id"
-            ddlCustomer.DataBind()
-
-            If ddlCustomer.Items.Count > 1 Then
-                ddlCustomer.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            ddlCustomer.Items.Clear()
-        End Try
-    End Sub
-
-    Protected Sub BindDataPromo()
-        ddlPromo.Items.Clear()
-        Try
-            ddlPromo.DataSource = settingClass.GetDataTable("SELECT * FROM Promos WHERE Active=1 ORDER BY Name ASC")
-            ddlPromo.DataTextField = "Name"
-            ddlPromo.DataValueField = "Id"
-            ddlPromo.DataBind()
-
-            If ddlPromo.Items.Count > 1 Then
-                ddlPromo.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            ddlPromo.Items.Clear()
-        End Try
-    End Sub
-
     Protected Sub BuildPager()
         Try
             If gvList.PageCount <= 1 Then
@@ -294,10 +197,6 @@ Partial Class Setting_Customer_Promo_Default
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Process(visible As Boolean, message As String)
-        divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
     Protected Function LoginAccess(action As String) As Boolean

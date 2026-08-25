@@ -76,7 +76,7 @@
                                                             <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/customer/service/edit?serviceid=" & Eval("Id")) %>'>Detail / Edit</a>
                                                         </li>
                                                         <li>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("CustomerId").ToString()) %>'>Delete</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("CustomerId").ToString()) %>'>Delete</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerServices', '<%# Eval("Id") %>')">Log</a>

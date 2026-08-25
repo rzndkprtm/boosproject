@@ -42,7 +42,7 @@ Partial Class Stocks
     Protected Sub BindCompanyDetail()
         ddlCompanyDetail.Items.Clear()
         Try
-            ddlCompanyDetail.DataSource = stockClass.GetDataTable("SELECT * FROM CompanyDetails ORDER BY Name ASC")
+            ddlCompanyDetail.DataSource = stockClass.GetDataTable("SELECT * FROM CompanyDetails WHERE Status='Active' ORDER BY Name ASC")
             ddlCompanyDetail.DataTextField = "Name"
             ddlCompanyDetail.DataValueField = "Id"
             ddlCompanyDetail.DataBind()

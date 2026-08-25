@@ -65,7 +65,7 @@
                                         <div class="row">
                                             <div class="col-12 form-group">
                                                 <label class="form-label">Company Detail</label>
-                                                <asp:ListBox runat="server" ID="lbCompany" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                                <asp:ListBox runat="server" ID="lbCompanyDetail" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                             </div>
                                         </div>
                                         <div class="row">

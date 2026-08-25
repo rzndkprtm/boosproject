@@ -29,23 +29,25 @@ Partial Class Setting_Price_Surcharge_Delete
             End If
 
             If msgError.InnerText = "" Then
-                Dim surchargeData As DataTable = settingClass.GetDataTable("SELECT Id FROM PriceSurcharges WHERE PriceGroupId='" & ddlPriceGroup.SelectedValue & "'")
+                Dim surchargeData As DataTable = settingClass.GetDataTable("SELECT Id FROM PriceSurcharges WHERE PriceGroupId='" & ddlPriceGroup.SelectedValue & "' AND (Status='Active' OR Status='Inactive')")
                 If surchargeData.Rows.Count > 0 Then
                     For i As Integer = 0 To surchargeData.Rows.Count - 1
                         Dim surchargeId As String = surchargeData.Rows(i)(0).ToString()
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As New SqlCommand("DELETE FROM PriceSurcharges WHERE Id=@Id; DELETE FROM Logs WHERE Type='PriceSurcharges' AND DataId=@Id;", thisConn)
+                            Using thisCmd As New SqlCommand("UPDATE PriceSurcharges SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
                                 thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(surchargeId)
                                 thisConn.Open()
                                 thisCmd.ExecuteNonQuery()
                             End Using
                         End Using
+
+                        Dim dataLog As Object() = {"PriceSurcharges", surchargeId, Session("LoginId").ToString(), "Price Surcharges Deleted"}
+                        settingClass.Logs(dataLog)
                     Next
                 End If
 
                 Response.Redirect("~/setting/price/surcharge", False)
-                Exit Sub
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

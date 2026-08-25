@@ -80,9 +80,9 @@ Partial Class Setting_Specification_Fabric_Edit
                     tubeType = tube.Remove(tube.Length - 1).ToString()
                 End If
                 Dim companyDetail As String = String.Empty
-                If Not lbCompany.SelectedValue = "" Then
+                If Not lbCompanyDetail.SelectedValue = "" Then
                     Dim company As String = String.Empty
-                    For Each item As ListItem In lbCompany.Items
+                    For Each item As ListItem In lbCompanyDetail.Items
                         If item.Selected Then
                             company += item.Value & ","
                         End If
@@ -187,7 +187,7 @@ Partial Class Setting_Specification_Fabric_Edit
                     Dim value As String = i.Trim()
 
                     If value <> "" Then
-                        Dim item As ListItem = lbCompany.Items.FindByValue(value)
+                        Dim item As ListItem = lbCompanyDetail.Items.FindByValue(value)
                         If item IsNot Nothing Then
                             item.Selected = True
                         End If
@@ -281,15 +281,15 @@ Partial Class Setting_Specification_Fabric_Edit
     End Sub
 
     Protected Sub BindCompanyDetail()
-        lbCompany.Items.Clear()
+        lbCompanyDetail.Items.Clear()
         Try
-            lbCompany.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails ORDER BY Name ASC")
-            lbCompany.DataTextField = "Name"
-            lbCompany.DataValueField = "Id"
-            lbCompany.DataBind()
+            lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails WHERE Status='Active' OR Status='Inactive' ORDER BY Name ASC")
+            lbCompanyDetail.DataTextField = "Name"
+            lbCompanyDetail.DataValueField = "Id"
+            lbCompanyDetail.DataBind()
 
-            If lbCompany.Items.Count > 0 Then
-                lbCompany.Items.Insert(0, New ListItem("", ""))
+            If lbCompanyDetail.Items.Count > 0 Then
+                lbCompanyDetail.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

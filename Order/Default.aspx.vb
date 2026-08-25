@@ -594,6 +594,13 @@ Partial Class Order_Default
     Protected Sub btnOcean_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            Dim thisId As String = txtOceanId.Text
+
+            Task.Run(Async Function()
+                         Dim svc As New ShutterOceanService()
+                         Await svc.SendOrderAsync(thisId)
+                     End Function)
+
             Response.Redirect("~/order", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -831,7 +838,7 @@ Partial Class Order_Default
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = orderClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Active=1 ORDER BY Name ASC")
+            ddlCompany.DataSource = orderClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Status='Active' ORDER BY Name ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()
@@ -944,7 +951,7 @@ Partial Class Order_Default
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso (Not status = "Shipped Out" AndAlso Not status = "Completed" AndAlso Not status = "Canceled") Then Return True
             If Session("RoleName") = "IT" AndAlso (status = "Unsubmitted" OrElse status = "Quoted" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Waiting Proforma" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso (status = "Unsubmitted" OrElse status = "Quoted" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Waiting Proforma" OrElse status = "New Order") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (status = "Unsubmitted" OrElse status = "Quoted" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Waiting Proforma" OrElse status = "New Order" OrElse status = "In Production") Then Return True
             If Session("RoleName") = "Sales" AndAlso (status = "Unsubmitted" OrElse status = "Waiting Proforma") Then Return True
             If Session("RoleName") = "Account" AndAlso (status = "Unsubmitted" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Waiting Proforma" OrElse status = "New Order") Then Return True
             If Session("RoleName") = "Data Entry" AndAlso status = "Unsubmitted" AndAlso createdBy = Session("LoginId").ToString() Then Return True

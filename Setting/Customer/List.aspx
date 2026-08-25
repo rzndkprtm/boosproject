@@ -88,13 +88,13 @@
                                                             <a class="dropdown-item" href='<%# Page.ResolveUrl("~/setting/customer/edit?customerid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Change Cash Sale") %>'>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCashSale" onclick='<%# String.Format("return dataCashSale(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Convert.ToInt32(Eval("CashSale"))) %>'>Change Cash Sale</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCashSale" onclick='<%# String.Format("return dataCashSale(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Convert.ToInt32(Eval("CashSale"))) %>'>Change Cash Sale</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Change On Stop") %>'>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalOnStop" onclick='<%# String.Format("return dataOnStop(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Convert.ToInt32(Eval("OnStop"))) %>'>Change On Stop</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalOnStop" onclick='<%# String.Format("return dataOnStop(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Convert.ToInt32(Eval("OnStop"))) %>'>Change On Stop</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Delete") %>'>
-                                                            <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Customers', '<%# Eval("Id") %>')">Log</a>
@@ -122,9 +122,10 @@
                             <div class="card-footer">
                                 <div class="d-flex">
                                     <div class="ms-2 d-inline-block">
-                                        <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
-                                            <asp:ListItem Value="1" Text="Active"></asp:ListItem>
-                                            <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
+                                        <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged">
+                                            <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
+                                            <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
+                                            <asp:ListItem Value="Deleted" Text="Deleted"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>

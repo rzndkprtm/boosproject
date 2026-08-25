@@ -115,7 +115,7 @@ Partial Class Setting_Specification_Bottom_Add
     Protected Sub BindCompanyDetail()
         lbCompanyDetail.Items.Clear()
         Try
-            lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails WHERE Active=1 ORDER BY Name ASC")
+            lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails WHERE Status='Active' ORDER BY Name ASC")
             lbCompanyDetail.DataTextField = "Name"
             lbCompanyDetail.DataValueField = "Id"
             lbCompanyDetail.DataBind()

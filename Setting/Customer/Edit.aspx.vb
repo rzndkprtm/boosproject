@@ -76,7 +76,6 @@ Partial Class Setting_Customer_Edit
                 MessageError(True, "PRIMARY CUSTOMER IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlPriceGroup.SelectedValue = "" Then
                 MessageError(True, "PRICE GROUP IS REQUIRED !")
                 Exit Sub
@@ -195,7 +194,7 @@ Partial Class Setting_Customer_Edit
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys ORDER BY Id ASC")
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Status='Active' OR Status='Inactive' ORDER BY Id ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()
@@ -224,7 +223,7 @@ Partial Class Setting_Customer_Edit
         ddlCompanyDetail.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                ddlCompanyDetail.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM CompanyDetails WHERE CompanyId='" & companyId & "' ORDER BY Name ASC")
+                ddlCompanyDetail.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM CompanyDetails WHERE CompanyId='" & companyId & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC")
                 ddlCompanyDetail.DataTextField = "Name"
                 ddlCompanyDetail.DataValueField = "Id"
                 ddlCompanyDetail.DataBind()
@@ -245,7 +244,7 @@ Partial Class Setting_Customer_Edit
         lbOperator.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(companyId) Then
-                lbOperator.DataSource = settingClass.GetDataTable("SELECT Logins.Id, Logins.FullName FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Customers.CompanyId='" & companyId & "' AND Logins.RoleId='4' AND Logins.LevelId='2' ORDER BY Logins.UserName ASC")
+                lbOperator.DataSource = settingClass.GetDataTable("SELECT Logins.Id, Logins.FullName FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Customers.CompanyId='" & companyId & "' AND Logins.RoleId='4' AND Logins.LevelId='2' AND (Logins.Status='Active' OR Logins.Status='Inactive') ORDER BY Logins.UserName ASC")
                 lbOperator.DataTextField = "FullName"
                 lbOperator.DataValueField = "Id"
                 lbOperator.DataBind()
@@ -271,7 +270,7 @@ Partial Class Setting_Customer_Edit
     Protected Sub BindPrimary(companyId As String)
         ddlPrimary.Items.Clear()
         Try
-            ddlPrimary.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE [Level]='Primary' AND CompanyId='" & companyId & "' ORDER BY Id ASC")
+            ddlPrimary.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE [Level]='Primary' AND CompanyId='" & companyId & "' AND (Status='Active' OR Status='Inactive') ORDER BY Id ASC")
             ddlPrimary.DataTextField = "Name"
             ddlPrimary.DataValueField = "Id"
             ddlPrimary.DataBind()

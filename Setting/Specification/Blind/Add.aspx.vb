@@ -17,7 +17,7 @@ Partial Class Setting_Specification_Blind_Add
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindDesign()
-            BindCompany()
+            BindCompanyDetail()
         End If
     End Sub
 
@@ -32,16 +32,16 @@ Partial Class Setting_Specification_Blind_Add
                 MessageError(True, "DESIGN NAME IS REQUIRED !")
                 Exit Sub
             End If
-            If lbCompany.SelectedValue = "" Then
-                MessageError(True, "COMPANY IS REQUIRED !")
+            If lbCompanyDetail.SelectedValue = "" Then
+                MessageError(True, "SUB COMPANY IS REQUIRED !")
                 Exit Sub
             End If
             If msgError.InnerText = "" Then
                 Dim companyDetail As String = String.Empty
                 Dim aliasName As String = txtAlias.Text.Trim()
 
-                If Not lbCompany.SelectedValue = "" Then
-                    companyDetail = String.Join(",", lbCompany.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                If Not lbCompanyDetail.SelectedValue = "" Then
+                    companyDetail = String.Join(",", lbCompanyDetail.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
                 If String.IsNullOrEmpty(txtAlias.Text) Then
                     aliasName = txtName.Text.Trim()
@@ -101,20 +101,16 @@ Partial Class Setting_Specification_Blind_Add
         End Try
     End Sub
 
-    Protected Sub BindCompany(Optional isEdit As Boolean = False)
-        lbCompany.Items.Clear()
+    Protected Sub BindCompanyDetail()
+        lbCompanyDetail.Items.Clear()
         Try
-            Dim thisString As String = "SELECT * FROM CompanyDetails WHERE Active=1 ORDER BY Name ASC"
-            If isEdit = True Then
-                thisString = "SELECT * FROM CompanyDetails ORDER BY Name ASC"
-            End If
-            lbCompany.DataSource = settingClass.GetDataTable(thisString)
-            lbCompany.DataTextField = "Name"
-            lbCompany.DataValueField = "Id"
-            lbCompany.DataBind()
+            lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails WHERE Status='Active' ORDER BY Name ASC")
+            lbCompanyDetail.DataTextField = "Name"
+            lbCompanyDetail.DataValueField = "Id"
+            lbCompanyDetail.DataBind()
 
-            If lbCompany.Items.Count > 0 Then
-                lbCompany.Items.Insert(0, New ListItem("", ""))
+            If lbCompanyDetail.Items.Count > 0 Then
+                lbCompanyDetail.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

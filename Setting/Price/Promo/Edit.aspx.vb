@@ -24,7 +24,6 @@ Partial Class Setting_Price_Promo_Edit
         End If
 
         lblId.Text = Request.QueryString("promoid").ToString()
-
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindData(lblId.Text)
@@ -66,7 +65,7 @@ Partial Class Setting_Price_Promo_Edit
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Promos SET CompanyId=@CompanyId, Type=@Type, Name=@Name, StartDate=@StartDate, EndDate=@EndDate, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Promos SET CompanyId=@CompanyId, Type=@Type, Name=@Name, StartDate=@StartDate, EndDate=@EndDate, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
@@ -74,7 +73,7 @@ Partial Class Setting_Price_Promo_Edit
                         thisCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text)
                         thisCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text)
                         thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -83,7 +82,7 @@ Partial Class Setting_Price_Promo_Edit
                 Dim dataLog As Object() = {"Promos", lblId.Text, Session("LoginId").ToString(), "Promo Updated"}
                 settingClass.Logs(dataLog)
 
-                Dim url As String = "~/setting/price/promo/"
+                Dim url As String = "~/setting/price/promo"
                 If lblReturnPage.Text = "detail" Then
                     url = String.Format("~/setting/price/promo/detail?promoid={0}", lblId.Text)
                 End If
@@ -98,7 +97,7 @@ Partial Class Setting_Price_Promo_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Dim url As String = "~/setting/price/promo/"
+        Dim url As String = "~/setting/price/promo"
         If lblReturnPage.Text = "detail" Then
             url = String.Format("~/setting/price/promo/detail?promoid={0}", lblId.Text)
         End If
@@ -107,7 +106,7 @@ Partial Class Setting_Price_Promo_Edit
 
     Protected Sub BindData(promoId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Promos WHERE Id='" & promoId & "'")
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Promos WHERE Id='" & promoId & "' AND (Status='Active' OR Status='Inactive'")
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/price/promo", False)
                 Exit Sub
@@ -121,7 +120,7 @@ Partial Class Setting_Price_Promo_Edit
             txtStartDate.Text = Convert.ToDateTime(thisData("StartDate")).ToString("yyyy-MM-dd")
             txtEndDate.Text = Convert.ToDateTime(thisData("EndDate")).ToString("yyyy-MM-dd")
             txtDescription.Text = thisData("Description").ToString()
-            ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))
+            ddlStatus.SelectedValue = thisData("Status").ToString()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -133,7 +132,7 @@ Partial Class Setting_Price_Promo_Edit
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Companys ORDER BY Name ASC")
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Companys WHERE Status='Active' OR Status='Inactive' ORDER BY Name ASC")
             ddlCompany.DataTextField = "Name"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()

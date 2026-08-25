@@ -356,5 +356,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/Pelmet.js?v=1.1.1"></script>
+    <script src="/Scripts/RisaSolihah/Pelmet.js?v=1.1.2"></script>
 </asp:Content>

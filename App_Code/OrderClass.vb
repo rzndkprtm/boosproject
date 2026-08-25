@@ -2418,10 +2418,10 @@ Public Class OrderClass
                     costSell = thisSell
                     costBuy = thisBuy
 
-                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim promoType As String = detailRow("Type").ToString()
                             Dim dataId As String = detailRow("DataId").ToString()
@@ -2470,10 +2470,10 @@ Public Class OrderClass
                         Next
                     Next
 
-                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each sellPromoRow As DataRow In sellPromoData.Rows
                         Dim promoId As String = sellPromoRow("PromoId").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
 
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim promoType As String = detailRow("Type").ToString()
@@ -2733,10 +2733,10 @@ Public Class OrderClass
                     costSell = thisSell
                     costBuy = thisBuy
 
-                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
 
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim promoType As String = detailRow("Type").ToString()
@@ -2786,10 +2786,10 @@ Public Class OrderClass
                         Next
                     Next
 
-                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each sellPromoRow As DataRow In sellPromoData.Rows
                         Dim promoId As String = sellPromoRow("PromoId").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
 
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim promoType As String = detailRow("Type").ToString()
@@ -2970,10 +2970,10 @@ Public Class OrderClass
                     costSell = thisSell
                     costBuy = thisBuy
 
-                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
 
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim promoType As String = detailRow("Type").ToString()
@@ -3023,10 +3023,10 @@ Public Class OrderClass
                         Next
                     Next
 
-                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each sellPromoRow As DataRow In sellPromoData.Rows
                         Dim promoId As String = sellPromoRow("PromoId").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
 
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim promoType As String = detailRow("Type").ToString()
@@ -3191,10 +3191,10 @@ Public Class OrderClass
                     costSell = thisSell
                     costBuy = thisBuy
 
-                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
 
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim promoType As String = detailRow("Type").ToString()
@@ -3244,10 +3244,10 @@ Public Class OrderClass
                         Next
                     Next
 
-                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each sellPromoRow As DataRow In sellPromoData.Rows
                         Dim promoId As String = sellPromoRow("PromoId").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
 
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim promoType As String = detailRow("Type").ToString()
@@ -3412,10 +3412,10 @@ Public Class OrderClass
                     costSell = thisSell
                     costBuy = thisBuy
 
-                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
 
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim promoType As String = detailRow("Type").ToString()
@@ -3465,10 +3465,10 @@ Public Class OrderClass
                         Next
                     Next
 
-                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each sellPromoRow As DataRow In sellPromoData.Rows
                         Dim promoId As String = sellPromoRow("PromoId").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
 
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim promoType As String = detailRow("Type").ToString()
@@ -3633,10 +3633,10 @@ Public Class OrderClass
                     costSell = thisSell
                     costBuy = thisBuy
 
-                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Active=1 AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
 
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim promoType As String = detailRow("Type").ToString()
@@ -3686,10 +3686,10 @@ Public Class OrderClass
                         Next
                     Next
 
-                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Active=1 AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each sellPromoRow As DataRow In sellPromoData.Rows
                         Dim promoId As String = sellPromoRow("PromoId").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
 
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim promoType As String = detailRow("Type").ToString()

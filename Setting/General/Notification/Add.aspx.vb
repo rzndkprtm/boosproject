@@ -115,7 +115,7 @@ Partial Class Setting_General_Notification_Add
     Protected Sub BindLoginRole()
         ddlLoginRole.Items.Clear()
         Try
-            ddlLoginRole.DataSource = settingClass.GetDataTable("SELECT * FROM LoginRoles ORDER BY Name ASC")
+            ddlLoginRole.DataSource = settingClass.GetDataTable("SELECT * FROM LoginRoles WHERE Status='Active' ORDER BY Name ASC")
             ddlLoginRole.DataTextField = "Name"
             ddlLoginRole.DataValueField = "Id"
             ddlLoginRole.DataBind()
@@ -134,7 +134,7 @@ Partial Class Setting_General_Notification_Add
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys ORDER BY Name ASC")
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys WHERE Status='Active' ORDER BY Name ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()

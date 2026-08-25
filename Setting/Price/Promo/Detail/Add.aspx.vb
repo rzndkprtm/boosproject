@@ -15,6 +15,7 @@ Partial Class Setting_Price_Promo_Detail_Add
                 dt.Columns.Add("Type")
                 dt.Columns.Add("Data")
                 dt.Columns.Add("Discount")
+                dt.Columns.Add("Status")
 
                 Session("PromoTable") = dt
             End If
@@ -46,7 +47,7 @@ Partial Class Setting_Price_Promo_Detail_Add
             ddlPromo.SelectedValue = lblId.Text
 
             PromoTable.Rows.Clear()
-            PromoTable.Rows.Add("", "", "")
+            PromoTable.Rows.Add("", "", "", "")
 
             BindGrid()
         End If
@@ -99,7 +100,7 @@ Partial Class Setting_Price_Promo_Detail_Add
             End If
 
             If PromoTable.Rows.Count = 0 Then
-                PromoTable.Rows.Add("", "", "")
+                PromoTable.Rows.Add("", "", "", "")
             End If
 
             BindGrid()
@@ -132,7 +133,7 @@ Partial Class Setting_Price_Promo_Detail_Add
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         Try
             SaveGrid()
-            PromoTable.Rows.Add("", "", "")
+            PromoTable.Rows.Add("", "", "", "")
             BindGrid()
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -158,13 +159,13 @@ Partial Class Setting_Price_Promo_Detail_Add
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PromoDetails ORDER BY Id DESC")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand("INSERT INTO PromoDetails VALUES (@Id, @PromoId, @Type, @DataId, @Discount)", thisConn)
+                    Using thisCmd As New SqlCommand("INSERT INTO PromoDetails VALUES (@Id, @PromoId, @Type, @DataId, @Discount, @Status)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@PromoId", ddlPromo.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Type", dr("Type"))
                         thisCmd.Parameters.AddWithValue("@DataId", dr("Data"))
                         thisCmd.Parameters.AddWithValue("@Discount", dr("Discount"))
-
+                        thisCmd.Parameters.AddWithValue("@Status", dr("Status"))
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -270,7 +271,7 @@ Partial Class Setting_Price_Promo_Detail_Add
             Dim dt As DataTable = PromoTable
 
             While dt.Rows.Count < rptPromo.Items.Count
-                dt.Rows.Add("", "", "")
+                dt.Rows.Add("", "", "", "")
             End While
 
             For i As Integer = 0 To rptPromo.Items.Count - 1
@@ -279,20 +280,21 @@ Partial Class Setting_Price_Promo_Detail_Add
                 Dim ddlType As DropDownList = CType(item.FindControl("ddlType"), DropDownList)
                 Dim ddlData As DropDownList = CType(item.FindControl("ddlData"), DropDownList)
                 Dim txtDiscount As TextBox = CType(item.FindControl("txtDiscount"), TextBox)
+                Dim ddlStatus As DropDownList = CType(item.FindControl("ddlStatus"), DropDownList)
 
-                If ddlType Is Nothing OrElse ddlData Is Nothing OrElse txtDiscount Is Nothing Then
+                If ddlType Is Nothing OrElse ddlData Is Nothing OrElse txtDiscount Is Nothing OrElse ddlStatus Is Nothing Then
                     Continue For
                 End If
 
                 dt.Rows(i)("Type") = ddlType.SelectedValue
+                dt.Rows(i)("Discount") = txtDiscount.Text.Trim()
+                dt.Rows(i)("Status") = ddlStatus.SelectedValue
 
                 If ddlData.SelectedItem Is Nothing Then
                     dt.Rows(i)("Data") = ""
                 Else
                     dt.Rows(i)("Data") = ddlData.SelectedValue
                 End If
-
-                dt.Rows(i)("Discount") = txtDiscount.Text.Trim()
             Next
             PromoTable = dt
         Catch ex As Exception

@@ -1,6 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
+Imports System.Runtime.InteropServices.ComTypes
 
 Partial Class Setting_Price_Promo_Detail_Default
     Inherits Page
@@ -104,6 +105,43 @@ Partial Class Setting_Price_Promo_Detail_Default
                 End Using
             End Using
 
+            dataLog = {"PromoDetails", dataId, Session("LoginId").ToString(), "Price Promo Detail Change Value"}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/price/promo/detail?promoid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnStatusDetail_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtStatusDetailId.Text
+            Dim thisStatus As String = txtStatusDetailText.Text
+
+            Dim newStatus As String = "Inactive"
+            If thisStatus = "Inactive" Then : newStatus = "Active" : End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE PromoDetails SET Status=@Status WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim statusDesc As String = "Promo Has Been Activated"
+            If newStatus = "Inactive" Then statusDesc = "Promo Has Been Deactivated"
+
+            dataLog = {"PromoDetails", thisId, Session("LoginId").ToString(), statusDesc}
+            settingClass.Logs(dataLog)
+
             url = String.Format("~/setting/price/promo/detail?promoid={0}", lblId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
@@ -117,15 +155,18 @@ Partial Class Setting_Price_Promo_Detail_Default
     Protected Sub btnDeleteDetail_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim dataId As String = txtIdDeleteDetail.Text
+            Dim dataId As String = txtDeleteDetailId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM PromoDetails WHERE Id=@Id; DELETE FROM Logs WHERE Type='PromoDetails' AND DataId=@Id;", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE PromoDetails SET Status='Deleted' WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", dataId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
+
+            dataLog = {"PromoDetails", dataId, Session("LoginId").ToString(), "Price Promo Detail Deleted"}
+            settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/price/promo/detail?promoid={0}", lblId.Text)
             Response.Redirect(url, False)
@@ -139,17 +180,14 @@ Partial Class Setting_Price_Promo_Detail_Default
 
     Protected Sub BindData(promoId As String)
         Try
-            Dim thisQuery As String = "SELECT Promos.*, Companys.Name AS CompanyName FROM Promos INNER JOIN Companys ON Promos.CompanyId=Companys.Id WHERE Promos.Id='" & promoId & "'"
-            If Session("RoleName") = "Sales" Then
-                thisQuery = "SELECT Promos.*, Companys.Name AS CompanyName FROM Promos INNER JOIN Companys ON Promos.CompanyId=Companys.Id WHERE Promos.Id='" & promoId & "' AND Promos.CompanyId='" & Session("CompanyId") & "'"
-                If Session("LevelName") = "Member" Then
-                    thisQuery = "SELECT Promos.*, Companys.Name AS CompanyName FROM Promos INNER JOIN Companys ON Promos.CompanyId=Companys.Id WHERE Promos.Id='" & promoId & "' AND Promos.CompanyId='" & Session("CompanyId") & "' AND Promos.Type='Sell'"
-                End If
-            End If
-            If Session("RoleName") = "Account" Then
-                thisQuery = "SELECT Promos.*, Companys.Name AS CompanyName FROM Promos INNER JOIN Companys ON Promos.CompanyId=Companys.Id WHERE Promos.Id='" & promoId & "' AND Promos.CompanyId='" & Session("CompanyId") & "'"
-            End If
-            Dim thisData As DataRow = settingClass.GetDataRow(thisQuery)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@PromoId", promoId),
+                New SqlParameter("@RoleName", Session("RoleName")),
+                New SqlParameter("@LevelName", Session("LevelName")),
+                New SqlParameter("@CompanyId", If(String.IsNullOrWhiteSpace(Session("CompanyId")), CType(DBNull.Value, Object), Session("CompanyId").ToString()))
+            }
+
+            Dim thisData As DataRow = settingClass.GetDataRowSP("sp_Promos_GetById", params)
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/price/promo", False)
                 Exit Sub
@@ -161,16 +199,16 @@ Partial Class Setting_Price_Promo_Detail_Default
             lblEndDate.Text = Convert.ToDateTime(thisData("EndDate")).ToString("dd MMM yyyy")
             lblType.Text = thisData("Type").ToString()
             lblDescription.Text = thisData("Description").ToString()
+            lblStatus.Text = thisData("Status").ToString()
             If String.IsNullOrEmpty(lblDescription.Text) Then
                 lblDescription.Text = "&nbsp;"
             End If
 
-            Dim active As Integer = Convert.ToInt32(thisData("Active"))
-            lblActive.Text = "Error"
-            If active = 1 Then lblActive.Text = "Yes"
-            If active = 0 Then lblActive.Text = "No"
-
-            gvList.DataSource = settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'")
+            Dim promoDetailQuerya As String = "SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND (Status='Active' OR Status='Inactive')"
+            If Session("RoleName") = "Developer" Then
+                promoDetailQuerya = "SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'"
+            End If
+            gvList.DataSource = settingClass.GetDataTable(promoDetailQuerya)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID Detail")
 
@@ -189,6 +227,12 @@ Partial Class Setting_Price_Promo_Detail_Default
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
+
+    Protected Function TextStatusDetail(status As String) As String
+        Dim result As String = "Activate"
+        If status = "Active" Then : Return "Deactivate" : End If
+        Return result
+    End Function
 
     Protected Function DiscountTitle(type As String, dataId As String) As String
         If String.IsNullOrEmpty(type) Then Return String.Empty

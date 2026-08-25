@@ -77,7 +77,7 @@ Partial Class Setting_Price_Service_Edit
                         thisCmd.Parameters.AddWithValue("@BuyValue", If(String.IsNullOrEmpty(txtBuyValue.Text), CType(DBNull.Value, Object), txtBuyValue.Text))
                         thisCmd.Parameters.AddWithValue("@SellValue", If(String.IsNullOrEmpty(txtSellValue.Text), CType(DBNull.Value, Object), txtSellValue.Text))
                         thisCmd.Parameters.AddWithValue("@MinValue", If(String.IsNullOrEmpty(txtMinimumValue.Text), CType(DBNull.Value, Object), txtMinimumValue.Text))
-                        thisCmd.Parameters.AddWithValue("@MaxValue", If(String.IsNullOrEmpty(txtMinimumValue.Text), CType(DBNull.Value, Object), txtMinimumValue.Text))
+                        thisCmd.Parameters.AddWithValue("@MaxValue", If(String.IsNullOrEmpty(txtMaximumValue.Text), CType(DBNull.Value, Object), txtMaximumValue.Text))
                         thisCmd.Parameters.AddWithValue("@Region", ddlRegion.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@AutoCreate", ddlAutoCreate.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@AllowCustom", ddlAllowCustom.SelectedValue)
@@ -91,17 +91,26 @@ Partial Class Setting_Price_Service_Edit
                 Dim dataLog As Object() = {"OrderDetails", lblId.Text, Session("LoginId"), "Price Service Updated"}
                 settingClass.Logs(dataLog)
 
+                If ddlAutoCreate.SelectedValue = "1" AndAlso lblAutoCreate.Text = "1" Then
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As New SqlCommand("sp_CustomerServices_UpdateByServiceId", thisConn)
+                            thisCmd.CommandType = CommandType.StoredProcedure
+                            thisCmd.Parameters.AddWithValue("@ServiceId", Convert.ToInt32(lblId.Text))
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+                End If
+
                 If ddlAutoCreate.SelectedValue = "1" AndAlso lblAutoCreate.Text = "0" Then
                     Dim thisData As DataTable = settingClass.GetDataTable("SELECT Id FROM Customers WHERE CompanyDetailId IN (SELECT TRY_CAST(value AS INT) FROM STRING_SPLIT('" & companyDetailId & "', ','));")
                     For Each row As DataRow In thisData.Rows
                         Dim customerId As Integer = Convert.ToInt32(row("Id"))
-                        Dim customerServiceId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerServices ORDER BY Id DESC")
-
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerServices SELECT @Id, @CustomerId, Id, AllowCustom, Type, DefaultBuyPrice, DefaultSellPrice, Parameter, Operator, BuyValue, SellValue, MinValue, MaxValue, Region FROM PriceServices WHERE Id=@ServiceId", thisConn)
-                                thisCmd.Parameters.AddWithValue("@Id", customerServiceId)
+                            Using thisCmd As New SqlCommand("sp_CustomerServices_Upsert", thisConn)
+                                thisCmd.CommandType = CommandType.StoredProcedure
                                 thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
-                                thisCmd.Parameters.AddWithValue("@ServiceId", lblId.Text)
+                                thisCmd.Parameters.AddWithValue("@ServiceId", Convert.ToInt32(lblId.Text))
                                 thisConn.Open()
                                 thisCmd.ExecuteNonQuery()
                             End Using
@@ -197,7 +206,7 @@ Partial Class Setting_Price_Service_Edit
     Protected Sub BindCompanyDetail()
         lbCompanyDetail.Items.Clear()
         Try
-            lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM CompanyDetails ORDER BY Name ASC")
+            lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM CompanyDetails WHERE Status='Active' OR Status='Inactive' ORDER BY Name ASC")
             lbCompanyDetail.DataTextField = "Name"
             lbCompanyDetail.DataValueField = "Id"
             lbCompanyDetail.DataBind()

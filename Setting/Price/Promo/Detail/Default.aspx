@@ -84,7 +84,7 @@
                             <div class="col-md-4 mb-3">
                                 <label class="text-muted small">Status</label>
                                 <div>
-                                    <asp:Label runat="server" ID="lblActive"></asp:Label>
+                                    <asp:Label runat="server" ID="lblStatus"></asp:Label>
                                 </div>
                             </div>
                             
@@ -123,15 +123,19 @@
                                             <%# DiscountValue(Eval("Discount")) %>
                                         </ItemTemplate>
                                     </asp:TemplateField>
+                                    <asp:BoundField DataField="Status" HeaderText="Status" />
                                     <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="130px">
                                         <ItemTemplate>
                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                             <ul class="dropdown-menu">
-                                                <li runat="server" visible='<%# LoginAccess("Change Detail") %>'>
+                                                <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Change Detail") %>'>
                                                     <a href="javascript:void(0);" id="aChangeDetail" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeDetail" onclick='<%# String.Format("return dataChangeDetail(`{0}`, `{1}`);", Eval("Id"), CType(Eval("Discount"), Decimal).ToString("G29", New System.Globalization.CultureInfo("en-US"))) %>'>Change Value</a>
                                                 </li>
-                                                <li runat="server" visible='<%# LoginAccess("Delete Detail") %>'>
-                                                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDetail" onclick='<%# String.Format("return showDeleteDetail(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Status Detail") %>'>
+                                                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalStatusDetail" onclick='<%# String.Format("return dataStatusDetail(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Status").ToString()) %>'><%# TextStatusdetail(Eval("Status").ToString()) %></a>
+                                                </li>
+                                                <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Delete Detail") %>'>
+                                                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDetail" onclick='<%# String.Format("return dataDeleteDetail(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                 </li>
                                                 <li>
                                                     <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('PromoDetails', '<%# Eval("Id") %>')">Log</a>
@@ -188,6 +192,24 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modalStatusDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title white" id="titleStatusDetail"></h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtStatusDetailId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtStatusDetailText" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnStatusDetail" CssClass="btn btn-warning" Text="Confirm" OnClick="btnStatusDetail_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade text-center" id="modalDeleteDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -195,7 +217,7 @@
                     <h5 class="modal-title white">Delete Promo Detail</h5>
                 </div>
                 <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtIdDeleteDetail" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDeleteDetailId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -233,6 +255,21 @@
             document.getElementById("<%=txtChangeValueId.ClientID %>").value = id;
             document.getElementById("<%=txtDiscount.ClientID %>").value = discount;
         }
+        function dataStatusDetail(id, status) {
+            document.getElementById("<%=txtStatusDetailId.ClientID %>").value = id;
+            document.getElementById("<%=txtStatusDetailText.ClientID %>").value = status;
+
+            let title = "";
+            if (status === "Active") {
+                title = "Deactivate Promo Item";
+            } else {
+                title = "Activate Promo Item";
+            }
+            document.getElementById("titleStatusDetail").innerHTML = title;
+        }
+        function dataDeleteDetail(id) {
+            document.getElementById("<%=txtDeleteDetailId.ClientID %>").value = id;
+        }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -266,7 +303,7 @@
                 }
             });
         }
-        ["modalDelete", "modalChangeDetail", "modalDeleteDetail", "modalLog"].forEach(function (id) {
+        ["modalDelete", "modalChangeDetail", "modalStatusDetail", "modalDeleteDetail", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

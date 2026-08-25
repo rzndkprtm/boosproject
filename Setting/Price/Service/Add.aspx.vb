@@ -72,7 +72,7 @@ Partial Class Setting_Price_Service_Add
                         thisCmd.Parameters.AddWithValue("@BuyValue", If(String.IsNullOrEmpty(txtBuyValue.Text), CType(DBNull.Value, Object), txtBuyValue.Text))
                         thisCmd.Parameters.AddWithValue("@SellValue", If(String.IsNullOrEmpty(txtSellValue.Text), CType(DBNull.Value, Object), txtSellValue.Text))
                         thisCmd.Parameters.AddWithValue("@MinValue", If(String.IsNullOrEmpty(txtMinimumValue.Text), CType(DBNull.Value, Object), txtMinimumValue.Text))
-                        thisCmd.Parameters.AddWithValue("@MaxValue", If(String.IsNullOrEmpty(txtMinimumValue.Text), CType(DBNull.Value, Object), txtMinimumValue.Text))
+                        thisCmd.Parameters.AddWithValue("@MaxValue", If(String.IsNullOrEmpty(txtMaximumValue.Text), CType(DBNull.Value, Object), txtMaximumValue.Text))
                         thisCmd.Parameters.AddWithValue("@Region", ddlRegion.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@AutoCreate", ddlAutoCreate.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@AllowCustom", ddlAllowCustom.SelectedValue)
@@ -146,7 +146,7 @@ Partial Class Setting_Price_Service_Add
     Protected Sub BindCompanyDetail()
         lbCompanyDetail.Items.Clear()
         Try
-            lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM CompanyDetails ORDER BY Name ASC")
+            lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM CompanyDetails WHERE Status='Active' ORDER BY Name ASC")
             lbCompanyDetail.DataTextField = "Name"
             lbCompanyDetail.DataValueField = "Id"
             lbCompanyDetail.DataBind()

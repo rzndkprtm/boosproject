@@ -36,7 +36,7 @@ Partial Class Setting_Price_Group_Delete
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("UPDATE PriceGroups SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                Using thisCmd As New SqlCommand("UPDATE PriceGroups SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END, Master=NULL WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(lblId.Text)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()

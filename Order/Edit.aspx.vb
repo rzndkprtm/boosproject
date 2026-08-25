@@ -294,7 +294,7 @@ Partial Class Order_Edit
                 byRole = "AND Customers.CompanyId='" + Session("CompanyId") + "'"
             End If
 
-            Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Active=1 {0} ORDER BY Name ASC", byRole)
+            Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Status='Active' {0} ORDER BY Name ASC", byRole)
 
             ddlCustomer.DataSource = orderClass.GetDataTable(thisQuery)
             ddlCustomer.DataTextField = "Name"
@@ -315,7 +315,7 @@ Partial Class Order_Edit
     Protected Sub BindDataUser()
         ddlCreatedBy.Items.Clear()
         Try
-            ddlCreatedBy.DataSource = orderClass.GetDataTable("SELECT Id, UserName FROM Logins ORDER BY UserName ASC")
+            ddlCreatedBy.DataSource = orderClass.GetDataTable("SELECT Id, UserName FROM Logins WHERE Status = 'Active' OR Status = 'Inactive' OR Status = 'Blocked' ORDER BY UserName ASC")
             ddlCreatedBy.DataTextField = "UserName"
             ddlCreatedBy.DataValueField = "Id"
             ddlCreatedBy.DataBind()

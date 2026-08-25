@@ -50,9 +50,10 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th style="width:220px;">Type</th>
+                                            <th style="width:230px;">Type</th>
                                             <th>Data</th>
                                             <th style="width:180px;">Discount</th>
+                                            <th style="width:130px;">Status</th>
                                             <th style="width:100px;"></th>
                                         </tr>
                                     </thead>
@@ -79,6 +80,13 @@
                                                             <asp:TextBox ID="txtDiscount" runat="server" CssClass="form-control" TextMode="Number" Text='<%# Eval("Discount") %>' autocomplete="off"></asp:TextBox>
                                                             <span class="input-group-text">%</span>
                                                         </div>
+                                                    </td>
+                                                    <td>
+                                                        <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-select">
+                                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                            <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
+                                                            <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
+                                                        </asp:DropDownList>
                                                     </td>
                                                     <td class="text-center">
                                                         <asp:LinkButton ID="btnDelete" runat="server" CssClass="btn btn-danger btn-sm" CommandName="DeleteRow" CommandArgument='<%# Container.ItemIndex %>'>Delete</asp:LinkButton>

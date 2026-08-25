@@ -75,17 +75,17 @@ Partial Public Class SiteMaster
             Session("CompanyName") = myData("CompanyName").ToString()
 
             Dim loginEmail As String = myData("Email").ToString()
-            Dim loginActive As Boolean = Convert.ToBoolean(myData("Active"))
+            Dim loginStatus As String = myData("Status").ToString()
 
             Dim roleName As String = myData("RoleName").ToString()
-            Dim roleActive As Boolean = Convert.ToBoolean(myData("RoleActive"))
-            Dim levelActive As Boolean = Convert.ToBoolean(myData("LevelActive"))
+            Dim roleStatus As String = myData("RoleStatus").ToString()
+
+            Dim levelStatus As String = myData("LevelStatus").ToString()
 
             Dim resetLogin As Integer = Convert.ToInt32(myData("ResetLogin"))
 
-            Dim companyActive As Integer = If(IsDBNull(myData("CompanyActive")), -1, Convert.ToInt32(myData("CompanyActive")))
-
-            Dim customerActive As Integer = If(IsDBNull(myData("CustomerActive")), -1, Convert.ToInt32(myData("CustomerActive")))
+            Dim companyStatus As String = myData("CompanyStatus").ToString()
+            Dim customerStatus As String = myData("CustomerStatus").ToString()
 
             Dim path As String = Request.Url.AbsolutePath.ToLower()
 
@@ -94,31 +94,57 @@ Partial Public Class SiteMaster
             Dim isNonActivePage As Boolean = path.StartsWith("/boos/nonactive")
             Dim isMaintenancePage As Boolean = path.StartsWith("/boos/maintenance")
 
-            If Not loginActive AndAlso Not isNonActivePage Then
+            If loginStatus = "Inactive" AndAlso Not isNonActivePage Then
+                Response.Redirect("~/boos/nonactive", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+            If loginStatus = "Blocked" AndAlso Not isNonActivePage Then
                 Response.Redirect("~/boos/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
-            If Not roleActive AndAlso Not isNonActivePage Then
+            If roleStatus = "Inactive" AndAlso Not isNonActivePage Then
+                Response.Redirect("~/boos/nonactive", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+            If roleStatus = "Deleted" AndAlso Not isNonActivePage Then
                 Response.Redirect("~/boos/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
-            If Not levelActive AndAlso Not isNonActivePage Then
+            If levelStatus = "Inactive" AndAlso Not isNonActivePage Then
+                Response.Redirect("~/boos/nonactive", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+            If levelStatus = "Deleted" AndAlso Not isNonActivePage Then
                 Response.Redirect("~/boos/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
-            If customerActive = 0 AndAlso Not isNonActivePage Then
+            If customerStatus = "Inactive" AndAlso Not isNonActivePage Then
                 Response.Redirect("~/boos/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
-            If companyActive = 0 AndAlso Not isMaintenancePage Then
+            If customerStatus = "Deleted" AndAlso Not isNonActivePage Then
+                Response.Redirect("~/boos/nonactive", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+
+            If companyStatus = "Inactive" AndAlso Not isMaintenancePage Then
+                Response.Redirect("~/boos/maintenance", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+            If companyStatus = "Deleted" AndAlso Not isMaintenancePage Then
                 Response.Redirect("~/boos/maintenance", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
