@@ -550,13 +550,7 @@ Partial Class Setting_Customer_Detail
     End Sub
 
 
-    Protected Sub MessageError(visible As Boolean, message As String)
-        divError.Visible = visible : msgError.InnerText = message
-    End Sub
 
-    Protected Sub MessageError_SendLogin(visible As Boolean, message As String)
-        divErrorSendLogin.Visible = visible : msgErrorSendLogin.InnerText = message
-    End Sub
 
     Protected Function LoginAccess(action As String) As Boolean
         Try
@@ -636,9 +630,7 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub MessageError_Contact(visible As Boolean, message As String)
-        divErrorContact.Visible = visible : msgErrorContact.InnerText = message
-    End Sub
+
 
     Protected Function VisiblePrimaryContact(primary As Boolean) As Boolean
         If primary = False Then Return True
@@ -798,9 +790,7 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub MessageError_Business(visible As Boolean, message As String)
-        divErrorBusiness.Visible = visible : msgErrorBusiness.InnerText = message
-    End Sub
+
 
     Protected Function VisiblePrimaryBusiness(primary As Boolean) As Boolean
         If primary = False Then Return True
@@ -998,13 +988,7 @@ Partial Class Setting_Customer_Detail
         Return "Activate Login"
     End Function
 
-    Protected Sub MessageError_Login(visible As Boolean, message As String)
-        divErrorLogin.Visible = visible : msgErrorLogin.InnerText = message
-    End Sub
 
-    Protected Sub MessageError_SendPersonalLogin(visible As Boolean, message As String)
-        divErrorSendPersonalLogin.Visible = visible : msgErrorSendPersonalLogin.InnerText = message
-    End Sub
 
     Protected Sub btnAddMarkup_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-markup"
@@ -1122,9 +1106,7 @@ Partial Class Setting_Customer_Detail
         Return "ERROR"
     End Function
 
-    Protected Sub MessageError_Markup(visible As Boolean, message As String)
-        divErrorMarkup.Visible = visible : msgErrorMarkup.InnerText = message
-    End Sub
+
 
     Protected Sub btnAddDiscount_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-discount"
@@ -1248,6 +1230,8 @@ Partial Class Setting_Customer_Detail
         Return "ERROR"
     End Function
 
+
+
     Protected Sub MessageError_Discount(visible As Boolean, message As String)
         divErrorDiscount.Visible = visible : msgErrorDiscount.InnerText = message
     End Sub
@@ -1360,9 +1344,7 @@ Partial Class Setting_Customer_Detail
         Return result
     End Function
 
-    Protected Sub MessageError_Product(visible As Boolean, message As String)
-        divErrorProduct.Visible = visible : msgErrorProduct.InnerText = message
-    End Sub
+
 
     Protected Sub btnAddService_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-service"
@@ -1370,9 +1352,7 @@ Partial Class Setting_Customer_Detail
         Response.Redirect(url, False)
     End Sub
 
-    Protected Sub MessageError_Service(visible As Boolean, message As String)
-        divErrorService.Visible = visible : msgErrorService.InnerText = message
-    End Sub
+
 
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)
@@ -1387,5 +1367,40 @@ Partial Class Setting_Customer_Detail
         MessageError_Promo(visible, message)
         MessageError_Product(visible, message)
         MessageError_Service(visible, message)
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_SendLogin(visible As Boolean, message As String)
+        divErrorSendLogin.Visible = visible : msgErrorSendLogin.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Contact(visible As Boolean, message As String)
+        divErrorContact.Visible = visible : msgErrorContact.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Business(visible As Boolean, message As String)
+        divErrorBusiness.Visible = visible : msgErrorBusiness.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Login(visible As Boolean, message As String)
+        divErrorLogin.Visible = visible : msgErrorLogin.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_SendPersonalLogin(visible As Boolean, message As String)
+        divErrorSendPersonalLogin.Visible = visible : msgErrorSendPersonalLogin.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Markup(visible As Boolean, message As String)
+        divErrorMarkup.Visible = visible : msgErrorMarkup.InnerText = message
+    End Sub
+    Protected Sub MessageError_Product(visible As Boolean, message As String)
+        divErrorProduct.Visible = visible : msgErrorProduct.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Service(visible As Boolean, message As String)
+        divErrorService.Visible = visible : msgErrorService.InnerText = message
     End Sub
 End Class
