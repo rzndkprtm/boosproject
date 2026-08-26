@@ -67,16 +67,6 @@ Partial Class Setting_Customer_Detail
             AllMessageError(False, String.Empty)
             BindData(lblId.Text)
 
-            BindDataContact(lblId.Text)
-            BindDataAddress(lblId.Text)
-            BindDataBusiness(lblId.Text)
-            BindDataLogin(lblId.Text)
-            BindDataMarkup(lblId.Text)
-            BindDataDiscount(lblId.Text)
-            BindDataPromo(lblId.Text)
-            BindDataProduct(lblId.Text)
-            BindDataService(lblId.Text)
-
             secDetail.Visible = True
             If Session("CustomerId") = lblId.Text AndAlso (Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account") Then
                 secDetail.Visible = False
@@ -394,6 +384,44 @@ Partial Class Setting_Customer_Detail
             aWelcome.Visible = False
             Dim welcomeStatus As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerWelcomes WHERE CustomerId='" & lblId.Text & "'")
             If welcomeStatus = 0 Then aWelcome.Visible = True
+
+            Dim primaryContact As String = settingClass.GetItemData("SELECT Email FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+            txtSendLoginEmail.Text = primaryContact
+
+            '  DETAIL
+
+            Dim thisDataSet As New DataSet()
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("sp_CustomerDetail_List", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
+                    thisCmd.Parameters.AddWithValue("@RoleName", Session("RoleName").ToString())
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        thisAdapter.Fill(thisDataSet)
+                    End Using
+                End Using
+            End Using
+
+            Dim dtContact As DataTable = thisDataSet.Tables(0)
+            Dim dtAddress As DataTable = thisDataSet.Tables(1)
+            Dim dtBusiness As DataTable = thisDataSet.Tables(2)
+            Dim dtLogin As DataTable = thisDataSet.Tables(3)
+            Dim dtMarkup As DataTable = thisDataSet.Tables(4)
+            Dim dtDiscount As DataTable = thisDataSet.Tables(5)
+            Dim dtPromo As DataTable = thisDataSet.Tables(6)
+            Dim dtProduct As DataTable = thisDataSet.Tables(7)
+            Dim dtService As DataTable = thisDataSet.Tables(8)
+
+            BindDataContact(dtContact)
+            BindDataAddress(dtAddress)
+            BindDataBusiness(dtBusiness)
+            BindDataLogin(dtLogin)
+            BindDataMarkup(dtMarkup)
+            BindDataDiscount(dtDiscount)
+            BindDataPromo(dtPromo)
+            BindDataProduct(dtProduct)
+            BindDataService(dtService)
         Catch ex As Exception
             MessageError(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then
@@ -401,6 +429,127 @@ Partial Class Setting_Customer_Detail
             End If
         End Try
     End Sub
+
+    Protected Sub BindDataContact(thisData As DataTable)
+        MessageError_Contact(False, String.Empty)
+        Try
+            gvListContact.DataSource = thisData
+            gvListContact.DataBind()
+        Catch ex As Exception
+            MessageError_Contact(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindDataAddress(thisData As DataTable)
+        MessageError_Address(False, String.Empty)
+        lblIdAddress.Text = String.Empty
+        Try
+            gvListAddress.DataSource = thisData
+            gvListAddress.DataBind()
+        Catch ex As Exception
+            MessageError_Address(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Address(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindDataBusiness(thisData As DataTable)
+        MessageError_Business(False, String.Empty)
+        lblIdBusiness.Text = String.Empty
+        Try
+            gvListBusiness.DataSource = thisData
+            gvListBusiness.DataBind()
+        Catch ex As Exception
+            MessageError_Business(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Business(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindDataLogin(thisData As DataTable)
+        MessageError_Login(False, String.Empty)
+        Try
+            gvListLogin.DataSource = thisData
+            gvListLogin.DataBind()
+        Catch ex As Exception
+            MessageError_Login(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindDataMarkup(thisData As DataTable)
+        MessageError_Markup(False, String.Empty)
+        Try
+            gvListMarkup.DataSource = thisData
+            gvListMarkup.DataBind()
+        Catch ex As Exception
+            MessageError_Markup(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Markup(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindDataDiscount(thisData As DataTable)
+        MessageError_Discount(False, String.Empty)
+        Try
+            gvListDiscount.DataSource = thisData
+            gvListDiscount.DataBind()
+        Catch ex As Exception
+            MessageError_Discount(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Discount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindDataPromo(thisData As DataTable)
+        MessageError_Promo(False, String.Empty)
+        Try
+            gvListPromo.DataSource = thisData
+            gvListPromo.DataBind()
+        Catch ex As Exception
+            MessageError_Promo(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Promo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindDataProduct(thisData As DataTable)
+        MessageError_Product(False, String.Empty)
+        Try
+            gvListProduct.DataSource = thisData
+            gvListProduct.DataBind()
+        Catch ex As Exception
+            MessageError_Product(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Product(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindDataService(thisData As DataTable)
+        MessageError_Service(False, String.Empty)
+        Try
+            gvListService.DataSource = thisData
+            gvListService.DataBind()
+        Catch ex As Exception
+            MessageError_Service(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Service(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
@@ -488,22 +637,6 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub BindDataContact(customerId As String)
-        MessageError_Contact(False, String.Empty)
-        Try
-            gvListContact.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN [Primary]=1 THEN 'Yes' WHEN [Primary]=0 THEN 'No' ELSE 'Error' END AS PrimaryData FROM CustomerContacts WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
-            gvListContact.DataBind()
-
-            Dim primaryContact As String = settingClass.GetItemData("SELECT Email FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
-            txtSendLoginEmail.Text = primaryContact
-        Catch ex As Exception
-            MessageError_Contact(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub MessageError_Contact(visible As Boolean, message As String)
         divErrorContact.Visible = visible : msgErrorContact.InnerText = message
     End Sub
@@ -569,20 +702,6 @@ Partial Class Setting_Customer_Detail
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Address(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Address(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindDataAddress(customerId As String)
-        MessageError_Address(False, String.Empty)
-        lblIdAddress.Text = String.Empty
-        Try
-            gvListAddress.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN [Primary]=1 THEN 'Yes' WHEN [Primary]=0 THEN 'No' ELSE 'Error' END AS PrimaryData FROM CustomerAddress WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
-            gvListAddress.DataBind()
         Catch ex As Exception
             MessageError_Address(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -672,20 +791,6 @@ Partial Class Setting_Customer_Detail
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Business(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Business(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindDataBusiness(customerId As String)
-        MessageError_Business(False, String.Empty)
-        lblIdBusiness.Text = String.Empty
-        Try
-            gvListBusiness.DataSource = settingClass.GetDataTable("SELECT *, CASE WHEN [Primary]=1 THEN 'Yes' WHEN [Primary]=0 THEN 'No' ELSE 'Error' END AS PrimaryData FROM CustomerBusiness WHERE CustomerId='" & customerId & "' ORDER BY Id ASC")
-            gvListBusiness.DataBind()
         Catch ex As Exception
             MessageError_Business(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -879,23 +984,6 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub BindDataLogin(customerId As String)
-        MessageError_Login(False, String.Empty)
-        Try
-            Dim thisQuery As String = "SELECT Logins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN Logins.Pricing=1 THEN 'Yes' WHEN Logins.Pricing=0 THEN 'No' ELSE 'Error' END AS DataPricing FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON Logins.LevelId=LoginLevels.Id WHERE Logins.CustomerId='" & customerId & "' AND (Logins.Status='Active' OR Logins.Status='Inactive' OR Logins.Status='Blocked') ORDER BY Logins.RoleId, Logins.Id ASC"
-            If Session("RoleName") = "Developer" Then
-                thisQuery = "SELECT Logins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN Logins.Pricing=1 THEN 'Yes' WHEN Logins.Pricing=0 THEN 'No' ELSE 'Error' END AS DataPricing FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON Logins.LevelId=LoginLevels.Id WHERE Logins.CustomerId='" & customerId & "' ORDER BY Logins.RoleId, Logins.Id ASC"
-            End If
-            gvListLogin.DataSource = settingClass.GetDataTable(thisQuery)
-            gvListLogin.DataBind()
-        Catch ex As Exception
-            MessageError_Login(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Function VisibleStatusLogin(status As String) As Boolean
         If status = "Active" OrElse status = "Inactive" Or status = "Blocked" Then Return True
         Return False
@@ -985,19 +1073,6 @@ Partial Class Setting_Customer_Detail
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Markup(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Markup(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindDataMarkup(customerId As String)
-        MessageError_Markup(False, String.Empty)
-        Try
-            gvListMarkup.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
-            gvListMarkup.DataBind()
         Catch ex As Exception
             MessageError_Markup(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -1097,19 +1172,6 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub BindDataDiscount(customerId As String)
-        MessageError_Discount(False, String.Empty)
-        Try
-            gvListDiscount.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
-            gvListDiscount.DataBind()
-        Catch ex As Exception
-            MessageError_Discount(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Discount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Function DiscountTitle(type As String, dataId As String) As String
         If String.IsNullOrEmpty(type) Then Return String.Empty
 
@@ -1175,19 +1237,6 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub BindDataPromo(customerId As String)
-        MessageError_Promo(False, String.Empty)
-        Try
-            gvListPromo.DataSource = settingClass.GetDataTable("SELECT CustomerPromos.*, Promos.Name AS PromoName, Promos.StartDate AS StartDate, Promos.EndDate AS EndDate, Promos.Status AS PromoStatus FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status IN ('Active', 'Inactive')")
-            gvListPromo.DataBind()
-        Catch ex As Exception
-            MessageError_Promo(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Promo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub MessageError_Promo(visible As Boolean, message As String)
         divErrorPromo.Visible = visible : msgErrorPromo.InnerText = message
     End Sub
@@ -1242,19 +1291,6 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub BindDataProduct(customerId As String)
-        MessageError_Product(False, String.Empty)
-        Try
-            gvListProduct.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerProductAccess WHERE Id='" + customerId + "'")
-            gvListProduct.DataBind()
-        Catch ex As Exception
-            MessageError_Product(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Product(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Function BindDetailProduct(customerId As String) As String
         Dim result As String = String.Empty
         Try
@@ -1281,19 +1317,6 @@ Partial Class Setting_Customer_Detail
         Session("selectedTabCustomer") = "list-service"
         url = String.Format("~/setting/customer/service/add?custid={0}&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub BindDataService(customerId As String)
-        MessageError_Service(False, String.Empty)
-        Try
-            gvListService.DataSource = settingClass.GetDataTable("SELECT CustomerServices.*, PriceServices.Name AS PriceServiceName FROM CustomerServices LEFT JOIN PriceServices ON CustomerServices.ServiceId=PriceServices.Id WHERE CustomerServices.CustomerId='" + customerId + "'")
-            gvListService.DataBind()
-        Catch ex As Exception
-            MessageError_Service(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Service(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
     End Sub
 
     Protected Sub MessageError_Service(visible As Boolean, message As String)
