@@ -16,20 +16,19 @@ Partial Class Setting_Customer_Service_Edit
             Exit Sub
         End If
 
-        If Not String.IsNullOrEmpty(Request.QueryString("custid")) Then
-            lblCustomerId.Text = Request.QueryString("custid").ToString()
+        If String.IsNullOrEmpty(Request.QueryString("serviceid")) Then
+            Response.Redirect("~/setting/customer/service/", False)
+            Exit Sub
         End If
 
         If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
             lblReturnPage.Text = Request.QueryString("returnpage").ToString()
         End If
 
+        lblId.Text = Request.QueryString("serviceid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindCustomer(lblCustomerId.Text)
-            BindService(lblCustomerId.Text)
-            BindServiceData(ddlService.SelectedValue)
-            BindForm(ddlType.SelectedValue)
+            BindData(lblId.Text)
         End If
     End Sub
 
@@ -66,6 +65,14 @@ Partial Class Setting_Customer_Service_Edit
             url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
         End If
         Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub BindData(serviceId As String)
+        Try
+
+        Catch ex As Exception
+
+        End Try
     End Sub
 
     Protected Sub BindCustomer(customerId As String)
