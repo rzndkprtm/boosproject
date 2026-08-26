@@ -882,7 +882,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub BindDataLogin(customerId As String)
         MessageError_Login(False, String.Empty)
         Try
-            Dim thisQuery As String = "SELECT Logins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN Logins.Pricing=1 THEN 'Yes' WHEN Logins.Pricing=0 THEN 'No' ELSE 'Error' END AS DataPricing FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON Logins.LevelId=LoginLevels.Id WHERE Logins.CustomerId='" & customerId & "' AND (Logins.Status='Active' OR Logins.Status='Inactive') ORDER BY Logins.RoleId, Logins.Id ASC"
+            Dim thisQuery As String = "SELECT Logins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN Logins.Pricing=1 THEN 'Yes' WHEN Logins.Pricing=0 THEN 'No' ELSE 'Error' END AS DataPricing FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON Logins.LevelId=LoginLevels.Id WHERE Logins.CustomerId='" & customerId & "' AND (Logins.Status='Active' OR Logins.Status='Inactive' OR Logins.Status='Blocked') ORDER BY Logins.RoleId, Logins.Id ASC"
             If Session("RoleName") = "Developer" Then
                 thisQuery = "SELECT Logins.*, LoginRoles.Name AS RoleName, LoginLevels.Name AS LevelName, CASE WHEN Logins.Pricing=1 THEN 'Yes' WHEN Logins.Pricing=0 THEN 'No' ELSE 'Error' END AS DataPricing FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id LEFT JOIN LoginLevels ON Logins.LevelId=LoginLevels.Id WHERE Logins.CustomerId='" & customerId & "' ORDER BY Logins.RoleId, Logins.Id ASC"
             End If
