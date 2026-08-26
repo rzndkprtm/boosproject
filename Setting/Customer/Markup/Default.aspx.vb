@@ -82,13 +82,8 @@ Partial Class Setting_Customer_Markup_Default
         BuildPager()
     End Sub
 
-    Protected Sub btnAddMarkupA_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/markup/add?custid={0}&type=product", txtCustomerId.Text)
-        Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub btnAddMarkupB_Click(sender As Object, e As EventArgs)
-        Dim url As String = String.Format("~/setting/customer/markup/add?custid={0}&type=productgroup", txtCustomerId.Text)
+    Protected Sub btnAddMarkup_Click(sender As Object, e As EventArgs)
+        Dim url As String = String.Format("~/setting/customer/markup/add?custid={0}", txtCustomerId.Text)
         Response.Redirect(url, False)
     End Sub
 

@@ -214,6 +214,41 @@ Public Class SettingClass
         End Try
     End Function
 
+    Public Function GetTotalMarkup(ParamArray markups() As Object) As Decimal
+        Try
+            Dim result As Decimal = 1D
+
+            If markups Is Nothing OrElse markups.Length = 0 Then
+                Return 0D
+            End If
+
+            For Each d As Object In markups
+                Dim discValue As Decimal = 0D
+                Try
+                    If d Is Nothing Then
+                        discValue = 0D
+                    ElseIf TypeOf d Is Decimal OrElse TypeOf d Is Double OrElse TypeOf d Is Integer Then
+                        discValue = Convert.ToDecimal(d)
+                    ElseIf TypeOf d Is String Then
+                        Dim s As String = d.ToString().Trim().ToUpper()
+                        If s = "D" Then
+                            discValue = 0D
+                        ElseIf IsNumeric(s) Then
+                            discValue = Convert.ToDecimal(s)
+                        End If
+                    End If
+                Catch
+                    discValue = 0D
+                End Try
+                result *= (1D - (discValue / 100D))
+            Next
+
+            Return (1D - result) * 100D
+        Catch ex As Exception
+            Return 0D
+        End Try
+    End Function
+
     Public Function GetTextLog(logId As String) As String
         Dim result As String = String.Empty
         Try

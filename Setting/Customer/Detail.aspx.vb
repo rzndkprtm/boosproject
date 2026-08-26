@@ -550,7 +550,6 @@ Partial Class Setting_Customer_Detail
     End Sub
 
 
-
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
@@ -1007,15 +1006,9 @@ Partial Class Setting_Customer_Detail
         divErrorSendPersonalLogin.Visible = visible : msgErrorSendPersonalLogin.InnerText = message
     End Sub
 
-    Protected Sub btnAddMarkupA_Click(sender As Object, e As EventArgs)
+    Protected Sub btnAddMarkup_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-markup"
-        url = String.Format("~/setting/customer/markup/add?custid={0}&type=product&returnpage=detail", lblId.Text)
-        Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub btnAddMarkupB_Click(sender As Object, e As EventArgs)
-        Session("selectedTabCustomer") = "list-markup"
-        url = String.Format("~/setting/customer/markup/add?custid={0}&type=productgroup&returnpage=detail", lblId.Text)
+        url = String.Format("~/setting/customer/markup/add?custid={0}&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
     End Sub
 
@@ -1069,6 +1062,35 @@ Partial Class Setting_Customer_Detail
             End Using
 
             dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Customer markup has been reset."}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Markup(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Markup(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnChangeMarkup_Click(sender As Object, e As EventArgs)
+        MessageError_Markup(False, String.Empty)
+        Session("selectedTabCustomer") = "list-markup"
+        Try
+            Dim thisId As String = txtChangeMarkupId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerMarkups SET Markup=@Markup, Description=@Description WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Markup", txtChangeMarkupValue.Text)
+                    thisCmd.Parameters.AddWithValue("@Description", txtChangeMarkupDescription.Text)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"CustomerMarkups", lblId.Text, Session("LoginId").ToString(), "Customer Markup Updated"}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1160,6 +1182,35 @@ Partial Class Setting_Customer_Detail
             End Using
 
             dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Customer discount has been reset."}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Discount(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Discount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnChangeDiscount_Click(sender As Object, e As EventArgs)
+        MessageError_Discount(False, String.Empty)
+        Session("selectedTabCustomer") = "list-discount"
+        Try
+            Dim thisId As String = txtChangeDiscountId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerDiscounts SET Discount=@Discount, Description=@Description WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Discount", txtChangeDiscountValue.Text)
+                    thisCmd.Parameters.AddWithValue("@Description", txtChangeDiscountDescription.Text)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"CustomerDiscounts", lblId.Text, Session("LoginId").ToString(), "Customer Discount Updated"}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)

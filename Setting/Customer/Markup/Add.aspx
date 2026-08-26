@@ -24,49 +24,14 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-7">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Markup Form</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="form form-vertical">
-                            <div class="form-body">
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Account</label>
-                                        <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Type</label>
-                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="product" Text="Product"></asp:ListItem>
-                                            <asp:ListItem Value="productgroup" Text="Product Group"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-8 form-group">
-                                        <label class="form-label">Product</label>
-                                        <asp:DropDownList runat="server" ID="ddlProduct" CssClass="choices form-select"></asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                        <label class="form-label">Markup</label>
-                                        <div class="input-group">
-                                            <asp:TextBox runat="server" TextMode="Number" ID="txtMarkup" CssClass="form-control" placeholder="Markup ......" autocomplete="off"></asp:TextBox>
-                                            <span class="input-group-text">%</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Description</label>
-                                        <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" CssClass="form-control" Height="100px" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                                    </div>
-                                </div>
+            <div class="col-12">
+                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Markup Form</h4>
+                            </div>
+                            <div class="card-body">
                                 <div class="row mt-3" runat="server" id="divError">
                                     <div class="col-12">
                                         <div class="alert alert-danger">
@@ -74,52 +39,124 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Account</label>
+                                        <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:320px;">Type</th>
+                                            <th style="width:550px;">Product</th>
+                                            <th style="width:130px;">Markup (%)</th>
+                                            <th>Description</th>
+                                            <th style="width:80px;"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <asp:Repeater ID="rptMarkup" runat="server" OnItemDataBound="rptMarkup_ItemDataBound" OnItemCommand="rptMarkup_ItemCommand">
+                                            <ItemTemplate>
+                                                <tr>
+                                                    <td>
+                                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
+                                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                            <asp:ListItem Value="Designs" Text="Product"></asp:ListItem>
+                                                            <asp:ListItem Value="PriceProductGroups" Text="Product Group"></asp:ListItem>
+                                                            <asp:ListItem Value="RollerFabrics" Text="Fabric Type (Roller)"></asp:ListItem>
+                                                            <asp:ListItem Value="RollerFabricColours" Text="Fabric Colour (Roller)"></asp:ListItem>
+                                                            <asp:ListItem Value="RomanFabrics" Text="Fabric Type (Roman)"></asp:ListItem>
+                                                            <asp:ListItem Value="RomanFabricColours" Text="Fabric Colour (Roman)"></asp:ListItem>
+                                                            <asp:ListItem Value="PanelGlideFabrics" Text="Fabric Type (Panel Glide)"></asp:ListItem>
+                                                            <asp:ListItem Value="PanelGlideFabricColours" Text="Fabric Colour (Panel Glide)"></asp:ListItem>
+                                                        </asp:DropDownList>
+                                                    </td>
+                                                    <td>
+                                                        <asp:DropDownList runat="server" ID="ddlProduct" CssClass="choices form-select"></asp:DropDownList>
+                                                    </td>
+                                                    <td>
+                                                        <asp:TextBox runat="server" ID="txtMarkup" CssClass="form-control" placeholder="Markup ......" autocomplete="off"></asp:TextBox>
+                                                    </td>
+                                                    <td>
+                                                        <asp:TextBox runat="server" ID="txtDescription" CssClass="form-control" placeholder="Description ..." autocomplete="off"></asp:TextBox>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <asp:LinkButton runat="server" ID="btnDelete" CssClass="btn btn-danger btn-sm" CommandName="DeleteRow" CommandArgument='<%# Container.ItemIndex %>'>Delete</asp:LinkButton>
+                                                    </td>
+                                                </tr>
+                                            </ItemTemplate>
+                                        </asp:Repeater>
+                                    </tbody>
+                                </table>
+                                <div class="row mb-3">
+                                    <div class="col-lg-12 text-start">
+                                        <asp:Button ID="btnAdd" runat="server" Text="+ Add Row" CssClass="btn btn-success" OnClick="btnAdd_Click" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
+                                <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer text-center">
-                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
-                        <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 col-lg-5">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title text-center">Information</h4>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-body">
-                            <ul>
-                                <li>
-                                    <strong>Type: Product</strong>
-                                    <ul>
-                                        <li>If no products are selected, the markup will be applied to all products displayed in the list.</li>
-                                        <li>If specific products are selected, the markup will only be applied to the selected products.</li>
-                                    </ul>
-                                </li>
-                                <li class="mt-2">
-                                    <strong>Type: Product Group</strong>
-                                    <ul>
-                                        <li>At least one product must be selected. The markup will only apply to the selected product(s).</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
             </div>
         </section>
     </div>
 
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblCustomerId"></asp:Label>
-        <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
-        <asp:Label runat="server" ID="lblCompanyDetailId"></asp:Label>
-        <asp:Label runat="server" ID="lblReturnPage"></asp:Label>
+        <asp:Label runat="server" ID="lblReturnPage"></asp:Label>        
     </div>
 
     <script type="text/javascript">
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) loading.style.display = "none";
+        });
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
+            });
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
+                initChoices();
+            });
+        }
+        function initChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.choices) {
+                    el.choices.destroy();
+                }
+                el.choices = new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false,
+                    searchResultLimit: 50
+                });
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            initChoices();
+        });
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>
