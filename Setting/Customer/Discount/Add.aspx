@@ -64,7 +64,7 @@
                                             <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Discount</label>
                                                 <div class="input-group">
-                                                    <asp:TextBox runat="server" TextMode="Number" ID="txtDiscount" CssClass="form-control" placeholder="Discount ......" autocomplete="off"></asp:TextBox>
+                                                    <asp:TextBox runat="server" ID="txtDiscount" CssClass="form-control" placeholder="Discount ......" autocomplete="off"></asp:TextBox>
                                                     <span class="input-group-text">%</span>
                                                 </div>
                                             </div>
