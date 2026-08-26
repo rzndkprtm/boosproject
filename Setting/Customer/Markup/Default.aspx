@@ -95,15 +95,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Markup</h5>
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnAddMarkup">Add Markup</button>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <asp:Button runat="server" ID="btnAddMarkupA" CssClass="dropdown-item" Text="By Product" OnClick="btnAddMarkupA_Click" />
-                        </li>
-                        <li>
-                            <asp:Button runat="server" ID="btnAddMarkupB" CssClass="dropdown-item" Text="By Product Group" OnClick="btnAddMarkupB_Click" />
-                        </li>
-                    </ul>
+                    <asp:Button runat="server" ID="btnAddMarkup" CssClass="btn btn-primary" Text="Add Markup" OnClick="btnAddMarkup_Click" />
                 </div>
                 <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtCustomerId" style="display:none;"></asp:TextBox>
@@ -117,7 +109,6 @@
                                             <th>Type</th>
                                             <th>Product</th>
                                             <th>Markup</th>
-                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody id="markupBody"></tbody>
@@ -196,14 +187,13 @@
                 let tbody = "";
                 data.forEach((x, i) => {
                     tbody += `
-            <tr>
-            <td class="text-center">${i + 1}</td>
-            <td>${x.Type}</td>
-            <td>${x.Product}</td>
-            <td>${x.Markup}</td>
-            <td><a class="btn btn-sm btn-primary" href="/setting/customer/markup/edit?markupid=${x.Id}">Edit</a></td>
-            </tr>
-            `;
+                        <tr>
+                        <td class="text-center">${i + 1}</td>
+                        <td>${x.Type}</td>
+                        <td>${x.Product}</td>
+                        <td>${x.Markup}</td>
+                        </tr>
+                    `;
                 });
                 document.getElementById("markupBody").innerHTML = tbody;
                 showDetailDiscount();

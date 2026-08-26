@@ -84,7 +84,7 @@ Partial Class Setting_Price_Group_Add
                 lblId.Text = thisId
                 lblType.Text = ddlType.SelectedValue
 
-                gvProductGroup.DataSource = settingClass.GetDataTable("SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups INNER JOIN Designs ON PriceProductGroups.DesignId = Designs.Id WHERE Designs.Type='" & lblType.Text & "'")
+                gvProductGroup.DataSource = settingClass.GetDataTable("SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups INNER JOIN Designs ON PriceProductGroups.DesignId = Designs.Id WHERE Designs.Type='" & lblType.Text & "' AND PriceProductGroups.Status='Active'")
                 gvProductGroup.DataBind()
 
                 Dim thisScript As String = "window.onload = function() { showProductGroup(); };"

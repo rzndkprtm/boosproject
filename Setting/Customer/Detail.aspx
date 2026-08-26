@@ -453,7 +453,7 @@
                                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                             <ul class="dropdown-menu">
                                                                 <li>
-                                                                    <a class="dropdown-item" id="aDetailMarkup" href='<%# Page.ResolveUrl("~/setting/customer/markup/edit?markupid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
+                                                                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeMarkup" onclick='<%# String.Format("return dataChangeMarkup(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Description").ToString()) %>'>Change</a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteMarkup" onclick='<%# String.Format("return dataDeleteMarkup(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
@@ -471,15 +471,7 @@
                                 </div>
                                 <div class="row mt-3">
                                     <div class="col-12">
-                                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Add Markup</button>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <asp:Button runat="server" ID="btnAddMarkupA" CssClass="dropdown-item" Text="By Product" OnClick="btnAddMarkupA_Click" />
-                                            </li>
-                                            <li>
-                                                <asp:Button runat="server" ID="btnAddMarkupB" CssClass="dropdown-item" Text="By Product Group" OnClick="btnAddMarkupB_Click" />
-                                            </li>
-                                        </ul>
+                                        <asp:Button runat="server" ID="btnAddMarkup" CssClass="btn btn-primary" Text="Add Markup" OnClick="btnAddMarkup_Click" />
                                         <a href="javascript:void(0);" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetMarkup">Reset Markup</a>
                                     </div>
                                 </div>
@@ -521,7 +513,7 @@
                                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                             <ul class="dropdown-menu">
                                                                 <li>
-                                                                    <a class="dropdown-item" id="aDetailDiscount" href='<%# Page.ResolveUrl("~/setting/customer/discount/edit?discountid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
+                                                                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeDiscount" onclick='<%# String.Format("return dataChangeDiscount(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Description").ToString()) %>'>Change</a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDiscount" onclick='<%# String.Format("return dataDeleteDiscount(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
@@ -1133,6 +1125,35 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modalChangeMarkup" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Markup</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtChangeMarkupId" style="display:none;"></asp:TextBox>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">New Markup (%)</label>
+                            <asp:TextBox runat="server" ID="txtChangeMarkupValue" CssClass="form-control" placeholder="New Markup ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Description</label>
+                            <asp:TextBox runat="server" ID="txtChangeMarkupDescription" CssClass="form-control" placeholder="Description ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnChangeMarkup" Text="Submit" CssClass="btn btn-primary" OnClick="btnChangeMarkup_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalResetMarkup" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1162,6 +1183,35 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnDeleteMarkup" CssClass="btn btn-danger" Text="Confirm" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalChangeDiscount" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Discount</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtChangeDiscountId" style="display:none;"></asp:TextBox>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">New Discount (%)</label>
+                            <asp:TextBox runat="server" ID="txtChangeDiscountValue" CssClass="form-control" placeholder="New Discount ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Description</label>
+                            <asp:TextBox runat="server" ID="txtChangeDiscountDescription" CssClass="form-control" placeholder="Description ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnChangeDiscount" Text="Submit" CssClass="btn btn-primary" OnClick="btnChangeDiscount_Click" />
                 </div>
             </div>
         </div>
@@ -1323,9 +1373,7 @@
                 { id: '<%= gvListBusiness.ClientID %>', link: "aDetailBusiness" },
                 { id: '<%= gvListLogin.ClientID %>', link: "aDetailLogin" },
                 { id: '<%= gvListMarkup.ClientID %>', link: "aDetailMarkup" },
-                { id: '<%= gvListDiscount.ClientID %>', link: "aDetailDiscount" },
                 { id: '<%= gvListProduct.ClientID %>', link: "aDetailProduct" },
-                { id: '<%= gvListPromo.ClientID %>', link: "aDetailPromo" },
                 { id: '<%= gvListService.ClientID %>', link: "aDetailService" },
             ];
             gridConfigs.forEach(cfg => {
@@ -1460,8 +1508,16 @@
             }
             return result;
         }
+        function dataChangeMarkup(id, description) {
+            document.getElementById("<%=txtChangeMarkupId.ClientID %>").value = id;
+            document.getElementById("<%=txtChangeMarkupDescription.ClientID %>").value = description;
+        }
         function dataDeleteMarkup(markupid) {
             document.getElementById("<%=txtDeleteMarkupId.ClientID %>").value = markupid;
+        }
+        function dataChangeDiscount(id, description) {
+            document.getElementById("<%=txtChangeDiscountId.ClientID %>").value = id;
+            document.getElementById("<%=txtChangeDiscountDescription.ClientID %>").value = description;
         }
         function dataDeleteDiscount(discountid) {
             document.getElementById("<%=txtDeleteDiscountId.ClientID %>").value = discountid;
@@ -1511,7 +1567,7 @@
             "modalDeleteBusiness", "modalPrimaryBusiness",
             "ModalStatusLogin", "modalDeleteLogin", "modalSendPersonalLogin", "modalChangePasswordLogin", "modalResetPasswordLogin",
             "modalResetMarkup", "modalDeleteMarkup",
-            "modalResetDiscount", "modalDeleteDiscount",
+            "modalChangeDiscount", "modalResetDiscount", "modalDeleteDiscount",
             "modalDetailPromo", "modalDeletePromo",
             "modalResetProduct"
         ].forEach(function (id) {

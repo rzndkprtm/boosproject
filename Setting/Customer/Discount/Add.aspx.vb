@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports iTextSharp.text.pdf.AcroFields
 
 Partial Class Setting_Customer_Discount_Add
     Inherits Page
@@ -56,7 +55,7 @@ Partial Class Setting_Customer_Discount_Add
         End If
     End Sub
 
-    Protected Sub rptPromo_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
+    Protected Sub rptDiscount_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
         Try
             If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
                 Dim drv As DataRowView = CType(e.Item.DataItem, DataRowView)
@@ -93,7 +92,7 @@ Partial Class Setting_Customer_Discount_Add
         End Try
     End Sub
 
-    Protected Sub rptPromo_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+    Protected Sub rptDiscount_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
         Try
             If e.CommandName <> "DeleteRow" Then Exit Sub
             SaveGrid()
@@ -291,8 +290,8 @@ Partial Class Setting_Customer_Discount_Add
 
     Protected Sub BindGrid()
         Try
-            rptPromo.DataSource = DiscountTable
-            rptPromo.DataBind()
+            rptDiscount.DataSource = DiscountTable
+            rptDiscount.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Session("RoleName").ToString() <> "Developer" Then
@@ -305,12 +304,12 @@ Partial Class Setting_Customer_Discount_Add
         Try
             Dim dt As DataTable = DiscountTable
 
-            While dt.Rows.Count < rptPromo.Items.Count
+            While dt.Rows.Count < rptDiscount.Items.Count
                 dt.Rows.Add("", "", "", "")
             End While
 
-            For i As Integer = 0 To rptPromo.Items.Count - 1
-                Dim item As RepeaterItem = rptPromo.Items(i)
+            For i As Integer = 0 To rptDiscount.Items.Count - 1
+                Dim item As RepeaterItem = rptDiscount.Items(i)
 
                 Dim ddlType As DropDownList = CType(item.FindControl("ddlType"), DropDownList)
                 Dim ddlProduct As DropDownList = CType(item.FindControl("ddlProduct"), DropDownList)

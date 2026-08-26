@@ -49,14 +49,14 @@
                                     <thead>
                                         <tr>
                                             <th style="width:320px;">Type</th>
-                                            <th style="width:500px;">Product</th>
-                                            <th style="width:180px;">Discount (%)</th>
+                                            <th style="width:550px;">Product</th>
+                                            <th style="width:130px;">Discount (%)</th>
                                             <th>Description</th>
                                             <th style="width:80px;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <asp:Repeater ID="rptPromo" runat="server" OnItemDataBound="rptPromo_ItemDataBound" OnItemCommand="rptPromo_ItemCommand">
+                                        <asp:Repeater ID="rptDiscount" runat="server" OnItemDataBound="rptDiscount_ItemDataBound" OnItemCommand="rptDiscount_ItemCommand">
                                             <ItemTemplate>
                                                 <tr>
                                                     <td>
