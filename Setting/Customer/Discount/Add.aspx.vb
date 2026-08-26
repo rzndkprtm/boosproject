@@ -12,7 +12,6 @@ Partial Class Setting_Customer_Discount_Add
         Get
             If Session("DiscountTable") Is Nothing Then
                 Dim dt As New DataTable
-                dt.Columns.Add("Type")
                 dt.Columns.Add("Product")
                 dt.Columns.Add("Discount")
                 dt.Columns.Add("Description")
@@ -49,7 +48,9 @@ Partial Class Setting_Customer_Discount_Add
             BindCustomer(lblCustomerId.Text)
 
             DiscountTable.Rows.Clear()
-            DiscountTable.Rows.Add("", "", "", "")
+            DiscountTable.Rows.Add("", "", "")
+
+            ddlType.SelectedValue = ""
 
             BindGrid()
         End If
@@ -60,24 +61,16 @@ Partial Class Setting_Customer_Discount_Add
             If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
                 Dim drv As DataRowView = CType(e.Item.DataItem, DataRowView)
 
-                Dim ddlType As DropDownList = CType(e.Item.FindControl("ddlType"), DropDownList)
                 Dim ddlProduct As DropDownList = CType(e.Item.FindControl("ddlProduct"), DropDownList)
                 Dim txtDiscount As TextBox = CType(e.Item.FindControl("txtDiscount"), TextBox)
+                If ddlProduct Is Nothing Then Exit Sub
 
-                If ddlType Is Nothing OrElse ddlProduct Is Nothing Then Exit Sub
-
-                If drv("Type") IsNot DBNull.Value Then
-                    ddlType.SelectedValue = drv("Type").ToString()
-                End If
-
-                txtDiscount.Text = drv("Discount")
+                txtDiscount.Text = drv("Discount").ToString()
 
                 If ddlType.SelectedValue <> "" Then
                     BindProduct(lblCustomerId.Text, ddlType.SelectedValue, ddlProduct)
-
                     If drv("Product") IsNot DBNull.Value Then
                         Dim item As ListItem = ddlProduct.Items.FindByValue(drv("Product").ToString())
-
                         If item IsNot Nothing Then
                             ddlProduct.SelectedValue = item.Value
                         End If
@@ -98,16 +91,15 @@ Partial Class Setting_Customer_Discount_Add
             SaveGrid()
 
             Dim index As Integer
-            If Not Integer.TryParse(e.CommandArgument.ToString(), index) Then Exit Sub
-
+            If Not Integer.TryParse(e.CommandArgument.ToString(), index) Then
+                Exit Sub
+            End If
             If index >= 0 AndAlso index < DiscountTable.Rows.Count Then
                 DiscountTable.Rows.RemoveAt(index)
             End If
-
             If DiscountTable.Rows.Count = 0 Then
-                DiscountTable.Rows.Add("", "", "", "")
+                DiscountTable.Rows.Add("", "", "")
             End If
-
             BindGrid()
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -118,15 +110,18 @@ Partial Class Setting_Customer_Discount_Add
     End Sub
 
     Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
         Try
-            Dim ddlType As DropDownList = CType(sender, DropDownList)
-            Dim item As RepeaterItem = CType(ddlType.NamingContainer, RepeaterItem)
-            Dim ddlProduct As DropDownList = CType(item.FindControl("ddlProduct"), DropDownList)
+            For Each item As RepeaterItem In rptDiscount.Items
+                Dim ddlProduct As DropDownList = CType(item.FindControl("ddlProduct"), DropDownList)
 
-            BindProduct(lblCustomerId.Text, ddlType.SelectedValue, ddlProduct)
-
-            DiscountTable.Rows(item.ItemIndex)("Type") = ddlType.SelectedValue
-            DiscountTable.Rows(item.ItemIndex)("Product") = ""
+                If ddlProduct IsNot Nothing Then
+                    BindProduct(lblCustomerId.Text, ddlType.SelectedValue, ddlProduct)
+                End If
+            Next
+            For Each row As DataRow In DiscountTable.Rows
+                row("Product") = ""
+            Next
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Session("RoleName").ToString() <> "Developer" Then
@@ -138,7 +133,7 @@ Partial Class Setting_Customer_Discount_Add
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         Try
             SaveGrid()
-            DiscountTable.Rows.Add("", "", "", "")
+            DiscountTable.Rows.Add("", "", "")
             BindGrid()
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -153,15 +148,46 @@ Partial Class Setting_Customer_Discount_Add
         Try
             SaveGrid()
 
+            If ddlCustomer.SelectedValue = "" Then
+                MessageError(True, "ACCOUNT IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlType.SelectedValue = "" Then
+                MessageError(True, "DISCOUNT TYPE IS REQUIRED !")
+                Exit Sub
+            End If
+
             Dim dt As DataTable = DiscountTable
-            If dt.Rows.Count = 0 Then Exit Sub
+            If dt.Rows.Count = 0 Then
+                MessageError(True, "AT LEAST ONE DISCOUNT ROW IS REQUIRED !")
+                Exit Sub
+            End If
+
+            For i As Integer = 0 To dt.Rows.Count - 1
+                Dim product As String = dt.Rows(i)("Product").ToString().Trim()
+                Dim discount As String = dt.Rows(i)("Discount").ToString().Trim()
+
+                Dim rowNumber As Integer = i + 1
+
+                If product = "" AndAlso discount = "" Then
+                    MessageError(True, String.Format("ROW {0}: PRODUCT AND DISCOUNT ARE REQUIRED !", rowNumber))
+                    Exit Sub
+                End If
+                If product = "" Then
+                    MessageError(True, String.Format("ROW {0}: PRODUCT IS REQUIRED !", rowNumber))
+                    Exit Sub
+                End If
+                If discount = "" Then
+                    MessageError(True, String.Format("ROW {0}: DISCOUNT IS REQUIRED !", rowNumber))
+                    Exit Sub
+                End If
+            Next
 
             For Each dr As DataRow In dt.Rows
-                If dr("Type").ToString = "" Then Continue For
                 If dr("Product").ToString = "" Then Continue For
                 If dr("Discount").ToString = "" Then Continue For
 
-                Dim checkData As DataRow = settingClass.GetDataRow(String.Format("SELECT * FROM CustomerDiscounts WHERE CustomerId='{0}' AND Type='{1}' AND DataId='{2}'", lblCustomerId.Text, dr("Type").ToString, dr("Product").ToString))
+                Dim checkData As DataRow = settingClass.GetDataRow(String.Format("SELECT * FROM CustomerDiscounts WHERE CustomerId='{0}' AND Type='{1}' AND DataId='{2}'", lblCustomerId.Text, ddlType.SelectedValue, dr("Product").ToString))
                 If checkData IsNot Nothing Then
                     Dim thisId As String = checkData("Id").ToString()
                     Dim thisDiscount As Decimal = CDec(checkData("Discount"))
@@ -183,7 +209,7 @@ Partial Class Setting_Customer_Discount_Add
                         Using thisCmd As New SqlCommand("INSERT INTO CustomerDiscounts VALUES (@Id, @CustomerId, @Type, @DataId, @Discount, @Description)", thisConn)
                             thisCmd.Parameters.AddWithValue("@Id", thisId)
                             thisCmd.Parameters.AddWithValue("@CustomerId", lblCustomerId.Text)
-                            thisCmd.Parameters.AddWithValue("@Type", dr("Type").ToString())
+                            thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                             thisCmd.Parameters.AddWithValue("@DataId", dr("Product").ToString())
                             thisCmd.Parameters.AddWithValue("@Discount", dr("Discount"))
                             thisCmd.Parameters.AddWithValue("@Description", dr("Description").ToString())
@@ -305,29 +331,27 @@ Partial Class Setting_Customer_Discount_Add
             Dim dt As DataTable = DiscountTable
 
             While dt.Rows.Count < rptDiscount.Items.Count
-                dt.Rows.Add("", "", "", "")
+                dt.Rows.Add("", "", "")
             End While
 
             For i As Integer = 0 To rptDiscount.Items.Count - 1
                 Dim item As RepeaterItem = rptDiscount.Items(i)
 
-                Dim ddlType As DropDownList = CType(item.FindControl("ddlType"), DropDownList)
                 Dim ddlProduct As DropDownList = CType(item.FindControl("ddlProduct"), DropDownList)
                 Dim txtDiscount As TextBox = CType(item.FindControl("txtDiscount"), TextBox)
                 Dim txtDescription As TextBox = CType(item.FindControl("txtDescription"), TextBox)
 
-                If ddlType Is Nothing OrElse ddlProduct Is Nothing OrElse txtDiscount Is Nothing OrElse txtDescription Is Nothing Then
+                If ddlProduct Is Nothing OrElse txtDiscount Is Nothing OrElse txtDescription Is Nothing Then
                     Continue For
                 End If
 
-                dt.Rows(i)("Type") = ddlType.SelectedValue
                 dt.Rows(i)("Discount") = txtDiscount.Text.Trim()
                 dt.Rows(i)("Description") = txtDescription.Text.Trim()
-
                 If ddlProduct.SelectedItem Is Nothing Then
                     dt.Rows(i)("Product") = ""
                 Else
-                    dt.Rows(i)("Product") = ddlProduct.SelectedValue
+                    dt.Rows(i)("Product") =
+                    ddlProduct.SelectedValue
                 End If
             Next
             DiscountTable = dt
