@@ -897,7 +897,7 @@ Partial Class Setting_Customer_Detail
     End Sub
 
     Protected Function VisibleStatusLogin(status As String) As Boolean
-        If status = "Active" OrElse status = "Inactive" Then Return True
+        If status = "Active" OrElse status = "Inactive" Or status = "Blocked" Then Return True
         Return False
     End Function
 
