@@ -25,32 +25,45 @@
     <div class="page-content">
         <section class="row">
             <div class="col-12">
-                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
-                    <ContentTemplate>
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">Discount Form</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="row mt-3" runat="server" id="divError">
-                                    <div class="col-12">
-                                        <div class="alert alert-danger">
-                                            <span runat="server" id="msgError"></span>
-                                        </div>
-                                    </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Discount Form</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mt-3" runat="server" id="divError">
+                            <div class="col-12">
+                                <div class="alert alert-danger">
+                                    <span runat="server" id="msgError"></span>
                                 </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
+                            </div>
+                        </div>
+                        <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                            <ContentTemplate>
+                                <div class="row mb-3">
+                                    <div class="col-12 col-sm-12 col-lg-7 form-group">
                                         <label class="form-label">Account</label>
                                         <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                        <label class="form-label">Type</label>
+                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
+                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                            <asp:ListItem Value="Designs" Text="Product"></asp:ListItem>
+                                            <asp:ListItem Value="PriceProductGroups" Text="Product Group"></asp:ListItem>
+                                            <asp:ListItem Value="RollerFabrics" Text="Fabric Type (Roller)"></asp:ListItem>
+                                            <asp:ListItem Value="RollerFabricColours" Text="Fabric Colour (Roller)"></asp:ListItem>
+                                            <asp:ListItem Value="RomanFabrics" Text="Fabric Type (Roman)"></asp:ListItem>
+                                            <asp:ListItem Value="RomanFabricColours" Text="Fabric Colour (Roman)"></asp:ListItem>
+                                            <asp:ListItem Value="PanelGlideFabrics" Text="Fabric Type (Panel Glide)"></asp:ListItem>
+                                            <asp:ListItem Value="PanelGlideFabricColours" Text="Fabric Colour (Panel Glide)"></asp:ListItem>
+                                        </asp:DropDownList>
                                     </div>
                                 </div>
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th style="width:320px;">Type</th>
-                                            <th style="width:550px;">Product</th>
-                                            <th style="width:130px;">Discount (%)</th>
+                                            <th style="width:600px;">Product</th>
+                                            <th style="width:150px;">Discount (%)</th>
                                             <th>Description</th>
                                             <th style="width:80px;"></th>
                                         </tr>
@@ -59,19 +72,6 @@
                                         <asp:Repeater ID="rptDiscount" runat="server" OnItemDataBound="rptDiscount_ItemDataBound" OnItemCommand="rptDiscount_ItemCommand">
                                             <ItemTemplate>
                                                 <tr>
-                                                    <td>
-                                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
-                                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                            <asp:ListItem Value="Designs" Text="Product"></asp:ListItem>
-                                                            <asp:ListItem Value="PriceProductGroups" Text="Product Group"></asp:ListItem>
-                                                            <asp:ListItem Value="RollerFabrics" Text="Fabric Type (Roller)"></asp:ListItem>
-                                                            <asp:ListItem Value="RollerFabricColours" Text="Fabric Colour (Roller)"></asp:ListItem>
-                                                            <asp:ListItem Value="RomanFabrics" Text="Fabric Type (Roman)"></asp:ListItem>
-                                                            <asp:ListItem Value="RomanFabricColours" Text="Fabric Colour (Roman)"></asp:ListItem>
-                                                            <asp:ListItem Value="PanelGlideFabrics" Text="Fabric Type (Panel Glide)"></asp:ListItem>
-                                                            <asp:ListItem Value="PanelGlideFabricColours" Text="Fabric Colour (Panel Glide)"></asp:ListItem>
-                                                        </asp:DropDownList>
-                                                    </td>
                                                     <td>
                                                         <asp:DropDownList runat="server" ID="ddlProduct" CssClass="choices form-select"></asp:DropDownList>
                                                     </td>
@@ -94,14 +94,14 @@
                                         <asp:Button ID="btnAdd" runat="server" Text="+ Add Row" CssClass="btn btn-success" OnClick="btnAdd_Click" />
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card-footer">
-                                <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
-                                <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
-                            </div>
-                        </div>
-                    </ContentTemplate>
-                </asp:UpdatePanel>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                    <div class="card-footer">
+                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
+                        <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
+                    </div>
+                </div>
             </div>
         </section>
     </div>
