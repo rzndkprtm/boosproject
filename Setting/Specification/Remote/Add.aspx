@@ -14,7 +14,7 @@
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting/specification">Specification</a></li>
-                            <li class="breadcrumb-item"><a runat="server" href="~/setting/specification/blind">Blind</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/specification/remote">Remote</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
@@ -27,7 +27,7 @@
             <div class="col-12 col-sm-12 col-lg-7">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Chain Form</h4>
+                        <h4 class="card-title">Remote Form</h4>
                     </div>
                     <div class="card-body">
                         <div class="form form-vertical">

@@ -27,7 +27,7 @@
             <div class="col-12 col-sm-12 col-lg-7">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Chain Form</h4>
+                        <h4 class="card-title">Remote Form</h4>
                     </div>
                     <div class="card-body">
                         <div class="form form-vertical">
