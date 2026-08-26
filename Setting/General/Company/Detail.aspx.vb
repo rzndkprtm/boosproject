@@ -16,12 +16,12 @@ Partial Class Setting_General_Company_Detail
             Exit Sub
         End If
 
-        If String.IsNullOrEmpty(Request.QueryString("cid")) Then
+        If String.IsNullOrEmpty(Request.QueryString("companyid")) Then
             Response.Redirect("~/setting/general/company", False)
             Exit Sub
         End If
 
-        lblId.Text = Request.QueryString("cid").ToString()
+        lblId.Text = Request.QueryString("companyid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindData(lblId.Text)
