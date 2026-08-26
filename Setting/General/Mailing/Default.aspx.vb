@@ -107,13 +107,10 @@ Partial Class Setting_General_Mailing_Default
     Protected Sub BindData(searchText As String)
         Session("SearchMailing") = String.Empty
         Try
-            Dim search As String = String.Empty
-            If Not searchText = "" Then
-                search = "WHERE Mailings.Name LIKE '%" & searchText.Trim() & "%' OR Mailings.Name LIKE '%" & searchText.Trim() & "%' OR Companys.Name LIKE '%" & searchText.Trim() & "%'"
-            End If
-            Dim thisQuery As String = String.Format("SELECT Mailings.*, Companys.Alias AS CompanyAlias, CASE WHEN Mailings.Active=1 THEN 'Yes' WHEN Mailings.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Mailings LEFT JOIN Companys ON Mailings.CompanyId=Companys.Id {0} ORDER BY Companys.Id, Mailings.Name ASC", search)
-
-            gvList.DataSource = settingClass.GetDataTable(thisQuery)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText))
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_Mailings_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
