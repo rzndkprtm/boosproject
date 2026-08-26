@@ -50,11 +50,11 @@
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th style="width:230px;">Type</th>
+                                            <th style="width:300px;">Type</th>
                                             <th>Data</th>
                                             <th style="width:180px;">Discount</th>
-                                            <th style="width:130px;">Status</th>
-                                            <th style="width:100px;"></th>
+                                            <th style="width:200px;">Status</th>
+                                            <th style="width:80px;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -62,7 +62,7 @@
                                             <ItemTemplate>
                                                 <tr>
                                                     <td>
-                                                        <asp:DropDownList ID="ddlType" runat="server" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
+                                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
                                                             <asp:ListItem Value=""></asp:ListItem>
                                                             <asp:ListItem Value="Designs">Design Type</asp:ListItem>
                                                             <asp:ListItem Value="Blinds">Blind Type</asp:ListItem>
@@ -74,22 +74,22 @@
                                                             <asp:ListItem Value="FrameColours">Frame Colour</asp:ListItem>
                                                         </asp:DropDownList>
                                                     </td>
-                                                    <td><asp:DropDownList  ID="ddlData" runat="server" CssClass="form-select"></asp:DropDownList></td>
+                                                    <td><asp:DropDownList runat="server" ID="ddlData" CssClass="choices form-select"></asp:DropDownList></td>
                                                     <td>
                                                         <div class="input-group">
-                                                            <asp:TextBox ID="txtDiscount" runat="server" CssClass="form-control" TextMode="Number" Text='<%# Eval("Discount") %>' autocomplete="off"></asp:TextBox>
+                                                            <asp:TextBox runat="server" ID="txtDiscount" CssClass="form-control" TextMode="Number" Text='<%# Eval("Discount") %>' Height="45px" autocomplete="off"></asp:TextBox>
                                                             <span class="input-group-text">%</span>
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <asp:DropDownList ID="ddlStatus" runat="server" CssClass="form-select">
+                                                        <asp:DropDownList runat="server" ID="ddlStatus" CssClass="choices form-select">
                                                             <asp:ListItem Value="" Text=""></asp:ListItem>
                                                             <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
                                                             <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
                                                         </asp:DropDownList>
                                                     </td>
                                                     <td class="text-center">
-                                                        <asp:LinkButton ID="btnDelete" runat="server" CssClass="btn btn-danger btn-sm" CommandName="DeleteRow" CommandArgument='<%# Container.ItemIndex %>'>Delete</asp:LinkButton>
+                                                        <asp:LinkButton runat="server" ID="btnDelete" CssClass="btn btn-danger btn-sm" CommandName="DeleteRow" CommandArgument='<%# Container.ItemIndex %>'>Delete</asp:LinkButton>
                                                     </td>
                                                 </tr>
                                             </ItemTemplate>
@@ -130,7 +130,7 @@
 
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
-        var loading = document.getElementById("loadingOverlay");
+            var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
         });
         function initUpdatePanelLoading() {
@@ -143,10 +143,25 @@
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
+                initChoices();
+            });
+        }
+        function initChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.choices) {
+                    el.choices.destroy();
+                }
+                el.choices = new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false,
+                    searchResultLimit: 50
+                });
             });
         }
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
+            initChoices();
         });
         window.history.replaceState(null, null, window.location.href);
     </script>

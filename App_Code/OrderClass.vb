@@ -2341,7 +2341,7 @@ Public Class OrderClass
                     For Each markupRow As DataRow In markupData.Rows
                         Dim markupType As String = markupRow("Type").ToString()
                         Dim dataId As String = markupRow("DataId").ToString()
-                        Dim markup As Decimal = Math.Round(CDec(markupRow("Markup")) / 100, 4)
+                        Dim markup As Decimal = Math.Round(CDec(markupRow("Markup")) / 100, 2)
 
                         If (markupType = "Designs" AndAlso dataId <> designId) OrElse (markupType = "PriceProductGroups" AndAlso dataId <> priceProductGroupId) Then Continue For
 
@@ -2376,9 +2376,9 @@ Public Class OrderClass
                     For Each discountRow As DataRow In discountData.Rows
                         Dim discountType As String = discountRow("Type").ToString()
                         Dim dataId As String = discountRow("DataId").ToString()
-                        Dim discount As Decimal = Math.Round(CDec(discountRow("Discount")) / 100, 4)
+                        Dim discount As Decimal = Math.Round(CDec(discountRow("Discount")) / 100, 2)
 
-                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupId) OrElse (discountType = "RollerFabrics" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricId) OrElse (discountType = "RollerFabricColours" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricColourId) OrElse (discountType = "RomanFabrics" AndAlso designName = "Roman Blind" AndAlso dataId <> fabricId) OrElse (discountType = "RomanFabricColours" AndAlso designName = "Roman Blind" AndAlso dataId <> fabricColourId) OrElse (discountType = "PanelGlideFabrics" AndAlso designName = "Panel Glide" AndAlso dataId <> fabricId) OrElse (discountType = "PanelGlideFabricColours" AndAlso designName = "Panel Glide" AndAlso dataId <> fabricColourId) Then Continue For
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupId) OrElse (discountType = "RollerFabrics" AndAlso designName <> "Roller Blind" AndAlso dataId <> fabricId) OrElse (discountType = "RollerFabricColours" AndAlso designName <> "Roller Blind" AndAlso dataId <> fabricColourId) OrElse (discountType = "RomanFabrics" AndAlso designName <> "Roman Blind" AndAlso dataId <> fabricId) OrElse (discountType = "RomanFabricColours" AndAlso designName <> "Roman Blind" AndAlso dataId <> fabricColourId) OrElse (discountType = "PanelGlideFabrics" AndAlso designName <> "Panel Glide" AndAlso dataId <> fabricId) OrElse (discountType = "PanelGlideFabricColours" AndAlso designName <> "Panel Glide" AndAlso dataId <> fabricColourId) Then Continue For
 
                         If discountType = "Designs" AndAlso designName = "Panel Glide" AndAlso blindName = "Track Only" Then Continue For
 
@@ -2658,7 +2658,7 @@ Public Class OrderClass
                     For Each markupRow As DataRow In markupData.Rows
                         Dim markupType As String = markupRow("Type").ToString()
                         Dim dataId As String = markupRow("DataId").ToString()
-                        Dim markup As Decimal = Math.Round(CDec(markupRow("Markup")) / 100, 4)
+                        Dim markup As Decimal = Math.Round(CDec(markupRow("Markup")) / 100, 2)
 
                         If (markupType = "Designs" AndAlso dataId <> designId) OrElse (markupType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdB) Then Continue For
 
@@ -2693,9 +2693,9 @@ Public Class OrderClass
                     For Each discountRow As DataRow In discountData.Rows
                         Dim discountType As String = discountRow("Type").ToString()
                         Dim dataId As String = discountRow("DataId").ToString()
-                        Dim discount As Decimal = Math.Round(CDec(discountRow("Discount")) / 100, 4)
+                        Dim discount As Decimal = Math.Round(CDec(discountRow("Discount")) / 100, 2)
 
-                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdB) OrElse (discountType = "RollerFabrics" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricIdB) OrElse (discountType = "RollerFabricColours" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricColourIdB) Then Continue For
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdB) OrElse (discountType = "RollerFabrics" AndAlso designName <> "Roller Blind" AndAlso dataId <> fabricIdB) OrElse (discountType = "RollerFabricColours" AndAlso designName <> "Roller Blind" AndAlso dataId <> fabricColourIdB) Then Continue For
 
                         Dim discountValue As Decimal = Math.Round(costSell * discount, 4)
                         thisSell = Math.Round(costSell - discountValue, 4)
@@ -2903,7 +2903,7 @@ Public Class OrderClass
                     For Each markupRow As DataRow In markupData.Rows
                         Dim markupType As String = markupRow("Type").ToString()
                         Dim dataId As String = markupRow("DataId").ToString()
-                        Dim markup As Decimal = Math.Round(CDec(markupRow("Markup")) / 100, 4)
+                        Dim markup As Decimal = Math.Round(CDec(markupRow("Markup")) / 100, 2)
 
                         If (markupType = "Designs" AndAlso dataId <> designId) OrElse (markupType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdC) Then Continue For
 
@@ -2934,9 +2934,9 @@ Public Class OrderClass
                     For Each discountRow As DataRow In discountData.Rows
                         Dim discountType As String = discountRow("Type").ToString()
                         Dim dataId As String = discountRow("DataId").ToString()
-                        Dim discount As Decimal = Math.Round(CDec(discountRow("Discount")) / 100, 4)
+                        Dim discount As Decimal = Math.Round(CDec(discountRow("Discount")) / 100, 2)
 
-                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdC) OrElse (discountType = "RollerFabrics" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricIdC) OrElse (discountType = "RollerFabricColours" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricColourIdC) Then Continue For
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdC) OrElse (discountType = "RollerFabrics" AndAlso designName <> "Roller Blind" AndAlso dataId <> fabricIdC) OrElse (discountType = "RollerFabricColours" AndAlso designName <> "Roller Blind" AndAlso dataId <> fabricColourIdC) Then Continue For
 
                         Dim discountValue As Decimal = Math.Round(costSell * discount, 4)
                         thisSell = Math.Round(costSell - discountValue, 4)
@@ -3124,7 +3124,7 @@ Public Class OrderClass
                     For Each markupRow As DataRow In markupData.Rows
                         Dim markupType As String = markupRow("Type").ToString()
                         Dim dataId As String = markupRow("DataId").ToString()
-                        Dim markup As Decimal = Math.Round(CDec(markupRow("Markup")) / 100, 4)
+                        Dim markup As Decimal = Math.Round(CDec(markupRow("Markup")) / 100, 2)
 
                         If (markupType = "Designs" AndAlso dataId <> designId) OrElse (markupType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdD) Then Continue For
 
@@ -3155,9 +3155,9 @@ Public Class OrderClass
                     For Each discountRow As DataRow In discountData.Rows
                         Dim discountType As String = discountRow("Type").ToString()
                         Dim dataId As String = discountRow("DataId").ToString()
-                        Dim discount As Decimal = Math.Round(CDec(discountRow("Discount")) / 100, 4)
+                        Dim discount As Decimal = Math.Round(CDec(discountRow("Discount")) / 100, 2)
 
-                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdD) OrElse (discountType = "RollerFabrics" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricIdD) OrElse (discountType = "RollerFabricColours" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricColourIdD) Then Continue For
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdD) OrElse (discountType = "RollerFabrics" AndAlso designName <> "Roller Blind" AndAlso dataId <> fabricIdD) OrElse (discountType = "RollerFabricColours" AndAlso designName <> "Roller Blind" AndAlso dataId <> fabricColourIdD) Then Continue For
 
                         Dim discountValue As Decimal = Math.Round(costSell * discount, 4)
                         thisSell = Math.Round(costSell - discountValue, 2)
@@ -3345,7 +3345,7 @@ Public Class OrderClass
                     For Each markupRow As DataRow In markupData.Rows
                         Dim markupType As String = markupRow("Type").ToString()
                         Dim dataId As String = markupRow("DataId").ToString()
-                        Dim markup As Decimal = Math.Round(CDec(markupRow("Markup")) / 100, 4)
+                        Dim markup As Decimal = Math.Round(CDec(markupRow("Markup")) / 100, 2)
 
                         If (markupType = "Designs" AndAlso dataId <> designId) OrElse (markupType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdE) Then Continue For
 
@@ -3378,7 +3378,7 @@ Public Class OrderClass
                         Dim dataId As String = discountRow("DataId").ToString()
                         Dim discount As Decimal = Math.Round(CDec(discountRow("Discount")) / 100, 4)
 
-                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdE) OrElse (discountType = "RollerFabrics" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricIdE) OrElse (discountType = "RollerFabricColours" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricColourIdE) Then Continue For
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdE) OrElse (discountType = "RollerFabrics" AndAlso designName <> "Roller Blind" AndAlso dataId <> fabricIdE) OrElse (discountType = "RollerFabricColours" AndAlso designName <> "Roller Blind" AndAlso dataId <> fabricColourIdE) Then Continue For
 
                         Dim discountValue As Decimal = Math.Round(costSell * discount, 4)
                         thisSell = Math.Round(costSell - discountValue, 4)
@@ -3566,7 +3566,7 @@ Public Class OrderClass
                     For Each markupRow As DataRow In markupData.Rows
                         Dim markupType As String = markupRow("Type").ToString()
                         Dim dataId As String = markupRow("DataId").ToString()
-                        Dim markup As Decimal = Math.Round(CDec(markupRow("Markup")) / 100, 4)
+                        Dim markup As Decimal = Math.Round(CDec(markupRow("Markup")) / 100, 2)
 
                         If (markupType = "Designs" AndAlso dataId <> designId) OrElse (markupType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdF) Then Continue For
 
@@ -3597,9 +3597,9 @@ Public Class OrderClass
                     For Each discountRow As DataRow In discountData.Rows
                         Dim discountType As String = discountRow("Type").ToString()
                         Dim dataId As String = discountRow("DataId").ToString()
-                        Dim discount As Decimal = Math.Round(CDec(discountRow("Discount")) / 100, 4)
+                        Dim discount As Decimal = Math.Round(CDec(discountRow("Discount")) / 100, 2)
 
-                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdF) OrElse (discountType = "RollerFabrics" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricIdF) OrElse (discountType = "RollerFabricColours" AndAlso designName = "Roller Blind" AndAlso dataId <> fabricColourIdF) Then Continue For
+                        If (discountType = "Designs" AndAlso dataId <> designId) OrElse (discountType = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdF) OrElse (discountType = "RollerFabrics" AndAlso designName <> "Roller Blind" AndAlso dataId <> fabricIdF) OrElse (discountType = "RollerFabricColours" AndAlso designName <> "Roller Blind" AndAlso dataId <> fabricColourIdF) Then Continue For
 
                         Dim discountValue As Decimal = Math.Round(costSell * discount, 4)
                         thisSell = Math.Round(costSell - discountValue, 4)

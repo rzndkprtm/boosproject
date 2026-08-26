@@ -131,7 +131,11 @@ Partial Class Setting_Customer_Address_Add
                 End If
             End If
 
-            ddlCustomer.DataSource = settingClass.GetDataTable(String.Format("SELECT Id, Name FROM Customers WHERE Status='Active' {0} ORDER BY Name ASC", role))
+            If Not String.IsNullOrEmpty(customerId) Then
+                customerId = "AND Id='" & customerId & "'"
+            End If
+
+            ddlCustomer.DataSource = settingClass.GetDataTable(String.Format("SELECT Id, Name FROM Customers WHERE Status='Active' {0} {1} ORDER BY Name ASC", customerId, role))
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
@@ -139,10 +143,6 @@ Partial Class Setting_Customer_Address_Add
             If ddlCustomer.Items.Count > 1 Then
                 ddlCustomer.Items.Insert(0, New ListItem("", ""))
             End If
-            ddlCustomer.SelectedValue = customerId
-
-            ddlCustomer.Enabled = False
-            If String.IsNullOrEmpty(customerId) Then ddlCustomer.Enabled = True
         Catch ex As Exception
             ddlCustomer.Items.Clear()
             If Session("RoleName") = "Developer" Then

@@ -72,13 +72,13 @@ Partial Class Order_Edit
                     orderFactory = String.Join(",", lbOrderFactory.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
 
-                Dim orderState As String = ddlOrderState.SelectedValue
-                If ddlOrderState.SelectedValue = "" Then
+                Dim orderState As String = txtOrderState.Text
+                If txtOrderState.Text = "" Then
                     orderState = orderClass.GetCustomerState(ddlCustomer.SelectedValue)
                 End If
 
                 Dim orderAddress As String = txtOrderAddress.Text
-                If ddlOrderState.SelectedValue = "" Then
+                If txtOrderState.Text = "" Then
                     orderAddress = orderClass.GetCustomerPrimaryAddress(ddlCustomer.SelectedValue)
                 End If
 
@@ -217,7 +217,7 @@ Partial Class Order_Edit
                     End If
                 Next
             End If
-            ddlOrderState.SelectedValue = headerData("OrderState").ToString()
+            txtOrderState.Text = headerData("OrderState").ToString()
             txtOrderAddress.Text = headerData("OrderAddress").ToString()
 
             divCustomer.Visible = False

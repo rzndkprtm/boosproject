@@ -163,6 +163,8 @@
             writer.WriteAttributeString("StoreOrderNo", myData("OrderNumber").ToString())
             writer.WriteAttributeString("StoreCustomer", myData("OrderName").ToString())
             writer.WriteAttributeString("DebtorCode", myData("DebtorCode").ToString())
+            writer.WriteAttributeString("Zone", myData("OrderState").ToString())
+            writer.WriteAttributeString("Address", myData("OrderAddress").ToString())
 
             Dim prodDate As DateTime
             If DateTime.TryParse(myData("ProductionDate").ToString(), prodDate) Then

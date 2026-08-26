@@ -69,17 +69,7 @@
                                 <div class="row mb-2" runat="server" id="divOrderStateAddress">
                                     <div class="col-12 col-sm-12 col-lg-4 form-group">
                                         <label class="form-label">Order State</label>
-                                        <asp:DropDownList runat="server" ID="ddlOrderState" CssClass="choices form-select">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="WA" Text="WA"></asp:ListItem>
-                                            <asp:ListItem Value="NT" Text="NT"></asp:ListItem>
-                                            <asp:ListItem Value="SA" Text="SA"></asp:ListItem>
-                                            <asp:ListItem Value="QLD" Text="QLD"></asp:ListItem>
-                                            <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
-                                            <asp:ListItem Value="ACT" Text="ACT"></asp:ListItem>
-                                            <asp:ListItem Value="VIC" Text="VIC"></asp:ListItem>
-                                            <asp:ListItem Value="TAS" Text="TAS"></asp:ListItem>
-                                        </asp:DropDownList>
+                                        <asp:TextBox runat="server" ID="txtOrderState" CssClass="form-control" placeholder="Order State ...." autocomplete="off"></asp:TextBox>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-8 form-group">
                                         <label class="form-label">Order Address</label>
