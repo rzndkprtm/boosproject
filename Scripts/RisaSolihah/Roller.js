@@ -2120,7 +2120,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 }
             }
             else if (blindName === "Wire Guide") {
-                divShow.push("divfabric", "divcontrolposition", "divbottomtype", "divsize");
+                divShow.push("divfabric", "divcontrolposition", "divbottomtype", "divbottomcolour", "divsize");
                 if (controlName === "Chain") {
                     divShow.push("divchainstopper", "divcontrollength");
                 }
