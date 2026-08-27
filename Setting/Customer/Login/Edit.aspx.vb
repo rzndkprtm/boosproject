@@ -81,7 +81,7 @@ Partial Class Setting_Customer_Login_Edit
 
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email, Pricing=@Pricing WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
                         thisCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
