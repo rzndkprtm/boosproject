@@ -2480,6 +2480,9 @@ Partial Class Order_Upload
                                 If blindType = "Double: Linked (4 Blinds)" Then
                                     validControl = New String() {"II - II", "CS - CS", "CS - SC", "SC - SC", "SC - CS"}
                                 End If
+                                If blindType = "Double: Linked (3 Blinds)" Then
+                                    validControl = New String() {"ISC - ISC", "CSI - CSI", "CSS - CSS", "SSC - SSC"}
+                                End If
 
                                 If Not validControl.Contains(controlText) Then
                                     MessageError(True, "PLEASE CHECK YOUR CONTROL POSITION DATA !")

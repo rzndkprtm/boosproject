@@ -74,10 +74,10 @@
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
-                                                        <li runat="server" visible='<%# LoginAccess("Edit") %>'>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/price/group/edit?pricegroupid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
-                                                        <li runat="server" visible='<%# LoginAccess("Delete") %>'>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Delete") %>'>
                                                             <a class="dropdown-item" href='<%# Page.ResolveUrl("~/setting/price/group/delete?pricegroupid=" & Eval("Id")) %>'>Delete</a>
                                                         </li>
                                                         <li>

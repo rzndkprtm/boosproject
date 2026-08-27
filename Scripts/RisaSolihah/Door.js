@@ -302,36 +302,31 @@ function getFormAction(itemAction) {
     const pageAction = document.getElementById("pageaction");
     const submitButton = document.getElementById("submit");
 
-    const actionMap = {
-        create: {
-            page: "Add Item",
-            submit: "Save Item"
-        },
-        edit: {
-            page: "Edit Item",
-            submit: "Update Item"
-        },
-        view: {
-            page: "View Item",
-            submit: "Update Item"
-        },
-        copy: {
-            page: "Copy Item",
-            submit: "Save Item (Copy)"
-        }
+    const pageActionMap = {
+        create: "Add Item",
+        edit: "Edit Item",
+        view: "View Item",
+        copy: "Copy Item"
     };
 
-    const action = actionMap[itemAction];
-
-    if (!action) return;
-
     if (pageAction) {
-        pageAction.innerText = action.page;
+        pageAction.innerText = pageActionMap[itemAction] || "";
     }
 
     if (submitButton) {
-        submitButton.innerText = action.submit;
+        submitButton.innerText = getSubmitButtonText(itemAction);
     }
+}
+
+function getSubmitButtonText(itemAction) {
+    const actionMap = {
+        create: "Save Item",
+        edit: "Update Item",
+        view: "Update Item",
+        copy: "Save Item (Copy)"
+    };
+
+    return actionMap[itemAction] || "Submit";
 }
 
 function bindBlindType(designType) {
@@ -1014,11 +1009,11 @@ function process() {
                 }, 500);
             } else {
                 isError(result);
-                toggleButtonState(false, "Submit");
+                toggleButtonState(false, getSubmitButtonText(itemAction));
             }
         },
         error: function () {
-            toggleButtonState(false, "Submit");
+            toggleButtonState(false, getSubmitButtonText(itemAction));
         }
     });
 }
