@@ -88,13 +88,26 @@ Partial Class Setting_Price_Group_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/price/group/", False)
+        Response.Redirect("~/setting/price/group", False)
     End Sub
 
     Protected Sub BindData(priceGroupId As String)
         Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM PriceGroups WHERE Id='" & priceGroupId & "'")
-            If myData Is Nothing Then Exit Sub
+            If String.IsNullOrEmpty(priceGroupId) Then
+                Response.Redirect("~/setting/price/group", False)
+                Exit Sub
+            End If
+
+            Dim thisQuery As String = "SELECT * FROM PriceGroups WHERE Id='" & priceGroupId & "' AND (Status='Active' OR Status='Inactive')"
+            If Session("RoleName") = "Developer" Then
+                thisQuery = "SELECT * FROM PriceGroups WHERE Id='" & priceGroupId & "'"
+            End If
+
+            Dim myData As DataRow = settingClass.GetDataRow(thisQuery)
+            If myData Is Nothing Then
+                Response.Redirect("~/setting/price/group", False)
+                Exit Sub
+            End If
 
             BindCompany()
 

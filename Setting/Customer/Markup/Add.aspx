@@ -63,7 +63,7 @@
                                     <thead>
                                         <tr>
                                             <th style="width:600px;">Product</th>
-                                            <th style="width:150px;">Discount (%)</th>
+                                            <th style="width:150px;">Markup (%)</th>
                                             <th>Description</th>
                                             <th style="width:80px;"></th>
                                         </tr>
@@ -76,7 +76,7 @@
                                                         <asp:DropDownList runat="server" ID="ddlProduct" CssClass="choices form-select"></asp:DropDownList>
                                                     </td>
                                                     <td>
-                                                        <asp:TextBox runat="server" ID="txtMarkup" CssClass="form-control" placeholder="Discount ......" autocomplete="off"></asp:TextBox>
+                                                        <asp:TextBox runat="server" ID="txtMarkup" CssClass="form-control" placeholder="Markup ......" autocomplete="off"></asp:TextBox>
                                                     </td>
                                                     <td>
                                                         <asp:TextBox runat="server" ID="txtDescription" CssClass="form-control" placeholder="Description ..." autocomplete="off"></asp:TextBox>

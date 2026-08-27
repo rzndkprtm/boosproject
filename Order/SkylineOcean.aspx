@@ -648,5 +648,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/RisaSolihah/SkylineOcean.js?v=1.1.2"></script>
+    <script src="/Scripts/RisaSolihah/SkylineOcean.js?v=1.2.0"></script>
 </asp:Content>

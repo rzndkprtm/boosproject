@@ -60,17 +60,27 @@ Partial Class Setting_Customer_Discount_Add
         Try
             If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
                 Dim drv As DataRowView = CType(e.Item.DataItem, DataRowView)
-
                 Dim ddlProduct As DropDownList = CType(e.Item.FindControl("ddlProduct"), DropDownList)
                 Dim txtDiscount As TextBox = CType(e.Item.FindControl("txtDiscount"), TextBox)
+                Dim txtDescription As TextBox = CType(e.Item.FindControl("txtDescription"), TextBox)
+
                 If ddlProduct Is Nothing Then Exit Sub
 
-                txtDiscount.Text = drv("Discount").ToString()
+                If txtDiscount IsNot Nothing Then
+                    txtDiscount.Text = drv("Discount").ToString()
+                End If
+
+                If txtDescription IsNot Nothing Then
+                    txtDescription.Text = drv("Description").ToString()
+                End If
 
                 If ddlType.SelectedValue <> "" Then
                     BindProduct(lblCustomerId.Text, ddlType.SelectedValue, ddlProduct)
-                    If drv("Product") IsNot DBNull.Value Then
-                        Dim item As ListItem = ddlProduct.Items.FindByValue(drv("Product").ToString())
+
+                    Dim productId As String = drv("Product").ToString()
+                    If Not String.IsNullOrEmpty(productId) Then
+
+                        Dim item As ListItem = ddlProduct.Items.FindByValue(productId)
                         If item IsNot Nothing Then
                             ddlProduct.SelectedValue = item.Value
                         End If
@@ -112,16 +122,52 @@ Partial Class Setting_Customer_Discount_Add
     Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            For Each item As RepeaterItem In rptDiscount.Items
-                Dim ddlProduct As DropDownList = CType(item.FindControl("ddlProduct"), DropDownList)
+            Dim customerId As String = lblCustomerId.Text.Trim()
+            Dim discType As String = ddlType.SelectedValue.Trim()
 
-                If ddlProduct IsNot Nothing Then
-                    BindProduct(lblCustomerId.Text, ddlType.SelectedValue, ddlProduct)
+            DiscountTable.Rows.Clear()
+
+            If String.IsNullOrEmpty(discType) Then
+                DiscountTable.Rows.Add("", "", "")
+                BindGrid()
+
+                Exit Sub
+            End If
+
+            If discType = "Designs" OrElse discType = "PriceProductGroups" Then
+                Dim checkData As DataRow = settingClass.GetDataRow("SELECT COUNT(*) AS Total FROM CustomerDiscounts WHERE CustomerId='" & customerId & "'")
+                Dim totalDiscount As Integer = 0
+                If checkData IsNot Nothing Then
+                    Integer.TryParse(checkData("Total").ToString(), totalDiscount)
                 End If
-            Next
-            For Each row As DataRow In DiscountTable.Rows
-                row("Product") = ""
-            Next
+
+                If totalDiscount = 0 Then
+                    Dim dtProduct As DataTable = GetProductData(customerId, discType)
+
+                    If dtProduct IsNot Nothing AndAlso dtProduct.Rows.Count > 0 Then
+                        For Each productRow As DataRow In dtProduct.Rows
+                            Dim newRow As DataRow = DiscountTable.NewRow()
+                            newRow("Product") = productRow("Id").ToString()
+
+                            newRow("Discount") = ""
+                            newRow("Description") = ""
+
+                            DiscountTable.Rows.Add(newRow)
+                        Next
+                    Else
+                        DiscountTable.Rows.Add("", "", "")
+                    End If
+
+                    BindGrid()
+
+                    Exit Sub
+                End If
+            End If
+
+            DiscountTable.Rows.Clear()
+            DiscountTable.Rows.Add("", "", "")
+
+            BindGrid()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Session("RoleName").ToString() <> "Developer" Then
@@ -313,6 +359,53 @@ Partial Class Setting_Customer_Discount_Add
             End If
         End Try
     End Sub
+
+    Protected Function GetProductData(customerId As String, discType As String) As DataTable
+        Try
+            Dim dt As New DataTable
+
+            If String.IsNullOrEmpty(discType) Then
+                Return dt
+            End If
+
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT CompanyId, CompanyDetailId, PriceGroupId FROM Customers WHERE Id='" & customerId & "'")
+
+            If thisData Is Nothing Then
+                Return dt
+            End If
+
+            Dim companyId As String = thisData("CompanyId").ToString().Trim()
+            Dim companyDetailId As String = thisData("CompanyDetailId").ToString().Trim()
+            Dim priceGroupId As String = thisData("PriceGroupId").ToString().Trim()
+
+            Dim thisString As String = String.Empty
+
+            If discType = "Designs" Then
+                thisString = "SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE companyArray.VALUE='" & companyId & "' AND applyArray.VALUE='Discounts' ORDER BY Name ASC"
+            ElseIf discType = "PriceProductGroups" Then
+                thisString = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "' ORDER BY Name ASC"
+            ElseIf discType = "RollerFabrics" Then
+                thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='12' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
+            ElseIf discType = "RomanFabrics" Then
+                thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='8' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
+            ElseIf discType = "PanelGlideFabrics" Then
+                thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='6' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
+            ElseIf discType = "RollerFabricColours" Then
+                thisString = "SELECT FabricColours.Id, FabricColours.Name FROM FabricColours LEFT JOIN Fabrics ON FabricColours.FabricId=Fabrics.Id CROSS APPLY STRING_SPLIT(Fabrics.CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(Fabrics.DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='12' AND (Fabrics.Status='In Stock' OR Fabrics.Status='Limited Stock') AND (FabricColours.Status='In Stock' OR FabricColours.Status='Limited Stock') ORDER BY FabricColours.Name ASC"
+            End If
+
+            If Not String.IsNullOrEmpty(thisString) Then
+                dt = settingClass.GetDataTable(thisString)
+            End If
+            Return dt
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Session("RoleName").ToString() <> "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            Return New DataTable()
+        End Try
+    End Function
 
     Protected Sub BindGrid()
         Try

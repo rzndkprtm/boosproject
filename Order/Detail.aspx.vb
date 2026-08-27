@@ -3349,7 +3349,11 @@ Partial Class Order_Detail
     Protected Sub BindDesignType()
         ddlDesign.Items.Clear()
         Try
-            ddlDesign.DataSource = orderClass.GetDataTable("SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type<>'Services' AND Designs.Active=1 ORDER BY Designs.Name ASC")
+            Dim thisQuery As String = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type<>'Services' AND Designs.Active=1 ORDER BY Designs.Name ASC"
+            If Session("RoleName") = "Customer" Then
+                thisQuery = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type<>'Services' ORDER BY Designs.Name ASC"
+            End If
+            ddlDesign.DataSource = orderClass.GetDataTable(thisQuery)
             ddlDesign.DataTextField = "NameText"
             ddlDesign.DataValueField = "Id"
             ddlDesign.DataBind()
@@ -3424,7 +3428,7 @@ Partial Class Order_Detail
             gvListItem.Columns(7).Visible = False
             If Session("PriceAccess") = "Yes" Then gvListItem.Columns(7).Visible = True
 
-            If status = "Unsubmitted" Then
+            If status = "Unsubmitted" And gvListItem.Rows.Count > 0 Then
                 Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text}}
                 rptData.DataSource = orderClass.GetDataTableSP("sp_CustomerServices_Get", params)
                 rptData.DataBind()
