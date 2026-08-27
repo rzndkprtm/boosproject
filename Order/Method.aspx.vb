@@ -4460,7 +4460,7 @@ Partial Class Order_Method
         If Not blindName = "Full Cassette" AndAlso Not blindName = "Semi Cassette" Then
             If String.IsNullOrEmpty(data.bottomtype) Then Return "BOTTOM RAIL TYPE IS REQUIRED !"
             If blindName = "Wire Guide" Then
-                If data.bottomtype <> "Flat" AndAlso data.bottomtype <> "Flat Mohair" Then
+                If bottomName <> "Flat" AndAlso bottomName <> "Flat Mohair" Then
                     Return "BOTTOM TYPE MUST BE FLAT OR FLAT MOHAIR !"
                 End If
             End If
