@@ -1791,7 +1791,7 @@ Partial Class Order_Detail
                 Dim serviceName As String = orderClass.GetItemData("SELECT Name FROM PriceServices WHERE Id='" & ddlAddService.SelectedValue & "'")
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, ServiceId, Qty, Width, [Drop], LinearMetre, SquareMetre, TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 3711, @ServiceId, 1, 0, 0, 0, 0, 1, 0, 1)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, ServiceId, Qty, Width, [Drop], LinearMetre, SquareMetre, TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 3716, @ServiceId, 1, 0, 0, 0, 0, 1, 0, 1)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
                         thisCmd.Parameters.AddWithValue("@ServiceId", ddlAddService.SelectedValue)
