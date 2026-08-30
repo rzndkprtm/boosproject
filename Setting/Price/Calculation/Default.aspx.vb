@@ -78,7 +78,8 @@ Partial Class Setting_Price_Calculation_Default
     Protected Sub BindData(searchText As String)
         Try
             Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), "", searchText.Trim()))
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), "", searchText.Trim())),
+                New SqlParameter("@RoleName", Session("RoleName").ToString())
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_PriceCalculations_List", params)
             gvList.DataBind()

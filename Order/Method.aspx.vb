@@ -11539,9 +11539,9 @@ Partial Class Order_Method
         Dim orderClass As New OrderClass
         Dim AccessClass As New AccessClass
 
-        Dim thisQuery As String = "SELECT *, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
+        Dim thisQuery As String = "SELECT *, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(FactoryPrice, 'C', 'en-US') AS FactoryPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
         If companyId = "3" OrElse companyId = "5" Then
-            thisQuery = "SELECT *, FORMAT(BuyPrice, 'C', 'id-ID') AS BuyPricing, FORMAT(SellPrice, 'C', 'id-ID') AS SellPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
+            thisQuery = "SELECT *, FORMAT(SellPrice, 'C', 'id-ID') AS SellPricing, FORMAT(BuyPrice, 'C', 'id-ID') AS BuyPricing, FORMAT(FactoryPrice, 'C', 'id-ID') AS FactoryPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
         End If
 
         Dim dt = orderClass.GetDataTable(thisQuery)
@@ -11552,9 +11552,10 @@ Partial Class Order_Method
             list.Add(New CostingDto With {
                 .Type = r("Type").ToString(),
                 .Description = r("Description").ToString(),
-                .BuyPricing = r("BuyPricing").ToString(),
+                .Price = r("SellPricing").ToString(),
                 .SellPricing = r("SellPricing").ToString(),
-                .Price = r("SellPricing").ToString()
+                .BuyPricing = r("BuyPricing").ToString(),
+                .FactoryPricing = r("FactoryPricing").ToString()
             })
         Next
 
@@ -11564,9 +11565,10 @@ Partial Class Order_Method
         Return New With {
             .data = list,
             .showType = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Type"),
-            .showBuy = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Buy Price"),
+            .showPrice = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Price"),
             .showSell = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Sell Price"),
-            .showPrice = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Price")
+            .showBuy = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Buy Price"),
+            .showFactory = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Factory Price")
         }
     End Function
 
@@ -11893,9 +11895,10 @@ End Class
 Public Class CostingDto
     Public Property Type As String
     Public Property Description As String
-    Public Property BuyPricing As String
-    Public Property SellPricing As String
     Public Property Price As String
+    Public Property SellPricing As String
+    Public Property BuyPricing As String
+    Public Property FactoryPricing As String
 End Class
 
 Public Class HistoryNoteDto

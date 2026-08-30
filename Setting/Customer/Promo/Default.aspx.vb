@@ -24,9 +24,12 @@ Partial Class Setting_Customer_Promo_Default
         End If
 
         Dim dt As DataTable = settingClass.GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId.Replace("'", "''") & "'")
+
+        Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Promos WHERE Id='" & promoId & "'")
         For Each dr As DataRow In dt.Rows
             Dim typeName As String = ""
             Dim typeValue As String = dr("Type").ToString()
+            Dim method As String = dr("Method").ToString()
             Dim dataId As String = dr("DataId").ToString()
 
             If String.IsNullOrEmpty(typeValue) Then
@@ -47,6 +50,14 @@ Partial Class Setting_Customer_Promo_Default
             If Decimal.TryParse(dr("Discount").ToString(), discount) Then
                 If discount > 0 Then
                     discountText = discount.ToString("G29") & "%"
+                    If method = "Value" Then
+                        If companyId = "2" Then
+                            discountText = "$" & discount.ToString("G29")
+                        End If
+                        If companyId = "3" Then
+                            discountText = "Rp" & discount.ToString("G29")
+                        End If
+                    End If
                 End If
             End If
 

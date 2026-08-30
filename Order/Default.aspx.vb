@@ -441,16 +441,6 @@ Partial Class Order_Default
                     End Using
                 End Using
 
-                If orderType = "Builder" Then
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", newIdHeader)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-                End If
-
                 dataLog = {"OrderHeaders", newIdHeader, Session("LoginId").ToString(), "Order Created | Copy"}
                 orderClass.Logs(dataLog)
 

@@ -51,12 +51,14 @@ Partial Class Setting_Price_Service_Edit
             If msgError.InnerText = "" Then
                 If ddlType.SelectedValue = "Price" Then
                     ddlOperator.SelectedValue = ""
-                    txtBuyValue.Text = String.Empty
                     txtSellValue.Text = String.Empty
+                    txtBuyValue.Text = String.Empty
+                    txtFactoryValue.Text = String.Empty
                 End If
                 If ddlType.SelectedValue = "Formula" Then
-                    txtBuyPrice.Text = String.Empty
                     txtSellPrice.Text = String.Empty
+                    txtBuyPrice.Text = String.Empty
+                    txtFactoryPrice.Text = String.Empty
                 End If
 
                 Dim companyDetailId As String = String.Empty
@@ -65,17 +67,19 @@ Partial Class Setting_Price_Service_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceServices SET  CompanyDetailId=@CompanyDetailId, Name=@Name, Type=@Type, DefaultBuyPrice=@DefaultBuyPrice, DefaultSellPrice=@DefaultSellPrice, Parameter=@Parameter, Operator=@Operator, BuyValue=@BuyValue, SellValue=@SellValue, MinValue=@MinValue, MaxValue=@MaxValue, Region=@Region, AutoCreate=@AutoCreate, AllowCustom=@AllowCustom, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceServices SET  CompanyDetailId=@CompanyDetailId, Name=@Name, Type=@Type, DefaultSellPrice=@DefaultSellPrice, DefaultBuyPrice=@DefaultBuyPrice, DefaultFactoryPrice=@DefaultFactoryPrice, Parameter=@Parameter, Operator=@Operator, SellValue=@SellValue, BuyValue=@BuyValue, FactoryValue=@FactoryValue, MinValue=@MinValue, MaxValue=@MaxValue, Region=@Region, AutoCreate=@AutoCreate, AllowCustom=@AllowCustom, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@DefaultBuyPrice", If(String.IsNullOrEmpty(txtBuyPrice.Text), CType(DBNull.Value, Object), txtBuyPrice.Text))
                         thisCmd.Parameters.AddWithValue("@DefaultSellPrice", If(String.IsNullOrEmpty(txtSellPrice.Text), CType(DBNull.Value, Object), txtSellPrice.Text))
+                        thisCmd.Parameters.AddWithValue("@DefaultBuyPrice", If(String.IsNullOrEmpty(txtBuyPrice.Text), CType(DBNull.Value, Object), txtBuyPrice.Text))
+                        thisCmd.Parameters.AddWithValue("@DefaultFactoryPrice", If(String.IsNullOrEmpty(txtFactoryPrice.Text), CType(DBNull.Value, Object), txtFactoryPrice.Text))
                         thisCmd.Parameters.AddWithValue("@Parameter", ddlParameter.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Operator", ddlOperator.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@BuyValue", If(String.IsNullOrEmpty(txtBuyValue.Text), CType(DBNull.Value, Object), txtBuyValue.Text))
                         thisCmd.Parameters.AddWithValue("@SellValue", If(String.IsNullOrEmpty(txtSellValue.Text), CType(DBNull.Value, Object), txtSellValue.Text))
+                        thisCmd.Parameters.AddWithValue("@BuyValue", If(String.IsNullOrEmpty(txtBuyValue.Text), CType(DBNull.Value, Object), txtBuyValue.Text))
+                        thisCmd.Parameters.AddWithValue("@FactoryValue", If(String.IsNullOrEmpty(txtFactoryValue.Text), CType(DBNull.Value, Object), txtFactoryValue.Text))
                         thisCmd.Parameters.AddWithValue("@MinValue", If(String.IsNullOrEmpty(txtMinimumValue.Text), CType(DBNull.Value, Object), txtMinimumValue.Text))
                         thisCmd.Parameters.AddWithValue("@MaxValue", If(String.IsNullOrEmpty(txtMaximumValue.Text), CType(DBNull.Value, Object), txtMaximumValue.Text))
                         thisCmd.Parameters.AddWithValue("@Region", ddlRegion.SelectedValue)
@@ -165,10 +169,14 @@ Partial Class Setting_Price_Service_Edit
             ddlStatus.SelectedValue = myData("Status").ToString()
             txtDescription.Text = myData("Description").ToString()
 
-            txtBuyPrice.Text = If(IsDBNull(myData("DefaultBuyPrice")) OrElse myData("DefaultBuyPrice") Is Nothing, "", Convert.ToDecimal(myData("DefaultBuyPrice")).ToString("#,##0.##", enUS))
             txtSellPrice.Text = If(IsDBNull(myData("DefaultSellPrice")) OrElse myData("DefaultSellPrice") Is Nothing, "", Convert.ToDecimal(myData("DefaultSellPrice")).ToString("#,##0.##", enUS))
-            txtBuyValue.Text = If(IsDBNull(myData("BuyValue")) OrElse myData("BuyValue") Is Nothing, "", Convert.ToDecimal(myData("BuyValue")).ToString("#,##0.##", enUS))
+            txtBuyPrice.Text = If(IsDBNull(myData("DefaultBuyPrice")) OrElse myData("DefaultBuyPrice") Is Nothing, "", Convert.ToDecimal(myData("DefaultBuyPrice")).ToString("#,##0.##", enUS))
+            txtFactoryPrice.Text = If(IsDBNull(myData("DefaultFactoryPrice")) OrElse myData("DefaultFactoryPrice") Is Nothing, "", Convert.ToDecimal(myData("DefaultFactoryPrice")).ToString("#,##0.##", enUS))
+
             txtSellValue.Text = If(IsDBNull(myData("SellValue")) OrElse myData("SellValue") Is Nothing, "", Convert.ToDecimal(myData("SellValue")).ToString("#,##0.##", enUS))
+            txtBuyValue.Text = If(IsDBNull(myData("BuyValue")) OrElse myData("BuyValue") Is Nothing, "", Convert.ToDecimal(myData("BuyValue")).ToString("#,##0.##", enUS))
+            txtFactoryValue.Text = If(IsDBNull(myData("FactoryValue")) OrElse myData("FactoryValue") Is Nothing, "", Convert.ToDecimal(myData("FactoryValue")).ToString("#,##0.##", enUS))
+
             txtMinimumValue.Text = If(IsDBNull(myData("MinValue")) OrElse myData("MinValue") Is Nothing, "", Convert.ToDecimal(myData("MinValue")).ToString("#,##0.##", enUS))
             txtMaximumValue.Text = If(IsDBNull(myData("MaxValue")) OrElse myData("MaxValue") Is Nothing, "", Convert.ToDecimal(myData("MaxValue")).ToString("#,##0.##", enUS))
 
@@ -183,17 +191,17 @@ Partial Class Setting_Price_Service_Edit
 
     Protected Sub BindForm(type As String)
         Try
-            divDefaultBuy.Visible = False
-            divDefaultSell.Visible = False
-            divFormula.Visible = False
+            divDefaultPrice.Visible = False
+            divOperator.Visible = False
+            divFormulaValue.Visible = False
 
             If type = "Price" Then
-                divDefaultBuy.Visible = True
-                divDefaultSell.Visible = True
+                divDefaultPrice.Visible = True
             End If
 
             If type = "Formula" Then
-                divFormula.Visible = True
+                divOperator.Visible = True
+                divFormulaValue.Visible = True
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

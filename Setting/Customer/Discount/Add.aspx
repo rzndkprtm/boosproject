@@ -56,6 +56,7 @@
                                             <asp:ListItem Value="RomanFabricColours" Text="Fabric Colour (Roman)"></asp:ListItem>
                                             <asp:ListItem Value="PanelGlideFabrics" Text="Fabric Type (Panel Glide)"></asp:ListItem>
                                             <asp:ListItem Value="PanelGlideFabricColours" Text="Fabric Colour (Panel Glide)"></asp:ListItem>
+                                            <asp:ListItem Value="RollerChains" Text="Chain Colour (Roller)"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
@@ -63,7 +64,8 @@
                                     <thead>
                                         <tr>
                                             <th style="width:600px;">Product</th>
-                                            <th style="width:150px;">Discount (%)</th>
+                                            <th style="width:200px;">Method</th>
+                                            <th style="width:150px;">Discount</th>
                                             <th>Description</th>
                                             <th style="width:80px;"></th>
                                         </tr>
@@ -74,6 +76,13 @@
                                                 <tr>
                                                     <td>
                                                         <asp:DropDownList runat="server" ID="ddlProduct" CssClass="choices form-select"></asp:DropDownList>
+                                                    </td>
+                                                    <td>
+                                                        <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select">
+                                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                            <asp:ListItem Value="Percent" Text="Percent"></asp:ListItem>
+                                                            <asp:ListItem Value="Value" Text="Value"></asp:ListItem>
+                                                        </asp:DropDownList>
                                                     </td>
                                                     <td>
                                                         <asp:TextBox runat="server" ID="txtDiscount" CssClass="form-control" placeholder="Discount ......" autocomplete="off"></asp:TextBox>
@@ -91,14 +100,15 @@
                                 </table>
                                 <div class="row mb-3">
                                     <div class="col-lg-12 text-start">
-                                        <asp:Button ID="btnAdd" runat="server" Text="+ Add Row" CssClass="btn btn-success" OnClick="btnAdd_Click" />
+                                        <asp:Button ID="btnAdd" runat="server" Text="+ Add Row" CssClass="btn btn-secondary" OnClick="btnAdd_Click" />
                                     </div>
                                 </div>
                             </ContentTemplate>
                         </asp:UpdatePanel>
                     </div>
                     <div class="card-footer">
-                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
+                        <asp:Button runat="server" ID="btnSubmitAgain" CssClass="btn btn-primary" Text="Submit & Again" OnClick="btnSubmitAgain_Click" />
+                        <asp:Button runat="server" ID="btnSubmitFinish" CssClass="btn btn-success me-2" Text="Submit & Finish" OnClick="btnSubmitFinish_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
                     </div>
                 </div>

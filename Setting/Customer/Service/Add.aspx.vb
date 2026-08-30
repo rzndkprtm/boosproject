@@ -36,11 +36,13 @@ Partial Class Setting_Customer_Service_Add
     Protected Sub ddlCustomer_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindService(ddlCustomer.SelectedValue)
+        BindForm(ddlType.SelectedValue)
     End Sub
 
     Protected Sub ddlService_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindServiceData(ddlService.SelectedValue)
+        BindForm(ddlType.SelectedValue)
     End Sub
 
     Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -135,34 +137,44 @@ Partial Class Setting_Customer_Service_Add
 
                 Dim allowCustom As Boolean = CBool(myData("AllowCustom"))
 
-                txtBuyPrice.Text = If(IsDBNull(myData("DefaultBuyPrice")) OrElse myData("DefaultBuyPrice") Is Nothing, "", Convert.ToDecimal(myData("DefaultBuyPrice")).ToString("#,##0.##", enUS))
                 txtSellPrice.Text = If(IsDBNull(myData("DefaultSellPrice")) OrElse myData("DefaultSellPrice") Is Nothing, "", Convert.ToDecimal(myData("DefaultSellPrice")).ToString("#,##0.##", enUS))
-                txtBuyValue.Text = If(IsDBNull(myData("BuyValue")) OrElse myData("BuyValue") Is Nothing, "", Convert.ToDecimal(myData("BuyValue")).ToString("#,##0.##", enUS))
+                txtBuyPrice.Text = If(IsDBNull(myData("DefaultBuyPrice")) OrElse myData("DefaultBuyPrice") Is Nothing, "", Convert.ToDecimal(myData("DefaultBuyPrice")).ToString("#,##0.##", enUS))
+                txtFactoryPrice.Text = If(IsDBNull(myData("DefaultFactoryPrice")) OrElse myData("DefaultFactoryPrice") Is Nothing, "", Convert.ToDecimal(myData("DefaultFactoryPrice")).ToString("#,##0.##", enUS))
+
                 txtSellValue.Text = If(IsDBNull(myData("SellValue")) OrElse myData("SellValue") Is Nothing, "", Convert.ToDecimal(myData("SellValue")).ToString("#,##0.##", enUS))
+                txtBuyValue.Text = If(IsDBNull(myData("BuyValue")) OrElse myData("BuyValue") Is Nothing, "", Convert.ToDecimal(myData("BuyValue")).ToString("#,##0.##", enUS))
+                txtFactoryValue.Text = If(IsDBNull(myData("FactoryValue")) OrElse myData("FactoryValue") Is Nothing, "", Convert.ToDecimal(myData("FactoryValue")).ToString("#,##0.##", enUS))
+
                 txtMinimumValue.Text = If(IsDBNull(myData("MinValue")) OrElse myData("MinValue") Is Nothing, "", Convert.ToDecimal(myData("MinValue")).ToString("#,##0.##", enUS))
                 txtMaximumValue.Text = If(IsDBNull(myData("MaxValue")) OrElse myData("MaxValue") Is Nothing, "", Convert.ToDecimal(myData("MaxValue")).ToString("#,##0.##", enUS))
 
                 BindForm(myData("Type").ToString())
 
                 ddlType.Enabled = False
-                txtBuyPrice.Enabled = False
                 txtSellPrice.Enabled = False
+                txtBuyPrice.Enabled = False
+                txtFactoryPrice.Enabled = False
                 ddlParameter.Enabled = False
                 ddlOperator.Enabled = False
-                txtBuyValue.Enabled = False
                 txtSellValue.Enabled = False
+                txtBuyValue.Enabled = False
+                txtFactoryValue.Enabled = False
                 txtMinimumValue.Enabled = False
                 txtMaximumValue.Enabled = False
                 ddlRegion.Enabled = False
 
                 If allowCustom = True Then
                     ddlType.Enabled = True
-                    txtBuyPrice.Enabled = True
                     txtSellPrice.Enabled = True
+                    txtBuyPrice.Enabled = True
+                    txtFactoryPrice.Enabled = True
+
                     ddlParameter.Enabled = True
                     ddlOperator.Enabled = True
-                    txtBuyValue.Enabled = True
                     txtSellValue.Enabled = True
+                    txtBuyValue.Enabled = True
+                    txtBuyValue.Enabled = True
+
                     txtMinimumValue.Enabled = True
                     txtMaximumValue.Enabled = True
                     ddlRegion.Enabled = True
@@ -178,17 +190,17 @@ Partial Class Setting_Customer_Service_Add
 
     Protected Sub BindForm(type As String)
         Try
-            divDefaultBuy.Visible = False
-            divDefaultSell.Visible = False
-            divFormula.Visible = False
+            divDefaultPrice.Visible = False
+            divOperator.Visible = False
+            divFormulaValue.Visible = False
 
             If type = "Price" Then
-                divDefaultBuy.Visible = True
-                divDefaultSell.Visible = True
+                divDefaultPrice.Visible = True
             End If
 
             If type = "Formula" Then
-                divFormula.Visible = True
+                divOperator.Visible = True
+                divFormulaValue.Visible = True
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

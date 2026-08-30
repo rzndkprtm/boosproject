@@ -134,10 +134,11 @@ Partial Class Setting_Price_Surcharge_Default
             Dim thisId As String = txtChangeValueId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceSurcharges SET BuyCharge=@BuyCharge, SellCharge=@SellCharge WHERE Id=@Id;", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceSurcharges SET BuyCharge=@BuyCharge, SellCharge=@SellCharge, FactoryCharge=@FactoryCharge WHERE Id=@Id;", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
-                    thisCmd.Parameters.AddWithValue("@BuyCharge", txtBuy.Text)
                     thisCmd.Parameters.AddWithValue("@SellCharge", txtSell.Text)
+                    thisCmd.Parameters.AddWithValue("@BuyCharge", txtBuy.Text)
+                    thisCmd.Parameters.AddWithValue("@FactoryCharge", txtFactory.Text)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -164,7 +165,7 @@ Partial Class Setting_Price_Surcharge_Default
             Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceSurcharges ORDER BY Id DESC")
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges SELECT @NewId, DesignId, PriceGroupId, Name + ' - Copy', Type, Formula, BuyCharge, SellCharge, Description, Status FROM PriceSurcharges WHERE Id=@Id", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges SELECT @NewId, DesignId, PriceGroupId, Name + ' - Copy', Type, Formula, SellCharge, BuyCharge, FactoryCharge, Description, Status FROM PriceSurcharges WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisCmd.Parameters.AddWithValue("@NewId", newId)
                     thisConn.Open()

@@ -14,16 +14,31 @@ Partial Class Setting_Customer_Discount_Default
     <WebMethod()>
     Public Shared Function GetCustomerDiscount(customerId As String) As Object
         Dim settingClass As New SettingClass
-        Dim dt As DataTable = settingClass.GetDataTable("SELECT Id, Type, DataId, Discount FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
+        Dim dt As DataTable = settingClass.GetDataTable("SELECT Id, Type, Method, DataId, Discount FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
+
+        Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
 
         Dim result As New List(Of Object)
         For Each r As DataRow In dt.Rows
-            Dim typeName As String = r("Type").ToString()
+            Dim type As String = r("Type").ToString()
+            Dim method As String = r("Method").ToString()
             Dim dataId As String = r("DataId").ToString()
             Dim discount As Decimal = Convert.ToDecimal(r("Discount"))
-            Dim title As String = GetDiscountTitle(typeName, dataId)
-            Dim value As String = If(discount > 0, discount.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%", "-")
-            result.Add(New With {.Id = r("Id").ToString(), .Type = typeName, .Product = title, .Discount = value})
+            Dim title As String = GetDiscountTitle(type, dataId)
+            Dim value As String = "-"
+            If method = "Percent" Then
+                value = discount.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
+            End If
+            If method = "Value" Then
+                If companyId = "2" Then
+                    value = "$" & discount.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                End If
+                If companyId = "3" Then
+                    value = "Rp" & discount.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                End If
+            End If
+
+            result.Add(New With {.Id = r("Id").ToString(), .Type = type, .Product = title, .Discount = value})
         Next
         Return result
     End Function
@@ -34,7 +49,7 @@ Partial Class Setting_Customer_Discount_Default
 
         Dim dataName As String = String.Empty
         If type = "Designs" Then
-            dataName = settingClass.GetItemData("SELECT Name FROM Designs WHERE Id='" & dataId & "'")
+            dataName = settingClass.GetItemData("Select Name FROM Designs WHERE Id='" & dataId & "'")
         End If
         If type = "PriceProductGroups" Then
             dataName = settingClass.GetItemData("SELECT CASE WHEN Status='Active' THEN Name ELSE Name + ' [' + UPPER(Status) + ']' END FROM PriceProductGroups WHERE Id='" & dataId & "'")
@@ -44,6 +59,9 @@ Partial Class Setting_Customer_Discount_Default
         End If
         If type = "RollerFabricColours" OrElse type = "RomanFabricColours" OrElse type = "PanelGlideFabricColours" Then
             dataName = settingClass.GetItemData("SELECT Name FROM FabricColours WHERE Id='" & dataId & "'")
+        End If
+        If type = "RollerChains" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM Chains WHERE Id='" & dataId & "'")
         End If
         Return dataName
     End Function

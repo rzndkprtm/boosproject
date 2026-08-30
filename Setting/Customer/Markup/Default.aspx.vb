@@ -1,4 +1,5 @@
-﻿Imports System.Data
+﻿Imports System.ComponentModel.Design
+Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
 Imports System.Web.Services
@@ -14,16 +15,30 @@ Partial Class Setting_Customer_Markup_Default
     <WebMethod()>
     Public Shared Function GetCustomerMarkup(customerId As String) As Object
         Dim settingClass As New SettingClass
-        Dim dt As DataTable = settingClass.GetDataTable("SELECT Id, Type, DataId, Markup FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
+        Dim dt As DataTable = settingClass.GetDataTable("SELECT Id, Type, Method, DataId, Markup FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
+
+        Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
 
         Dim result As New List(Of Object)
         For Each r As DataRow In dt.Rows
-            Dim typeName As String = r("Type").ToString()
+            Dim type As String = r("Type").ToString()
+            Dim method As String = r("Method").ToString()
             Dim dataId As String = r("DataId").ToString()
             Dim markup As Decimal = Convert.ToDecimal(r("Markup"))
-            Dim title As String = GetMarkupTitle(typeName, dataId)
-            Dim value As String = If(markup > 0, markup.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%", "-")
-            result.Add(New With {.Id = r("Id").ToString(), .Type = typeName, .Product = title, .Markup = value})
+            Dim title As String = GetMarkupTitle(type, dataId)
+            Dim value As String = "-"
+            If method = "Percent" Then
+                value = markup.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
+            End If
+            If method = "Value" Then
+                If companyId = "2" Then
+                    value = "$" & markup.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                End If
+                If companyId = "3" Then
+                    value = "Rp" & markup.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                End If
+            End If
+            result.Add(New With {.Id = r("Id").ToString(), .Type = type, .Product = title, .Markup = value})
         Next
         Return result
     End Function

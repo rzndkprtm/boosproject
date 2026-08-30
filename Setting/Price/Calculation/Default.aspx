@@ -75,7 +75,7 @@
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                     <ul class="dropdown-menu">
                                                         <li>
-                                                            <a class="dropdown-item" id="aDetail" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDetail" onclick='<%# String.Format("return dataDetail(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`, `{5}`);", Eval("SellMinSize").ToString(), Eval("BuyMinSize"), Eval("SellMinWidth").ToString(), Eval("BuyMinWidth").ToString(), Eval("SellMinDrop").ToString(), Eval("BuyMinDrop").ToString()) %>'>Detail</a>
+                                                            <a class="dropdown-item" id="aDetail" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDetail" onclick='<%# String.Format("return dataDetail(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`, `{5}`, `{6}`, `{7}`, `{8}`);", Eval("SellMinSize").ToString(), Eval("BuyMinSize").ToString(), Eval("FactoryMinSize").ToString(), Eval("SellMinWidth").ToString(), Eval("BuyMinWidth").ToString(), Eval("FactoryMinWidth").ToString(), Eval("SellMinDrop").ToString(), Eval("BuyMinDrop").ToString(), Eval("FactoryMinDrop").ToString()) %>'>Detail</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/price/calculation/edit?calculationid=" & Eval("Id")) %>'>Edit</a>
@@ -123,25 +123,31 @@
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">
                             <tr>
-                                <th colspan="2">Minimum Size</th>
-                                <th colspan="2">Minimum Width</th>
-                                <th colspan="2">Minimum Drop</th>
+                                <th colspan="3">Minimum Size</th>
+                                <th colspan="3">Minimum Width</th>
+                                <th colspan="3">Minimum Drop</th>
                             </tr>
                             <tr>
                                 <th>Sell</th>
                                 <th>Buy</th>
+                                <th>Factory</th>
                                 <th>Sell</th>
                                 <th>Buy</th>
+                                <th>Factory</th>
                                 <th>Sell</th>
                                 <th>Buy</th>
+                                <th>Factory</th>
                             </tr>
                             <tr>
                                 <td><span id="spanSellMinSize"></span></td>
                                 <td><span id="spanBuyMinSize"></span></td>
+                                <td><span id="spanFactoryMinSize"></span></td>
                                 <td><span id="spanSellMinWidth"></span></td>
                                 <td><span id="spanBuyMinWidth"></span></td>
+                                <td><span id="spanFactoryMinWidth"></span></td>
                                 <td><span id="spanSellMinDrop"></span></td>
                                 <td><span id="spanBuyMinDrop"></span></td>
+                                <td><span id="spanFactoryMinDrop"></span></td>
                             </tr>
                         </table>
                     </div>
@@ -235,13 +241,16 @@
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-        function dataDetail(sellminsize, buyminsize, sellminwidth, buyminwidth, sellmindrop, buymindrop) {
+        function dataDetail(sellminsize, buyminsize, factoryminsize, sellminwidth, buyminwidth, factoryminwidth, sellmindrop, buymindrop, factorymindrop) {
             document.getElementById("spanSellMinSize").innerText = sellminsize;
             document.getElementById("spanBuyMinSize").innerText = buyminsize;
+            document.getElementById("spanFactoryMinSize").innerText = factoryminsize;
             document.getElementById("spanSellMinWidth").innerText = sellminwidth;
             document.getElementById("spanBuyMinWidth").innerText = buyminwidth;
+            document.getElementById("spanFactoryMinWidth").innerText = factoryminwidth;
             document.getElementById("spanSellMinDrop").innerText = sellmindrop;
             document.getElementById("spanBuyMinDrop").innerText = buymindrop;
+            document.getElementById("spanFactoryMinDrop").innerText = factorymindrop;
         }
         function dataDelete(id) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;

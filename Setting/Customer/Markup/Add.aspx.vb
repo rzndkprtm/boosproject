@@ -13,6 +13,7 @@ Partial Class Setting_Customer_Markup_Add
             If Session("PromoTable") Is Nothing Then
                 Dim dt As New DataTable
                 dt.Columns.Add("Product")
+                dt.Columns.Add("Method")
                 dt.Columns.Add("Markup")
                 dt.Columns.Add("Description")
 
@@ -48,7 +49,7 @@ Partial Class Setting_Customer_Markup_Add
             BindCustomer(lblCustomerId.Text)
 
             PromoTable.Rows.Clear()
-            PromoTable.Rows.Add("", "", "")
+            PromoTable.Rows.Add("", "", "", "")
 
             ddlType.SelectedValue = ""
 
@@ -61,15 +62,18 @@ Partial Class Setting_Customer_Markup_Add
             If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
                 Dim drv As DataRowView = CType(e.Item.DataItem, DataRowView)
                 Dim ddlProduct As DropDownList = CType(e.Item.FindControl("ddlProduct"), DropDownList)
+                Dim ddlMethod As DropDownList = CType(e.Item.FindControl("ddlMethod"), DropDownList)
                 Dim txtMarkup As TextBox = CType(e.Item.FindControl("txtMarkup"), TextBox)
                 Dim txtDescription As TextBox = CType(e.Item.FindControl("txtDescription"), TextBox)
 
                 If ddlProduct Is Nothing Then Exit Sub
 
+                If ddlMethod IsNot Nothing Then
+                    ddlMethod.SelectedValue = drv("Method").ToString()
+                End If
                 If txtMarkup IsNot Nothing Then
                     txtMarkup.Text = drv("Markup").ToString()
                 End If
-
                 If txtDescription IsNot Nothing Then
                     txtDescription.Text = drv("Description").ToString()
                 End If
@@ -108,7 +112,7 @@ Partial Class Setting_Customer_Markup_Add
                 PromoTable.Rows.RemoveAt(index)
             End If
             If PromoTable.Rows.Count = 0 Then
-                PromoTable.Rows.Add("", "", "")
+                PromoTable.Rows.Add("", "", "", "")
             End If
             BindGrid()
         Catch ex As Exception
@@ -128,7 +132,7 @@ Partial Class Setting_Customer_Markup_Add
             PromoTable.Rows.Clear()
 
             If String.IsNullOrEmpty(markupType) Then
-                PromoTable.Rows.Add("", "", "")
+                PromoTable.Rows.Add("", "", "", "")
                 BindGrid()
 
                 Exit Sub
@@ -148,14 +152,14 @@ Partial Class Setting_Customer_Markup_Add
                         For Each productRow As DataRow In dtProduct.Rows
                             Dim newRow As DataRow = PromoTable.NewRow()
                             newRow("Product") = productRow("Id").ToString()
-
+                            newRow("Method") = ""
                             newRow("Markup") = ""
                             newRow("Description") = ""
 
                             PromoTable.Rows.Add(newRow)
                         Next
                     Else
-                        PromoTable.Rows.Add("", "", "")
+                        PromoTable.Rows.Add("", "", "", "")
                     End If
 
                     BindGrid()
@@ -165,7 +169,7 @@ Partial Class Setting_Customer_Markup_Add
             End If
 
             PromoTable.Rows.Clear()
-            PromoTable.Rows.Add("", "", "")
+            PromoTable.Rows.Add("", "", "", "")
 
             BindGrid()
         Catch ex As Exception
@@ -179,7 +183,7 @@ Partial Class Setting_Customer_Markup_Add
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         Try
             SaveGrid()
-            PromoTable.Rows.Add("", "", "")
+            PromoTable.Rows.Add("", "", "", "")
             BindGrid()
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -189,7 +193,23 @@ Partial Class Setting_Customer_Markup_Add
         End Try
     End Sub
 
-    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+    Protected Sub btnSubmitAgain_Click(sender As Object, e As EventArgs)
+        Process("Again")
+    End Sub
+
+    Protected Sub btnSubmitFinish_Click(sender As Object, e As EventArgs)
+        Process()
+    End Sub
+
+    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
+        url = "~/setting/customer/markup"
+        If lblReturnPage.Text = "detail" Then
+            url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+        End If
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub Process(Optional action As String = "")
         MessageError(False, String.Empty)
         Try
             SaveGrid()
@@ -211,19 +231,24 @@ Partial Class Setting_Customer_Markup_Add
 
             For i As Integer = 0 To dt.Rows.Count - 1
                 Dim product As String = dt.Rows(i)("Product").ToString().Trim()
+                Dim method As String = dt.Rows(i)("Method").ToString().Trim()
                 Dim markup As String = dt.Rows(i)("Markup").ToString().Trim()
 
                 Dim rowNumber As Integer = i + 1
 
-                If product = "" AndAlso markup = "" Then
-                    MessageError(True, String.Format("ROW {0}: PRODUCT AND MARKUP ARE REQUIRED !", rowNumber))
+                If product = "" AndAlso markup = "" AndAlso method = "" Then
+                    MessageError(True, String.Format("ROW {0}: PRODUCT, MARKUP & METHOD ARE REQUIRED !", rowNumber))
                     Exit Sub
                 End If
                 If product = "" Then
                     MessageError(True, String.Format("ROW {0}: PRODUCT IS REQUIRED !", rowNumber))
                     Exit Sub
                 End If
-                If Markup = "" Then
+                If method = "" Then
+                    MessageError(True, String.Format("ROW {0}: METHOD IS REQUIRED !", rowNumber))
+                    Exit Sub
+                End If
+                If markup = "" Then
                     MessageError(True, String.Format("ROW {0}: MARKUP IS REQUIRED !", rowNumber))
                     Exit Sub
                 End If
@@ -231,6 +256,7 @@ Partial Class Setting_Customer_Markup_Add
 
             For Each dr As DataRow In dt.Rows
                 If dr("Product").ToString = "" Then Continue For
+                If dr("Method").ToString = "" Then Continue For
                 If dr("Markup").ToString = "" Then Continue For
 
                 Dim checkData As DataRow = settingClass.GetDataRow(String.Format("SELECT * FROM CustomerMarkups WHERE CustomerId='{0}' AND Type='{1}' AND DataId='{2}'", lblCustomerId.Text, ddlType.SelectedValue, dr("Product").ToString))
@@ -252,10 +278,11 @@ Partial Class Setting_Customer_Markup_Add
                 Else
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerMarkups ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As New SqlCommand("INSERT INTO CustomerMarkups VALUES (@Id, @CustomerId, @Type, @DataId, @Markup, @Description)", thisConn)
+                        Using thisCmd As New SqlCommand("INSERT INTO CustomerMarkups VALUES (@Id, @CustomerId, @Type, @Method, @DataId, @Markup, @Description)", thisConn)
                             thisCmd.Parameters.AddWithValue("@Id", thisId)
                             thisCmd.Parameters.AddWithValue("@CustomerId", lblCustomerId.Text)
                             thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@Method", dr("Method").ToString())
                             thisCmd.Parameters.AddWithValue("@DataId", dr("Product").ToString())
                             thisCmd.Parameters.AddWithValue("@Markup", dr("Markup"))
                             thisCmd.Parameters.AddWithValue("@Description", dr("Description").ToString())
@@ -272,6 +299,12 @@ Partial Class Setting_Customer_Markup_Add
             If lblReturnPage.Text = "detail" Then
                 url = String.Format("~/setting/customer/detail?customerid={0}", lblCustomerId.Text)
             End If
+            If action = "Again" Then
+                url = String.Format("~/setting/customer/markup/add?custid={0}", lblCustomerId.Text)
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/customer/markup/add?custid={0}&returnpage=detail", lblCustomerId.Text)
+                End If
+            End If
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -279,14 +312,6 @@ Partial Class Setting_Customer_Markup_Add
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
-    End Sub
-
-    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        url = "~/setting/customer/markup"
-        If lblReturnPage.Text = "detail" Then
-            url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
-        End If
-        Response.Redirect(url, False)
     End Sub
 
     Protected Sub BindCustomer(customerId As String)
@@ -424,22 +449,29 @@ Partial Class Setting_Customer_Markup_Add
             Dim dt As DataTable = PromoTable
 
             While dt.Rows.Count < rptMarkup.Items.Count
-                dt.Rows.Add("", "", "")
+                dt.Rows.Add("", "", "", "")
             End While
 
             For i As Integer = 0 To rptMarkup.Items.Count - 1
                 Dim item As RepeaterItem = rptMarkup.Items(i)
 
                 Dim ddlProduct As DropDownList = CType(item.FindControl("ddlProduct"), DropDownList)
+                Dim ddlMethod As DropDownList = CType(item.FindControl("ddlMethod"), DropDownList)
                 Dim txtMarkup As TextBox = CType(item.FindControl("txtMarkup"), TextBox)
                 Dim txtDescription As TextBox = CType(item.FindControl("txtDescription"), TextBox)
 
-                If ddlProduct Is Nothing OrElse txtMarkup Is Nothing OrElse txtDescription Is Nothing Then
+                If ddlProduct Is Nothing OrElse ddlMethod Is Nothing OrElse txtMarkup Is Nothing OrElse txtDescription Is Nothing Then
                     Continue For
                 End If
 
                 dt.Rows(i)("Markup") = txtMarkup.Text.Trim()
                 dt.Rows(i)("Description") = txtDescription.Text.Trim()
+                If ddlMethod.SelectedItem Is Nothing Then
+                    dt.Rows(i)("Method") = ""
+                Else
+                    dt.Rows(i)("Method") =
+                    ddlMethod.SelectedValue
+                End If
                 If ddlProduct.SelectedItem Is Nothing Then
                     dt.Rows(i)("Product") = ""
                 Else

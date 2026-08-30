@@ -93,6 +93,10 @@ Partial Class Setting_Price_Surcharge_Add
                 MessageError(True, "SELL CHARGE IS REQUIRED !")
                 Exit Sub
             End If
+            If txtFactoryCharge.Text = "" Then
+                MessageError(True, "FACTORY CHARGE IS REQUIRED !")
+                Exit Sub
+            End If
 
             Dim finalFormula As String = String.Format("{0} = {1}", ddlFormulaField.SelectedValue, ddlFormulaData.SelectedValue)
             If Not String.IsNullOrEmpty(ddlFormulaFieldB.SelectedValue) Then
@@ -107,15 +111,16 @@ Partial Class Setting_Price_Surcharge_Add
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges VALUES (@Id, @DesignId, @PriceGroupId, @Name, @Type, @Formula, @BuyCharge, @SellCharge, @Description, @Status)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceSurcharges VALUES (@Id, @DesignId, @PriceGroupId, @Name, @Type, @Formula, @SellCharge, @BuyCharge, @FactoryCharge, @Description, @Status)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Type", ddlFormulaType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Formula", finalFormula)
-                        thisCmd.Parameters.AddWithValue("@BuyCharge", txtBuyCharge.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@SellCharge", txtSellCharge.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@BuyCharge", txtBuyCharge.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@FactoryCharge", txtFactoryCharge.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Description", descText)
                         thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()

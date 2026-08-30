@@ -43,8 +43,9 @@
                                                 <label class="form-label">Category</label>
                                                 <asp:DropDownList runat="server" ID="ddlCategory" CssClass="choices form-select">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                    <asp:ListItem Value="Sell" Text="Sell"></asp:ListItem>
-                                                    <asp:ListItem Value="Buy" Text="Buy"></asp:ListItem>
+                                                    <asp:ListItem Value="Sell" Text="Sell Price"></asp:ListItem>
+                                                    <asp:ListItem Value="Buy" Text="Buy Price"></asp:ListItem>
+                                                    <asp:ListItem Value="Factory" Text="Factory Price"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>

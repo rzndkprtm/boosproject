@@ -6,16 +6,16 @@ Partial Class Setting_Price_Promo_Detail_Add
 
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim dataLog As Object() = Nothing
+    Dim url As String = String.Empty
 
     Private Property PromoTable As DataTable
         Get
             If Session("PromoTable") Is Nothing Then
                 Dim dt As New DataTable
-                dt.Columns.Add("Type")
-                dt.Columns.Add("Data")
+                dt.Columns.Add("Product")
+                dt.Columns.Add("Method")
                 dt.Columns.Add("Discount")
-                dt.Columns.Add("Status")
+                dt.Columns.Add("Description")
 
                 Session("PromoTable") = dt
             End If
@@ -30,24 +30,24 @@ Partial Class Setting_Price_Promo_Detail_Add
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/price/promo/detail", False)
+            Response.Redirect("~/setting/price/promo", False)
             Exit Sub
         End If
 
         If String.IsNullOrEmpty(Request.QueryString("promoid")) Then
-            Response.Redirect("~/setting/price/promo/", False)
+            Response.Redirect("~/setting/price/promo", False)
             Exit Sub
         End If
 
-        lblId.Text = Request.QueryString("promoid").ToString()
-
+        lblPromoId.Text = Request.QueryString("promoid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindPromo()
-            ddlPromo.SelectedValue = lblId.Text
+            BindPromo(lblPromoId.Text)
 
             PromoTable.Rows.Clear()
             PromoTable.Rows.Add("", "", "", "")
+
+            ddlType.SelectedValue = ""
 
             BindGrid()
         End If
@@ -58,23 +58,32 @@ Partial Class Setting_Price_Promo_Detail_Add
             If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
                 Dim drv As DataRowView = CType(e.Item.DataItem, DataRowView)
 
-                Dim ddlType As DropDownList = CType(e.Item.FindControl("ddlType"), DropDownList)
-                Dim ddlData As DropDownList = CType(e.Item.FindControl("ddlData"), DropDownList)
+                Dim ddlProduct As DropDownList = CType(e.Item.FindControl("ddlProduct"), DropDownList)
+                Dim ddlMethod As DropDownList = CType(e.Item.FindControl("ddlMethod"), DropDownList)
+                Dim txtDiscount As TextBox = CType(e.Item.FindControl("txtDiscount"), TextBox)
+                Dim txtDescription As TextBox = CType(e.Item.FindControl("txtDescription"), TextBox)
 
-                If ddlType Is Nothing OrElse ddlData Is Nothing Then Exit Sub
+                If ddlProduct Is Nothing Then Exit Sub
 
-                If drv("Type") IsNot DBNull.Value Then
-                    ddlType.SelectedValue = drv("Type").ToString()
+                If ddlMethod IsNot Nothing Then
+                    ddlMethod.SelectedValue = drv("Method").ToString()
+                End If
+                If txtDiscount IsNot Nothing Then
+                    txtDiscount.Text = drv("Discount").ToString()
+                End If
+                If txtDescription IsNot Nothing Then
+                    txtDescription.Text = drv("Description").ToString()
                 End If
 
                 If ddlType.SelectedValue <> "" Then
-                    BindData(ddlType.SelectedValue, ddlData)
+                    BindProduct(ddlType.SelectedValue, ddlProduct)
 
-                    If drv("Data") IsNot DBNull.Value Then
-                        Dim item As ListItem = ddlData.Items.FindByValue(drv("Data").ToString())
+                    Dim productId As String = drv("Product").ToString()
+                    If Not String.IsNullOrEmpty(productId) Then
 
+                        Dim item As ListItem = ddlProduct.Items.FindByValue(productId)
                         If item IsNot Nothing Then
-                            ddlData.SelectedValue = item.Value
+                            ddlProduct.SelectedValue = item.Value
                         End If
                     End If
                 End If
@@ -93,16 +102,15 @@ Partial Class Setting_Price_Promo_Detail_Add
             SaveGrid()
 
             Dim index As Integer
-            If Not Integer.TryParse(e.CommandArgument.ToString(), index) Then Exit Sub
-
+            If Not Integer.TryParse(e.CommandArgument.ToString(), index) Then
+                Exit Sub
+            End If
             If index >= 0 AndAlso index < PromoTable.Rows.Count Then
                 PromoTable.Rows.RemoveAt(index)
             End If
-
             If PromoTable.Rows.Count = 0 Then
                 PromoTable.Rows.Add("", "", "", "")
             End If
-
             BindGrid()
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -113,15 +121,23 @@ Partial Class Setting_Price_Promo_Detail_Add
     End Sub
 
     Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
         Try
-            Dim ddlType As DropDownList = CType(sender, DropDownList)
-            Dim item As RepeaterItem = CType(ddlType.NamingContainer, RepeaterItem)
-            Dim ddlData As DropDownList = CType(item.FindControl("ddlData"), DropDownList)
+            Dim discType As String = ddlType.SelectedValue.Trim()
 
-            BindData(ddlType.SelectedValue, ddlData)
+            PromoTable.Rows.Clear()
 
-            PromoTable.Rows(item.ItemIndex)("Type") = ddlType.SelectedValue
-            PromoTable.Rows(item.ItemIndex)("Data") = ""
+            If String.IsNullOrEmpty(discType) Then
+                PromoTable.Rows.Add("", "", "", "")
+                BindGrid()
+
+                Exit Sub
+            End If
+
+            PromoTable.Rows.Clear()
+            PromoTable.Rows.Add("", "", "", "")
+
+            BindGrid()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Session("RoleName").ToString() <> "Developer" Then
@@ -143,29 +159,80 @@ Partial Class Setting_Price_Promo_Detail_Add
         End Try
     End Sub
 
+    Protected Sub btnSubmitAgain_Click(sender As Object, e As EventArgs)
+        Process("Again")
+    End Sub
 
-    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+    Protected Sub btnSubmitFinish_Click(sender As Object, e As EventArgs)
+        Process()
+    End Sub
+
+    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
+        url = String.Format("~/setting/price/promo/detail?promoid={0}", lblPromoId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub Process(Optional action As String = "")
         MessageError(False, String.Empty)
         Try
             SaveGrid()
 
+            If ddlPromo.SelectedValue = "" Then
+                MessageError(True, "ACCOUNT IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlType.SelectedValue = "" Then
+                MessageError(True, "PROMO TYPE IS REQUIRED !")
+                Exit Sub
+            End If
+
             Dim dt As DataTable = PromoTable
-            If dt.Rows.Count = 0 Then Exit Sub
+            If dt.Rows.Count = 0 Then
+                MessageError(True, "AT LEAST ONE PROMO ROW IS REQUIRED !")
+                Exit Sub
+            End If
+
+            For i As Integer = 0 To dt.Rows.Count - 1
+                Dim product As String = dt.Rows(i)("Product").ToString().Trim()
+                Dim method As String = dt.Rows(i)("Method").ToString().Trim()
+                Dim discount As String = dt.Rows(i)("Discount").ToString().Trim()
+
+                Dim rowNumber As Integer = i + 1
+
+                If product = "" AndAlso discount = "" AndAlso method = "" Then
+                    MessageError(True, String.Format("ROW {0}: PRODUCT, METHOD AND PROMO ARE REQUIRED !", rowNumber))
+                    Exit Sub
+                End If
+                If product = "" Then
+                    MessageError(True, String.Format("ROW {0}: PRODUCT IS REQUIRED !", rowNumber))
+                    Exit Sub
+                End If
+                If method = "" Then
+                    MessageError(True, String.Format("ROW {0}: METHOD IS REQUIRED !", rowNumber))
+                    Exit Sub
+                End If
+                If discount = "" Then
+                    MessageError(True, String.Format("ROW {0}: DISCOUNT IS REQUIRED !", rowNumber))
+                    Exit Sub
+                End If
+            Next
 
             For Each dr As DataRow In dt.Rows
-                If dr("Type").ToString = "" Then Continue For
-                If dr("Data").ToString = "" Then Continue For
+                If dr("Product").ToString = "" Then Continue For
+                If dr("Method").ToString = "" Then Continue For
+                If dr("Discount").ToString = "" Then Continue For
 
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PromoDetails ORDER BY Id DESC")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand("INSERT INTO PromoDetails VALUES (@Id, @PromoId, @Type, @DataId, @Discount, @Status)", thisConn)
+                    Using thisCmd As New SqlCommand("INSERT INTO PromoDetails VALUES (@Id, @PromoId, @Type, @Method, @DataId, @Discount, @Description, 'Active')", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
-                        thisCmd.Parameters.AddWithValue("@PromoId", ddlPromo.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Type", dr("Type"))
-                        thisCmd.Parameters.AddWithValue("@DataId", dr("Data"))
+                        thisCmd.Parameters.AddWithValue("@PromoId", lblPromoId.Text)
+                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Method", dr("Method"))
+                        thisCmd.Parameters.AddWithValue("@DataId", dr("Product"))
                         thisCmd.Parameters.AddWithValue("@Discount", dr("Discount"))
-                        thisCmd.Parameters.AddWithValue("@Status", dr("Status"))
+                        thisCmd.Parameters.AddWithValue("@Description", dr("Description"))
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -175,77 +242,76 @@ Partial Class Setting_Price_Promo_Detail_Add
                 settingClass.Logs(dataLog)
             Next
 
-            Session.Remove("PromoTable")
-            Response.Redirect(String.Format("~/setting/price/promo/detail?promoid={0}", ddlPromo.SelectedValue), False)
+            url = String.Format("~/setting/price/promo/detail?promoid={0}", lblPromoId.Text)
+            Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Session("RoleName") <> "Developer" Then
+            If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
 
-    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Session.Remove("PromoTable")
-        Dim url As String = String.Format("~/setting/price/promo/detail/?promoid={0}", ddlPromo.SelectedValue)
-        Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub BindPromo()
+    Protected Sub BindPromo(promoId As String)
         ddlPromo.Items.Clear()
         Try
-            ddlPromo.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Promos ORDER BY Name ASC")
-            ddlPromo.DataTextField = "Name"
-            ddlPromo.DataValueField = "Id"
-            ddlPromo.DataBind()
+            If Not String.IsNullOrEmpty(promoId) Then
+                ddlPromo.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Promos WHERE Id='" & promoId & "' ORDER BY Name ASC")
+                ddlPromo.DataTextField = "Name"
+                ddlPromo.DataValueField = "Id"
+                ddlPromo.DataBind()
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
     End Sub
 
-    Protected Sub BindData(type As String, ddl As DropDownList)
+    Protected Sub BindProduct(discType As String, ddl As DropDownList)
         Try
-            Dim dt As DataTable
-            Select Case type
-                Case "Designs"
-                    dt = settingClass.GetDataTable("SELECT Id, Name FROM Designs")
-                Case "Blinds"
-                    dt = settingClass.GetDataTable("SELECT Blinds.Id, '[' + Designs.Name + '] ' + Blinds.Name AS Name FROM Blinds INNER JOIN Designs ON Blinds.DesignId=Designs.Id ORDER BY Designs.Name, Blinds.Name ASC")
-                Case "Products"
-                    dt = settingClass.GetDataTable("SELECT Id, Name FROM Products")
-                Case "RollerFabrics"
-                    dt = settingClass.GetDataTable("SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE designArray.VALUE='12' AND (Status='In Stock' OR Status='Limited Stock')")
-                Case "CurtainFabrics"
-                    dt = settingClass.GetDataTable("SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE designArray.VALUE='3' AND (Status='In Stock' OR Status='Limited Stock')")
-                Case "RollerFabricColours"
-                    dt = settingClass.GetDataTable("SELECT FabricColours.Id AS Id, FabricColours.Name AS Name FROM FabricColours LEFT JOIN Fabrics CROSS APPLY STRING_SPLIT(Fabrics.DesignId, ',') AS designArray ON FabricColours.FabricId=Fabrics.Id WHERE designArray.VALUE='12'")
-                Case "CurtainFabricColours"
-                    dt = settingClass.GetDataTable("SELECT FabricColours.Id AS Id, FabricColours.Name AS Name FROM FabricColours LEFT JOIN Fabrics CROSS APPLY STRING_SPLIT(Fabrics.DesignId, ',') AS designArray ON FabricColours.FabricId=Fabrics.Id WHERE designArray.VALUE='3'")
-                Case "FrameColours"
-                    dt = New DataTable()
+            If Not String.IsNullOrEmpty(discType) Then
+                Dim dt As DataTable
 
-                    dt.Columns.Add("Id")
-                    dt.Columns.Add("Name")
+                Select Case discType
+                    Case "Designs"
+                        dt = settingClass.GetDataTable("SELECT Id, Name FROM Designs")
+                    Case "Blinds"
+                        dt = settingClass.GetDataTable("SELECT Blinds.Id, '[' + Designs.Name + '] ' + Blinds.Name AS Name FROM Blinds INNER JOIN Designs ON Blinds.DesignId=Designs.Id ORDER BY Designs.Name, Blinds.Name ASC")
+                    Case "Products"
+                        dt = settingClass.GetDataTable("SELECT Id, Name FROM Products")
+                    Case "RollerFabrics"
+                        dt = settingClass.GetDataTable("SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE designArray.VALUE='12' AND (Status='In Stock' OR Status='Limited Stock')")
+                    Case "CurtainFabrics"
+                        dt = settingClass.GetDataTable("SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE designArray.VALUE='3' AND (Status='In Stock' OR Status='Limited Stock')")
+                    Case "RollerFabricColours"
+                        dt = settingClass.GetDataTable("SELECT FabricColours.Id AS Id, FabricColours.Name AS Name FROM FabricColours LEFT JOIN Fabrics CROSS APPLY STRING_SPLIT(Fabrics.DesignId, ',') AS designArray ON FabricColours.FabricId=Fabrics.Id WHERE designArray.VALUE='12'")
+                    Case "CurtainFabricColours"
+                        dt = settingClass.GetDataTable("SELECT FabricColours.Id AS Id, FabricColours.Name AS Name FROM FabricColours LEFT JOIN Fabrics CROSS APPLY STRING_SPLIT(Fabrics.DesignId, ',') AS designArray ON FabricColours.FabricId=Fabrics.Id WHERE designArray.VALUE='3'")
+                    Case "FrameColours"
+                        dt = New DataTable()
 
-                    dt.Rows.Add("Primrose (Express)", "Primrose (Express)")
-                    dt.Rows.Add("Primrose (Regular)", "Primrose (Regular)")
-                Case Else
-                    dt = New DataTable()
-            End Select
+                        dt.Columns.Add("Id")
+                        dt.Columns.Add("Name")
 
-            ddl.SelectedIndex = -1
-            ddl.ClearSelection()
-            ddl.Items.Clear()
+                        dt.Rows.Add("Primrose (Express)", "Primrose (Express)")
+                        dt.Rows.Add("Primrose (Regular)", "Primrose (Regular)")
+                    Case Else
+                        dt = New DataTable()
+                End Select
 
-            ddl.DataSource = Nothing
-            ddl.DataBind()
+                ddl.SelectedIndex = -1
+                ddl.ClearSelection()
+                ddl.Items.Clear()
 
-            ddl.DataSource = dt
-            ddl.DataTextField = "Name"
-            ddl.DataValueField = "Id"
-            ddl.DataBind()
+                ddl.DataSource = Nothing
+                ddl.DataBind()
 
-            ddl.Items.Insert(0, New ListItem("", ""))
+                ddl.DataSource = dt
+                ddl.DataTextField = "Name"
+                ddl.DataValueField = "Id"
+                ddl.DataBind()
+
+                ddl.Items.Insert(0, New ListItem("", ""))
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Session("RoleName").ToString() <> "Developer" Then
@@ -277,23 +343,28 @@ Partial Class Setting_Price_Promo_Detail_Add
             For i As Integer = 0 To rptPromo.Items.Count - 1
                 Dim item As RepeaterItem = rptPromo.Items(i)
 
-                Dim ddlType As DropDownList = CType(item.FindControl("ddlType"), DropDownList)
-                Dim ddlData As DropDownList = CType(item.FindControl("ddlData"), DropDownList)
+                Dim ddlProduct As DropDownList = CType(item.FindControl("ddlProduct"), DropDownList)
+                Dim ddlMethod As DropDownList = CType(item.FindControl("ddlMethod"), DropDownList)
                 Dim txtDiscount As TextBox = CType(item.FindControl("txtDiscount"), TextBox)
-                Dim ddlStatus As DropDownList = CType(item.FindControl("ddlStatus"), DropDownList)
+                Dim txtDescription As TextBox = CType(item.FindControl("txtDescription"), TextBox)
 
-                If ddlType Is Nothing OrElse ddlData Is Nothing OrElse txtDiscount Is Nothing OrElse ddlStatus Is Nothing Then
+                If ddlProduct Is Nothing OrElse ddlMethod Is Nothing OrElse txtDiscount Is Nothing OrElse txtDescription Is Nothing Then
                     Continue For
                 End If
 
-                dt.Rows(i)("Type") = ddlType.SelectedValue
                 dt.Rows(i)("Discount") = txtDiscount.Text.Trim()
-                dt.Rows(i)("Status") = ddlStatus.SelectedValue
-
-                If ddlData.SelectedItem Is Nothing Then
-                    dt.Rows(i)("Data") = ""
+                dt.Rows(i)("Description") = txtDescription.Text.Trim()
+                If ddlMethod.SelectedItem Is Nothing Then
+                    dt.Rows(i)("Method") = ""
                 Else
-                    dt.Rows(i)("Data") = ddlData.SelectedValue
+                    dt.Rows(i)("Method") =
+                    ddlMethod.SelectedValue
+                End If
+                If ddlProduct.SelectedItem Is Nothing Then
+                    dt.Rows(i)("Product") = ""
+                Else
+                    dt.Rows(i)("Product") =
+                    ddlProduct.SelectedValue
                 End If
             Next
             PromoTable = dt

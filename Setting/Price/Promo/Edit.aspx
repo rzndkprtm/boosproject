@@ -43,6 +43,7 @@
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
                                             <asp:ListItem Value="Sell" Text="Promo Sell"></asp:ListItem>
                                             <asp:ListItem Value="Buy" Text="Promo Buy"></asp:ListItem>
+                                            <asp:ListItem Value="Factory" Text="Promo Factory"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>
@@ -66,15 +67,6 @@
                                     <div class="col-12 form-group">
                                         <label class="form-label">Description</label>
                                         <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Status</label>
-                                        <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
-                                            <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
-                                            <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
-                                        </asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="row mt-3" runat="server" id="divError">

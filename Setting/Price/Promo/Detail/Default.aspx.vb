@@ -1,7 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
-Imports System.Runtime.InteropServices.ComTypes
 
 Partial Class Setting_Price_Promo_Detail_Default
     Inherits Page
@@ -193,7 +192,8 @@ Partial Class Setting_Price_Promo_Detail_Default
                 Exit Sub
             End If
 
-            lblCompanyDetail.Text = thisData("CompanyName").ToString()
+            lblCompanyName.Text = thisData("CompanyName").ToString()
+            lblCompanyId.Text = thisData("CompanyId").ToString()
             lblName.Text = thisData("Name").ToString()
             lblStartDate.Text = Convert.ToDateTime(thisData("StartDate")).ToString("dd MMM yyyy")
             lblEndDate.Text = Convert.ToDateTime(thisData("EndDate")).ToString("dd MMM yyyy")
@@ -204,11 +204,11 @@ Partial Class Setting_Price_Promo_Detail_Default
                 lblDescription.Text = "&nbsp;"
             End If
 
-            Dim promoDetailQuerya As String = "SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND (Status='Active' OR Status='Inactive')"
+            Dim promoDetailQuery As String = "SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND (Status='Active' OR Status='Inactive')"
             If Session("RoleName") = "Developer" Then
-                promoDetailQuerya = "SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'"
+                promoDetailQuery = "SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "'"
             End If
-            gvList.DataSource = settingClass.GetDataTable(promoDetailQuerya)
+            gvList.DataSource = settingClass.GetDataTable(promoDetailQuery)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID Detail")
 
@@ -246,9 +246,25 @@ Partial Class Setting_Price_Promo_Detail_Default
         Return settingClass.GetItemData(String.Format("SELECT Name FROM {0} WHERE Id='{1}'", type, dataId))
     End Function
 
-    Protected Function DiscountValue(data As Decimal) As String
+    Protected Function TextStatus(status As String) As String
+        Dim result As String = "Activate"
+        If status = "Active" Then : Return "Deactivate" : End If
+        Return result
+    End Function
+
+    Protected Function DiscountValue(method As String, data As Decimal) As String
         If data > 0 Then
-            Return data.ToString("G29", enUS) & "%"
+            If method = "Percent" Then
+                Return data.ToString("G29", enUS) & "%"
+            End If
+            If method = "Value" Then
+                If lblCompanyId.Text = "2" Then
+                    Return "$" & data.ToString("G29", enUS)
+                End If
+                If lblCompanyId.Text = "3" Then
+                    Return "Rp" & data.ToString("G29", enUS)
+                End If
+            End If
         End If
         Return "ERROR"
     End Function

@@ -1222,15 +1222,25 @@ Partial Class Setting_Customer_Detail
         If type = "RollerFabricColours" OrElse type = "RomanFabricColours" OrElse type = "PanelGlideFabricColours" Then
             dataName = settingClass.GetItemData("SELECT Name FROM FabricColours WHERE Id='" & dataId & "'")
         End If
+        If type = "RollerChains" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM Chains WHERE Id='" & dataId & "'")
+        End If
         Return dataName
     End Function
 
-    Protected Function DiscountValue(data As Decimal) As String
-        If data > 0 Then Return data.ToString("G29", enUS) & "%"
+    Protected Function DiscountValue(method As String, data As Decimal) As String
+        If data > 0 Then
+            If lblCompanyId.Text = "2" Then
+                If method = "Percent" Then Return data.ToString("G29", enUS) & "%"
+                Return "$" & data.ToString("G29", enUS)
+            End If
+            If lblCompanyId.Text = "3" Then
+                If method = "Percent" Then Return data.ToString("G29", enUS) & "%"
+                Return "Rp" & data.ToString("G29", enUS)
+            End If
+        End If
         Return "ERROR"
     End Function
-
-
 
     Protected Sub MessageError_Discount(visible As Boolean, message As String)
         divErrorDiscount.Visible = visible : msgErrorDiscount.InnerText = message

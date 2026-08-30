@@ -11,7 +11,7 @@
         .order-filter-header .form-control:focus { border-color: #86b7fe; box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10); }
         .order-filter-header .btn-primary { min-width: 90px; font-weight: 500; }
         
-        .order-grid { font-size: 1rem; }
+        .order-grid { font-size: 0.9rem; }
         .order-grid thead th { background: #f8f9fa; color: #495057; font-size: 0.85rem; font-weight: 600; white-space: nowrap; vertical-align: middle; border-bottom: 1px solid #dee2e6; padding: 0.7rem 0.65rem; }
         .order-grid tbody td { padding: 0.65rem 0.65rem; vertical-align: middle; }
         .order-grid tbody tr { transition: background-color 0.15s ease; }
@@ -19,58 +19,20 @@
         .order-grid .btn-sm { font-size: 0.78rem; padding: 0.3rem 0.65rem; }
         .order-grid .dropdown-menu { font-size: 0.85rem; box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.10); border: 1px solid #e9ecef; }
         .order-grid .dropdown-item { padding: 0.45rem 0.85rem; }
-
-        .order-grid-body {
-            padding: 1rem 1.25rem 1.25rem !important;
-        }
-
-        .order-filter-footer {
-            background: #fff;
-            border-top: 1px solid #e9ecef;
-            padding: 0.85rem 1.25rem !important;
-        }
-
-        .order-filter-footer .form-select {
-            min-width: 130px;
-            font-size: 0.85rem;
-            border-color: #dee2e6;
-        }
-
-        #navPager .pagination {
-            gap: 3px;
-        }
-
-        #navPager .page-link {
-            border-radius: 6px !important;
-            border: 1px solid #dee2e6;
-            font-size: 0.82rem;
-            min-width: 34px;
-            text-align: center;
-        }
-
-        #navPager .page-item.active .page-link {
-            font-weight: 600;
-        }
-
+        .order-grid-body { padding: 1rem 1.25rem 1.25rem !important; }
+        .order-filter-footer { background: #fff; border-top: 1px solid #e9ecef; padding: 0.85rem 1.25rem !important; }
+        .order-filter-footer .form-select { min-width: 130px; font-size: 0.85rem; border-color: #dee2e6; }
+        #navPager .pagination { gap: 3px; }
+        #navPager .page-link { border-radius: 6px !important; border: 1px solid #dee2e6; font-size: 0.82rem; min-width: 34px; text-align: center; }
+        #navPager .page-item.active .page-link { font-weight: 600; }
         @media (max-width: 991.98px) {
-            .order-filter-header {
-                padding: 1rem !important;
-            }
-
-            .order-filter-header .input-group {
-                height: 40px;
-            }
-
-            .order-grid-body {
-                padding: 0.75rem !important;
-            }
-
-            .order-filter-footer {
-                padding: 0.75rem 1rem !important;
-            }
+            .order-filter-header { padding: 1rem !important; }
+            .order-filter-header .input-group { height: 40px; }
+            .order-grid-body { padding: 0.75rem !important; }
+            .order-filter-footer { padding: 0.75rem 1rem !important; }
         }
     </style>
-
+    
     <div class="page-heading">
         <div class="page-title">
             <div class="row">

@@ -83,7 +83,7 @@ Partial Class Setting_Price_Calculation_Add
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceCalculations VALUES (@Id, @Name, @Method, @PriceGroupId, @DesignId, @Formula, @SellMinSize, @BuyMinSize, @SellMinWidth, @BuyMinWidth, @SellMinDrop, @BuyMinDrop, @Active)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceCalculations VALUES (@Id, @Name, @Method, @PriceGroupId, @DesignId, @Formula, @SellMinSize, @BuyMinSize, @SellMinWidth, @BuyMinWidth, @SellMinDrop, @BuyMinDrop, @Status)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
                         thisCmd.Parameters.AddWithValue("@Method", ddlMethod.SelectedValue)
@@ -96,7 +96,7 @@ Partial Class Setting_Price_Calculation_Add
                         thisCmd.Parameters.AddWithValue("@BuyMinWidth", If(String.IsNullOrEmpty(txtBuyMinWidth.Text), CType(DBNull.Value, Object), txtBuyMinWidth.Text))
                         thisCmd.Parameters.AddWithValue("@SellMinDrop", If(String.IsNullOrEmpty(txtSellMinDrop.Text), CType(DBNull.Value, Object), txtSellMinDrop.Text))
                         thisCmd.Parameters.AddWithValue("@BuyMinDrop", If(String.IsNullOrEmpty(txtBuyMinDrop.Text), CType(DBNull.Value, Object), txtBuyMinDrop.Text))
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
 
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
