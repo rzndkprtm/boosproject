@@ -411,7 +411,7 @@
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:BoundField DataField="Id" HeaderText="ID" />
-                                        <asp:BoundField DataField="ProductId" HeaderText="Product ID" />
+                                        <asp:BoundField DataField="ProductId" HeaderText="Product ID" ItemStyle-Width="150px" />
                                         <asp:TemplateField HeaderText="Description">
                                             <ItemTemplate>
                                                 <%# BindProductDescription(Eval("Id")) %>

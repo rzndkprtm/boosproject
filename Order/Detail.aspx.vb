@@ -3414,7 +3414,6 @@ Partial Class Order_Detail
             gvListItem.Columns(6).Visible = LoginAccess("Visible Buy Price")
             gvListItem.Columns(7).Visible = LoginAccess("Visible Factory Price")
 
-
             gvListItem.Columns(8).Visible = False
             If Session("PriceAccess") = "Yes" Then gvListItem.Columns(8).Visible = True
 
