@@ -133,7 +133,7 @@ Partial Class Setting_Customer_Service_Add
                 ddlParameter.SelectedValue = myData("Parameter").ToString()
                 ddlOperator.SelectedValue = myData("Operator").ToString()
                 ddlRegion.SelectedValue = myData("Region").ToString()
-                txtDescription.Text = myData("Description.").ToString()
+                txtDescription.Text = myData("Description").ToString()
 
                 Dim allowCustom As Boolean = CBool(myData("AllowCustom"))
 
