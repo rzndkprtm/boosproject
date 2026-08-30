@@ -3415,7 +3415,9 @@ Partial Class Order_Detail
             gvListItem.Columns(7).Visible = LoginAccess("Visible Factory Price")
 
             gvListItem.Columns(8).Visible = False
-            If Session("PriceAccess") = "Yes" Then gvListItem.Columns(8).Visible = True
+            If Session("RoleName") = "Customer" Then
+                If Session("PriceAccess") = "Yes" Then gvListItem.Columns(8).Visible = True
+            End If
 
             If status = "Unsubmitted" And gvListItem.Rows.Count > 0 Then
                 Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text}}
