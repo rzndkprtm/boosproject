@@ -411,7 +411,7 @@
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:BoundField DataField="Id" HeaderText="ID" />
-                                        <asp:BoundField DataField="ProductId" HeaderText="Product ID" ItemStyle-Width="150px" />
+                                        <asp:BoundField DataField="ProductId" HeaderText="Product ID" ItemStyle-Width="130px" />
                                         <asp:TemplateField HeaderText="Description">
                                             <ItemTemplate>
                                                 <%# BindProductDescription(Eval("Id")) %>
@@ -422,22 +422,22 @@
                                                 <%# ItemCosting(Eval("Id").ToString(), "SellPrice") %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Sell Price">
+                                        <asp:TemplateField HeaderText="Sell Price" ItemStyle-Width="130px">
                                             <ItemTemplate>
                                                 <%# ItemCosting(Eval("Id").ToString(), "SellPrice") %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Buy Price">
+                                        <asp:TemplateField HeaderText="Buy Price" ItemStyle-Width="130px">
                                             <ItemTemplate>
                                                 <%# ItemCosting(Eval("Id").ToString(), "BuyPrice") %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Factory Price">
+                                        <asp:TemplateField HeaderText="Factory Price" ItemStyle-Width="130px">
                                             <ItemTemplate>
                                                 <%# ItemCosting(Eval("Id").ToString(), "FactoryPrice") %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Mark Up">
+                                        <asp:TemplateField HeaderText="Mark Up" ItemStyle-Width="130px">
                                             <ItemTemplate>
                                                 <%# BindMarkUp(Eval("MarkUp")) %>
                                             </ItemTemplate>
