@@ -44,12 +44,14 @@ Partial Class Setting_Price_Service_Add
             If msgError.InnerText = "" Then
                 If ddlType.SelectedValue = "Price" Then
                     ddlOperator.SelectedValue = ""
-                    txtBuyValue.Text = String.Empty
                     txtSellValue.Text = String.Empty
+                    txtBuyValue.Text = String.Empty
+                    txtFactoryValue.Text = String.Empty
                 End If
                 If ddlType.SelectedValue = "Formula" Then
-                    txtBuyPrice.Text = String.Empty
                     txtSellPrice.Text = String.Empty
+                    txtBuyPrice.Text = String.Empty
+                    txtFactoryPrice.Text = String.Empty
                 End If
 
                 Dim serviceId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceServices ORDER BY Id DESC")
@@ -60,17 +62,19 @@ Partial Class Setting_Price_Service_Add
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceServices VALUES (@Id, @CompanyDetailId, @Name, @Type, @DefaultBuyPrice, @DefaultSellPrice, @Parameter, @Operator, @BuyValue, @SellValue, @MinValue, @MaxValue, @Region, @AutoCreate, @AllowCustom, @Description, @Status)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceServices VALUES (@Id, @CompanyDetailId, @Name, @Type, @DefaultSellPrice, @DefaultBuyPrice, @DefaultFactoryPrice, @Parameter, @Operator, @SellValue, @BuyValue, @FactoryValue, @MinValue, @MaxValue, @Region, @AutoCreate, @AllowCustom, @Description, @Status)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", serviceId)
                         thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@DefaultBuyPrice", If(String.IsNullOrEmpty(txtBuyPrice.Text), CType(DBNull.Value, Object), txtBuyPrice.Text))
                         thisCmd.Parameters.AddWithValue("@DefaultSellPrice", If(String.IsNullOrEmpty(txtSellPrice.Text), CType(DBNull.Value, Object), txtSellPrice.Text))
+                        thisCmd.Parameters.AddWithValue("@DefaultBuyPrice", If(String.IsNullOrEmpty(txtBuyPrice.Text), CType(DBNull.Value, Object), txtBuyPrice.Text))
+                        thisCmd.Parameters.AddWithValue("@DefaultFactoryPrice", If(String.IsNullOrEmpty(txtFactoryPrice.Text), CType(DBNull.Value, Object), txtFactoryPrice.Text))
                         thisCmd.Parameters.AddWithValue("@Parameter", ddlParameter.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Operator", ddlOperator.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@BuyValue", If(String.IsNullOrEmpty(txtBuyValue.Text), CType(DBNull.Value, Object), txtBuyValue.Text))
                         thisCmd.Parameters.AddWithValue("@SellValue", If(String.IsNullOrEmpty(txtSellValue.Text), CType(DBNull.Value, Object), txtSellValue.Text))
+                        thisCmd.Parameters.AddWithValue("@BuyValue", If(String.IsNullOrEmpty(txtBuyValue.Text), CType(DBNull.Value, Object), txtBuyValue.Text))
+                        thisCmd.Parameters.AddWithValue("@FactoryValue", If(String.IsNullOrEmpty(txtFactoryValue.Text), CType(DBNull.Value, Object), txtFactoryValue.Text))
                         thisCmd.Parameters.AddWithValue("@MinValue", If(String.IsNullOrEmpty(txtMinimumValue.Text), CType(DBNull.Value, Object), txtMinimumValue.Text))
                         thisCmd.Parameters.AddWithValue("@MaxValue", If(String.IsNullOrEmpty(txtMaximumValue.Text), CType(DBNull.Value, Object), txtMaximumValue.Text))
                         thisCmd.Parameters.AddWithValue("@Region", ddlRegion.SelectedValue)
@@ -93,7 +97,7 @@ Partial Class Setting_Price_Service_Add
                         Dim customerServiceId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerServices ORDER BY Id DESC")
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerServices SELECT @Id, @CustomerId, Id, AllowCustom, Type, DefaultBuyPrice, DefaultSellPrice, Parameter, Operator, BuyValue, SellValue, MinValue, MaxValue, Region FROM PriceServices WHERE Id=@ServiceId", thisConn)
+                            Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerServices SELECT @Id, @CustomerId, Id, AllowCustom, Type, DefaultSellPrice, DefaultBuyPrice, DefaultFactoryPrice, Parameter, Operator, SellValue, BuyValue, FactoryValue, MinValue, MaxValue, Region FROM PriceServices WHERE Id=@ServiceId", thisConn)
                                 thisCmd.Parameters.AddWithValue("@Id", customerServiceId)
                                 thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
                                 thisCmd.Parameters.AddWithValue("@ServiceId", serviceId)
@@ -123,17 +127,17 @@ Partial Class Setting_Price_Service_Add
 
     Protected Sub BindForm(type As String)
         Try
-            divDefaultBuy.Visible = False
-            divDefaultSell.Visible = False
-            divFormula.Visible = False
+            divDefaultPrice.Visible = False
+            divOperator.Visible = False
+            divFormulaValue.Visible = False
 
             If type = "Price" Then
-                divDefaultBuy.Visible = True
-                divDefaultSell.Visible = True
+                divDefaultPrice.Visible = True
             End If
 
             If type = "Formula" Then
-                divFormula.Visible = True
+                divOperator.Visible = True
+                divFormulaValue.Visible = True
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

@@ -68,14 +68,19 @@
                                             <asp:BoundField DataField="Name" HeaderText="Name" />
                                             <asp:BoundField DataField="CompanyDetailName" HeaderText="Company Name" />
                                             <asp:BoundField DataField="Type" HeaderText="Type" />
+                                            <asp:TemplateField HeaderText="Default Sell Price">
+                                                <ItemTemplate>
+                                                    <%# BindDecimal(Eval("DefaultSellPrice")) %>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Default Buy Price">
                                                 <ItemTemplate>
                                                     <%# BindDecimal(Eval("DefaultBuyPrice")) %>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="Default Sell Price">
+                                            <asp:TemplateField HeaderText="Default Factory Price">
                                                 <ItemTemplate>
-                                                    <%# BindDecimal(Eval("DefaultSellPrice")) %>
+                                                    <%# BindDecimal(Eval("DefaultFactoryPrice")) %>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Parameter" HeaderText="Parameter" />

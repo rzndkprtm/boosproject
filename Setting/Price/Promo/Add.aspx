@@ -43,6 +43,7 @@
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
                                             <asp:ListItem Value="Sell" Text="Promo Sell"></asp:ListItem>
                                             <asp:ListItem Value="Buy" Text="Promo Buy"></asp:ListItem>
+                                            <asp:ListItem Value="Factory" Text="Promo Factory"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>

@@ -1,6 +1,24 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Detail.aspx.vb" Inherits="Setting_Specification_Bottom_Detail" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Bottom Detail" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <style>
+        .info-item { height: 100%; }
+        .info-label { font-size: 0.78rem; font-weight: 600; color: #6c757d; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 7px; }
+        .info-value { font-size: 1rem; font-weight: 600; color: #212529; min-height: 24px; }
+        .info-description { background: #f8f9fa; border: 1px solid #edf0f2; border-radius: 6px; padding: 12px 14px; min-height: 45px; color: #495057; line-height: 1.5; }
+        .card { border-radius: 8px; }
+        .card-header { border-radius: 8px 8px 0 0 !important; }
+        .card-title { color: #212529; }
+        .card-footer .btn { min-width: 90px; }
+        @media (max-width: 767.98px) {
+            .card-header,
+            .card-body,
+            .card-footer { padding-left: 16px !important; padding-right: 16px !important; }
+            .card-footer .d-flex { justify-content: stretch !important; }
+            .card-footer .btn { flex: 1; }
+        }
+    </style>
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -34,65 +52,83 @@
                 </div>
             </div>
         </section>
-        <section class="row">
-            <div class="col-12 col-sm-12 col-lg-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="form form-vertical">
-                            <div class="row mb-3">
-                                <div class="col-12">
-                                    <label>Bottom Name</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblName" CssClass="form-label font-bold"></asp:Label>
+        <section class="row g-3">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom py-3 px-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5 class="card-title mt-2 mb-1 fw-semibold">Bottom Information</h5>
+                                <small class="text-muted">Bottom details and configuration</small>
+                            </div>
+                            <div class="text-muted small">
+                                <span class="me-1">ID:</span>
+                                <asp:Label runat="server" ID="lblId" CssClass="fw-semibold"></asp:Label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body px-4 py-4">
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="info-item">
+                                    <div class="info-label">Bottom Name</div>
+                                    <div class="info-value">
+                                        <asp:Label runat="server" ID="lblName"></asp:Label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-12">
-                                    <label>Design Type</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblDesignType" CssClass="form-label font-bold"></asp:Label>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="info-item">
+                                    <div class="info-label">Design Type</div>
+                                    <div class="info-value">
+                                        <asp:Label runat="server" ID="lblDesignType"></asp:Label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-12">
-                                    <label>Company Detail</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblCompanyDetail" CssClass="form-label font-bold"></asp:Label>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="info-item">
+                                    <div class="info-label">Company Detail</div>
+                                    <div class="info-value">
+                                        <asp:Label runat="server" ID="lblCompanyDetail"></asp:Label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row mb-3">
-                                <div class="col-12">
-                                    <label>Description</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblDescription" CssClass="form-label font-bold"></asp:Label>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="info-item">
+                                    <div class="info-label">Status</div>
+                                    <div class="info-value">
+                                        <asp:Label runat="server" ID="lblStatus" CssClass="fw-semibold"></asp:Label>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <label>Status</label>
-                                    <br />
-                                    <asp:Label runat="server" ID="lblStatus" CssClass="form-label font-bold"></asp:Label>
+                            <div class="col-12">
+                                <div class="info-item">
+                                    <div class="info-label">Description</div>
+                                    <div class="info-description">
+                                        <asp:Label runat="server" ID="lblDescription"></asp:Label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer text-center">
-                        <asp:Button runat="server" ID="btnEdit" CssClass="btn btn-info" Text="Edit" OnClick="btnEdit_Click" />
-                        <a href="javascript:void(0);" runat="server" id="aChangeStatus" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalChangeStatus">Change Status</a>
-                        <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Bottoms', '<%= lblId.Text %>')">Log</a>
+                    <div class="card-footer bg-light border-top px-4 py-3">
+                        <div class="d-flex justify-content-end align-items-center flex-wrap gap-2">
+                            <asp:Button runat="server" ID="btnEdit" CssClass="btn btn-info" Text="Edit" OnClick="btnEdit_Click" />
+                            <a href="javascript:void(0);" runat="server" id="aChangeStatus" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalChangeStatus">Change Status</a>
+                            <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Bottoms', '<%= lblId.Text %>')">Log</a>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-8">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <div class="row">
-                            <div class="col-6">
-                                <h3 class="card-title">List Colour</h3>
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                            <div>
+                                <h5 class="card-title mb-1 fw-semibold">List Colour</h5>
+                                <small class="text-muted">Manage available colours for this bottom</small>
                             </div>
-                            <div class="col-6 d-flex justify-content-end">
-                                <asp:Button runat="server" ID="btnAddColour" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddColour_Click" />
-                            </div>
+                            <asp:Button runat="server" ID="btnAddColour" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddColour_Click" />
                         </div>
                     </div>
                     <div class="card-body">
@@ -281,7 +317,6 @@
     </div>
 
     <div runat="server" visible="false">
-        <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblIdColour"></asp:Label>
         <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>

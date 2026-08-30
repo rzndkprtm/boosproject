@@ -219,8 +219,9 @@ Partial Class Order_Rework_Detail
             For Each row As DataRow In dtService.Rows
                 Dim serviceId As Integer = Convert.ToInt32(row("ServiceId"))
                 Dim serviceName As String = row("Name").ToString()
-                Dim buyPrice As Decimal = Convert.ToDecimal(row("BuyPrice"))
                 Dim sellPrice As Decimal = Convert.ToDecimal(row("SellPrice"))
+                Dim buyPrice As Decimal = Convert.ToDecimal(row("BuyPrice"))
+                Dim factoryPrice As Decimal = Convert.ToDecimal(row("FactoryPrice"))
 
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
@@ -236,7 +237,7 @@ Partial Class Order_Rework_Detail
 
                 orderClass.ResetPriceDetail(newHeaderId, itemId)
 
-                Dim costingArray As Object() = {newHeaderId, itemId, 1, "Base", serviceName, buyPrice, sellPrice}
+                Dim costingArray As Object() = {newHeaderId, itemId, 1, "Base", serviceName, sellPrice, buyPrice, factoryPrice}
                 orderClass.OrderCostings(costingArray)
                 orderClass.FinalCostItem(newHeaderId, itemId)
 

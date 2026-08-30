@@ -27,20 +27,27 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="list-group list-group-horizontal-sm mb-1 text-center" id="dvTab" role="tablist">
+                        <div class="border-bottom pb-4 mb-4">
+                            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
+                                <div>
+                                    <h2 class="fw-bold mb-1">
+                                        <asp:Label runat="server" ID="lblName"></asp:Label>
+                                    </h2>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="text-muted">Status:</span>
+                                        <span class="fw-semibold">
+                                            <asp:Label runat="server" ID="lblStatus"></asp:Label>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group list-group-horizontal-sm mb-4 text-center" id="dvTab" role="tablist">
                             <a class="list-group-item list-group-item-action active" id="listGeneral" data-bs-toggle="list" href="#list-general" role="tab">General Data</a>
                             <a class="list-group-item list-group-item-action" id="listKit" data-bs-toggle="list" href="#list-kit" role="tab">Kit Data</a>
                         </div>
                         <div class="tab-content text-justify">
                             <div class="tab-pane fade show active" id="list-general" role="tabpanel" aria-labelledby="listGeneral">
-                                <div class="border-bottom pb-3 mt-4 mb-4">
-                                    <h2 class="fw-bold mb-1">
-                                        <asp:Label runat="server" ID="lblName"></asp:Label>
-                                    </h2>
-                                    <div class="text-muted">
-                                        <asp:Label runat="server" ID="lblStatus"></asp:Label>
-                                    </div>
-                                </div>
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <h6 class="text-uppercase fw-bold text-primary mb-3">Product Information</h6>

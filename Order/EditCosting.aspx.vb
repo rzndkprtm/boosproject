@@ -42,6 +42,7 @@ Partial Class Order_EditCosting
     Protected Sub btnFinish_Click(sender As Object, e As EventArgs)
         Response.Redirect(String.Format("~/order/detail?orderid={0}", lblHeaderId.Text), False)
     End Sub
+
     Protected Sub btnAddDiscount_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -67,7 +68,7 @@ Partial Class Order_EditCosting
             End Using
 
             If Not String.IsNullOrEmpty(txtDiscountNote.Text) Then
-                Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtDiscountNote.Text.Trim(), 0, 0}
+                Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtDiscountNote.Text.Trim(), 0, 0, 0}
                 orderClass.OrderCostings(costingArray)
             End If
 
@@ -87,7 +88,7 @@ Partial Class Order_EditCosting
     Protected Sub btnAddSurcharge_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, ddlAddItem.SelectedValue, "Surcharge", txtAddDescription.Text, txtAddBuyPrice.Text, txtAddSellPrice.Text}
+            Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, ddlAddItem.SelectedValue, "Surcharge", txtAddDescription.Text, txtAddSellPrice.Text, txtAddBuyPrice.Text, txtAddFactoryPrice.Text}
             orderClass.OrderCostings(costingArray)
             orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
 
@@ -106,7 +107,7 @@ Partial Class Order_EditCosting
     Protected Sub btnAddNote_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtNote.Text.Trim(), 0, 0}
+            Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtNote.Text.Trim(), 0, 0, 0}
             orderClass.OrderCostings(costingArray)
             orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
 
@@ -163,10 +164,15 @@ Partial Class Order_EditCosting
                         Dim newBuy As Decimal = 0
                         Decimal.TryParse(txtNewBuyPrice.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newBuy)
 
-                        Using thisCmd As New SqlCommand("UPDATE OrderCostings SET SellPrice=@SellPrice, BuyPrice=@BuyPrice WHERE Id=@Id", thisConn, tran)
+                        Dim txtNewFactoryPrice As TextBox = CType(thisRow.FindControl("txtNewFactoryPrice"), TextBox)
+                        Dim newFactory As Decimal = 0
+                        Decimal.TryParse(txtNewFactoryPrice.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newFactory)
+
+                        Using thisCmd As New SqlCommand("UPDATE OrderCostings SET SellPrice=@SellPrice, BuyPrice=@BuyPrice, FactoryPrice=@FactoryPrice WHERE Id=@Id", thisConn, tran)
                             thisCmd.Parameters.AddWithValue("@Id", txtUpdateId.Text)
                             thisCmd.Parameters.Add("@SellPrice", SqlDbType.Decimal).Value = newSell
                             thisCmd.Parameters.Add("@BuyPrice", SqlDbType.Decimal).Value = newBuy
+                            thisCmd.Parameters.Add("@FactoryPrice", SqlDbType.Decimal).Value = newFactory
                             thisCmd.ExecuteNonQuery()
                         End Using
 
@@ -175,20 +181,22 @@ Partial Class Order_EditCosting
                             delFinal.ExecuteNonQuery()
                         End Using
 
-                        Dim buyPrice As Decimal = 0
                         Dim sellPrice As Decimal = 0
+                        Dim buyPrice As Decimal = 0
+                        Dim factoryPrice As Decimal = 0
 
-                        Using cmdSum As New SqlCommand("SELECT ISNULL(SUM(CASE WHEN Type='Base' THEN BuyPrice WHEN Type='Discount' THEN -BuyPrice WHEN Type='Surcharge' THEN BuyPrice ELSE 0 END),0) AS TotalBuy, ISNULL(SUM(CASE WHEN Type='Base' THEN SellPrice WHEN Type='Discount' THEN -SellPrice WHEN Type='Surcharge' THEN SellPrice ELSE 0 END),0) AS TotalSell FROM OrderCostings WHERE ItemId=@ItemId", thisConn, tran)
+                        Using cmdSum As New SqlCommand("SELECT ISNULL(SUM(CASE WHEN Type='Base' THEN SellPrice WHEN Type='Discount' THEN -SellPrice WHEN Type='Surcharge' THEN SellPrice ELSE 0 END),0) AS TotalSell, ISNULL(SUM(CASE WHEN Type='Base' THEN BuyPrice WHEN Type='Discount' THEN -BuyPrice WHEN Type='Surcharge' THEN BuyPrice ELSE 0 END),0) AS TotalBuy, ISNULL(SUM(CASE WHEN Type='Base' THEN FactoryPrice WHEN Type='Discount' THEN -FactoryPrice WHEN Type='Surcharge' THEN FactoryPrice ELSE 0 END),0) AS TotalFactory FROM OrderCostings WHERE ItemId=@ItemId", thisConn, tran)
                             cmdSum.Parameters.Add("@ItemId", SqlDbType.Int).Value = lblItemId.Text
                             Using rd = cmdSum.ExecuteReader()
                                 If rd.Read() Then
-                                    buyPrice = Convert.ToDecimal(rd("TotalBuy"))
                                     sellPrice = Convert.ToDecimal(rd("TotalSell"))
+                                    buyPrice = Convert.ToDecimal(rd("TotalBuy"))
+                                    factoryPrice = Convert.ToDecimal(rd("TotalFactory"))
                                 End If
                             End Using
                         End Using
 
-                        Dim dataCosting As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Final", "Final Cost This Item", buyPrice, sellPrice}
+                        Dim dataCosting As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Final", "Final Cost This Item", sellPrice, buyPrice, factoryPrice}
 
                         orderClass.OrderCostings(dataCosting)
 

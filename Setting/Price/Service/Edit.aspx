@@ -55,13 +55,19 @@
                                                     <asp:ListItem Value="Formula" Text="Formula"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group" runat="server" id="divDefaultBuy">
+                                        </div>
+                                        <div class="row mb-2" runat="server" id="divDefaultPrice">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Default Sell Price</label>
+                                                <asp:TextBox runat="server" ID="txtSellPrice" CssClass="form-control" placeholder="Default Sell Price ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Default Buy Price</label>
                                                 <asp:TextBox runat="server" ID="txtBuyPrice" CssClass="form-control" placeholder="Default Buy Price ..." autocomplete="off"></asp:TextBox>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group" runat="server" id="divDefaultSell">
-                                                <label class="form-label">Default Sell Price</label>
-                                                <asp:TextBox runat="server" ID="txtSellPrice" CssClass="form-control" placeholder="Default Sell Price ..." autocomplete="off"></asp:TextBox>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Default Factory Price</label>
+                                                <asp:TextBox runat="server" ID="txtFactoryPrice" CssClass="form-control" placeholder="Default Factory Price ..." autocomplete="off"></asp:TextBox>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
@@ -79,7 +85,7 @@
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div class="row mb-2" runat="server" id="divFormula">
+                                        <div class="row mb-2" runat="server" id="divOperator">
                                             <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Operator</label>
                                                 <asp:DropDownList runat="server" ID="ddlOperator" CssClass="form-select">
@@ -90,13 +96,19 @@
                                                     <asp:ListItem Value="/" Text="Divide (÷)"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
+                                        </div>
+                                        <div class="row mb-2" runat="server" id="divFormulaValue">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Sell Value</label>
+                                                <asp:TextBox runat="server" ID="txtSellValue" CssClass="form-control" placeholder="Sell Value ..." autocomplete="off"></asp:TextBox>
+                                            </div>
                                             <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Buy Value</label>
                                                 <asp:TextBox runat="server" ID="txtBuyValue" CssClass="form-control" placeholder="Buy Value ..." autocomplete="off"></asp:TextBox>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                <label class="form-label">Sell Value</label>
-                                                <asp:TextBox runat="server" ID="txtSellValue" CssClass="form-control" placeholder="Sell Value ..." autocomplete="off"></asp:TextBox>
+                                                <label class="form-label">Factory Value</label>
+                                                <asp:TextBox runat="server" ID="txtFactoryValue" CssClass="form-control" placeholder="Factory Value ..." autocomplete="off"></asp:TextBox>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
@@ -149,7 +161,7 @@
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Status</label>
                                                 <asp:DropDownList runat="server" ID="ddlStatus" CssClass="choices form-select">
                                                     <asp:ListItem Value="Active" Text="Active"></asp:ListItem>

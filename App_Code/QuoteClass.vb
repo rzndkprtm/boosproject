@@ -1325,14 +1325,8 @@ Public Class QuoteClass
 
             Dim orderRef As String = String.Format("{0} - {1}", orderNumber, orderName)
 
-            Dim estimator As String = String.Empty
-            Dim supervisor As String = String.Empty
-
-            Dim builderData As DataRow = GetDataRow("SELECT * FROM OrderBuilders WHERE Id='" & headerId & "'")
-            If builderData IsNot Nothing Then
-                estimator = builderData("Estimator").ToString()
-                supervisor = builderData("Supervisor").ToString()
-            End If
+            Dim estimator As String = headerData("Estimator").ToString()
+            Dim supervisor As String = headerData("Supervisor").ToString()
 
             Dim issueDate As String = Now.ToString("dd MMM yyyy")
 

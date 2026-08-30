@@ -56,7 +56,7 @@
                                                 <asp:DropDownList runat="server" ID="ddlFormulaType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlFormulaType_SelectedIndexChanged">
                                                     <%--<asp:ListItem Value="" Text=""></asp:ListItem>--%>
                                                     <asp:ListItem Value="Standard" Text="Standard"></asp:ListItem>
-                                                    <%--<asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>--%>
+                                                    <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
@@ -86,19 +86,27 @@
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                                <label class="form-label">Buy Charge</label>
-                                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtBuyCharge" Height="200px" CssClass="form-control" placeholder="Buy Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <div class="col-12 form-group">
                                                 <label class="form-label">Sell Charge</label>
-                                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtSellCharge" Height="200px" CssClass="form-control" placeholder="Sell Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtSellCharge" Height="80" CssClass="form-control" placeholder="Sell Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Buy Charge</label>
+                                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtBuyCharge" Height="80" CssClass="form-control" placeholder="Buy Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Factory Charge</label>
+                                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtFactoryCharge" Height="80" CssClass="form-control" placeholder="Factory Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col-12 form-group">
                                                 <label>Description</label>
-                                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                                <asp:TextBox runat="server" ID="txtDescription" CssClass="form-control" placeholder="Description ..." autocomplete="off"></asp:TextBox>
                                             </div>
                                         </div>
                                         <div class="row mb-2">

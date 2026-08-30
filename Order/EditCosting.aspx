@@ -51,15 +51,21 @@
                                             <%# BindDescription(Eval("DesignName").ToString(), Eval("Description").ToString(), Eval("OrderNote").ToString()) %>
                                         </ItemTemplate>
                                     </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Sell Price" ItemStyle-Width="180px">
+                                        <ItemTemplate>
+                                            <asp:TextBox runat="server" ID="txtNewSellPrice" CssClass="form-control" Visible='<%# Eval("Type").ToString() <> "Note" %>' Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("SellPrice")) %>'></asp:TextBox>
+                                            <asp:Label runat="server" Text="-" Visible='<%# Eval("Type").ToString() = "Note" %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Buy Price" ItemStyle-Width="180px">
                                         <ItemTemplate>
                                             <asp:TextBox runat="server" ID="txtNewBuyPrice" CssClass="form-control" Visible='<%# Eval("Type").ToString() <> "Note" %>' Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("BuyPrice")) %>'></asp:TextBox>
                                             <asp:Label runat="server" Text="-" Visible='<%# Eval("Type").ToString() = "Note" %>'></asp:Label>
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Sell Price" ItemStyle-Width="180px">
+                                    <asp:TemplateField HeaderText="Factory Price" ItemStyle-Width="180px">
                                         <ItemTemplate>
-                                            <asp:TextBox runat="server" ID="txtNewSellPrice" CssClass="form-control" Visible='<%# Eval("Type").ToString() <> "Note" %>' Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("SellPrice")) %>'></asp:TextBox>
+                                            <asp:TextBox runat="server" ID="txtNewFactoryPrice" CssClass="form-control" Visible='<%# Eval("Type").ToString() <> "Note" %>' Text='<%# String.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Eval("FactoryPrice")) %>'></asp:TextBox>
                                             <asp:Label runat="server" Text="-" Visible='<%# Eval("Type").ToString() = "Note" %>'></asp:Label>
                                         </ItemTemplate>
                                     </asp:TemplateField>
@@ -154,14 +160,20 @@
                     </div>
                     <div class="row">
                         <div class="col-12 form-group">
+                            <label class="form-label">Sell Price</label>
+                            <asp:TextBox runat="server" ID="txtAddSellPrice" CssClass="form-control" placeholder="Sell Price ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
                             <label class="form-label">Buy Price</label>
                             <asp:TextBox runat="server" ID="txtAddBuyPrice" CssClass="form-control" placeholder="Buy Price ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12 form-group">
-                            <label class="form-label">Sell Price</label>
-                            <asp:TextBox runat="server" ID="txtAddSellPrice" CssClass="form-control" placeholder="Sell Price ..." autocomplete="off"></asp:TextBox>
+                            <label class="form-label">Factory Price</label>
+                            <asp:TextBox runat="server" ID="txtAddFactoryPrice" CssClass="form-control" placeholder="Factory Price ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                 </div>

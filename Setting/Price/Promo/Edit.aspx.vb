@@ -65,7 +65,7 @@ Partial Class Setting_Price_Promo_Edit
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Promos SET CompanyId=@CompanyId, Type=@Type, Name=@Name, StartDate=@StartDate, EndDate=@EndDate, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Promos SET CompanyId=@CompanyId, Type=@Type, Name=@Name, StartDate=@StartDate, EndDate=@EndDate, Description=@Description WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
@@ -73,7 +73,6 @@ Partial Class Setting_Price_Promo_Edit
                         thisCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text)
                         thisCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text)
                         thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -106,7 +105,7 @@ Partial Class Setting_Price_Promo_Edit
 
     Protected Sub BindData(promoId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Promos WHERE Id='" & promoId & "' AND (Status='Active' OR Status='Inactive'")
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Promos WHERE Id='" & promoId & "' AND (Status='Active' OR Status='Inactive')")
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/price/promo", False)
                 Exit Sub
@@ -120,7 +119,6 @@ Partial Class Setting_Price_Promo_Edit
             txtStartDate.Text = Convert.ToDateTime(thisData("StartDate")).ToString("yyyy-MM-dd")
             txtEndDate.Text = Convert.ToDateTime(thisData("EndDate")).ToString("yyyy-MM-dd")
             txtDescription.Text = thisData("Description").ToString()
-            ddlStatus.SelectedValue = thisData("Status").ToString()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

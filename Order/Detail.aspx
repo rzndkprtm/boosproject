@@ -417,9 +417,9 @@
                                                 <%# BindProductDescription(Eval("Id")) %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Buy Price">
+                                        <asp:TemplateField HeaderText="Price">
                                             <ItemTemplate>
-                                                <%# ItemCosting(Eval("Id").ToString(), "BuyPrice") %>
+                                                <%# ItemCosting(Eval("Id").ToString(), "SellPrice") %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Sell Price">
@@ -427,9 +427,14 @@
                                                 <%# ItemCosting(Eval("Id").ToString(), "SellPrice") %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Price">
+                                        <asp:TemplateField HeaderText="Buy Price">
                                             <ItemTemplate>
-                                                <%# ItemCosting(Eval("Id").ToString(), "SellPrice") %>
+                                                <%# ItemCosting(Eval("Id").ToString(), "BuyPrice") %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Factory Price">
+                                            <ItemTemplate>
+                                                <%# ItemCosting(Eval("Id").ToString(), "FactoryPrice") %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                         <asp:TemplateField HeaderText="Mark Up">
@@ -1326,7 +1331,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row mb-2">
                         <div class="col-6 form-group">
                             <label class="form-label">Estimator</label>
                             <asp:TextBox runat="server" ID="txtEstimator" CssClass="form-control" placeholder="Estimator ..." autocomplete="off"></asp:TextBox>
@@ -1336,30 +1341,24 @@
                             <asp:TextBox runat="server" ID="txtSupervisor" CssClass="form-control" placeholder="Supervisor ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Address</label>
-                            <asp:TextBox runat="server" ID="txtAddress" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
+                    <div class="row mb-2">
                         <div class="col-6 form-group">
-                            <label class="form-label">Call For Check Measure</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtCallForCheckMeasure" CssClass="form-control" placeholder="Call Up ..." autocomplete="off"></asp:TextBox>
+                            <label class="form-label">Check Measure</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtMeasureDate" CssClass="form-control"></asp:TextBox>
                         </div>
                         <div class="col-6 form-group">
                             <label class="form-label">Check Measure Due</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtCheckMeasureDue" CssClass="form-control" placeholder="Check Measure ..." autocomplete="off"></asp:TextBox>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtMeasureDueDate" CssClass="form-control"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-6 form-group">
-                            <label class="form-label">To Be Installed</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtToBeInstalled" CssClass="form-control" placeholder="Installation ..." autocomplete="off"></asp:TextBox>
+                            <label class="form-label">Install</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtInstallDate" CssClass="form-control"></asp:TextBox>
                         </div>
                         <div class="col-6 form-group">
                             <label class="form-label">Installed</label>
-                            <asp:TextBox runat="server" TextMode="Date" ID="txtInstalled" CssClass="form-control" placeholder="Installed ..." autocomplete="off"></asp:TextBox>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtInstalledDate" CssClass="form-control"></asp:TextBox>
                         </div>
                     </div>
                 </div>
@@ -1605,13 +1604,17 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                            <label class="form-label required">SELL PRICE</label>
+                            <asp:TextBox runat="server" ID="txtSellService" CssClass="form-control" placeholder="Sell Price ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label required">BUY PRICE</label>
                             <asp:TextBox runat="server" ID="txtBuyService" CssClass="form-control" placeholder="Buy Price ..." autocomplete="off"></asp:TextBox>
                         </div>
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                            <label class="form-label required">SELL PRICE</label>
-                            <asp:TextBox runat="server" ID="txtSellService" CssClass="form-control" placeholder="Sell Price ..." autocomplete="off"></asp:TextBox>
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                            <label class="form-label required">FACTORY PRICE</label>
+                            <asp:TextBox runat="server" ID="txtFactoryService" CssClass="form-control" placeholder="Factory Price ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row mb-2" runat="server" id="divErrorAddService">
@@ -1772,9 +1775,10 @@
                 success: res => {
                     const perm = {
                         showType: res.d.showType,
-                        showBuy: res.d.showBuy,
+                        showPrice: res.d.showPrice,
                         showSell: res.d.showSell,
-                        showPrice: res.d.showPrice
+                        showBuy: res.d.showBuy,                        
+                        showFactory: res.d.showFactory                        
                     };
 
                     renderCostingTable(res.d.data, perm);
@@ -1788,9 +1792,11 @@
             let headHtml = "<tr>";
             if (perm.showType) headHtml += "<th>Type</th>";
             headHtml += "<th>Description</th>";
-            if (perm.showBuy) headHtml += "<th>Buy Price</th>";
-            if (perm.showSell) headHtml += "<th>Sell Price</th>";
             if (perm.showPrice) headHtml += "<th>Price</th>";
+            if (perm.showSell) headHtml += "<th>Sell Price</th>";
+            if (perm.showBuy) headHtml += "<th>Buy Price</th>";            
+            if (perm.showFactory) headHtml += "<th>Factory Price</th>";
+            
             headHtml += "</tr>";
 
             $("#costingHead").html(headHtml);
@@ -1811,9 +1817,11 @@
                 bodyHtml += "<tr>";
                 if (perm.showType) bodyHtml += `<td>${r.Type}</td>`;
                 bodyHtml += `<td>${r.Description}</td>`;
-                if (perm.showBuy) bodyHtml += `<td>${r.BuyPricing}</td>`;
-                if (perm.showSell) bodyHtml += `<td>${r.SellPricing}</td>`;
                 if (perm.showPrice) bodyHtml += `<td>${r.Price}</td>`;
+                if (perm.showSell) bodyHtml += `<td>${r.SellPricing}</td>`;
+                if (perm.showBuy) bodyHtml += `<td>${r.BuyPricing}</td>`;                
+                if (perm.showFactory) bodyHtml += `<td>${r.FactoryPricing}</td>`;
+                
                 bodyHtml += "</tr>";
             });
 

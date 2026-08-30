@@ -115,16 +115,6 @@ Partial Class Order_Add
                     End Try
                 Loop
 
-                If ddlOrderType.SelectedValue = "Builder" Then
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", thisId)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-                End If
-
                 Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Order/{0}/", orderId))
                 If Not Directory.Exists(directoryOrder) Then
                     Directory.CreateDirectory(directoryOrder)

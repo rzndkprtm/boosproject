@@ -87,7 +87,7 @@ Partial Class Setting_Price_Calculation_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceCalculations SET Name=@Name, Method=@Method, PriceGroupId=@PriceGroupId, DesignId=@DesignId, Formula=@Formula, SellMinSize=@SellMinSize, BuyMinSize=@BuyMinSize, SellMinWidth=@SellMinWidth, BuyMinWidth=@BuyMinWidth, SellMinDrop=@SellMinDrop, BuyMinDrop=@BuyMinDrop, Active=@Active WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceCalculations SET Name=@Name, Method=@Method, PriceGroupId=@PriceGroupId, DesignId=@DesignId, Formula=@Formula, SellMinSize=@SellMinSize, BuyMinSize=@BuyMinSize, SellMinWidth=@SellMinWidth, BuyMinWidth=@BuyMinWidth, SellMinDrop=@SellMinDrop, BuyMinDrop=@BuyMinDrop, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
                         thisCmd.Parameters.AddWithValue("@Method", ddlMethod.SelectedValue)
@@ -100,7 +100,7 @@ Partial Class Setting_Price_Calculation_Edit
                         thisCmd.Parameters.AddWithValue("@BuyMinWidth", If(String.IsNullOrEmpty(txtBuyMinWidth.Text), CType(DBNull.Value, Object), txtBuyMinWidth.Text))
                         thisCmd.Parameters.AddWithValue("@SellMinDrop", If(String.IsNullOrEmpty(txtSellMinDrop.Text), CType(DBNull.Value, Object), txtSellMinDrop.Text))
                         thisCmd.Parameters.AddWithValue("@BuyMinDrop", If(String.IsNullOrEmpty(txtBuyMinDrop.Text), CType(DBNull.Value, Object), txtBuyMinDrop.Text))
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
 
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
@@ -148,7 +148,7 @@ Partial Class Setting_Price_Calculation_Edit
             txtBuyMinWidth.Text = myData("BuyMinWidth").ToString()
             txtSellMinDrop.Text = myData("SellMinDrop").ToString()
             txtBuyMinDrop.Text = myData("BuyMinDrop").ToString()
-            ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
+            ddlStatus.SelectedValue = myData("Status").ToString()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

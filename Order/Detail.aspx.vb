@@ -80,6 +80,9 @@ Partial Class Order_Detail
         Try
             orderClass.CalculatePriceByOrder(lblHeaderId.Text)
 
+            dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Re-Price Order"}
+            orderClass.Logs(dataLog)
+
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
@@ -321,16 +324,6 @@ Partial Class Order_Detail
                     End Using
                 End Using
 
-                If lblOrderType.Text = "Builder" Then
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As New SqlCommand("INSERT INTO OrderBuilders(Id) VALUES (@Id)", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", newIdHeader)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-                End If
-
                 dataLog = {"OrderHeaders", newIdHeader, Session("LoginId").ToString(), "Order Created | Copy"}
                 orderClass.Logs(dataLog)
 
@@ -388,38 +381,19 @@ Partial Class Order_Detail
                 Exit Sub
             End If
 
-            If lblCompanyDetailId.Text = "3" AndAlso lblOrderType.Text = "Builder" Then
-                Dim thisData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderBuilders WHERE Id='" & lblHeaderId.Text & "'")
-                Dim estimator As String = thisData("Estimator").ToString()
-                Dim supervisor As String = thisData("Supervisor").ToString()
-                Dim address As String = thisData("Address").ToString()
-
-                If String.IsNullOrEmpty(estimator) Then
-                    MessageError(True, "ESTIMATOR IS REQUIRED !")
-                    Exit Sub
-                End If
-                If String.IsNullOrEmpty(supervisor) Then
-                    MessageError(True, "SUPERVISOR IS REQUIRED !")
-                    Exit Sub
-                End If
-                If String.IsNullOrEmpty(address) Then
-                    MessageError(True, "ADDRESS IS REQUIRED !")
-                    Exit Sub
-                End If
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET QuotedDate=GETDATE(), Status='Quoted' WHERE Id=@Id", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                        thisConn.Open()
-                        thisCmd.ExecuteNonQuery()
-                    End Using
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET QuotedDate=GETDATE(), Status='Quoted' WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
                 End Using
+            End Using
 
-                dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Quote Order"}
-                orderClass.Logs(dataLog)
+            dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Quote Order"}
+            orderClass.Logs(dataLog)
 
-                url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
-                Response.Redirect(url, False)
-            End If
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -494,8 +468,9 @@ Partial Class Order_Detail
             For Each row As DataRow In dtService.Rows
                 Dim serviceId As Integer = Convert.ToInt32(row("ServiceId"))
                 Dim serviceName As String = row("Name").ToString()
-                Dim buyPrice As Decimal = Convert.ToDecimal(row("BuyPrice"))
                 Dim sellPrice As Decimal = Convert.ToDecimal(row("SellPrice"))
+                Dim buyPrice As Decimal = Convert.ToDecimal(row("BuyPrice"))
+                Dim factoryPrice As Decimal = Convert.ToDecimal(row("FactoryPrice"))
 
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
@@ -511,7 +486,7 @@ Partial Class Order_Detail
 
                 orderClass.ResetPriceDetail(lblHeaderId.Text, itemId)
 
-                Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, buyPrice, sellPrice}
+                Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, sellPrice, buyPrice, factoryPrice}
                 orderClass.OrderCostings(costingArray)
                 orderClass.FinalCostItem(lblHeaderId.Text, itemId)
 
@@ -1332,18 +1307,17 @@ Partial Class Order_Detail
 
     Protected Sub btnBuilderDetail_Click(sender As Object, e As EventArgs)
         MessageError_BuilderDetail(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showConvertJob(); };"
+        Dim thisScript As String = "window.onload = function() { showBuilderDetail(); };"
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("UPDATE OrderBuilders SET Estimator=@Estimator, Supervisor=@Supervisor, Address=@Address, CallForCheckMeasure=@CallForCheckMeasure, CheckMeasureDue=@CheckMeasureDue, ToBeInstalled=@ToBeInstalled, Installed=@Installed WHERE Id=@Id", thisConn)
+                Using thisCmd As New SqlCommand("UPDATE OrderHeaders SET Estimator=@Estimator, Supervisor=@Supervisor, MeasureDate=@MeasureDate, MeasureDueDate=@MeasureDueDate, InstallDate=@InstallDate, InstalledDate=@InstalledDate WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     thisCmd.Parameters.AddWithValue("@Estimator", txtEstimator.Text.Trim())
                     thisCmd.Parameters.AddWithValue("@Supervisor", txtSupervisor.Text.Trim())
-                    thisCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
-                    thisCmd.Parameters.AddWithValue("@CallForCheckMeasure", If(String.IsNullOrEmpty(txtCallForCheckMeasure.Text), CType(DBNull.Value, Object), txtCallForCheckMeasure.Text))
-                    thisCmd.Parameters.AddWithValue("@CheckMeasureDue", If(String.IsNullOrEmpty(txtCheckMeasureDue.Text), CType(DBNull.Value, Object), txtCheckMeasureDue.Text))
-                    thisCmd.Parameters.AddWithValue("@ToBeInstalled", If(String.IsNullOrEmpty(txtToBeInstalled.Text), CType(DBNull.Value, Object), txtToBeInstalled.Text))
-                    thisCmd.Parameters.AddWithValue("@Installed", If(String.IsNullOrEmpty(txtInstalled.Text), CType(DBNull.Value, Object), txtInstalled.Text))
+                    thisCmd.Parameters.AddWithValue("@MeasureDate", If(String.IsNullOrEmpty(txtMeasureDate.Text), CType(DBNull.Value, Object), txtMeasureDate.Text))
+                    thisCmd.Parameters.AddWithValue("@MeasureDueDate", If(String.IsNullOrEmpty(txtMeasureDueDate.Text), CType(DBNull.Value, Object), txtMeasureDueDate.Text))
+                    thisCmd.Parameters.AddWithValue("@InstallDate", If(String.IsNullOrEmpty(txtInstallDate.Text), CType(DBNull.Value, Object), txtInstallDate.Text))
+                    thisCmd.Parameters.AddWithValue("@InstalledDate", If(String.IsNullOrEmpty(txtInstalledDate.Text), CType(DBNull.Value, Object), txtInstalledDate.Text))
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -1802,11 +1776,11 @@ Partial Class Order_Detail
 
                 orderClass.ResetPriceDetail(lblHeaderId.Text, itemId)
 
-                Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, txtBuyService.Text, txtSellService.Text}
+                Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, txtSellService.Text, txtBuyService.Text, txtFactoryService.Text}
                 orderClass.OrderCostings(costingArray)
 
                 If Not String.IsNullOrEmpty(txtNoteService.Text.Trim()) Then
-                    costingArray = {lblHeaderId.Text, itemId, 0, "Note", txtNoteService.Text, 0, 0}
+                    costingArray = {lblHeaderId.Text, itemId, 0, "Note", txtNoteService.Text, 0, 0, 0}
                     orderClass.OrderCostings(costingArray)
                 End If
                 orderClass.FinalCostItem(lblHeaderId.Text, itemId)
@@ -2020,8 +1994,6 @@ Partial Class Order_Detail
                 txtCourier.Text = headerData("Courier").ToString()
             End If
 
-            If lblOrderType.Text = "Builder" Then BindDataBuilder()
-
             ' BIND ORDER JOB
             Dim convertedStatus As String = headerData("Converted").ToString()
             spanJobNumber.InnerText = headerData("JobNumber").ToString()
@@ -2030,6 +2002,23 @@ Partial Class Order_Detail
             spanJobCreatedBy.InnerText = headerData("JobBy").ToString()
             If Not String.IsNullOrEmpty(headerData("JobDate").ToString()) Then
                 spanJobCreatedDate.InnerText = Convert.ToDateTime(headerData("JobDate")).ToString("dd MMM yyyy HH:mm")
+            End If
+
+            ' BIND BUILDER
+
+            txtEstimator.Text = headerData("Estimator").ToString()
+            txtSupervisor.Text = headerData("Supervisor").ToString()
+            If Not String.IsNullOrEmpty(headerData("MeasureDate").ToString()) Then
+                txtMeasureDate.Text = Convert.ToDateTime(headerData("MeasureDate")).ToString("yyyy-MM-dd")
+            End If
+            If Not String.IsNullOrEmpty(headerData("MeasureDueDate").ToString()) Then
+                txtMeasureDueDate.Text = Convert.ToDateTime(headerData("MeasureDueDate")).ToString("yyyy-MM-dd")
+            End If
+            If Not String.IsNullOrEmpty(headerData("InstallDate").ToString()) Then
+                txtInstallDate.Text = Convert.ToDateTime(headerData("InstallDate")).ToString("yyyy-MM-dd")
+            End If
+            If Not String.IsNullOrEmpty(headerData("InstalledDate").ToString()) Then
+                txtInstalledDate.Text = Convert.ToDateTime(headerData("InstalledDate")).ToString("yyyy-MM-dd")
             End If
 
             BindCollector()
@@ -3420,13 +3409,14 @@ Partial Class Order_Detail
 
             gvListItem.Columns(1).Visible = LoginAccess("Visible ID")
             gvListItem.Columns(2).Visible = LoginAccess("Visible Product ID")
-
-            gvListItem.Columns(4).Visible = LoginAccess("Visible Buy Price")
+            gvListItem.Columns(4).Visible = LoginAccess("Visible Price")
             gvListItem.Columns(5).Visible = LoginAccess("Visible Sell Price")
-            gvListItem.Columns(6).Visible = LoginAccess("Visible Price")
+            gvListItem.Columns(6).Visible = LoginAccess("Visible Buy Price")
+            gvListItem.Columns(7).Visible = LoginAccess("Visible Factory Price")
 
-            gvListItem.Columns(7).Visible = False
-            If Session("PriceAccess") = "Yes" Then gvListItem.Columns(7).Visible = True
+
+            gvListItem.Columns(8).Visible = False
+            If Session("PriceAccess") = "Yes" Then gvListItem.Columns(8).Visible = True
 
             If status = "Unsubmitted" And gvListItem.Rows.Count > 0 Then
                 Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text}}
@@ -3544,40 +3534,6 @@ Partial Class Order_Detail
                 divCosting.Style.Add("cursor", "pointer")
             End If
         End If
-    End Sub
-
-    Protected Sub BindDataBuilder()
-        Try
-            Dim dataBuilder As DataRow = orderClass.GetDataRow("SELECT * FROM OrderBuilders WHERE Id='" & lblHeaderId.Text & "'")
-            If dataBuilder IsNot Nothing Then
-                txtEstimator.Text = dataBuilder("Estimator").ToString()
-                txtSupervisor.Text = dataBuilder("Supervisor").ToString()
-                txtAddress.Text = dataBuilder("Address").ToString()
-
-                txtCallForCheckMeasure.Text = String.Empty
-                txtCheckMeasureDue.Text = String.Empty
-                txtToBeInstalled.Text = String.Empty
-                txtInstalled.Text = String.Empty
-
-                If Not String.IsNullOrEmpty(dataBuilder("CallForCheckMeasure").ToString()) Then
-                    txtCallForCheckMeasure.Text = Convert.ToDateTime(dataBuilder("CallForCheckMeasure")).ToString("yyyy-MM-dd")
-                End If
-                If Not String.IsNullOrEmpty(dataBuilder("CheckMeasureDue").ToString()) Then
-                    txtCheckMeasureDue.Text = Convert.ToDateTime(dataBuilder("CheckMeasureDue")).ToString("yyyy-MM-dd")
-                End If
-                If Not String.IsNullOrEmpty(dataBuilder("ToBeInstalled").ToString()) Then
-                    txtToBeInstalled.Text = Convert.ToDateTime(dataBuilder("ToBeInstalled")).ToString("yyyy-MM-dd")
-                End If
-                If Not String.IsNullOrEmpty(dataBuilder("Installed").ToString()) Then
-                    txtInstalled.Text = Convert.ToDateTime(dataBuilder("Installed")).ToString("yyyy-MM-dd")
-                End If
-            End If
-        Catch ex As Exception
-            MessageError_BuilderDetail(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_BuilderDetail(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
     End Sub
 
     Protected Sub BindDataFile(orderId As String)

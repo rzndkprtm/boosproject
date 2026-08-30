@@ -63,7 +63,6 @@ Partial Class Setting_Price_Base_Import
             End If
 
             Dim uploadType As String = ddlUploadType.SelectedValue
-            If ddlUploadType.SelectedValue = "" Then uploadType = "Sell"
 
             Dim msg = ImportExcel(fuFile, "Cost", ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue, uploadType, ddlBackup.SelectedValue)
 
@@ -117,12 +116,10 @@ Partial Class Setting_Price_Base_Import
                             If sellSheet Is Nothing Then
                                 Return "WORKSHEET 'SELL' COULD NOT BE FOUND !"
                             End If
-
                             result = ReadSheet(sellSheet, "Sell", method, productGroupId, priceGroupId, dt, nextId)
                             If result <> "" Then
                                 Return result
                             End If
-
                         Case "BUY"
                             Dim buySheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Buy", StringComparison.OrdinalIgnoreCase))
 
@@ -135,31 +132,34 @@ Partial Class Setting_Price_Base_Import
                             If result <> "" Then
                                 Return result
                             End If
-                        Case "SELL & BUY"
+                        Case "COMPLETE"
                             Dim sellSheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Sell", StringComparison.OrdinalIgnoreCase))
-
                             If sellSheet Is Nothing Then
                                 Return "WORKSHEET 'SELL' COULD NOT BE FOUND !"
                             End If
-
                             result = ReadSheet(sellSheet, "Sell", method, productGroupId, priceGroupId, dt, nextId)
-
                             If result <> "" Then
                                 Return result
                             End If
 
                             Dim buySheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Buy", StringComparison.OrdinalIgnoreCase))
-
                             If buySheet Is Nothing Then
                                 Return "WORKSHEET 'BUY' COULD NOT BE FOUND !"
                             End If
-
                             result = ReadSheet(buySheet, "Buy", method, productGroupId, priceGroupId, dt, nextId)
-
                             If result <> "" Then
                                 Return result
                             End If
-                        Case "SELL (BUY AUTO)"
+
+                            Dim factorySheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Factory", StringComparison.OrdinalIgnoreCase))
+                            If factorySheet Is Nothing Then
+                                Return "WORKSHEET 'FACTORY' COULD NOT BE FOUND !"
+                            End If
+                            result = ReadSheet(factorySheet, "Factory", method, productGroupId, priceGroupId, dt, nextId)
+                            If result <> "" Then
+                                Return result
+                            End If
+                        Case "SELL (BUY & FACTORY AUTO)"
                             Dim sellSheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Sell", StringComparison.OrdinalIgnoreCase))
 
                             If sellSheet Is Nothing Then
@@ -198,12 +198,14 @@ Partial Class Setting_Price_Base_Import
                                 deleteCategories.Add("Sell")
                             Case "BUY"
                                 deleteCategories.Add("Buy")
-                            Case "SELL & BUY"
+                            Case "COMPLETE"
                                 deleteCategories.Add("Sell")
                                 deleteCategories.Add("Buy")
-                            Case "SELL (BUY AUTO)"
+                                deleteCategories.Add("Factory")
+                            Case "SELL (BUY & FACTORY AUTO)"
                                 deleteCategories.Add("Sell")
                                 deleteCategories.Add("Buy")
+                                deleteCategories.Add("Factory")
                         End Select
 
                         Dim sql As String = "DELETE FROM PriceBases WHERE Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@PriceGroupId AND Category IN (" & String.Join(",", deleteCategories.Select(Function(x) "'" & x & "'")) & ")"
@@ -235,6 +237,10 @@ Partial Class Setting_Price_Base_Import
 
                         If uploadType.Trim().ToUpper() = "BUY" Then
                             CopyBuyToNoMaster(productGroupId, priceGroupId, method, thisConn, tran)
+                        End If
+
+                        If uploadType.Trim().ToUpper() = "FACTORY" Then
+                            CopyFactoryToNoMaster(productGroupId, priceGroupId, method, thisConn, tran)
                         End If
 
                         tran.Commit()
@@ -337,7 +343,7 @@ Partial Class Setting_Price_Base_Import
         Try
             Dim isMaster As Boolean = False
 
-            Using cmd As New SqlCommand("SELECT CASE WHEN Master = 'Yes' THEN 1 ELSE 0 END FROM PriceGroups WHERE Id=@PriceGroupId", conn, tran)
+            Using cmd As New SqlCommand("SELECT CASE WHEN Master='Yes' THEN 1 ELSE 0 END FROM PriceGroups WHERE Id=@PriceGroupId", conn, tran)
                 cmd.Parameters.AddWithValue("@PriceGroupId", masterPriceGroupId)
                 Dim result = cmd.ExecuteScalar()
                 If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
@@ -351,7 +357,7 @@ Partial Class Setting_Price_Base_Import
             Dim companyId As Integer
             Dim priceGroupType As String
 
-            Using cmd As New SqlCommand("SELECT CompanyId, Type FROM PriceGroups WHERE Id = @PriceGroupId", conn, tran)
+            Using cmd As New SqlCommand("SELECT CompanyId, Type FROM PriceGroups WHERE Id=@PriceGroupId", conn, tran)
                 cmd.Parameters.AddWithValue("@PriceGroupId", masterPriceGroupId)
                 Using rd As SqlDataReader = cmd.ExecuteReader()
                     If Not rd.Read() Then
@@ -365,7 +371,7 @@ Partial Class Setting_Price_Base_Import
 
             Dim priceGroupIds As New List(Of Integer)
 
-            Using cmd As New SqlCommand("SELECT Id FROM PriceGroups WHERE CompanyId = @CompanyId AND Type = @Type AND Master = 'No'", conn, tran)
+            Using cmd As New SqlCommand("SELECT Id FROM PriceGroups WHERE CompanyId=@CompanyId AND Type=@Type AND Master='No'", conn, tran)
                 cmd.Parameters.AddWithValue("@CompanyId", companyId)
                 cmd.Parameters.AddWithValue("@Type", priceGroupType)
 
@@ -377,14 +383,79 @@ Partial Class Setting_Price_Base_Import
             End Using
 
             For Each targetPriceGroupId As Integer In priceGroupIds
-                Using cmd As New SqlCommand("DELETE FROM PriceBases WHERE Method = @Method AND ProductGroupId = @ProductGroupId AND PriceGroupId = @PriceGroupId AND Category = 'Buy'", conn, tran)
+                Using cmd As New SqlCommand("DELETE FROM PriceBases WHERE Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId = @PriceGroupId AND Category='Buy'", conn, tran)
                     cmd.Parameters.AddWithValue("@Method", method)
                     cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
                     cmd.Parameters.AddWithValue("@PriceGroupId", targetPriceGroupId)
                     cmd.ExecuteNonQuery()
                 End Using
 
-                Using cmd As New SqlCommand("INSERT INTO PriceBases (Id, Category, Method, ProductGroupId, PriceGroupId, Height, Width, Price, Conditional) SELECT ISNULL((SELECT MAX(Id) FROM PriceBases), 0) + ROW_NUMBER() OVER (ORDER BY Height, Width), Category, Method, ProductGroupId, @TargetPriceGroupId, Height, Width, Price, Conditional FROM PriceBases WHERE Category = 'Buy' AND Method = @Method AND ProductGroupId = @ProductGroupId AND PriceGroupId = @MasterPriceGroupId", conn, tran)
+                Using cmd As New SqlCommand("INSERT INTO PriceBases (Id, Category, Method, ProductGroupId, PriceGroupId, Height, Width, Price, Conditional) SELECT ISNULL((SELECT MAX(Id) FROM PriceBases), 0) + ROW_NUMBER() OVER (ORDER BY Height, Width), Category, Method, ProductGroupId, @TargetPriceGroupId, Height, Width, Price, Conditional FROM PriceBases WHERE Category='Buy' AND Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@MasterPriceGroupId", conn, tran)
+                    cmd.Parameters.AddWithValue("@TargetPriceGroupId", targetPriceGroupId)
+                    cmd.Parameters.AddWithValue("@Method", method)
+                    cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
+                    cmd.Parameters.AddWithValue("@MasterPriceGroupId", masterPriceGroupId)
+
+                    cmd.ExecuteNonQuery()
+                End Using
+            Next
+        Catch ex As Exception
+            Throw
+        End Try
+    End Sub
+
+    Protected Sub CopyFactoryToNoMaster(productGroupId As Integer, masterPriceGroupId As Integer, method As String, conn As SqlConnection, tran As SqlTransaction)
+        Try
+            Dim isMaster As Boolean = False
+
+            Using cmd As New SqlCommand("SELECT CASE WHEN Master='Yes' THEN 1 ELSE 0 END FROM PriceGroups WHERE Id=@PriceGroupId", conn, tran)
+                cmd.Parameters.AddWithValue("@PriceGroupId", masterPriceGroupId)
+                Dim result = cmd.ExecuteScalar()
+                If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
+                    isMaster = Convert.ToBoolean(result)
+                End If
+            End Using
+
+            If Not isMaster Then
+                Throw New Exception("FACTORY CAN ONLY BE UPLOADED TO MASTER PRICE GROUP.")
+            End If
+            Dim companyId As Integer
+            Dim priceGroupType As String
+
+            Using cmd As New SqlCommand("SELECT CompanyId, Type FROM PriceGroups WHERE Id=@PriceGroupId", conn, tran)
+                cmd.Parameters.AddWithValue("@PriceGroupId", masterPriceGroupId)
+                Using rd As SqlDataReader = cmd.ExecuteReader()
+                    If Not rd.Read() Then
+                        Throw New Exception("MASTER PRICE GROUP NOT FOUND.")
+                    End If
+
+                    companyId = Convert.ToInt32(rd("CompanyId"))
+                    priceGroupType = rd("Type").ToString()
+                End Using
+            End Using
+
+            Dim priceGroupIds As New List(Of Integer)
+
+            Using cmd As New SqlCommand("SELECT Id FROM PriceGroups WHERE CompanyId=@CompanyId AND Type=@Type AND Master='No'", conn, tran)
+                cmd.Parameters.AddWithValue("@CompanyId", companyId)
+                cmd.Parameters.AddWithValue("@Type", priceGroupType)
+
+                Using rd As SqlDataReader = cmd.ExecuteReader()
+                    While rd.Read()
+                        priceGroupIds.Add(Convert.ToInt32(rd("Id")))
+                    End While
+                End Using
+            End Using
+
+            For Each targetPriceGroupId As Integer In priceGroupIds
+                Using cmd As New SqlCommand("DELETE FROM PriceBases WHERE Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId = @PriceGroupId AND Category='Factory'", conn, tran)
+                    cmd.Parameters.AddWithValue("@Method", method)
+                    cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
+                    cmd.Parameters.AddWithValue("@PriceGroupId", targetPriceGroupId)
+                    cmd.ExecuteNonQuery()
+                End Using
+
+                Using cmd As New SqlCommand("INSERT INTO PriceBases (Id, Category, Method, ProductGroupId, PriceGroupId, Height, Width, Price, Conditional) SELECT ISNULL((SELECT MAX(Id) FROM PriceBases), 0) + ROW_NUMBER() OVER (ORDER BY Height, Width), Category, Method, ProductGroupId, @TargetPriceGroupId, Height, Width, Price, Conditional FROM PriceBases WHERE Category='Factory' AND Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@MasterPriceGroupId", conn, tran)
                     cmd.Parameters.AddWithValue("@TargetPriceGroupId", targetPriceGroupId)
                     cmd.Parameters.AddWithValue("@Method", method)
                     cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
@@ -406,9 +477,10 @@ Partial Class Setting_Price_Base_Import
                 ddlUploadType.Items.Add(New ListItem("", ""))
                 ddlUploadType.Items.Add(New ListItem("Sell Only", "Sell"))
                 ddlUploadType.Items.Add(New ListItem("Buy Only", "Buy"))
-                ddlUploadType.Items.Add(New ListItem("Sell & Buy", "Sell & Buy"))
+                ddlUploadType.Items.Add(New ListItem("Factory Only", "Factory"))
+                ddlUploadType.Items.Add(New ListItem("Sell, Buy & Factory", "Complete"))
             ElseIf master = "No" Then
-                ddlUploadType.Items.Add(New ListItem("Sell Only (Buy Auto)", "Sell (Buy Auto)"))
+                ddlUploadType.Items.Add(New ListItem("Sell Only (Buy & Factory Auto)", "Sell & Factory (Buy Auto)"))
             Else
                 ddlUploadType.Items.Add(New ListItem("", ""))
             End If

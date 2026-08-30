@@ -101,8 +101,9 @@
                                             <asp:BoundField DataField="DesignName" HeaderText="Product" />
                                             <asp:BoundField DataField="PriceGroupName" HeaderText="Price Group" />
                                             <asp:BoundField DataField="Name" HeaderText="Name" />
-                                            <asp:BoundField DataField="BuyChargeShort" HeaderText="Buy Charge" />
                                             <asp:BoundField DataField="SellChargeShort" HeaderText="Sell Charge" />
+                                            <asp:BoundField DataField="BuyChargeShort" HeaderText="Buy Charge" />
+                                            <asp:BoundField DataField="FactoryChargeShort" HeaderText="Factory Charge" />
                                             <asp:BoundField DataField="Status" HeaderText="Status" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
@@ -112,7 +113,7 @@
                                                             <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/price/surcharge/edit?surchargeid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Change Value") %>'>
-                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeValue" onclick='<%# String.Format("return dataChangeValue(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("BuyCharge").ToString(), Eval("SellCharge").ToString()) %>'>Change Value</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeValue" onclick='<%# String.Format("return dataChangeValue(`{0}`, `{1}`, `{2}`, `{3}`);", Eval("Id").ToString(), Eval("SellCharge").ToString(), Eval("BuyCharge").ToString(), Eval("FactoryCharge").ToString()) %>'>Change Value</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Copy") %>'>
                                                             <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
@@ -183,13 +184,21 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
-                            <label class="form-label">Buy Charge</label>
-                            <asp:TextBox runat="server" ID="txtBuy" CssClass="form-control" TextMode="MultiLine" Height="150px" placeholder="Buy Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                        </div>
-                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                        <div class="col-12 form-group">
                             <label class="form-label">Sell Charge</label>
-                            <asp:TextBox runat="server" ID="txtSell" CssClass="form-control" TextMode="MultiLine" Height="150px" placeholder="Sell Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                            <asp:TextBox runat="server" ID="txtSell" CssClass="form-control" TextMode="MultiLine" Height="100px" placeholder="Sell Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Buy Charge</label>
+                            <asp:TextBox runat="server" ID="txtBuy" CssClass="form-control" TextMode="MultiLine" Height="100px" placeholder="Buy Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Factory Charge</label>
+                            <asp:TextBox runat="server" ID="txtFactory" CssClass="form-control" TextMode="MultiLine" Height="100px" placeholder="Factory Charge ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
                     </div>
                 </div>
@@ -314,10 +323,11 @@
             initChoices();
             bindGridRowClick();
         });
-        function dataChangeValue(id, buy, sell) {
+        function dataChangeValue(id, sell, buy, factory) {
             document.getElementById("<%=txtChangeValueId.ClientID %>").value = id;
-            document.getElementById("<%=txtBuy.ClientID %>").value = buy;
             document.getElementById("<%=txtSell.ClientID %>").value = sell;
+            document.getElementById("<%=txtBuy.ClientID %>").value = buy;            
+            document.getElementById("<%=txtFactory.ClientID %>").value = factory;
         }
         function dataCopy(id) {
             document.getElementById("<%=txtCopyId.ClientID %>").value = id;

@@ -108,15 +108,16 @@ Partial Class Setting_Price_Surcharge_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceSurcharges SET DesignId=@DesignId, PriceGroupId=@PriceGroupId, Name=@Name, Type=@Type, Formula=@Formula, BuyCharge=@BuyCharge, SellCharge=@SellCharge, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceSurcharges SET DesignId=@DesignId, PriceGroupId=@PriceGroupId, Name=@Name, Type=@Type, Formula=@Formula, SellCharge=@SellCharge, BuyCharge=@BuyCharge, FactoryCharge=@FactoryCharge, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Type", ddlFormulaType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Formula", finalFormula)
-                        thisCmd.Parameters.AddWithValue("@BuyCharge", txtBuyCharge.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@SellCharge", txtSellCharge.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@BuyCharge", txtBuyCharge.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@FactoryCharge", txtFactoryCharge.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Description", descText)
                         thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
@@ -154,8 +155,9 @@ Partial Class Setting_Price_Surcharge_Edit
             ddlDesign.SelectedValue = thisData("DesignId").ToString()
             ddlPriceGroup.SelectedValue = thisData("PriceGroupId").ToString()
             ddlFormulaType.SelectedValue = type
-            txtBuyCharge.Text = thisData("BuyCharge").ToString()
             txtSellCharge.Text = thisData("SellCharge").ToString()
+            txtBuyCharge.Text = thisData("BuyCharge").ToString()
+            txtFactoryCharge.Text = thisData("FactoryCharge").ToString()
             txtDescription.Text = thisData("Description").ToString()
             ddlStatus.SelectedValue = thisData("Status").ToString()
 

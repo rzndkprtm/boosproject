@@ -48,7 +48,8 @@
                             <div class="col-md-3 mb-3">
                                 <label class="text-muted small">Company</label>
                                 <div class="fw-bold">
-                                    <asp:Label runat="server" ID="lblCompanyDetail"></asp:Label>
+                                    <asp:Label runat="server" ID="lblCompanyName"></asp:Label>
+                                    <asp:Label runat="server" ID="lblCompanyId" Visible="false"></asp:Label>
                                 </div>
                             </div>
                             <div class="col-md-3 mb-3">
@@ -120,7 +121,7 @@
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Discount">
                                         <ItemTemplate>
-                                            <%# DiscountValue(Eval("Discount")) %>
+                                            <%# DiscountValue(Eval("Method").ToString(), Eval("Discount")) %>
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:BoundField DataField="Status" HeaderText="Status" />
