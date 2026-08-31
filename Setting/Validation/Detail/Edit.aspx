@@ -23,7 +23,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12">
+            <div class="col-12 col-sm-12 col-lg-7">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Detail Validation Form</h4>
@@ -32,8 +32,8 @@
                         <div class="form form-vertical">
                             <div class="form-body">
                                 <div class="row mb-2">
-                                    <div class="col-12 col-sm-12 col-lg-1 form-group">
-                                        <label class="form-label">Category</label>
+                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                        <label class="form-label">Group No</label>
                                         <asp:DropDownList ID="ddlGroupNo" runat="server" CssClass="choices form-select">
                                             <asp:ListItem Value=""></asp:ListItem>
                                             <asp:ListItem Value="1">1</asp:ListItem>
@@ -43,19 +43,23 @@
                                             <asp:ListItem Value="5">5</asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-9 form-group">
                                         <label class="form-label">Field Name</label>
                                         <asp:DropDownList ID="ddlFieldName" runat="server" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-5 form-group">
                                         <label class="form-label">Operator</label>
                                         <asp:DropDownList ID="ddlOperator" runat="server" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-7 form-group">
                                         <label class="form-label">Compare Value</label>
                                         <asp:TextBox ID="txtCompareValue" runat="server" CssClass="form-control" Height="45px"></asp:TextBox>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
                                         <label class="form-label">Data Type</label>
                                         <asp:DropDownList ID="ddlDataType" runat="server" CssClass="choices form-select">
                                             <asp:ListItem Value=""></asp:ListItem>
