@@ -82,10 +82,10 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-6">
+                                            <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Type</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <select id="colourtype" class="form-select"></select>
                                             </div>
                                         </div>
