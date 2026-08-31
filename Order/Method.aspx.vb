@@ -1475,7 +1475,7 @@ Partial Class Order_Method
         If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
 
         If String.IsNullOrEmpty(data.room) OrElse data.room.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.room.Contains("&=") OrElse data.room.Contains("&+") Then
-            Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+"
+            Return "ROOM / LOCATION IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+"
         End If
 
         If blindName = "Complete Set (Single)" OrElse blindName = "Complete Set (Double)" OrElse blindName = "Curtain Only" OrElse blindName = "Track Only" Then
