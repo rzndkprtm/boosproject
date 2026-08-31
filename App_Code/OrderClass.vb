@@ -1118,7 +1118,7 @@ Public Class OrderClass
                 End If
             End If
             If designName = "Sample" Then
-                result = productName
+                result = String.Format("{0} {1}", designName, productName)
             End If
             If designName = "Skyline Shutter Express" Then
                 result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
