@@ -126,7 +126,7 @@ Partial Class Setting_Price_Product_Add
                 Dim type As String = settingClass.GetItemData("SELECT Type FROM Designs WHERE Id='" & designId & "'")
 
                 Dim thisQuery As String = "SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND Status='Active' ORDER BY Name ASC"
-                If type = "Services" Then
+                If type = "Services" OrElse type = "Samples" Then
                     thisQuery = "SELECT Id, Name FROM PriceGroups WHERE Type='Blinds' AND Status='Active' ORDER BY Name ASC"
                 End If
 

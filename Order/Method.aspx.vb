@@ -7929,20 +7929,19 @@ Partial Class Order_Method
 
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
+        Dim productName As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+        If Not String.IsNullOrEmpty(data.colourtype) Then productName = orderClass.GetProductName(data.colourtype)
 
         Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "SAMPLE TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.colourtype) Then Return "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !"
+        If String.IsNullOrEmpty(data.colourtype) Then Return "SAMPLE TYPE IS REQUIRED !"
 
         If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
         If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
-
-        If String.IsNullOrEmpty(data.fabrictype) Then Return "FABRIC TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.fabriccolour) Then Return "FABRIC COLOUR IS REQUIRED !"
 
         If Not String.IsNullOrEmpty(data.notes) Then
             If data.notes.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.notes.Contains("&=") OrElse data.notes.Contains("&+") Then
@@ -7955,7 +7954,7 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(designName, data.designid, priceGroupId)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -7970,8 +7969,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                         thisCmd.Parameters.AddWithValue("@Qty", 1)
-                        thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
-                        thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(data.fabriccolour), CType(DBNull.Value, Object), data.fabriccolour))
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
 
@@ -8003,8 +8000,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                     thisCmd.Parameters.AddWithValue("@Qty", 1)
-                    thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
-                    thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(data.fabriccolour), CType(DBNull.Value, Object), data.fabriccolour))
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
 
@@ -11106,27 +11101,18 @@ Partial Class Order_Method
 
         Dim blindName As String = detailData("BlindName").ToString()
 
-        Dim fabricId As String = detailData("FabricId").ToString()
-
         Dim itemDetail As New Dictionary(Of String, Object)
         For Each col As DataColumn In detailData.Table.Columns
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
         Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
+        Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
             .BlindTypes = ListData(blindReq),
-            .ColourTypes = ListData(colourReq),
-            .Fabrics = ListData(fabricReq),
-            .FabricColours = ListData(fabricColourReq)
+            .ColourTypes = ListData(colourReq)
         }
         Return result
     End Function
