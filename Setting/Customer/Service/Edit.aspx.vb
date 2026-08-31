@@ -17,7 +17,7 @@ Partial Class Setting_Customer_Service_Edit
         End If
 
         If String.IsNullOrEmpty(Request.QueryString("serviceid")) Then
-            Response.Redirect("~/setting/customer/service/", False)
+            Response.Redirect("~/setting/customer/service", False)
             Exit Sub
         End If
 
@@ -69,35 +69,38 @@ Partial Class Setting_Customer_Service_Edit
 
     Protected Sub BindData(serviceId As String)
         Try
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerServices WHERE Id='" & serviceId & "'")
+            If myData Is Nothing Then
+                Response.Redirect("~/setting/customer/service", False)
+                Exit Sub
+            End If
 
+            Dim customerId As String = myData("CustomerId").ToString()
+
+            BindCustomer(customerId)
+            BindService(customerId)
+
+            ddlCustomer.SelectedValue = myData("CustomerId").ToString()
+            ddlService.SelectedValue = myData("ServiceId").ToString()
+
+            MessageError(True, serviceId)
         Catch ex As Exception
-
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
     Protected Sub BindCustomer(customerId As String)
         ddlCustomer.Items.Clear()
         Try
-            Dim role As String = String.Empty
-            If Session("RoleName") = "Sales" Then
-                role = "AND CompanyId='" & Session("CompanyId").ToString() & "'"
-                If Session("LevelName") = "Member" Then
-                    role = "AND (Id = '" & Session("CustomerId") & "' OR EXISTS (SELECT 1 FROM STRING_SPLIT(Operator, ',') WHERE value = '" & Session("LoginId") & "'))"
-                End If
+            If Not String.IsNullOrEmpty(customerId) Then
+                ddlCustomer.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE Id='" & customerId & "' AND Status='Active'")
+                ddlCustomer.DataTextField = "Name"
+                ddlCustomer.DataValueField = "Id"
+                ddlCustomer.DataBind()
             End If
-
-            ddlCustomer.DataSource = settingClass.GetDataTable(String.Format("SELECT Id, Name FROM Customers WHERE Status='Active' {0} ORDER BY Name ASC", role))
-            ddlCustomer.DataTextField = "Name"
-            ddlCustomer.DataValueField = "Id"
-            ddlCustomer.DataBind()
-
-            If ddlCustomer.Items.Count > 1 Then
-                ddlCustomer.Items.Insert(0, New ListItem("", ""))
-            End If
-            ddlCustomer.SelectedValue = customerId
-
-            ddlCustomer.Enabled = False
-            If String.IsNullOrEmpty(customerId) Then ddlCustomer.Enabled = True
         Catch ex As Exception
             ddlCustomer.Items.Clear()
             If Session("RoleName") = "Developer" Then
