@@ -23,9 +23,6 @@ $("#blindtype").on("change", function () {
 $("#colourtype").on("change", function () {
     bindComponentForm($(this).val());
 });
-$("#fabrictype").on("change", function () {
-    bindFabricColour($(this).val());
-});
 
 function loader(itemAction) {
     return new Promise((resolve) => {
@@ -349,7 +346,7 @@ function bindColourType(blindType) {
             return;
         }
 
-        const listData = { type: "ColourType", blindtype: blindType, companydetailid: companyDetailId, tubetype: "9", controltype: "17", action: itemAction };
+        const listData = { type: "ProductName", blindtype: blindType, companydetailid: companyDetailId, tubetype: "9", controltype: "17", action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -389,116 +386,6 @@ function bindColourType(blindType) {
                         bindComponentForm(selectedValue)
                     ]).then(resolve).catch(reject);
                 }
-            },
-            error: function (error) {
-                reject(error);
-            }
-        });
-    });
-}
-
-function bindFabricType(designType) {
-    return new Promise((resolve, reject) => {
-        const fabrictype = document.getElementById("fabrictype");
-        fabrictype.innerHTML = "";
-
-        if (!designType) {
-            const selectedValue = fabrictype.value || "";
-            Promise.resolve(
-                bindFabricColour(selectedValue)
-            ).then(resolve).catch(reject);
-            return;
-        }
-
-        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetailid: companyDetailId, action: itemAction };
-
-        $.ajax({
-            type: "POST",
-            url: "Method.aspx/ListData",
-            data: JSON.stringify({ data: listData }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (Array.isArray(response.d)) {
-                    fabrictype.innerHTML = "";
-
-                    if (response.d.length > 1) {
-                        const defaultOption = document.createElement("option");
-                        defaultOption.text = "";
-                        defaultOption.value = "";
-                        fabrictype.add(defaultOption);
-                    }
-
-                    response.d.forEach(function (item) {
-                        const option = document.createElement("option");
-                        option.value = item.Value;
-                        option.text = item.Text;
-                        fabrictype.add(option);
-                    });
-
-                    if (response.d.length === 1) {
-                        fabrictype.selectedIndex = 0;
-                    }
-
-                    const selectedValue = fabrictype.value || "";
-                    Promise.resolve(
-                        bindFabricColour(selectedValue)
-                    ).then(resolve).catch(reject);
-                } else {
-                    const selectedValue = fabrictype.value || "";
-                    Promise.resolve(
-                        bindFabricColour(selectedValue)
-                    ).then(resolve).catch(reject);
-                }
-            },
-            error: function (error) {
-                reject(error);
-            }
-        });
-    });
-}
-
-function bindFabricColour(fabricType) {
-    return new Promise((resolve, reject) => {
-        const fabriccolour = document.getElementById("fabriccolour");
-        fabriccolour.innerHTML = "";
-
-        if (!fabricType) {
-            resolve();
-            return;
-        }
-
-        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId,  action: itemAction };
-
-        $.ajax({
-            type: "POST",
-            url: "Method.aspx/ListData",
-            data: JSON.stringify({ data: listData }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (Array.isArray(response.d)) {
-                    fabriccolour.innerHTML = "";
-
-                    if (response.d.length > 1) {
-                        const defaultOption = document.createElement("option");
-                        defaultOption.text = "";
-                        defaultOption.value = "";
-                        fabriccolour.add(defaultOption);
-                    }
-
-                    response.d.forEach(function (item) {
-                        const option = document.createElement("option");
-                        option.value = item.Value;
-                        option.text = item.Text;
-                        fabriccolour.add(option);
-                    });
-
-                    if (response.d.length === 1) {
-                        fabriccolour.selectedIndex = 0;
-                    }
-                }
-                resolve();
             },
             error: function (error) {
                 reject(error);
@@ -559,7 +446,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = ["blindtype", "colourtype", "qty", "fabrictype", "fabriccolour", "notes", "markup"];
+    const inputs = ["blindtype", "colourtype", "qty", "notes", "markup"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
@@ -580,10 +467,6 @@ function setFormValues(itemData) {
         blindtype: "BlindType",
         colourtype: "ProductId",
         qty: "Qty",
-        room: "Room",
-        mounting: "Mounting",
-        fabrictype: "FabricId",
-        fabriccolour: "FabricColourId",
         notes: "Notes",
         markup: "MarkUp"
     };
@@ -621,7 +504,7 @@ function fillSelect(selector, list, selected = null) {
 function process() {
     toggleButtonState(true, "Processing...");
 
-    const fields = ["blindtype", "colourtype", "qty", "fabrictype", "fabriccolour", "notes", "markup"];
+    const fields = ["blindtype", "colourtype", "qty", "notes", "markup"];
 
     const formData = {
         headerid: headerId,
@@ -706,7 +589,6 @@ async function initSample() {
         bindComponentForm("", "");
         controlForm(false);
         bindBlindType(designId);
-        bindFabricType(designId);
         loader(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {
         await bindItemOrder(itemId, companyDetailId, itemAction);
@@ -728,8 +610,6 @@ async function bindItemOrder(itemId, companyDetailId, action) {
 
         fillSelect("#blindtype", data.BlindTypes);
         fillSelect("#colourtype", data.ColourTypes);
-        fillSelect("#fabrictype", data.Fabrics);
-        fillSelect("#fabriccolour", data.FabricColours);
 
         document.getElementById("divloader").style.display = "none";
         document.getElementById("divorder").style.display = "";

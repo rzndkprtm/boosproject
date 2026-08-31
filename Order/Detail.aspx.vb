@@ -3340,6 +3340,43 @@ Partial Class Order_Detail
         End Try
     End Sub
 
+    Protected Sub BindDataItem(status As String)
+        Try
+            Dim param As New List(Of SqlParameter) From {
+                New SqlParameter("@HeaderId", Convert.ToInt32(lblHeaderId.Text))
+            }
+
+            gvListItem.DataSource = orderClass.GetDataTableSP("sp_OrderDetails_List_ByHeaderId", param)
+            gvListItem.DataBind()
+
+            gvListItem.Columns(1).Visible = LoginAccess("Visible ID")
+            gvListItem.Columns(2).Visible = LoginAccess("Visible Product ID")
+            gvListItem.Columns(4).Visible = LoginAccess("Visible Price")
+            gvListItem.Columns(5).Visible = LoginAccess("Visible Sell Price")
+            gvListItem.Columns(6).Visible = LoginAccess("Visible Buy Price")
+            gvListItem.Columns(7).Visible = LoginAccess("Visible Factory Price")
+
+            gvListItem.Columns(8).Visible = False
+            If Session("RoleName") = "Customer" Then
+                If Session("PriceAccess") = "Yes" Then gvListItem.Columns(8).Visible = True
+            End If
+
+            If status = "Unsubmitted" And gvListItem.Rows.Count > 0 Then
+                Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text}}
+                rptData.DataSource = orderClass.GetDataTableSP("sp_CustomerServices_Get", params)
+                rptData.DataBind()
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindDesignType()
         ddlDesign.Items.Clear()
         Try
@@ -3400,43 +3437,6 @@ Partial Class Order_Detail
             End If
         Catch ex As Exception
             ddlCollector.Items.Add(New ListItem(ex.ToString(), ""))
-        End Try
-    End Sub
-
-    Protected Sub BindDataItem(status As String)
-        Try
-            Dim param As New List(Of SqlParameter) From {
-                New SqlParameter("@HeaderId", Convert.ToInt32(lblHeaderId.Text))
-            }
-
-            gvListItem.DataSource = orderClass.GetDataTableSP("sp_OrderDetails_List_ByHeaderId", param)
-            gvListItem.DataBind()
-
-            gvListItem.Columns(1).Visible = LoginAccess("Visible ID")
-            gvListItem.Columns(2).Visible = LoginAccess("Visible Product ID")
-            gvListItem.Columns(4).Visible = LoginAccess("Visible Price")
-            gvListItem.Columns(5).Visible = LoginAccess("Visible Sell Price")
-            gvListItem.Columns(6).Visible = LoginAccess("Visible Buy Price")
-            gvListItem.Columns(7).Visible = LoginAccess("Visible Factory Price")
-
-            gvListItem.Columns(8).Visible = False
-            If Session("RoleName") = "Customer" Then
-                If Session("PriceAccess") = "Yes" Then gvListItem.Columns(8).Visible = True
-            End If
-
-            If status = "Unsubmitted" And gvListItem.Rows.Count > 0 Then
-                Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text}}
-                rptData.DataSource = orderClass.GetDataTableSP("sp_CustomerServices_Get", params)
-                rptData.DataBind()
-            End If
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-            End If
         End Try
     End Sub
 
