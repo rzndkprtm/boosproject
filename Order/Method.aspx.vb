@@ -3197,80 +3197,29 @@ Partial Class Order_Method
 
         Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
-        Dim qty As Integer
-        Dim width As Integer
-        Dim drop As Integer = 0
-        Dim rlValue As Integer
-        Dim markup As Integer
-
         Dim designName As String = String.Empty
-        Dim blindName As String = String.Empty
-
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+
+        Dim blindName As String = String.Empty
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
         Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
-        'Dim context As New ValidationContext With {
-        '    .data = data,
-        '    .pricegroupid = priceGroupId
-        '}
+        Dim context As New ValidationContext With {
+            .data = data,
+            .pricegroupid = priceGroupId
+        }
 
-        'Dim engine As New ValidationEngine()
-        'Dim result As String = engine.Validate(context)
+        Dim engine As New ValidationEngine()
+        Dim result As String = engine.Validate(context)
 
-        'If result <> "" Then Return result
+        If result <> "" Then Return result
 
-        If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.tubetype) Then Return "VALANCE TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.colourtype) Then Return "COLOUR TYPE IS REQUIRED !"
-
-        If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
-        If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
-
-        If String.IsNullOrEmpty(data.room) OrElse data.room.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.room.Contains("&=") OrElse data.room.Contains("&+") Then
-            Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+"
-        End If
-        If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
-
-        If data.fabricinsert = "Yes" Then
-            If String.IsNullOrEmpty(data.fabrictype) Then Return "FABRIC TYPE IS REQUIRED !"
-            If String.IsNullOrEmpty(data.fabriccolour) Then Return "FABRIC COLOUR IS REQUIRED !"
-        End If
-
-        If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
-        If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
-            If width < 600 Then Return "MINIMUM WIDTH IS 600MM !"
-        End If
-        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-            If width > 2910 Then Return "MAXIMUM WIDTH IS 2910MM !"
-        End If
-
-        If String.IsNullOrEmpty(data.brackettype) Then Return "BRACKET TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.isblindin) Then Return "IS BLIND IN IS REQUIRED !"
-
-        If data.mounting = "Face Fit" Then
-            If String.IsNullOrEmpty(data.returnposition) Then Return "RETURN POSITION IS REQUIRED !"
-        End If
-
-        If Not String.IsNullOrEmpty(data.returnposition) AndAlso String.IsNullOrEmpty(data.returnlength) Then Return "RETURN LENGTH IS REQUIRED !"
-
-        If data.returnlength = "Custom" Then
-            If String.IsNullOrEmpty(data.returnlengthvalue) Then Return "RETURN LENGTH VALUE IS REQUIRED !"
-            If Not Integer.TryParse(data.returnlengthvalue, rlValue) OrElse rlValue <= 0 Then Return "PLEASE CHECK YOUR RETURN LENGTH VALUE ORDER !"
-        End If
-
-        If Not String.IsNullOrEmpty(data.notes) Then
-            If data.notes.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.notes.Contains("&=") OrElse data.notes.Contains("&+") Then
-                Return "SPECIAL INFORMATION MUST NOT CONTAIN: , & ` ' &= &+"
-            End If
-            If data.notes.Trim().Length > 1000 Then Return "MAXIMUM 1000 CHARACTERS !"
-        End If
-
-        If Not String.IsNullOrEmpty(data.markup) Then
-            If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
-        End If
+        Dim qty As Integer = CInt(data.qty)
+        Dim width As Integer = CInt(data.width)
+        Dim drop As Integer = 0
+        Dim linearMetre As Decimal = width / 1000
+        Dim returnlengthvalue As Integer = 0
 
         If blindName = "Valance 140mm" Then drop = 140
         If blindName = "Valance 100mm" Then drop = 100
@@ -3280,18 +3229,19 @@ Partial Class Order_Method
         End If
 
         If data.returnlength = "Standard" Then
-            If data.brackettype = "Single Roller" Then rlValue = 120
+            If data.brackettype = "Single Roller" Then returnlengthvalue = 120
             If data.brackettype = "Dual Roller" Then
-                rlValue = 145
-                If width > 2410 Then rlValue = 180
+                returnlengthvalue = 145
+                If width > 2410 Then returnlengthvalue = 180
             End If
-            If data.brackettype = "Panel Screen - 3 Tracks" OrElse data.brackettype = "Panel Screen - 4 Tracks" Then rlValue = 160
-            If data.brackettype = "Panel Screen - 5 Tracks" Then rlValue = 170
-            If data.brackettype = "Vertical" Then rlValue = 120
-            If data.brackettype = "Vertical with Extention" Then rlValue = 190
+            If data.brackettype = "Panel Screen - 3 Tracks" OrElse data.brackettype = "Panel Screen - 4 Tracks" Then returnlengthvalue = 160
+            If data.brackettype = "Panel Screen - 5 Tracks" Then returnlengthvalue = 170
+            If data.brackettype = "Vertical" Then returnlengthvalue = 120
+            If data.brackettype = "Vertical with Extention" Then returnlengthvalue = 190
         End If
-
-        Dim linearMetre As Decimal = width / 1000
+        If data.returnlength = "Custom" Then
+            returnlengthvalue = CInt(data.returnlengthvalue)
+        End If
 
         Dim priceProductGroupName As String = designName
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, priceGroupId)
@@ -3320,10 +3270,10 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@IsBlindIn", data.isblindin)
                         thisCmd.Parameters.AddWithValue("@ReturnPosition", data.returnposition)
                         thisCmd.Parameters.AddWithValue("@ReturnLength", data.returnlength)
-                        thisCmd.Parameters.AddWithValue("@ReturnLengthValue", rlValue)
+                        thisCmd.Parameters.AddWithValue("@ReturnLengthValue", returnlengthvalue)
                         thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
-                        thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+                        thisCmd.Parameters.AddWithValue("@MarkUp", If(String.IsNullOrEmpty(data.markup), CType(0, Object), data.markup))
 
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
@@ -3364,10 +3314,10 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@IsBlindIn", data.isblindin)
                     thisCmd.Parameters.AddWithValue("@ReturnPosition", data.returnposition)
                     thisCmd.Parameters.AddWithValue("@ReturnLength", data.returnlength)
-                    thisCmd.Parameters.AddWithValue("@ReturnLengthValue", rlValue)
+                    thisCmd.Parameters.AddWithValue("@ReturnLengthValue", returnlengthvalue)
                     thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
-                    thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+                    thisCmd.Parameters.AddWithValue("@MarkUp", If(String.IsNullOrEmpty(data.markup), CType(0, Object), data.markup))
 
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
