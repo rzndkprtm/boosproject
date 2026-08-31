@@ -43,8 +43,8 @@ Partial Class Setting_Validation_Detail_Edit
                 End Using
             End Using
 
-            'dataLog = {"ValidationDetails", lblId.Text, Session("LoginId").ToString(), "Validation Detail Updated"}
-            'settingClass.Logs(dataLog)
+            dataLog = {"ValidationDetails", lblId.Text, Session("LoginId").ToString(), "Validation Detail Updated"}
+            settingClass.Logs(dataLog)
 
             Dim url As String = String.Format("~/setting/validation/detail?validationid={0}", lblId.Text)
             Response.Redirect(url, False)
@@ -64,7 +64,10 @@ Partial Class Setting_Validation_Detail_Edit
     Protected Sub BindData(detailId As String)
         Try
             Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM ValidationDetails WHERE Id='" & detailId & "'")
-            If thisData Is Nothing Then Exit Sub
+            If thisData Is Nothing Then
+                Response.Redirect("~/setting/validation/detail", False)
+                Exit Sub
+            End If
 
             BindFieldName()
             BindOperator()
