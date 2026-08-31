@@ -56,6 +56,40 @@ Partial Class Setting_Price_Service_Default
         BuildPager()
     End Sub
 
+    Protected Sub btnStatus_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtStatusId.Text
+            Dim thisStatus As String = txtStatusText.Text
+
+            Dim newStatus As String = "Inactive"
+            If thisStatus = "Inactive" Then : newStatus = "Active" : End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceServices SET Status=@Status WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim statusDesc As String = "Service Has Been Activated"
+            If newStatus = "Inactive" Then statusDesc = "Service Has Been Deactivated"
+
+            Dim dataLog As Object() = {"PriceServices", thisId, Session("LoginId").ToString(), statusDesc}
+            settingClass.Logs(dataLog)
+
+            Session("SearchPriceService") = txtSearch.Text
+            Response.Redirect("~/setting/price/service", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -160,6 +194,12 @@ Partial Class Setting_Price_Service_Default
             Return String.Empty
         End Try
         Return String.Empty
+    End Function
+
+    Protected Function TextStatus(status As String) As String
+        Dim result As String = "Activate"
+        If status = "Active" Then : Return "Deactivate" : End If
+        Return result
     End Function
 
     Protected Sub MessageError(visible As Boolean, message As String)

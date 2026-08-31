@@ -267,7 +267,7 @@
                 }
             });
         }
-        ["modalChange", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalStatus", "modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
