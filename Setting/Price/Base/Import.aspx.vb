@@ -11,7 +11,7 @@ Partial Class Setting_Price_Base_Import
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/price/base/", False)
+            Response.Redirect("~/setting/price/base", False)
             Exit Sub
         End If
 
@@ -183,7 +183,7 @@ Partial Class Setting_Price_Base_Import
                 End Using
 
                 If backupData = "Yes" Then
-                    Dim newTable As String = "PriceBases_Backup_" & DateTime.Now.ToString("yyyyMMdd_HHmmss") & "_" & Session("RoleName").ToString()
+                    Dim newTable As String = "PriceBases_Backup_" & "_" & Session("RoleName").ToString() & DateTime.Now.ToString("yyyyMMdd_HHmmss")
                     Using cmd As New SqlCommand("SELECT * INTO [dbo].[" & newTable & "] FROM [dbo].[PriceBases]",
                     thisConn)
                         cmd.ExecuteNonQuery()

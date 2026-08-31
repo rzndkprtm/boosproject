@@ -69,6 +69,15 @@
                                                 <asp:TextBox ID="txtMarkup" runat="server" CssClass="form-control" Height="45px" placeholder="Mark Up ..."></asp:TextBox>
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                <label class="form-label">Backup?</label>
+                                                <asp:DropDownList runat="server" ID="ddlBackup" CssClass="choices form-select">
+                                                    <asp:ListItem Value="Yes" Text="Yes"></asp:ListItem>
+                                                    <asp:ListItem Value="No" Text="No"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                                 <div class="row" runat="server" id="divError">

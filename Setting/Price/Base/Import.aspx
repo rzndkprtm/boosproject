@@ -52,11 +52,11 @@
                                         </div>
                                         <div class="row mb-2">
                                             <div class="col-12 col-sm-12 col-lg-9 form-group">
-                                                <label>Upload File</label>
+                                                <label class="form-label">Upload File</label>
                                                 <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                <label>Backup?</label>
+                                                <label class="form-label">Backup?</label>
                                                 <asp:DropDownList runat="server" ID="ddlBackup" CssClass="form-select">
                                                     <asp:ListItem Value="Yes" Text="Yes"></asp:ListItem>
                                                     <asp:ListItem Value="No" Text="No"></asp:ListItem>

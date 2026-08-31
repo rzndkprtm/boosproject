@@ -9,7 +9,7 @@ Partial Class Setting_Database_View_Add
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/database/view/", False)
+            Response.Redirect("~/setting/database/view", False)
             Exit Sub
         End If
 

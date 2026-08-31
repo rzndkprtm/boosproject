@@ -108,7 +108,7 @@ Partial Class Setting_Specification_Fabric_Edit
                 Dim dataLog As Object() = {"Fabrics", lblId.Text, Session("LoginId").ToString(), "Fabric Type Updated"}
                 settingClass.Logs(dataLog)
 
-                url = "~/setting/specification/fabric/"
+                url = "~/setting/specification/fabric"
                 If returnPage = "detail" Then
                     url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
                 End If
@@ -123,7 +123,7 @@ Partial Class Setting_Specification_Fabric_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        url = "~/setting/specification/fabric/"
+        url = "~/setting/specification/fabric"
         If returnPage = "detail" Then
             url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
         End If

@@ -11,14 +11,14 @@ Partial Class Order_Add
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/order/", False)
+            Response.Redirect("~/order", False)
             Exit Sub
         End If
 
         If Session("RoleName") = "Customer" Then
             Dim status As Boolean = orderClass.GetCustomerOnStop(Session("CustomerId").ToString())
             If status = True Then
-                Response.Redirect("~/order/", False)
+                Response.Redirect("~/order", False)
                 Exit Sub
             End If
         End If
@@ -138,7 +138,7 @@ Partial Class Order_Add
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/order/", False)
+        Response.Redirect("~/order", False)
     End Sub
 
     Protected Sub BindComponentForm(customerId As String)
@@ -169,18 +169,15 @@ Partial Class Order_Add
     Protected Sub BindDataCustomer()
         ddlCustomer.Items.Clear()
         Try
-            Dim splitArray As String = String.Empty
-            Dim role As String = String.Empty
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@CustomerId", If(Session("CustomerId") Is Nothing, CType(DBNull.Value, Object), Session("CustomerId"))),
+                New SqlParameter("@LoginId", Session("LoginId"))
+            }
 
-            If Session("RoleName") = "Customer" Then role = "AND Id='" & Session("CustomerId") & "'"
-            If Session("RoleName") = "Sales" Then
-                role = "AND CompanyId='" & Session("CompanyId").ToString() & "'"
-                If Session("LevelName") = "Member" Then
-                    role = "AND (Id = '" & Session("CustomerId") & "' OR EXISTS (SELECT 1 FROM STRING_SPLIT(Operator, ',') WHERE value = '" & Session("LoginId") & "'))"
-                End If
-            End If
-
-            ddlCustomer.DataSource = orderClass.GetDataTable(String.Format("SELECT Id, Name FROM Customers WHERE Status='Active' {0} ORDER BY Name ASC", role))
+            ddlCustomer.DataSource = orderClass.GetDataTableSP("sp_Customers_List_Dropdown_Order", params)
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
@@ -188,8 +185,6 @@ Partial Class Order_Add
             If ddlCustomer.Items.Count > 1 Then
                 ddlCustomer.Items.Insert(0, New ListItem("", ""))
             End If
-
-            ddlCustomer.SelectedValue = Session("CustomerId").ToString()
         Catch ex As Exception
             ddlCustomer.Items.Clear()
             If Session("RoleName") = "Developer" Then

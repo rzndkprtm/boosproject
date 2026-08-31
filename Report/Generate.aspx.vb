@@ -11,7 +11,7 @@ Partial Class Report_Generate
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/report/", False)
+            Response.Redirect("~/report", False)
             Exit Sub
         End If
 
@@ -203,7 +203,7 @@ Partial Class Report_Generate
     Protected Sub BindCompany()
         ddlCompany.Items.Clear() : ddlCompany.Enabled = True
         Try
-            ddlCompany.DataSource = reportClass.GetDataTable("SELECT * FROM Companys WHERE Active=1 ORDER BY Name ASC")
+            ddlCompany.DataSource = reportClass.GetDataTable("SELECT * FROM Companys WHERE Status='Active' ORDER BY Name ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()

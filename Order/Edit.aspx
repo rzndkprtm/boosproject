@@ -73,7 +73,7 @@
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-8 form-group">
                                         <label class="form-label">Order Address</label>
-                                        <asp:TextBox runat="server" ID="txtOrderAddress" Height="45px" CssClass="form-control" placeholder="Order Address ...." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                        <asp:TextBox runat="server" ID="txtOrderAddress" CssClass="form-control" placeholder="Order Address ...." autocomplete="off"></asp:TextBox>
                                     </div>
                                 </div>
                                 <div class="row mb-2" runat="server" id="divOrderTypeFactory">

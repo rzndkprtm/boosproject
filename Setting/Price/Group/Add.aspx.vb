@@ -11,7 +11,7 @@ Partial Class Setting_Price_Group_Add
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/price/group/", False)
+            Response.Redirect("~/setting/price/group", False)
             Exit Sub
         End If
 
@@ -100,7 +100,7 @@ Partial Class Setting_Price_Group_Add
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/price/group/", False)
+        Response.Redirect("~/setting/price/group", False)
     End Sub
 
     Protected Sub btnClose_Click(sender As Object, e As EventArgs)

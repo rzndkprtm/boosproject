@@ -11,7 +11,7 @@ Partial Class Setting_Job_Sheet_Detail_Add
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/job/sheet/", False)
+            Response.Redirect("~/setting/job/sheet", False)
             Exit Sub
         End If
 

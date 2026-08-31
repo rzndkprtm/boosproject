@@ -127,7 +127,6 @@ Partial Class Setting_Price_Base_Default
         MessageError(False, String.Empty)
 
         BindProductGroup(ddlPriceGroup.SelectedValue)
-
         BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
 
         Session("PriceBaseCategory") = ddlCategory.SelectedValue
@@ -159,7 +158,6 @@ Partial Class Setting_Price_Base_Default
                 Using thisCmd As New SqlCommand("sp_PriceBases_UpdateConditional", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
                     thisCmd.Parameters.AddWithValue("@Conditional", "Excl. $7 Disc")
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using

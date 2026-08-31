@@ -142,7 +142,7 @@ Partial Class Setting_Customer_Service_Edit
                 New SqlParameter("@LoginId", Session("LoginId"))
             }
 
-            ddlCustomer.DataSource = settingClass.GetDataTableSP("sp_Customers_List_Dropdown", params)
+            ddlCustomer.DataSource = settingClass.GetDataTableSP("sp_Customers_List_Dropdown_Setting", params)
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()

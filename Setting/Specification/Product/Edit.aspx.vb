@@ -105,7 +105,7 @@ Partial Class Setting_Specification_Product_Edit
                 dataLog = {"Products", lblId.Text, Session("LoginId").ToString(), "Product Updated"}
                 settingClass.Logs(dataLog)
 
-                url = "~/setting/specification/product/"
+                url = "~/setting/specification/product"
                 If lblReturnPage.Text = "detail" Then
                     url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
                 End If
@@ -117,7 +117,7 @@ Partial Class Setting_Specification_Product_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        url = "~/setting/specification/product/"
+        url = "~/setting/specification/product"
         If lblReturnPage.Text = "detail" Then
             url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
         End If
@@ -128,7 +128,7 @@ Partial Class Setting_Specification_Product_Edit
         Try
             Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Products WHERE Id='" & productId & "' AND Status<>'Deleted'")
             If myData Is Nothing Then
-                Response.Redirect("~/setting/specification/product/", False)
+                Response.Redirect("~/setting/specification/product", False)
                 Exit Sub
             End If
 

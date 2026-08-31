@@ -11,12 +11,12 @@ Partial Class Setting_Price_Group_Delete
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/price/group/", False)
+            Response.Redirect("~/setting/price/group", False)
             Exit Sub
         End If
 
         If String.IsNullOrEmpty(Request.QueryString("pricegroupid")) Then
-            Response.Redirect("~/setting/price/group/", False)
+            Response.Redirect("~/setting/price/group", False)
             Exit Sub
         End If
 
@@ -73,7 +73,7 @@ Partial Class Setting_Price_Group_Delete
                 End If
             End If
 
-            Response.Redirect("~/setting/price/group/", False)
+            Response.Redirect("~/setting/price/group", False)
             Exit Sub
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -84,14 +84,14 @@ Partial Class Setting_Price_Group_Delete
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/price/group/", False)
+        Response.Redirect("~/setting/price/group", False)
     End Sub
 
     Protected Sub BindData(priceGroupId As String)
         Try
             Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM PriceGroups WHERE Id='" & priceGroupId & "' AND (Status='Active' OR Status='Inactive')")
             If myData Is Nothing Then
-                Response.Redirect("~/setting/price/group/", False)
+                Response.Redirect("~/setting/price/group", False)
                 Exit Sub
             End If
 

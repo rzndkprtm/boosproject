@@ -239,7 +239,7 @@ Partial Class Setting_Specification_Product_Detail
             }
             Dim thisData As DataRow = settingClass.GetDataRowSP("sp_Products_Get", params)
             If thisData Is Nothing Then
-                Response.Redirect("~/setting/specification/product/", False)
+                Response.Redirect("~/setting/specification/product", False)
                 Exit Sub
             End If
 
