@@ -1,5 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Globalization
+Imports System.Web.Services
 
 Partial Class Setting_Customer_Markup_Add
     Inherits Page
@@ -7,6 +9,61 @@ Partial Class Setting_Customer_Markup_Add
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
+
+    <WebMethod()>
+    Public Shared Function GetCustomerMarkup(customerId As String) As Object
+        Dim settingClass As New SettingClass
+        Dim dt As DataTable = settingClass.GetDataTable("SELECT Id, Type, Method, DataId, Markup FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
+
+        Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
+
+        Dim result As New List(Of Object)
+        For Each r As DataRow In dt.Rows
+            Dim type As String = r("Type").ToString()
+            Dim method As String = r("Method").ToString()
+            Dim dataId As String = r("DataId").ToString()
+            Dim markup As Decimal = Convert.ToDecimal(r("Markup"))
+            Dim title As String = GetMarkupTitle(type, dataId)
+            Dim value As String = "-"
+            If method = "Percent" Then
+                value = markup.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
+            End If
+            If method = "Value" Then
+                If companyId = "2" Then
+                    value = "$" & markup.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                End If
+                If companyId = "3" Then
+                    value = "Rp" & markup.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                End If
+            End If
+
+            result.Add(New With {.Id = r("Id").ToString(), .Type = type, .Product = title, .Markup = value})
+        Next
+        Return result
+    End Function
+
+    Private Shared Function GetMarkupTitle(type As String, dataId As String) As String
+        If String.IsNullOrEmpty(type) Then Return String.Empty
+        Dim settingClass As New SettingClass
+
+        Dim dataName As String = String.Empty
+        If type = "Designs" Then
+            dataName = settingClass.GetItemData("Select Name FROM Designs WHERE Id='" & dataId & "'")
+        End If
+        If type = "PriceProductGroups" Then
+            dataName = settingClass.GetItemData("SELECT CASE WHEN Status='Active' THEN Name ELSE Name + ' [' + UPPER(Status) + ']' END FROM PriceProductGroups WHERE Id='" & dataId & "'")
+        End If
+        If type = "RollerFabrics" OrElse type = "RomanFabrics" OrElse type = "PanelGlideFabrics" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM Fabrics WHERE Id='" & dataId & "'")
+        End If
+        If type = "RollerFabricColours" OrElse type = "RomanFabricColours" OrElse type = "PanelGlideFabricColours" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM FabricColours WHERE Id='" & dataId & "'")
+        End If
+        If type = "RollerChains" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM Chains WHERE Id='" & dataId & "'")
+        End If
+        Return dataName
+    End Function
 
     Private Property PromoTable As DataTable
         Get

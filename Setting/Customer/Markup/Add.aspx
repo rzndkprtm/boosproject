@@ -39,7 +39,7 @@
                         </div>
                         <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                             <ContentTemplate>
-                                <div class="row mb-3">
+                                <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-7 form-group">
                                         <label class="form-label">Account</label>
                                         <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
@@ -59,7 +59,12 @@
                                         </asp:DropDownList>
                                     </div>
                                 </div>
-                                <table class="table table-bordered">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <a href="javascript:void(0);" class="btn btn-sm btn-outline-info" data-bs-dismiss="modal" onclick="openRegisteredMarkupModal(document.getElementById('<%= ddlCustomer.ClientID %>').value)">Registered Markup</a>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered mt-5">
                                     <thead>
                                         <tr>
                                             <th style="width:600px;">Product</th>
@@ -115,6 +120,38 @@
         </section>
     </div>
 
+    <div class="modal modal-blur fade" id="modalRegisteredMarkup" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Registered Markup</h5>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtCustomerId" style="display:none;"></asp:TextBox>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Type</th>
+                                            <th>Product</th>
+                                            <th>Markup</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="markupBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
         <div class="position-absolute top-50 start-50 translate-middle">
             <div class="card shadow">
@@ -165,6 +202,38 @@
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
             initChoices();
+        });
+        function openRegisteredMarkupModal(customerId) {
+            document.getElementById("<%=txtCustomerId.ClientID %>").value = customerId;
+            fetch('Add.aspx/GetCustomerMarkup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                body: JSON.stringify({ customerId: customerId })
+            }).then(res => res.json()).then(res => {
+                const data = res.d;
+                let tbody = "";
+                data.forEach((x, i) => {
+                    tbody += `
+                    <tr>
+                    <td class="text-center">${i + 1}</td>
+                    <td>${x.Type}</td>
+                    <td>${x.Product}</td>
+                    <td>${x.Markup}</td>
+                    </tr>
+                    `;
+                });
+                document.getElementById("markupBody").innerHTML = tbody;
+                showRegisteredMarkup();
+            });
+        }
+        function showRegisteredMarkup() {
+            $("#modalRegisteredMarkup").modal("show");
+        }
+        ["modalRegisteredMarkup"].forEach(function (id) {
+            document.getElementById(id).addEventListener("hide.bs.modal", function () {
+                document.activeElement.blur();
+                document.body.focus();
+            });
         });
         window.history.replaceState(null, null, window.location.href);
     </script>
