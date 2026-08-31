@@ -1,5 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Globalization
+Imports System.Web.Services
 
 Partial Class Setting_Customer_Discount_Add
     Inherits Page
@@ -7,6 +9,61 @@ Partial Class Setting_Customer_Discount_Add
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
+
+    <WebMethod()>
+    Public Shared Function GetCustomerDiscount(customerId As String) As Object
+        Dim settingClass As New SettingClass
+        Dim dt As DataTable = settingClass.GetDataTable("SELECT Id, Type, Method, DataId, Discount FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
+
+        Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
+
+        Dim result As New List(Of Object)
+        For Each r As DataRow In dt.Rows
+            Dim type As String = r("Type").ToString()
+            Dim method As String = r("Method").ToString()
+            Dim dataId As String = r("DataId").ToString()
+            Dim discount As Decimal = Convert.ToDecimal(r("Discount"))
+            Dim title As String = GetDiscountTitle(type, dataId)
+            Dim value As String = "-"
+            If method = "Percent" Then
+                value = discount.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
+            End If
+            If method = "Value" Then
+                If companyId = "2" Then
+                    value = "$" & discount.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                End If
+                If companyId = "3" Then
+                    value = "Rp" & discount.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                End If
+            End If
+
+            result.Add(New With {.Id = r("Id").ToString(), .Type = type, .Product = title, .Discount = value})
+        Next
+        Return result
+    End Function
+
+    Private Shared Function GetDiscountTitle(type As String, dataId As String) As String
+        If String.IsNullOrEmpty(type) Then Return String.Empty
+        Dim settingClass As New SettingClass
+
+        Dim dataName As String = String.Empty
+        If type = "Designs" Then
+            dataName = settingClass.GetItemData("Select Name FROM Designs WHERE Id='" & dataId & "'")
+        End If
+        If type = "PriceProductGroups" Then
+            dataName = settingClass.GetItemData("SELECT CASE WHEN Status='Active' THEN Name ELSE Name + ' [' + UPPER(Status) + ']' END FROM PriceProductGroups WHERE Id='" & dataId & "'")
+        End If
+        If type = "RollerFabrics" OrElse type = "RomanFabrics" OrElse type = "PanelGlideFabrics" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM Fabrics WHERE Id='" & dataId & "'")
+        End If
+        If type = "RollerFabricColours" OrElse type = "RomanFabricColours" OrElse type = "PanelGlideFabricColours" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM FabricColours WHERE Id='" & dataId & "'")
+        End If
+        If type = "RollerChains" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM Chains WHERE Id='" & dataId & "'")
+        End If
+        Return dataName
+    End Function
 
     Private Property DiscountTable As DataTable
         Get
@@ -34,16 +91,14 @@ Partial Class Setting_Customer_Discount_Add
             Exit Sub
         End If
 
-        If String.IsNullOrEmpty(Request.QueryString("custid")) Then
-            Response.Redirect("~/setting/customer/discount", False)
-            Exit Sub
+        If Not String.IsNullOrEmpty(Request.QueryString("custid")) Then
+            lblCustomerId.Text = Request.QueryString("custid").ToString()
         End If
 
         If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
             lblReturnPage.Text = Request.QueryString("returnpage").ToString()
         End If
 
-        lblCustomerId.Text = Request.QueryString("custid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindCustomer(lblCustomerId.Text)
@@ -57,78 +112,11 @@ Partial Class Setting_Customer_Discount_Add
         End If
     End Sub
 
-    Protected Sub rptDiscount_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
-        Try
-            If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
-                Dim drv As DataRowView = CType(e.Item.DataItem, DataRowView)
-
-                Dim ddlProduct As DropDownList = CType(e.Item.FindControl("ddlProduct"), DropDownList)
-                Dim ddlMethod As DropDownList = CType(e.Item.FindControl("ddlMethod"), DropDownList)
-                Dim txtDiscount As TextBox = CType(e.Item.FindControl("txtDiscount"), TextBox)
-                Dim txtDescription As TextBox = CType(e.Item.FindControl("txtDescription"), TextBox)
-
-                If ddlProduct Is Nothing Then Exit Sub
-
-                If ddlMethod IsNot Nothing Then
-                    ddlMethod.SelectedValue = drv("Method").ToString()
-                End If
-                If txtDiscount IsNot Nothing Then
-                    txtDiscount.Text = drv("Discount").ToString()
-                End If
-                If txtDescription IsNot Nothing Then
-                    txtDescription.Text = drv("Description").ToString()
-                End If
-
-                If ddlType.SelectedValue <> "" Then
-                    BindProduct(lblCustomerId.Text, ddlType.SelectedValue, ddlProduct)
-
-                    Dim productId As String = drv("Product").ToString()
-                    If Not String.IsNullOrEmpty(productId) Then
-
-                        Dim item As ListItem = ddlProduct.Items.FindByValue(productId)
-                        If item IsNot Nothing Then
-                            ddlProduct.SelectedValue = item.Value
-                        End If
-                    End If
-                End If
-            End If
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Session("RoleName").ToString() <> "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub rptDiscount_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
-        Try
-            If e.CommandName <> "DeleteRow" Then Exit Sub
-            SaveGrid()
-
-            Dim index As Integer
-            If Not Integer.TryParse(e.CommandArgument.ToString(), index) Then
-                Exit Sub
-            End If
-            If index >= 0 AndAlso index < DiscountTable.Rows.Count Then
-                DiscountTable.Rows.RemoveAt(index)
-            End If
-            If DiscountTable.Rows.Count = 0 Then
-                DiscountTable.Rows.Add("", "", "", "")
-            End If
-            BindGrid()
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Session("RoleName").ToString() <> "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Protected Sub ddlCustomer_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim customerId As String = lblCustomerId.Text.Trim()
-            Dim discType As String = ddlType.SelectedValue.Trim()
+            Dim customerId As String = ddlCustomer.SelectedValue
+            Dim discType As String = ddlType.SelectedValue
 
             DiscountTable.Rows.Clear()
 
@@ -172,6 +160,130 @@ Partial Class Setting_Customer_Discount_Add
             DiscountTable.Rows.Clear()
             DiscountTable.Rows.Add("", "", "", "")
 
+            BindGrid()
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Session("RoleName").ToString() <> "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim customerId As String = ddlCustomer.SelectedValue
+            Dim discType As String = ddlType.SelectedValue
+
+            DiscountTable.Rows.Clear()
+
+            If String.IsNullOrEmpty(discType) Then
+                DiscountTable.Rows.Add("", "", "", "")
+                BindGrid()
+
+                Exit Sub
+            End If
+
+            If discType = "Designs" OrElse discType = "PriceProductGroups" Then
+                Dim checkData As DataRow = settingClass.GetDataRow("SELECT COUNT(*) AS Total FROM CustomerDiscounts WHERE CustomerId='" & customerId & "'")
+                Dim totalDiscount As Integer = 0
+                If checkData IsNot Nothing Then
+                    Integer.TryParse(checkData("Total").ToString(), totalDiscount)
+                End If
+
+                If totalDiscount = 0 Then
+                    Dim dtProduct As DataTable = GetProductData(customerId, discType)
+
+                    If dtProduct IsNot Nothing AndAlso dtProduct.Rows.Count > 0 Then
+                        For Each productRow As DataRow In dtProduct.Rows
+                            Dim newRow As DataRow = DiscountTable.NewRow()
+                            newRow("Product") = productRow("Id").ToString()
+                            newRow("Method") = ""
+                            newRow("Discount") = ""
+                            newRow("Description") = ""
+
+                            DiscountTable.Rows.Add(newRow)
+                        Next
+                    Else
+                        DiscountTable.Rows.Add("", "", "", "")
+                    End If
+
+                    BindGrid()
+
+                    Exit Sub
+                End If
+            End If
+
+            DiscountTable.Rows.Clear()
+            DiscountTable.Rows.Add("", "", "", "")
+
+            BindGrid()
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Session("RoleName").ToString() <> "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub rptDiscount_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
+        Try
+            If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
+                Dim drv As DataRowView = CType(e.Item.DataItem, DataRowView)
+
+                Dim ddlProduct As DropDownList = CType(e.Item.FindControl("ddlProduct"), DropDownList)
+                Dim ddlMethod As DropDownList = CType(e.Item.FindControl("ddlMethod"), DropDownList)
+                Dim txtDiscount As TextBox = CType(e.Item.FindControl("txtDiscount"), TextBox)
+                Dim txtDescription As TextBox = CType(e.Item.FindControl("txtDescription"), TextBox)
+
+                If ddlProduct Is Nothing Then Exit Sub
+
+                If ddlMethod IsNot Nothing Then
+                    ddlMethod.SelectedValue = drv("Method").ToString()
+                End If
+                If txtDiscount IsNot Nothing Then
+                    txtDiscount.Text = drv("Discount").ToString()
+                End If
+                If txtDescription IsNot Nothing Then
+                    txtDescription.Text = drv("Description").ToString()
+                End If
+
+                If ddlType.SelectedValue <> "" Then
+                    BindProduct(ddlCustomer.SelectedValue, ddlType.SelectedValue, ddlProduct)
+
+                    Dim productId As String = drv("Product").ToString()
+                    If Not String.IsNullOrEmpty(productId) Then
+
+                        Dim item As ListItem = ddlProduct.Items.FindByValue(productId)
+                        If item IsNot Nothing Then
+                            ddlProduct.SelectedValue = item.Value
+                        End If
+                    End If
+                End If
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Session("RoleName").ToString() <> "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub rptDiscount_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        Try
+            If e.CommandName <> "DeleteRow" Then Exit Sub
+            SaveGrid()
+
+            Dim index As Integer
+            If Not Integer.TryParse(e.CommandArgument.ToString(), index) Then
+                Exit Sub
+            End If
+            If index >= 0 AndAlso index < DiscountTable.Rows.Count Then
+                DiscountTable.Rows.RemoveAt(index)
+            End If
+            If DiscountTable.Rows.Count = 0 Then
+                DiscountTable.Rows.Add("", "", "", "")
+            End If
             BindGrid()
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -260,7 +372,7 @@ Partial Class Setting_Customer_Discount_Add
                 If dr("Method").ToString = "" Then Continue For
                 If dr("Discount").ToString = "" Then Continue For
 
-                Dim checkData As DataRow = settingClass.GetDataRow(String.Format("SELECT * FROM CustomerDiscounts WHERE CustomerId='{0}' AND Type='{1}' AND DataId='{2}'", lblCustomerId.Text, ddlType.SelectedValue, dr("Product").ToString))
+                Dim checkData As DataRow = settingClass.GetDataRow(String.Format("SELECT * FROM CustomerDiscounts WHERE CustomerId='{0}' AND Type='{1}' AND DataId='{2}'", ddlCustomer.SelectedValue, ddlType.SelectedValue, dr("Product").ToString))
                 If checkData IsNot Nothing Then
                     Dim thisId As String = checkData("Id").ToString()
                     Dim thisDiscount As Decimal = CDec(checkData("Discount"))
@@ -281,7 +393,7 @@ Partial Class Setting_Customer_Discount_Add
                     Using thisConn As New SqlConnection(myConn)
                         Using thisCmd As New SqlCommand("INSERT INTO CustomerDiscounts VALUES (@Id, @CustomerId, @Type, @Method, @DataId, @Discount, @Description)", thisConn)
                             thisCmd.Parameters.AddWithValue("@Id", thisId)
-                            thisCmd.Parameters.AddWithValue("@CustomerId", lblCustomerId.Text)
+                            thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
                             thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                             thisCmd.Parameters.AddWithValue("@Method", dr("Method").ToString())
                             thisCmd.Parameters.AddWithValue("@DataId", dr("Product").ToString())
@@ -298,12 +410,12 @@ Partial Class Setting_Customer_Discount_Add
 
             url = "~/setting/customer/discount"
             If lblReturnPage.Text = "detail" Then
-                url = String.Format("~/setting/customer/detail?customerid={0}", lblCustomerId.Text)
+                url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
             End If
             If action = "Again" Then
-                url = String.Format("~/setting/customer/discount/add?custid={0}", lblCustomerId.Text)
+                url = String.Format("~/setting/customer/discount/add?custid={0}", ddlCustomer.SelectedValue)
                 If lblReturnPage.Text = "detail" Then
-                    url = String.Format("~/setting/customer/discount/add?custid={0}&returnpage=detail", lblCustomerId.Text)
+                    url = String.Format("~/setting/customer/discount/add?custid={0}&returnpage=detail", ddlCustomer.SelectedValue)
                 End If
             End If
             Response.Redirect(url, False)
