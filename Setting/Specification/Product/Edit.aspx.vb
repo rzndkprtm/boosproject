@@ -126,7 +126,7 @@ Partial Class Setting_Specification_Product_Edit
 
     Protected Sub BindData(productId As String)
         Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Products WHERE Id='" & productId & "' (Status IS NULL OR Status <> 'Deleted')")
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Products WHERE Id='" & productId & "' AND (Status IS NULL OR Status <> 'Deleted')")
             If myData Is Nothing Then
                 Response.Redirect("~/setting/specification/product", False)
                 Exit Sub
