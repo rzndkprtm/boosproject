@@ -71,7 +71,7 @@
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                     <ul class="dropdown-menu">
                                                         <li runat="server" visible='<%# LoginAccess("Detail") %>'>
-                                                            <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/customer/product/edit?productid=" & Eval("Id")) %>'>Detail / Edit</a>
+                                                            <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/customer/product/edit?productid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReset" onclick='<%# String.Format("return dataReset(`{0}`);", Eval("Id").ToString()) %>'>Reset</a>

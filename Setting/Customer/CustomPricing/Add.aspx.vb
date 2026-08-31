@@ -10,13 +10,21 @@ Partial Class Setting_Customer_CustomPricing_Add
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/customer/custompricing/", False)
+            Response.Redirect("~/setting/customer/custompricing", False)
             Exit Sub
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("custid")) Then
+            lblCustomerId.Text = Request.QueryString("custid").ToString()
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            lblReturnPage.Text = Request.QueryString("returnpage").ToString()
         End If
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindCustomer()
+            BindCustomer(lblCustomerId.Text)
         End If
     End Sub
 
@@ -67,10 +75,18 @@ Partial Class Setting_Customer_CustomPricing_Add
         Response.Redirect("~/setting/customer/custompricing", False)
     End Sub
 
-    Protected Sub BindCustomer()
+    Protected Sub BindCustomer(customerId As String)
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE Status='Active' ORDER BY Name ASC")
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@CustomerId", If(customerId Is Nothing, CType(DBNull.Value, Object), customerId)),
+                New SqlParameter("@LoginId", Session("LoginId"))
+            }
+
+            ddlCustomer.DataSource = settingClass.GetDataTableSP("sp_Customers_List_Dropdown", params)
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
