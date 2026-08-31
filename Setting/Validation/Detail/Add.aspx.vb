@@ -78,7 +78,6 @@ Partial Class Setting_Validation_Detail_Add
                         thisCmd.Parameters.AddWithValue("@Operator", item.Operator)
                         thisCmd.Parameters.AddWithValue("@CompareValue", item.CompareValue)
                         thisCmd.Parameters.AddWithValue("@DataType", item.DataType)
-
                         thisCmd.ExecuteNonQuery()
                     End Using
                 Next
