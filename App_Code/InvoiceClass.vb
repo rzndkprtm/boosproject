@@ -519,7 +519,7 @@ Public Class InvoiceClass
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
                 End If
                 If designName = "Sample" Then
-                    itemDescription = invoiceName
+                    itemDescription = String.Format("{0} - {1}", designName, invoiceName)
                 End If
                 If designName = "Saphora Drape" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
