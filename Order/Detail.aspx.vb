@@ -3159,14 +3159,18 @@ Partial Class Order_Detail
 
                         If lblOrderType.Text = "Regular" Then aSubmitOrder.Visible = True
                     End If
-                    If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True : aRePrice.Visible = False
+                    If lblOrderType.Text = "Builder" Then
+                        aQuoteOrder.Visible = True : aRePrice.Visible = True
+                    End If
                     aAddItem.Visible = True
                 End If
                 If lblOrderStatus.Text = "Quoted" Then
                     btnQuoteAction.Visible = True
                     aFile.Visible = True
                     aAddItem.Visible = True
-                    If lblOrderType.Text = "Builder" Then aRePrice.Visible = False
+                    If lblOrderType.Text = "Builder" Then
+                        aRePrice.Visible = True
+                    End If
                 End If
                 If lblOrderStatus.Text = "Payment Received" Then
                     btnUpdateStatus.Visible = True
