@@ -126,13 +126,11 @@ Partial Class Setting_Specification_Product_Edit
 
     Protected Sub BindData(productId As String)
         Try
-            MessageError(True, "SELECT * FROM Products WHERE Id='" & productId & "' AND Status<>'Deleted'")
-            Exit Sub
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Products WHERE Id='" & productId & "' AND Status<>'Deleted'")
-            'If myData Is Nothing Then
-            '    Response.Redirect("~/setting/specification/product", False)
-            '    Exit Sub
-            'End If
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Products WHERE Id='" & productId & "' (Status IS NULL OR Status <> 'Deleted')")
+            If myData Is Nothing Then
+                Response.Redirect("~/setting/specification/product", False)
+                Exit Sub
+            End If
 
             Dim designId As String = myData("DesignId").ToString()
             Dim blindId As String = myData("BlindId").ToString()
