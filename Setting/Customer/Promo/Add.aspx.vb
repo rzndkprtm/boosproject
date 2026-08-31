@@ -108,18 +108,14 @@ Partial Class Setting_Customer_Promo_Add
 
             Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Status='Active' {0} ORDER BY Name ASC", role)
 
+            If Not String.IsNullOrEmpty(customerId) Then
+                thisQuery = "SELECT Id, Name FROM Customers WHERE Id='" & customerId & "' AND Status='Active' ORDER BY Name ASC"
+            End If
+
             ddlCustomer.DataSource = settingClass.GetDataTable(thisQuery)
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
-
-            If ddlCustomer.Items.Count > 1 Then
-                ddlCustomer.Items.Insert(0, New ListItem("", ""))
-            End If
-            ddlCustomer.SelectedValue = customerId
-
-            ddlCustomer.Enabled = False
-            If String.IsNullOrEmpty(customerId) Then ddlCustomer.Enabled = True
         Catch ex As Exception
             ddlCustomer.Items.Clear()
             If Session("RoleName") = "Developer" Then

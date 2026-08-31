@@ -128,6 +128,10 @@ Partial Class Setting_Customer_Login_Edit
                 Exit Sub
             End If
 
+            BindCustomer()
+            BindRole()
+            BindLevel()
+
             ddlCustomer.SelectedValue = myData("CustomerId").ToString()
             ddlRole.SelectedValue = myData("RoleId").ToString()
             ddlLevel.SelectedValue = myData("LevelId").ToString()
@@ -136,10 +140,6 @@ Partial Class Setting_Customer_Login_Edit
             lblUserName.Text = myData("UserName").ToString()
             txtFullName.Text = myData("FullName").ToString()
             txtEmail.Text = myData("Email").ToString()
-
-            BindCustomer()
-            BindRole()
-            BindLevel()
 
             ddlCustomer.Enabled = False
 

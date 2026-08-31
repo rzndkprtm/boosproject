@@ -455,7 +455,7 @@
                                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                             <ul class="dropdown-menu">
                                                                 <li>
-                                                                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeMarkup" onclick='<%# String.Format("return dataChangeMarkup(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Description").ToString()) %>'>Change</a>
+                                                                    <a href="javascript:void(0);" id="aChangeMarkup" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeMarkup" onclick='<%# String.Format("return dataChangeMarkup(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Description").ToString()) %>'>Change</a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteMarkup" onclick='<%# String.Format("return dataDeleteMarkup(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
@@ -515,7 +515,7 @@
                                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                             <ul class="dropdown-menu">
                                                                 <li>
-                                                                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeDiscount" onclick='<%# String.Format("return dataChangeDiscount(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Description").ToString()) %>'>Change</a>
+                                                                    <a href="javascript:void(0);" id="aChangeDiscount" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeDiscount" onclick='<%# String.Format("return dataChangeDiscount(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Description").ToString()) %>'>Change</a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDiscount" onclick='<%# String.Format("return dataDeleteDiscount(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
@@ -1376,7 +1376,8 @@
                 { id: '<%= gvListAddress.ClientID %>', link: "aDetailAddress" },
                 { id: '<%= gvListBusiness.ClientID %>', link: "aDetailBusiness" },
                 { id: '<%= gvListLogin.ClientID %>', link: "aDetailLogin" },
-                { id: '<%= gvListMarkup.ClientID %>', link: "aDetailMarkup" },
+                { id: '<%= gvListMarkup.ClientID %>', link: "aChangeMarkup" },
+                { id: '<%= gvListDiscount.ClientID %>', link: "aChangeDiscount" },
                 { id: '<%= gvListProduct.ClientID %>', link: "aDetailProduct" },
                 { id: '<%= gvListService.ClientID %>', link: "aDetailService" },
             ];
