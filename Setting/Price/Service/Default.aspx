@@ -91,6 +91,9 @@
                                                         <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/price/service/edit?serviceid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Status") %>'>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalStatus" onclick='<%# String.Format("return dataStatus(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Status").ToString()) %>'><%# TextStatus(Eval("Status").ToString()) %></a>
+                                                        </li>
                                                         <li runat="server" visible='<%# LoginAccess("Delete") %>'>
                                                             <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                         </li>
@@ -124,6 +127,24 @@
         </section>
     </div>
 
+    <div class="modal modal-blur fade" id="modalStatus" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title white" id="titleStatus"></h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtStatusId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtStatusText" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnStatus" CssClass="btn btn-warning" Text="Confirm" OnClick="btnStatus_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -207,6 +228,18 @@
             initUpdatePanelLoading();
             bindGridRowClick();
         });
+        function dataStatus(id, status) {
+            document.getElementById("<%=txtStatusId.ClientID %>").value = id;
+            document.getElementById("<%=txtStatusText.ClientID %>").value = status;
+
+            let title = "";
+            if (status === "Active") {
+                title = "Deactivate Service";
+            } else {
+                title = "Activate Service";
+            }
+            document.getElementById("titleStatus").innerHTML = title;
+        }
         function dataDelete(id) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
         }
@@ -243,7 +276,7 @@
                 }
             });
         }
-        ["modalDelete", "modalLog"].forEach(function (id) {
+        ["modalStatus", "modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
