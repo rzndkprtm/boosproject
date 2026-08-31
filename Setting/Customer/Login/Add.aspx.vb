@@ -10,7 +10,7 @@ Partial Class Setting_Customer_Login_Add
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/customer/login/", False)
+            Response.Redirect("~/setting/customer/login", False)
             Exit Sub
         End If
 
@@ -28,6 +28,11 @@ Partial Class Setting_Customer_Login_Add
             BindRole()
             BindLevel()
         End If
+    End Sub
+
+    Protected Sub ddlCustomer_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindLoginName(ddlCustomer.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -116,24 +121,15 @@ Partial Class Setting_Customer_Login_Add
     Protected Sub BindCustomer(customerId As String)
         ddlCustomer.Items.Clear()
         Try
-            Dim role As String = String.Empty
-            If Session("RoleName") = "Sales" Then
-                role = "AND CompanyId='" & Session("CompanyId").ToString() & "'"
-                If Session("LevelName") = "Member" Then
-                    role = "AND (Id = '" & Session("CustomerId") & "' OR EXISTS (SELECT 1 FROM STRING_SPLIT(Operator, ',') WHERE value = '" & Session("LoginId") & "'))"
-                End If
-            End If
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@CustomerId", If(customerId Is Nothing, CType(DBNull.Value, Object), customerId)),
+                New SqlParameter("@LoginId", Session("LoginId"))
+            }
 
-            If Not String.IsNullOrEmpty(customerId) Then
-                txtUserName.Text = settingClass.GenerateUsername(GetCustomerName(customerId))
-                txtFullName.Text = txtUserName.Text
-
-                customerId = "AND Id='" & customerId & "'"
-            End If
-
-            Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Status='Active' {0} {1} ORDER BY Name ASC", customerId, role)
-
-            ddlCustomer.DataSource = settingClass.GetDataTable(thisQuery)
+            ddlCustomer.DataSource = settingClass.GetDataTableSP("sp_Customers_List_Dropdown", params)
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
@@ -142,7 +138,7 @@ Partial Class Setting_Customer_Login_Add
                 ddlCustomer.Items.Insert(0, New ListItem("", ""))
             End If
 
-
+            BindLoginName(customerId)
         Catch ex As Exception
             ddlCustomer.Items.Clear()
             If Session("RoleName") = "Developer" Then
@@ -176,6 +172,16 @@ Partial Class Setting_Customer_Login_Add
             ddlLevel.Items.Insert(0, New ListItem("", ""))
         Catch ex As Exception
             ddlLevel.Items.Clear()
+        End Try
+    End Sub
+
+    Protected Sub BindLoginName(customerId As String)
+        Try
+            txtUserName.Text = settingClass.GenerateUsername(GetCustomerName(customerId))
+            txtFullName.Text = txtUserName.Text
+        Catch ex As Exception
+            txtUserName.Text = String.Empty
+            txtFullName.Text = String.Empty
         End Try
     End Sub
 

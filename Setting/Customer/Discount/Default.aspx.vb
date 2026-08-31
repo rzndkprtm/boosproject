@@ -80,6 +80,11 @@ Partial Class Setting_Customer_Discount_Default
         End If
     End Sub
 
+    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Session("SearchCustomerDiscount") = txtSearch.Text
+        Response.Redirect("~/setting/customer/discount/add", False)
+    End Sub
+
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 

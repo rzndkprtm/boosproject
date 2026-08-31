@@ -1,5 +1,4 @@
-﻿Imports System.ComponentModel.Design
-Imports System.Data
+﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
 Imports System.Web.Services
@@ -69,6 +68,11 @@ Partial Class Setting_Customer_Markup_Default
             txtSearch.Text = Session("SearchCustomerMarkup")
             BindData(txtSearch.Text)
         End If
+    End Sub
+
+    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Session("SearchCustomerMarkup") = txtSearch.Text
+        Response.Redirect("~/setting/customer/markup/add", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)

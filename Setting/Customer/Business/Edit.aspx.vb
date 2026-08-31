@@ -11,12 +11,12 @@ Partial Class Setting_Customer_Business_Edit
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/customer/business/", False)
+            Response.Redirect("~/setting/customer/business", False)
             Exit Sub
         End If
 
         If String.IsNullOrEmpty(Request.QueryString("businessid")) Then
-            Response.Redirect("~/setting/customer/business/", False)
+            Response.Redirect("~/setting/customer/business", False)
             Exit Sub
         End If
 
@@ -87,11 +87,11 @@ Partial Class Setting_Customer_Business_Edit
         Try
             Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerBusiness WHERE Id='" & businessId & "'")
             If thisData Is Nothing Then
-                Response.Redirect("~/setting/customer/business/", False)
+                Response.Redirect("~/setting/customer/business", False)
                 Exit Sub
             End If
 
-            BindCustomer()
+            BindCustomer(thisData("CustomerId").ToString())
 
             ddlCustomer.SelectedValue = thisData("CustomerId").ToString()
             txtName.Text = thisData("RegisteredName").ToString()
@@ -106,18 +106,18 @@ Partial Class Setting_Customer_Business_Edit
         End Try
     End Sub
 
-    Protected Sub BindCustomer()
+    Protected Sub BindCustomer(customerId As String)
         ddlCustomer.Items.Clear()
         Try
-            Dim role As String = String.Empty
-            If Session("RoleName") = "Sales" Then
-                role = "AND CompanyId='" & Session("CompanyId").ToString() & "'"
-                If Session("LevelName") = "Member" Then
-                    role = "AND (Id = '" & Session("CustomerId") & "' OR EXISTS (SELECT 1 FROM STRING_SPLIT(Operator, ',') WHERE value = '" & Session("LoginId") & "'))"
-                End If
-            End If
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@CustomerId", If(customerId Is Nothing, CType(DBNull.Value, Object), customerId)),
+                New SqlParameter("@LoginId", Session("LoginId"))
+            }
 
-            ddlCustomer.DataSource = settingClass.GetDataTable(String.Format("SELECT Id, Name FROM Customers WHERE Status='Active' {0} ORDER BY Name ASC", role))
+            ddlCustomer.DataSource = settingClass.GetDataTableSP("sp_Customers_List_Dropdown", params)
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()

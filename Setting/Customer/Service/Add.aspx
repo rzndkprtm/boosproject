@@ -32,116 +32,120 @@
                     <div class="card-body">
                         <div class="form form-vertical">
                             <div class="form-body">
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Account</label>
-                                        <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Service Name</label>
-                                        <asp:DropDownList runat="server" ID="ddlService" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlService_SelectedIndexChanged"></asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Type</label>
-                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="Price" Text="Price"></asp:ListItem>
-                                            <asp:ListItem Value="Formula" Text="Formula"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="row mb-2" runat="server" id="divDefaultPrice">
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Default Sell Price</label>
-                                        <asp:TextBox runat="server" ID="txtSellPrice" CssClass="form-control" placeholder="Default Sell Price ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Default Buy Price</label>
-                                        <asp:TextBox runat="server" ID="txtBuyPrice" CssClass="form-control" placeholder="Default Buy Price ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Default Factory Price</label>
-                                        <asp:TextBox runat="server" ID="txtFactoryPrice" CssClass="form-control" placeholder="Default Factory Price ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Parameter</label>
-                                        <asp:DropDownList runat="server" ID="ddlParameter" CssClass="form-select">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="ItemQty" Text="ItemQty"></asp:ListItem>
-                                            <asp:ListItem Value="TotalSQM" Text="TotalSQM"></asp:ListItem>
-                                            <asp:ListItem Value="TotalLM" Text="TotalLM"></asp:ListItem>
-                                            <asp:ListItem Value="TotalBuy" Text="TotalBuy"></asp:ListItem>
-                                            <asp:ListItem Value="TotalSell" Text="TotalSell"></asp:ListItem>
-                                            <asp:ListItem Value="OrderValue" Text="OrderValue"></asp:ListItem>
-                                            <asp:ListItem Value="Distance" Text="Distance"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="row mb-2" runat="server" id="divOperator">
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Operator</label>
-                                        <asp:DropDownList runat="server" ID="ddlOperator" CssClass="form-select">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="+" Text="Add (+)"></asp:ListItem>
-                                            <asp:ListItem Value="-" Text="Subtract (-)"></asp:ListItem>
-                                            <asp:ListItem Value="*" Text="Multiply (×)"></asp:ListItem>
-                                            <asp:ListItem Value="/" Text="Divide (÷)"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="row mb-2" runat="server" id="divFormulaValue">
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Sell Value</label>
-                                        <asp:TextBox runat="server" ID="txtSellValue" CssClass="form-control" placeholder="Sell Value ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Buy Value</label>
-                                        <asp:TextBox runat="server" ID="txtBuyValue" CssClass="form-control" placeholder="Buy Value ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Factory Value</label>
-                                        <asp:TextBox runat="server" ID="txtFactoryValue" CssClass="form-control" placeholder="Factory Value ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                        <label class="form-label">Minimum Value</label>
-                                        <asp:TextBox runat="server" ID="txtMinimumValue" CssClass="form-control" placeholder="Minimum Value ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                        <label class="form-label">Maximum Value</label>
-                                        <asp:TextBox runat="server" ID="txtMaximumValue" CssClass="form-control" placeholder="Maximum Value ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Description</label>
-                                        <asp:TextBox runat="server" ID="txtDescription" CssClass="form-control" placeholder="Description ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Region</label>
-                                        <asp:DropDownList runat="server" ID="ddlRegion" CssClass="choices form-select">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
-                                            <asp:ListItem Value="QLD" Text="QLD"></asp:ListItem>
-                                            <asp:ListItem Value="SA" Text="SA"></asp:ListItem>
-                                            <asp:ListItem Value="TAS" Text="TAS"></asp:ListItem>
-                                            <asp:ListItem Value="NT" Text="NT"></asp:ListItem>
-                                            <asp:ListItem Value="ACT" Text="ACT"></asp:ListItem>
-                                            <asp:ListItem Value="VIC" Text="VIC"></asp:ListItem>
-                                            <asp:ListItem Value="WA" Text="WA"></asp:ListItem>
-                                            <asp:ListItem Value="JKT" Text="JKT"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                </div>
+                                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Account</label>
+                                                <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Service Name</label>
+                                                <asp:DropDownList runat="server" ID="ddlService" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlService_SelectedIndexChanged"></asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Price" Text="Price"></asp:ListItem>
+                                                    <asp:ListItem Value="Formula" Text="Formula"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2" runat="server" id="divDefaultPrice">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Default Sell Price</label>
+                                                <asp:TextBox runat="server" ID="txtSellPrice" CssClass="form-control" placeholder="Default Sell Price ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Default Buy Price</label>
+                                                <asp:TextBox runat="server" ID="txtBuyPrice" CssClass="form-control" placeholder="Default Buy Price ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Default Factory Price</label>
+                                                <asp:TextBox runat="server" ID="txtFactoryPrice" CssClass="form-control" placeholder="Default Factory Price ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Parameter</label>
+                                                <asp:DropDownList runat="server" ID="ddlParameter" CssClass="form-select">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="ItemQty" Text="ItemQty"></asp:ListItem>
+                                                    <asp:ListItem Value="TotalSQM" Text="TotalSQM"></asp:ListItem>
+                                                    <asp:ListItem Value="TotalLM" Text="TotalLM"></asp:ListItem>
+                                                    <asp:ListItem Value="TotalBuy" Text="TotalBuy"></asp:ListItem>
+                                                    <asp:ListItem Value="TotalSell" Text="TotalSell"></asp:ListItem>
+                                                    <asp:ListItem Value="OrderValue" Text="OrderValue"></asp:ListItem>
+                                                    <asp:ListItem Value="Distance" Text="Distance"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2" runat="server" id="divOperator">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Operator</label>
+                                                <asp:DropDownList runat="server" ID="ddlOperator" CssClass="form-select">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="+" Text="Add (+)"></asp:ListItem>
+                                                    <asp:ListItem Value="-" Text="Subtract (-)"></asp:ListItem>
+                                                    <asp:ListItem Value="*" Text="Multiply (×)"></asp:ListItem>
+                                                    <asp:ListItem Value="/" Text="Divide (÷)"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2" runat="server" id="divFormulaValue">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Sell Value</label>
+                                                <asp:TextBox runat="server" ID="txtSellValue" CssClass="form-control" placeholder="Sell Value ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Buy Value</label>
+                                                <asp:TextBox runat="server" ID="txtBuyValue" CssClass="form-control" placeholder="Buy Value ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Factory Value</label>
+                                                <asp:TextBox runat="server" ID="txtFactoryValue" CssClass="form-control" placeholder="Factory Value ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                <label class="form-label">Minimum Value</label>
+                                                <asp:TextBox runat="server" ID="txtMinimumValue" CssClass="form-control" placeholder="Minimum Value ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                <label class="form-label">Maximum Value</label>
+                                                <asp:TextBox runat="server" ID="txtMaximumValue" CssClass="form-control" placeholder="Maximum Value ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Description</label>
+                                                <asp:TextBox runat="server" ID="txtDescription" CssClass="form-control" placeholder="Description ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Region</label>
+                                                <asp:DropDownList runat="server" ID="ddlRegion" CssClass="choices form-select">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
+                                                    <asp:ListItem Value="QLD" Text="QLD"></asp:ListItem>
+                                                    <asp:ListItem Value="SA" Text="SA"></asp:ListItem>
+                                                    <asp:ListItem Value="TAS" Text="TAS"></asp:ListItem>
+                                                    <asp:ListItem Value="NT" Text="NT"></asp:ListItem>
+                                                    <asp:ListItem Value="ACT" Text="ACT"></asp:ListItem>
+                                                    <asp:ListItem Value="VIC" Text="VIC"></asp:ListItem>
+                                                    <asp:ListItem Value="WA" Text="WA"></asp:ListItem>
+                                                    <asp:ListItem Value="JKT" Text="JKT"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
                                 <div class="row mt-3" runat="server" id="divError">
                                     <div class="col-12">
                                         <div class="alert alert-danger">
@@ -171,12 +175,57 @@
         </section>
     </div>
 
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblCustomerId"></asp:Label>
         <asp:Label runat="server" ID="lblReturnPage"></asp:Label>
     </div>
 
     <script type="text/javascript">
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) loading.style.display = "none";
+        });
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
+            });
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
+                initChoices();
+            });
+        }
+        function initChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.choices) {
+                    el.choices.destroy();
+                }
+                el.choices = new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false,
+                    searchResultLimit: 50
+                });
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            initChoices();
+        });
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

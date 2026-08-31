@@ -30,20 +30,18 @@ Partial Class Setting_Customer_Markup_Add
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/customer/markup/", False)
+            Response.Redirect("~/setting/customer/markup", False)
             Exit Sub
         End If
 
-        If String.IsNullOrEmpty(Request.QueryString("custid")) Then
-            Response.Redirect("~/setting/customer/markup/", False)
-            Exit Sub
+        If Not String.IsNullOrEmpty(Request.QueryString("custid")) Then
+            lblCustomerId.Text = Request.QueryString("custid").ToString()
         End If
 
         If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
             lblReturnPage.Text = Request.QueryString("returnpage").ToString()
         End If
 
-        lblCustomerId.Text = Request.QueryString("custid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindCustomer(lblCustomerId.Text)
@@ -57,77 +55,11 @@ Partial Class Setting_Customer_Markup_Add
         End If
     End Sub
 
-    Protected Sub rptMarkup_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
-        Try
-            If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
-                Dim drv As DataRowView = CType(e.Item.DataItem, DataRowView)
-                Dim ddlProduct As DropDownList = CType(e.Item.FindControl("ddlProduct"), DropDownList)
-                Dim ddlMethod As DropDownList = CType(e.Item.FindControl("ddlMethod"), DropDownList)
-                Dim txtMarkup As TextBox = CType(e.Item.FindControl("txtMarkup"), TextBox)
-                Dim txtDescription As TextBox = CType(e.Item.FindControl("txtDescription"), TextBox)
-
-                If ddlProduct Is Nothing Then Exit Sub
-
-                If ddlMethod IsNot Nothing Then
-                    ddlMethod.SelectedValue = drv("Method").ToString()
-                End If
-                If txtMarkup IsNot Nothing Then
-                    txtMarkup.Text = drv("Markup").ToString()
-                End If
-                If txtDescription IsNot Nothing Then
-                    txtDescription.Text = drv("Description").ToString()
-                End If
-
-                If ddlType.SelectedValue <> "" Then
-                    BindProduct(lblCustomerId.Text, ddlType.SelectedValue, ddlProduct)
-
-                    Dim productId As String = drv("Product").ToString()
-                    If Not String.IsNullOrEmpty(productId) Then
-
-                        Dim item As ListItem = ddlProduct.Items.FindByValue(productId)
-                        If item IsNot Nothing Then
-                            ddlProduct.SelectedValue = item.Value
-                        End If
-                    End If
-                End If
-            End If
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Session("RoleName").ToString() <> "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub rptMarkup_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
-        Try
-            If e.CommandName <> "DeleteRow" Then Exit Sub
-            SaveGrid()
-
-            Dim index As Integer
-            If Not Integer.TryParse(e.CommandArgument.ToString(), index) Then
-                Exit Sub
-            End If
-            If index >= 0 AndAlso index < PromoTable.Rows.Count Then
-                PromoTable.Rows.RemoveAt(index)
-            End If
-            If PromoTable.Rows.Count = 0 Then
-                PromoTable.Rows.Add("", "", "", "")
-            End If
-            BindGrid()
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Session("RoleName").ToString() <> "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Protected Sub ddlCustomer_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim customerId As String = lblCustomerId.Text.Trim()
-            Dim markupType As String = ddlType.SelectedValue.Trim()
+            Dim customerId As String = ddlCustomer.SelectedValue
+            Dim markupType As String = ddlType.SelectedValue
 
             PromoTable.Rows.Clear()
 
@@ -171,6 +103,129 @@ Partial Class Setting_Customer_Markup_Add
             PromoTable.Rows.Clear()
             PromoTable.Rows.Add("", "", "", "")
 
+            BindGrid()
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Session("RoleName").ToString() <> "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim customerId As String = ddlCustomer.SelectedValue
+            Dim markupType As String = ddlType.SelectedValue
+
+            PromoTable.Rows.Clear()
+
+            If String.IsNullOrEmpty(markupType) Then
+                PromoTable.Rows.Add("", "", "", "")
+                BindGrid()
+
+                Exit Sub
+            End If
+
+            If markupType = "Designs" OrElse markupType = "PriceProductGroups" Then
+                Dim checkData As DataRow = settingClass.GetDataRow("SELECT COUNT(*) AS Total FROM CustomerMarkups WHERE CustomerId='" & customerId & "'")
+                Dim totalMarkup As Integer = 0
+                If checkData IsNot Nothing Then
+                    Integer.TryParse(checkData("Total").ToString(), totalMarkup)
+                End If
+
+                If totalMarkup = 0 Then
+                    Dim dtProduct As DataTable = GetProductData(customerId, markupType)
+
+                    If dtProduct IsNot Nothing AndAlso dtProduct.Rows.Count > 0 Then
+                        For Each productRow As DataRow In dtProduct.Rows
+                            Dim newRow As DataRow = PromoTable.NewRow()
+                            newRow("Product") = productRow("Id").ToString()
+                            newRow("Method") = ""
+                            newRow("Markup") = ""
+                            newRow("Description") = ""
+
+                            PromoTable.Rows.Add(newRow)
+                        Next
+                    Else
+                        PromoTable.Rows.Add("", "", "", "")
+                    End If
+
+                    BindGrid()
+
+                    Exit Sub
+                End If
+            End If
+
+            PromoTable.Rows.Clear()
+            PromoTable.Rows.Add("", "", "", "")
+
+            BindGrid()
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Session("RoleName").ToString() <> "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub rptMarkup_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
+        Try
+            If e.Item.ItemType = ListItemType.Item OrElse e.Item.ItemType = ListItemType.AlternatingItem Then
+                Dim drv As DataRowView = CType(e.Item.DataItem, DataRowView)
+                Dim ddlProduct As DropDownList = CType(e.Item.FindControl("ddlProduct"), DropDownList)
+                Dim ddlMethod As DropDownList = CType(e.Item.FindControl("ddlMethod"), DropDownList)
+                Dim txtMarkup As TextBox = CType(e.Item.FindControl("txtMarkup"), TextBox)
+                Dim txtDescription As TextBox = CType(e.Item.FindControl("txtDescription"), TextBox)
+
+                If ddlProduct Is Nothing Then Exit Sub
+
+                If ddlMethod IsNot Nothing Then
+                    ddlMethod.SelectedValue = drv("Method").ToString()
+                End If
+                If txtMarkup IsNot Nothing Then
+                    txtMarkup.Text = drv("Markup").ToString()
+                End If
+                If txtDescription IsNot Nothing Then
+                    txtDescription.Text = drv("Description").ToString()
+                End If
+
+                If ddlType.SelectedValue <> "" Then
+                    BindProduct(ddlCustomer.SelectedValue, ddlType.SelectedValue, ddlProduct)
+
+                    Dim productId As String = drv("Product").ToString()
+                    If Not String.IsNullOrEmpty(productId) Then
+
+                        Dim item As ListItem = ddlProduct.Items.FindByValue(productId)
+                        If item IsNot Nothing Then
+                            ddlProduct.SelectedValue = item.Value
+                        End If
+                    End If
+                End If
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Session("RoleName").ToString() <> "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub rptMarkup_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        Try
+            If e.CommandName <> "DeleteRow" Then Exit Sub
+            SaveGrid()
+
+            Dim index As Integer
+            If Not Integer.TryParse(e.CommandArgument.ToString(), index) Then
+                Exit Sub
+            End If
+            If index >= 0 AndAlso index < PromoTable.Rows.Count Then
+                PromoTable.Rows.RemoveAt(index)
+            End If
+            If PromoTable.Rows.Count = 0 Then
+                PromoTable.Rows.Add("", "", "", "")
+            End If
             BindGrid()
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -259,7 +314,7 @@ Partial Class Setting_Customer_Markup_Add
                 If dr("Method").ToString = "" Then Continue For
                 If dr("Markup").ToString = "" Then Continue For
 
-                Dim checkData As DataRow = settingClass.GetDataRow(String.Format("SELECT * FROM CustomerMarkups WHERE CustomerId='{0}' AND Type='{1}' AND DataId='{2}'", lblCustomerId.Text, ddlType.SelectedValue, dr("Product").ToString))
+                Dim checkData As DataRow = settingClass.GetDataRow(String.Format("SELECT * FROM CustomerMarkups WHERE CustomerId='{0}' AND Type='{1}' AND DataId='{2}'", ddlCustomer.SelectedValue, ddlType.SelectedValue, dr("Product").ToString))
                 If checkData IsNot Nothing Then
                     Dim thisId As String = checkData("Id").ToString()
                     Dim thisMarkup As Decimal = CDec(checkData("Markup"))
@@ -280,7 +335,7 @@ Partial Class Setting_Customer_Markup_Add
                     Using thisConn As New SqlConnection(myConn)
                         Using thisCmd As New SqlCommand("INSERT INTO CustomerMarkups VALUES (@Id, @CustomerId, @Type, @Method, @DataId, @Markup, @Description)", thisConn)
                             thisCmd.Parameters.AddWithValue("@Id", thisId)
-                            thisCmd.Parameters.AddWithValue("@CustomerId", lblCustomerId.Text)
+                            thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
                             thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                             thisCmd.Parameters.AddWithValue("@Method", dr("Method").ToString())
                             thisCmd.Parameters.AddWithValue("@DataId", dr("Product").ToString())
@@ -297,12 +352,12 @@ Partial Class Setting_Customer_Markup_Add
 
             url = "~/setting/customer/markup"
             If lblReturnPage.Text = "detail" Then
-                url = String.Format("~/setting/customer/detail?customerid={0}", lblCustomerId.Text)
+                url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
             End If
             If action = "Again" Then
-                url = String.Format("~/setting/customer/markup/add?custid={0}", lblCustomerId.Text)
+                url = String.Format("~/setting/customer/markup/add?custid={0}", ddlCustomer.SelectedValue)
                 If lblReturnPage.Text = "detail" Then
-                    url = String.Format("~/setting/customer/markup/add?custid={0}&returnpage=detail", lblCustomerId.Text)
+                    url = String.Format("~/setting/customer/markup/add?custid={0}&returnpage=detail", ddlCustomer.SelectedValue)
                 End If
             End If
             Response.Redirect(url, False)
@@ -317,10 +372,22 @@ Partial Class Setting_Customer_Markup_Add
     Protected Sub BindCustomer(customerId As String)
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE Status='Active' AND Id='" & customerId & "' ORDER BY Name ASC")
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@CustomerId", If(customerId Is Nothing, CType(DBNull.Value, Object), customerId)),
+                New SqlParameter("@LoginId", Session("LoginId"))
+            }
+
+            ddlCustomer.DataSource = settingClass.GetDataTableSP("sp_Customers_List_Dropdown", params)
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
+
+            If ddlCustomer.Items.Count > 1 Then
+                ddlCustomer.Items.Insert(0, New ListItem("", ""))
+            End If
         Catch ex As Exception
             ddlCustomer.Items.Clear()
             If Session("RoleName") = "Developer" Then

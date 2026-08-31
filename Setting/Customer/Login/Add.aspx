@@ -35,7 +35,7 @@
                                 <div class="row mb-2">
                                     <div class="col-12 form-group">
                                         <label class="form-label">Account</label>
-                                        <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
+                                        <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="row mb-2">

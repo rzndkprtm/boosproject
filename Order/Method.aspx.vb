@@ -1457,6 +1457,17 @@ Partial Class Order_Method
         Dim factory As String = orderClass.GetFabricFactory(data.fabriccolour)
         Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
 
+        'Dim context As New ValidationContext With {
+        '    .data = data,
+        '    .pricegroupid = priceGroupId,
+        '    .fabricfactory = factory
+        '}
+
+        'Dim engine As New ValidationEngine()
+        'Dim result As String = engine.Validate(context)
+
+        'If result <> "" Then Return result
+
         If String.IsNullOrEmpty(data.blindtype) Then Return "CURTAIN TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID"
 
@@ -1968,16 +1979,6 @@ Partial Class Order_Method
 
         Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
-        Dim qty As Integer
-        Dim width As Integer
-        Dim drop As Integer
-        Dim controllength As Integer
-        Dim wandlength As Integer
-        Dim markup As Integer
-
-        Dim linearMetre As Decimal
-        Dim squareMetre As Decimal
-
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
         Dim controlName As String = String.Empty
@@ -1988,97 +1989,48 @@ Partial Class Order_Method
 
         Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
-        If String.IsNullOrEmpty(data.blindtype) Then Return "PLEASE CONTACT CUSTOMER SERVICE !"
-        If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.colourtype) Then Return "TRACK COLOUR IS REQUIRED !"
+        Dim context As New ValidationContext With {
+            .data = data,
+            .pricegroupid = priceGroupId
+        }
 
-        If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
-        If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
+        Dim engine As New ValidationEngine()
+        Dim result As String = engine.Validate(context)
 
-        If String.IsNullOrEmpty(data.room) OrElse data.room.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.room.Contains("&=") OrElse data.room.Contains("&+") Then
-            Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+"
-        End If
-        If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
+        If result <> "" Then Return result
 
-        If String.IsNullOrEmpty(data.fabrictype) Then Return "FABRIC TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.fabriccolour) Then Return "FABRIC COLOUR IS REQUIRED !"
+        Dim qty As Integer = CInt(data.qty)
+        Dim width As Integer = CInt(data.width)
+        Dim drop As Integer = CInt(data.drop)
+        Dim linearMetre As Decimal = width / 1000
+        Dim squareMetre As Decimal = width * drop / 1000000
 
-        If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
-        If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
-        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
-            If width < 500 Then Return "MINIMUM WIDTH IS 500MM !"
-        End If
-        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-            If width > 2910 Then Return "MAXIMUM WIDTH IS 2910MM !"
-        End If
-
-        If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
-        If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
-        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
-            If drop < 600 Then Return "MINIMUM DROP IS 600MM !"
-        End If
-        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-            If drop > 2700 Then Return "MINIMUM DROP IS 2700MM !"
-        End If
-
-        If String.IsNullOrEmpty(data.stackposition) Then Return "STACK POSITION IS REQUIRED !"
-        If controlName = "Chain" AndAlso String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED !"
-
-        If controlName = "Chain" AndAlso String.IsNullOrEmpty(data.chaincolour) Then
-            Return "CHAIN COLOUR IS REQUIRED !"
-        End If
-
-        If controlName = "Wand" AndAlso String.IsNullOrEmpty(data.wandcolour) Then
-            Return "WAND COLOUR IS REQUIRED !"
-        End If
-
-        If String.IsNullOrEmpty(data.controllength) Then
-            If controlName = "Wand" Then Return "WAND LENGTH IS REQUIRED !"
-            Return "CHAIN LENGTH IS REQUIRED !"
-        End If
-
-        If data.controllength = "Custom" Then
-            If controlName = "Chain" Then
-                If String.IsNullOrEmpty(data.chainlengthvalue) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
-                If Not Integer.TryParse(data.chainlengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE ORDER !"
-            End If
-
-            If controlName = "Wand" Then
-                If String.IsNullOrEmpty(data.wandlengthvalue) Then Return "WAND LENGTH VALUE IS REQUIRED !"
-                If Not Integer.TryParse(data.wandlengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR WAND LENGTH VALUE ORDER !"
-                If controllength > 1000 Then Return "MAXIMUM WAND LENGTH IS 1000MM !"
-            End If
-        End If
-
-        If Not String.IsNullOrEmpty(data.notes) Then
-            If data.notes.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.notes.Contains("&=") OrElse data.notes.Contains("&+") Then
-                Return "SPECIAL INFORMATION MUST NOT CONTAIN: , & ` ' &= &+"
-            End If
-            If data.notes.Trim().Length > 1000 Then Return "MAXIMUM 1000 CHARACTERS !"
-        End If
-
-        If Not String.IsNullOrEmpty(data.markup) Then
-            If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
-        End If
+        Dim controllengthValue As Integer
 
         If controlName = "Chain" Then
             data.wandcolour = String.Empty
-            wandlength = 0
+
             If data.controllength = "Standard" Then
-                controllength = 550
+                controllengthValue = 550
                 Dim thisFormula As Integer = Math.Ceiling(drop * 2 / 3)
-                If thisFormula > 500 Then controllength = 750
-                If thisFormula > 750 Then controllength = 1000
-                If thisFormula > 1000 Then controllength = 1200
-                If thisFormula > 1200 Then controllength = 1500
+                If thisFormula > 500 Then controllengthValue = 750
+                If thisFormula > 750 Then controllengthValue = 1000
+                If thisFormula > 1000 Then controllengthValue = 1200
+                If thisFormula > 1200 Then controllengthValue = 1500
+            End If
+            If data.controllength = "Custom" Then
+                controllengthValue = CInt(data.chainlengthvalue)
             End If
         End If
 
         If controlName = "Wand" Then
             data.chaincolour = String.Empty
             If data.controllength = "Standard" Then
-                controllength = Math.Ceiling(drop * 2 / 3)
-                If controllength > 1000 Then controllength = 1000
+                controllengthValue = Math.Ceiling(drop * 2 / 3)
+                If controllengthValue > 1000 Then controllengthValue = 1000
+            End If
+            If data.controllength = "Custom" Then
+                controllengthValue = CInt(data.wandlengthvalue)
             End If
 
             If data.stackposition = "Right" Then data.controlposition = "Left"
@@ -2086,9 +2038,6 @@ Partial Class Order_Method
             If data.stackposition = "Split" Then data.controlposition = "Middle"
             If data.stackposition = "Centre" Then data.controlposition = "Left and Right"
         End If
-
-        linearMetre = width / 1000
-        squareMetre = width * drop / 1000000
 
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(designName, data.designid, priceGroupId)
 
@@ -2115,13 +2064,12 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@StackPosition", data.stackposition)
                         thisCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
                         thisCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
-                        thisCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
+                        thisCmd.Parameters.AddWithValue("@ControlLengthValue", controllengthValue)
                         thisCmd.Parameters.AddWithValue("@WandColour", data.wandcolour)
-                        thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
                         thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
-                        thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+                        thisCmd.Parameters.AddWithValue("@MarkUp", If(String.IsNullOrEmpty(data.markup), CType(0, Object), data.markup))
 
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
@@ -2161,13 +2109,12 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@StackPosition", data.stackposition)
                     thisCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
                     thisCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
-                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
+                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", controllengthValue)
                     thisCmd.Parameters.AddWithValue("@WandColour", data.wandcolour)
-                    thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
                     thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
-                    thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+                    thisCmd.Parameters.AddWithValue("@MarkUp", If(String.IsNullOrEmpty(data.markup), CType(0, Object), data.markup))
 
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
@@ -3263,6 +3210,16 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
 
         Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+
+        'Dim context As New ValidationContext With {
+        '    .data = data,
+        '    .pricegroupid = priceGroupId
+        '}
+
+        'Dim engine As New ValidationEngine()
+        'Dim result As String = engine.Validate(context)
+
+        'If result <> "" Then Return result
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "VALANCE TYPE IS REQUIRED !"

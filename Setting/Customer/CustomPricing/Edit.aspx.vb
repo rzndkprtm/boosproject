@@ -12,12 +12,12 @@ Partial Class Setting_Customer_CustomPricing_Edit
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/customer/custompricing/", False)
+            Response.Redirect("~/setting/customer/custompricing", False)
             Exit Sub
         End If
 
         If String.IsNullOrEmpty(Request.QueryString("customid")) Then
-            Response.Redirect("~/setting/customer/custompricing/", False)
+            Response.Redirect("~/setting/customer/custompricing", False)
             Exit Sub
         End If
 
@@ -84,7 +84,7 @@ Partial Class Setting_Customer_CustomPricing_Edit
                 Exit Sub
             End If
 
-            BindCustomer()
+            BindCustomer(thisData("Id").ToString())
 
             ddlCustomer.SelectedValue = thisData("Id").ToString()
 
@@ -96,8 +96,6 @@ Partial Class Setting_Customer_CustomPricing_Edit
                     lbTags.Items.FindByValue(i).Selected = True
                 End If
             Next
-
-            ddlCustomer.Enabled = False
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -106,10 +104,18 @@ Partial Class Setting_Customer_CustomPricing_Edit
         End Try
     End Sub
 
-    Protected Sub BindCustomer()
+    Protected Sub BindCustomer(customerId As String)
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE Status='Active' ORDER BY Name ASC")
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@CustomerId", If(customerId Is Nothing, CType(DBNull.Value, Object), customerId)),
+                New SqlParameter("@LoginId", Session("LoginId"))
+            }
+
+            ddlCustomer.DataSource = settingClass.GetDataTableSP("sp_Customers_List_Dropdown", params)
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
