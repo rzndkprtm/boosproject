@@ -68,7 +68,7 @@ Partial Class Setting_Validation_Edit
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/validation/", False)
+        Response.Redirect("~/setting/validation", False)
     End Sub
 
     Protected Sub BindData(validationId As String)

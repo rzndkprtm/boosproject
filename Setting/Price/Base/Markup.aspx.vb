@@ -62,8 +62,17 @@ Partial Class Setting_Price_Base_Markup
             End If
 
             If msgError.InnerText = "" Then
-                Dim productGroup As String = String.Empty
+                If ddlBackup.SelectedValue = "Yes" Then
+                    Dim newTable As String = "PriceBases_Backup_" & "_" & Session("RoleName").ToString() & DateTime.Now.ToString("yyyyMMdd_HHmmss")
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As New SqlCommand("SELECT * INTO [dbo].[" & newTable & "] FROM [dbo].[PriceBases]",
+                    thisConn)
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+                End If
 
+                Dim productGroup As String = String.Empty
                 If Not lbProductGroup.SelectedValue = "" Then
                     productGroup = String.Join(",", lbProductGroup.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If

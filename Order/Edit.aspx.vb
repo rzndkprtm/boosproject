@@ -282,21 +282,15 @@ Partial Class Order_Edit
     Protected Sub BindDataCustomer()
         ddlCustomer.Items.Clear()
         Try
-            Dim byRole As String = String.Empty
-            If Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Production" Then byRole = " AND Id<>'1' AND Id<>'2'"
-            If Session("RoleName") = "Sales" Then
-                byRole = "AND Customers.CompanyId='" & Session("CompanyId") & "'"
-                If Session("LevelName") = "Member" Then
-                    byRole = "AND Customers.Operator='" & Session("LoginId") & "'"
-                End If
-            End If
-            If Session("RoleName") = "Account" Then
-                byRole = "AND Customers.CompanyId='" + Session("CompanyId") + "'"
-            End If
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@CustomerId", If(Session("CustomerId") Is Nothing, CType(DBNull.Value, Object), Session("CustomerId"))),
+                New SqlParameter("@LoginId", Session("LoginId"))
+            }
 
-            Dim thisQuery As String = String.Format("SELECT Id, Name FROM Customers WHERE Status='Active' {0} ORDER BY Name ASC", byRole)
-
-            ddlCustomer.DataSource = orderClass.GetDataTable(thisQuery)
+            ddlCustomer.DataSource = orderClass.GetDataTableSP("sp_Customers_List_Dropdown_Order", params)
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()

@@ -11,7 +11,7 @@ Partial Class Setting_Price_Product_Add
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/price/product/", False)
+            Response.Redirect("~/setting/price/product", False)
             Exit Sub
         End If
 
@@ -97,7 +97,7 @@ Partial Class Setting_Price_Product_Add
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
-        Response.Redirect("~/setting/price/product/", False)
+        Response.Redirect("~/setting/price/product", False)
     End Sub
 
     Protected Sub BindDesignType()

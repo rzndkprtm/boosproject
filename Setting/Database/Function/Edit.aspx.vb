@@ -9,12 +9,12 @@ Partial Class Setting_Database_Function_Edit
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/database/function/", False)
+            Response.Redirect("~/setting/database/function", False)
             Exit Sub
         End If
 
         If String.IsNullOrEmpty(Request.QueryString("spname")) Then
-            Response.Redirect("~/setting/database/function/", False)
+            Response.Redirect("~/setting/database/function", False)
             Exit Sub
         End If
 

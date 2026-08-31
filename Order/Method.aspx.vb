@@ -179,7 +179,7 @@ Partial Class Order_Method
         End If
 
         If type = "ColourType" Then
-            Dim thisQuery As String = "SELECT Products.*, ProductColours.Name AS ColourName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') ORDER BY ProductColours.Name ASC"
+            Dim thisQuery As String = "SELECT Products.Id, ProductColours.Name AS ColourName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') ORDER BY ProductColours.Name ASC"
             If action = "view" Then
                 thisQuery = "SELECT Products.*, ProductColours.Name AS ColourName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' ORDER BY ProductColours.Name ASC"
             End If
@@ -191,9 +191,9 @@ Partial Class Order_Method
         End If
 
         If type = "ProductName" Then
-            Dim thisQuery As String = "SELECT * FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') ORDER BY Products.Name ASC"
+            Dim thisQuery As String = "SELECT Products.Id, Products.Name FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') ORDER BY Products.Name ASC"
             If action = "view" Then
-                thisQuery = "SELECT * FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' ORDER BY Products.Name ASC"
+                thisQuery = "SELECT Products.Id, Products.Name FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' ORDER BY Products.Name ASC"
             End If
 
             Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
@@ -215,9 +215,9 @@ Partial Class Order_Method
         End If
 
         If type = "FabricType" Then
-            Dim thisQuery As String = "SELECT * FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND tubeArray.VALUE='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
+            Dim thisQuery As String = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND tubeArray.VALUE='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
             If action = "view" Then
-                thisQuery = "SELECT * FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND tubeArray.VALUE='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
+                thisQuery = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND tubeArray.VALUE='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
             End If
 
             Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
@@ -227,20 +227,20 @@ Partial Class Order_Method
         End If
 
         If type = "FabricTypeByDesign" Then
-            Dim thisQuery As String = "SELECT *, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
+            Dim thisQuery As String = "SELECT Fabrics.Id, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
             If designtype = "3" Then
-                thisQuery = "SELECT *, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
+                thisQuery = "SELECT Fabrics.Id, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
                 If companydetailid = "5" Or companydetailid = "6" OrElse companydetailid = "8" OrElse companydetailid = "9" Then
-                    thisQuery = "SELECT *, REPLACE(Name, ' (Express)', '') AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
+                    thisQuery = "SELECT Fabrics.Id, REPLACE(Name, ' (Express)', '') AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
                 End If
             End If
             If action = "view" Then
-                thisQuery = "SELECT *, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
+                thisQuery = "SELECT Fabrics.Id, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
                 If designtype = "3" Then
-                    thisQuery = "SELECT *, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY CASE WHEN [Group]='Group Express' THEN 1 ELSE 2 END, Name ASC"
+                    thisQuery = "SELECT Fabrics.Id, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY CASE WHEN [Group]='Group Express' THEN 1 ELSE 2 END, Name ASC"
 
                     If companydetailid = "5" Or companydetailid = "6" OrElse companydetailid = "8" OrElse companydetailid = "9" Then
-                        thisQuery = "SELECT *, REPLACE(Name, ' (Express)', '') AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
+                        thisQuery = "SELECT Fabrics.Id, REPLACE(Name, ' (Express)', '') AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
                     End If
                 End If
             End If
@@ -252,14 +252,14 @@ Partial Class Order_Method
         End If
 
         If type = "FabricColour" Then
-            Dim thisQuery As String = "SELECT *, Colour AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
+            Dim thisQuery As String = "SELECT FabricColours.Id, Colour AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
             If action = "view" Then
-                thisQuery = "SELECT *, Colour AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
+                thisQuery = "SELECT FabricColours.Id, Colour AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
             End If
             If companydetailid = "5" OrElse companydetailid = "6" OrElse companydetailid = "8" OrElse companydetailid = "9" Then
-                thisQuery = "SELECT *, REPLACE(Colour, '(Express)', '') AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' AND Factory='Express' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Colour ASC"
+                thisQuery = "SELECT FabricColours.Id, REPLACE(Colour, '(Express)', '') AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' AND Factory='Express' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Colour ASC"
                 If action = "view" Then
-                    thisQuery = "SELECT *, REPLACE(Colour   , '(Express)', '') AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' AND Factory='Express' ORDER BY Colour ASC"
+                    thisQuery = "SELECT FabricColours.Id, REPLACE(Colour   , '(Express)', '') AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' AND Factory='Express' ORDER BY Colour ASC"
                 End If
             End If
 
@@ -270,21 +270,21 @@ Partial Class Order_Method
         End If
 
         If type = "ControlColour" Then
-            Dim thisQuery As String = "SELECT * FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
+            Dim thisQuery As String = "SELECT Id, Name FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
             If action = "view" Then
-                thisQuery = "SELECT * FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
+                thisQuery = "SELECT Id, Name FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
             End If
 
             If customtype = "Cassette" Then
-                thisQuery = "SELECT * FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
+                thisQuery = "SELECT Id, Name FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
                 If action = "view" Then
-                    thisQuery = "SELECT * FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
+                    thisQuery = "SELECT Id, Name FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
                 End If
 
                 If controltype = "1" Then
-                    thisQuery = "SELECT * FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' AND ChainType='Continuous' AND Active=1 ORDER BY Name ASC"
+                    thisQuery = "SELECT Id, Name FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' AND ChainType='Continuous' AND Active=1 ORDER BY Name ASC"
                     If action = "view" Then
-                        thisQuery = "SELECT * FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' AND ChainType='Continuous' ORDER BY Name ASC"
+                        thisQuery = "SELECT Id, Name FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' AND ChainType='Continuous' ORDER BY Name ASC"
                     End If
                 End If
             End If
@@ -295,9 +295,9 @@ Partial Class Order_Method
         End If
 
         If type = "BottomType" Then
-            Dim thisQuery As String = "SELECT * FROM Bottoms CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
+            Dim thisQuery As String = "SELECT Id, Name FROM Bottoms CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
             If action = "view" Then
-                thisQuery = "SELECT * FROM Bottoms CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
+                thisQuery = "SELECT Id, Name FROM Bottoms CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
             End If
 
             Dim dt As DataTable = orderClass.GetDataTable(thisQuery)
@@ -307,7 +307,7 @@ Partial Class Order_Method
         End If
 
         If type = "BottomColour" Then
-            Dim thisQuery As String = "SELECT * FROM BottomColours WHERE BottomId='" & bottomtype & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Colour ASC"
+            Dim thisQuery As String = "SELECT Id, Colour FROM BottomColours WHERE BottomId='" & bottomtype & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Colour ASC"
             If action = "view" Then
                 thisQuery = "SELECT * FROM BottomColours WHERE BottomId='" & bottomtype & "' ORDER BY Colour ASC"
             End If
