@@ -20,8 +20,15 @@
         MessageError(False, String.Empty)
         Try
             If msgError.InnerText = "" Then
-                Dim url As String = String.Format("boe?company={0}&status={1}&type={2}&action=check", ddlOrderCompany.SelectedValue, ddlOrderStatus.SelectedValue, ddlOrderType.SelectedValue)
-                Dim script As String = "window.open('" & ResolveUrl(url) & "', '_blank');"
+                'Dim url As String = String.Format("boe?company={0}&status={1}&type={2}&action=check", ddlOrderCompany.SelectedValue, ddlOrderStatus.SelectedValue, ddlOrderType.SelectedValue)
+                'Dim script As String = "window.open('" & ResolveUrl(url) & "', '_blank');"
+                'ClientScript.RegisterStartupScript(Me.GetType(), "exportTab", script, True)
+
+                Dim serverUrl As String = "http://localhost:20261/boe"
+                'Dim serverUrl As String = "https://serverlain.com/boe"
+
+                Dim url As String = String.Format("{0}?company={1}&status={2}&type={3}&action=check", serverUrl, HttpUtility.UrlEncode(ddlOrderCompany.SelectedValue), HttpUtility.UrlEncode(ddlOrderStatus.SelectedValue), HttpUtility.UrlEncode(ddlOrderType.SelectedValue))
+                Dim script As String = "window.open('" & url & "', '_blank');"
                 ClientScript.RegisterStartupScript(Me.GetType(), "exportTab", script, True)
             End If
         Catch ex As Exception
