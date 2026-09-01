@@ -76,6 +76,7 @@
                                                 <asp:DropDownList runat="server" ID="ddlParameter" CssClass="form-select">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
                                                     <asp:ListItem Value="ItemQty" Text="ItemQty"></asp:ListItem>
+                                                    <asp:ListItem Value="ItemQtyWithSample" Text="ItemQtyWithSample"></asp:ListItem>
                                                     <asp:ListItem Value="TotalSQM" Text="TotalSQM"></asp:ListItem>
                                                     <asp:ListItem Value="TotalLM" Text="TotalLM"></asp:ListItem>
                                                     <asp:ListItem Value="TotalBuy" Text="TotalBuy"></asp:ListItem>
