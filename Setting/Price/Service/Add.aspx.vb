@@ -97,7 +97,7 @@ Partial Class Setting_Price_Service_Add
                         Dim customerServiceId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerServices ORDER BY Id DESC")
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerServices SELECT @Id, @CustomerId, Id, AllowCustom, Type, DefaultSellPrice, DefaultBuyPrice, DefaultFactoryPrice, Parameter, Operator, SellValue, BuyValue, FactoryValue, MinValue, MaxValue, Region FROM PriceServices WHERE Id=@ServiceId", thisConn)
+                            Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerServices SELECT @Id, @CustomerId, Id, AllowCustom, Type, DefaultSellPrice, DefaultBuyPrice, DefaultFactoryPrice, Parameter, Operator, SellValue, BuyValue, FactoryValue, MinValue, MaxValue, Region, Description FROM PriceServices WHERE Id=@ServiceId", thisConn)
                                 thisCmd.Parameters.AddWithValue("@Id", customerServiceId)
                                 thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
                                 thisCmd.Parameters.AddWithValue("@ServiceId", serviceId)

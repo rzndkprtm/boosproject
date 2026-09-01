@@ -11,7 +11,7 @@
         .order-filter-header .form-control:focus { border-color: #86b7fe; box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10); }
         .order-filter-header .btn-primary { min-width: 90px; font-weight: 500; }
         
-        .order-grid { font-size: 0.9rem; }
+        .order-grid { font-size: 0.95rem; }
         .order-grid thead th { background: #f8f9fa; color: #495057; font-size: 0.85rem; font-weight: 600; white-space: nowrap; vertical-align: middle; border-bottom: 1px solid #dee2e6; padding: 0.7rem 0.65rem; }
         .order-grid tbody td { padding: 0.65rem 0.65rem; vertical-align: middle; }
         .order-grid tbody tr { transition: background-color 0.15s ease; }
