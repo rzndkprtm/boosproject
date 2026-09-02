@@ -83,7 +83,7 @@ Partial Class Setting_Price_Calculation_Add
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceCalculations VALUES (@Id, @Name, @Method, @PriceGroupId, @DesignId, @Formula, @SellMinSize, @BuyMinSize, @SellMinWidth, @BuyMinWidth, @SellMinDrop, @BuyMinDrop, @Status)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceCalculations VALUES (@Id, @Name, @Method, @PriceGroupId, @DesignId, @Formula, @SellMinSize, @BuyMinSize, @FactoryMinSize, @SellMinWidth, @BuyMinWidth, @FactoryMinWidth, @SellMinDrop, @BuyMinDrop, @FactoryMinDrop, @Status)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
                         thisCmd.Parameters.AddWithValue("@Method", ddlMethod.SelectedValue)
@@ -92,10 +92,13 @@ Partial Class Setting_Price_Calculation_Add
                         thisCmd.Parameters.AddWithValue("@Formula", ddlFormula.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@SellMinSize", If(String.IsNullOrEmpty(txtSellMinSize.Text), CType(DBNull.Value, Object), txtSellMinSize.Text))
                         thisCmd.Parameters.AddWithValue("@BuyMinSize", If(String.IsNullOrEmpty(txtBuyMinSize.Text), CType(DBNull.Value, Object), txtBuyMinSize.Text))
+                        thisCmd.Parameters.AddWithValue("@FactoryMinSize", If(String.IsNullOrEmpty(txtFactoryMinSize.Text), CType(DBNull.Value, Object), txtFactoryMinSize.Text))
                         thisCmd.Parameters.AddWithValue("@SellMinWidth", If(String.IsNullOrEmpty(txtSellMinWidth.Text), CType(DBNull.Value, Object), txtSellMinWidth.Text))
                         thisCmd.Parameters.AddWithValue("@BuyMinWidth", If(String.IsNullOrEmpty(txtBuyMinWidth.Text), CType(DBNull.Value, Object), txtBuyMinWidth.Text))
+                        thisCmd.Parameters.AddWithValue("@FactoryMinWidth", If(String.IsNullOrEmpty(txtFactoryMinWidth.Text), CType(DBNull.Value, Object), txtFactoryMinWidth.Text))
                         thisCmd.Parameters.AddWithValue("@SellMinDrop", If(String.IsNullOrEmpty(txtSellMinDrop.Text), CType(DBNull.Value, Object), txtSellMinDrop.Text))
                         thisCmd.Parameters.AddWithValue("@BuyMinDrop", If(String.IsNullOrEmpty(txtBuyMinDrop.Text), CType(DBNull.Value, Object), txtBuyMinDrop.Text))
+                        thisCmd.Parameters.AddWithValue("@FactoryMinDrop", If(String.IsNullOrEmpty(txtFactoryMinDrop.Text), CType(DBNull.Value, Object), txtFactoryMinDrop.Text))
                         thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
 
                         thisConn.Open()

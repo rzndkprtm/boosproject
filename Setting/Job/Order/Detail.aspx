@@ -94,7 +94,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
                         </div>
                     </div>
                 </div>
@@ -114,7 +113,6 @@
                                         <asp:DropDownList runat="server" ID="ddlJobSheet" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlJobSheet_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
                                 </div>
-    
                             </div>
                             <div class="card-body">
                                 <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center"></asp:GridView>

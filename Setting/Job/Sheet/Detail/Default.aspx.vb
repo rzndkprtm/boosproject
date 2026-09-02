@@ -103,7 +103,7 @@ Partial Class Setting_Job_Sheet_Detail_Default
 
     Protected Sub BindDataDetail(sheetId As String)
         Try
-            Dim thisString As String = "SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM JobSheetDetails WHERE JobSheetId='" & sheetId & "' ORDER BY SortOrder ASC"
+            Dim thisString As String = "SELECT * FROM JobSheetDetails WHERE JobSheetId='" & sheetId & "' AND Status='Active' ORDER BY SortOrder ASC"
             gvListDetail.DataSource = jobClass.GetDataTable(thisString)
             gvListDetail.DataBind()
 

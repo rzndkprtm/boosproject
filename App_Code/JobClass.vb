@@ -322,7 +322,7 @@ Public Class JobClass
                     For startCol As Integer = 0 To itemNumbers.Count - 1 Step 6
                         Dim table As New PdfPTable(7)
                         table.WidthPercentage = 100
-                        Dim itemHeader As New PdfPCell(New Phrase("Item :", fontHeader))
+                        Dim itemHeader As New PdfPCell(New Phrase(" ", fontHeader))
                         itemHeader.HorizontalAlignment = Element.ALIGN_RIGHT
                         itemHeader.VerticalAlignment = Element.ALIGN_MIDDLE
                         itemHeader.BackgroundColor = New BaseColor(200, 200, 200)
