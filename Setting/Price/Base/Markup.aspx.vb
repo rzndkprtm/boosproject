@@ -65,8 +65,8 @@ Partial Class Setting_Price_Base_Markup
                 If ddlBackup.SelectedValue = "Yes" Then
                     Dim newTable As String = "PriceBases_Backup_" & "_" & Session("RoleName").ToString() & DateTime.Now.ToString("yyyyMMdd_HHmmss")
                     Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As New SqlCommand("SELECT * INTO [dbo].[" & newTable & "] FROM [dbo].[PriceBases]",
-                    thisConn)
+                        Using thisCmd As New SqlCommand("SELECT * INTO [dbo].[" & newTable & "] FROM [dbo].[PriceBases]", thisConn)
+                            thisConn.Open()
                             thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
