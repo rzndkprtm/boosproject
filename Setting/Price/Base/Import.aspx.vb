@@ -132,6 +132,18 @@ Partial Class Setting_Price_Base_Import
                             If result <> "" Then
                                 Return result
                             End If
+                        Case "FACTORY"
+                            Dim factorySheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Factory", StringComparison.OrdinalIgnoreCase))
+
+                            If factorySheet Is Nothing Then
+                                Return "WORKSHEET 'FACTORY' COULD NOT BE FOUND !"
+                            End If
+
+                            result = ReadSheet(factorySheet, "Factory", method, productGroupId, priceGroupId, dt, nextId)
+
+                            If result <> "" Then
+                                Return result
+                            End If
                         Case "COMPLETE"
                             Dim sellSheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Sell", StringComparison.OrdinalIgnoreCase))
                             If sellSheet Is Nothing Then
@@ -183,7 +195,7 @@ Partial Class Setting_Price_Base_Import
                 End Using
 
                 If backupData = "Yes" Then
-                    Dim newTable As String = "PriceBases_Backup_" & "_" & Session("RoleName").ToString() & DateTime.Now.ToString("yyyyMMdd_HHmmss")
+                    Dim newTable As String = "PriceBases_Backup" & "_" & Session("RoleName").ToString() & "_" & DateTime.Now.ToString("yyyyMMdd_HHmmss")
                     Using cmd As New SqlCommand("SELECT * INTO [dbo].[" & newTable & "] FROM [dbo].[PriceBases]",
                     thisConn)
                         cmd.ExecuteNonQuery()
@@ -198,6 +210,8 @@ Partial Class Setting_Price_Base_Import
                                 deleteCategories.Add("Sell")
                             Case "BUY"
                                 deleteCategories.Add("Buy")
+                            Case "FACTORY"
+                                deleteCategories.Add("Factory")
                             Case "COMPLETE"
                                 deleteCategories.Add("Sell")
                                 deleteCategories.Add("Buy")
