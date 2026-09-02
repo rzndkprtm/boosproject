@@ -41,7 +41,7 @@ Partial Class Setting_Price_Surcharge_Copy
                         Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceSurcharges ORDER BY Id DESC")
 
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As New SqlCommand("INSERT INTO PriceSurcharges SELECT @NewId, DesignId, @NewPriceGroupId, Name, Type, Formula, BuyCharge, SellCharge, Description, Status FROM PriceSurcharges WHERE Id=@Id", thisConn)
+                            Using thisCmd As New SqlCommand("INSERT INTO PriceSurcharges SELECT @NewId, DesignId, @NewPriceGroupId, Name, Type, Formula, BuyCharge, SellCharge, FactoryCharge, Description, Status FROM PriceSurcharges WHERE Id=@Id", thisConn)
                                 thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(surchargeId)
                                 thisCmd.Parameters.Add("@NewId", SqlDbType.Int).Value = CInt(newId)
                                 thisCmd.Parameters.Add("@NewPriceGroupId", SqlDbType.Int).Value = CInt(ddlPriceGroupNew.SelectedValue)
