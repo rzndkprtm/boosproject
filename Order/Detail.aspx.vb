@@ -1343,13 +1343,11 @@ Partial Class Order_Detail
                 ClientScript.RegisterStartupScript(Me.GetType(), "showConvertOrder", thisScript, True)
                 Exit Sub
             End If
-
             If Not Session("RoleName") = "Developer" Then
                 MessageError_ConvertOrder(True, "SORRY, UNDER CONSTRUCTION !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showConvertOrder", thisScript, True)
                 Exit Sub
             End If
-
             If txtConvertNumber.Text = "" Then
                 MessageError_ConvertOrder(True, "JOB NUMBER IS REQUIRED !")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showConvertOrder", thisScript, True)

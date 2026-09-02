@@ -645,6 +645,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
                 result.Add(New With {.Value = "3 on 1 Left-Left-Right", .Text = "3 on 1 Venetian (Left-Left-Right)"})
                 result.Add(New With {.Value = "3 on 1 Left-Right-Right", .Text = "3 on 1 Venetian (Left-Right-Right)"})
+                'result.Add(New With {.Value = "Valance Only", .Text = "Valance Only"})
             End If
 
             If blindName = "Basswood 63mm" Then
@@ -654,6 +655,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
                 result.Add(New With {.Value = "3 on 1 Left-Left-Right", .Text = "3 on 1 Venetian (Left-Left-Right)"})
                 result.Add(New With {.Value = "3 on 1 Left-Right-Right", .Text = "3 on 1 Venetian (Left-Right-Right)"})
+                'result.Add(New With {.Value = "Valance Only", .Text = "Valance Only"})
             End If
 
             If blindName = "Econo 50mm" Then
@@ -663,6 +665,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
                 result.Add(New With {.Value = "3 on 1 Left-Left-Right", .Text = "3 on 1 Venetian (Left-Left-Right)"})
                 result.Add(New With {.Value = "3 on 1 Left-Right-Right", .Text = "3 on 1 Venetian (Left-Right-Right)"})
+                'result.Add(New With {.Value = "Valance Only", .Text = "Valance Only"})
             End If
 
             If blindName = "Econo 63mm" Then
@@ -672,6 +675,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
                 result.Add(New With {.Value = "3 on 1 Left-Left-Right", .Text = "3 on 1 Venetian (Left-Left-Right)"})
                 result.Add(New With {.Value = "3 on 1 Left-Right-Right", .Text = "3 on 1 Venetian (Left-Right-Right)"})
+                'result.Add(New With {.Value = "Valance Only", .Text = "Valance Only"})
             End If
 
             If blindName = "Ultraslat 50mm" Then
@@ -681,6 +685,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
                 result.Add(New With {.Value = "3 on 1 Left-Left-Right", .Text = "3 on 1 Venetian (Left-Left-Right)"})
                 result.Add(New With {.Value = "3 on 1 Left-Right-Right", .Text = "3 on 1 Venetian (Left-Right-Right)"})
+                'result.Add(New With {.Value = "Valance Only", .Text = "Valance Only"})
             End If
 
             If blindName = "Ultraslat 63mm" Then
@@ -690,6 +695,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "2 on 1 Left-Right", .Text = "2 on 1 Venetian (Left-Right)"})
                 result.Add(New With {.Value = "3 on 1 Left-Left-Right", .Text = "3 on 1 Venetian (Left-Left-Right)"})
                 result.Add(New With {.Value = "3 on 1 Left-Right-Right", .Text = "3 on 1 Venetian (Left-Right-Right)"})
+                'result.Add(New With {.Value = "Valance Only", .Text = "Valance Only"})
             End If
 
             If blindName = "Econo 50mm (Cordless)" OrElse blindName = "Ultraslat 50mm (Cordless)" Then

@@ -255,6 +255,7 @@
                                 <asp:ListItem Value="End" Text="End"></asp:ListItem>
                                 <asp:ListItem Value="Metal" Text="Metal"></asp:ListItem>
                                 <asp:ListItem Value="Semi Metal" Text="Semi Metal"></asp:ListItem>
+                                <asp:ListItem Value="Part" Text="Part"></asp:ListItem>
                             </asp:DropDownList>
                         </div>
                     </div>

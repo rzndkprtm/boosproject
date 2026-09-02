@@ -73,33 +73,45 @@
                                             </div>
                                         </div>
                                         <div class="row" runat="server" id="divMinimumSize">
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Sell Minimum Size</label>
                                                 <asp:TextBox runat="server" ID="txtSellMinSize" CssClass="form-control" placeholder="Sell Minimum Size ..." autocomplete="off"></asp:TextBox>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Buy Minimum Size</label>
                                                 <asp:TextBox runat="server" ID="txtBuyMinSize" CssClass="form-control" placeholder="Buy Minimum Size ..." autocomplete="off"></asp:TextBox>
                                             </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Factory Minimum Size</label>
+                                                <asp:TextBox runat="server" ID="txtFactoryMinSize" CssClass="form-control" placeholder="Factory Minimum Size ..." autocomplete="off"></asp:TextBox>
+                                            </div>
                                         </div>
                                         <div class="row" runat="server" id="divMinimumWidth">
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Sell Minimum Width</label>
                                                 <asp:TextBox runat="server" ID="txtSellMinWidth" CssClass="form-control" placeholder="Sell Minimum Width ..." autocomplete="off"></asp:TextBox>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Buy Minimum Width</label>
                                                 <asp:TextBox runat="server" ID="txtBuyMinWidth" CssClass="form-control" placeholder="Buy Minimum Width ..." autocomplete="off"></asp:TextBox>
                                             </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Factory Minimum Width</label>
+                                                <asp:TextBox runat="server" ID="txtFactoryMinWidth" CssClass="form-control" placeholder="Factory Minimum Width ..." autocomplete="off"></asp:TextBox>
+                                            </div>
                                         </div>
                                         <div class="row" runat="server" id="divMinimumHeight">
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Sell Minimum Height</label>
                                                 <asp:TextBox runat="server" ID="txtSellMinDrop" CssClass="form-control" placeholder="Sell Minimum Height ..." autocomplete="off"></asp:TextBox>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Buy Minimum Height</label>
                                                 <asp:TextBox runat="server" ID="txtBuyMinDrop" CssClass="form-control" placeholder="Buy Minimum Height ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Factory Minimum Height</label>
+                                                <asp:TextBox runat="server" ID="txtFactoryMinDrop" CssClass="form-control" placeholder="Factory Minimum Height ..." autocomplete="off"></asp:TextBox>
                                             </div>
                                         </div>
                                         <div class="row">
