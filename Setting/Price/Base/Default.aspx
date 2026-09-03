@@ -329,14 +329,21 @@
         }
         function initChoices() {
             document.querySelectorAll("select.choices").forEach(function (el) {
+
                 if (el.choices) {
                     el.choices.destroy();
                 }
+
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',
                     shouldSort: false,
-                    searchResultLimit: 50
+
+                    // Saat melakukan search
+                    searchResultLimit: 50,
+
+                    // Jangan batasi jumlah choice yang dirender
+                    renderChoiceLimit: -1
                 });
             });
         }
