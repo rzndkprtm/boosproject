@@ -294,106 +294,304 @@
     </div>
 
     <script>
+
+        // =========================================================
+        // PAGE SHOW
+        // =========================================================
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");
-            if (loading) loading.style.display = "none";
-        });
-        function initUpdatePanelLoading() {
-            if (typeof Sys === "undefined") return;
-            var prm = Sys.WebForms.PageRequestManager.getInstance();
-            prm.add_beginRequest(function () {
-                var loading = document.getElementById("loadingOverlay");
-                if (loading) loading.style.display = "block";
-            });
-            prm.add_endRequest(function () {
-                var loading = document.getElementById("loadingOverlay");
-                if (loading) loading.style.display = "none";
-                bindGridRowClick();
-                initChoices();                
-            });
-        }
-        function bindGridRowClick() {
-            const gv = document.getElementById('<%= gvList.ClientID %>');
-            if (!gv) return;
-            for (let i = 1; i < gv.rows.length; i++) {
-                const row = gv.rows[i];
-                row.style.cursor = "pointer";
-                row.onclick = function (e) {
-                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
-                        return;
-                    }
-                    const btn = this.querySelector("a[id*='aEdit']");
-                    if (btn) btn.click();
-                };
-            }
-        }
-        function initChoices() {
-            document.querySelectorAll("select.choices").forEach(function (el) {
 
-                if (el.choices) {
-                    el.choices.destroy();
+            if (loading) {
+                loading.style.display = "none";
+            }
+        });
+
+
+        // =========================================================
+        // UPDATE PANEL LOADING
+        // =========================================================
+        function initUpdatePanelLoading() {
+
+            if (typeof Sys === "undefined") {
+                return;
+            }
+
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+
+            prm.add_beginRequest(function () {
+
+                var loading = document.getElementById("loadingOverlay");
+
+                if (loading) {
+                    loading.style.display = "block";
+                }
+            });
+
+            prm.add_endRequest(function () {
+
+                var loading = document.getElementById("loadingOverlay");
+
+                if (loading) {
+                    loading.style.display = "none";
                 }
 
-                el.choices = new Choices(el, {
-                    searchEnabled: true,
-                    itemSelectText: '',
-                    shouldSort: false,
-
-                    // Saat melakukan search
-                    searchResultLimit: 50,
-
-                    // Jangan batasi jumlah choice yang dirender
-                    renderChoiceLimit: -1
-                });
+                // Re-bind after UpdatePanel refresh
+                bindGridRowClick();
+                initChoices();
             });
         }
-        document.addEventListener("DOMContentLoaded", function () {
-            initUpdatePanelLoading();            
-            bindGridRowClick();
-            initChoices();
-        });
-        function dataDelete(id) {
-            document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
+
+
+        // =========================================================
+        // GRID ROW CLICK
+        // =========================================================
+        function bindGridRowClick() {
+
+            const gv = document.getElementById('<%= gvList.ClientID %>');
+
+        if (!gv) {
+            return;
         }
+
+        // Start from row 1 because row 0 is normally header
+        for (let i = 1; i < gv.rows.length; i++) {
+
+            const row = gv.rows[i];
+
+            row.style.cursor = "pointer";
+
+            // Prevent duplicate event handlers
+            row.onclick = function (e) {
+
+                const target = e.target;
+
+                // =================================================
+                // IGNORE CHOICES.JS
+                // =================================================
+                if (target.closest(".choices")) {
+                    return;
+                }
+
+                // =================================================
+                // IGNORE ALL INTERACTIVE ELEMENTS
+                // =================================================
+                if (
+                    target.closest("a") ||
+                    target.closest("button") ||
+                    target.closest("input") ||
+                    target.closest("select") ||
+                    target.closest("textarea") ||
+                    target.closest("[data-bs-toggle]") ||
+                    target.closest(".dropdown") ||
+                    target.closest(".form-control")
+                ) {
+                    return;
+                }
+
+                // =================================================
+                // FIND EDIT BUTTON
+                // =================================================
+                const btn = row.querySelector("a[id*='aEdit']");
+
+                if (btn) {
+                    btn.click();
+                }
+            };
+        }
+    }
+
+
+    // =========================================================
+    // CHOICES.JS
+    // =========================================================
+    function initChoices() {
+
+        document.querySelectorAll("select.choices").forEach(function (el) {
+
+            // =====================================================
+            // DESTROY EXISTING INSTANCE
+            // =====================================================
+            if (el.choices) {
+
+                try {
+                    el.choices.destroy();
+                }
+                catch (e) {
+                    console.log("Choices destroy error:", e);
+                }
+
+                el.choices = null;
+            }
+
+
+            // =====================================================
+            // INITIALIZE CHOICES
+            // =====================================================
+            el.choices = new Choices(el, {
+
+                // Enable search
+                searchEnabled: true,
+
+                // Remove "Press to select"
+                itemSelectText: '',
+
+                // Keep original option order
+                shouldSort: false,
+
+                // Maximum search results
+                searchResultLimit: 50,
+
+                // Maximum choices displayed
+                renderChoiceLimit: 50,
+
+                // Search placeholder
+                searchPlaceholderValue: 'Search...',
+
+                // Messages
+                noResultsText: 'No results found',
+                noChoicesText: 'No choices available'
+            });
+        });
+    }
+
+
+    // =========================================================
+    // DOCUMENT READY
+    // =========================================================
+    document.addEventListener("DOMContentLoaded", function () {
+
+        initUpdatePanelLoading();
+
+        bindGridRowClick();
+
+        initChoices();
+    });
+
+
+    // =========================================================
+    // DELETE
+    // =========================================================
+    function dataDelete(id) {
+
+        var txtDeleteId =
+            document.getElementById("<%=txtDeleteId.ClientID %>");
+
+            if (txtDeleteId) {
+                txtDeleteId.value = id;
+            }
+        }
+
+
+        // =========================================================
+        // SHOW LOG
+        // =========================================================
         function showLog(type, dataId) {
-            $("#logError").addClass("d-none").html("");
+
+            $("#logError")
+                .addClass("d-none")
+                .html("");
+
             $("#tblLogs tbody").html("");
+
             $("#modalLog").modal("show");
 
+
             $.ajax({
+
                 type: "POST",
+
                 url: "/Setting/Method.aspx/GetLogs",
-                data: JSON.stringify({ type: type, dataId: dataId }),
+
+                data: JSON.stringify({
+                    type: type,
+                    dataId: dataId
+                }),
+
                 contentType: "application/json; charset=utf-8",
+
                 dataType: "json",
+
                 success: function (res) {
+
                     const logs = res.d;
 
+
                     if (!logs || logs.length === 0) {
+
                         $("#tblLogs tbody").html(
-                            `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
+                            `<tr>
+                            <td class="text-center">
+                                DATA LOG NOT FOUND
+                            </td>
+                        </tr>`
                         );
+
                         return;
                     }
 
+
                     let html = "";
-                    logs.forEach(r => {
-                        html += `<tr><td>${r.TextLog}</td></tr>`;
+
+
+                    logs.forEach(function (r) {
+
+                        html += `
+                        <tr>
+                            <td>${r.TextLog}</td>
+                        </tr>
+                    `;
                     });
+
 
                     $("#tblLogs tbody").html(html);
                 },
+
+
                 error: function (err) {
-                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
+
+                    $("#logError")
+                        .removeClass("d-none")
+                        .html("FAILED TO LOAD LOG DATA");
                 }
             });
         }
-        ["modalRePrice", "modalConditional", "modalDelete", "modalLog"].forEach(function (id) {
-            document.getElementById(id).addEventListener("hide.bs.modal", function () {
-                document.activeElement.blur();
+
+
+        // =========================================================
+        // MODAL BLUR
+        // =========================================================
+        [
+            "modalRePrice",
+            "modalConditional",
+            "modalDelete",
+            "modalLog"
+        ].forEach(function (id) {
+
+            var modal = document.getElementById(id);
+
+            if (!modal) {
+                return;
+            }
+
+            modal.addEventListener("hide.bs.modal", function () {
+
+                if (document.activeElement) {
+                    document.activeElement.blur();
+                }
+
                 document.body.focus();
             });
         });
-        window.history.replaceState(null, null, window.location.href);
+
+
+        // =========================================================
+        // HISTORY
+        // =========================================================
+        window.history.replaceState(
+            null,
+            null,
+            window.location.href
+        );
+
     </script>
 </asp:Content>
