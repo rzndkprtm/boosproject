@@ -27,8 +27,8 @@ Cont Grey 1200
 A $15 minimum order surcharge will be applied once the order is submitted.
 A $4 fuel surcharge will be applied once the order is submitted.
 
-10%
-10%
+10% (CS)
+10% (CS)
 8%
 6%
 5%
@@ -39,3 +39,5 @@ A $4 fuel surcharge will be applied once the order is submitted.
 5%
 4%
 3%
+
+PG PLANTATION UP (25%) & SEWLESS (35%)
