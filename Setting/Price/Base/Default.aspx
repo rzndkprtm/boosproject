@@ -308,8 +308,8 @@
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
-                initChoices();
                 bindGridRowClick();
+                initChoices();                
             });
         }
         function bindGridRowClick() {
@@ -341,9 +341,9 @@
             });
         }
         document.addEventListener("DOMContentLoaded", function () {
-            initUpdatePanelLoading();
-            initChoices();
+            initUpdatePanelLoading();            
             bindGridRowClick();
+            initChoices();
         });
         function dataDelete(id) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
