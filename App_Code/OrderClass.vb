@@ -2573,7 +2573,7 @@ Public Class OrderClass
                         Next
                     Next
 
-                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT * FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
                         Dim promoDataType As String = buyPromoRow("DataType").ToString()
@@ -2990,7 +2990,7 @@ Public Class OrderClass
                         Next
                     Next
 
-                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT * FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
                         Dim promoDataType As String = buyPromoRow("DataType").ToString()
@@ -3325,7 +3325,7 @@ Public Class OrderClass
                         Next
                     Next
 
-                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT * FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
                         Dim promoDataType As String = buyPromoRow("DataType").ToString()
@@ -3647,7 +3647,7 @@ Public Class OrderClass
                         Next
                     Next
 
-                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT * FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
                         Dim promoDataType As String = buyPromoRow("DataType").ToString()
@@ -3969,7 +3969,7 @@ Public Class OrderClass
                         Next
                     Next
 
-                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT * FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
                         Dim promoDataType As String = buyPromoRow("DataType").ToString()
@@ -4291,7 +4291,7 @@ Public Class OrderClass
                         Next
                     Next
 
-                    Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT * FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
                         Dim promoDataType As String = buyPromoRow("DataType").ToString()
