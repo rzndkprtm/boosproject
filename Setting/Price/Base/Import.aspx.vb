@@ -49,10 +49,10 @@ Partial Class Setting_Price_Base_Import
                 MessageError(True, "PRICE GROUP IS REQUIRED !")
                 Exit Sub
             End If
-            If ddlUploadType.SelectedValue = "" Then
-                MessageError(True, "METHOD IS REQUIRED !")
-                Exit Sub
-            End If
+            'If ddlUploadType.SelectedValue = "" Then
+            '    MessageError(True, "METHOD IS REQUIRED !")
+            '    Exit Sub
+            'End If
             If ddlProductGroup.SelectedValue = "" Then
                 MessageError(True, "PRODUCT GROUP IS REQUIRED !")
                 Exit Sub
