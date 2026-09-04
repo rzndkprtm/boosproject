@@ -15,19 +15,35 @@ Partial Class Setting_Price_Promo_Add
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindCompany()
+            BindDataType(ddlType.SelectedValue)
+            BindDataId(ddlDataType.SelectedValue)
         End If
+    End Sub
+
+    Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindDataType(ddlType.SelectedValue)
+        BindDataId(ddlDataType.SelectedValue)
+    End Sub
+
+    Protected Sub ddlDataType_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindDataId(ddlDataType.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If ddlCompany.SelectedValue = "" Then
-                MessageError(True, "COMPANY IS REQUIRED !")
+            If ddlType.SelectedValue = "" Then
+                MessageError(True, "PROMO TYPE IS REQUIRED !")
                 Exit Sub
             End If
-            If ddlType.SelectedValue = "" Then
-                MessageError(True, "TYPE IS REQUIRED !")
+            If ddlDataType.SelectedValue = "" Then
+                MessageError(True, "DATA TYPE IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlDataId.SelectedValue = "" Then
+                MessageError(True, "DATA NAME IS REQUIRED !")
                 Exit Sub
             End If
             If txtName.Text = "" Then
@@ -55,10 +71,11 @@ Partial Class Setting_Price_Promo_Add
 
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Promos ORDER BY Id DESC")
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Promos VALUES (@Id, @CompanyId, @Type, @Name, @StartDate, @EndDate, @Description, @Status)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Promos VALUES (@Id, @Type, @DataType, @DataId, @Name, @StartDate, @EndDate, @Description, @Status)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
-                        thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@DataType", ddlDataType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@DataId", ddlDataId.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text)
                         thisCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text)
@@ -87,19 +104,43 @@ Partial Class Setting_Price_Promo_Add
         Response.Redirect("~/setting/price/promo", False)
     End Sub
 
-    Protected Sub BindCompany()
-        ddlCompany.Items.Clear()
+    Protected Sub BindDataType(type As String)
+        ddlDataType.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Status='Active' ORDER BY Name ASC")
-            ddlCompany.DataTextField = "Alias"
-            ddlCompany.DataValueField = "Id"
-            ddlCompany.DataBind()
+            If type = "Buy" Then
+                ddlDataType.Items.Add(New ListItem("Companys", "Companys"))
+                ddlDataType.Items.Add(New ListItem("Customers", "Customers"))
+            End If
+            If type = "Sell" OrElse type = "Factory" Then
+                ddlDataType.Items.Add(New ListItem("Companys", "Companys"))
+            End If
 
-            If ddlCompany.Items.Count > 1 Then
-                ddlCompany.Items.Insert(0, New ListItem("", ""))
+            If ddlDataType.Items.Count > 1 Then
+                ddlDataType.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            ddlCompany.Items.Clear()
+            ddlDataType.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindDataId(dataType As String)
+        ddlDataId.Items.Clear()
+        Try
+            If Not String.IsNullOrEmpty(dataType) Then
+                ddlDataId.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM " & dataType & " WHERE Status='Active' ORDER BY Name ASC")
+                ddlDataId.DataTextField = "Name"
+                ddlDataId.DataValueField = "Id"
+                ddlDataId.DataBind()
+
+                If ddlDataId.Items.Count > 1 Then
+                    ddlDataId.Items.Insert(0, New ListItem("", ""))
+                End If
+            End If
+        Catch ex As Exception
+            ddlDataId.Items.Clear()
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If

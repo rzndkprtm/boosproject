@@ -45,17 +45,29 @@
                     </div>
                     <div class="card-body">
                         <div class="row mt-4">
-                            <div class="col-md-3 mb-3">
-                                <label class="text-muted small">Company</label>
-                                <div class="fw-bold">
-                                    <asp:Label runat="server" ID="lblCompanyName"></asp:Label>
-                                    <asp:Label runat="server" ID="lblCompanyId" Visible="false"></asp:Label>
+                            <div class="col-md-2 mb-3">
+                                <label class="text-muted small">Type</label>
+                                <div>
+                                    <asp:Label runat="server" ID="lblType"></asp:Label>
                                 </div>
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="text-muted small">Promo Name</label>
                                 <div class="fw-bold">
                                     <asp:Label runat="server" ID="lblName"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="text-muted small">Data Name</label>
+                                <div class="fw-bold">
+                                    <asp:Label runat="server" ID="lblDataName"></asp:Label>
+                                    <asp:Label runat="server" ID="lblCompanyId" Visible="false"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="text-muted small">Status</label>
+                                <div>
+                                    <asp:Label runat="server" ID="lblStatus"></asp:Label>
                                 </div>
                             </div>
                             <div class="col-md-3 mb-3">
@@ -70,24 +82,14 @@
                                     <asp:Label runat="server" ID="lblEndDate"></asp:Label>
                                 </div>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="text-muted small">Type</label>
-                                <div>
-                                    <asp:Label runat="server" ID="lblType"></asp:Label>
-                                </div>
-                            </div>
+                            
                             <div class="col-md-4 mb-3">
                                 <label class="text-muted small">Description</label>
                                 <div>
                                     <asp:Label runat="server" ID="lblDescription"></asp:Label>
                                 </div>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label class="text-muted small">Status</label>
-                                <div>
-                                    <asp:Label runat="server" ID="lblStatus"></asp:Label>
-                                </div>
-                            </div>
+                            
                             
                         </div>
                     </div>
