@@ -379,8 +379,8 @@
                                 <div class="text-muted small">Products and services included in this order</div>
                             </div>
                             <div class="mt-2 mt-lg-0">
-                                <a href="javascript:void(0);" runat="server" id="aAddItem" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modalAddItem">New Item</a>
-                                <a href="javascript:void(0);" runat="server" id="aAddService" class="btn btn-outline-secondary me-2" data-bs-toggle="modal" data-bs-target="#modalAddService">New Service</a>
+                                <a href="javascript:void(0);" runat="server" id="aAddProduct" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modalAddProduct">New Item</a>
+                                <a href="javascript:void(0);" runat="server" id="aAddService" class="btn btn-outline-secondary me-2" data-bs-toggle="modal" data-bs-target="#modalAddService">Add Service</a>
                             </div>
                         </div>
                     </div>
@@ -1560,25 +1560,25 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modalAddItem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal modal-blur fade" id="modalAddProduct" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Item</h5>
+                    <h5 class="modal-title">Add Product</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12 form-group">
-                            <label class="form-label required">SELECT PRODUCT</label>
-                            <asp:DropDownList runat="server" ID="ddlDesign" CssClass="choices form-select"></asp:DropDownList>
+                            <label class="form-label required">SELECT ITEM</label>
+                            <asp:DropDownList runat="server" ID="ddlProduct" CssClass="choices form-select"></asp:DropDownList>
                             <small class="form-hint" style="color:red;">* Please select a product then click the submit button</small>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnAddItem" CssClass="btn btn-primary" Text="Submit" OnClick="btnAddItem_Click" />
+                    <asp:Button runat="server" ID="btnAddProduct" CssClass="btn btn-primary" Text="Submit" OnClick="btnAddProduct_Click" />
                 </div>
             </div>
         </div>
@@ -1718,7 +1718,7 @@
             "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData", "modalDownloadPL",
             "modalDetailQuote", "modalDownloadQuote", "modalSendQuote",
             "modalConvertOrder", "modalReConvertOrder", "modalDataJob", "modalUpdateJobData",
-            "modalAddItem", "modalAddService", "modalDeleteItem", "modalCosting", 
+            "modalAddProduct", "modalAddService", "modalDeleteItem", "modalCosting",
             
         ].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {

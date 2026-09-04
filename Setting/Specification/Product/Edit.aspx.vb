@@ -84,7 +84,7 @@ Partial Class Setting_Specification_Product_Edit
                 If String.IsNullOrEmpty(txtInvoiceName.Text) Then txtInvoiceName.Text = txtName.Text
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET DesignId=@DesignId, BlindId=@BlindId, CompanyDetailId=@CompanyDetailId, JobSheetId=@JobSheetId, Name=@Name, InvoiceName=@InvoiceName, TubeType=@TubeType, ControlType=@ControlType, ColourType=@ColourType, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET DesignId=@DesignId, BlindId=@BlindId, CompanyDetailId=@CompanyDetailId, JobSheetId=@JobSheetId, Name=@Name, InvoiceName=@InvoiceName, TubeType=@TubeType, ControlType=@ControlType, ColourType=@ColourType, Description=@Description WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@BlindId", ddlBlind.SelectedValue)
@@ -96,7 +96,6 @@ Partial Class Setting_Specification_Product_Edit
                         thisCmd.Parameters.AddWithValue("@ControlType", ddlControl.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@ColourType", ddlColour.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -152,7 +151,6 @@ Partial Class Setting_Specification_Product_Edit
             ddlTube.SelectedValue = myData("TubeType").ToString()
             ddlColour.SelectedValue = myData("ColourType").ToString()
             txtDescription.Text = myData("Description").ToString()
-            ddlStatus.SelectedValue = myData("Status").ToString()
 
             If Not myData("CompanyDetailId").ToString() = "" Then
                 Dim companyArray() As String = myData("CompanyDetailId").ToString().Split(",")

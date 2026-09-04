@@ -2576,6 +2576,16 @@ Public Class OrderClass
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
+                        Dim promoDataType As String = buyPromoRow("DataType").ToString()
+                        Dim promoDataId As String = buyPromoRow("DataId").ToString()
+
+                        If promoDataType = "Companys" AndAlso Not promoDataId = companyId Then
+                            Continue For
+                        End If
+                        If promoDataType = "Customers" AndAlso Not promoDataId = customerId Then
+                            Continue For
+                        End If
+
                         Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim type As String = detailRow("Type").ToString()
@@ -2983,8 +2993,17 @@ Public Class OrderClass
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+                        Dim promoDataType As String = buyPromoRow("DataType").ToString()
+                        Dim promoDataId As String = buyPromoRow("DataId").ToString()
 
+                        If promoDataType = "Companys" AndAlso Not promoDataId = companyId Then
+                            Continue For
+                        End If
+                        If promoDataType = "Customers" AndAlso Not promoDataId = customerId Then
+                            Continue For
+                        End If
+
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim type As String = detailRow("Type").ToString()
                             Dim method As String = detailRow("Method").ToString()
@@ -3309,8 +3328,17 @@ Public Class OrderClass
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+                        Dim promoDataType As String = buyPromoRow("DataType").ToString()
+                        Dim promoDataId As String = buyPromoRow("DataId").ToString()
 
+                        If promoDataType = "Companys" AndAlso Not promoDataId = companyId Then
+                            Continue For
+                        End If
+                        If promoDataType = "Customers" AndAlso Not promoDataId = customerId Then
+                            Continue For
+                        End If
+
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim type As String = detailRow("Type").ToString()
                             Dim method As String = detailRow("Method").ToString()
@@ -3622,8 +3650,17 @@ Public Class OrderClass
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+                        Dim promoDataType As String = buyPromoRow("DataType").ToString()
+                        Dim promoDataId As String = buyPromoRow("DataId").ToString()
 
+                        If promoDataType = "Companys" AndAlso Not promoDataId = companyId Then
+                            Continue For
+                        End If
+                        If promoDataType = "Customers" AndAlso Not promoDataId = customerId Then
+                            Continue For
+                        End If
+
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim type As String = detailRow("Type").ToString()
                             Dim method As String = detailRow("Method").ToString()
@@ -3935,8 +3972,17 @@ Public Class OrderClass
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+                        Dim promoDataType As String = buyPromoRow("DataType").ToString()
+                        Dim promoDataId As String = buyPromoRow("DataId").ToString()
 
+                        If promoDataType = "Companys" AndAlso Not promoDataId = companyId Then
+                            Continue For
+                        End If
+                        If promoDataType = "Customers" AndAlso Not promoDataId = customerId Then
+                            Continue For
+                        End If
+
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim type As String = detailRow("Type").ToString()
                             Dim method As String = detailRow("Method").ToString()
@@ -4248,8 +4294,17 @@ Public Class OrderClass
                     Dim buyPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each buyPromoRow As DataRow In buyPromoData.Rows
                         Dim promoId As String = buyPromoRow("Id").ToString()
-                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+                        Dim promoDataType As String = buyPromoRow("DataType").ToString()
+                        Dim promoDataId As String = buyPromoRow("DataId").ToString()
 
+                        If promoDataType = "Companys" AndAlso Not promoDataId = companyId Then
+                            Continue For
+                        End If
+                        If promoDataType = "Customers" AndAlso Not promoDataId = customerId Then
+                            Continue For
+                        End If
+
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
                         For Each detailRow As DataRow In promoDetailData.Rows
                             Dim type As String = detailRow("Type").ToString()
                             Dim method As String = detailRow("Method").ToString()

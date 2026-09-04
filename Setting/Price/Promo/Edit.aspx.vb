@@ -30,15 +30,30 @@ Partial Class Setting_Price_Promo_Edit
         End If
     End Sub
 
+    Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindDataType(ddlType.SelectedValue)
+        BindDataId(ddlDataType.SelectedValue)
+    End Sub
+
+    Protected Sub ddlDataType_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindDataId(ddlDataType.SelectedValue)
+    End Sub
+
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If ddlCompany.SelectedValue = "" Then
-                MessageError(True, "COMPANY IS REQUIRED !")
+            If ddlType.SelectedValue = "" Then
+                MessageError(True, "PROMO TYPE IS REQUIRED !")
                 Exit Sub
             End If
-            If ddlType.SelectedValue = "" Then
-                MessageError(True, "TYPE IS REQUIRED !")
+            If ddlDataType.SelectedValue = "" Then
+                MessageError(True, "DATA TYPE IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlDataId.SelectedValue = "" Then
+                MessageError(True, "DATA NAME IS REQUIRED !")
                 Exit Sub
             End If
             If txtName.Text = "" Then
@@ -53,6 +68,7 @@ Partial Class Setting_Price_Promo_Edit
                 MessageError(True, "END DATE IS REQUIRED !")
                 Exit Sub
             End If
+
             Dim startDate As Date = Date.Parse(txtStartDate.Text)
             Dim endDate As Date = Date.Parse(txtEndDate.Text)
 
@@ -65,10 +81,11 @@ Partial Class Setting_Price_Promo_Edit
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Promos SET CompanyId=@CompanyId, Type=@Type, Name=@Name, StartDate=@StartDate, EndDate=@EndDate, Description=@Description WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Promos SET Type=@Type, CompanyId=@CompanyId, Name=@Name, StartDate=@StartDate, EndDate=@EndDate, Description=@Description WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@DataType", ddlDataType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@DataId", ddlDataId.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@StartDate", txtStartDate.Text)
                         thisCmd.Parameters.AddWithValue("@EndDate", txtEndDate.Text)
@@ -111,10 +128,12 @@ Partial Class Setting_Price_Promo_Edit
                 Exit Sub
             End If
 
-            BindCompany()
+            BindDataType(thisData("Type").ToString())
+            BindDataId(thisData("DataType").ToString())
 
-            ddlCompany.SelectedValue = thisData("CompanyId").ToString()
+            ddlDataId.SelectedValue = thisData("DataId").ToString()
             ddlType.SelectedValue = thisData("Type").ToString()
+            ddlDataType.SelectedValue = thisData("DataType").ToString()
             txtName.Text = thisData("Name").ToString()
             txtStartDate.Text = Convert.ToDateTime(thisData("StartDate")).ToString("yyyy-MM-dd")
             txtEndDate.Text = Convert.ToDateTime(thisData("EndDate")).ToString("yyyy-MM-dd")
@@ -127,19 +146,43 @@ Partial Class Setting_Price_Promo_Edit
         End Try
     End Sub
 
-    Protected Sub BindCompany()
-        ddlCompany.Items.Clear()
+    Protected Sub BindDataType(type As String)
+        ddlDataType.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Companys WHERE Status='Active' OR Status='Inactive' ORDER BY Name ASC")
-            ddlCompany.DataTextField = "Name"
-            ddlCompany.DataValueField = "Id"
-            ddlCompany.DataBind()
+            If type = "Buy" Then
+                ddlDataType.Items.Add(New ListItem("Companys", "Companys"))
+                ddlDataType.Items.Add(New ListItem("Customers", "Customers"))
+            End If
+            If type = "Sell" OrElse type = "Factory" Then
+                ddlDataType.Items.Add(New ListItem("Companys", "Companys"))
+            End If
 
-            If ddlCompany.Items.Count > 1 Then
-                ddlCompany.Items.Insert(0, New ListItem("", ""))
+            If ddlDataType.Items.Count > 1 Then
+                ddlDataType.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            ddlCompany.Items.Clear()
+            ddlDataType.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindDataId(dataType As String)
+        ddlDataId.Items.Clear()
+        Try
+            If Not String.IsNullOrEmpty(dataType) Then
+                ddlDataId.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM " & dataType & " WHERE Status='Active' ORDER BY Name ASC")
+                ddlDataId.DataTextField = "Name"
+                ddlDataId.DataValueField = "Id"
+                ddlDataId.DataBind()
+
+                If ddlDataId.Items.Count > 1 Then
+                    ddlDataId.Items.Insert(0, New ListItem("", ""))
+                End If
+            End If
+        Catch ex As Exception
+            ddlDataId.Items.Clear()
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If

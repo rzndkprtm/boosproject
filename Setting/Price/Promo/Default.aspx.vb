@@ -117,8 +117,7 @@ Partial Class Setting_Price_Promo_Default
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)),
                 New SqlParameter("@RoleName", Session("RoleName").ToString()),
-                New SqlParameter("@LevelName", Session("LevelName").ToString()),
-                New SqlParameter("@CompanyId", If(String.IsNullOrWhiteSpace(Session("CompanyId")), CType(DBNull.Value, Object), Session("CompanyId").ToString()))
+                New SqlParameter("@LevelName", Session("LevelName").ToString())
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_Promos_List", params)
             gvList.DataBind()

@@ -192,12 +192,14 @@ Partial Class Setting_Price_Promo_Detail_Default
                 Exit Sub
             End If
 
-            lblCompanyName.Text = thisData("CompanyName").ToString()
-            lblCompanyId.Text = thisData("CompanyId").ToString()
+            lblType.Text = thisData("Type").ToString()
             lblName.Text = thisData("Name").ToString()
+            lblDataName.Text = thisData("DataName").ToString()
+            'lblCompanyId.Text = thisData("CompanyId").ToString()
+
             lblStartDate.Text = Convert.ToDateTime(thisData("StartDate")).ToString("dd MMM yyyy")
             lblEndDate.Text = Convert.ToDateTime(thisData("EndDate")).ToString("dd MMM yyyy")
-            lblType.Text = thisData("Type").ToString()
+
             lblDescription.Text = thisData("Description").ToString()
             lblStatus.Text = thisData("Status").ToString()
             If String.IsNullOrEmpty(lblDescription.Text) Then

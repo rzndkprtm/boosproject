@@ -1724,16 +1724,16 @@ Partial Class Order_Detail
         End If
     End Sub
 
-    Protected Sub btnAddItem_Click(sender As Object, e As EventArgs)
+    Protected Sub btnAddProduct_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If ddlDesign.SelectedValue = "" Then
+            If ddlProduct.SelectedValue = "" Then
                 Response.Redirect("~/order/detail", False)
                 Exit Sub
             End If
 
-            Dim page As String = orderClass.GetDesignPage(ddlDesign.SelectedValue)
-            Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", "create", lblHeaderId.Text, String.Empty, ddlDesign.SelectedValue, Session("LoginId").ToString())
+            Dim page As String = orderClass.GetDesignPage(ddlProduct.SelectedValue)
+            Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", "create", lblHeaderId.Text, String.Empty, ddlProduct.SelectedValue, Session("LoginId").ToString())
             Dim contextId As String = InsertContext(queryString)
 
             url = String.Format("{0}?boos={1}", page, contextId)
@@ -2074,7 +2074,7 @@ Partial Class Order_Detail
             divOrderFactory.Visible = False
             divInternalNote.Visible = False
 
-            aAddItem.Visible = False
+            aAddProduct.Visible = False
             aAddService.Visible = False
 
             Dim isReworkOrder As Boolean = orderClass.IsReworkOrder(headerId)
@@ -2115,7 +2115,7 @@ Partial Class Order_Detail
                         aConvertOrder.Visible = True
                     End If
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
 
                     If lblDownloadBoe.Text = "No" OrElse lblDownloadBoe.Text = "Done" Then
@@ -2143,7 +2143,7 @@ Partial Class Order_Detail
                         aConvertOrder.Visible = True
                     End If
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Waiting Proforma" Then
@@ -2172,7 +2172,7 @@ Partial Class Order_Detail
                         aConvertOrder.Visible = True
                     End If
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -2201,7 +2201,7 @@ Partial Class Order_Detail
                         aConvertOrder.Visible = True
                     End If
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Pending Payment" Then
@@ -2230,7 +2230,7 @@ Partial Class Order_Detail
                         aConvertOrder.Visible = True
                     End If
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Payment Received" Then
@@ -2258,7 +2258,7 @@ Partial Class Order_Detail
                         aConvertOrder.Visible = True
                     End If
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
 
                     If lblDownloadBoe.Text = "No" OrElse lblDownloadBoe.Text = "Done" Then
@@ -2292,7 +2292,7 @@ Partial Class Order_Detail
                         aConvertOrder.Visible = True
                     End If
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "In Production" Then
@@ -2324,7 +2324,7 @@ Partial Class Order_Detail
                         aConvertOrder.Visible = True
                     End If
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
 
                     If lblDownloadBoe.Text = "No" OrElse lblDownloadBoe.Text = "Done" Then
@@ -2359,7 +2359,7 @@ Partial Class Order_Detail
                         aConvertOrder.Visible = True
                     End If
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
 
                     If lblDownloadBoe.Text = "No" OrElse lblDownloadBoe.Text = "Done" Then
@@ -2441,7 +2441,7 @@ Partial Class Order_Detail
 
                     If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Quoted" Then
@@ -2452,7 +2452,7 @@ Partial Class Order_Detail
                     btnQuoteAction.Visible = True
                     aSendQuote.Visible = True
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Waiting Proforma" Then
@@ -2469,7 +2469,7 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -2509,7 +2509,7 @@ Partial Class Order_Detail
                         aConvertOrder.Visible = True
                     End If
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Pending Payment" Then
@@ -2555,7 +2555,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
-                        aAddItem.Visible = True
+                        aAddProduct.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -2588,7 +2588,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
-                        aAddItem.Visible = True
+                        aAddProduct.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -2620,7 +2620,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then
                         aRePrice.Visible = True
                         aSendInvoice.Visible = True
-                        aAddItem.Visible = True
+                        aAddProduct.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -2694,7 +2694,7 @@ Partial Class Order_Detail
                     btnQuoteAction.Visible = True
                     aSendQuote.Visible = True
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Quoted" Then
@@ -2705,7 +2705,7 @@ Partial Class Order_Detail
                     btnQuoteAction.Visible = True
                     aSendQuote.Visible = True
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Waiting Proforma" Then
@@ -2720,7 +2720,7 @@ Partial Class Order_Detail
                     btnInvoice.Visible = True
                     aSendInvoice.Visible = True
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -2785,7 +2785,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
-                        aAddItem.Visible = True
+                        aAddProduct.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -2817,7 +2817,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
-                        aAddItem.Visible = True
+                        aAddProduct.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -2847,7 +2847,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
-                        aAddItem.Visible = True
+                        aAddProduct.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -2908,11 +2908,11 @@ Partial Class Order_Detail
                     If lblOrderType.Text = "Regular" Then
                         If Session("LoginId") = lblCreatedBy.Text Then aDeleteOrder.Visible = True
                         aSubmitOrder.Visible = True
-                        aAddItem.Visible = True
+                        aAddProduct.Visible = True
                     End If
                     If lblOrderType.Text = "Builder" Then
                         aQuoteOrder.Visible = True
-                        aAddItem.Visible = True
+                        aAddProduct.Visible = True
                     End If
 
                 End If
@@ -2923,7 +2923,7 @@ Partial Class Order_Detail
                     btnQuoteAction.Visible = True
                     aSendQuote.Visible = True
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Waiting Proforma" Then
@@ -2936,7 +2936,7 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -3020,7 +3020,7 @@ Partial Class Order_Detail
                     btnQuoteAction.Visible = True
                     aSendQuote.Visible = True
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Quoted" Then
@@ -3043,7 +3043,7 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
 
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -3096,7 +3096,7 @@ Partial Class Order_Detail
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
                         aAddService.Visible = True
-                        aAddItem.Visible = True
+                        aAddProduct.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "In Production" Then
@@ -3107,7 +3107,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
-                        aAddItem.Visible = True
+                        aAddProduct.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -3119,7 +3119,7 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
-                        aAddItem.Visible = True
+                        aAddProduct.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -3160,12 +3160,12 @@ Partial Class Order_Detail
                     If lblOrderType.Text = "Builder" Then
                         aQuoteOrder.Visible = True : aRePrice.Visible = True
                     End If
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                 End If
                 If lblOrderStatus.Text = "Quoted" Then
                     btnQuoteAction.Visible = True
                     aFile.Visible = True
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                     If lblOrderType.Text = "Builder" Then
                         aRePrice.Visible = True
                     End If
@@ -3310,7 +3310,7 @@ Partial Class Order_Detail
                     btnEditOrder.Visible = True
                     aDeleteOrder.Visible = True
                     aSubmitOrder.Visible = True
-                    aAddItem.Visible = True
+                    aAddProduct.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Shipped Out" Then
@@ -3376,22 +3376,22 @@ Partial Class Order_Detail
     End Sub
 
     Protected Sub BindDesignType()
-        ddlDesign.Items.Clear()
+        ddlProduct.Items.Clear()
         Try
-            Dim thisQuery As String = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type<>'Services' AND Designs.Active=1 ORDER BY Designs.Name ASC"
+            Dim thisQuery As String = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type IN ('Blinds', 'Shutters', 'Doors') ORDER BY Designs.Name ASC"
             If Session("RoleName") = "Customer" Then
-                thisQuery = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type<>'Services' ORDER BY Designs.Name ASC"
+                thisQuery = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type IN ('Blinds', 'Shutters', 'Doors') AND Designs.Active=1 ORDER BY Designs.Name ASC"
             End If
-            ddlDesign.DataSource = orderClass.GetDataTable(thisQuery)
-            ddlDesign.DataTextField = "NameText"
-            ddlDesign.DataValueField = "Id"
-            ddlDesign.DataBind()
+            ddlProduct.DataSource = orderClass.GetDataTable(thisQuery)
+            ddlProduct.DataTextField = "NameText"
+            ddlProduct.DataValueField = "Id"
+            ddlProduct.DataBind()
 
-            If ddlDesign.Items.Count > 0 Then
-                ddlDesign.Items.Insert(0, New ListItem("", ""))
+            If ddlProduct.Items.Count > 0 Then
+                ddlProduct.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            ddlDesign.Items.Clear()
+            ddlProduct.Items.Clear()
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If

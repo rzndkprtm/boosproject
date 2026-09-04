@@ -1545,15 +1545,10 @@ Public Class PreviewClass
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim items(17, saphoraData.Rows.Count - 1) As String
+                    Dim items(15, saphoraData.Rows.Count - 1) As String
 
                     For i As Integer = 0 To saphoraData.Rows.Count - 1
                         Dim number As Integer = i + 1
-
-                        Dim controlName As String = saphoraData.Rows(i)("ControlName").ToString()
-                        Dim controlColour As String = String.Empty
-                        If controlName = "Chain" Then controlColour = saphoraData.Rows(i)("ChainName").ToString()
-                        If controlName = "Wand" Then controlColour = saphoraData.Rows(i)("WandColour").ToString()
 
                         Dim controlLength As String = saphoraData.Rows(i)("ControlLength").ToString()
                         Dim controlLengthValue As String = saphoraData.Rows(i)("ControlLengthValue").ToString()
@@ -1567,19 +1562,17 @@ Public Class PreviewClass
                         items(1, i) = saphoraData.Rows(i)("Room").ToString()
                         items(2, i) = saphoraData.Rows(i)("Mounting").ToString()
                         items(3, i) = saphoraData.Rows(i)("BlindName").ToString()
-                        items(4, i) = saphoraData.Rows(i)("TubeName").ToString()
-                        items(5, i) = saphoraData.Rows(i)("FabricName").ToString()
-                        items(6, i) = saphoraData.Rows(i)("FabricColour").ToString()
-                        items(7, i) = saphoraData.Rows(i)("Width").ToString()
-                        items(8, i) = saphoraData.Rows(i)("Drop").ToString()
-                        items(9, i) = saphoraData.Rows(i)("ColourName").ToString()
-                        items(10, i) = saphoraData.Rows(i)("StackPosition").ToString()
-                        items(11, i) = saphoraData.Rows(i)("ControlPosition").ToString()
-                        items(12, i) = controlName
-                        items(13, i) = controlColour
-                        items(14, i) = controlLengthText
-                        items(15, i) = saphoraData.Rows(i)("BracketExtension").ToString()
-                        items(16, i) = saphoraData.Rows(i)("Notes").ToString()
+                        items(4, i) = saphoraData.Rows(i)("FabricName").ToString()
+                        items(5, i) = saphoraData.Rows(i)("FabricColour").ToString()
+                        items(6, i) = saphoraData.Rows(i)("Width").ToString()
+                        items(7, i) = saphoraData.Rows(i)("Drop").ToString()
+                        items(8, i) = saphoraData.Rows(i)("ColourName").ToString()
+                        items(9, i) = saphoraData.Rows(i)("StackPosition").ToString()
+                        items(10, i) = saphoraData.Rows(i)("ControlPosition").ToString()
+                        items(11, i) = saphoraData.Rows(i)("WandColour").ToString()
+                        items(12, i) = controlLengthText
+                        items(13, i) = saphoraData.Rows(i)("BracketExtension").ToString()
+                        items(14, i) = saphoraData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
@@ -1588,7 +1581,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Vertical Type", "Slat Type", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Track Colour", "Stack Position", "Control Position", "Control Type", "Control Colour", "Control Length", "Extension Bracket", "Special Information"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Type", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Track Colour", "Stack Position", "Control Position", "Control Colour", "Control Length", "Extension Bracket", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
