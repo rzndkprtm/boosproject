@@ -1783,7 +1783,7 @@ Partial Class Order_Detail
                 End If
                 orderClass.FinalCostItem(lblHeaderId.Text, itemId)
 
-                Dim dataLog As Object() = {"OrderDetails", itemId, Session("LoginId"), "Order Item Added"}
+                dataLog = {"OrderDetails", itemId, Session("LoginId"), "Order Item Added"}
                 orderClass.Logs(dataLog)
 
                 url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
