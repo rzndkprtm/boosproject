@@ -63,6 +63,9 @@ Partial Class Setting_Price_Base_Import
             End If
 
             Dim uploadType As String = ddlUploadType.SelectedValue
+            If ddlUploadType.SelectedValue = "" Then
+                uploadType = "Sell"
+            End If
 
             Dim msg = ImportExcel(fuFile, "Cost", ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue, uploadType, ddlBackup.SelectedValue)
 
