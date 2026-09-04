@@ -8030,31 +8030,25 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function SaphoraDrapeProcess(data As ProccessData) As String
+    Public Shared Function SaphoraProcess(data As ProccessData) As String
         Dim orderClass As New OrderClass
 
         Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
         Dim qty As Integer
         Dim width As Integer : Dim drop As Integer
-        Dim controllength As Integer : Dim wandlength As Integer
+        Dim controllengthValue As Integer : Dim wandlengthValue As Integer
         Dim markup As Integer
 
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
-        Dim tubeName As String = String.Empty
-        Dim controlName As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
-        If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
-        If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
 
         Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.tubetype) Then Return "SLAT TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "TRACK COLOUR IS REQUIRED !"
 
         If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
@@ -8091,23 +8085,15 @@ Partial Class Order_Method
 
         If blindName = "Complete Set" Then
             If String.IsNullOrEmpty(data.stackposition) Then Return "STACK POSITION IS REQUIRED !"
-            If controlName = "Chain" Then
-                If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED !"
-            End If
-            If controlName = "Chain" AndAlso String.IsNullOrEmpty(data.chaincolour) Then
-                Return "CHAIN COLOUR IS REQUIRED !"
-            End If
-            If controlName = "Wand" AndAlso String.IsNullOrEmpty(data.wandcolour) Then
-                Return "WAND COLOUR IS REQUIRED !"
-            End If
-
+            If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED !"
+            If String.IsNullOrEmpty(data.wandcolour) Then Return "WAND COLOUR IS REQUIRED !"
             If String.IsNullOrEmpty(data.controllength) Then Return "WAND LENGTH IS REQUIRED !"
 
             If data.controllength = "Custom" Then
                 If String.IsNullOrEmpty(data.controllengthvalue) Then Return "WAND LENGTH VALUE IS REQUIRED !"
-                If Not Integer.TryParse(data.controllengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR WAND LENGTH ORDER !"
+                If Not Integer.TryParse(data.controllengthvalue, controllengthValue) OrElse controllengthValue <= 0 Then Return "PLEASE CHECK YOUR WAND LENGTH ORDER !"
 
-                If controllength > 2000 Then Return "MAXIMUM CONTROL LENGTH IS 2000MM !"
+                If controllengthValue > 2000 Then Return "MAXIMUM CONTROL LENGTH IS 2000MM !"
             End If
         End If
 
@@ -8124,29 +8110,23 @@ Partial Class Order_Method
 
         If blindName = "Complete Set" Then
             If data.controllength = "Standard" Then
-                controllength = Math.Ceiling(drop * 2 / 3)
+                controllengthValue = Math.Ceiling(drop * 2 / 3)
+                If controllengthValue > 2000 Then controllengthValue = 2000
+            End If
+            If data.controllength = "Custom" Then
+                controllengthValue = data.controllengthvalue
             End If
 
-            If controlName = "Chain" Then
-                data.wandcolour = String.Empty
-            End If
+            wandlengthValue = controllengthValue
 
-            If controlName = "Wand" Then
-                If controllength > 2000 Then controllength = 2000
-                wandlength = controllength
-
-                data.chaincolour = String.Empty
-                If data.stackposition = "Left" Then data.controlposition = "Right"
-                If data.stackposition = "Right" Then data.controlposition = "Left"
-                If data.stackposition = "Centre" Then data.controlposition = "Right and Left"
-                If data.stackposition = "Split" Then data.controlposition = "Middle"
-            End If
+            If data.stackposition = "Left" Then data.controlposition = "Right"
+            If data.stackposition = "Right" Then data.controlposition = "Left"
         End If
 
         If blindName = "Fabric Only" Then
             data.mounting = String.Empty
             data.controllength = String.Empty
-            controllength = 0 : wandlength = 0
+            controllengthValue = 0 : wandlengthValue = 0
             data.chaincolour = String.Empty : data.wandcolour = String.Empty
             data.stackposition = String.Empty
             data.controlposition = String.Empty
@@ -8171,7 +8151,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                         thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
                         thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(data.fabriccolour), CType(DBNull.Value, Object), data.fabriccolour))
-                        thisCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(data.chaincolour), CType(DBNull.Value, Object), data.chaincolour))
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                         thisCmd.Parameters.AddWithValue("@Qty", 1)
                         thisCmd.Parameters.AddWithValue("@Room", data.room)
@@ -8181,9 +8160,9 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@StackPosition", data.stackposition)
                         thisCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
                         thisCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
-                        thisCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
+                        thisCmd.Parameters.AddWithValue("@ControlLengthValue", controllengthValue)
                         thisCmd.Parameters.AddWithValue("@WandColour", data.wandcolour)
-                        thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
+                        thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlengthValue)
                         thisCmd.Parameters.AddWithValue("@BracketExtension", data.bracketextension)
                         thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
@@ -8218,7 +8197,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
                     thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(data.fabriccolour), CType(DBNull.Value, Object), data.fabriccolour))
-                    thisCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(data.chaincolour), CType(DBNull.Value, Object), data.chaincolour))
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                     thisCmd.Parameters.AddWithValue("@Qty", 1)
                     thisCmd.Parameters.AddWithValue("@Room", data.room)
@@ -8228,9 +8206,9 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@StackPosition", data.stackposition)
                     thisCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
                     thisCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
-                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
+                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", controllengthvalue)
                     thisCmd.Parameters.AddWithValue("@WandColour", data.wandcolour)
-                    thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
+                    thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlengthValue)
                     thisCmd.Parameters.AddWithValue("@BracketExtension", data.bracketextension)
                     thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
@@ -9464,6 +9442,10 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED !"
         End If
         If data.subtype = "Single" AndAlso String.IsNullOrEmpty(data.tilterposition) Then Return "TILTER POSITION IS REQUIRED !"
+
+        'If width > 250 And width < 310 AndAlso data.controlposition <> "No Control" Then
+
+        'End If
 
         If width > 310 AndAlso width <= 410 AndAlso data.controlposition = data.tilterposition Then
             Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS !"
@@ -11134,11 +11116,7 @@ Partial Class Order_Method
         Dim blindId As String = detailData("BlindType").ToString()
         Dim tubeId As String = detailData("TubeType").ToString()
         Dim controlId As String = detailData("ControlType").ToString()
-
-        Dim blindName As String = detailData("BlindName").ToString()
-
         Dim fabricId As String = detailData("FabricId").ToString()
-        Dim chainId As String = detailData("ChainId").ToString()
 
         Dim itemDetail As New Dictionary(Of String, Object)
         For Each col As DataColumn In detailData.Table.Columns
@@ -11159,18 +11137,13 @@ Partial Class Order_Method
 
         Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
 
-        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .action = action}
-
         Dim result = New With {
             .ItemData = itemDetail,
             .BlindTypes = ListData(blindReq),
-            .ControlTypes = ListData(controlReq),
-            .TubeTypes = ListData(tubeReq),
             .ColourTypes = ListData(colourReq),
             .Mountings = ListData(mountingReq),
             .Fabrics = ListData(fabricReq),
-            .FabricColours = ListData(fabricColourReq),
-            .Chains = ListData(chainReq)
+            .FabricColours = ListData(fabricColourReq)
         }
         Return result
     End Function
