@@ -126,8 +126,9 @@
                                             <%# DiscountValue(Eval("Method").ToString(), Eval("Discount")) %>
                                         </ItemTemplate>
                                     </asp:TemplateField>
+                                    <asp:BoundField DataField="Description" HeaderText="Description" />
                                     <asp:BoundField DataField="Status" HeaderText="Status" />
-                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="130px">
+                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="100px">
                                         <ItemTemplate>
                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                             <ul class="dropdown-menu">
