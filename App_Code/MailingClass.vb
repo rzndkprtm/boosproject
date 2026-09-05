@@ -400,7 +400,7 @@ Public Class MailingClass
             Dim contactData As DataRow = GetDataRow("SELECT * FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
             If contactData Is Nothing Then Exit Sub
 
-            Dim loginData As DataTable = GetDataTable("SELECT *, CASE WHEN Active=1 THEN 'Enabled' WHEN Active=0 THEN 'Disabled' ELSE 'Error' END AS DataActive FROM Logins WHERE CustomerId='" & customerId & "' ORDER BY UserName ASC")
+            Dim loginData As DataTable = GetDataTable("SELECT * FROM Logins WHERE CustomerId='" & customerId & "' AND Status IN ('Active', 'Inactive', 'Blocked') ORDER BY UserName ASC")
             If loginData.Rows.Count = 0 Then Exit Sub
 
             Dim actionData As DataRow = GetDataRow("SELECT FullName, Email FROM Logins WHERE Id='" & actionBy & "'")
@@ -443,13 +443,12 @@ Public Class MailingClass
 
             mailBody &= "<span style='font-family: Cambria; font-size: 16px;'>"
             mailBody &= "<b>Account Information</b>"
-            mailBody &= "<br />"
             mailBody &= "</span>"
+            mailBody &= "<br />"
             mailBody &= "<table cellpadding='3' cellspacing='0' style='font-family:Cambria; font-size: 16px;'>"
             mailBody &= "<tr><td valign='top'>Name</td><td valign='top'>:</td><td valign='top'>" & customerName & "</td></tr>"
             mailBody &= "<tr><td valign='top'>Company</td><td valign='top'>:</td><td valign='top'>" & companyName & "</td></tr>"
             mailBody &= "</table>"
-            mailBody &= "<br />"
 
             mailBody &= "<br /><br />"
 
@@ -467,7 +466,7 @@ Public Class MailingClass
                 mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & no & "</td>"
                 mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & loginData.Rows(i)("UserName").ToString() & "</td>"
                 mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & Decrypt(loginData.Rows(i)("Password").ToString()) & "</td>"
-                mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & loginData.Rows(i)("DataActive").ToString() & "</td>"
+                mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & loginData.Rows(i)("Status").ToString() & "</td>"
                 mailBody &= "</tr>"
                 no += 1
             Next
@@ -576,7 +575,7 @@ Public Class MailingClass
             Dim contactName As String = contactData("Name").ToString()
             Dim contactEmail As String = contactData("Email").ToString()
 
-            Dim loginData As DataTable = GetDataTable("SELECT * FROM Logins WHERE CustomerId='" & customerId & "' AND Active=1 ORDER BY UserName ASC")
+            Dim loginData As DataTable = GetDataTable("SELECT * FROM Logins WHERE CustomerId='" & customerId & "' AND Status IN ('Active', 'Inactive', 'Blocked') ORDER BY UserName ASC")
             If loginData.Rows.Count = 0 Then Exit Sub
 
             Dim actionData As DataRow = GetDataRow("SELECT Logins.*, LoginRoles.Name AS RoleName FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id WHERE Logins.Id='" & loginId & "'")
@@ -623,8 +622,8 @@ Public Class MailingClass
 
             mailBody &= "<span style='font-family: Cambria; font-size: 16px;'>"
             mailBody &= "<b>Customer Information</b>"
-            mailBody &= "<br />"
             mailBody &= "</span>"
+            mailBody &= "<br />"
             mailBody &= "<table cellpadding='3' cellspacing='0' style='font-family:Cambria; font-size: 16px;'>"
             mailBody &= "<tr><td valign='top'>Name</td><td valign='top'>:</td><td valign='top'>" & customerName & "</td></tr>"
             mailBody &= "<tr><td valign='top'>Company</td><td valign='top'>:</td><td valign='top'>" & companyName & "</td></tr>"
