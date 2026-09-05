@@ -95,10 +95,12 @@ Partial Class Setting_Price_Group_Delete
                 Exit Sub
             End If
 
-            BindPriceGroup(priceGroupId)
+            Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM PriceGroups WHERE Id='" & priceGroupId & "'")
 
             txtName.Text = myData("Name").ToString()
             lblType.Text = myData("Type").ToString()
+
+            BindPriceGroup(priceGroupId, companyId, lblType.Text)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -107,10 +109,10 @@ Partial Class Setting_Price_Group_Delete
         End Try
     End Sub
 
-    Protected Sub BindPriceGroup(deletedId As String)
+    Protected Sub BindPriceGroup(deletedId As String, companyId As String, groupType As String)
         ddlPriceGroup.Items.Clear()
         Try
-            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Id<>'" & deletedId & "' AND (Status='Active' OR Status='Inactive')")
+            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Id<>'" & deletedId & "' AND CompanyId='" & companyId & "' AND Type='" & groupType & "' AND (Status='Active' OR Status='Inactive')")
             ddlPriceGroup.DataTextField = "Name"
             ddlPriceGroup.DataValueField = "Id"
             ddlPriceGroup.DataBind()
