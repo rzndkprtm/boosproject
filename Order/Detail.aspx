@@ -379,7 +379,7 @@
                                 <div class="text-muted small">Products and services included in this order</div>
                             </div>
                             <div class="mt-2 mt-lg-0">
-                                <a href="javascript:void(0);" runat="server" id="aAddProduct" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modalAddProduct">New Item</a>
+                                <a href="javascript:void(0);" runat="server" id="aAddProduct" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modalAddProduct">Add Item</a>
                                 <a href="javascript:void(0);" runat="server" id="aAddService" class="btn btn-outline-secondary me-2" data-bs-toggle="modal" data-bs-target="#modalAddService">Add Service</a>
                             </div>
                         </div>
@@ -1604,6 +1604,15 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label required">PRICING TYPE</label>
+                            <asp:DropDownList runat="server" ID="ddlPricingService" CssClass="choices form-select">
+                                <asp:ListItem Value="Default" Text="Default"></asp:ListItem>
+                                <asp:ListItem Value="Custom" Text="Custom"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label required">SELL PRICE</label>
                             <asp:TextBox runat="server" ID="txtSellService" CssClass="form-control" placeholder="Sell Price ..." autocomplete="off"></asp:TextBox>
@@ -1806,8 +1815,8 @@
             if (!data || data.length === 0) {
                 $("#costingBody").html(
                     `<tr><td colspan="${colCount}" class="text-center">
-                DATA NOT FOUND :)
-             </td></tr>`
+                        DATA NOT FOUND :)
+                    </td></tr>`
                 );
                 return;
             }
