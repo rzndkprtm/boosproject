@@ -716,7 +716,9 @@
                 </div>
                 <div class="modal-body text-center py-4">
                     Hi <b><%: Session("FullName") %></b>,<br />
-                    Teks
+                    <b>The price will be recalculated using the latest pricing version.</b><br /><br />
+                    If the issue persists, please contact the IT team.<br />
+                    This issue is caused by a product group that is not registered in the system.
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
