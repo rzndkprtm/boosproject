@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 Imports System.IO
 
 Partial Class Order_Add
@@ -27,12 +28,14 @@ Partial Class Order_Add
             MessageError(False, String.Empty)
             BindDataCustomer()
             BindComponentForm(ddlCustomer.SelectedValue)
+            'GetCustomerAddress(ddlCustomer.SelectedValue)
         End If
     End Sub
 
     Protected Sub ddlCustomer_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindComponentForm(ddlCustomer.SelectedValue)
+        'GetCustomerAddress(ddlCustomer.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -190,6 +193,25 @@ Partial Class Order_Add
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If
+        End Try
+    End Sub
+
+    Protected Sub GetCustomerAddress(customerId As String)
+        txtOrderAddress.Text = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                Dim thisData As DataRow = orderClass.GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+                If thisData IsNot Nothing Then
+                    Dim address As String = thisData("Address").ToString()
+                    Dim suburb As String = thisData("Suburb").ToString()
+                    Dim state As String = thisData("State").ToString()
+                    Dim postCode As String = thisData("PostCode").ToString()
+
+                    txtOrderAddress.Text = address & ", " & suburb & ", " & state & " " & postCode
+                End If
+            End If
+        Catch ex As Exception
+            txtOrderAddress.Text = String.Empty
         End Try
     End Sub
 

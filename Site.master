@@ -377,7 +377,7 @@
         <script type="text/javascript">
             document.addEventListener("DOMContentLoaded", function () {
                 checkNotification();
-                setInterval(checkNotification, 3000);
+                setInterval(checkNotification, 10000);
             });
 
             var popupQueue = [];
