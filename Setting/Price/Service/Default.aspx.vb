@@ -184,11 +184,18 @@ Partial Class Setting_Price_Service_Default
         End Try
     End Sub
 
-    Protected Function BindDecimal(value As Decimal) As String
+    Protected Function BindDecimal(value As Object) As String
         Try
-            If value >= 0 Then
-                value = Math.Round(value, 2)
-                Return value.ToString("N2", enUS)
+            If value Is Nothing OrElse value Is DBNull.Value Then
+                Return String.Empty
+            End If
+
+            Dim decimalValue As Decimal
+
+            If Decimal.TryParse(value.ToString(), decimalValue) Then
+                If decimalValue >= 0 Then
+                    Return Math.Round(decimalValue, 2).ToString("N2", enUS)
+                End If
             End If
         Catch ex As Exception
             Return String.Empty

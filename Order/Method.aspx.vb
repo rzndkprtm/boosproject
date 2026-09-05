@@ -11411,9 +11411,10 @@ Partial Class Order_Method
         Dim orderClass As New OrderClass
         Dim AccessClass As New AccessClass
 
-        Dim thisQuery As String = "SELECT *, FORMAT(SellPrice, 'C', 'en-US') AS SellPricing, FORMAT(BuyPrice, 'C', 'en-US') AS BuyPricing, FORMAT(FactoryPrice, 'C', 'en-US') AS FactoryPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
+        Dim thisQuery As String = "SELECT *, FORMAT(SellPrice, '$#,##0.00;-$#,##0.00', 'en-US') AS SellPricing, FORMAT(BuyPrice, '$#,##0.00;-$#,##0.00', 'en-US') AS BuyPricing, FORMAT(FactoryPrice, '$#,##0.00;-$#,##0.00', 'en-US') AS FactoryPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
+
         If companyId = "3" OrElse companyId = "5" Then
-            thisQuery = "SELECT *, FORMAT(SellPrice, 'C', 'id-ID') AS SellPricing, FORMAT(BuyPrice, 'C', 'id-ID') AS BuyPricing, FORMAT(FactoryPrice, 'C', 'id-ID') AS FactoryPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
+            thisQuery = "SELECT *, FORMAT(SellPrice, 'Rp #,##0.00;-Rp #,##0.00', 'id-ID') AS SellPricing, FORMAT(BuyPrice, 'Rp #,##0.00;-Rp #,##0.00', 'id-ID') AS BuyPricing, FORMAT(FactoryPrice, 'Rp #,##0.00;-Rp #,##0.00', 'id-ID') AS FactoryPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
         End If
 
         Dim dt = orderClass.GetDataTable(thisQuery)
@@ -11422,13 +11423,13 @@ Partial Class Order_Method
 
         For Each r As DataRow In dt.Rows
             list.Add(New CostingDto With {
-                .Type = r("Type").ToString(),
-                .Description = r("Description").ToString(),
-                .Price = r("SellPricing").ToString(),
-                .SellPricing = r("SellPricing").ToString(),
-                .BuyPricing = r("BuyPricing").ToString(),
-                .FactoryPricing = r("FactoryPricing").ToString()
-            })
+            .Type = r("Type").ToString(),
+            .Description = r("Description").ToString(),
+            .Price = r("SellPricing").ToString(),
+            .SellPricing = r("SellPricing").ToString(),
+            .BuyPricing = r("BuyPricing").ToString(),
+            .FactoryPricing = r("FactoryPricing").ToString()
+        })
         Next
 
         Dim roleId As String = HttpContext.Current.Session("RoleId").ToString()

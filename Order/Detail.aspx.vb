@@ -1758,6 +1758,23 @@ Partial Class Order_Detail
                 ClientScript.RegisterStartupScript(Me.GetType(), "showService", thisScript, True)
                 Exit Sub
             End If
+            If ddlPricingService.SelectedValue = "Custom" Then
+                If txtSellService.Text = "" Then
+                    MessageError_AddService(True, "ITEM SERVICE IS REQUIRED !")
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showService", thisScript, True)
+                    Exit Sub
+                End If
+                If txtBuyService.Text = "" Then
+                    MessageError_AddService(True, "ITEM SERVICE IS REQUIRED !")
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showService", thisScript, True)
+                    Exit Sub
+                End If
+                If txtFactoryService.Text = "" Then
+                    MessageError_AddService(True, "ITEM SERVICE IS REQUIRED !")
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showService", thisScript, True)
+                    Exit Sub
+                End If
+            End If
             If msgErrorAddService.InnerText = "" Then
                 Dim itemId As String = orderClass.GetNewOrderItemId()
                 Dim serviceName As String = orderClass.GetItemData("SELECT Name FROM PriceServices WHERE Id='" & ddlAddService.SelectedValue & "'")
@@ -1772,19 +1789,41 @@ Partial Class Order_Detail
                     End Using
                 End Using
 
-                orderClass.ResetPriceDetail(lblHeaderId.Text, itemId)
-
-                Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, txtSellService.Text, txtBuyService.Text, txtFactoryService.Text}
-                orderClass.OrderCostings(costingArray)
-
-                If Not String.IsNullOrEmpty(txtNoteService.Text.Trim()) Then
-                    costingArray = {lblHeaderId.Text, itemId, 0, "Note", txtNoteService.Text, 0, 0, 0}
-                    orderClass.OrderCostings(costingArray)
-                End If
-                orderClass.FinalCostItem(lblHeaderId.Text, itemId)
-
                 dataLog = {"OrderDetails", itemId, Session("LoginId"), "Order Item Added"}
                 orderClass.Logs(dataLog)
+
+                orderClass.ResetPriceDetail(lblHeaderId.Text, itemId)
+
+                If ddlPricingService.SelectedValue = "Default" Then
+                    Dim params As New List(Of SqlParameter) From {
+                        New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text},
+                        New SqlParameter("@PriceServiceId", SqlDbType.Int) With {.Value = ddlAddService.SelectedValue}
+                    }
+                    Dim dataService As DataRow = orderClass.GetDataRowSP("sp_PriceService_Get", params)
+                    Dim sellPrice As Decimal = dataService("SellPrice")
+                    Dim buyPrice As Decimal = dataService("BuyPrice")
+                    Dim factoryPrice As Decimal = dataService("FactoryPrice")
+
+                    Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, sellPrice, buyPrice, factoryPrice}
+                    orderClass.OrderCostings(costingArray)
+
+                    If Not String.IsNullOrEmpty(txtNoteService.Text.Trim()) Then
+                        costingArray = {lblHeaderId.Text, itemId, 0, "Note", txtNoteService.Text, 0, 0, 0}
+                        orderClass.OrderCostings(costingArray)
+                    End If
+                    orderClass.FinalCostItem(lblHeaderId.Text, itemId)
+                End If
+
+                If ddlPricingService.SelectedValue = "Custom" Then
+                    Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, txtSellService.Text, txtBuyService.Text, txtFactoryService.Text}
+                    orderClass.OrderCostings(costingArray)
+
+                    If Not String.IsNullOrEmpty(txtNoteService.Text.Trim()) Then
+                        costingArray = {lblHeaderId.Text, itemId, 0, "Note", txtNoteService.Text, 0, 0, 0}
+                        orderClass.OrderCostings(costingArray)
+                    End If
+                    orderClass.FinalCostItem(lblHeaderId.Text, itemId)
+                End If
 
                 url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
                 Response.Redirect(url, False)
