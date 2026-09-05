@@ -39,42 +39,15 @@ Partial Class Setting_Price_Promo_Detail_Default
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Promos WHERE Id=@Id; DELETE FROM Logs WHERE Type='Promos' AND DataId=@Id;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                Using thisCmd As New SqlCommand("UPDATE Promos SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(lblId.Text)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim customerPromos As DataTable = settingClass.GetDataTable("SELECT Id FROM CustomerPromos WHERE PromoId='" & lblId.Text & "'")
-            If customerPromos.Rows.Count > 0 Then
-                For i As Integer = 0 To customerPromos.Rows.Count - 1
-                    Dim thisId As String = customerPromos.Rows(i)("Id").ToString()
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id;", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", thisId)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-                Next
-            End If
-
-            Dim promoDetail As DataTable = settingClass.GetDataTable("SELECT Id FROM PromoDetails WHERE PromoId='" & lblId.Text & "'")
-            If promoDetail.Rows.Count > 0 Then
-                For i As Integer = 0 To promoDetail.Rows.Count - 1
-                    Dim thisId As String = promoDetail.Rows(i)("Id").ToString()
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM PromoDetails WHERE Id=@Id; DELETE FROM Logs WHERE Type='PromoDetails' AND DataId=@Id;", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", thisId)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-                Next
-            End If
+            dataLog = {"Promos", lblId.Text, Session("LoginId").ToString(), "Price Promo Deleted"}
+            settingClass.Logs(dataLog)
 
             Response.Redirect("~/setting/price/promo", False)
         Catch ex As Exception

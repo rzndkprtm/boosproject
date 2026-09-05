@@ -72,6 +72,13 @@ Partial Class Order_Add
                 MessageError(True, "ORDER NUMBER ALREADY EXISTS !")
                 Exit Sub
             End If
+            'If Not String.IsNullOrEmpty(txtOrderAddress.Text) Then
+            '    Dim addressParts() As String = txtOrderAddress.Text.Split(","c)
+            '    If addressParts.Length <> 3 Then
+            '        MessageError(True, "PLEASE ENTER A COMPLETE ORDER ADDRESS !")
+            '        Exit Sub
+            '    End If
+            'End If
 
             If msgError.InnerText = "" Then
                 Dim thisId As String = orderClass.GetNewOrderHeaderId()

@@ -41,3 +41,96 @@ A $4 fuel surcharge will be applied once the order is submitted.
 3%
 
 PG PLANTATION UP (25%) & SEWLESS (35%)
+
+If String.IsNullOrWhiteSpace(txtOrderAddress.Text) Then
+    MessageError(True, "ORDER ADDRESS IS REQUIRED !")
+    Exit Sub
+End If
+
+Dim addressParts() As String = txtOrderAddress.Text.Split(","c)
+
+' Minimal:
+' Address, Suburb, State PostCode
+If addressParts.Length < 3 Then
+    MessageError(True, "PLEASE ENTER A COMPLETE ORDER ADDRESS !")
+    Exit Sub
+End If
+
+' Trim semua bagian
+For i As Integer = 0 To addressParts.Length - 1
+    addressParts(i) = addressParts(i).Trim()
+Next
+
+' =========================================
+' STATE + POST CODE
+' =========================================
+
+Dim statePostCode As String = addressParts(addressParts.Length - 1)
+
+Dim statePostCodeParts() As String = statePostCode.Split(
+    New Char() {" "c, vbTab},
+    StringSplitOptions.RemoveEmptyEntries
+)
+
+If statePostCodeParts.Length <> 2 Then
+    MessageError(True, "PLEASE ENTER A VALID STATE AND POST CODE !")
+    Exit Sub
+End If
+
+Dim state As String = statePostCodeParts(0).Trim().ToUpper()
+Dim postCode As String = statePostCodeParts(1).Trim()
+
+' =========================================
+' STATE VALIDATION
+' =========================================
+
+Dim validStates() As String = {
+    "NSW", "VIC", "QLD", "SA",
+    "WA", "TAS", "NT", "ACT"
+}
+
+If Not validStates.Contains(state) Then
+    MessageError(True, "PLEASE ENTER A VALID STATE !")
+    Exit Sub
+End If
+
+' =========================================
+' POST CODE VALIDATION
+' =========================================
+
+If Not System.Text.RegularExpressions.Regex.IsMatch(postCode, "^\d{4}$") Then
+    MessageError(True, "PLEASE ENTER A VALID 4-DIGIT POST CODE !")
+    Exit Sub
+End If
+
+' =========================================
+' SUBURB
+' =========================================
+
+Dim suburb As String = addressParts(addressParts.Length - 2)
+
+If String.IsNullOrWhiteSpace(suburb) Then
+    MessageError(True, "SUBURB IS REQUIRED !")
+    Exit Sub
+End If
+
+' =========================================
+' ADDRESS
+' =========================================
+
+Dim addressList As New List(Of String)
+
+For i As Integer = 0 To addressParts.Length - 3
+
+    If Not String.IsNullOrWhiteSpace(addressParts(i)) Then
+        addressList.Add(addressParts(i))
+    End If
+
+Next
+
+Dim address As String = String.Join(", ", addressList)
+
+If String.IsNullOrWhiteSpace(address) Then
+    MessageError(True, "ADDRESS IS REQUIRED !")
+    Exit Sub
+End If
