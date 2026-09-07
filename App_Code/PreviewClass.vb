@@ -157,8 +157,9 @@ Public Class PreviewClass
             Dim orderNumber As String = headerData("OrderNumber").ToString()
             Dim orderName As String = headerData("OrderName").ToString()
             Dim orderNote As String = headerData("OrderNote").ToString()
-            Dim orderState As String = headerData("OrderState").ToString()
+            Dim orderContact As String = headerData("OrderContact").ToString()
             Dim orderAddress As String = headerData("OrderAddress").ToString()
+            Dim orderContainer As String = headerData("OrderContainer").ToString()
             Dim orderCreatedBy As String = headerData("CreatedName").ToString()
             Dim orderCreatedDate As String = String.Empty
             If Not IsDBNull(headerData("CreatedDate")) Then
@@ -181,7 +182,7 @@ Public Class PreviewClass
                 .PageSubmitDate = submitDate, .PageCustomerName = customerName,
                 .PageOrderNumber = orderNumber, .PageOrderName = orderName,
                 .PageNote = orderNote, .PageTotalItem = pageTotalItem,
-                .pageCompany = companyId, .PageCreatedBy = orderCreatedBy, .PageOrderState = orderState, .PageOrderAddress = orderAddress
+                .pageCompany = companyId, .PageCreatedBy = orderCreatedBy, .pageOrderContact = orderContact, .PageOrderAddress = orderAddress, .PageOrderContainer = orderContainer
             }
             writer.PageEvent = pageEvent
 
@@ -2406,8 +2407,9 @@ Public Class PreviewEvents
     Public Property PageOrderNumber As String
     Public Property PageOrderName As String
     Public Property PageNote As String
-    Public Property PageOrderState As String
+    Public Property PageOrderContact As String
     Public Property PageOrderAddress As String
+    Public Property PageOrderContainer As String
     Public Property PageCreatedBy As String
     Public Property PageCreatedDate As String
     Public Property PageSubmitDate As String
@@ -2440,7 +2442,7 @@ Public Class PreviewEvents
         cb.SetGState(gs)
         Dim wmFont As Font = FontFactory.GetFont(FontFactory.TIMES_ROMAN, 140, Font.BOLD)
         wmFont.Color = BaseColor.LIGHT_GRAY
-        ColumnText.ShowTextAligned(cb, Element.ALIGN_CENTER, New Phrase(PageOrderState, wmFont), document.PageSize.Width / 2, document.PageSize.Height / 2, 0)
+        ColumnText.ShowTextAligned(cb, Element.ALIGN_CENTER, New Phrase(PageOrderContainer, wmFont), document.PageSize.Width / 2, document.PageSize.Height / 2, 0)
         cb.RestoreState()
 
         '=========================================================
@@ -2587,19 +2589,93 @@ Public Class PreviewEvents
         ' RIGHT HEADER - TITLE
         '=========================================================
 
-        Dim phraseThird As New Phrase()
-        phraseThird.Add(New Chunk(PageTitle, New Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD)))
-        phraseThird.Add(New Chunk(Environment.NewLine))
-        phraseThird.Add(New Chunk(PageTitle2, New Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD)))
-        Dim thirdHeaderCell As New PdfPCell(phraseThird)
-        thirdHeaderCell.Border = 0
+        Dim rightTable As New PdfPTable(1)
+        rightTable.WidthPercentage = 100
+
+        Dim titlePhrase As New Phrase()
+
+        titlePhrase.Add(New Chunk(PageTitle, New Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD)))
+        titlePhrase.Add(New Chunk(Environment.NewLine))
+        titlePhrase.Add(New Chunk(PageTitle2, New Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD)))
+
+        Dim titleCell As New PdfPCell(titlePhrase)
+        titleCell.Border = Rectangle.NO_BORDER
+        titleCell.HorizontalAlignment = Element.ALIGN_RIGHT
+        titleCell.VerticalAlignment = Element.ALIGN_TOP
+        titleCell.Padding = 0
+
+        rightTable.AddCell(titleCell)
+
+        Dim spacingCell As New PdfPCell(New Phrase(" "))
+        spacingCell.Border = Rectangle.NO_BORDER
+        spacingCell.FixedHeight = 8
+        rightTable.AddCell(spacingCell)
+
+        If Not String.IsNullOrWhiteSpace(pageOrderContact) Then
+            Dim contactPhrase As New Phrase()
+            contactPhrase.Add(New Chunk("CONTACT", New Font(Font.FontFamily.TIMES_ROMAN, 7, Font.BOLD, BaseColor.GRAY)))
+            contactPhrase.Add(New Chunk(Environment.NewLine))
+            contactPhrase.Add(New Chunk(pageOrderContact, New Font(Font.FontFamily.TIMES_ROMAN, 8)))
+
+            Dim contactCell As New PdfPCell(contactPhrase)
+
+            contactCell.Border = Rectangle.BOX
+            contactCell.BorderColor = New BaseColor(220, 220, 220)
+            contactCell.BorderWidth = 0.5F
+
+            contactCell.BackgroundColor = New BaseColor(248, 248, 248)
+
+            contactCell.HorizontalAlignment = Element.ALIGN_RIGHT
+            contactCell.VerticalAlignment = Element.ALIGN_MIDDLE
+
+            contactCell.PaddingTop = 4
+            contactCell.PaddingBottom = 4
+            contactCell.PaddingLeft = 6
+            contactCell.PaddingRight = 6
+
+            rightTable.AddCell(contactCell)
+        End If
+
+        If Not String.IsNullOrWhiteSpace(pageOrderContact) AndAlso Not String.IsNullOrWhiteSpace(PageOrderAddress) Then
+            Dim smallSpacingCell As New PdfPCell(New Phrase(" "))
+            smallSpacingCell.Border = Rectangle.NO_BORDER
+            smallSpacingCell.FixedHeight = 4
+            rightTable.AddCell(smallSpacingCell)
+        End If
+
+        If Not String.IsNullOrWhiteSpace(PageOrderAddress) Then
+            Dim addressPhrase As New Phrase()
+
+            addressPhrase.Add(New Chunk("ADDRESS", New Font(Font.FontFamily.TIMES_ROMAN, 7, Font.BOLD, BaseColor.GRAY)))
+            addressPhrase.Add(New Chunk(Environment.NewLine))
+            addressPhrase.Add(New Chunk(PageOrderAddress, New Font(Font.FontFamily.TIMES_ROMAN, 8)))
+            Dim addressCell As New PdfPCell(addressPhrase)
+
+            addressCell.Border = Rectangle.BOX
+            addressCell.BorderColor = New BaseColor(220, 220, 220)
+            addressCell.BorderWidth = 0.5F
+
+            addressCell.BackgroundColor = New BaseColor(248, 248, 248)
+
+            addressCell.HorizontalAlignment = Element.ALIGN_RIGHT
+            addressCell.VerticalAlignment = Element.ALIGN_MIDDLE
+
+            addressCell.PaddingTop = 4
+            addressCell.PaddingBottom = 4
+            addressCell.PaddingLeft = 6
+            addressCell.PaddingRight = 6
+
+            rightTable.AddCell(addressCell)
+        End If
+
+        Dim thirdHeaderCell As New PdfPCell(rightTable)
+
+        thirdHeaderCell.Border = Rectangle.NO_BORDER
         thirdHeaderCell.HorizontalAlignment = Element.ALIGN_RIGHT
         thirdHeaderCell.VerticalAlignment = Element.ALIGN_TOP
-        headerTable.AddCell(thirdHeaderCell)
+        thirdHeaderCell.Padding = 0
 
-        '=========================================================
-        ' WRITE HEADER TABLE
-        '=========================================================
+        headerTable.AddCell(thirdHeaderCell)
 
         Dim headerY As Single = document.PageSize.Height - 20
         headerTable.WriteSelectedRows(0, -1, 20, headerY, cb)

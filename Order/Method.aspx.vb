@@ -1764,11 +1764,19 @@ Partial Class Order_Method
         Dim priceAdditionalB As String = String.Empty
 
         Dim sellName As String = designName
-        Dim groupFabric As String = orderClass.GetFabricGroup(data.fabrictype)
+        Dim groupFabric As String = String.Empty
         Dim groupFabricB As String = String.Empty
 
+        If data.companyid = "2" Then
+            groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+            groupFabricB = String.Empty
+        End If
         If data.companyid = "3" Then
             groupFabric = orderClass.GetFabricGroupLocal("Curtain", data.fabrictype)
+            If data.companydetailid = "8" Then
+                groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+            End If
+            groupFabricB = String.Empty
         End If
 
         Dim groupName As String = String.Format("{0} - {1}", designName, groupFabric)
@@ -1778,7 +1786,6 @@ Partial Class Order_Method
 
         If blindName = "Complete Set (Double)" Then
             groupFabricB = orderClass.GetFabricGroup(data.fabrictypeb)
-
             groupNameB = String.Format("{0} - {1}", designName, groupFabricB)
             trackGroupNameB = String.Format("{0} - {1}", designName, data.tracktypeb)
         End If

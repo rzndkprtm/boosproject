@@ -41,7 +41,56 @@ Partial Class Setting_Customer_Service_Edit
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            If ddlService.SelectedValue = "" Then
+                MessageError(True, "SERVICE NAME IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlType.SelectedValue = "" Then
+                MessageError(True, "TYPE IS REQUIRED !")
+                Exit Sub
+            End If
 
+            If msgError.InnerText = "" Then
+                Dim useCustom As Boolean = settingClass.GetItemData_Boolean("SELECT AllowCustom FROM PriceServices WHERE Id='" & ddlService.SelectedValue & "'")
+
+                Dim state As String = String.Empty
+                If Not String.IsNullOrEmpty(lbState.SelectedValue) Then
+                    state = String.Join(",", lbState.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerServices SET CustomerId=@CustomerId, ServiceId=@ServiceId, UseCustom=@UseCustom, Type=@Type, SellPrice=@SellPrice, BuyPrice=@BuyPrice, FactoryPrice=@FactoryPrice, Parameter=@Parameter, Operator=@Operator, SellValue=@SellValue, BuyValue=@BuyValue, FactoryValue=@FactoryValue, MinValue=@MinValue, MaxValue=@MaxValue, State=@State, Description=@Description WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@ServiceId", ddlService.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@UseCustom", useCustom)
+                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@SellPrice", If(String.IsNullOrEmpty(txtSellPrice.Text), CType(DBNull.Value, Object), txtSellPrice.Text))
+                        thisCmd.Parameters.AddWithValue("@BuyPrice", If(String.IsNullOrEmpty(txtBuyPrice.Text), CType(DBNull.Value, Object), txtBuyPrice.Text))
+                        thisCmd.Parameters.AddWithValue("@FactoryPrice", If(String.IsNullOrEmpty(txtFactoryPrice.Text), CType(DBNull.Value, Object), txtFactoryPrice.Text))
+                        thisCmd.Parameters.AddWithValue("@Parameter", ddlParameter.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Operator", ddlOperator.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@SellValue", If(String.IsNullOrEmpty(txtSellValue.Text), CType(DBNull.Value, Object), txtSellValue.Text))
+                        thisCmd.Parameters.AddWithValue("@BuyValue", If(String.IsNullOrEmpty(txtBuyValue.Text), CType(DBNull.Value, Object), txtBuyValue.Text))
+                        thisCmd.Parameters.AddWithValue("@FactoryValue", If(String.IsNullOrEmpty(txtFactoryValue.Text), CType(DBNull.Value, Object), txtFactoryValue.Text))
+                        thisCmd.Parameters.AddWithValue("@MinValue", If(String.IsNullOrEmpty(txtMinimumValue.Text), CType(DBNull.Value, Object), txtMinimumValue.Text))
+                        thisCmd.Parameters.AddWithValue("@MaxValue", If(String.IsNullOrEmpty(txtMaximumValue.Text), CType(DBNull.Value, Object), txtMaximumValue.Text))
+                        thisCmd.Parameters.AddWithValue("@State", state)
+                        thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim dataLog As Object() = {"CustomerServices", lblId.Text, Session("LoginId"), "Customer Service Updated"}
+                settingClass.Logs(dataLog)
+
+                url = "~/setting/customer/service"
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                End If
+                Response.Redirect(url, False)
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -76,6 +125,18 @@ Partial Class Setting_Customer_Service_Edit
             ddlService.SelectedValue = myData("ServiceId").ToString()
             ddlType.SelectedValue = myData("Type").ToString()
 
+            If Not myData("State").ToString() = "" Then
+                Dim stateArray() As String = myData("State").ToString().Split(",")
+                For Each i In stateArray
+                    If Not String.IsNullOrEmpty(i) Then
+                        Dim item = lbState.Items.FindByValue(i)
+                        If item IsNot Nothing Then
+                            item.Selected = True
+                        End If
+                    End If
+                Next
+            End If
+
             txtSellPrice.Text = If(IsDBNull(myData("SellPrice")) OrElse myData("SellPrice") Is Nothing, "", Convert.ToDecimal(myData("SellPrice")).ToString("#,##0.##", enUS))
             txtBuyPrice.Text = If(IsDBNull(myData("BuyPrice")) OrElse myData("BuyPrice") Is Nothing, "", Convert.ToDecimal(myData("BuyPrice")).ToString("#,##0.##", enUS))
             txtFactoryPrice.Text = If(IsDBNull(myData("FactoryPrice")) OrElse myData("FactoryPrice") Is Nothing, "", Convert.ToDecimal(myData("FactoryPrice")).ToString("#,##0.##", enUS))
@@ -89,8 +150,6 @@ Partial Class Setting_Customer_Service_Edit
 
             txtMinimumValue.Text = If(IsDBNull(myData("MinValue")) OrElse myData("MinValue") Is Nothing, "", Convert.ToDecimal(myData("MinValue")).ToString("#,##0.##", enUS))
             txtMaximumValue.Text = If(IsDBNull(myData("MaxValue")) OrElse myData("MaxValue") Is Nothing, "", Convert.ToDecimal(myData("MaxValue")).ToString("#,##0.##", enUS))
-
-            ddlRegion.SelectedValue = myData("Region").ToString()
 
             BindForm(myData("Type").ToString())
 
@@ -107,7 +166,7 @@ Partial Class Setting_Customer_Service_Edit
             txtFactoryValue.Enabled = False
             txtMinimumValue.Enabled = False
             txtMaximumValue.Enabled = False
-            ddlRegion.Enabled = False
+            lbState.Enabled = False
 
             If allowCustom = True Then
                 ddlType.Enabled = True
@@ -121,7 +180,7 @@ Partial Class Setting_Customer_Service_Edit
                 txtFactoryValue.Enabled = True
                 txtMinimumValue.Enabled = True
                 txtMaximumValue.Enabled = True
-                ddlRegion.Enabled = True
+                lbState.Enabled = True
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

@@ -157,13 +157,13 @@
             writer.WriteAttributeString("OrderNumber", myData("OrderNumber").ToString())
             writer.WriteAttributeString("OrderName", myData("OrderName").ToString())
             writer.WriteAttributeString("OrderNote", myData("OrderNote").ToString())
-            writer.WriteAttributeString("OrderState", myData("OrderState").ToString())
+            writer.WriteAttributeString("OrderState", myData("OrderContainer").ToString())
             writer.WriteAttributeString("OrderAddress", myData("OrderAddress").ToString())
             writer.WriteAttributeString("OrdID", myData("Id").ToString())
             writer.WriteAttributeString("StoreOrderNo", myData("OrderNumber").ToString())
             writer.WriteAttributeString("StoreCustomer", myData("OrderName").ToString())
             writer.WriteAttributeString("DebtorCode", myData("DebtorCode").ToString())
-            writer.WriteAttributeString("Zone", myData("OrderState").ToString())
+            writer.WriteAttributeString("Zone", myData("OrderContainer").ToString())
             writer.WriteAttributeString("Address", myData("OrderAddress").ToString())
 
             Dim prodDate As DateTime
@@ -853,6 +853,11 @@
                     If flatOption = "Fabric on Back" Then flatOption = "Fabric on back"
                     If flatOption = "Fabric on Front" Then flatOption = "Fabric on front"
 
+                    Dim bracketSize As String = thisData("BracketSize").ToString()
+                    If thisData("BracketExtension").ToString() = "Yes" Then
+                        bracketSize = "50"
+                    End If
+
                     writer.WriteStartElement("OrderDetails")
                     writer.WriteAttributeString("OrddID", thisData("Id").ToString())
                     writer.WriteAttributeString("FKOrdID", thisData("HeaderId").ToString())
@@ -872,7 +877,8 @@
                     writer.WriteAttributeString("RollDirection", thisData("Roll").ToString())
                     writer.WriteAttributeString("Width", thisData("Width").ToString())
                     writer.WriteAttributeString("Drop", thisData("Drop").ToString())
-                    writer.WriteAttributeString("Panel", thisData("BracketSize").ToString())
+                    writer.WriteAttributeString("Panel", bracketSize)
+                    'writer.WriteAttributeString("Panel", thisData("BracketSize").ToString())
                     writer.WriteAttributeString("PelmetLayout", thisData("TopTrack").ToString())
                     writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                     writer.WriteEndElement()

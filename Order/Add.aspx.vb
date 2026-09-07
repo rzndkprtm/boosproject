@@ -28,14 +28,14 @@ Partial Class Order_Add
             MessageError(False, String.Empty)
             BindDataCustomer()
             BindComponentForm(ddlCustomer.SelectedValue)
-            'GetCustomerAddress(ddlCustomer.SelectedValue)
+            GetCustomerAddress(ddlCustomer.SelectedValue)
         End If
     End Sub
 
     Protected Sub ddlCustomer_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindComponentForm(ddlCustomer.SelectedValue)
-        'GetCustomerAddress(ddlCustomer.SelectedValue)
+        GetCustomerAddress(ddlCustomer.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -72,18 +72,34 @@ Partial Class Order_Add
                 MessageError(True, "ORDER NUMBER ALREADY EXISTS !")
                 Exit Sub
             End If
-            'If Not String.IsNullOrEmpty(txtOrderAddress.Text) Then
-            '    Dim addressParts() As String = txtOrderAddress.Text.Split(","c)
-            '    If addressParts.Length <> 3 Then
-            '        MessageError(True, "PLEASE ENTER A COMPLETE ORDER ADDRESS !")
-            '        Exit Sub
-            '    End If
-            'End If
 
             If msgError.InnerText = "" Then
                 Dim thisId As String = orderClass.GetNewOrderHeaderId()
-                Dim orderState As String = orderClass.GetCustomerState(ddlCustomer.SelectedValue)
-                Dim orderAddress As String = orderClass.GetCustomerPrimaryAddress(ddlCustomer.SelectedValue)
+
+                Dim orderContact As String = hfOrderContact.Value.Trim()
+                Dim orderAddress As String = hfOrderAddress.Value.Trim()
+                Dim orderContainer As String = String.Empty
+                If Not String.IsNullOrEmpty(orderAddress) Then
+                    Dim state As String = String.Empty
+
+                    Dim states() As String = {"NSW", "QLD", "SA", "TAS", "NT", "ACT", "VIC", "WA"}
+                    For Each s As String In states
+                        If Regex.IsMatch(orderAddress, "\b" & s & "\b", RegexOptions.IgnoreCase) Then
+                            state = s
+                            Exit For
+                        End If
+                    Next
+                    Select Case state
+                        Case "NSW", "QLD", "NT", "ACT"
+                            orderContainer = "SYD"
+
+                        Case "VIC", "SA", "TAS", "WA"
+                            orderContainer = "MEL"
+
+                        Case Else
+                            orderContainer = ""
+                    End Select
+                End If
 
                 Dim success As Boolean = False
                 Dim retry As Integer = 0
@@ -100,7 +116,7 @@ Partial Class Order_Add
                     orderId = companyAlias & randomCode
                     Try
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, OrderState, OrderAddress, Status, CreatedBy, CreatedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, @OrderType, @OrderState, @OrderAddress, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                            Using thisCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, OrderContact, OrderAddress, OrderContainer, Status, CreatedBy, CreatedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, @OrderType, @OrderContact, @OrderAddress, @OrderContainer, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                                 thisCmd.Parameters.AddWithValue("@Id", thisId)
                                 thisCmd.Parameters.AddWithValue("@OrderId", orderId)
                                 thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
@@ -108,8 +124,9 @@ Partial Class Order_Add
                                 thisCmd.Parameters.AddWithValue("@OrderName", txtOrderName.Text.Trim())
                                 thisCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
                                 thisCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
-                                thisCmd.Parameters.AddWithValue("@OrderState", orderState)
+                                thisCmd.Parameters.AddWithValue("@OrderContact", orderContact)
                                 thisCmd.Parameters.AddWithValue("@OrderAddress", orderAddress)
+                                thisCmd.Parameters.AddWithValue("@OrderContainer", orderContainer)
                                 thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
                                 thisConn.Open()
                                 thisCmd.ExecuteNonQuery()
@@ -207,12 +224,21 @@ Partial Class Order_Add
         txtOrderAddress.Text = String.Empty
         Try
             If Not String.IsNullOrEmpty(customerId) Then
-                Dim thisData As DataRow = orderClass.GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1")
-                If thisData IsNot Nothing Then
-                    Dim address As String = thisData("Address").ToString()
-                    Dim suburb As String = thisData("Suburb").ToString()
-                    Dim state As String = thisData("State").ToString()
-                    Dim postCode As String = thisData("PostCode").ToString()
+                Dim contactData As DataRow = orderClass.GetDataRow("SELECT * FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+                If contactData IsNot Nothing Then
+                    Dim name As String = contactData("Name").ToString()
+                    Dim phone As String = contactData("Phone").ToString()
+                    Dim email As String = contactData("Email").ToString()
+
+                    txtOrderContact.Text = name & " | " & phone & " | " & email
+                End If
+
+                Dim addressData As DataRow = orderClass.GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+                If addressData IsNot Nothing Then
+                    Dim address As String = addressData("Address").ToString()
+                    Dim suburb As String = addressData("Suburb").ToString()
+                    Dim state As String = addressData("State").ToString()
+                    Dim postCode As String = addressData("PostCode").ToString()
 
                     txtOrderAddress.Text = address & ", " & suburb & ", " & state & " " & postCode
                 End If

@@ -193,13 +193,14 @@ Partial Class Setting_Price_Service_Default
             Dim decimalValue As Decimal
 
             If Decimal.TryParse(value.ToString(), decimalValue) Then
-                If decimalValue >= 0 Then
-                    Return Math.Round(decimalValue, 2).ToString("N2", enUS)
-                End If
+                decimalValue = Math.Round(decimalValue, 2)
+                Return decimalValue.ToString("N2", enUS)
             End If
+
         Catch ex As Exception
             Return String.Empty
         End Try
+
         Return String.Empty
     End Function
 

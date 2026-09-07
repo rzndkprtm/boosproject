@@ -63,21 +63,13 @@ Partial Class Order_Upload
                     Dim worksheet As ExcelWorksheet = package.Workbook.Worksheets(0)
 
                     Dim headerId As String = orderClass.GetNewOrderHeaderId
-                    Dim orderState As String = orderClass.GetCustomerState(ddlCustomer.SelectedValue)
-                    Dim orderAddress As String = orderClass.GetCustomerPrimaryAddress(ddlCustomer.SelectedValue)
 
                     Dim orderNumber As String = worksheet.Cells(2, 1).Text
                     Dim orderName As String = worksheet.Cells(2, 2).Text
                     Dim orderNote As String = worksheet.Cells(2, 5).Text
 
-                    Dim cellState As String = worksheet.Cells(1, 7).Text
-                    Dim cellAddress As String = worksheet.Cells(1, 8).Text
-                    If Not String.IsNullOrEmpty(cellState) Then
-                        orderState = cellState.ToUpper()
-                    End If
-                    If Not String.IsNullOrEmpty(cellAddress) Then
-                        orderAddress = cellAddress
-                    End If
+                    Dim orderAddress As String = worksheet.Cells(1, 8).Text
+                    Dim orderContainer As String = worksheet.Cells(1, 7).Text
 
                     If orderNumber = orderClass.IsOrderExist(ddlCustomer.SelectedValue, orderNumber.Trim()) Then
                         MessageError(True, "ORDER NUMBER ALREADY EXISTS !")
@@ -90,8 +82,7 @@ Partial Class Order_Upload
 
                     Dim aliasCustomerId As String = ddlCustomer.SelectedValue
                     If ddlCustomer.SelectedValue = "127" Then
-                        If orderState = "NZN" OrElse orderState = "NZS" Then aliasCustomerId = "1614"
-                        If orderState = "NSW" Then orderState = "SYD"
+                        If orderContainer = "NZN" OrElse orderContainer = "NZS" Then aliasCustomerId = "1614"
                     End If
 
                     Dim success As Boolean = False
@@ -107,15 +98,16 @@ Partial Class Order_Upload
                         orderId = companyAlias & randomCode
                         Try
                             Using thisConn As New SqlConnection(myConn)
-                                Using thisCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, OrderState, OrderAddress, Status, CreatedBy, CreatedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, 'Regular', @OrderState, @OrderAddress, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                                Using thisCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, OrderContact, OrderAddress, OrderContainer, Status, CreatedBy, CreatedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, 'Regular', @OrderState, @OrderAddress, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                                     thisCmd.Parameters.AddWithValue("@Id", headerId)
                                     thisCmd.Parameters.AddWithValue("@OrderId", orderId)
                                     thisCmd.Parameters.AddWithValue("@CustomerId", aliasCustomerId)
                                     thisCmd.Parameters.AddWithValue("@OrderNumber", orderNumber)
                                     thisCmd.Parameters.AddWithValue("@OrderName", orderName)
                                     thisCmd.Parameters.AddWithValue("@OrderNote", orderNote)
-                                    thisCmd.Parameters.AddWithValue("@OrderState", orderState)
+                                    thisCmd.Parameters.AddWithValue("@OrderContact", String.Empty)
                                     thisCmd.Parameters.AddWithValue("@OrderAddress", orderAddress)
+                                    thisCmd.Parameters.AddWithValue("@OrderContainer", orderContainer)
                                     thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
                                     thisConn.Open()
                                     thisCmd.ExecuteNonQuery()
@@ -140,7 +132,7 @@ Partial Class Order_Upload
                     Dim newPath As String = Path.Combine(directoryOrder, fileName)
                     File.Copy(savePath, newPath, True)
 
-                    Dim dataLog As Object() = {"OrderHeaders", headerId, Session("LoginId").ToString(), "Order Created | CSV"}
+                    Dim dataLog As Object() = {"OrderHeaders", headerId, Session("LoginId").ToString(), "Order Created | Upload File"}
                     orderClass.Logs(dataLog)
 
                     Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(headerId)

@@ -61,8 +61,13 @@ Partial Class Setting_Price_Service_Add
                     companyDetailId = String.Join(",", lbCompanyDetail.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
 
+                Dim state As String = String.Empty
+                If Not String.IsNullOrEmpty(lbState.SelectedValue) Then
+                    state = String.Join(",", lbState.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceServices VALUES (@Id, @CompanyDetailId, @Name, @Type, @DefaultSellPrice, @DefaultBuyPrice, @DefaultFactoryPrice, @Parameter, @Operator, @SellValue, @BuyValue, @FactoryValue, @MinValue, @MaxValue, @Region, @AutoCreate, @AllowCustom, @Description, @Status)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceServices VALUES (@Id, @CompanyDetailId, @Name, @Type, @DefaultSellPrice, @DefaultBuyPrice, @DefaultFactoryPrice, @Parameter, @Operator, @SellValue, @BuyValue, @FactoryValue, @MinValue, @MaxValue, @State, @AutoCreate, @AllowCustom, @Description, @Status)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", serviceId)
                         thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
@@ -77,7 +82,7 @@ Partial Class Setting_Price_Service_Add
                         thisCmd.Parameters.AddWithValue("@FactoryValue", If(String.IsNullOrEmpty(txtFactoryValue.Text), CType(DBNull.Value, Object), txtFactoryValue.Text))
                         thisCmd.Parameters.AddWithValue("@MinValue", If(String.IsNullOrEmpty(txtMinimumValue.Text), CType(DBNull.Value, Object), txtMinimumValue.Text))
                         thisCmd.Parameters.AddWithValue("@MaxValue", If(String.IsNullOrEmpty(txtMaximumValue.Text), CType(DBNull.Value, Object), txtMaximumValue.Text))
-                        thisCmd.Parameters.AddWithValue("@Region", ddlRegion.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@State", state)
                         thisCmd.Parameters.AddWithValue("@AutoCreate", ddlAutoCreate.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@AllowCustom", ddlAllowCustom.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
