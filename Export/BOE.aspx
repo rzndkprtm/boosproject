@@ -244,7 +244,6 @@
                 writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                 writer.WriteEndElement()
             End If
-
             If designName = "Cellular Shades" Then
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
                 Dim webFabricId As String = thisData("FabricColourId").ToString()
@@ -834,6 +833,7 @@
 
                         Dim width As Integer = thisData("Width")
                         If width > 1810 Then kitName = String.Format("{0} (HD)", productName)
+                        If colourName = "Black" Then kitName = String.Format("{0} (LD)", productName)
 
                         kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
                     End If
@@ -899,6 +899,7 @@
                         Dim width As Integer = thisData("Width")
                         Dim widthB As Integer = thisData("WidthB")
                         If width > 1810 OrElse widthB > 1810 Then kitName = String.Format("{0} (HD)", productName)
+                        If colourName = "Black" Then kitName = String.Format("{0} (LD)", productName)
 
                         kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
                         kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
@@ -983,6 +984,7 @@
                         Dim widthB As Integer = thisData("WidthB")
 
                         If width > 1810 OrElse widthB > 1810 Then kitName = String.Format("{0} (HD)", productName)
+                        If colourName = "Black" Then kitName = String.Format("{0} (LD)", productName)
 
                         kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Control'")
                         kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='End'")
@@ -1055,6 +1057,7 @@
                         Dim widthC As Integer = thisData("WidthC")
 
                         If width > 1810 OrElse widthB > 1810 OrElse widthC > 1810 Then kitName = String.Format("{0} (HD)", productName)
+                        If colourName = "Black" Then kitName = String.Format("{0} (LD)", productName)
 
                         kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Control'")
                         kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Middle'")
@@ -1147,6 +1150,7 @@
                         Dim widthB As Integer = thisData("WidthB")
 
                         If width > 1810 OrElse widthB > 1810 Then kitName = String.Format("{0} (HD)", productName)
+                        If colourName = "Black" Then kitName = String.Format("{0} (LD)", productName)
 
                         kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Control'")
                         kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='End'")
@@ -1231,6 +1235,7 @@
                         Dim widthC As Integer = thisData("WidthC")
 
                         If width > 1810 OrElse widthB > 1810 OrElse widthC > 1810 Then kitName = String.Format("{0} (HD)", productName)
+                        If colourName = "Black" Then kitName = String.Format("{0} (LD)", productName)
 
                         kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Control'")
                         kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Middle'")
