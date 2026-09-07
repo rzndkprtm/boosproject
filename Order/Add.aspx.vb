@@ -231,6 +231,7 @@ Partial Class Order_Add
                     Dim email As String = contactData("Email").ToString()
 
                     txtOrderContact.Text = name & " | " & phone & " | " & email
+                    hfOrderContact.Value = name & " | " & phone & " | " & email
                 End If
 
                 Dim addressData As DataRow = orderClass.GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1")
@@ -241,6 +242,7 @@ Partial Class Order_Add
                     Dim postCode As String = addressData("PostCode").ToString()
 
                     txtOrderAddress.Text = address & ", " & suburb & ", " & state & " " & postCode
+                    hfOrderAddress.Value = address & ", " & suburb & ", " & state & " " & postCode
                 End If
             End If
         Catch ex As Exception
