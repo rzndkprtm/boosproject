@@ -192,7 +192,13 @@
                             <asp:DropDownList runat="server" ID="ddlState" CssClass="form-select" ClientIDMode="Static">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                 <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
+                                <asp:ListItem Value="QLD" Text="QLD"></asp:ListItem>
+                                <asp:ListItem Value="SA" Text="SA"></asp:ListItem>
+                                <asp:ListItem Value="TAS" Text="TAS"></asp:ListItem>
+                                <asp:ListItem Value="NT" Text="NT"></asp:ListItem>
+                                <asp:ListItem Value="ACT" Text="ACT"></asp:ListItem>
                                 <asp:ListItem Value="VIC" Text="VIC"></asp:ListItem>
+                                <asp:ListItem Value="WA" Text="WA"></asp:ListItem>
                             </asp:DropDownList>
                             <span id="spanErrorState" style="color:red;"></span>
                         </div>
