@@ -66,8 +66,13 @@ Partial Class Setting_Price_Service_Edit
                     companyDetailId = String.Join(",", lbCompanyDetail.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
 
+                Dim state As String = String.Empty
+                If Not String.IsNullOrEmpty(lbState.SelectedValue) Then
+                    state = String.Join(",", lbState.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceServices SET  CompanyDetailId=@CompanyDetailId, Name=@Name, Type=@Type, DefaultSellPrice=@DefaultSellPrice, DefaultBuyPrice=@DefaultBuyPrice, DefaultFactoryPrice=@DefaultFactoryPrice, Parameter=@Parameter, Operator=@Operator, SellValue=@SellValue, BuyValue=@BuyValue, FactoryValue=@FactoryValue, MinValue=@MinValue, MaxValue=@MaxValue, Region=@Region, AutoCreate=@AutoCreate, AllowCustom=@AllowCustom, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceServices SET  CompanyDetailId=@CompanyDetailId, Name=@Name, Type=@Type, DefaultSellPrice=@DefaultSellPrice, DefaultBuyPrice=@DefaultBuyPrice, DefaultFactoryPrice=@DefaultFactoryPrice, Parameter=@Parameter, Operator=@Operator, SellValue=@SellValue, BuyValue=@BuyValue, FactoryValue=@FactoryValue, MinValue=@MinValue, MaxValue=@MaxValue, State=@State, AutoCreate=@AutoCreate, AllowCustom=@AllowCustom, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
@@ -82,7 +87,7 @@ Partial Class Setting_Price_Service_Edit
                         thisCmd.Parameters.AddWithValue("@FactoryValue", If(String.IsNullOrEmpty(txtFactoryValue.Text), CType(DBNull.Value, Object), txtFactoryValue.Text))
                         thisCmd.Parameters.AddWithValue("@MinValue", If(String.IsNullOrEmpty(txtMinimumValue.Text), CType(DBNull.Value, Object), txtMinimumValue.Text))
                         thisCmd.Parameters.AddWithValue("@MaxValue", If(String.IsNullOrEmpty(txtMaximumValue.Text), CType(DBNull.Value, Object), txtMaximumValue.Text))
-                        thisCmd.Parameters.AddWithValue("@Region", ddlRegion.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@State", state)
                         thisCmd.Parameters.AddWithValue("@AutoCreate", ddlAutoCreate.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@AllowCustom", ddlAllowCustom.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
@@ -158,11 +163,22 @@ Partial Class Setting_Price_Service_Edit
                 Next
             End If
 
+            If Not myData("State").ToString() = "" Then
+                Dim stateArray() As String = myData("State").ToString().Split(",")
+                For Each i In stateArray
+                    If Not String.IsNullOrEmpty(i) Then
+                        Dim item = lbState.Items.FindByValue(i)
+                        If item IsNot Nothing Then
+                            item.Selected = True
+                        End If
+                    End If
+                Next
+            End If
+
             txtName.Text = myData("Name").ToString()
             ddlType.SelectedValue = myData("Type").ToString()
             ddlParameter.SelectedValue = myData("Parameter").ToString()
             ddlOperator.SelectedValue = myData("Operator").ToString()
-            ddlRegion.SelectedValue = myData("Region").ToString()
             ddlAutoCreate.SelectedValue = Convert.ToInt32(myData("AutoCreate"))
             lblAutoCreate.Text = Convert.ToInt32(myData("AutoCreate"))
             ddlAllowCustom.SelectedValue = Convert.ToInt32(myData("AllowCustom"))

@@ -549,9 +549,6 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-
-
-
     Protected Function LoginAccess(action As String) As Boolean
         Try
             Dim roleId As String = Session("RoleId").ToString()
@@ -1354,15 +1351,58 @@ Partial Class Setting_Customer_Detail
         Return result
     End Function
 
-
-
     Protected Sub btnAddService_Click(sender As Object, e As EventArgs)
         Session("selectedTabCustomer") = "list-service"
         url = String.Format("~/setting/customer/service/add?custid={0}&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
     End Sub
 
+    Protected Sub btnDeleteService_Click(sender As Object, e As EventArgs)
+        MessageError_Service(False, String.Empty)
+        Session("selectedTabCustomer") = "list-service"
+        Try
+            Dim serviceId As String = txtDeleteServiceId.Text
 
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerServices WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerServices' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", serviceId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            'Dim stringLog As String = String.Format("Customer Service Deleted | {0}", fullContact)
+            'dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), stringLog}
+            'settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Contact(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Function BindServiceDecimal(value As Object) As String
+        Try
+            If value Is Nothing OrElse value Is DBNull.Value Then
+                Return String.Empty
+            End If
+
+            Dim decimalValue As Decimal
+
+            If Decimal.TryParse(value.ToString(), decimalValue) Then
+                If decimalValue >= 0 Then
+                    Return Math.Round(decimalValue, 2).ToString("N2", enUS)
+                End If
+            End If
+        Catch ex As Exception
+            Return String.Empty
+        End Try
+        Return String.Empty
+    End Function
 
     Protected Sub AllMessageError(visible As Boolean, message As String)
         MessageError(visible, message)

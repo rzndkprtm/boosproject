@@ -54,7 +54,58 @@ Partial Class Setting_Customer_Service_Add
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            If ddlService.SelectedValue = "" Then
+                MessageError(True, "SERVICE NAME IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlType.SelectedValue = "" Then
+                MessageError(True, "TYPE IS REQUIRED !")
+                Exit Sub
+            End If
 
+            If msgError.InnerText = "" Then
+                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerServices ORDER BY Id DESC")
+
+                Dim useCustom As Boolean = settingClass.GetItemData_Boolean("SELECT AllowCustom FROM PriceServices WHERE Id='" & ddlService.SelectedValue & "'")
+
+                Dim state As String = String.Empty
+                If Not String.IsNullOrEmpty(lbState.SelectedValue) Then
+                    state = String.Join(",", lbState.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerServices VALUES (@Id, @CustomerId, @ServiceId, @UseCustom, @Type, @SellPrice, @BuyPrice, @FactoryPrice, @Parameter, @Operator, @SellValue, @BuyValue, @FactoryValue, @MinValue, @MaxValue, @State, @Description)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@ServiceId", ddlService.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@UseCustom", useCustom)
+                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@SellPrice", If(String.IsNullOrEmpty(txtSellPrice.Text), CType(DBNull.Value, Object), txtSellPrice.Text))
+                        thisCmd.Parameters.AddWithValue("@BuyPrice", If(String.IsNullOrEmpty(txtBuyPrice.Text), CType(DBNull.Value, Object), txtBuyPrice.Text))
+                        thisCmd.Parameters.AddWithValue("@FactoryPrice", If(String.IsNullOrEmpty(txtFactoryPrice.Text), CType(DBNull.Value, Object), txtFactoryPrice.Text))
+                        thisCmd.Parameters.AddWithValue("@Parameter", ddlParameter.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Operator", ddlOperator.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@SellValue", If(String.IsNullOrEmpty(txtSellValue.Text), CType(DBNull.Value, Object), txtSellValue.Text))
+                        thisCmd.Parameters.AddWithValue("@BuyValue", If(String.IsNullOrEmpty(txtBuyValue.Text), CType(DBNull.Value, Object), txtBuyValue.Text))
+                        thisCmd.Parameters.AddWithValue("@FactoryValue", If(String.IsNullOrEmpty(txtFactoryValue.Text), CType(DBNull.Value, Object), txtFactoryValue.Text))
+                        thisCmd.Parameters.AddWithValue("@MinValue", If(String.IsNullOrEmpty(txtMinimumValue.Text), CType(DBNull.Value, Object), txtMinimumValue.Text))
+                        thisCmd.Parameters.AddWithValue("@MaxValue", If(String.IsNullOrEmpty(txtMaximumValue.Text), CType(DBNull.Value, Object), txtMaximumValue.Text))
+                        thisCmd.Parameters.AddWithValue("@State", state)
+                        thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim dataLog As Object() = {"CustomerServices", thisId, Session("LoginId"), "Customer Service Added"}
+                settingClass.Logs(dataLog)
+
+                url = "~/setting/customer/service"
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                End If
+                Response.Redirect(url, False)
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -129,8 +180,19 @@ Partial Class Setting_Customer_Service_Add
                 ddlType.SelectedValue = myData("Type").ToString()
                 ddlParameter.SelectedValue = myData("Parameter").ToString()
                 ddlOperator.SelectedValue = myData("Operator").ToString()
-                ddlRegion.SelectedValue = myData("Region").ToString()
                 txtDescription.Text = myData("Description").ToString()
+
+                If Not myData("State").ToString() = "" Then
+                    Dim stateArray() As String = myData("State").ToString().Split(",")
+                    For Each i In stateArray
+                        If Not String.IsNullOrEmpty(i) Then
+                            Dim item = lbState.Items.FindByValue(i)
+                            If item IsNot Nothing Then
+                                item.Selected = True
+                            End If
+                        End If
+                    Next
+                End If
 
                 Dim allowCustom As Boolean = CBool(myData("AllowCustom"))
 
@@ -158,7 +220,7 @@ Partial Class Setting_Customer_Service_Add
                 txtFactoryValue.Enabled = False
                 txtMinimumValue.Enabled = False
                 txtMaximumValue.Enabled = False
-                ddlRegion.Enabled = False
+                lbState.Enabled = False
 
                 If allowCustom = True Then
                     ddlType.Enabled = True
@@ -174,7 +236,7 @@ Partial Class Setting_Customer_Service_Add
 
                     txtMinimumValue.Enabled = True
                     txtMaximumValue.Enabled = True
-                    ddlRegion.Enabled = True
+                    lbState.Enabled = True
                 End If
             End If
         Catch ex As Exception

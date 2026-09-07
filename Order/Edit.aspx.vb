@@ -72,18 +72,33 @@ Partial Class Order_Edit
                     orderFactory = String.Join(",", lbOrderFactory.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
 
-                Dim orderState As String = txtOrderState.Text
-                If txtOrderState.Text = "" Then
-                    orderState = orderClass.GetCustomerState(ddlCustomer.SelectedValue)
-                End If
+                Dim orderContact As String = hfOrderContact.Value.Trim()
+                Dim orderAddress As String = hfOrderAddress.Value.Trim()
+                Dim orderContainer As String = String.Empty
+                If Not String.IsNullOrEmpty(orderAddress) Then
+                    Dim state As String = String.Empty
 
-                Dim orderAddress As String = txtOrderAddress.Text
-                If txtOrderState.Text = "" Then
-                    orderAddress = orderClass.GetCustomerPrimaryAddress(ddlCustomer.SelectedValue)
+                    Dim states() As String = {"NSW", "QLD", "SA", "TAS", "NT", "ACT", "VIC", "WA"}
+                    For Each s As String In states
+                        If Regex.IsMatch(orderAddress, "\b" & s & "\b", RegexOptions.IgnoreCase) Then
+                            state = s
+                            Exit For
+                        End If
+                    Next
+                    Select Case state
+                        Case "NSW", "QLD", "NT", "ACT"
+                            orderContainer = "SYD"
+
+                        Case "VIC", "SA", "TAS", "WA"
+                            orderContainer = "MEL"
+
+                        Case Else
+                            orderContainer = String.Empty
+                    End Select
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderId=@OrderId, CustomerId=@CustomerId, OrderNumber=@OrderNumber, OrderName=@OrderName, OrderNote=@OrderNote, OrderType=@OrderType, OrderFactory=@OrderFactory, OrderState=@OrderState, OrderAddress=@OrderAddress, CreatedBy=@CreatedBy WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderId=@OrderId, CustomerId=@CustomerId, OrderNumber=@OrderNumber, OrderName=@OrderName, OrderNote=@OrderNote, OrderType=@OrderType, OrderFactory=@OrderFactory, OrderContact=@OrderContact, OrderAddress=@OrderAddress, OrderContainer=@OrderContainer WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         thisCmd.Parameters.AddWithValue("@OrderId", txtOrderId.Text)
                         thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
@@ -92,9 +107,9 @@ Partial Class Order_Edit
                         thisCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@OrderFactory", orderFactory)
-                        thisCmd.Parameters.AddWithValue("@OrderState", orderState)
+                        thisCmd.Parameters.AddWithValue("@OrderContact", orderContact)
                         thisCmd.Parameters.AddWithValue("@OrderAddress", orderAddress)
-                        thisCmd.Parameters.AddWithValue("@CreatedBy", ddlCreatedBy.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@OrderContainer", orderContainer)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -195,10 +210,8 @@ Partial Class Order_Edit
             End If
 
             BindDataCustomer()
-            BindDataUser()
 
             ddlCustomer.SelectedValue = headerData("CustomerId").ToString()
-            ddlCreatedBy.SelectedValue = headerData("CreatedBy").ToString()
             txtOrderNumber.Text = headerData("OrderNumber").ToString()
             lblOrderNo.Text = headerData("OrderNumber").ToString()
 
@@ -217,56 +230,45 @@ Partial Class Order_Edit
                     End If
                 Next
             End If
-            txtOrderState.Text = headerData("OrderState").ToString()
+            txtOrderContact.Text = headerData("OrderContact").ToString()
+            hfOrderContact.Value = headerData("OrderContact").ToString()
             txtOrderAddress.Text = headerData("OrderAddress").ToString()
+            hfOrderAddress.Value = headerData("OrderAddress").ToString()
 
             divCustomer.Visible = False
-            divCreatedBy.Visible = False
             divOrderTypeFactory.Visible = False
-            divOrderStateAddress.Visible = False
 
             ddlCustomer.Enabled = False
-            ddlCreatedBy.Enabled = False
 
             txtOrderId.Enabled = False
             ddlCustomer.Enabled = False
-            ddlCreatedBy.Enabled = False
 
             If Session("RoleName") = "Developer" Then
                 divCustomer.Visible = True
-                divCreatedBy.Visible = True
                 divOrderTypeFactory.Visible = True
-                divOrderStateAddress.Visible = True
 
                 ddlCustomer.Enabled = True
-                ddlCreatedBy.Enabled = True
 
                 txtOrderId.Enabled = True
                 ddlCustomer.Enabled = True
-                ddlCreatedBy.Enabled = True
             End If
 
             If Session("RoleName") = "IT" Then
                 divCustomer.Visible = True
-                divCreatedBy.Visible = True
                 divOrderTypeFactory.Visible = True
 
                 ddlCustomer.Enabled = True
-                ddlCreatedBy.Enabled = True
 
                 txtOrderId.Enabled = True
                 If statusOrder = "In Production" OrElse statusOrder = "On Hold" Then
                     txtOrderId.Enabled = False
                 End If
                 ddlCustomer.Enabled = False
-                ddlCreatedBy.Enabled = False
             End If
 
             If Session("RoleName") = "Factory Office" Then
                 divCustomer.Visible = True
-                divCreatedBy.Visible = True
                 ddlCustomer.Enabled = False
-                ddlCreatedBy.Enabled = False
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -300,27 +302,6 @@ Partial Class Order_Edit
             End If
         Catch ex As Exception
             ddlCustomer.Items.Clear()
-            If Session("RoleName") = "Developer" Then
-                MessageError(True, ex.ToString())
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindDataUser()
-        ddlCreatedBy.Items.Clear()
-        Try
-            ddlCreatedBy.DataSource = orderClass.GetDataTable("SELECT Id, UserName FROM Logins WHERE Status = 'Active' OR Status = 'Inactive' OR Status = 'Blocked' ORDER BY UserName ASC")
-            ddlCreatedBy.DataTextField = "UserName"
-            ddlCreatedBy.DataValueField = "Id"
-            ddlCreatedBy.DataBind()
-
-            If ddlCreatedBy.Items.Count > 0 Then
-                ddlCreatedBy.Items.Insert(0, New ListItem("", ""))
-            End If
-
-            ddlCreatedBy.SelectedValue = Session("LoginId")
-        Catch ex As Exception
-            ddlCreatedBy.Items.Clear()
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If

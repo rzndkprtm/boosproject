@@ -662,17 +662,17 @@
                                                     <asp:BoundField DataField="Type" HeaderText="Type" />
                                                     <asp:TemplateField HeaderText="Sell Price">
                                                         <ItemTemplate>
-                                                            <%# BindPromoDecimal(Eval("SellPrice")) %>
+                                                            <%# BindServiceDecimal(Eval("SellPrice")) %>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="Buy Price">
                                                         <ItemTemplate>
-                                                            <%# BindPromoDecimal(Eval("BuyPrice")) %>
+                                                            <%# BindServiceDecimal(Eval("BuyPrice")) %>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField HeaderText="Factory Price">
                                                         <ItemTemplate>
-                                                            <%# BindPromoDecimal(Eval("FactoryPrice")) %>
+                                                            <%# BindServiceDecimal(Eval("FactoryPrice")) %>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField>
@@ -681,6 +681,9 @@
                                                             <ul class="dropdown-menu">
                                                                 <li>
                                                                     <a class="dropdown-item" id="aDetailService" href='<%# Page.ResolveUrl("~/setting/customer/service/edit?serviceid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteService" onclick='<%# String.Format("return dataDeleteService(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerServices', '<%# Eval("Id") %>')">Log</a>
@@ -1323,6 +1326,23 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modalDeleteService" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Customer Service</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtDeleteServiceId" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDeleteService" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDeleteService_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblIdContact"></asp:Label>
@@ -1565,6 +1585,9 @@
             document.getElementById("<%=txtDeletePromoId.ClientID %>").value = promoid;
             document.getElementById("<%=txtDeleteDetailPromoId.ClientID %>").value = detailid;
         }
+        function dataDeleteService(serviceid) {
+            document.getElementById("<%=txtDeleteServiceId.ClientID %>").value = serviceid;
+        }
         [
             "modalDelete", "modalRecalculate", "modalWelcome", "modalSendLogin",
             "modalOnStop", "modalCashSale", "modalNewsletter",
@@ -1576,7 +1599,8 @@
             "modalResetMarkup", "modalDeleteMarkup",
             "modalChangeDiscount", "modalResetDiscount", "modalDeleteDiscount",
             "modalDetailPromo", "modalDeletePromo",
-            "modalResetProduct"
+            "modalResetProduct",
+            "modalDeleteService"
         ].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();

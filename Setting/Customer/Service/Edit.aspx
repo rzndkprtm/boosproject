@@ -128,9 +128,8 @@
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-12 form-group">
-                                        <label class="form-label">Region</label>
-                                        <asp:DropDownList runat="server" ID="ddlRegion" CssClass="choices form-select">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                        <label class="form-label">State</label>
+                                        <asp:ListBox runat="server" ID="lbState" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
                                             <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
                                             <asp:ListItem Value="QLD" Text="QLD"></asp:ListItem>
                                             <asp:ListItem Value="SA" Text="SA"></asp:ListItem>
@@ -139,8 +138,7 @@
                                             <asp:ListItem Value="ACT" Text="ACT"></asp:ListItem>
                                             <asp:ListItem Value="VIC" Text="VIC"></asp:ListItem>
                                             <asp:ListItem Value="WA" Text="WA"></asp:ListItem>
-                                            <asp:ListItem Value="JKT" Text="JKT"></asp:ListItem>
-                                        </asp:DropDownList>
+                                        </asp:ListBox>
                                     </div>
                                 </div>
                                 <div class="row mt-3" runat="server" id="divError">
