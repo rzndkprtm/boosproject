@@ -54,15 +54,15 @@
                     <div class="dashboard-title">Price Surcharge</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
-                <a href="/setting/price/service" class="dashboard-card">
-                    <div class="dashboard-number"><%= PriceServices %> Data</div>
-                    <div class="dashboard-title">Price Service</div>
-                    <div class="dashboard-desc">Service</div>
-                </a>
                 <a href="/setting/price/promo" class="dashboard-card">
                     <div class="dashboard-number"><%= Promos %> Data</div>
                     <div class="dashboard-title">Price Promo</div>
                     <div class="dashboard-desc">Description</div>
+                </a>
+                <a href="/setting/price/service" class="dashboard-card">
+                    <div class="dashboard-number"><%= PriceServices %> Data</div>
+                    <div class="dashboard-title">Price Service</div>
+                    <div class="dashboard-desc">Service</div>
                 </a>
                 <a href="/setting/price/calculation" class="dashboard-card">
                     <div class="dashboard-number"><%= Promos %> Data</div>

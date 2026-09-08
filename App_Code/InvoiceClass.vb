@@ -943,7 +943,7 @@ Public Class InvoiceClass
             footerTable.AddCell(totalCell)
 
             Dim signSpace As New Paragraph(" ")
-            signSpace.SpacingBefore = 10
+            signSpace.SpacingBefore = 6
             doc.Add(signSpace)
 
             Dim signTable As New PdfPTable(2)
@@ -1045,6 +1045,7 @@ Public Class InvoiceClass
             doc.Add(itemTable)
             doc.Add(space)
             doc.Add(footerTable)
+            doc.Add(signSpace)
             doc.Add(signSpace)
             doc.Add(signTable)
 

@@ -166,6 +166,18 @@
                                     <asp:Label runat="server" ID="lblOrderStatus"></asp:Label>
                                 </div>
                             </div>
+                            <div class="detail-row" runat="server" id="divOrderContact">
+                                <div class="detail-label">Order Contact</div>
+                                <div class="detail-value">
+                                    <asp:Label runat="server" ID="lblOrderContact"></asp:Label>
+                                </div>
+                            </div>
+                            <div class="detail-row" runat="server" id="divOrderAddress">
+                                <div class="detail-label">Order Address</div>
+                                <div class="detail-value">
+                                    <asp:Label runat="server" ID="lblOrderAddress"></asp:Label>
+                                </div>
+                            </div>
                             <div class="detail-row" runat="server" id="divOrderType">
                                 <div class="detail-label">Order Type</div>
                                 <div class="detail-value">
@@ -379,7 +391,8 @@
                                 <div class="text-muted small">Products and services included in this order</div>
                             </div>
                             <div class="mt-2 mt-lg-0">
-                                <a href="javascript:void(0);" runat="server" id="aAddProduct" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#modalAddProduct">Add Item</a>
+                                <a href="javascript:void(0);" runat="server" id="aAddProduct" class="btn btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalAddProduct">Add Item</a>
+                                <a href="javascript:void(0);" runat="server" id="aAddPart" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#modalAddPart">Add Part</a>
                                 <a href="javascript:void(0);" runat="server" id="aAddService" class="btn btn-outline-secondary me-2" data-bs-toggle="modal" data-bs-target="#modalAddService">Add Service</a>
                             </div>
                         </div>
@@ -1583,6 +1596,29 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modalAddPart" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Part</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label required">SELECT ITEM</label>
+                            <asp:DropDownList runat="server" ID="ddlPart" CssClass="choices form-select"></asp:DropDownList>
+                            <small class="form-hint" style="color:red;">* Please select a product part then click the submit button</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnAddPart" CssClass="btn btn-primary" Text="Submit" OnClick="btnAddPart_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalAddService" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1727,7 +1763,7 @@
             "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData", "modalDownloadPL",
             "modalDetailQuote", "modalDownloadQuote", "modalSendQuote",
             "modalConvertOrder", "modalReConvertOrder", "modalDataJob", "modalUpdateJobData",
-            "modalAddProduct", "modalAddService", "modalDeleteItem", "modalCosting",
+            "modalAddProduct", "modalAddPart", "modalAddService", "modalDeleteItem", "modalCosting",
             
         ].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
