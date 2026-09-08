@@ -281,7 +281,6 @@
                 writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                 writer.WriteEndElement()
             End If
-
             If designName = "Curtain" Then
                 Dim heading As String = thisData("Heading").ToString()
                 Dim headingB As String = thisData("HeadingB").ToString()
@@ -343,7 +342,6 @@
                 writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                 writer.WriteEndElement()
             End If
-
             If designName = "Design Shades" Then
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
                 Dim webFabricId As String = thisData("FabricColourId").ToString()
@@ -388,7 +386,6 @@
                 writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                 writer.WriteEndElement()
             End If
-
             If designName = "Linea Valance" Then
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
                 Dim webFabricId As String = thisData("FabricColourId").ToString()
@@ -429,7 +426,6 @@
                 writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                 writer.WriteEndElement()
             End If
-
             If designName = "Panel Glide" Then
                 Dim idhk As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
                 Dim webFabricId As String = thisData("FabricColourId").ToString()
@@ -460,7 +456,6 @@
                 writer.WriteAttributeString("WandLength", thisData("WandLengthValue").ToString())
                 writer.WriteEndElement()
             End If
-
             If designName = "Pelmet" Then
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
                 Dim webFabricId As String = thisData("FabricColourId").ToString()
@@ -493,7 +488,6 @@
                 writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                 writer.WriteEndElement()
             End If
-
             If designName = "Roman Blind" Then
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
                 Dim webFabricId As String = thisData("FabricColourId").ToString()
@@ -544,7 +538,6 @@
                 writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                 writer.WriteEndElement()
             End If
-
             If designName = "Soft Roman" Then
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
                 Dim webFabricId As String = thisData("FabricColourId").ToString()
@@ -595,7 +588,6 @@
                 writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                 writer.WriteEndElement()
             End If
-
             If designName = "Privacy Venetian" Then
                 Dim venId As String = GetItemData("SELECT VenId FROM ProductKits WHERE ProductId='" & productId & "'")
 
@@ -621,7 +613,6 @@
                 writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                 writer.WriteEndElement()
             End If
-
             If designName = "Venetian Blind" Then
                 Dim subType As String = thisData("SubType").ToString()
                 Dim tassel As String = thisData("Tassel").ToString()
@@ -685,7 +676,6 @@
                 writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                 writer.WriteEndElement()
             End If
-
             If designName = "Vertical" Then
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
 
@@ -741,7 +731,6 @@
                 writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                 writer.WriteEndElement()
             End If
-
             If designName = "Saphora Drape" Then
                 Dim kitId As String = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "'")
 
@@ -790,7 +779,6 @@
                 writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                 writer.WriteEndElement()
             End If
-
             If designName = "Roller Blind" Then
                 Dim webFabricId As String = thisData("FabricColourId").ToString()
                 Dim boeFabricId As String = GetItemData("SELECT BoeId FROM FabricColours WHERE Id='" & webFabricId & "'")
@@ -833,7 +821,7 @@
 
                         Dim width As Integer = thisData("Width")
                         If width > 1810 Then kitName = String.Format("{0} (HD)", productName)
-                        If colourName = "Black" Then kitName = String.Format("{0} (LD)", productName)
+                        If colourName = "Black" Then kitName = String.Format("{0} (HD)", productName)
 
                         kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
                     End If
@@ -905,7 +893,7 @@
                         Dim width As Integer = thisData("Width")
                         Dim widthB As Integer = thisData("WidthB")
                         If width > 1810 OrElse widthB > 1810 Then kitName = String.Format("{0} (HD)", productName)
-                        If colourName = "Black" Then kitName = String.Format("{0} (LD)", productName)
+                        If colourName = "Black" Then kitName = String.Format("{0} (HD)", productName)
 
                         kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
                         kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "'")
@@ -970,7 +958,6 @@
                     writer.WriteAttributeString("ProductId", productId)
                     writer.WriteEndElement()
                 End If
-
                 If blindName = "Link 2 Blinds Dependent" Then
                     kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Control'")
                     kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='End'")
@@ -990,7 +977,7 @@
                         Dim widthB As Integer = thisData("WidthB")
 
                         If width > 1810 OrElse widthB > 1810 Then kitName = String.Format("{0} (HD)", productName)
-                        If colourName = "Black" Then kitName = String.Format("{0} (LD)", productName)
+                        If colourName = "Black" Then kitName = String.Format("{0} (HD)", productName)
 
                         kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Control'")
                         kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='End'")
@@ -1047,7 +1034,6 @@
                     writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                     writer.WriteEndElement()
                 End If
-
                 If blindName = "Link 3 Blinds Dependent" Then
                     kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Control'")
                     kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Middle'")
@@ -1063,7 +1049,7 @@
                         Dim widthC As Integer = thisData("WidthC")
 
                         If width > 1810 OrElse widthB > 1810 OrElse widthC > 1810 Then kitName = String.Format("{0} (HD)", productName)
-                        If colourName = "Black" Then kitName = String.Format("{0} (LD)", productName)
+                        If colourName = "Black" Then kitName = String.Format("{0} (HD)", productName)
 
                         kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Control'")
                         kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Middle'")
@@ -1142,7 +1128,6 @@
                     writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                     writer.WriteEndElement()
                 End If
-
                 If blindName = "Link 2 Blinds Independent" Then
                     kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Control'")
                     kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='End'")
@@ -1156,7 +1141,7 @@
                         Dim widthB As Integer = thisData("WidthB")
 
                         If width > 1810 OrElse widthB > 1810 Then kitName = String.Format("{0} (HD)", productName)
-                        If colourName = "Black" Then kitName = String.Format("{0} (LD)", productName)
+                        If colourName = "Black" Then kitName = String.Format("{0} (HD)", productName)
 
                         kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Control'")
                         kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='End'")
@@ -1225,7 +1210,6 @@
                     writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                     writer.WriteEndElement()
                 End If
-
                 If blindName = "Link 3 Blinds Independent with Dependent" Then
                     kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Control'")
                     kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Middle'")
@@ -1241,7 +1225,7 @@
                         Dim widthC As Integer = thisData("WidthC")
 
                         If width > 1810 OrElse widthB > 1810 OrElse widthC > 1810 Then kitName = String.Format("{0} (HD)", productName)
-                        If colourName = "Black" Then kitName = String.Format("{0} (LD)", productName)
+                        If colourName = "Black" Then kitName = String.Format("{0} (HD)", productName)
 
                         kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Control'")
                         kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND Name='" & kitName & "' AND BlindStatus='Middle'")
@@ -1331,7 +1315,6 @@
                     writer.WriteAttributeString("Notes", thisData("Notes").ToString())
                     writer.WriteEndElement()
                 End If
-
                 If blindName = "DB Link 2 Blinds Dependent" Then
                     kitId = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='Control'")
                     kitIdB = GetItemData("SELECT KitId FROM ProductKits WHERE ProductId='" & productId & "' AND BlindStatus='End'")
