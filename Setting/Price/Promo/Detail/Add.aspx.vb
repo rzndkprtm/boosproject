@@ -278,6 +278,8 @@ Partial Class Setting_Price_Promo_Detail_Add
                         dt = settingClass.GetDataTable("SELECT Blinds.Id, '[' + Designs.Name + '] ' + Blinds.Name AS Name FROM Blinds INNER JOIN Designs ON Blinds.DesignId=Designs.Id ORDER BY Designs.Name, Blinds.Name ASC")
                     Case "Products"
                         dt = settingClass.GetDataTable("SELECT Id, Name FROM Products")
+                    Case "PriceProductGroups"
+                        dt = settingClass.GetDataTable("SELECT Id, Name FROM PriceProductGroups")
                     Case "RollerFabrics"
                         dt = settingClass.GetDataTable("SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE designArray.VALUE='12' AND (Status='In Stock' OR Status='Limited Stock')")
                     Case "CurtainFabrics"
