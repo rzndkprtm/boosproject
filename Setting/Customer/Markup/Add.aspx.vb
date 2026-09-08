@@ -549,7 +549,7 @@ Partial Class Setting_Customer_Markup_Add
             Return dt
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Session("RoleName").ToString() <> "Developer" Then
+            If Not Session("RoleName").ToString() = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
             Return New DataTable()

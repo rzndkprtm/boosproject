@@ -144,7 +144,7 @@ Partial Class Setting_Customer_List
             Dim customerId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Status='Deleted' WHERE Id=@Id; UPDATE Logins SET Active=0 WHERE CustomerId=@Id;", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET Status='Deleted' WHERE Id=@Id; UPDATE Logins SET Status=0 WHERE CustomerId=@Id;", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", customerId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()

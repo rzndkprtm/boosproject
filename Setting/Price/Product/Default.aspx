@@ -68,7 +68,6 @@
                                             <asp:BoundField DataField="Id" HeaderText="ID" ItemStyle-Width="80px" />
                                             <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-Width="500px" />
                                             <asp:BoundField DataField="PriceGroupName" HeaderText="Price Group" />
-                                            <asp:BoundField DataField="Description" HeaderText="Description" />
                                             <asp:BoundField DataField="Status" HeaderText="Status" ItemStyle-Width="90px" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="150px">
                                                 <ItemTemplate>

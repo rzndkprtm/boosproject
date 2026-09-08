@@ -69,7 +69,7 @@
                                             <asp:BoundField DataField="PromoName" HeaderText="Promo Name" />
                                             <asp:BoundField DataField="PromoStart" HeaderText="Start Date" DataFormatString="{0:dd MMM yyyy}" />
                                             <asp:BoundField DataField="PromoEnd" HeaderText="End Date" DataFormatString="{0:dd MMM yyyy}" />
-                                            <asp:BoundField DataField="PromoStatus" HeaderText="Promo Status" />
+                                            <asp:BoundField DataField="PromoStatus" HeaderText="Status" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>

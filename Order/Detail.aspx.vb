@@ -1749,6 +1749,32 @@ Partial Class Order_Detail
         End Try
     End Sub
 
+    Protected Sub btnAddPart_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            If ddlPart.SelectedValue = "" Then
+                Response.Redirect("~/order/detail", False)
+                Exit Sub
+            End If
+
+            Dim page As String = orderClass.GetDesignPage(ddlPart.SelectedValue)
+            Dim partPage As String = page.Replace("/order/", "/order/part/")
+            Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", "create", lblHeaderId.Text, String.Empty, ddlPart.SelectedValue, Session("LoginId").ToString())
+            Dim contextId As String = InsertContext(queryString)
+
+            url = String.Format("{0}?boos={1}", partPage, contextId)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnAddService_Click(sender As Object, e As EventArgs)
         MessageError_AddService(False, String.Empty)
         Dim thisScript As String = "window.onload = function() { showService(); };"
@@ -1906,6 +1932,8 @@ Partial Class Order_Detail
             lblOrderStatusDescription.Text = headerData("StatusDescription").ToString()
             lblOrderType.Text = headerData("OrderType").ToString()
             lblOrderFactory.Text = headerData("OrderFactory").ToString()
+            lblOrderContact.Text = headerData("OrderContact").ToString()
+            lblOrderAddress.Text = headerData("OrderAddress").ToString()
             lblInternalNote.Text = orderClass.GetItemData("SELECT TOP 1 'Noted By ' + ISNULL(Logins.FullName, '') + ' | ' + ISNULL(OrderInternalNotes.Note, '') AS NoteDetail FROM OrderInternalNotes LEFT JOIN Logins ON OrderInternalNotes.CreatedBy=Logins.Id WHERE OrderInternalNotes.HeaderId='" & headerId & "' ORDER BY OrderInternalNotes.CreatedDate DESC;")
             If lblInternalNote.Text = "" Then lblInternalNote.Text = "-"
             lblCreatedBy.Text = headerData("CreatedBy").ToString()
@@ -2109,11 +2137,14 @@ Partial Class Order_Detail
 
             aLog.Visible = False : aLog.Attributes("data-id") = headerId
 
+            divOrderContact.Visible = False
+            divOrderAddress.Visible = False
             divOrderType.Visible = False
             divOrderFactory.Visible = False
             divInternalNote.Visible = False
 
             aAddProduct.Visible = False
+            aAddPart.Visible = False
             aAddService.Visible = False
 
             Dim isReworkOrder As Boolean = orderClass.IsReworkOrder(headerId)
@@ -2155,6 +2186,7 @@ Partial Class Order_Detail
                     End If
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
 
                     If lblDownloadBoe.Text = "No" OrElse lblDownloadBoe.Text = "Done" Then
@@ -2183,6 +2215,7 @@ Partial Class Order_Detail
                     End If
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Waiting Proforma" Then
@@ -2212,6 +2245,7 @@ Partial Class Order_Detail
                     End If
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -2241,6 +2275,7 @@ Partial Class Order_Detail
                     End If
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Pending Payment" Then
@@ -2270,6 +2305,7 @@ Partial Class Order_Detail
                     End If
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Payment Received" Then
@@ -2298,6 +2334,7 @@ Partial Class Order_Detail
                     End If
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
 
                     If lblDownloadBoe.Text = "No" OrElse lblDownloadBoe.Text = "Done" Then
@@ -2332,6 +2369,7 @@ Partial Class Order_Detail
                     End If
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "In Production" Then
@@ -2364,6 +2402,7 @@ Partial Class Order_Detail
                     End If
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
 
                     If lblDownloadBoe.Text = "No" OrElse lblDownloadBoe.Text = "Done" Then
@@ -2399,6 +2438,7 @@ Partial Class Order_Detail
                     End If
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
 
                     If lblDownloadBoe.Text = "No" OrElse lblDownloadBoe.Text = "Done" Then
@@ -3345,6 +3385,9 @@ Partial Class Order_Detail
                 btnQuoteAction.Visible = True
                 aQuoteCustomer.Visible = True
 
+                divOrderContact.Visible = True
+                divOrderAddress.Visible = True
+
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     btnEditOrder.Visible = True
                     aDeleteOrder.Visible = True
@@ -3416,6 +3459,7 @@ Partial Class Order_Detail
 
     Protected Sub BindDesignType()
         ddlProduct.Items.Clear()
+        ddlPart.Items.Clear()
         Try
             Dim thisQuery As String = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type IN ('Blinds', 'Shutters', 'Doors') ORDER BY Designs.Name ASC"
             If Session("RoleName") = "Customer" Then
@@ -3426,11 +3470,20 @@ Partial Class Order_Detail
             ddlProduct.DataValueField = "Id"
             ddlProduct.DataBind()
 
+            ddlPart.DataSource = orderClass.GetDataTable(thisQuery)
+            ddlPart.DataTextField = "NameText"
+            ddlPart.DataValueField = "Id"
+            ddlPart.DataBind()
+
             If ddlProduct.Items.Count > 0 Then
                 ddlProduct.Items.Insert(0, New ListItem("", ""))
             End If
+            If ddlPart.Items.Count > 0 Then
+                ddlPart.Items.Insert(0, New ListItem("", ""))
+            End If
         Catch ex As Exception
             ddlProduct.Items.Clear()
+            ddlPart.Items.Clear()
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If
