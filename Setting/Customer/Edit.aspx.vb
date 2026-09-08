@@ -59,7 +59,6 @@ Partial Class Setting_Customer_Edit
                 MessageError(True, "CUSTOMER NAME IS REQUIRED !")
                 Exit Sub
             End If
-
             If ddlCompany.SelectedValue = "" Then
                 MessageError(True, "COMPANY IS REQUIRED !")
                 Exit Sub
