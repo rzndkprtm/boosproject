@@ -81,7 +81,7 @@ Partial Class Setting_Price_Promo_Edit
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Promos SET Type=@Type, CompanyId=@CompanyId, Name=@Name, StartDate=@StartDate, EndDate=@EndDate, Description=@Description WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Promos SET Type=@Type, DataType=@DataType, DataId=@DataId, Name=@Name, StartDate=@StartDate, EndDate=@EndDate, Description=@Description WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@DataType", ddlDataType.SelectedValue)
