@@ -84,8 +84,7 @@
                                                     </td>
                                                     <td>
                                                         <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select">
-                                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                            <asp:ListItem Value="Percent" Text="Percent"></asp:ListItem>
+                                                            <asp:ListItem Value="Percent" Text="Percent" Selected="True"></asp:ListItem>
                                                             <asp:ListItem Value="Value" Text="Value"></asp:ListItem>
                                                         </asp:DropDownList>
                                                     </td>
