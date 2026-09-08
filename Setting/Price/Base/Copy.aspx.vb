@@ -59,6 +59,7 @@ Partial Class Setting_Price_Base_Copy
                     Using thisConn As New SqlConnection(myConn)
                         Using thisCmd As New SqlCommand("SELECT * INTO [dbo].[" & newTable & "] FROM [dbo].[PriceBases]",
                     thisConn)
+                            thisConn.Open()
                             thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
