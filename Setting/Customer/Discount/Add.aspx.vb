@@ -198,7 +198,7 @@ Partial Class Setting_Customer_Discount_Add
                         For Each productRow As DataRow In dtProduct.Rows
                             Dim newRow As DataRow = DiscountTable.NewRow()
                             newRow("Product") = productRow("Id").ToString()
-                            newRow("Method") = ""
+                            newRow("Method") = "Percent"
                             newRow("Discount") = ""
                             newRow("Description") = ""
 
@@ -253,7 +253,6 @@ Partial Class Setting_Customer_Discount_Add
 
                     Dim productId As String = drv("Product").ToString()
                     If Not String.IsNullOrEmpty(productId) Then
-
                         Dim item As ListItem = ddlProduct.Items.FindByValue(productId)
                         If item IsNot Nothing Then
                             ddlProduct.SelectedValue = item.Value
@@ -457,53 +456,26 @@ Partial Class Setting_Customer_Discount_Add
     Protected Sub BindProduct(customerId As String, discType As String, ddl As DropDownList)
         Try
             If Not String.IsNullOrEmpty(discType) Then
-                Dim dt As DataTable
 
-                Dim thisData As DataRow = settingClass.GetDataRow("SELECT CompanyId, CompanyDetailId, PriceGroupId FROM Customers WHERE Id='" & customerId & "'")
-                If thisData IsNot Nothing Then
-                    Dim companyId As String = thisData("CompanyId").ToString().Trim()
-                    Dim companyDetailId As String = thisData("CompanyDetailId").ToString().Trim()
-                    Dim priceGroupId As String = thisData("PriceGroupId").ToString().Trim()
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@CustomerId", customerId),
+                    New SqlParameter("@DiscType", discType)
+                }
+                Dim dt As DataTable = settingClass.GetDataTableSP("sp_BindDiscountData", params)
 
-                    Dim thisString As String = String.Empty
-                    If discType = "Designs" Then
-                        thisString = "SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE companyArray.VALUE='" & companyId & "' AND applyArray.VALUE='Discounts' ORDER BY Name ASC"
-                    End If
-                    If discType = "PriceProductGroups" Then
-                        thisString = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'"
-                    End If
-                    If discType = "RollerFabrics" Then
-                        thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='12' AND (Status='In Stock' OR Status='Limited Stock')"
-                    End If
-                    If discType = "RomanFabrics" Then
-                        thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='8' AND (Status='In Stock' OR Status='Limited Stock')"
-                    End If
-                    If discType = "PanelGlideFabrics" Then
-                        thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='6' AND (Status='In Stock' OR Status='Limited Stock')"
-                    End If
-                    If discType = "RollerFabricColours" Then
-                        thisString = "SELECT FabricColours.Id, FabricColours.Name FROM FabricColours LEFT JOIN Fabrics ON FabricColours.FabricId=Fabrics.Id CROSS APPLY STRING_SPLIT(Fabrics.CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(Fabrics.DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='12' AND (Fabrics.Status='In Stock' OR Fabrics.Status='Limited Stock') AND (FabricColours.Status='In Stock' OR FabricColours.Status='Limited Stock')"
-                    End If
-                    If discType = "RollerChains" Then
-                        thisString = "SELECT Chains.Id, Chains.Name FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE designArray.VALUE='12' AND companyDetailArray.VALUE='" & companyDetailId & "' AND ControlTypeId='1' AND (Status='In Stock' OR Status='Limited Stock')"
-                    End If
+                ddl.SelectedIndex = -1
+                ddl.ClearSelection()
+                ddl.Items.Clear()
 
-                    dt = settingClass.GetDataTable(thisString)
+                ddl.DataSource = Nothing
+                ddl.DataBind()
 
-                    ddl.SelectedIndex = -1
-                    ddl.ClearSelection()
-                    ddl.Items.Clear()
+                ddl.DataSource = dt
+                ddl.DataTextField = "Name"
+                ddl.DataValueField = "Id"
+                ddl.DataBind()
 
-                    ddl.DataSource = Nothing
-                    ddl.DataBind()
-
-                    ddl.DataSource = dt
-                    ddl.DataTextField = "Name"
-                    ddl.DataValueField = "Id"
-                    ddl.DataBind()
-
-                    ddl.Items.Insert(0, New ListItem("", ""))
-                End If
+                ddl.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -515,43 +487,11 @@ Partial Class Setting_Customer_Discount_Add
 
     Protected Function GetProductData(customerId As String, discType As String) As DataTable
         Try
-            Dim dt As New DataTable
-
-            If String.IsNullOrEmpty(discType) Then
-                Return dt
-            End If
-
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT CompanyId, CompanyDetailId, PriceGroupId FROM Customers WHERE Id='" & customerId & "'")
-
-            If thisData Is Nothing Then
-                Return dt
-            End If
-
-            Dim companyId As String = thisData("CompanyId").ToString().Trim()
-            Dim companyDetailId As String = thisData("CompanyDetailId").ToString().Trim()
-            Dim priceGroupId As String = thisData("PriceGroupId").ToString().Trim()
-
-            Dim thisString As String = String.Empty
-
-            If discType = "Designs" Then
-                thisString = "SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE companyArray.VALUE='" & companyId & "' AND applyArray.VALUE='Discounts' ORDER BY Name ASC"
-            ElseIf discType = "PriceProductGroups" Then
-                thisString = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "' ORDER BY Name ASC"
-            ElseIf discType = "RollerFabrics" Then
-                thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='12' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
-            ElseIf discType = "RomanFabrics" Then
-                thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='8' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
-            ElseIf discType = "PanelGlideFabrics" Then
-                thisString = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='6' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
-            ElseIf discType = "RollerFabricColours" Then
-                thisString = "SELECT FabricColours.Id, FabricColours.Name FROM FabricColours LEFT JOIN Fabrics ON FabricColours.FabricId=Fabrics.Id CROSS APPLY STRING_SPLIT(Fabrics.CompanyDetailId, ',') AS companyDetailArray CROSS APPLY STRING_SPLIT(Fabrics.DesignId, ',') AS designArray WHERE companyDetailArray.VALUE='" & companyDetailId & "' AND designArray.VALUE='12' AND (Fabrics.Status='In Stock' OR Fabrics.Status='Limited Stock') AND (FabricColours.Status='In Stock' OR FabricColours.Status='Limited Stock') ORDER BY FabricColours.Name ASC"
-            ElseIf discType = "RollerChains" Then
-                thisString = "SELECT Chains.Id, Chains.Name FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE designArray.VALUE='12' AND companyDetailArray.VALUE='" & companyDetailId & "' AND ControlTypeId='1' AND (Status='In Stock' OR Status='Limited Stock')"
-            End If
-
-            If Not String.IsNullOrEmpty(thisString) Then
-                dt = settingClass.GetDataTable(thisString)
-            End If
+            Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@CustomerId", customerId),
+                    New SqlParameter("@DiscType", discType)
+                }
+            Dim dt As DataTable = settingClass.GetDataTableSP("sp_BindDiscountData", params)
             Return dt
         Catch ex As Exception
             MessageError(True, ex.ToString())
