@@ -2605,6 +2605,8 @@ Public Class OrderClass
                                     If companyDetailId = "4" Then
                                         isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
                                     End If
+                                Case "PriceProductGroups"
+                                    isMatch = (dataId = priceProductGroupId)
                                 Case "RollerFabrics"
                                     isMatch = (designName = "Roller Blind" AndAlso dataId = fabricId)
                                     If companyDetailId = "4" Then
@@ -3022,6 +3024,8 @@ Public Class OrderClass
                                     If companyDetailId = "4" Then
                                         isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
                                     End If
+                                Case "PriceProductGroups"
+                                    isMatch = (dataId = priceProductGroupIdB)
                                 Case "RollerFabrics"
                                     isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdB)
                                     If companyDetailId = "4" Then
@@ -3357,6 +3361,8 @@ Public Class OrderClass
                                     If companyDetailId = "4" Then
                                         isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
                                     End If
+                                Case "PriceProductGroups"
+                                    isMatch = (dataId = priceProductGroupIdC)
                                 Case "RollerFabrics"
                                     isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdC)
                                     If companyDetailId = "4" Then
@@ -3679,6 +3685,8 @@ Public Class OrderClass
                                     If companyDetailId = "4" Then
                                         isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
                                     End If
+                                Case "PriceProductGroups"
+                                    isMatch = (dataId = priceProductGroupIdD)
                                 Case "RollerFabrics"
                                     isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdD)
                                     If companyDetailId = "4" Then
@@ -4001,6 +4009,8 @@ Public Class OrderClass
                                     If companyDetailId = "4" Then
                                         isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
                                     End If
+                                Case "PriceProductGroups"
+                                    isMatch = (dataId = priceProductGroupIdE)
                                 Case "RollerFabrics"
                                     isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdE)
                                     If companyDetailId = "4" Then
@@ -4323,6 +4333,8 @@ Public Class OrderClass
                                     If companyDetailId = "4" Then
                                         isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
                                     End If
+                                Case "PriceProductGroups"
+                                    isMatch = (dataId = priceProductGroupIdF)
                                 Case "RollerFabrics"
                                     isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdF)
                                     If companyDetailId = "4" Then
