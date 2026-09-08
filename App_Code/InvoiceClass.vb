@@ -638,8 +638,6 @@ Public Class InvoiceClass
                 fullAddress = address
                 fullAddress &= vbCrLf
                 fullAddress &= String.Format("{0}, {1}, {2}", suburb, state, postCode)
-                fullAddress &= vbCrLf
-                fullAddress &= country
             End If
 
             Dim customerAbn As String = GetItemData("SELECT ABNNumber FROM CustomerBusiness WHERE CustomerId='" & customerId & "' AND [Primary]=1")
@@ -891,7 +889,7 @@ Public Class InvoiceClass
 
             Dim footerTable As New PdfPTable(2)
             footerTable.WidthPercentage = 100
-            footerTable.SetWidths(New Single() {0.6F, 0.4F})
+            footerTable.SetWidths(New Single() {0.55F, 0.45F})
 
             Dim paymentCell As New PdfPCell()
             paymentCell.Border = Rectangle.NO_BORDER
@@ -945,7 +943,7 @@ Public Class InvoiceClass
             footerTable.AddCell(totalCell)
 
             Dim signSpace As New Paragraph(" ")
-            signSpace.SpacingBefore = 6
+            signSpace.SpacingBefore = 10
             doc.Add(signSpace)
 
             Dim signTable As New PdfPTable(2)
@@ -1015,6 +1013,14 @@ Public Class InvoiceClass
             rightTable.WidthPercentage = 100
             rightTable.SetWidths({0.4F, 0.03F, 0.57F})
             rightTable.DefaultCell.Border = Rectangle.NO_BORDER
+
+            rightTable.AddCell(CreateCell("Order Number", True, Element.ALIGN_TOP))
+            rightTable.AddCell(CreateCell(":", False, Element.ALIGN_TOP))
+            rightTable.AddCell(CreateCell(orderNumber, False, Element.ALIGN_TOP))
+
+            rightTable.AddCell(CreateCell("Order Name", True, Element.ALIGN_TOP))
+            rightTable.AddCell(CreateCell(":", False, Element.ALIGN_TOP))
+            rightTable.AddCell(CreateCell(orderName, False, Element.ALIGN_TOP))
 
             rightTable.AddCell(CreateCell("No Faktur", True, Element.ALIGN_TOP))
             rightTable.AddCell(CreateCell(":", False, Element.ALIGN_TOP))
