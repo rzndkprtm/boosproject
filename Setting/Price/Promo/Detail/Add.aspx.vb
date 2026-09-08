@@ -269,36 +269,10 @@ Partial Class Setting_Price_Promo_Detail_Add
     Protected Sub BindProduct(discType As String, ddl As DropDownList)
         Try
             If Not String.IsNullOrEmpty(discType) Then
-                Dim dt As DataTable
-
-                Select Case discType
-                    Case "Designs"
-                        dt = settingClass.GetDataTable("SELECT Id, Name FROM Designs")
-                    Case "Blinds"
-                        dt = settingClass.GetDataTable("SELECT Blinds.Id, '[' + Designs.Name + '] ' + Blinds.Name AS Name FROM Blinds INNER JOIN Designs ON Blinds.DesignId=Designs.Id ORDER BY Designs.Name, Blinds.Name ASC")
-                    Case "Products"
-                        dt = settingClass.GetDataTable("SELECT Id, Name FROM Products")
-                    Case "PriceProductGroups"
-                        dt = settingClass.GetDataTable("SELECT Id, Name FROM PriceProductGroups")
-                    Case "RollerFabrics"
-                        dt = settingClass.GetDataTable("SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE designArray.VALUE='12' AND (Status='In Stock' OR Status='Limited Stock')")
-                    Case "CurtainFabrics"
-                        dt = settingClass.GetDataTable("SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray WHERE designArray.VALUE='3' AND (Status='In Stock' OR Status='Limited Stock')")
-                    Case "RollerFabricColours"
-                        dt = settingClass.GetDataTable("SELECT FabricColours.Id AS Id, FabricColours.Name AS Name FROM FabricColours LEFT JOIN Fabrics CROSS APPLY STRING_SPLIT(Fabrics.DesignId, ',') AS designArray ON FabricColours.FabricId=Fabrics.Id WHERE designArray.VALUE='12'")
-                    Case "CurtainFabricColours"
-                        dt = settingClass.GetDataTable("SELECT FabricColours.Id AS Id, FabricColours.Name AS Name FROM FabricColours LEFT JOIN Fabrics CROSS APPLY STRING_SPLIT(Fabrics.DesignId, ',') AS designArray ON FabricColours.FabricId=Fabrics.Id WHERE designArray.VALUE='3'")
-                    Case "FrameColours"
-                        dt = New DataTable()
-
-                        dt.Columns.Add("Id")
-                        dt.Columns.Add("Name")
-
-                        dt.Rows.Add("Primrose (Express)", "Primrose (Express)")
-                        dt.Rows.Add("Primrose (Regular)", "Primrose (Regular)")
-                    Case Else
-                        dt = New DataTable()
-                End Select
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@DiscType", discType)
+                }
+                Dim dt As DataTable = settingClass.GetDataTableSP("sp_BindPromoData", params)
 
                 ddl.SelectedIndex = -1
                 ddl.ClearSelection()
