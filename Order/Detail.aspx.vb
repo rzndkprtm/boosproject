@@ -1758,11 +1758,10 @@ Partial Class Order_Detail
             End If
 
             Dim page As String = orderClass.GetDesignPage(ddlPart.SelectedValue)
-            Dim partPage As String = page.Replace("/order/", "/order/part/")
             Dim queryString As String = String.Format("do={0}&orderid={1}&itemid={2}&dtype={3}&uid={4}", "create", lblHeaderId.Text, String.Empty, ddlPart.SelectedValue, Session("LoginId").ToString())
             Dim contextId As String = InsertContext(queryString)
 
-            url = String.Format("{0}?boos={1}", partPage, contextId)
+            url = String.Format("{0}?boos={1}", page, contextId)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -1984,7 +1983,8 @@ Partial Class Order_Detail
                 txtCompletedDate.Text = Convert.ToDateTime(headerData("CompletedDate")).ToString("yyyy-MM-dd")
             End If
 
-            BindDesignType()
+            BindProduct()
+            BindPart()
             BindService()
             BindDataQuote(headerId)
             BindDataItem(lblOrderStatus.Text)
@@ -3457,9 +3457,8 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub BindDesignType()
+    Protected Sub BindProduct()
         ddlProduct.Items.Clear()
-        ddlPart.Items.Clear()
         Try
             Dim thisQuery As String = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type IN ('Blinds', 'Shutters', 'Doors') ORDER BY Designs.Name ASC"
             If Session("RoleName") = "Customer" Then
@@ -3470,19 +3469,33 @@ Partial Class Order_Detail
             ddlProduct.DataValueField = "Id"
             ddlProduct.DataBind()
 
+            If ddlProduct.Items.Count > 0 Then
+                ddlProduct.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlProduct.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindPart()
+        ddlPart.Items.Clear()
+        Try
+            Dim thisQuery As String = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type='Parts' ORDER BY Designs.Name ASC"
+            If Session("RoleName") = "Customer" Then
+                thisQuery = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type='Parts' AND Designs.Active=1 ORDER BY Designs.Name ASC"
+            End If
             ddlPart.DataSource = orderClass.GetDataTable(thisQuery)
             ddlPart.DataTextField = "NameText"
             ddlPart.DataValueField = "Id"
             ddlPart.DataBind()
 
-            If ddlProduct.Items.Count > 0 Then
-                ddlProduct.Items.Insert(0, New ListItem("", ""))
-            End If
             If ddlPart.Items.Count > 0 Then
                 ddlPart.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            ddlProduct.Items.Clear()
             ddlPart.Items.Clear()
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())

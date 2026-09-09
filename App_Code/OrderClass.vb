@@ -1148,6 +1148,9 @@ Public Class OrderClass
                     result &= String.Format("{0} {1} {2}", productName, sizeC, squareMetreTextC)
                 End If
             End If
+            If designName = "Venetian Part" Then
+                result = productName
+            End If
             If designName = "Vertical" Then
                 fabricColourName = fabricColourName.Replace("127mm ", "").Replace("89mm ", "").Trim()
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
@@ -1976,14 +1979,16 @@ Public Class OrderClass
         End Try
     End Sub
 
-    Private Function GetPriceCalculationRule(method As String, priceGroupId As String, designId As String) As DataRow
+    Private Function GetPriceCalculationRule(method As String, priceGroupId As String, designId As String, blindId As String) As DataRow
         Try
-            Dim thisSql As String = "SELECT TOP 1 * FROM PriceCalculations WHERE Status='Active' AND Method=@Method AND PriceGroupId=@PriceGroupId AND (DesignId IS NULL OR DesignId=@DesignId) ORDER BY CASE WHEN DesignId IS NULL THEN 0 ELSE 1 END DESC, Id"
+            Dim thisSql As String = "SELECT TOP 1 * FROM PriceCalculations WHERE Status='Active' AND Method=@Method AND PriceGroupId=@PriceGroupId AND ((DataType='Designs' AND DataId=@DesignId) OR (DataType='Blinds' AND DataId=@BlindId) OR (DataType IS NULL OR DataType='')) ORDER BY CASE WHEN DataType='Designs' AND DataId=@DesignId THEN 2 WHEN DataType='Blinds' AND DataId=@BlindId THEN 2 WHEN DataType IS NULL OR DataType='' THEN 1 ELSE 0 END DESC, Id"
+
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisSql, thisConn)
                     thisCmd.Parameters.AddWithValue("@Method", method)
                     thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
                     thisCmd.Parameters.AddWithValue("@DesignId", designId)
+                    thisCmd.Parameters.AddWithValue("@BlindId", blindId)
 
                     Dim dt As New DataTable
                     Using da As New SqlDataAdapter(thisCmd)
@@ -2504,9 +2509,9 @@ Public Class OrderClass
                         costSellAdditional = thisSellAdditional
                     Next
 
-                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupCalculation, designId)
-                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupCalculation, designId)
-                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupCalculation, designId)
+                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupCalculation, designId, blindId)
+                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupCalculation, designId, blindId)
+                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupCalculation, designId, blindId)
 
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(width), CInt(drop), squareMetre, linearMetre, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetre, linearMetre)
@@ -2923,9 +2928,9 @@ Public Class OrderClass
                         costSellAdditional = thisSellAdditional
                     Next
 
-                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupCalculation, designId)
-                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupCalculation, designId)
-                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupCalculation, designId)
+                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupCalculation, designId, blindId)
+                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupCalculation, designId, blindId)
+                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupCalculation, designId, blindId)
 
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreB, linearMetreB)
@@ -3260,9 +3265,9 @@ Public Class OrderClass
                         costSell = thisSell
                     Next
 
-                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupId, designId)
-                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId)
-                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId)
+                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupId, designId, blindId)
+                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId, blindId)
+                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
 
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthC), CInt(dropC), squareMetreC, linearMetreC, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreC, linearMetreC)
@@ -3584,9 +3589,9 @@ Public Class OrderClass
                         costSell = thisSell
                     Next
 
-                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupId, designId)
-                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId)
-                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId)
+                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupId, designId, blindId)
+                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId, blindId)
+                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
 
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthD), CInt(dropD), squareMetreD, linearMetreD, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreD, linearMetreD)
@@ -3908,9 +3913,9 @@ Public Class OrderClass
                         costSell = thisSell
                     Next
 
-                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupId, designId)
-                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId)
-                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId)
+                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupId, designId, blindId)
+                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId, blindId)
+                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
 
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthE), CInt(dropE), squareMetreE, linearMetreE, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreE, linearMetreE)
@@ -4232,9 +4237,9 @@ Public Class OrderClass
                         costSell = thisSell
                     Next
 
-                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupId, designId)
-                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId)
-                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId)
+                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupId, designId, blindId)
+                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId, blindId)
+                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
 
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthF), CInt(dropF), squareMetreF, linearMetreF, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreF, linearMetreF)

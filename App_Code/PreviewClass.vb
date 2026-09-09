@@ -2196,6 +2196,92 @@ Public Class PreviewClass
             End Try
             ' END VENETIAN BLIND
 
+            ' START VENETIAN PART
+            Try
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@HeaderId", headerId)
+                }
+                Dim venetianPartData As DataTable = GetDataTableSP("sp_OrderDetails_Get_VenetianPart", params)
+
+                If venetianPartData.Rows.Count > 0 Then
+                    pageEvent.PageTitle = "Venetian"
+                    pageEvent.PageTitle2 = "Blind"
+                    Dim table As New PdfPTable(5)
+                    table.WidthPercentage = 100
+
+                    Dim items(9, venetianPartData.Rows.Count - 1) As String
+
+                    For i As Integer = 0 To venetianPartData.Rows.Count - 1
+                        Dim number As Integer = i + 1
+
+                        Dim valancesize As String = venetianPartData.Rows(i)("ValanceSize").ToString()
+                        Dim valancesizeValue As String = venetianPartData.Rows(i)("ValanceSizeValue").ToString()
+
+                        Dim valancesizeText As String = String.Empty
+                        If Not String.IsNullOrEmpty(valancesize) Then
+                            valancesizeText = String.Format("{0} : {1}mm", valancesize, valancesizeValue)
+                        End If
+
+                        Dim returnLength As String = venetianPartData.Rows(i)("ReturnLength").ToString()
+                        Dim returnLengthValue As String = venetianPartData.Rows(i)("ReturnLengthValue").ToString()
+
+                        Dim returnLengthText As String = String.Empty
+                        If Not String.IsNullOrEmpty(returnLength) Then
+                            returnLengthText = String.Format("{0} : {1}mm", returnLength, returnLengthValue)
+                        End If
+
+                        items(0, i) = "Item : " & number
+                        items(1, i) = venetianPartData.Rows(i)("Mounting").ToString()
+                        items(2, i) = venetianPartData.Rows(i)("BlindName").ToString()
+                        items(3, i) = venetianPartData.Rows(i)("ColourName").ToString()
+                        items(4, i) = venetianPartData.Rows(i)("ValanceType").ToString()
+                        items(5, i) = valancesizeText
+                        items(6, i) = venetianPartData.Rows(i)("ReturnPosition").ToString()
+                        items(7, i) = returnLengthText
+                        items(8, i) = venetianPartData.Rows(i)("Notes").ToString()
+                    Next
+
+                    For i As Integer = 0 To items.GetLength(1) - 1 Step 4
+                        If i > 0 Then doc.NewPage()
+
+                        Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
+                        Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
+
+                        Dim headers As String() = {"", "Mounting", "Part Type", "Colour", "Valance Type", "Valance Size", "Return Position", "Return Length", "Special Information"}
+
+                        For row As Integer = 0 To headers.Length - 1
+                            Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
+                            cellHeader.HorizontalAlignment = Element.ALIGN_RIGHT
+                            cellHeader.VerticalAlignment = Element.ALIGN_MIDDLE
+                            cellHeader.BackgroundColor = New BaseColor(200, 200, 200)
+                            cellHeader.MinimumHeight = 22
+                            table.AddCell(cellHeader)
+
+                            For col As Integer = i To Math.Min(i + 3, items.GetLength(1) - 1)
+                                Dim cellContent As New PdfPCell(New Phrase(items(row, col), fontContent))
+                                cellContent.HorizontalAlignment = Element.ALIGN_CENTER
+                                cellContent.VerticalAlignment = Element.ALIGN_MIDDLE
+                                cellContent.MinimumHeight = 22
+                                table.AddCell(cellContent)
+                            Next
+
+                            For col As Integer = items.GetLength(1) To i + 3
+                                Dim emptyCell As New PdfPCell(New Phrase("", fontContent))
+                                emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
+                                emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                                emptyCell.MinimumHeight = 22
+                                table.AddCell(emptyCell)
+                            Next
+                        Next
+                        doc.Add(table)
+                        table.DeleteBodyRows()
+                        doc.NewPage()
+                    Next
+                End If
+            Catch ex As Exception
+            End Try
+            ' END VENETIAN PART
+
             ' START VERTICAL
             Try
                 Dim params As New List(Of SqlParameter) From {

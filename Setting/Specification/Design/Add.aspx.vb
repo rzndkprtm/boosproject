@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_Specification_Design_Add
     Inherits Page
@@ -63,6 +64,22 @@ Partial Class Setting_Specification_Design_Add
 
                 dataLog = {"Designs", thisId, Session("LoginId").ToString(), "Created"}
                 settingClass.Logs(dataLog)
+
+                Dim customerData As DataTable = settingClass.GetDataTable("SELECT Id FROM Customers WHERE CompanyId IN (SELECT TRY_CAST(value AS INT) FROM STRING_SPLIT('" & company & "', ','))")
+                For Each row As DataRow In customerData.Rows
+                    Dim customerId As String = row("Id").ToString()
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Dim sql As String = "UPDATE CustomerProductAccess SET DesignId=CASE WHEN ISNULL(DesignId, '') = '' THEN @NewDesignId WHEN ',' + DesignId + ',' NOT LIKE '%,' + @NewDesignId + ',%' THEN DesignId + ',' + @NewDesignId ELSE DesignId END WHERE Id=@CustomerId"
+                        Using thisCmd As New SqlCommand(sql, thisConn)
+                            thisCmd.Parameters.AddWithValue("@NewDesignId", thisId)
+                            thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
+
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+                Next
 
                 Response.Redirect("~/setting/specification/design", False)
             End If
