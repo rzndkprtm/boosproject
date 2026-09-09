@@ -9897,15 +9897,17 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.colourtype) Then Return "VENETIAN COLOUR IS REQUIRED !"
         If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
         If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
-        If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
-
         If blindName.Contains("Valance") Then
+            If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
+
             If String.IsNullOrEmpty(data.valancetype) Then Return "VALANCE TYPE IS REQUIRED !"
             If String.IsNullOrEmpty(data.valancesizevalue) Then Return "VALANCE SIZE VALUE IS REQUIRED !"
             If Not Integer.TryParse(data.valancesizevalue, vsvalue) OrElse vsvalue <= 0 Then Return "PLEASE CHECK YOUR VALANCE SIZE VALUE ORDER !"
 
-            If String.IsNullOrEmpty(data.returnlengthvalue) Then Return "VALANCE RETURN LENGTH VALUE IS REQUIRED !"
-            If Not Integer.TryParse(data.returnlengthvalue, rlvalue) OrElse rlvalue <= 0 Then Return "PLEASE CHECK YOUR VALANCE RETURN LENGTH VALUE ORDER !"
+            If Not String.IsNullOrEmpty(data.returnposition) Then
+                If String.IsNullOrEmpty(data.returnlengthvalue) Then Return "VALANCE RETURN LENGTH VALUE IS REQUIRED !"
+                If Not Integer.TryParse(data.returnlengthvalue, rlvalue) OrElse rlvalue <= 0 Then Return "PLEASE CHECK YOUR VALANCE RETURN LENGTH VALUE ORDER !"
+            End If
         End If
 
         If Not String.IsNullOrEmpty(data.notes) Then
@@ -9922,6 +9924,27 @@ Partial Class Order_Method
         If blindName.Contains("Valance") Then
             width = data.valancesizevalue
             data.valancesize = "Custom" : data.returnlength = "Custom"
+        End If
+
+        If blindName = "Metal Tassel" Then
+            width = 0
+            data.mounting = String.Empty
+            data.valancetype = String.Empty
+            data.valancesize = String.Empty
+            vsvalue = 0
+            data.returnposition = String.Empty
+            data.returnlength = String.Empty
+            rlvalue = 0
+        End If
+        If blindName = "Hold Down" Then
+            width = 0
+            data.mounting = String.Empty
+            data.valancetype = String.Empty
+            data.valancesize = String.Empty
+            vsvalue = 0
+            data.returnposition = String.Empty
+            data.returnlength = String.Empty
+            rlvalue = 0
         End If
 
         Dim groupName As String = String.Format("{0} - {1}", designName, blindName)
