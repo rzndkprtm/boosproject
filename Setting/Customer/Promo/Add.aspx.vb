@@ -128,7 +128,7 @@ Partial Class Setting_Customer_Promo_Add
             If Not String.IsNullOrEmpty(customerId) Then
                 Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
 
-                ddlPromo.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Promos WHERE CompanyId='" & companyId & "' AND Type='Sell' AND (Status='Active' OR Status='Inactive')")
+                ddlPromo.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Promos WHERE DataType='Companys' AND DataId='" & companyId & "' AND Type='Sell' AND (Status='Active' OR Status='Inactive')")
                 ddlPromo.DataTextField = "Name"
                 ddlPromo.DataValueField = "Id"
                 ddlPromo.DataBind()
