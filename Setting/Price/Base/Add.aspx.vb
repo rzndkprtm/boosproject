@@ -228,7 +228,7 @@ Partial Class Setting_Price_Base_Add
                 Exit Sub
             End If
 
-            Dim query As String = "SELECT DISTINCT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE = @PriceGroupId ORDER BY PriceProductGroups.Name"
+            Dim query As String = "SELECT DISTINCT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE=@PriceGroupId ORDER BY PriceProductGroups.Name"
             Using conn As New SqlConnection(myConn)
                 Using cmd As New SqlCommand(query, conn)
                     cmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
