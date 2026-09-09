@@ -214,9 +214,9 @@ Partial Class Order_Add
             End If
         Catch ex As Exception
             ddlCustomer.Items.Clear()
-            If Session("RoleName") = "Developer" Then
-                MessageError(True, ex.ToString())
-            End If
+            'If Session("RoleName") = "Developer" Then
+            '    MessageError(True, ex.ToString())
+            'End If
         End Try
     End Sub
 
