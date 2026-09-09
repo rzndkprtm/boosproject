@@ -10,7 +10,7 @@ Partial Class Order_Method
     Public Shared Function GetOrderHeader(headerId As String) As Object
         Dim orderClass As New OrderClass
 
-        Dim row As DataRow = orderClass.GetDataRow("SELECT OrderId, CustomerId, OrderNumber, OrderName FROM OrderHeaders WHERE Id = '" & headerId & "'")
+        Dim row As DataRow = orderClass.GetDataRow("SELECT OrderId, CustomerId, OrderNumber, OrderName FROM OrderHeaders WHERE Id='" & headerId & "'")
 
         If row Is Nothing Then Return Nothing
 
