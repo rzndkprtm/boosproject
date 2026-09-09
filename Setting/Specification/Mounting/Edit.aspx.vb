@@ -95,11 +95,17 @@ Partial Class Setting_Specification_Mounting_Edit
             txtDescription.Text = myData("Description").ToString()
             ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
 
-            If Not myData("BlindId").ToString() = "" Then
-                Dim blindArray() As String = myData("BlindId").ToString().Split(",")
-                For Each i In blindArray
-                    If Not (i.Equals(String.Empty)) Then
-                        lbBlind.Items.FindByValue(i).Selected = True
+            Dim blindIds As String = myData("BlindId").ToString().Trim()
+            If blindIds <> "" Then
+                For Each blindId As String In blindIds.Split(","c)
+                    blindId = blindId.Trim()
+
+                    If blindId <> "" Then
+                        Dim item As ListItem = lbBlind.Items.FindByValue(blindId)
+
+                        If item IsNot Nothing Then
+                            item.Selected = True
+                        End If
                     End If
                 Next
             End If
@@ -114,7 +120,7 @@ Partial Class Setting_Specification_Mounting_Edit
     Protected Sub BindBlind()
         lbBlind.Items.Clear()
         Try
-            lbBlind.DataSource = settingClass.GetDataTable("SELECT Blinds.Id, CONVERT(VARCHAR, Designs.Name) + ' | ' + CONVERT(VARCHAR, Blinds.Name) AS NameText FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id WHERE Blinds.Active=1 ORDER BY Designs.Id, Blinds.Id ASC")
+            lbBlind.DataSource = settingClass.GetDataTable("SELECT Blinds.Id, CONVERT(VARCHAR, Designs.Name) + ' | ' + CONVERT(VARCHAR, Blinds.Name) AS NameText FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id ORDER BY Designs.Id, Blinds.Id ASC")
             lbBlind.DataTextField = "NameText"
             lbBlind.DataValueField = "Id"
             lbBlind.DataBind()

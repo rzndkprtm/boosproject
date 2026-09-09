@@ -40,14 +40,24 @@
                                                 <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                             </div>
                                         </div>
-                                        <div class="row mt-2">
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <div class="row">
+                                            <div class="col-12 form-group">
                                                 <label class="form-label">Price Group</label>
-                                                <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlPriceGroup_SelectedIndexChanged"></asp:DropDownList>
+                                                <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                                <label class="form-label">Design Type</label>
-                                                <asp:DropDownList runat="server" ID="ddlDesignType" CssClass="choices form-select"></asp:DropDownList>
+                                        </div>
+                                        <div class="row mt-2">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Data Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlDataType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDataType_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Designs" Text="Design Type"></asp:ListItem>
+                                                    <asp:ListItem Value="Blinds" Text="Blind Type"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                                <label class="form-label">Data Name</label>
+                                                <asp:DropDownList runat="server" ID="ddlDataId" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
@@ -57,6 +67,7 @@
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
                                                     <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
                                                     <asp:ListItem Value="Linear Metre" Text="Linear Metre"></asp:ListItem>
+                                                    <asp:ListItem Value="Feet" Text="Feet"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-6 form-group">
@@ -69,6 +80,7 @@
                                                     <asp:ListItem Value="LM" Text="LM"></asp:ListItem>
                                                     <asp:ListItem Value="LM_MIN" Text="LM_MIN"></asp:ListItem>
                                                     <asp:ListItem Value="CUT_LENGTH" Text="CUT_LENGTH"></asp:ListItem>
+                                                    <asp:ListItem Value="FEET" Text="FEET"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
@@ -112,6 +124,20 @@
                                             <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Factory Minimum Height</label>
                                                 <asp:TextBox runat="server" ID="txtFactoryMinDrop" CssClass="form-control" placeholder="Factory Minimum Height ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row" runat="server" id="divCustomFormula">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Sell Formula</label>
+                                                <asp:TextBox runat="server" ID="txtSellFormula" CssClass="form-control" placeholder="Sell Formula ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Buy Formula</label>
+                                                <asp:TextBox runat="server" ID="txtBuyFormula" CssClass="form-control" placeholder="Buy Formula ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Factory Formula</label>
+                                                <asp:TextBox runat="server" ID="txtFactoryFormula" CssClass="form-control" placeholder="Factory Formula ..." autocomplete="off"></asp:TextBox>
                                             </div>
                                         </div>
                                         <div class="row">

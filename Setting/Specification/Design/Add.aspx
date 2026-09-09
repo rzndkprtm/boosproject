@@ -53,6 +53,7 @@
                                             <asp:ListItem Value="Samples" Text="Samples"></asp:ListItem>
                                             <asp:ListItem Value="Services" Text="Services"></asp:ListItem>
                                             <asp:ListItem Value="Shutters" Text="Shutters"></asp:ListItem>
+                                            <asp:ListItem Value="Parts" Text="Parts"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                     <div class="col-7 form-group">

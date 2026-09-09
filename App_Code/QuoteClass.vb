@@ -577,6 +577,9 @@ Public Class QuoteClass
                 If designName = "Venetian Blind" Then
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
                 End If
+                If designName = "Venetian Part" Then
+                    itemDescription = invoiceName
+                End If
                 If designName = "Vertical" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     fabricColourName = fabricColourName.Replace("127mm ", "").Replace("89mm ", "").Trim()
@@ -1195,6 +1198,9 @@ Public Class QuoteClass
                         itemDescription &= productName
                     End If
                 End If
+                If designName = "Venetian Part" Then
+                    itemDescription = productName
+                End If
                 If designName = "Vertical" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1}", productName, fabricColourName)
@@ -1786,6 +1792,9 @@ Public Class QuoteClass
                         itemDescription &= vbCrLf
                         itemDescription &= productName
                     End If
+                End If
+                If designName = "Venetian Part" Then
+                    itemDescription = productName
                 End If
                 If designName = "Vertical" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)

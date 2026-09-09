@@ -27,9 +27,9 @@ Partial Class Setting_Price_Calculation_Edit
         End If
     End Sub
 
-    Protected Sub ddlPriceGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Protected Sub ddlDataType_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindDesignType(ddlPriceGroup.SelectedValue)
+        BindDataName(ddlDataType.SelectedValue)
     End Sub
 
     Protected Sub ddlFormula_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -60,39 +60,51 @@ Partial Class Setting_Price_Calculation_Edit
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceCalculations ORDER BY Id DESC")
 
                 If ddlFormula.SelectedValue = "SQM" Then
-                    txtSellMinSize.Text = "" : txtBuyMinSize.Text = ""
-                    txtSellMinWidth.Text = "" : txtBuyMinWidth.Text = ""
-                    txtSellMinDrop.Text = "" : txtBuyMinDrop.Text = ""
+                    txtSellMinSize.Text = "" : txtBuyMinSize.Text = "" : txtFactoryMinSize.Text = ""
+                    txtSellMinWidth.Text = "" : txtBuyMinWidth.Text = "" : txtFactoryMinWidth.Text = ""
+                    txtSellMinDrop.Text = "" : txtBuyMinDrop.Text = "" : txtFactoryMinDrop.Text = ""
+                    txtSellFormula.Text = "" : txtBuyFormula.Text = "" : txtFactoryFormula.Text = ""
                 End If
                 If ddlFormula.SelectedValue = "SQM_MIN" Then
-                    txtSellMinWidth.Text = "" : txtBuyMinWidth.Text = ""
-                    txtSellMinDrop.Text = "" : txtBuyMinDrop.Text = ""
+                    txtSellMinWidth.Text = "" : txtBuyMinWidth.Text = "" : txtFactoryMinWidth.Text = ""
+                    txtSellMinDrop.Text = "" : txtBuyMinDrop.Text = "" : txtFactoryMinDrop.Text = ""
+                    txtSellFormula.Text = "" : txtBuyFormula.Text = "" : txtFactoryFormula.Text = ""
                 End If
                 If ddlFormula.SelectedValue = "SQM_ROUND" Then
-                    txtSellMinSize.Text = "" : txtBuyMinSize.Text = ""
+                    txtSellMinSize.Text = "" : txtBuyMinSize.Text = "" : txtFactoryMinSize.Text = ""
+                    txtSellFormula.Text = "" : txtBuyFormula.Text = "" : txtFactoryFormula.Text = ""
                 End If
                 If ddlFormula.SelectedValue = "LM" Then
-                    txtSellMinSize.Text = "" : txtBuyMinSize.Text = ""
-                    txtSellMinWidth.Text = "" : txtBuyMinWidth.Text = ""
-                    txtSellMinDrop.Text = "" : txtBuyMinDrop.Text = ""
+                    txtSellMinSize.Text = "" : txtBuyMinSize.Text = "" : txtFactoryMinSize.Text = ""
+                    txtSellMinWidth.Text = "" : txtBuyMinWidth.Text = "" : txtFactoryMinWidth.Text = ""
+                    txtSellMinDrop.Text = "" : txtBuyMinDrop.Text = "" : txtFactoryMinDrop.Text = ""
+                    txtSellFormula.Text = "" : txtBuyFormula.Text = "" : txtFactoryFormula.Text = ""
                 End If
                 If ddlFormula.SelectedValue = "LM_MIN" Then
-                    txtSellMinWidth.Text = "" : txtBuyMinWidth.Text = ""
-                    txtSellMinDrop.Text = "" : txtBuyMinDrop.Text = ""
+                    txtSellMinWidth.Text = "" : txtBuyMinWidth.Text = "" : txtFactoryMinWidth.Text = ""
+                    txtSellMinDrop.Text = "" : txtBuyMinDrop.Text = "" : txtFactoryMinDrop.Text = ""
+                    txtSellFormula.Text = "" : txtBuyFormula.Text = "" : txtFactoryFormula.Text = ""
                 End If
                 If ddlFormula.SelectedValue = "CUT_LENGTH" Then
-                    txtSellMinSize.Text = "" : txtBuyMinSize.Text = ""
-                    txtSellMinWidth.Text = "" : txtBuyMinWidth.Text = ""
-                    txtSellMinDrop.Text = "" : txtBuyMinDrop.Text = ""
+                    txtSellMinSize.Text = "" : txtBuyMinSize.Text = "" : txtFactoryMinSize.Text = ""
+                    txtSellMinWidth.Text = "" : txtBuyMinWidth.Text = "" : txtFactoryMinWidth.Text = ""
+                    txtSellMinDrop.Text = "" : txtBuyMinDrop.Text = "" : txtFactoryMinDrop.Text = ""
+                    txtSellFormula.Text = "" : txtBuyFormula.Text = "" : txtFactoryFormula.Text = ""
+                End If
+                If ddlFormula.SelectedValue = "FEET" Then
+                    txtSellMinSize.Text = "" : txtBuyMinSize.Text = "" : txtFactoryMinSize.Text = ""
+                    txtSellMinWidth.Text = "" : txtBuyMinWidth.Text = "" : txtFactoryMinWidth.Text = ""
+                    txtSellMinDrop.Text = "" : txtBuyMinDrop.Text = "" : txtFactoryMinDrop.Text = ""
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceCalculations SET Name=@Name, Method=@Method, PriceGroupId=@PriceGroupId, DesignId=@DesignId, Formula=@Formula, SellMinSize=@SellMinSize, BuyMinSize=@BuyMinSize, FactoryMinSize=@FactoryMinSize, SellMinWidth=@SellMinWidth, BuyMinWidth=@BuyMinWidth, FactoryMinWidth=@FactoryMinWidth, SellMinDrop=@SellMinDrop, BuyMinDrop=@BuyMinDrop, FactoryMinDrop=@FactoryMinDrop Status=@Status WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceCalculations SET Name=@Name, Method=@Method, PriceGroupId=@PriceGroupId, DataType=@DataType, DataId=@DataId, Formula=@Formula, SellMinSize=@SellMinSize, BuyMinSize=@BuyMinSize, FactoryMinSize=@FactoryMinSize, SellMinWidth=@SellMinWidth, BuyMinWidth=@BuyMinWidth, FactoryMinWidth=@FactoryMinWidth, SellMinDrop=@SellMinDrop, BuyMinDrop=@BuyMinDrop, FactoryMinDrop=@FactoryMinDrop, SellFormula=@SellFormula, BuyFormula=@BuyFormula, FactoryFormula=@FactoryFormula, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
                         thisCmd.Parameters.AddWithValue("@Method", ddlMethod.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@DesignId", If(String.IsNullOrEmpty(ddlDesignType.SelectedValue), CType(DBNull.Value, Object), ddlDesignType.SelectedValue))
+                        thisCmd.Parameters.AddWithValue("@DataType", If(String.IsNullOrEmpty(ddlDataType.SelectedValue), CType(DBNull.Value, Object), ddlDataType.SelectedValue))
+                        thisCmd.Parameters.AddWithValue("@DataId", If(String.IsNullOrEmpty(ddlDataId.SelectedValue), CType(DBNull.Value, Object), ddlDataId.SelectedValue))
                         thisCmd.Parameters.AddWithValue("@Formula", ddlFormula.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@SellMinSize", If(String.IsNullOrEmpty(txtSellMinSize.Text), CType(DBNull.Value, Object), txtSellMinSize.Text))
                         thisCmd.Parameters.AddWithValue("@BuyMinSize", If(String.IsNullOrEmpty(txtBuyMinSize.Text), CType(DBNull.Value, Object), txtBuyMinSize.Text))
@@ -103,6 +115,10 @@ Partial Class Setting_Price_Calculation_Edit
                         thisCmd.Parameters.AddWithValue("@SellMinDrop", If(String.IsNullOrEmpty(txtSellMinDrop.Text), CType(DBNull.Value, Object), txtSellMinDrop.Text))
                         thisCmd.Parameters.AddWithValue("@BuyMinDrop", If(String.IsNullOrEmpty(txtBuyMinDrop.Text), CType(DBNull.Value, Object), txtBuyMinDrop.Text))
                         thisCmd.Parameters.AddWithValue("@FactoryMinDrop", If(String.IsNullOrEmpty(txtFactoryMinDrop.Text), CType(DBNull.Value, Object), txtFactoryMinDrop.Text))
+                        thisCmd.Parameters.AddWithValue("@SellFormula", If(String.IsNullOrEmpty(txtSellFormula.Text), CType(DBNull.Value, Object), txtSellFormula.Text))
+                        thisCmd.Parameters.AddWithValue("@BuyFormula", If(String.IsNullOrEmpty(txtBuyFormula.Text), CType(DBNull.Value, Object), txtBuyFormula.Text))
+                        thisCmd.Parameters.AddWithValue("@FactoryFormula", If(String.IsNullOrEmpty(txtFactoryFormula.Text), CType(DBNull.Value, Object), txtFactoryFormula.Text))
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
 
                         thisConn.Open()
@@ -136,21 +152,28 @@ Partial Class Setting_Price_Calculation_Edit
             End If
 
             BindPriceGroup()
-            BindDesignType(myData("PriceGroupId").ToString())
+            BindDataName(myData("DataType").ToString())
             BindForm(myData("Formula").ToString())
 
             txtName.Text = myData("Name").ToString()
             ddlPriceGroup.SelectedValue = myData("PriceGroupId").ToString()
-            ddlDesignType.SelectedValue = myData("DesignId").ToString()
+            ddlDataType.SelectedValue = myData("DataType").ToString()
+            ddlDataId.SelectedValue = myData("DataId").ToString()
             ddlMethod.SelectedValue = myData("Method").ToString()
             ddlFormula.SelectedValue = myData("Formula").ToString()
 
             txtSellMinSize.Text = myData("SellMinSize").ToString()
             txtBuyMinSize.Text = myData("BuyMinSize").ToString()
+            txtFactoryMinSize.Text = myData("FactoryMinSize").ToString()
             txtSellMinWidth.Text = myData("SellMinWidth").ToString()
             txtBuyMinWidth.Text = myData("BuyMinWidth").ToString()
+            txtFactoryMinWidth.Text = myData("FactoryMinWidth").ToString()
             txtSellMinDrop.Text = myData("SellMinDrop").ToString()
             txtBuyMinDrop.Text = myData("BuyMinDrop").ToString()
+            txtFactoryMinDrop.Text = myData("FactoryMinDrop").ToString()
+            txtSellFormula.Text = myData("SellFormula").ToString()
+            txtBuyFormula.Text = myData("BuyFormula").ToString()
+            txtFactoryFormula.Text = myData("FactoryFormula").ToString()
             ddlStatus.SelectedValue = myData("Status").ToString()
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -165,6 +188,7 @@ Partial Class Setting_Price_Calculation_Edit
             divMinimumSize.Visible = False
             divMinimumWidth.Visible = False
             divMinimumHeight.Visible = False
+            divCustomFormula.Visible = False
 
             If formula = "SQM_MIN" Then
                 divMinimumSize.Visible = True
@@ -175,6 +199,9 @@ Partial Class Setting_Price_Calculation_Edit
             End If
             If formula = "LM_MIN" Then
                 divMinimumSize.Visible = True
+            End If
+            If formula = "FEET" Then
+                divCustomFormula.Visible = True
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -200,25 +227,29 @@ Partial Class Setting_Price_Calculation_Edit
         End Try
     End Sub
 
-    Protected Sub BindDesignType(priceGroupId As String)
-        ddlDesignType.Items.Clear()
+    Protected Sub BindDataName(dataType As String)
+        ddlDataId.Items.Clear()
         Try
-            If Not String.IsNullOrEmpty(priceGroupId) Then
-                Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM PriceGroups WHERE Id='" & priceGroupId & "'")
-                Dim type As String = settingClass.GetItemData("SELECT Type FROM PriceGroups WHERE Id='" & priceGroupId & "'")
+            If Not String.IsNullOrEmpty(dataType) Then
+                Dim thisString As String = String.Empty
+                If dataType = "Designs" Then
+                    thisString = "SELECT Id, Name FROM Designs WHERE Active=1"
+                End If
+                If dataType = "Blinds" Then
+                    thisString = "SELECT Id, Name FROM Blinds WHERE Active=1"
+                End If
 
-                ddlDesignType.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS companyArray WHERE companyArray.VALUE='" & companyId & "' AND Type='" & type & "' AND Active=1")
-                ddlDesignType.DataTextField = "Name"
-                ddlDesignType.DataValueField = "Id"
-                ddlDesignType.DataBind()
+                ddlDataId.DataSource = settingClass.GetDataTable(thisString)
+                ddlDataId.DataTextField = "Name"
+                ddlDataId.DataValueField = "Id"
+                ddlDataId.DataBind()
 
-                If ddlDesignType.Items.Count > 0 Then
-                    ddlDesignType.Items.Insert(0, New ListItem("", ""))
+                If ddlDataId.Items.Count > 0 Then
+                    ddlDataId.Items.Insert(0, New ListItem("", ""))
                 End If
             End If
-
         Catch ex As Exception
-            ddlDesignType.Items.Clear()
+            ddlDataId.Items.Clear()
         End Try
     End Sub
 

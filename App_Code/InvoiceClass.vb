@@ -460,9 +460,6 @@ Public Class InvoiceClass
                         itemDescription &= fabricColourNameB
                     End If
                 End If
-                If designName = "Component" Then
-                    itemDescription = invoiceName
-                End If
                 If designName = "Curtain" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
@@ -540,6 +537,9 @@ Public Class InvoiceClass
                 End If
                 If designName = "Venetian Blind" Then
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
+                End If
+                If designName = "Venetian Part" Then
+                    itemDescription = invoiceName
                 End If
                 If designName = "Vertical" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
@@ -722,10 +722,6 @@ Public Class InvoiceClass
                     End If
                     namaBarang = designName
                 End If
-                If designName = "Component" Then
-                    itemDescription = invoiceName
-                    namaBarang = designName
-                End If
                 If designName = "Curtain" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
@@ -825,6 +821,10 @@ Public Class InvoiceClass
                     If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" Then
                         namaBarang = "Basswood Blind"
                     End If
+                End If
+                If designName = "Venetian Part" Then
+                    itemDescription = invoiceName
+                    namaBarang = designName
                 End If
                 If designName = "Vertical" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
@@ -1204,6 +1204,9 @@ Public Class InvoiceClass
                 End If
                 If designName = "Venetian Blind" Then
                     itemDescription = String.Format("{0} {1}", invoiceName, size)
+                End If
+                If designName = "Venetian Part" Then
+                    itemDescription = invoiceName
                 End If
                 If designName = "Vertical" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)

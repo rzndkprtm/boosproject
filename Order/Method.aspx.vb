@@ -720,7 +720,29 @@ Partial Class Order_Method
             End If
         End If
 
+        If type = "ValanceType_Part" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Basswood 50mm Valance" OrElse blindName = "Basswood 63mm Valance" Then
+                result.Add(New With {.Value = "75mm Valance", .Text = "75mm"})
+                result.Add(New With {.Value = "89mm Valance", .Text = "89mm"})
+            End If
+            If blindName = "Econo 50mm Valance" OrElse blindName = "Econo 63mm Valance" Then
+                result.Add(New With {.Value = "76mm Valance", .Text = "76mm"})
+            End If
+            If blindName = "Ultraslat 50mm Valance" OrElse blindName = "Ultraslat 63mm Valance" Then
+                result.Add(New With {.Value = "76mm Valance", .Text = "76mm"})
+            End If
+        End If
+
         If type = "ValancePosition" Then
+            If Not String.IsNullOrEmpty(blindtype) Then
+                result.Add(New With {.Value = "Left", .Text = "Left"})
+                result.Add(New With {.Value = "Right", .Text = "Right"})
+                result.Add(New With {.Value = "Both Sides", .Text = "Both Sides"})
+            End If
+        End If
+
+        If type = "ValancePosition_Part" Then
             If Not String.IsNullOrEmpty(blindtype) Then
                 result.Add(New With {.Value = "Left", .Text = "Left"})
                 result.Add(New With {.Value = "Right", .Text = "Right"})
@@ -9840,6 +9862,166 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
+    Public Shared Function VenetianPartProcess(data As ProccessData) As String
+        Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+
+        Dim qty As Integer
+        Dim width As Integer
+        Dim drop As Integer = 0
+
+        Dim vsvalue As Integer
+        Dim rlvalue As Integer
+
+        Dim markup As Integer
+
+        Dim linearMetre As Decimal = 0
+        Dim squareMetre As Decimal = 0
+
+        Dim totalItems As Integer = 1
+
+        Dim designName As String = String.Empty
+        Dim blindName As String = String.Empty
+        Dim colourId As String = String.Empty
+        Dim colourName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+        If Not String.IsNullOrEmpty(data.colourtype) Then colourId = orderClass.GetItemData("SELECT ColourType FROM Products WHERE Id='" & data.colourtype & "'")
+        If Not String.IsNullOrEmpty(colourId) Then colourName = orderClass.GetColourName(colourId)
+
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+
+        If String.IsNullOrEmpty(data.blindtype) Then Return "PART TYPE IS REQUIRED !"
+        If String.IsNullOrEmpty(data.colourtype) Then Return "VENETIAN COLOUR IS REQUIRED !"
+        If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
+        If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
+        If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
+
+        If blindName.Contains("Valance") Then
+            If String.IsNullOrEmpty(data.valancetype) Then Return "VALANCE TYPE IS REQUIRED !"
+            If String.IsNullOrEmpty(data.valancesizevalue) Then Return "VALANCE SIZE VALUE IS REQUIRED !"
+            If Not Integer.TryParse(data.valancesizevalue, vsvalue) OrElse vsvalue <= 0 Then Return "PLEASE CHECK YOUR VALANCE SIZE VALUE ORDER !"
+
+            If String.IsNullOrEmpty(data.returnlengthvalue) Then Return "VALANCE RETURN LENGTH VALUE IS REQUIRED !"
+            If Not Integer.TryParse(data.returnlengthvalue, rlvalue) OrElse rlvalue <= 0 Then Return "PLEASE CHECK YOUR VALANCE RETURN LENGTH VALUE ORDER !"
+        End If
+
+        If Not String.IsNullOrEmpty(data.notes) Then
+            If data.notes.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.notes.Contains("&=") OrElse data.notes.Contains("&+") Then
+                Return "SPECIAL INFORMATION MUST NOT CONTAIN: , & ` ' &= &+"
+            End If
+            If data.notes.Trim().Length > 1000 Then Return "MAXIMUM 1000 CHARACTERS !"
+        End If
+
+        If Not String.IsNullOrEmpty(data.markup) Then
+            If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
+        End If
+
+        If blindName.Contains("Valance") Then
+            width = data.valancesizevalue
+            data.valancesize = "Custom" : data.returnlength = "Custom"
+        End If
+
+        Dim groupName As String = String.Format("{0} - {1}", designName, blindName)
+        If blindName = "Ultraslat 50mm Valance" Then
+            groupName = String.Format("{0} - {1}", designName, "Econo 50mm Valance")
+        End If
+        If blindName = "Ultraslat 63mm" Then
+            groupName = String.Format("{0} - {1}", designName, "Econo 63mm Valance")
+        End If
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
+
+        If data.itemaction = "create" OrElse data.itemaction = "copy" Then
+            For i As Integer = 1 To qty
+                Dim itemId As String = orderClass.GetNewOrderItemId()
+
+                Using thisConn As SqlConnection = New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_VenetianPart", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+
+                        thisCmd.Parameters.AddWithValue("@Id", itemId)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
+                        thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
+                        thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                        thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
+                        thisCmd.Parameters.AddWithValue("@Width", width)
+                        thisCmd.Parameters.AddWithValue("@Drop", drop)
+                        thisCmd.Parameters.AddWithValue("@ValanceType", data.valancetype)
+                        thisCmd.Parameters.AddWithValue("@ValanceSize", data.valancesize)
+                        thisCmd.Parameters.AddWithValue("@ValanceSizeValue", vsvalue)
+                        thisCmd.Parameters.AddWithValue("@ReturnPosition", data.returnposition)
+                        thisCmd.Parameters.AddWithValue("@ReturnLength", data.returnlength)
+                        thisCmd.Parameters.AddWithValue("@ReturnLengthValue", rlvalue)
+                        thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
+                        thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
+                        thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
+                        thisCmd.Parameters.AddWithValue("@Notes", data.notes)
+                        thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+
+                Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
+                orderClass.Logs(dataLog)
+            Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
+            Return "Success"
+        End If
+
+        If data.itemaction = "edit" OrElse data.itemaction = "view" Then
+            Dim itemId As String = data.itemid
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Venetian", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+
+                    thisCmd.Parameters.AddWithValue("@Id", itemId)
+                    thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
+                    thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                    thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
+                    thisCmd.Parameters.AddWithValue("@Width", width)
+                    thisCmd.Parameters.AddWithValue("@Drop", drop)
+                    thisCmd.Parameters.AddWithValue("@ValanceType", data.valancetype)
+                    thisCmd.Parameters.AddWithValue("@ValanceSize", data.valancesize)
+                    thisCmd.Parameters.AddWithValue("@ValanceSizeValue", vsvalue)
+                    thisCmd.Parameters.AddWithValue("@ReturnPosition", data.returnposition)
+                    thisCmd.Parameters.AddWithValue("@ReturnLength", data.returnlength)
+                    thisCmd.Parameters.AddWithValue("@ReturnLengthValue", rlvalue)
+                    thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
+                    thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
+                    thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
+                    thisCmd.Parameters.AddWithValue("@Notes", data.notes)
+                    thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            orderClass.ResetPriceDetail(data.headerid, itemId)
+            orderClass.CalculatePrice(data.headerid, itemId)
+            orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
+
+            Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
+            orderClass.Logs(dataLog)
+
+            Return "Success"
+        End If
+
+        Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
+    End Function
+
+    <WebMethod()>
     Public Shared Function VerticalProcess(data As ProccessData) As String
         Dim orderClass As New OrderClass
 
@@ -11300,6 +11482,40 @@ Partial Class Order_Method
             .ColourTypes = ListData(colourReq),
             .Mountings = ListData(mountingReq),
             .SubTypes = ListData(subTypeReq),
+            .ValanceTypes = ListData(valanceTypeReq),
+            .ValancePositions = ListData(valancePositionReq)
+        }
+        Return result
+    End Function
+
+    <WebMethod()>
+    Public Shared Function VenetianPartDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+        Dim orderClass As New OrderClass
+
+        Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
+        If detailData Is Nothing Then Return Nothing
+
+        Dim designId As String = detailData("DesignId").ToString()
+        Dim blindId As String = detailData("BlindType").ToString()
+        Dim tubeId As String = detailData("TubeType").ToString()
+        Dim controlId As String = detailData("ControlType").ToString()
+
+        Dim itemDetail As New Dictionary(Of String, Object)
+        For Each col As DataColumn In detailData.Table.Columns
+            itemDetail(col.ColumnName) = detailData(col.ColumnName)
+        Next
+
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
+        Dim valanceTypeReq As New JSONList With {.type = "ValanceType_Part", .blindtype = blindId, .action = action}
+        Dim valancePositionReq As New JSONList With {.type = "ValancePosition_Part", .blindtype = blindId, .action = action}
+
+        Dim result = New With {
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .ColourTypes = ListData(colourReq),
+            .Mountings = ListData(mountingReq),
             .ValanceTypes = ListData(valanceTypeReq),
             .ValancePositions = ListData(valancePositionReq)
         }

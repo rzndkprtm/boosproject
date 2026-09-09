@@ -69,13 +69,13 @@
                                             <asp:BoundField DataField="Method" HeaderText="Method" />
                                             <asp:BoundField DataField="Name" HeaderText="Name" />
                                             <asp:BoundField DataField="Formula" HeaderText="Formula" />
-                                            <asp:BoundField DataField="DesignName" HeaderText="Design Name" />
+                                            <asp:BoundField DataField="DataName" HeaderText="Data Name" />
                                             <asp:TemplateField ItemStyle-Width="120px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                     <ul class="dropdown-menu">
                                                         <li>
-                                                            <a class="dropdown-item" id="aDetail" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDetail" onclick='<%# String.Format("return dataDetail(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`, `{5}`, `{6}`, `{7}`, `{8}`);", Eval("SellMinSize").ToString(), Eval("BuyMinSize").ToString(), Eval("FactoryMinSize").ToString(), Eval("SellMinWidth").ToString(), Eval("BuyMinWidth").ToString(), Eval("FactoryMinWidth").ToString(), Eval("SellMinDrop").ToString(), Eval("BuyMinDrop").ToString(), Eval("FactoryMinDrop").ToString()) %>'>Detail</a>
+                                                            <a class="dropdown-item" id="aDetail" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDetail" onclick='<%# String.Format("return dataDetail(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`, `{5}`, `{6}`, `{7}`, `{8}`, `{9}`, `{10}`, `{11}`);", Eval("SellMinSize").ToString(), Eval("BuyMinSize").ToString(), Eval("FactoryMinSize").ToString(), Eval("SellMinWidth").ToString(), Eval("BuyMinWidth").ToString(), Eval("FactoryMinWidth").ToString(), Eval("SellMinDrop").ToString(), Eval("BuyMinDrop").ToString(), Eval("FactoryMinDrop").ToString(), Eval("SellFormula").ToString(), Eval("BuyFormula").ToString(), Eval("FactoryFormula").ToString()) %>'>Detail</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/price/calculation/edit?calculationid=" & Eval("Id")) %>'>Edit</a>
@@ -114,7 +114,7 @@
     </div>
 
     <div class="modal fade text-center" id="modalDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-full modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Calculation</h5>
@@ -126,8 +126,12 @@
                                 <th colspan="3">Minimum Size</th>
                                 <th colspan="3">Minimum Width</th>
                                 <th colspan="3">Minimum Drop</th>
+                                <th colspan="3">Custom Formula</th>
                             </tr>
                             <tr>
+                                <th>Sell</th>
+                                <th>Buy</th>
+                                <th>Factory</th>
                                 <th>Sell</th>
                                 <th>Buy</th>
                                 <th>Factory</th>
@@ -148,6 +152,9 @@
                                 <td><span id="spanSellMinDrop"></span></td>
                                 <td><span id="spanBuyMinDrop"></span></td>
                                 <td><span id="spanFactoryMinDrop"></span></td>
+                                <td><span id="spanSellFormula"></span></td>
+                                <td><span id="spanBuyFormula"></span></td>
+                                <td><span id="spanFactoryFormula"></span></td>
                             </tr>
                         </table>
                     </div>
@@ -241,7 +248,7 @@
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-        function dataDetail(sellminsize, buyminsize, factoryminsize, sellminwidth, buyminwidth, factoryminwidth, sellmindrop, buymindrop, factorymindrop) {
+        function dataDetail(sellminsize, buyminsize, factoryminsize, sellminwidth, buyminwidth, factoryminwidth, sellmindrop, buymindrop, factorymindrop, sellformula, buyformula, factoryformula) {
             document.getElementById("spanSellMinSize").innerText = sellminsize;
             document.getElementById("spanBuyMinSize").innerText = buyminsize;
             document.getElementById("spanFactoryMinSize").innerText = factoryminsize;
@@ -251,6 +258,9 @@
             document.getElementById("spanSellMinDrop").innerText = sellmindrop;
             document.getElementById("spanBuyMinDrop").innerText = buymindrop;
             document.getElementById("spanFactoryMinDrop").innerText = factorymindrop;
+            document.getElementById("spanSellFormula").innerText = sellformula;
+            document.getElementById("spanBuyFormula").innerText = buyformula;
+            document.getElementById("spanFactoryFormula").innerText = factoryformula;
         }
         function dataDelete(id) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
