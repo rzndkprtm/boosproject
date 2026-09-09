@@ -55,6 +55,7 @@
                                                     <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
                                                     <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
                                                     <asp:ListItem Value="Linear Metre" Text="Linear Metre"></asp:ListItem>
+                                                    <asp:ListItem Value="Feet" Text="Feet"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
