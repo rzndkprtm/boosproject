@@ -136,15 +136,15 @@ Partial Class Setting_Price_Base_Add
                     Exit Sub
                 End If
 
-                If row("Height").ToString() = "" Then
-                    MessageError(True, "HEIGHT IS REQUIRED ON ROW " & (i + 1).ToString() & " !")
-                    Exit Sub
-                End If
+                'If row("Height").ToString() = "" Then
+                '    MessageError(True, "HEIGHT IS REQUIRED ON ROW " & (i + 1).ToString() & " !")
+                '    Exit Sub
+                'End If
 
-                If row("Width").ToString() = "" Then
-                    MessageError(True, "WIDTH IS REQUIRED ON ROW " & (i + 1).ToString() & " !")
-                    Exit Sub
-                End If
+                'If row("Width").ToString() = "" Then
+                '    MessageError(True, "WIDTH IS REQUIRED ON ROW " & (i + 1).ToString() & " !")
+                '    Exit Sub
+                'End If
 
                 If row("Price").ToString() = "" Then
                     MessageError(True, "PRICE IS REQUIRED ON ROW " & (i + 1).ToString() & " !")

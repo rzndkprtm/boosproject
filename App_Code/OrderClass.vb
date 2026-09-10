@@ -859,6 +859,9 @@ Public Class OrderClass
 
             Dim room As String = thisData("Room").ToString()
             Dim itemDescription As String = String.Format("<b>{0}</b>, {1}", room, productName)
+            If String.IsNullOrEmpty(room) Then
+                itemDescription = String.Format("<b>{0}</b>", productName)
+            End If
 
             If designName = "Aluminium Blind" Then
                 result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
@@ -1892,7 +1895,8 @@ Public Class OrderClass
             Dim width As Integer = Convert.ToInt32(data(3))
             Dim category As String = Convert.ToString(data(4))
 
-            Dim thisString As String = String.Format("SELECT TOP 1 * FROM PriceBases WHERE ProductGroupId='{0}' AND PriceGroupId='{1}' AND Height>='{2}' AND Width>='{3}' AND Category='{4}' AND Price>=0 ORDER BY Height, Width, Price, Conditional ASC", productGroupId, priceGroupId, drop, width, category)
+            'Dim thisString As String = String.Format("SELECT TOP 1 * FROM PriceBases WHERE ProductGroupId='{0}' AND PriceGroupId='{1}' AND Height>='{2}' AND Width>='{3}' AND Category='{4}' AND Price>=0 ORDER BY Height, Width, Price, Conditional ASC", productGroupId, priceGroupId, drop, width, category)
+            Dim thisString As String = String.Format("SELECT TOP 1 * FROM PriceBases WHERE ProductGroupId='{0}' AND PriceGroupId='{1}' AND (Height IS NULL OR Height>='{2}') AND (Width IS NULL OR Width>='{3}') AND Category='{4}' AND Price>=0 ORDER BY Height, Width, Price, Conditional ASC", productGroupId, priceGroupId, drop, width, category)
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisString, thisConn)

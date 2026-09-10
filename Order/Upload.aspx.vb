@@ -1102,7 +1102,7 @@ Partial Class Order_Upload
 
                                     Dim validControlPosition As String() = {"Left", "Right"}
                                     If blindType = "Day & Night" OrElse blindType = "TDBU" Then
-                                        validControlPosition = {"Both Sides"}
+                                        validControlPosition = {"Both Sides", "Cords Both Sides"}
                                     End If
                                     If Not validControlPosition.Contains(controlPosition) Then
                                         Dim thisAlert As String = String.Format("PLEASE CHECK THE CONTROL POSITION FOR ITEM {0}", itemNumber)

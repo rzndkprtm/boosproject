@@ -2,6 +2,7 @@
 let itemAction;
 let headerId;
 let orderId;
+let orderStatus;
 let itemId;
 let designId;
 let customerId;
@@ -298,6 +299,7 @@ function getOrderHeader(headerId) {
             success: ({ d }) => {
                 orderId = d.OrderId || "-";
                 customerId = d.CustomerId || "-";
+                orderStatus = d.OrderStatus || "-";
                 document.getElementById("orderid").innerText = d.OrderId || "-";
                 document.getElementById("ordernumber").innerText = d.OrderNumber || "-";
                 document.getElementById("ordername").innerText = d.OrderName || "-";
@@ -640,7 +642,7 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindTypeRoller", companydetailid: companyDetailId, designtype: designType, action: itemAction };
+        const listData = { type: "BlindTypeRoller", companydetailid: companyDetailId, designtype: designType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -704,7 +706,7 @@ function bindControlType(blindType) {
             return;
         }
 
-        let listData = { type: "ControlTypeRoller", companydetailid: companyDetailId, blindtype: blindType, action: itemAction };
+        let listData = { type: "ControlTypeRoller", companydetailid: companyDetailId, blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -767,7 +769,7 @@ function bindTubeType(blindType, controlType) {
             return;
         }
 
-        let listData = { type: "TubeTypeRoller", companydetailid: companyDetailId, blindtype: blindType, controltype:controlType, action: itemAction };
+        let listData = { type: "TubeTypeRoller", companydetailid: companyDetailId, blindtype: blindType, controltype: controlType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -828,7 +830,7 @@ function bindColourType(blindType, controlType, tubeType) {
             return;
         }
 
-        const listData = { type: "ColourType", companydetailid: companyDetailId, blindtype: blindType, tubetype: tubeType, controltype: controlType, action: itemAction };
+        const listData = { type: "ColourType", companydetailid: companyDetailId, blindtype: blindType, tubetype: tubeType, controltype: controlType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -885,7 +887,7 @@ function bindMounting(blindType) {
             return;
         }
 
-        const listData = { type: "Mounting", blindtype: blindType, action: itemAction };
+        const listData = { type: "Mounting", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -945,7 +947,7 @@ function bindChainRemote(designType, blindType, controlType) {
                 chainCustom = "Cassette";
             }
 
-            const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetailid: companyDetailId, customtype: chainCustom, action: itemAction };
+            const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetailid: companyDetailId, customtype: chainCustom, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
             $.ajax({
                 type: "POST",
@@ -996,7 +998,7 @@ function bindChainStopper(chainColour) {
             return;
         }
 
-        const listData = { type: "ChainStopper", chaincolour: chainColour, action: itemAction };
+        const listData = { type: "ChainStopper", chaincolour: chainColour, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1045,7 +1047,7 @@ function bindChainStopperB(chainColour) {
             return;
         }
 
-        const listData = { type: "ChainStopper", chaincolour: chainColour, action: itemAction };
+        const listData = { type: "ChainStopper", chaincolour: chainColour, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1094,7 +1096,7 @@ function bindChainStopperC(chainColour) {
             return;
         }
 
-        const listData = { type: "ChainStopper", chaincolour: chainColour, action: itemAction };
+        const listData = { type: "ChainStopper", chaincolour: chainColour, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1143,7 +1145,7 @@ function bindChainStopperD(chainColour) {
             return;
         }
 
-        const listData = { type: "ChainStopper", chaincolour: chainColour, action: itemAction };
+        const listData = { type: "ChainStopper", chaincolour: chainColour, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1192,7 +1194,7 @@ function bindChainStopperE(chainColour) {
             return;
         }
 
-        const listData = { type: "ChainStopper", chaincolour: chainColour, action: itemAction };
+        const listData = { type: "ChainStopper", chaincolour: chainColour, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1241,7 +1243,7 @@ function bindChainStopperF(chainColour) {
             return;
         }
 
-        const listData = { type: "ChainStopper", chaincolour: chainColour, action: itemAction };
+        const listData = { type: "ChainStopper", chaincolour: chainColour, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1299,7 +1301,7 @@ function bindFabricType(designType) {
             return;
         }
 
-        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetailid: companyDetailId, action: itemAction };
+        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetailid: companyDetailId, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1368,7 +1370,7 @@ function bindFabricColour(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, action: itemAction };
+        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1417,7 +1419,7 @@ function bindFabricColourB(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, action: itemAction };
+        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1466,7 +1468,7 @@ function bindFabricColourC(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, action: itemAction };
+        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1515,7 +1517,7 @@ function bindFabricColourD(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId,  action: itemAction };
+        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1564,7 +1566,7 @@ function bindFabricColourE(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId,  action: itemAction };
+        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1613,7 +1615,7 @@ function bindFabricColourF(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId,  action: itemAction };
+        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1684,7 +1686,7 @@ function bindBottomType(designType) {
             return;
         }
 
-        const listData = { type: "BottomType", designtype: designType, companydetailid: companyDetailId, action: itemAction };
+        const listData = { type: "BottomType", designtype: designType, companydetailid: companyDetailId, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1744,7 +1746,7 @@ function bindBottomColour(bottomType) {
             return;
         }
 
-        let listData = { type: "BottomColour", bottomtype: bottomType, action: itemAction };
+        let listData = { type: "BottomColour", bottomtype: bottomType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1793,7 +1795,7 @@ function bindBottomColourB(bottomType) {
             return;
         }
 
-        let listData = { type: "BottomColour", bottomtype: bottomType, action: itemAction };
+        let listData = { type: "BottomColour", bottomtype: bottomType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1842,7 +1844,7 @@ function bindBottomColourC(bottomType) {
             return;
         }
 
-        let listData = { type: "BottomColour", bottomtype: bottomType, action: itemAction };
+        let listData = { type: "BottomColour", bottomtype: bottomType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1891,7 +1893,7 @@ function bindBottomColourD(bottomType) {
             return;
         }
 
-        let listData = { type: "BottomColour", bottomtype: bottomType, action: itemAction };
+        let listData = { type: "BottomColour", bottomtype: bottomType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1940,7 +1942,7 @@ function bindBottomColourE(bottomType) {
             return;
         }
 
-        let listData = { type: "BottomColour", bottomtype: bottomType, action: itemAction };
+        let listData = { type: "BottomColour", bottomtype: bottomType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -1989,7 +1991,7 @@ function bindBottomColourF(bottomType) {
             return;
         }
 
-        let listData = { type: "BottomColour", bottomtype: bottomType, action: itemAction };
+        let listData = { type: "BottomColour", bottomtype: bottomType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -2972,18 +2974,18 @@ async function initRoller() {
         loader(itemAction)
     } else if (["edit", "view", "copy"].includes(itemAction)) {
         controlForm(itemAction === "view", itemAction === "edit", itemAction === "copy");
-        await bindItemOrder(itemId, companyDetailId, itemAction);
+        await bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, itemAction);
     }
 }
 
-async function bindItemOrder(itemId, companyDetailId, action) {
+async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, action) {
     try {
         document.getElementById("divloader").style.display = "";
 
         const response = await $.ajax({
             type: "POST",
             url: "Method.aspx/RollerDetail",
-            data: JSON.stringify({ itemId, companyDetailId, action }),
+            data: JSON.stringify({ itemId, companyDetailId, orderStatus, roleAccess, action }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         });

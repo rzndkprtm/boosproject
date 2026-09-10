@@ -172,6 +172,8 @@ Partial Class Order_Add
         Try
             divCustomer.Visible = False
             divOrderType.Visible = False
+            divOrderContact.Visible = False
+            divOrderAddress.Visible = False
 
             Dim companyDetailName As String = String.Empty
             If Not String.IsNullOrEmpty(customerId) Then
@@ -181,6 +183,11 @@ Partial Class Order_Add
             If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Data Entry" Then
                 divCustomer.Visible = True
                 If companyDetailName = "JPMD BP" Then divOrderType.Visible = True
+            End If
+
+            If companyDetailName = "JPMD" Then
+                divOrderContact.Visible = True
+                divOrderAddress.Visible = True
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
