@@ -3438,7 +3438,12 @@ Partial Class Order_Detail
 
             gvListItem.Columns(8).Visible = False
             If Session("RoleName") = "Customer" Then
-                If Session("PriceAccess") = "Yes" Then gvListItem.Columns(8).Visible = True
+                gvListItem.Columns(4).Visible = False
+                gvListItem.Columns(8).Visible = False
+                If Session("PriceAccess") = "Yes" Then
+                    gvListItem.Columns(4).Visible = True
+                    gvListItem.Columns(8).Visible = True
+                End If
             End If
 
             If status = "Unsubmitted" And gvListItem.Rows.Count > 0 Then
@@ -4071,6 +4076,8 @@ Partial Class Order_Detail
         Dim result As Boolean = False
 
         If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Data Entry" OrElse Session("RoleName") = "Account" OrElse Session("RoleName") = "Customer" OrElse Session("RoleName") = "Export" Then result = True
+
+        If Session("RoleName") = "Customer" AndAlso Session("PriceAccess") = "Yes" Then result = True
 
         Return result
     End Function

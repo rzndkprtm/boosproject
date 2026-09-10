@@ -29,6 +29,11 @@ Partial Class Quotation
             Exit Sub
         End If
 
+        If Session("RoleName") = "Customer" AndAlso Not Session("PriceAccess") = "Yes" Then
+            Response.Redirect("~/", False)
+            Exit Sub
+        End If
+
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             MessageError_Logo(False, String.Empty)
