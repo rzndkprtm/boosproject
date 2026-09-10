@@ -88,10 +88,8 @@ Partial Class Order_Edit
                     Select Case state
                         Case "NSW", "QLD", "NT", "ACT"
                             orderContainer = "SYD"
-
                         Case "VIC", "SA", "TAS", "WA"
                             orderContainer = "MEL"
-
                         Case Else
                             orderContainer = String.Empty
                     End Select
@@ -237,18 +235,20 @@ Partial Class Order_Edit
 
             divCustomer.Visible = False
             divOrderTypeFactory.Visible = False
+            divOrderContact.Visible = False
+            divOrderAddress.Visible = False
 
             ddlCustomer.Enabled = False
 
             txtOrderId.Enabled = False
             ddlCustomer.Enabled = False
 
+            Dim companyDetailName As String = orderClass.GetCompanyDetailNameByCustomer(ddlCustomer.SelectedValue)
+
             If Session("RoleName") = "Developer" Then
                 divCustomer.Visible = True
                 divOrderTypeFactory.Visible = True
-
                 ddlCustomer.Enabled = True
-
                 txtOrderId.Enabled = True
                 ddlCustomer.Enabled = True
             End If
@@ -269,6 +269,11 @@ Partial Class Order_Edit
             If Session("RoleName") = "Factory Office" Then
                 divCustomer.Visible = True
                 ddlCustomer.Enabled = False
+            End If
+
+            If companyDetailName = "JPMD" Then
+                divOrderContact.Visible = True
+                divOrderAddress.Visible = True
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

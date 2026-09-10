@@ -58,18 +58,24 @@
                                         <asp:TextBox runat="server" TextMode="MultiLine" ID="txtOrderNote" Height="100px" CssClass="form-control" placeholder="Order Note ...." autocomplete="off" style="resize:none;"></asp:TextBox>
                                     </div>
                                 </div>
-                                <div class="row mb-2">
+                                <div class="row mb-2" runat="server" id="divOrderContact">
                                     <div class="col-12 form-group">
                                         <label class="form-label">Order Contact</label>
-                                        <asp:TextBox runat="server" ID="txtOrderContact" CssClass="form-control" ReadOnly="true" ClientIDMode="Static" placeholder="Order Contact ..." autocomplete="off" onclick="openOrderContactModal();"></asp:TextBox>
+                                        <div class="input-group">
+                                            <asp:TextBox runat="server" ID="txtOrderContact" CssClass="form-control" ReadOnly="true" ClientIDMode="Static" placeholder="Order Contact ..." autocomplete="off" onclick="openOrderContactModal();"></asp:TextBox>
+                                            <span class="input-group-text" onclick="openOrderContactModal();">CLICK TO CHANGE</span>
+                                        </div>
                                         <small class="text-muted">Format : {Contact Name} | {Phone} | {Email}</small>
                                         <asp:HiddenField runat="server" ID="hfOrderContact" ClientIDMode="Static" />
                                     </div>
                                 </div>
-                                <div class="row mb-2">
+                                <div class="row mb-2" runat="server" id="divOrderAddress">
                                     <div class="col-12 form-group">
                                         <label class="form-label">Order Address</label>
-                                        <asp:TextBox runat="server" ID="txtOrderAddress" CssClass="form-control" ReadOnly="true" ClientIDMode="Static" placeholder="Order Address ..." autocomplete="off" onclick="openOrderAddressModal();"></asp:TextBox>
+                                        <div class="input-group">
+                                            <asp:TextBox runat="server" ID="txtOrderAddress" CssClass="form-control" ReadOnly="true" ClientIDMode="Static" placeholder="Order Address ..." autocomplete="off" onclick="openOrderAddressModal();"></asp:TextBox>
+                                            <span class="input-group-text" onclick="openOrderAddressModal();">CLICK TO CHANGE</span>
+                                        </div>
                                         <small class="text-muted">Format : {Address}, {Suburb}, {State} {Post Code}</small>
                                         <asp:HiddenField runat="server" ID="hfOrderAddress" ClientIDMode="Static" />
                                     </div>

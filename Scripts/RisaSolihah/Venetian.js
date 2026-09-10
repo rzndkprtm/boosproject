@@ -2,6 +2,7 @@
 let itemAction;
 let headerId;
 let orderId;
+let orderStatus;
 let itemId;
 let designId;
 let customerId;
@@ -103,6 +104,7 @@ function getOrderHeader(headerId) {
             success: ({ d }) => {
                 orderId = d.OrderId || "-";
                 customerId = d.CustomerId || "-";
+                orderStatus = d.OrderStatus || "-";
                 document.getElementById("orderid").innerText = d.OrderId || "-";
                 document.getElementById("ordernumber").innerText = d.OrderNumber || "-";
                 document.getElementById("ordername").innerText = d.OrderName || "-";
@@ -360,7 +362,7 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindType", companydetailid: companyDetailId, designtype: designType, action: itemAction };
+        const listData = { type: "BlindType", companydetailid: companyDetailId, designtype: designType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -424,7 +426,7 @@ function bindColourType(blindtype) {
             return;
         }
 
-        const listData = { type: "ColourType", blindtype: blindtype, companydetailid: companyDetailId, tubetype: "9", controltype: "17", action: itemAction };
+        const listData = { type: "ColourType", blindtype: blindtype, companydetailid: companyDetailId, tubetype: "9", controltype: "17", orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -475,7 +477,7 @@ function bindSubType(blindType) {
             return;
         }
 
-        const listData = { type: "SubType", blindtype: blindType, action: itemAction };
+        const listData = { type: "SubType", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -532,7 +534,7 @@ function bindMounting(blindType) {
             return;
         }
 
-        const listData = { type: "Mounting", blindtype: blindType, action: itemAction };
+        const listData = { type: "Mounting", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -581,7 +583,7 @@ function bindValanceType(blindType) {
             return;
         }
 
-        const listData = { type: "ValanceType", blindtype: blindType, action: itemAction };
+        const listData = { type: "ValanceType", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -630,7 +632,7 @@ function bindValancePosition(blindType) {
             return;
         }
 
-        const listData = { type: "ValancePosition", blindtype: blindType, action: itemAction };
+        const listData = { type: "ValancePosition", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -958,17 +960,17 @@ async function initVenetian() {
         bindBlindType(designId);
         loader(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {
-        await bindItemOrder(itemId, companyDetailId, itemAction);
+        await bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, itemAction);
         controlForm(itemAction === "view", itemAction === "edit", itemAction === "copy");
     }
 }
 
-async function bindItemOrder(itemId, companyDetailId, action) {
+async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, action) {
     try {
         const response = await $.ajax({
             type: "POST",
             url: "Method.aspx/VenetianDetail",
-            data: JSON.stringify({ itemId, companyDetailId, action }),
+            data: JSON.stringify({ itemId, companyDetailId, orderStatus, roleAccess, action }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         });

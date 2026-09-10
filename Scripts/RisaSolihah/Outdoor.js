@@ -2,6 +2,7 @@
 let itemAction;
 let headerId;
 let orderId;
+let orderStatus;
 let itemId;
 let designId;
 let customerId;
@@ -79,6 +80,7 @@ function getOrderHeader(headerId) {
             success: ({ d }) => {
                 orderId = d.OrderId || "-";
                 customerId = d.CustomerId || "-";
+                orderStatus = d.OrderStatus || "-";
                 document.getElementById("orderid").innerText = d.OrderId || "-";
                 document.getElementById("ordernumber").innerText = d.OrderNumber || "-";
                 document.getElementById("ordername").innerText = d.OrderName || "-";
@@ -355,7 +357,7 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindType", companydetailid: companyDetailId, designtype: designType, action: itemAction };
+        const listData = { type: "BlindType", companydetailid: companyDetailId, designtype: designType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -419,7 +421,7 @@ function bindControlType(blindType) {
             return;
         }
 
-        let listData = { type: "ControlType", companydetailid: companyDetailId, blindtype: blindType, tubetype: "9", action: itemAction };
+        let listData = { type: "ControlType", companydetailid: companyDetailId, blindtype: blindType, tubetype: "9", orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -482,7 +484,7 @@ function bindColourType(blindType, controlType) {
             return;
         }
 
-        const listData = { type: "ColourType", companydetailid: companyDetailId, blindtype: blindType, tubetype: "9", controltype: controlType, action: itemAction };
+        const listData = { type: "ColourType", companydetailid: companyDetailId, blindtype: blindType, tubetype: "9", controltype: controlType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -539,7 +541,7 @@ function bindMounting(blindType) {
             return;
         }
 
-        const listData = { type: "Mounting", blindtype: blindType, action: itemAction };
+        const listData = { type: "Mounting", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -588,7 +590,7 @@ function bindRemote(designType, controlType) {
             return;
         }
 
-        const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetailid: companyDetailId, action: itemAction };
+        const listData = { type: "ControlColour", designtype: designType, controltype: controlType, companydetailid: companyDetailId, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -636,7 +638,7 @@ function bindFabricType(designType) {
             return;
         }
 
-        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetailid: companyDetailId, action: itemAction };
+        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetailid: companyDetailId, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -694,7 +696,7 @@ function bindFabricColour(fabricType) {
             return;
         }
 
-        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, action: itemAction };
+        const listData = { type: "FabricColour", fabrictype: fabricType, companydetailid: companyDetailId, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -977,17 +979,17 @@ async function initOutdoor() {
         bindFabricType(designId);
         loader(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {
-        await bindItemOrder(itemId, companyDetailId, itemAction);
+        await bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, itemAction);
         controlForm(itemAction === "view", itemAction === "edit", itemAction === "copy");
     }
 }
 
-async function bindItemOrder(itemId, companyDetailId, action) {
+async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, action) {
     try {
         const response = await $.ajax({
             type: "POST",
             url: "Method.aspx/OutdoorDetail",
-            data: JSON.stringify({ itemId, companyDetailId, action }),
+            data: JSON.stringify({ itemId, companyDetailId, orderStatus, roleAccess, action }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         });

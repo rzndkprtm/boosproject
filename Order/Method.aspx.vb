@@ -8,20 +8,24 @@ Partial Class Order_Method
 
     <WebMethod>
     Public Shared Function GetOrderHeader(headerId As String) As Object
-        Dim orderClass As New OrderClass
+        Try
+            If String.IsNullOrWhiteSpace(headerId) Then Return Nothing
 
-        Dim row As DataRow = orderClass.GetDataRow("SELECT OrderId, CustomerId, OrderNumber, OrderName FROM OrderHeaders WHERE Id='" & headerId & "'")
+            Dim orderClass As New OrderClass
+            Dim row As DataRow = orderClass.GetDataRow("SELECT OrderId, CustomerId, OrderNumber, OrderName, Status FROM OrderHeaders WHERE Id='" & headerId & "'")
+            If row Is Nothing Then Return Nothing
 
-        If row Is Nothing Then Return Nothing
-
-        Dim dataHeader As New Dictionary(Of String, String) From {
-            {"OrderId", row("OrderId").ToString()},
-            {"CustomerId", row("CustomerId").ToString()},
-            {"OrderNumber", row("OrderNumber").ToString()},
-            {"OrderName", row("OrderName").ToString()}
-        }
-
-        Return dataHeader
+            Dim dataHeader As New Dictionary(Of String, String) From {
+                {"OrderId", row("OrderId").ToString()},
+                {"CustomerId", row("CustomerId").ToString()},
+                {"OrderNumber", row("OrderNumber").ToString()},
+                {"OrderName", row("OrderName").ToString()},
+                {"OrderStatus", row("Status").ToString()}
+            }
+            Return dataHeader
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     <WebMethod()>
@@ -65,6 +69,8 @@ Partial Class Order_Method
         Dim chaincolour As String = data.chaincolour
         Dim companyid As String = data.companyid
         Dim companydetailid As String = data.companydetailid
+        Dim orderstatus As String = data.orderstatus
+        Dim rolename As String = data.rolename
         Dim action As String = data.action
 
         If type = "BlindType" Then
@@ -216,6 +222,9 @@ Partial Class Order_Method
 
         If type = "FabricType" Then
             Dim thisQuery As String = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND tubeArray.VALUE='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
+            If action = "edit" AndAlso (orderstatus = "In Production" OrElse orderstatus = "On Hold" OrElse orderstatus = "Canceled") Then
+                thisQuery = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND tubeArray.VALUE='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued') ORDER BY Name ASC"
+            End If
             If action = "view" Then
                 thisQuery = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND tubeArray.VALUE='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
             End If
@@ -228,10 +237,19 @@ Partial Class Order_Method
 
         If type = "FabricTypeByDesign" Then
             Dim thisQuery As String = "SELECT Fabrics.Id, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
+            If action = "edit" AndAlso (orderstatus = "In Production" OrElse orderstatus = "On Hold" OrElse orderstatus = "Canceled") Then
+                thisQuery = "SELECT Fabrics.Id, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued') ORDER BY Name ASC"
+            End If
             If designtype = "3" Then
                 thisQuery = "SELECT Fabrics.Id, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
+                If action = "edit" AndAlso (orderstatus = "In Production" OrElse orderstatus = "On Hold" OrElse orderstatus = "Canceled") Then
+                    thisQuery = "SELECT Fabrics.Id, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued') ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
+                End If
                 If companydetailid = "5" Or companydetailid = "6" OrElse companydetailid = "8" OrElse companydetailid = "9" Then
                     thisQuery = "SELECT Fabrics.Id, REPLACE(Name, ' (Express)', '') AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
+                    If action = "edit" AndAlso (orderstatus = "In Production" OrElse orderstatus = "On Hold" OrElse orderstatus = "Canceled") Then
+                        thisQuery = "SELECT Fabrics.Id, REPLACE(Name, ' (Express)', '') AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued') ORDER BY CASE WHEN [Group] LIKE '%Express%' THEN 1 ELSE 2 END, Name ASC"
+                    End If
                 End If
             End If
             If action = "view" Then
@@ -253,11 +271,19 @@ Partial Class Order_Method
 
         If type = "FabricColour" Then
             Dim thisQuery As String = "SELECT FabricColours.Id, Colour AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
+            If action = "edit" AndAlso (orderstatus = "In Production" OrElse orderstatus = "On Hold" OrElse orderstatus = "Canceled") Then
+                thisQuery = "SELECT FabricColours.Id, Colour AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued') ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
+            End If
+
             If action = "view" Then
                 thisQuery = "SELECT FabricColours.Id, Colour AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
             End If
+
             If companydetailid = "5" OrElse companydetailid = "6" OrElse companydetailid = "8" OrElse companydetailid = "9" Then
                 thisQuery = "SELECT FabricColours.Id, REPLACE(Colour, '(Express)', '') AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' AND Factory='Express' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Colour ASC"
+                If action = "edit" AndAlso (orderstatus = "In Production" OrElse orderstatus = "On Hold" OrElse orderstatus = "Canceled") Then
+                    thisQuery = "SELECT FabricColours.Id, REPLACE(Colour, '(Express)', '') AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' AND Factory='Express' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued') ORDER BY Colour ASC"
+                End If
                 If action = "view" Then
                     thisQuery = "SELECT FabricColours.Id, REPLACE(Colour   , '(Express)', '') AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' AND Factory='Express' ORDER BY Colour ASC"
                 End If
@@ -10578,7 +10604,7 @@ Partial Class Order_Method
     'DETAIL
 
     <WebMethod()>
-    Public Shared Function AluminiumDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function AluminiumDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -10594,13 +10620,10 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim subTypeReq As New JSONList With {.type = "SubType", .blindtype = blindId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim subTypeReq As New JSONList With {.type = "SubType", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -10613,7 +10636,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function CellularDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function CellularDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -10631,38 +10654,31 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
-
-        Dim fabricColourReqB As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdB, .companydetailid = companyDetailId, .action = action}
-
-        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReqB As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdB, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
-                .ItemData = itemDetail,
-                .BlindTypes = ListData(blindReq),
-                .ControlTypes = ListData(controlReq),
-                .ColourTypes = ListData(colourReq),
-                .Mountings = ListData(mountingReq),
-                .Fabrics = ListData(fabricReq),
-                .FabricColours = ListData(fabricColourReq),
-                .FabricColoursB = ListData(fabricColourReqB),
-                .Chains = ListData(chainReq)
-            }
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .ControlTypes = ListData(controlReq),
+            .ColourTypes = ListData(colourReq),
+            .Mountings = ListData(mountingReq),
+            .Fabrics = ListData(fabricReq),
+            .FabricColours = ListData(fabricColourReq),
+            .FabricColoursB = ListData(fabricColourReqB),
+            .Chains = ListData(chainReq)
+        }
         Return result
     End Function
 
     <WebMethod()>
-    Public Shared Function CurtainDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function CurtainDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -10674,7 +10690,6 @@ Partial Class Order_Method
         Dim controlId As String = detailData("ControlType").ToString()
         Dim fabricId As String = detailData("FabricId").ToString()
         Dim fabricIdB As String = detailData("FabricIdB").ToString()
-
         Dim heading As String = detailData("Heading").ToString()
         Dim headingb As String = detailData("HeadingB").ToString()
         Dim trackType As String = detailData("TrackType").ToString()
@@ -10685,48 +10700,41 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-        Dim fabricReqB As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
-        Dim fabricColourReqB As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdB, .companydetailid = companyDetailId, .action = action}
-
-        Dim trackTypeReq As New JSONList With {.type = "CurtainTrackType", .customtype = heading, .companydetailid = companyDetailId, .action = action}
-        Dim trackTypeReqB As New JSONList With {.type = "CurtainTrackType", .customtype = headingb, .companydetailid = companyDetailId, .action = action}
-
-        Dim trackColourReq As New JSONList With {.type = "CurtainTrackColour", .customtype = trackType, .action = action}
-        Dim trackColourReqB As New JSONList With {.type = "CurtainTrackColour", .customtype = trackTypeb, .action = action}
-
-        Dim trackDrawReq As New JSONList With {.type = "CurtainTrackDraw", .customtype = trackType, .action = action}
-        Dim trackDrawReqB As New JSONList With {.type = "CurtainTrackDraw", .customtype = trackTypeb, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricReqB As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReqB As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdB, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim trackTypeReq As New JSONList With {.type = "CurtainTrackType", .customtype = heading, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim trackTypeReqB As New JSONList With {.type = "CurtainTrackType", .customtype = headingb, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim trackColourReq As New JSONList With {.type = "CurtainTrackColour", .customtype = trackType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim trackColourReqB As New JSONList With {.type = "CurtainTrackColour", .customtype = trackTypeb, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim trackDrawReq As New JSONList With {.type = "CurtainTrackDraw", .customtype = trackType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim trackDrawReqB As New JSONList With {.type = "CurtainTrackDraw", .customtype = trackTypeb, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
-                .ItemData = itemDetail,
-                .BlindTypes = ListData(blindReq),
-                .ColourTypes = ListData(colourReq),
-                .Mountings = ListData(mountingReq),
-                .Fabrics = ListData(fabricReq),
-                .FabricsB = ListData(fabricReqB),
-                .FabricColours = ListData(fabricColourReq),
-                .FabricColoursB = ListData(fabricColourReqB),
-                .TrackTypes = ListData(trackTypeReq),
-                .TrackTypesB = ListData(trackTypeReqB),
-                .TrackColours = ListData(trackColourReq),
-                .TrackColoursB = ListData(trackColourReqB),
-                .TrackDraws = ListData(trackDrawReq),
-                .TrackDrawsB = ListData(trackDrawReqB)
-            }
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .ColourTypes = ListData(colourReq),
+            .Mountings = ListData(mountingReq),
+            .Fabrics = ListData(fabricReq),
+            .FabricsB = ListData(fabricReqB),
+            .FabricColours = ListData(fabricColourReq),
+            .FabricColoursB = ListData(fabricColourReqB),
+            .TrackTypes = ListData(trackTypeReq),
+            .TrackTypesB = ListData(trackTypeReqB),
+            .TrackColours = ListData(trackColourReq),
+            .TrackColoursB = ListData(trackColourReqB),
+            .TrackDraws = ListData(trackDrawReq),
+            .TrackDrawsB = ListData(trackDrawReqB)
+        }
         Return result
     End Function
 
     <WebMethod()>
-    Public Shared Function DesignDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function DesignDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -10744,35 +10752,29 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
-
-        Dim chainColourReq As New JSONList With {.type = "ControlColour", .designtype = designId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim chainColourReq As New JSONList With {.type = "ControlColour", .designtype = designId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
-                .ItemData = itemDetail,
-                .BlindTypes = ListData(blindReq),
-                .ControlTypes = ListData(controlReq),
-                .ColourTypes = ListData(colourReq),
-                .Mountings = ListData(mountingReq),
-                .Fabrics = ListData(fabricReq),
-                .FabricColours = ListData(fabricColourReq),
-                .ChainColours = ListData(chainColourReq)
-            }
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .ControlTypes = ListData(controlReq),
+            .ColourTypes = ListData(colourReq),
+            .Mountings = ListData(mountingReq),
+            .Fabrics = ListData(fabricReq),
+            .FabricColours = ListData(fabricColourReq),
+            .ChainColours = ListData(chainColourReq)
+        }
         Return result
     End Function
 
     <WebMethod()>
-    Public Shared Function DoorDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function DoorDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -10788,76 +10790,26 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodeDoor", .tubetype = tubeId, .action = action}
-
-        Dim meshReq As New JSONList With {.type = "MeshDoor", .blindtype = blindId, .action = action}
-
-        Dim interlockReq As New JSONList With {.type = "InterlockDoor", .tubetype = tubeId, .action = action}
-
-        Dim frameColourReq As New JSONList With {.type = "FrameColourDoor", .blindtype = blindId, .action = action, .companydetailid = companyDetailId}
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodeDoor", .tubetype = tubeId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim meshReq As New JSONList With {.type = "MeshDoor", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim interlockReq As New JSONList With {.type = "InterlockDoor", .tubetype = tubeId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim frameColourReq As New JSONList With {.type = "FrameColourDoor", .blindtype = blindId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
-                .ItemData = itemDetail,
-                .BlindTypes = ListData(blindReq),
-                .TubeTypes = ListData(tubeReq),
-                .ColourTypes = ListData(colourReq),
-                .Mountings = ListData(mountingReq),
-                .LayoutCodes = ListData(layoutCodeReq),
-                .MeshTypes = ListData(meshReq),
-                .Interlocks = ListData(interlockReq),
-                .FrameColours = ListData(frameColourReq)
-            }
-        Return result
-    End Function
-
-    <WebMethod()>
-    Public Shared Function LineaDetail(itemId As Integer, companyDetailId As String, action As String) As Object
-        Dim orderClass As New OrderClass
-
-        Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
-        If detailData Is Nothing Then Return Nothing
-
-        Dim designId As String = detailData("DesignType").ToString()
-        Dim blindId As String = detailData("BlindType").ToString()
-        Dim tubeId As String = detailData("TubeType").ToString()
-        Dim controlId As String = detailData("ControlType").ToString()
-        Dim fabricId As String = detailData("FabricId").ToString()
-        Dim fabricIdB As String = detailData("FabricIdB").ToString()
-
-        Dim itemDetail As New Dictionary(Of String, Object)
-        For Each col As DataColumn In detailData.Table.Columns
-            itemDetail(col.ColumnName) = detailData(col.ColumnName)
-        Next
-
-        Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
-
-        Dim result = New With {
-                .ItemData = itemDetail,
-                .BlindTypes = ListData(blindReq),
-                .TubeTypes = ListData(tubeReq),
-                .ColourTypes = ListData(colourReq),
-                .Mountings = ListData(mountingReq),
-                .Fabrics = ListData(fabricReq),
-                .FabricColours = ListData(fabricColourReq)
-            }
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .TubeTypes = ListData(tubeReq),
+            .ColourTypes = ListData(colourReq),
+            .Mountings = ListData(mountingReq),
+            .LayoutCodes = ListData(layoutCodeReq),
+            .MeshTypes = ListData(meshReq),
+            .Interlocks = ListData(interlockReq),
+            .FrameColours = ListData(frameColourReq)
+        }
         Return result
     End Function
 
@@ -10879,22 +10831,59 @@ Partial Class Order_Method
         Next
 
         Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetailid = companyDetailId}
-
         Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId}
-
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId}
 
         Dim result = New With {
-                .ItemData = itemDetail,
-                .BlindTypes = ListData(blindReq),
-                .ColourTypes = ListData(colourReq),
-                .Mountings = ListData(mountingReq)
-            }
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .ColourTypes = ListData(colourReq),
+            .Mountings = ListData(mountingReq)
+        }
         Return result
     End Function
 
     <WebMethod()>
-    Public Shared Function OutdoorDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function LineaDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
+        Dim orderClass As New OrderClass
+
+        Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
+        If detailData Is Nothing Then Return Nothing
+
+        Dim designId As String = detailData("DesignType").ToString()
+        Dim blindId As String = detailData("BlindType").ToString()
+        Dim tubeId As String = detailData("TubeType").ToString()
+        Dim controlId As String = detailData("ControlType").ToString()
+        Dim fabricId As String = detailData("FabricId").ToString()
+        Dim fabricIdB As String = detailData("FabricIdB").ToString()
+
+        Dim itemDetail As New Dictionary(Of String, Object)
+        For Each col As DataColumn In detailData.Table.Columns
+            itemDetail(col.ColumnName) = detailData(col.ColumnName)
+        Next
+
+        Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+
+        Dim result = New With {
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .TubeTypes = ListData(tubeReq),
+            .ColourTypes = ListData(colourReq),
+            .Mountings = ListData(mountingReq),
+            .Fabrics = ListData(fabricReq),
+            .FabricColours = ListData(fabricColourReq)
+        }
+        Return result
+    End Function
+
+
+    <WebMethod()>
+    Public Shared Function OutdoorDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -10911,35 +10900,29 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
-
-        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
-                .ItemData = itemDetail,
-                .BlindTypes = ListData(blindReq),
-                .ControlTypes = ListData(controlReq),
-                .ColourTypes = ListData(colourReq),
-                .Mountings = ListData(mountingReq),
-                .Fabrics = ListData(fabricReq),
-                .FabricColours = ListData(fabricColourReq),
-                .Chains = ListData(chainReq)
-            }
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .ControlTypes = ListData(controlReq),
+            .ColourTypes = ListData(colourReq),
+            .Mountings = ListData(mountingReq),
+            .Fabrics = ListData(fabricReq),
+            .FabricColours = ListData(fabricColourReq),
+            .Chains = ListData(chainReq)
+        }
         Return result
     End Function
 
     <WebMethod()>
-    Public Shared Function PanelDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function PanelDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -10958,35 +10941,29 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim fabricReq As New JSONList With {.type = "FabricType", .designtype = designId, .companydetailid = companyDetailId, .tubetype = tubeId, .action = action}
-
-        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
-
-        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodePG", .customtype = trackType, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricType", .designtype = designId, .companydetailid = companyDetailId, .tubetype = tubeId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodePG", .customtype = trackType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
-                .ItemData = itemDetail,
-                .BlindTypes = ListData(blindReq),
-                .TubeTypes = ListData(tubeReq),
-                .ColourTypes = ListData(colourReq),
-                .Mountings = ListData(mountingReq),
-                .Fabrics = ListData(fabricReq),
-                .FabricColours = ListData(fabricColourReq),
-                .LayoutCodes = ListData(layoutCodeReq)
-            }
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .TubeTypes = ListData(tubeReq),
+            .ColourTypes = ListData(colourReq),
+            .Mountings = ListData(mountingReq),
+            .Fabrics = ListData(fabricReq),
+            .FabricColours = ListData(fabricColourReq),
+            .LayoutCodes = ListData(layoutCodeReq)
+        }
         Return result
     End Function
 
     <WebMethod()>
-    Public Shared Function PelmetDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function PelmetDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -10996,11 +10973,8 @@ Partial Class Order_Method
         Dim blindId As String = detailData("BlindType").ToString()
         Dim tubeId As String = detailData("TubeType").ToString()
         Dim controlId As String = detailData("ControlType").ToString()
-
         Dim blindName As String = detailData("BlindName").ToString()
-
         Dim fabricId As String = detailData("FabricId").ToString()
-
         Dim chainId As String = detailData("ChainId").ToString()
 
         Dim itemDetail As New Dictionary(Of String, Object)
@@ -11008,17 +10982,12 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -11033,7 +11002,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function PrivacyDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function PrivacyDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -11049,11 +11018,9 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -11065,7 +11032,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function RollerDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function RollerDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -11104,40 +11071,40 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindTypeRoller", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-        Dim controlReq As New JSONList With {.type = "ControlTypeRoller", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
-        Dim tubeReq As New JSONList With {.type = "TubeTypeRoller", .blindtype = blindId, .companydetailid = companyDetailId, .controltype = controlId, .action = action}
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindTypeRoller", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim controlReq As New JSONList With {.type = "ControlTypeRoller", .blindtype = blindId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim tubeReq As New JSONList With {.type = "TubeTypeRoller", .blindtype = blindId, .companydetailid = companyDetailId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
-        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
-        Dim fabricColourReqB As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdB, .companydetailid = companyDetailId, .action = action}
-        Dim fabricColourReqC As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdC, .companydetailid = companyDetailId, .action = action}
-        Dim fabricColourReqD As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdD, .companydetailid = companyDetailId, .action = action}
-        Dim fabricColourReqE As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdE, .companydetailid = companyDetailId, .action = action}
-        Dim fabricColourReqF As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdF, .companydetailid = companyDetailId, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReqB As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdB, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReqC As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdC, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReqD As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdD, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReqE As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdE, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReqF As New JSONList With {.type = "FabricColour", .fabrictype = fabricIdF, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim bottomReq As New JSONList With {.type = "BottomType", .designtype = designId, .companydetailid = companyDetailId, .tubetype = tubeId, .action = action}
-        Dim bottomColourReq As New JSONList With {.type = "BottomColour", .bottomtype = bottomId, .action = action}
-        Dim bottomColourReqB As New JSONList With {.type = "BottomColour", .bottomtype = bottomIdB, .action = action}
-        Dim bottomColourReqC As New JSONList With {.type = "BottomColour", .bottomtype = bottomIdC, .action = action}
-        Dim bottomColourReqD As New JSONList With {.type = "BottomColour", .bottomtype = bottomIdD, .action = action}
-        Dim bottomColourReqE As New JSONList With {.type = "BottomColour", .bottomtype = bottomIdE, .action = action}
-        Dim bottomColourReqF As New JSONList With {.type = "BottomColour", .bottomtype = bottomIdF, .action = action}
+        Dim bottomColourReq As New JSONList With {.type = "BottomColour", .bottomtype = bottomId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim bottomColourReqB As New JSONList With {.type = "BottomColour", .bottomtype = bottomIdB, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim bottomColourReqC As New JSONList With {.type = "BottomColour", .bottomtype = bottomIdC, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim bottomColourReqD As New JSONList With {.type = "BottomColour", .bottomtype = bottomIdD, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim bottomColourReqE As New JSONList With {.type = "BottomColour", .bottomtype = bottomIdE, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim bottomColourReqF As New JSONList With {.type = "BottomColour", .bottomtype = bottomIdF, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim chainCustom As String = String.Empty
         If blindName = "Full Cassette" OrElse blindName = "Semi Cassette" Then chainCustom = "Cassette"
 
         Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .customtype = chainCustom, .action = action}
 
-        Dim stopperReq As New JSONList With {.type = "ChainStopper", .chaincolour = chainId, .action = action}
-        Dim stopperReqB As New JSONList With {.type = "ChainStopper", .chaincolour = chainIdB, .action = action}
-        Dim stopperReqC As New JSONList With {.type = "ChainStopper", .chaincolour = chainIdC, .action = action}
-        Dim stopperReqD As New JSONList With {.type = "ChainStopper", .chaincolour = chainIdD, .action = action}
-        Dim stopperReqE As New JSONList With {.type = "ChainStopper", .chaincolour = chainIdE, .action = action}
-        Dim stopperReqF As New JSONList With {.type = "ChainStopper", .chaincolour = chainIdF, .action = action}
+        Dim stopperReq As New JSONList With {.type = "ChainStopper", .chaincolour = chainId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim stopperReqB As New JSONList With {.type = "ChainStopper", .chaincolour = chainIdB, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim stopperReqC As New JSONList With {.type = "ChainStopper", .chaincolour = chainIdC, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim stopperReqD As New JSONList With {.type = "ChainStopper", .chaincolour = chainIdD, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim stopperReqE As New JSONList With {.type = "ChainStopper", .chaincolour = chainIdE, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim stopperReqF As New JSONList With {.type = "ChainStopper", .chaincolour = chainIdF, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -11172,7 +11139,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function HorizonDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function HorizonDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -11182,9 +11149,7 @@ Partial Class Order_Method
         Dim blindId As String = detailData("BlindType").ToString()
         Dim tubeId As String = detailData("TubeType").ToString()
         Dim controlId As String = detailData("ControlType").ToString()
-
         Dim blindName As String = detailData("BlindName").ToString()
-
         Dim fabricId As String = detailData("FabricId").ToString()
         Dim bottomId As String = detailData("BottomId").ToString()
         Dim chainId As String = detailData("ChainId").ToString()
@@ -11194,27 +11159,17 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindTypeRoller", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
-
-        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
+        Dim blindReq As New JSONList With {.type = "BlindTypeRoller", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .action = action}
-
-        Dim bottomReq As New JSONList With {.type = "BottomType", .designtype = designId, .companydetailid = companyDetailId, .tubetype = tubeId, .action = action}
-
-        Dim bottomColourReq As New JSONList With {.type = "BottomColour", .bottomtype = bottomId, .action = action}
-
-        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .action = action}
-
-        Dim stopperReq As New JSONList With {.type = "ChainStopper", .chaincolour = chainId, .action = action}
+        Dim bottomReq As New JSONList With {.type = "BottomType", .designtype = designId, .companydetailid = companyDetailId, .tubetype = tubeId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim bottomColourReq As New JSONList With {.type = "BottomColour", .bottomtype = bottomId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim stopperReq As New JSONList With {.type = "ChainStopper", .chaincolour = chainId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -11234,7 +11189,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function RomanDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function RomanDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -11244,9 +11199,7 @@ Partial Class Order_Method
         Dim blindId As String = detailData("BlindType").ToString()
         Dim tubeId As String = detailData("TubeType").ToString()
         Dim controlId As String = detailData("ControlType").ToString()
-
         Dim blindName As String = detailData("BlindName").ToString()
-
         Dim fabricId As String = detailData("FabricId").ToString()
 
         Dim itemDetail As New Dictionary(Of String, Object)
@@ -11254,23 +11207,15 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
-
-        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim fabricReq As New JSONList With {.type = "FabricType", .designtype = designId, .companydetailid = companyDetailId, .tubetype = tubeId, .action = action}
-
-        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
-
-        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .action = action}
-
-        Dim valanceReq As New JSONList With {.type = "ValanceRoman", .controltype = controlId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricType", .designtype = designId, .companydetailid = companyDetailId, .tubetype = tubeId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim valanceReq As New JSONList With {.type = "ValanceRoman", .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -11288,7 +11233,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function SampleDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function SampleDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -11298,7 +11243,6 @@ Partial Class Order_Method
         Dim blindId As String = detailData("BlindType").ToString()
         Dim tubeId As String = detailData("TubeType").ToString()
         Dim controlId As String = detailData("ControlType").ToString()
-
         Dim blindName As String = detailData("BlindName").ToString()
 
         Dim itemDetail As New Dictionary(Of String, Object)
@@ -11306,8 +11250,8 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-        Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -11318,7 +11262,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function SaphoraDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function SaphoraDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -11335,19 +11279,13 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
-
-        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -11361,7 +11299,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function SkylineDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function SkylineDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -11371,7 +11309,6 @@ Partial Class Order_Method
         Dim blindId As String = detailData("BlindType").ToString()
         Dim tubeId As String = detailData("TubeType").ToString()
         Dim controlId As String = detailData("ControlType").ToString()
-
         Dim mounting As String = detailData("Mounting").ToString()
         Dim frameType As String = detailData("FrameType").ToString()
         Dim frameBottom As String = detailData("FrameBottom").ToString()
@@ -11381,44 +11318,35 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodeShutter", .blindtype = blindId, .action = action}
-
-        Dim frameTypeReq As New JSONList With {.type = "FrameTypeShutter", .blindtype = blindId, .customtype = mounting, .action = action}
-
-        Dim leftFrameReq As New JSONList With {.type = "LeftFrameShutter", .customtype = frameType, .action = action}
-
-        Dim rightFrameReq As New JSONList With {.type = "RightFrameShutter", .customtype = frameType, .action = action}
-
-        Dim topFrameReq As New JSONList With {.type = "TopFrameShutter", .customtype = frameType, .action = action}
-
-        Dim bottomFrameReq As New JSONList With {.type = "BottomFrameShutter", .customtype = frameType, .action = action}
-
-        Dim bottomTrackReq As New JSONList With {.type = "BottomTrackShutter", .blindtype = blindId, .customtype = frameBottom, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindTypeShutter", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodeShutter", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim frameTypeReq As New JSONList With {.type = "FrameTypeShutter", .blindtype = blindId, .customtype = mounting, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim leftFrameReq As New JSONList With {.type = "LeftFrameShutter", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim rightFrameReq As New JSONList With {.type = "RightFrameShutter", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim topFrameReq As New JSONList With {.type = "TopFrameShutter", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim bottomFrameReq As New JSONList With {.type = "BottomFrameShutter", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim bottomTrackReq As New JSONList With {.type = "BottomTrackShutter", .blindtype = blindId, .customtype = frameBottom, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
-                .ItemData = itemDetail,
-                .BlindTypes = ListData(blindReq),
-                .ColourTypes = ListData(colourReq),
-                .Mountings = ListData(mountingReq),
-                .LayoutCodes = ListData(layoutCodeReq),
-                .FrameTypes = ListData(frameTypeReq),
-                .LeftFrames = ListData(leftFrameReq),
-                .RightFrames = ListData(rightFrameReq),
-                .TopFrames = ListData(topFrameReq),
-                .BottomFrames = ListData(bottomFrameReq),
-                .BottomTracks = ListData(bottomTrackReq)
-            }
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .ColourTypes = ListData(colourReq),
+            .Mountings = ListData(mountingReq),
+            .LayoutCodes = ListData(layoutCodeReq),
+            .FrameTypes = ListData(frameTypeReq),
+            .LeftFrames = ListData(leftFrameReq),
+            .RightFrames = ListData(rightFrameReq),
+            .TopFrames = ListData(topFrameReq),
+            .BottomFrames = ListData(bottomFrameReq),
+            .BottomTracks = ListData(bottomTrackReq)
+        }
         Return result
     End Function
 
     <WebMethod()>
-    Public Shared Function SoftRomanDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function SoftRomanDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -11438,22 +11366,15 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
-
-        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
-
-        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .action = action}
-
-        Dim valanceReq As New JSONList With {.type = "ValanceRoman", .controltype = controlId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .orderstatus = orderStatus, .rolename = roleAccess, .companydetailid = companyDetailId, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .orderstatus = orderStatus, .rolename = roleAccess, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim valanceReq As New JSONList With {.type = "ValanceRoman", .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -11471,7 +11392,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function VenetianDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function VenetianDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -11487,17 +11408,12 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim subTypeReq As New JSONList With {.type = "SubType", .blindtype = blindId, .action = action}
-
-        Dim valanceTypeReq As New JSONList With {.type = "ValanceType", .blindtype = blindId, .action = action}
-
-        Dim valancePositionReq As New JSONList With {.type = "ValancePosition", .blindtype = blindId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim subTypeReq As New JSONList With {.type = "SubType", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim valanceTypeReq As New JSONList With {.type = "ValanceType", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim valancePositionReq As New JSONList With {.type = "ValancePosition", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -11512,7 +11428,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function VenetianPartDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function VenetianPartDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -11528,11 +11444,11 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .action = action}
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-        Dim valanceTypeReq As New JSONList With {.type = "ValanceType_Part", .blindtype = blindId, .action = action}
-        Dim valancePositionReq As New JSONList With {.type = "ValancePosition_Part", .blindtype = blindId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim valanceTypeReq As New JSONList With {.type = "ValanceType_Part", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim valancePositionReq As New JSONList With {.type = "ValancePosition_Part", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -11546,7 +11462,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function VerticalDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function VerticalDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -11556,9 +11472,7 @@ Partial Class Order_Method
         Dim blindId As String = detailData("BlindType").ToString()
         Dim tubeId As String = detailData("TubeType").ToString()
         Dim controlId As String = detailData("ControlType").ToString()
-
         Dim blindName As String = detailData("BlindName").ToString()
-
         Dim fabricId As String = detailData("FabricId").ToString()
         Dim chainId As String = detailData("ChainId").ToString()
 
@@ -11567,21 +11481,14 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
-
-        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim fabricReq As New JSONList With {.type = "FabricType", .designtype = designId, .tubetype = tubeId, .companydetailid = companyDetailId, .action = action}
-
-        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .action = action}
-
-        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim tubeReq As New JSONList With {.type = "TubeType", .blindtype = blindId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim controlReq As New JSONList With {.type = "ControlType", .blindtype = blindId, .tubetype = tubeId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricType", .designtype = designId, .tubetype = tubeId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim chainReq As New JSONList With {.type = "ControlColour", .designtype = designId, .companydetailid = companyDetailId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -11598,7 +11505,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function WindowDetail(itemId As Integer, companyDetailId As String, action As String) As Object
+    Public Shared Function WindowDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -11614,27 +11521,22 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetailid = companyDetailId, .action = action}
-
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .action = action}
-
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .action = action}
-
-        Dim meshReq As New JSONList With {.type = "MeshWindow", .blindtype = blindId, .action = action}
-
-        Dim frameColourReq As New JSONList With {.type = "FrameColourWindow", .blindtype = blindId, .companydetailid = companyDetailId, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim meshReq As New JSONList With {.type = "MeshWindow", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim frameColourReq As New JSONList With {.type = "FrameColourWindow", .blindtype = blindId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
-                .ItemData = itemDetail,
-                .BlindTypes = ListData(blindReq),
-                .ColourTypes = ListData(colourReq),
-                .Mountings = ListData(mountingReq),
-                .MeshTypes = ListData(meshReq),
-                .FrameColours = ListData(frameColourReq)
-            }
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .ColourTypes = ListData(colourReq),
+            .Mountings = ListData(mountingReq),
+            .MeshTypes = ListData(meshReq),
+            .FrameColours = ListData(frameColourReq)
+        }
         Return result
     End Function
-
 
     <WebMethod()>
     Public Shared Function GetLogs(type As String, dataId As String) As List(Of LogDto)
@@ -12004,6 +11906,8 @@ Public Class JSONList
     Public Property chaincolour As String
     Public Property companyid As String
     Public Property companydetailid As String
+    Public Property orderstatus As String
+    Public Property rolename As String
     Public Property action As String
 End Class
 
