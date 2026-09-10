@@ -337,7 +337,9 @@ Partial Public Class SiteMaster
                 liOldOrder.Visible = True
                 liGuide.Visible = True
                 liStocks.Visible = True
-                liQuotation.Visible = True
+                If Session("PriceAccess") = "Yes" Then
+                    liQuotation.Visible = True
+                End If
             End If
         Catch ex As Exception
             HandleRedirectLogin()
