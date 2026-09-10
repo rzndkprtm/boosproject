@@ -9952,7 +9952,7 @@ Partial Class Order_Method
             data.valancesize = "Custom" : data.returnlength = "Custom"
         End If
 
-        If blindName = "Metal Tassel" Then
+        If blindName = "Metal Accorn" Then
             width = 0
             data.mounting = String.Empty
             data.valancetype = String.Empty
@@ -9962,7 +9962,7 @@ Partial Class Order_Method
             data.returnlength = String.Empty
             rlvalue = 0
         End If
-        If blindName = "Hold Down" Then
+        If blindName = "Hold Down Clip" Then
             width = 0
             data.mounting = String.Empty
             data.valancetype = String.Empty
