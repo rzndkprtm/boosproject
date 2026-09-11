@@ -186,7 +186,7 @@ Partial Class Setting_Customer_Detail
     Protected Sub btnRecalculate_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim dataOrder As DataTable = settingClass.GetDataTable("SELECT * FROM OrderHeaders WHERE CustomerId='" & lblId.Text & "' AND Active=1 AND (Status = 'Unsubmitted' OR Status='Waiting Proforma')")
+            Dim dataOrder As DataTable = settingClass.GetDataTable("SELECT * FROM OrderHeaders WHERE CustomerId='" & lblId.Text & "' AND Active=1 AND (Status='Unsubmitted' OR Status='Waiting Proforma')")
             If Not dataOrder.Rows.Count = 0 Then
                 Dim orderClass As New OrderClass
                 For i As Integer = 0 To dataOrder.Rows.Count - 1
