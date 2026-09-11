@@ -121,42 +121,61 @@
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover">
+                        <table class="table table-bordered table-hover w-100 mb-3">
                             <tr>
-                                <th colspan="3">Minimum Size</th>
-                                <th colspan="3">Minimum Width</th>
-                                <th colspan="3">Minimum Drop</th>
-                                <th colspan="3">Custom Formula</th>
-                            </tr>
-                            <tr>
-                                <th>Sell</th>
-                                <th>Buy</th>
-                                <th>Factory</th>
-                                <th>Sell</th>
-                                <th>Buy</th>
-                                <th>Factory</th>
-                                <th>Sell</th>
-                                <th>Buy</th>
-                                <th>Factory</th>
-                                <th>Sell</th>
-                                <th>Buy</th>
-                                <th>Factory</th>
+                                <th>Sell Minimum Size</th>
+                                <th>Buy Minimum Size</th>
+                                <th>Factory Minimum Size</th>
                             </tr>
                             <tr>
                                 <td><span id="spanSellMinSize"></span></td>
                                 <td><span id="spanBuyMinSize"></span></td>
                                 <td><span id="spanFactoryMinSize"></span></td>
+                            </tr>
+                        </table>
+
+                        <!-- MINIMUM WIDTH -->
+                        <table class="table table-bordered table-hover w-100 mb-3">
+                            <tr>
+                                <th>Sell Minimum Width</th>
+                                <th>Buy Minimum Width</th>
+                                <th>Factory Minimum Width</th>
+                            </tr>
+                            <tr>
                                 <td><span id="spanSellMinWidth"></span></td>
                                 <td><span id="spanBuyMinWidth"></span></td>
                                 <td><span id="spanFactoryMinWidth"></span></td>
+                            </tr>
+                        </table>
+
+                        <!-- MINIMUM DROP -->
+                        <table class="table table-bordered table-hover w-100 mb-3">
+                            <tr>
+                                <th>Sell Minimum Drop</th>
+                                <th>Buy Minimum Drop</th>
+                                <th>Factory Minimum Drop</th>
+                            </tr>
+                            <tr>
                                 <td><span id="spanSellMinDrop"></span></td>
                                 <td><span id="spanBuyMinDrop"></span></td>
                                 <td><span id="spanFactoryMinDrop"></span></td>
+                            </tr>
+                        </table>
+
+                        <!-- CUSTOM FORMULA -->
+                        <table class="table table-bordered table-hover w-100">
+                            <tr>
+                                <th>Sell Custom Formula</th>
+                                <th>Buy Custom Formula</th>
+                                <th>Factory Custom Formula</th>
+                            </tr>
+                            <tr>
                                 <td><span id="spanSellFormula"></span></td>
                                 <td><span id="spanBuyFormula"></span></td>
                                 <td><span id="spanFactoryFormula"></span></td>
                             </tr>
                         </table>
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -249,18 +268,24 @@
             bindGridRowClick();
         });
         function dataDetail(sellminsize, buyminsize, factoryminsize, sellminwidth, buyminwidth, factoryminwidth, sellmindrop, buymindrop, factorymindrop, sellformula, buyformula, factoryformula) {
-            document.getElementById("spanSellMinSize").innerText = sellminsize;
-            document.getElementById("spanBuyMinSize").innerText = buyminsize;
-            document.getElementById("spanFactoryMinSize").innerText = factoryminsize;
-            document.getElementById("spanSellMinWidth").innerText = sellminwidth;
-            document.getElementById("spanBuyMinWidth").innerText = buyminwidth;
-            document.getElementById("spanFactoryMinWidth").innerText = factoryminwidth;
-            document.getElementById("spanSellMinDrop").innerText = sellmindrop;
-            document.getElementById("spanBuyMinDrop").innerText = buymindrop;
-            document.getElementById("spanFactoryMinDrop").innerText = factorymindrop;
-            document.getElementById("spanSellFormula").innerText = sellformula;
-            document.getElementById("spanBuyFormula").innerText = buyformula;
-            document.getElementById("spanFactoryFormula").innerText = factoryformula;
+            function displayValue(value) {
+                return (value === null || value === undefined || String(value).trim() === "")
+                    ? "Nothing Calculation"
+                    : value;
+            }
+
+            document.getElementById("spanSellMinSize").innerText = displayValue(sellminsize);
+            document.getElementById("spanBuyMinSize").innerText = displayValue(buyminsize);
+            document.getElementById("spanFactoryMinSize").innerText = displayValue(factoryminsize);
+            document.getElementById("spanSellMinWidth").innerText = displayValue(sellminwidth);
+            document.getElementById("spanBuyMinWidth").innerText = displayValue(buyminwidth);
+            document.getElementById("spanFactoryMinWidth").innerText = displayValue(factoryminwidth);
+            document.getElementById("spanSellMinDrop").innerText = displayValue(sellmindrop);
+            document.getElementById("spanBuyMinDrop").innerText = displayValue(buymindrop);
+            document.getElementById("spanFactoryMinDrop").innerText = displayValue(factorymindrop);
+            document.getElementById("spanSellFormula").innerText = displayValue(sellformula);
+            document.getElementById("spanBuyFormula").innerText = displayValue(buyformula);
+            document.getElementById("spanFactoryFormula").innerText = displayValue(factoryformula);
         }
         function dataDelete(id) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
