@@ -435,17 +435,17 @@
                                                 <%# ItemCosting(Eval("Id").ToString(), "SellPrice") %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Sell Price" ItemStyle-Width="120px">
+                                        <asp:TemplateField HeaderText="JPMD Sell" ItemStyle-Width="130px">
                                             <ItemTemplate>
                                                 <%# ItemCosting(Eval("Id").ToString(), "SellPrice") %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Buy Price" ItemStyle-Width="120px">
+                                        <asp:TemplateField HeaderText="JPMT -> JPMD" ItemStyle-Width="130px">
                                             <ItemTemplate>
                                                 <%# ItemCosting(Eval("Id").ToString(), "BuyPrice") %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Factory Price" ItemStyle-Width="120px">
+                                        <asp:TemplateField HeaderText="BIG -> JPMT" ItemStyle-Width="130px">
                                             <ItemTemplate>
                                                 <%# ItemCosting(Eval("Id").ToString(), "FactoryPrice") %>
                                             </ItemTemplate>

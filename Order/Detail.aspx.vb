@@ -3444,7 +3444,9 @@ Partial Class Order_Detail
                 gvListItem.Columns(5).Visible = LoginAccess("Visible Sell Price")
                 gvListItem.Columns(6).Visible = LoginAccess("Visible Buy Price")
                 gvListItem.Columns(7).Visible = LoginAccess("Visible Factory Price")
-                gvListItem.Columns(8).Visible = True ' Mark Up
+                If Session("RoleName") = "Customer" Then
+                    gvListItem.Columns(8).Visible = True ' Mark Up
+                End If
             End If
 
             If status = "Unsubmitted" And gvListItem.Rows.Count > 0 Then
