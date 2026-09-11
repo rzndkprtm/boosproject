@@ -2052,6 +2052,24 @@ Public Class OrderClass
                     Return Math.Round(gridPrice * lm, 2)
                 Case "CUT_LENGTH"
                     Return Math.Round((cutLength / 1000D) * gridPrice, 2)
+                Case "FEET"
+                    Dim sellFormula As String = rule("SellFormula").ToString()
+
+                    If Not String.IsNullOrWhiteSpace(sellFormula) Then
+                        sellFormula = sellFormula.Replace("Width", width.ToString(CultureInfo.InvariantCulture))
+                        Try
+                            Dim dt As New DataTable()
+                            Dim result As Object = dt.Compute(sellFormula, Nothing)
+
+                            If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
+                                Return Math.Round(Convert.ToDecimal(result), 2)
+                            End If
+                        Catch
+                            Return gridPrice
+                        End Try
+                    End If
+
+                    Return gridPrice
                 Case Else
                     Return gridPrice
             End Select
@@ -2060,7 +2078,7 @@ Public Class OrderClass
         End Try
     End Function
 
-    Private Function CalculateBuy(rule As DataRow, gridPrice As Decimal, squareMetre As Decimal, linearMetre As Decimal) As Decimal
+    Private Function CalculateBuy(rule As DataRow, gridPrice As Decimal, width As Integer, drop As Integer, squareMetre As Decimal, linearMetre As Decimal) As Decimal
         Try
             If rule Is Nothing Then Return gridPrice
 
@@ -2085,6 +2103,24 @@ Public Class OrderClass
                     End If
 
                     Return Math.Round(gridPrice * lm, 2)
+                Case "FEET"
+                    Dim buyFormula As String = rule("BuyFormula").ToString()
+
+                    If Not String.IsNullOrWhiteSpace(buyFormula) Then
+                        buyFormula = buyFormula.Replace("Width", width.ToString(CultureInfo.InvariantCulture))
+                        Try
+                            Dim dt As New DataTable()
+                            Dim result As Object = dt.Compute(buyFormula, Nothing)
+
+                            If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
+                                Return Math.Round(Convert.ToDecimal(result), 2)
+                            End If
+                        Catch
+                            Return gridPrice
+                        End Try
+                    End If
+
+                    Return gridPrice
                 Case Else
                     Return gridPrice
             End Select
@@ -2093,7 +2129,7 @@ Public Class OrderClass
         End Try
     End Function
 
-    Private Function CalculateFactory(rule As DataRow, gridPrice As Decimal, squareMetre As Decimal, linearMetre As Decimal) As Decimal
+    Private Function CalculateFactory(rule As DataRow, gridPrice As Decimal, width As Integer, drop As Integer, squareMetre As Decimal, linearMetre As Decimal) As Decimal
         Try
             If rule Is Nothing Then Return gridPrice
 
@@ -2118,6 +2154,24 @@ Public Class OrderClass
                     End If
 
                     Return Math.Round(gridPrice * lm, 2)
+                Case "FEET"
+                    Dim buyFormula As String = rule("BuyFormula").ToString()
+
+                    If Not String.IsNullOrWhiteSpace(buyFormula) Then
+                        buyFormula = buyFormula.Replace("Width", width.ToString(CultureInfo.InvariantCulture))
+                        Try
+                            Dim dt As New DataTable()
+                            Dim result As Object = dt.Compute(buyFormula, Nothing)
+
+                            If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
+                                Return Math.Round(Convert.ToDecimal(result), 2)
+                            End If
+                        Catch
+                            Return gridPrice
+                        End Try
+                    End If
+
+                    Return gridPrice
                 Case Else
                     Return gridPrice
             End Select
@@ -2518,8 +2572,8 @@ Public Class OrderClass
                     Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupCalculation, designId, blindId)
 
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(width), CInt(drop), squareMetre, linearMetre, cutLength)
-                    thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetre, linearMetre)
-                    thisFactory = CalculateFactory(factoryCalculation, costFactory, squareMetre, linearMetre)
+                    thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(width), CInt(drop), squareMetre, linearMetre)
+                    thisFactory = CalculateFactory(factoryCalculation, costFactory, CInt(width), CInt(drop), squareMetre, linearMetre)
 
                     costSell = thisSell
                     costBuy = thisBuy
@@ -2937,8 +2991,8 @@ Public Class OrderClass
                     Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupCalculation, designId, blindId)
 
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB, cutLength)
-                    thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreB, linearMetreB)
-                    thisFactory = CalculateBuy(factoryCalculation, costFactory, squareMetreB, linearMetreB)
+                    thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB)
+                    thisFactory = CalculateBuy(factoryCalculation, costFactory, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB)
 
                     costSell = thisSell
                     costBuy = thisBuy
@@ -3274,8 +3328,8 @@ Public Class OrderClass
                     Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
 
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthC), CInt(dropC), squareMetreC, linearMetreC, cutLength)
-                    thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreC, linearMetreC)
-                    thisFactory = CalculateFactory(factoryCalculation, costFactory, squareMetreC, linearMetreC)
+                    thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthC), CInt(dropC), squareMetreC, linearMetreC)
+                    thisFactory = CalculateFactory(factoryCalculation, costFactory, CInt(widthC), CInt(dropC), squareMetreC, linearMetreC)
 
                     costSell = thisSell
                     costBuy = thisBuy
@@ -3598,8 +3652,8 @@ Public Class OrderClass
                     Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
 
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthD), CInt(dropD), squareMetreD, linearMetreD, cutLength)
-                    thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreD, linearMetreD)
-                    thisFactory = CalculateBuy(factoryCalculation, costFactory, squareMetreD, linearMetreD)
+                    thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthD), CInt(dropD), squareMetreD, linearMetreD)
+                    thisFactory = CalculateBuy(factoryCalculation, costFactory, CInt(widthD), CInt(dropD), squareMetreD, linearMetreD)
 
                     costSell = thisSell
                     costBuy = thisBuy
@@ -3922,8 +3976,8 @@ Public Class OrderClass
                     Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
 
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthE), CInt(dropE), squareMetreE, linearMetreE, cutLength)
-                    thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreE, linearMetreE)
-                    thisFactory = CalculateBuy(factoryCalculation, costFactory, squareMetreE, linearMetreE)
+                    thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthE), CInt(dropE), squareMetreE, linearMetreE)
+                    thisFactory = CalculateBuy(factoryCalculation, costFactory, CInt(widthE), CInt(dropE), squareMetreE, linearMetreE)
 
                     costSell = thisSell
                     costBuy = thisBuy
@@ -4246,8 +4300,8 @@ Public Class OrderClass
                     Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
 
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthF), CInt(dropF), squareMetreF, linearMetreF, cutLength)
-                    thisBuy = CalculateBuy(buyCalculation, costBuy, squareMetreF, linearMetreF)
-                    thisFactory = CalculateBuy(factoryCalculation, costFactory, squareMetreF, linearMetreF)
+                    thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthF), CInt(dropF), squareMetreF, linearMetreF)
+                    thisFactory = CalculateBuy(factoryCalculation, costFactory, CInt(widthF), CInt(dropF), squareMetreF, linearMetreF)
 
                     costSell = thisSell
                     costBuy = thisBuy

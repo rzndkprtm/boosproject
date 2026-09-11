@@ -701,14 +701,10 @@ Partial Class Setting_Customer_Detail
     Protected Function BindDetailAddress(addressId As String) As String
         Dim result As String = String.Empty
         If Not addressId = "" Then
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerAddress WHERE Id='" & addressId & "'")
-            If thisData IsNot Nothing Then
-                Dim address As String = thisData("Address").ToString()
-                Dim suburb As String = thisData("Suburb").ToString()
-                Dim state As String = thisData("State").ToString()
-                Dim postCode As String = thisData("PostCode").ToString()
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT ISNULL(Address,'') + ', ' + ISNULL(Suburb,'') + ', ' + ISNULL(State,'') + ' ' + ISNULL(PostCode,'') AS FullAddress FROM CustomerAddress WHERE Id='" & addressId & "'")
 
-                result = address & ", " & suburb & ", " & state & " " & postCode
+            If thisData IsNot Nothing Then
+                result = thisData("FullAddress").ToString()
             End If
         End If
         Return result
