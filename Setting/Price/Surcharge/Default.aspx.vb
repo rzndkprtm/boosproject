@@ -108,7 +108,7 @@ Partial Class Setting_Price_Surcharge_Default
     Protected Sub btnRePrice_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim dataOrder As DataTable = settingClass.GetDataTable("SELECT Id FROM OrderHeaders WHERE Active=1 AND (Status = 'Unsubmitted' OR Status='Waiting Proforma')")
+            Dim dataOrder As DataTable = settingClass.GetDataTable("SELECT Id FROM OrderHeaders WHERE Active=1 AND (Status='Unsubmitted' OR Status='Waiting Proforma')")
             If Not dataOrder.Rows.Count = 0 Then
                 Dim orderClass As New OrderClass
                 For i As Integer = 0 To dataOrder.Rows.Count - 1
