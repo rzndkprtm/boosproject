@@ -9973,13 +9973,9 @@ Partial Class Order_Method
             rlvalue = 0
         End If
 
-        Dim groupName As String = String.Format("{0} - {1}", designName, blindName)
-        If blindName = "Ultraslat 50mm Valance" Then
-            groupName = String.Format("{0} - {1}", designName, "Econo 50mm Valance")
-        End If
-        If blindName = "Ultraslat 63mm" Then
-            groupName = String.Format("{0} - {1}", designName, "Econo 63mm Valance")
-        End If
+        Dim groupName As String = String.Format("{0}}", blindName)
+        If blindName = "Ultraslat 50mm Valance" Then groupName = "Econo 50mm Valance"
+        If blindName = "Ultraslat 63mm" Then groupName = "Econo 63mm Valance"
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
