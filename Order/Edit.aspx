@@ -193,7 +193,7 @@
                         </div>
                     </div>
                     <div class="row mb-2">
-                        <div class="col-12 form-group">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">State</label>
                             <asp:DropDownList runat="server" ID="ddlState" CssClass="form-select" ClientIDMode="Static">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
@@ -208,9 +208,7 @@
                             </asp:DropDownList>
                             <span id="spanErrorState" style="color:red;"></span>
                         </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Post Code</label>
                             <asp:TextBox runat="server" ID="txtPostCode" CssClass="form-control" ClientIDMode="Static" placeholder="Post Code ..." autocomplete="off"></asp:TextBox>
                             <span id="spanErrorPostCode" style="color:red;"></span>
