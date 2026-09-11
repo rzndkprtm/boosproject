@@ -77,7 +77,7 @@ Partial Class Order_Upload
                     End If
 
                     If String.IsNullOrEmpty(orderAddress) Then
-                        orderAddress = orderClass.GetItemData("SELECT ISNULL(Address,'') + ', ' + ISNULL(Suburb,'') + ', ' + ISNULL(State,'') + ' ' + ISNULL(PostCode,'') AS FullAddress FROM CustomerAddress WHERE CustomerId='" & ddlCustomer.SelectedValue & "' AND [Primary]=1")
+                        orderAddress = orderClass.GetItemData("SELECT ISNULL(Address,'') + ', ' + ISNULL(Suburb,'') + ', ' + ISNULL(State,'') + ', ' + ISNULL(PostCode,'') AS FullAddress FROM CustomerAddress WHERE CustomerId='" & ddlCustomer.SelectedValue & "' AND [Primary]=1")
                     End If
 
                     Dim customerData As DataRow = orderClass.GetDataRow("SELECT Customers.CompanyDetailId AS CompanyDetailId, Companys.Alias AS CompanyAlias FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id WHERE Customers.Id='" & ddlCustomer.SelectedValue & "'")

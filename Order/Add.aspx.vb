@@ -28,14 +28,14 @@ Partial Class Order_Add
             MessageError(False, String.Empty)
             BindDataCustomer()
             BindComponentForm(ddlCustomer.SelectedValue)
-            GetCustomerAddress(ddlCustomer.SelectedValue)
+            GetCustomerContactAddress(ddlCustomer.SelectedValue)
         End If
     End Sub
 
     Protected Sub ddlCustomer_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindComponentForm(ddlCustomer.SelectedValue)
-        GetCustomerAddress(ddlCustomer.SelectedValue)
+        GetCustomerContactAddress(ddlCustomer.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -227,7 +227,7 @@ Partial Class Order_Add
         End Try
     End Sub
 
-    Protected Sub GetCustomerAddress(customerId As String)
+    Protected Sub GetCustomerContactAddress(customerId As String)
         txtOrderAddress.Text = String.Empty
         Try
             If Not String.IsNullOrEmpty(customerId) Then
@@ -248,8 +248,8 @@ Partial Class Order_Add
                     Dim state As String = addressData("State").ToString()
                     Dim postCode As String = addressData("PostCode").ToString()
 
-                    txtOrderAddress.Text = address & ", " & suburb & ", " & state & " " & postCode
-                    hfOrderAddress.Value = address & ", " & suburb & ", " & state & " " & postCode
+                    txtOrderAddress.Text = address & ", " & suburb & ", " & state & ", " & postCode
+                    hfOrderAddress.Value = address & ", " & suburb & ", " & state & ", " & postCode
                 End If
             End If
         Catch ex As Exception
