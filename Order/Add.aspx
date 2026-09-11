@@ -182,7 +182,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-12 form-group">
-                            <label class="form-label">Suburb</label>
+                            <label class="form-label">State</label>
                             <asp:DropDownList runat="server" ID="ddlState" CssClass="form-select" ClientIDMode="Static">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
                                 <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
@@ -207,7 +207,8 @@
                     <div class="row mt-3">
                         <div class="col-12">
                             <div class="alert alert-info">
-                                Please contact Customer Service to set your address as the default address for all future orders.
+                                Please contact Customer Service to set your address as the default address for all future orders.<br /><br />
+                                If you use a different address, an additional delivery fee may apply to this order.
                             </div>
                         </div>
                     </div>
@@ -348,14 +349,15 @@
                 }).filter(function (x) {
                     return x !== '';
                 });
-                if (parts.length >= 3) {
-                    var statePostCode = parts[parts.length - 1];
-                    var match = statePostCode.match(/^(NSW|VIC|QLD|SA|WA|TAS|NT|ACT)\s+(\d{4})$/i);
-                    if (match) {
-                        var state = match[1].toUpperCase();
-                        var postCode = match[2];
-                        var suburb = parts[parts.length - 2];
-                        var address = parts.slice(0, parts.length - 2).join(", ");
+
+                if (parts.length >= 4) {
+                    var postCode = parts[parts.length - 1];
+                    var state = parts[parts.length - 2];
+                    var suburb = parts[parts.length - 3];
+                    var address = parts.slice(0, parts.length - 3).join(", ");
+
+                    if (/^(NSW|VIC|QLD|SA|WA|TAS|NT|ACT)$/i.test(state) && /^\d{4,5}$/.test(postCode)) {
+                        state = state.toUpperCase();
 
                         $("#<%= txtAddress.ClientID %>").val(address);
                         $("#<%= txtSuburb.ClientID %>").val(suburb);
@@ -374,6 +376,7 @@
                 backdrop: "static",
                 keyboard: false
             });
+
             modal.show();
         }
         function updateOrderAddress() {
@@ -393,14 +396,17 @@
                 $("#spanErrorAddress").text("ADDRESS IS REQUIRED !");
                 hasError = true;
             }
+
             if (suburb === "") {
                 $("#spanErrorSuburb").text("SUBURB IS REQUIRED !");
                 hasError = true;
             }
+
             if (state === "") {
                 $("#spanErrorState").text("STATE IS REQUIRED !");
                 hasError = true;
             }
+
             if (postCode === "") {
                 $("#spanErrorPostCode").text("POST CODE IS REQUIRED !");
                 hasError = true;
@@ -413,7 +419,8 @@
             if (hasError) {
                 return false;
             }
-            var orderAddress = address + ", " + suburb + ", " + state + " " + postCode;
+
+            var orderAddress = address + ", " + suburb + ", " + state + ", " + postCode;
 
             $("#txtOrderAddress").val(orderAddress);
             $("#hfOrderAddress").val(orderAddress);
