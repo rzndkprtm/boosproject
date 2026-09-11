@@ -113,7 +113,8 @@
                                                             <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/price/surcharge/edit?surchargeid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Change Value") %>'>
-                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeValue" onclick='<%# String.Format("return dataChangeValue(`{0}`, `{1}`, `{2}`, `{3}`);", Eval("Id").ToString(), Eval("SellCharge").ToString(), Eval("BuyCharge").ToString(), Eval("FactoryCharge").ToString()) %>'>Change Value</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeValue" onclick='<%# String.Format("return dataChangeValue(""{0}"", ""{1}"", ""{2}"", ""{3}"");", HttpUtility.JavaScriptStringEncode(Eval("Id").ToString()), HttpUtility.JavaScriptStringEncode(Eval("SellCharge").ToString()), HttpUtility.JavaScriptStringEncode(Eval("BuyCharge").ToString()), HttpUtility.JavaScriptStringEncode(Eval("FactoryCharge").ToString())) %>'>Change Value
+                                                            </a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Copy") %>'>
                                                             <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
