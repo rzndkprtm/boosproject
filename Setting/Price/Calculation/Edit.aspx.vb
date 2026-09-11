@@ -119,7 +119,6 @@ Partial Class Setting_Price_Calculation_Edit
                         thisCmd.Parameters.AddWithValue("@BuyFormula", If(String.IsNullOrEmpty(txtBuyFormula.Text), CType(DBNull.Value, Object), txtBuyFormula.Text))
                         thisCmd.Parameters.AddWithValue("@FactoryFormula", If(String.IsNullOrEmpty(txtFactoryFormula.Text), CType(DBNull.Value, Object), txtFactoryFormula.Text))
                         thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
 
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
