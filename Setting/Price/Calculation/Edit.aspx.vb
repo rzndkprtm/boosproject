@@ -59,6 +59,12 @@ Partial Class Setting_Price_Calculation_Edit
             If msgError.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceCalculations ORDER BY Id DESC")
 
+                If ddlFormula.SelectedValue = "COST" Then
+                    txtSellMinSize.Text = "" : txtBuyMinSize.Text = "" : txtFactoryMinSize.Text = ""
+                    txtSellMinWidth.Text = "" : txtBuyMinWidth.Text = "" : txtFactoryMinWidth.Text = ""
+                    txtSellMinDrop.Text = "" : txtBuyMinDrop.Text = "" : txtFactoryMinDrop.Text = ""
+                    txtSellFormula.Text = "" : txtBuyFormula.Text = "" : txtFactoryFormula.Text = ""
+                End If
                 If ddlFormula.SelectedValue = "SQM" Then
                     txtSellMinSize.Text = "" : txtBuyMinSize.Text = "" : txtFactoryMinSize.Text = ""
                     txtSellMinWidth.Text = "" : txtBuyMinWidth.Text = "" : txtFactoryMinWidth.Text = ""

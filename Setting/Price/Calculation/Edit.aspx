@@ -61,6 +61,7 @@
                                                 <label class="form-label">Method</label>
                                                 <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Cost" Text="Cost"></asp:ListItem>
                                                     <asp:ListItem Value="Square Metre" Text="Square Metre"></asp:ListItem>
                                                     <asp:ListItem Value="Linear Metre" Text="Linear Metre"></asp:ListItem>
                                                     <asp:ListItem Value="Feet" Text="Feet"></asp:ListItem>
@@ -70,6 +71,7 @@
                                                 <label class="form-label">Formula</label>
                                                 <asp:DropDownList runat="server" ID="ddlFormula" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlFormula_SelectedIndexChanged">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="COST" Text="COST"></asp:ListItem>
                                                     <asp:ListItem Value="SQM" Text="SQM"></asp:ListItem>
                                                     <asp:ListItem Value="SQM_MIN" Text="SQM_MIN"></asp:ListItem>
                                                     <asp:ListItem Value="SQM_ROUND" Text="SQM_ROUND"></asp:ListItem>
