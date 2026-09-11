@@ -2015,6 +2015,8 @@ Public Class OrderClass
             If rule Is Nothing Then Return gridPrice
 
             Select Case rule("Formula").ToString().ToUpper()
+                Case "COST"
+                    Return gridPrice
                 Case "SQM"
                     Return Math.Round(gridPrice * squareMetre, 2)
                 Case "SQM_MIN"
@@ -2032,11 +2034,9 @@ Public Class OrderClass
                     If Not IsDBNull(rule("SellMinWidth")) AndAlso w < CInt(rule("SellMinWidth")) Then
                         w = CInt(rule("SellMinWidth"))
                     End If
-
                     If Not IsDBNull(rule("SellMinDrop")) AndAlso d < CInt(rule("SellMinDrop")) Then
                         d = CInt(rule("SellMinDrop"))
                     End If
-
                     Dim sqm As Decimal = Math.Round((w * d) / 1000000D)
 
                     Return Math.Round(gridPrice * sqm, 2)
@@ -2044,7 +2044,6 @@ Public Class OrderClass
                     Return Math.Round(gridPrice * linearMetre, 2)
                 Case "LM_MIN"
                     Dim lm As Decimal = linearMetre
-
                     If Not IsDBNull(rule("SellMinSize")) AndAlso lm <= CDec(rule("SellMinSize")) Then
                         lm = CDec(rule("SellMinSize"))
                     End If
@@ -2054,13 +2053,11 @@ Public Class OrderClass
                     Return Math.Round((cutLength / 1000D) * gridPrice, 2)
                 Case "FEET"
                     Dim sellFormula As String = rule("SellFormula").ToString()
-
                     If Not String.IsNullOrWhiteSpace(sellFormula) Then
                         sellFormula = sellFormula.Replace("Width", width.ToString(CultureInfo.InvariantCulture))
                         Try
                             Dim dt As New DataTable()
                             Dim result As Object = dt.Compute(sellFormula, Nothing)
-
                             If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
                                 Return Math.Round(Convert.ToDecimal(result), 2)
                             End If
@@ -2083,6 +2080,8 @@ Public Class OrderClass
             If rule Is Nothing Then Return gridPrice
 
             Select Case rule("Formula").ToString().ToUpper()
+                Case "COST"
+                    Return gridPrice
                 Case "SQM"
                     Return Math.Round(gridPrice * squareMetre, 2)
                 Case "SQM_MIN"
@@ -2134,6 +2133,8 @@ Public Class OrderClass
             If rule Is Nothing Then Return gridPrice
 
             Select Case rule("Formula").ToString().ToUpper()
+                Case "COST"
+                    Return gridPrice
                 Case "SQM"
                     Return Math.Round(gridPrice * squareMetre, 2)
                 Case "SQM_MIN"
