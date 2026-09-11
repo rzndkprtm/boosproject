@@ -236,7 +236,7 @@ Partial Class Setting_Price_Calculation_Edit
                     thisString = "SELECT Id, Name FROM Designs WHERE Active=1"
                 End If
                 If dataType = "Blinds" Then
-                    thisString = "SELECT Id, Name FROM Blinds WHERE Active=1"
+                    thisString = "SELECT Blinds.Id, Blinds.Name + ' [' + Designs.Name + ']' AS Name FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id WHERE Blinds.Active=1"
                 End If
 
                 ddlDataId.DataSource = settingClass.GetDataTable(thisString)

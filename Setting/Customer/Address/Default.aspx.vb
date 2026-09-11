@@ -176,15 +176,10 @@ Partial Class Setting_Customer_Address_Default
         Dim result As String = String.Empty
 
         If Not String.IsNullOrEmpty(addressId) Then
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerAddress WHERE Id='" & addressId & "'")
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT ISNULL(Address,'') + ', ' + ISNULL(Suburb,'') + ', ' + ISNULL(State,'') + ' ' + ISNULL(PostCode,'') AS FullAddress FROM CustomerAddress WHERE Id='" & addressId & "'")
 
             If thisData IsNot Nothing Then
-                Dim address As String = thisData("Address").ToString()
-                Dim suburb As String = thisData("Suburb").ToString()
-                Dim state As String = thisData("State").ToString()
-                Dim postCode As String = thisData("PostCode").ToString()
-
-                result = address & ", " & suburb & ", " & state & " " & postCode
+                result = thisData("FullAddress").ToString()
             End If
         End If
         Return result

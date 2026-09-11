@@ -63,11 +63,7 @@ Partial Class Setting_Customer_Add
                 MessageError(True, "CUSTOMER LEVEL IS REQUIRED !")
                 Exit Sub
             End If
-            If ddlLevel.SelectedValue = "Master" AndAlso Not Session("RoleName") = "Developer" Then
-                MessageError(True, "!")
-                Exit Sub
-            End If
-            If ddlLevel.SelectedValue = "Referral" AndAlso ddlPrimary.SelectedValue = "" Then
+            If ddlLevel.SelectedValue = "Linked" AndAlso ddlPrimary.SelectedValue = "" Then
                 MessageError(True, "PRIMARY CUSTOMER IS REQUIRED !")
                 Exit Sub
             End If
