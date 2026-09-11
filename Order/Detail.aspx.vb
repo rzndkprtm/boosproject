@@ -3382,8 +3382,10 @@ Partial Class Order_Detail
             If Session("RoleName") = "Customer" Then
                 aDuplicateOrder.Visible = True
 
-                btnQuoteAction.Visible = True
-                aQuoteCustomer.Visible = True
+                If Session("PriceAccess") = "Yes" Then
+                    btnQuoteAction.Visible = True
+                    aQuoteCustomer.Visible = True
+                End If
 
                 divOrderContact.Visible = True
                 divOrderAddress.Visible = True
@@ -3431,19 +3433,18 @@ Partial Class Order_Detail
 
             gvListItem.Columns(1).Visible = LoginAccess("Visible ID")
             gvListItem.Columns(2).Visible = LoginAccess("Visible Product ID")
-            gvListItem.Columns(4).Visible = LoginAccess("Visible Price")
-            gvListItem.Columns(5).Visible = LoginAccess("Visible Sell Price")
-            gvListItem.Columns(6).Visible = LoginAccess("Visible Buy Price")
-            gvListItem.Columns(7).Visible = LoginAccess("Visible Factory Price")
+            gvListItem.Columns(4).Visible = False
+            gvListItem.Columns(5).Visible = False
+            gvListItem.Columns(6).Visible = False
+            gvListItem.Columns(7).Visible = False
+            gvListItem.Columns(8).Visible = False ' Mark Up
 
-            gvListItem.Columns(8).Visible = False
-            If Session("RoleName") = "Customer" Then
-                gvListItem.Columns(4).Visible = False
-                gvListItem.Columns(8).Visible = False
-                If Session("PriceAccess") = "Yes" Then
-                    gvListItem.Columns(4).Visible = True
-                    gvListItem.Columns(8).Visible = True
-                End If
+            If Session("PriceAccess") = "Yes" Then
+                gvListItem.Columns(4).Visible = LoginAccess("Visible Price")
+                gvListItem.Columns(5).Visible = LoginAccess("Visible Sell Price")
+                gvListItem.Columns(6).Visible = LoginAccess("Visible Buy Price")
+                gvListItem.Columns(7).Visible = LoginAccess("Visible Factory Price")
+                gvListItem.Columns(8).Visible = True ' Mark Up
             End If
 
             If status = "Unsubmitted" And gvListItem.Rows.Count > 0 Then
