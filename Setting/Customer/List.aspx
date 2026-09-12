@@ -31,7 +31,8 @@
         </section>
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
+                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
+                <asp:Button runat="server" ID="btnMultiple" CssClass="btn btn-info" Text="Multiple Change" OnClick="btnMultiple_Click" />
             </div>
         </section>
         <section class="row">

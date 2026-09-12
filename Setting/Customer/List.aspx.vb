@@ -25,6 +25,18 @@ Partial Class Setting_Customer_List
         End If
     End Sub
 
+    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Session("SearchCustomer") = txtSearch.Text
+        Session("CompanyCustomer") = ddlCompany.SelectedValue
+        Response.Redirect("~/setting/customer/add", False)
+    End Sub
+
+    Protected Sub btnMultiple_Click(sender As Object, e As EventArgs)
+        Session("SearchCustomer") = txtSearch.Text
+        Session("CompanyCustomer") = ddlCompany.SelectedValue
+        Response.Redirect("~/setting/customer/multiple", False)
+    End Sub
+
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 
@@ -53,12 +65,6 @@ Partial Class Setting_Customer_List
 
         Session("SearchCustomer") = txtSearch.Text
         Session("CompanyCustomer") = ddlCompany.SelectedValue
-    End Sub
-
-    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
-        Session("SearchCustomer") = txtSearch.Text
-        Session("CompanyCustomer") = ddlCompany.SelectedValue
-        Response.Redirect("~/setting/customer/add", False)
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
@@ -193,6 +199,7 @@ Partial Class Setting_Customer_List
             gvList.Columns(9).Visible = LoginAccess("Visible On Stop") ' ON STOP
 
             btnAdd.Visible = LoginAccess("Add")
+            'btnMultiple.Visible = LoginAccess("Multiple Change")
             ddlStatus.Visible = LoginAccess("Filter Active")
             divCompany.Visible = LoginAccess("Filter Company")
         Catch ex As Exception
