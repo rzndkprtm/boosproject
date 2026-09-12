@@ -45,15 +45,9 @@
                 <a href="javascript:void(0);" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalRecalculate">Re-Price Order</a>
                 <button class="btn btn-success dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Setting</button>
                 <ul class="dropdown-menu">
-                    <li>
-                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalOnStop">Change On Stop</a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCashSale">Change Cash Sale</a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalNewsletter">Change Newsletter</a>
-                    </li>
+                    <li><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalOnStop">Change On Stop</a></li>
+                    <li><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCashSale">Change Cash Sale</a></li>
+                    <li><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalNewsletter">Change Newsletter</a></li>
                 </ul>
                 <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Customers', '<%= lblId.Text %>')">Log</a>
             </div>
@@ -712,14 +706,14 @@
     <asp:HiddenField ID="selected_tab" runat="server" />
     
     <div class="modal modal-blur fade" id="modalRecalculate" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-dark">
                     <h5 class="modal-title white">Re-Price Order</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />
-                    <b>The price will be recalculated using the latest pricing version.</b><br /><br />
+                    Hi <b><%: Session("FullName") %></b>,<br /><br />
+                    For all orders with the status <b>"Unsubmitted"</b> or <b>"Waiting Proforma"</b>, the price will be recalculated using the latest pricing version.<br /><br />
                     If the issue persists, please contact the IT team.<br />
                     This issue is caused by a product group that is not registered in the system.
                 </div>
