@@ -199,7 +199,7 @@ Partial Class Setting_Customer_List
             gvList.Columns(9).Visible = LoginAccess("Visible On Stop") ' ON STOP
 
             btnAdd.Visible = LoginAccess("Add")
-            'btnMultiple.Visible = LoginAccess("Multiple Change")
+            btnMultiple.Visible = LoginAccess("Multiple Change")
             ddlStatus.Visible = LoginAccess("Filter Active")
             divCompany.Visible = LoginAccess("Filter Company")
         Catch ex As Exception
