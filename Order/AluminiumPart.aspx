@@ -201,5 +201,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/AluminiumPart.js?v=1.0.0"></script>
+    <script src="/Scripts/RisaSolihah/AluminiumPart.js?v=1.0.1"></script>
 </asp:Content>
