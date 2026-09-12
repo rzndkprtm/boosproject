@@ -235,5 +235,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/VenetianPart.js?v=1.0.2"></script>
+    <script src="/Scripts/RisaSolihah/VenetianPart.js?v=1.1.0"></script>
 </asp:Content>
