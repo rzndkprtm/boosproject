@@ -1151,9 +1151,6 @@ Public Class OrderClass
                     result &= String.Format("{0} {1} {2}", productName, sizeC, squareMetreTextC)
                 End If
             End If
-            If designName = "Venetian Part" Then
-                result = productName
-            End If
             If designName = "Vertical" Then
                 fabricColourName = fabricColourName.Replace("127mm ", "").Replace("89mm ", "").Trim()
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
@@ -1178,6 +1175,13 @@ Public Class OrderClass
             End If
             If designName = "Service" Then
                 result = GetItemData("SELECT Name FROM PriceServices WHERE Id='" & serviceId & "'")
+            End If
+
+            If designName = "Aluminium Part" Then
+                result = String.Format("{0} - {1}", designName, productName)
+            End If
+            If designName = "Venetian Part" Then
+                result = String.Format("{0} - {1}", designName, productName)
             End If
 
             Dim checkNote As String = GetItemData("SELECT Description FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Note'")

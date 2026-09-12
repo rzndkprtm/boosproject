@@ -10464,8 +10464,8 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
-        'Dim groupName As String = String.Format("{0}", product)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productName, data.designid, priceGroupId)
+        Dim groupName As String = String.Format("{0} - {1}", designName, productName)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -10481,6 +10481,7 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                         thisCmd.Parameters.AddWithValue("@Width", width)
                         thisCmd.Parameters.AddWithValue("@Drop", drop)
+                        thisCmd.Parameters.AddWithValue("@WandLength", wandLength)
                         thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlengthvalue)
                         thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
@@ -10517,6 +10518,7 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                     thisCmd.Parameters.AddWithValue("@Width", width)
                     thisCmd.Parameters.AddWithValue("@Drop", drop)
+                    thisCmd.Parameters.AddWithValue("@WandLength", wandLength)
                     thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlengthvalue)
                     thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
@@ -10565,13 +10567,11 @@ Partial Class Order_Method
 
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
-        Dim colourId As String = String.Empty
-        Dim colourName As String = String.Empty
+        Dim productName As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
-        If Not String.IsNullOrEmpty(data.colourtype) Then colourId = orderClass.GetItemData("SELECT ColourType FROM Products WHERE Id='" & data.colourtype & "'")
-        If Not String.IsNullOrEmpty(colourId) Then colourName = orderClass.GetColourName(colourId)
+        If Not String.IsNullOrEmpty(data.colourtype) Then productName = orderClass.GetProductName(data.colourtype)
 
         Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
 
@@ -10629,9 +10629,13 @@ Partial Class Order_Method
             rlvalue = 0
         End If
 
-        Dim groupName As String = String.Format("{0}", blindName)
-        If blindName = "Ultraslat 50mm Valance" Then groupName = "Econo 50mm Valance"
-        If blindName = "Ultraslat 63mm" Then groupName = "Econo 63mm Valance"
+        Dim groupName As String = String.Format("{0} - {1}", designName, productName)
+        If blindName = "Ultraslat 50mm Valance" Then
+            groupName = String.Format("{0} - Econo 50mm Valance", designName)
+        End If
+        If blindName = "Ultraslat 63mm" Then
+            groupName = String.Format("{0} - Econo 63mm Valance", designName)
+        End If
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
@@ -11643,18 +11647,12 @@ Partial Class Order_Method
         Next
 
         Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim valanceTypeReq As New JSONList With {.type = "ValanceType_Part", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim valancePositionReq As New JSONList With {.type = "ValancePosition_Part", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
             .BlindTypes = ListData(blindReq),
-            .ColourTypes = ListData(colourReq),
-            .Mountings = ListData(mountingReq),
-            .ValanceTypes = ListData(valanceTypeReq),
-            .ValancePositions = ListData(valancePositionReq)
+            .ColourTypes = ListData(colourReq)
         }
         Return result
     End Function
