@@ -118,6 +118,9 @@ Partial Class Account_Default
             gvContact.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerContacts WHERE CustomerId='" & loginData("CustomerId").ToString() & "' ORDER BY Id ASC")
             gvContact.DataBind()
 
+            gvAddress.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerAddress WHERE CustomerId='" & loginData("CustomerId").ToString() & "' ORDER BY Id ASC")
+            gvAddress.DataBind()
+
             divCompany.Visible = False
             If Session("RoleName") = "Customer" Then
                 divCompany.Visible = True
@@ -137,6 +140,19 @@ Partial Class Account_Default
             End If
         End Try
     End Sub
+
+    Protected Function BindDetailAddress(addressId As String) As String
+        Dim result As String = String.Empty
+
+        If Not String.IsNullOrEmpty(addressId) Then
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT ISNULL(Address,'') + ', ' + ISNULL(Suburb,'') + ', ' + ISNULL(State,'') + ' ' + ISNULL(PostCode,'') AS FullAddress FROM CustomerAddress WHERE Id='" & addressId & "'")
+
+            If thisData IsNot Nothing Then
+                result = thisData("FullAddress").ToString()
+            End If
+        End If
+        Return result
+    End Function
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message

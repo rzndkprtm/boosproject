@@ -136,6 +136,25 @@
                                 </Columns>
                             </asp:GridView>
                         </div>
+
+                        <div class="section-title mt-5">Address List</div>
+                        <div class="table-responsive">
+                            <asp:GridView runat="server" ID="gvAddress" CssClass="table table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="No address information available." EmptyDataRowStyle-HorizontalAlign="Center">
+                                <Columns>
+                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="30px">
+                                        <ItemTemplate>
+                                            <%# Container.DataItemIndex + 1 %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:BoundField DataField="Type" HeaderText="Name" ItemStyle-Wrap="true" />
+                                    <asp:TemplateField HeaderText="Address" ItemStyle-Wrap="true">
+                                        <ItemTemplate>
+                                            <%# BindDetailAddress(Eval("Id").ToString()) %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                            </asp:GridView>
+                        </div>
                         <div class="note-box">
                             <i class="bi bi-shield-lock-fill"></i>
                             Company account information is managed by IT or Accounting and cannot be modified from this page.
