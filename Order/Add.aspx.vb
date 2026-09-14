@@ -241,7 +241,7 @@ Partial Class Order_Add
                     hfOrderContact.Value = name & " | " & phone & " | " & email
                 End If
 
-                Dim addressData As DataRow = orderClass.GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND Type='Billing' AND [Primary]=1")
+                Dim addressData As DataRow = orderClass.GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND Type='Delivery' AND [Primary]=1")
                 If addressData IsNot Nothing Then
                     Dim address As String = addressData("Address").ToString()
                     Dim suburb As String = addressData("Suburb").ToString()
