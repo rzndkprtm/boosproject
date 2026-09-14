@@ -10630,12 +10630,26 @@ Partial Class Order_Method
             rlvalue = 0
         End If
 
-        Dim groupName As String = String.Format("{0} - {1}", designName, productName)
-        If blindName = "Ultraslat 50mm Valance" Then
-            groupName = String.Format("{0} - Econo 50mm Valance", designName)
-        End If
-        If blindName = "Ultraslat 63mm" Then
-            groupName = String.Format("{0} - Econo 63mm Valance", designName)
+        Dim groupName As String = String.Empty
+        If blindName = "Valance Only" Then
+            If productName.Contains("Basswood 50mm") Then
+                groupName = String.Format("{0} - Basswood 50mm Valance", designName)
+            End If
+            If productName.Contains("Basswood 63mm") Then
+                groupName = String.Format("{0} - Basswood 63mm Valance", designName)
+            End If
+            If productName.Contains("Econo 50mm") Then
+                groupName = String.Format("{0} - Econo 50mm Valance", designName)
+            End If
+            If productName.Contains("Econo 63mm") Then
+                groupName = String.Format("{0} - Econo 63mm Valance", designName)
+            End If
+            If productName.Contains("Ultraslat 50mm") Then
+                groupName = String.Format("{0} - Ultraslat 50mm Valance", designName)
+            End If
+            If productName.Contains("Ultraslat 63mm") Then
+                groupName = String.Format("{0} - Ultraslat 63mm Valance", designName)
+            End If
         End If
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
