@@ -39,10 +39,13 @@
                                                 <label class="form-label">Data Type</label>
                                                 <asp:DropDownList runat="server" ID="ddlData" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlData_SelectedIndexChanged">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="PriceGroup" Text="Price Group"></asp:ListItem>
+                                                    <asp:ListItem Value="PriceGroupShutter" Text="Price Group (Shutter)"></asp:ListItem>
+                                                    <asp:ListItem Value="PriceGroupDoor" Text=" Price Group (Door)"></asp:ListItem>
+                                                    <asp:ListItem Value="Sales" Text="Sales"></asp:ListItem>
+                                                    <asp:ListItem Value="SubCompany" Text="Sub Company"></asp:ListItem>
+                                                    <asp:ListItem Value="CashSale" Text="Cash Sale"></asp:ListItem>
+                                                    <asp:ListItem Value="OnStop" Text="On Stop"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
@@ -116,7 +119,9 @@
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',
-                    shouldSort: false
+                    shouldSort: false,
+                    removeItemButton: true,
+                    duplicateItemsAllowed: false
                 });
             });
         }
