@@ -10631,6 +10631,12 @@ Partial Class Order_Method
         End If
 
         Dim groupName As String = String.Empty
+        If blindName = "Metal Accorn" Then
+            groupName = String.Format("{0} - {1}", designName, blindName)
+        End If
+        If blindName = "Other" Then
+            groupName = String.Format("{0}", productName)
+        End If
         If blindName = "Valance Only" Then
             If productName.Contains("Basswood 50mm") Then
                 groupName = String.Format("{0} - Basswood 50mm Valance", designName)
