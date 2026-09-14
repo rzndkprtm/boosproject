@@ -67,12 +67,12 @@
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                             <asp:BoundField DataField="DebtorCode" HeaderText="Debtor Code" />
                                             <asp:BoundField DataField="CustomerName" HeaderText="Customer" />
-                                            <asp:BoundField DataField="Description" HeaderText="Description" />
                                             <asp:TemplateField HeaderText="Address">
                                                 <ItemTemplate>
                                                     <%# BindDetailAddress(Eval("Id").ToString()) %>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                            <asp:BoundField DataField="Tags" HeaderText="Tags" />
                                             <asp:BoundField DataField="Note" HeaderText="Note" />
                                             <asp:BoundField DataField="DataPrimary" HeaderText="Primary" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">

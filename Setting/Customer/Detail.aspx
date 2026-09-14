@@ -252,12 +252,12 @@
                                                             <%# Container.DataItemIndex + 1 %>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
-                                                    <asp:BoundField DataField="Description" HeaderText="Description" />
                                                     <asp:TemplateField HeaderText="Address">
                                                         <ItemTemplate>
                                                             <%# BindDetailAddress(Eval("Id").ToString()) %>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
+                                                    <asp:BoundField DataField="Tags" HeaderText="DescripTagstion" />
                                                     <asp:BoundField DataField="Note" HeaderText="Note" />
                                                     <asp:BoundField DataField="PrimaryData" HeaderText="Primary" />
                                                     <asp:TemplateField ItemStyle-Width="120px">

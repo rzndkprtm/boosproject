@@ -75,19 +75,32 @@ Partial Class Setting_Customer_Address_Add
             End If
             If msgError.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerAddress ORDER BY Id DESC")
+
+                Dim thisTags As String = String.Empty
+                Dim selected As String = String.Empty
+                For Each item As ListItem In lbTags.Items
+                    If item.Selected Then
+                        selected += item.Text & ","
+                    End If
+                Next
+
+                If Not selected = "" Then
+                    thisTags = selected.Remove(selected.Length - 1).ToString()
+                End If
+
                 Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerAddress WHERE CustomerId='" & ddlCustomer.SelectedValue & "'")
                 Dim primaryData As Integer = 0
                 If checkData = 0 Then primaryData = 1
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress VALUES (@Id, @CustomerId, @Description, @Address, @Suburb, @State, @PostCode, @Note, @Primary)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress VALUES (@Id, @CustomerId, @Address, @Suburb, @State, @PostCode, @Tags, @Note, @Primary)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
                         thisCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Suburb", txtSuburb.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@PostCode", txtPostCode.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Tags", thisTags)
                         thisCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Primary", primaryData)
                         thisConn.Open()
