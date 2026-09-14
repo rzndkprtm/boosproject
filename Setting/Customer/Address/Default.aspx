@@ -82,8 +82,11 @@
                                                         <li>
                                                             <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/customer/address/edit?addressid=" & Eval("Id")) %>'>Detail / Edit</a>
                                                         </li>
-                                                        <li runat="server" visible='<%# VisiblePrimary(Eval("Primary")) %>'>
-                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimary" onclick='<%# String.Format("return dataPrimary(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("CustomerId").ToString()) %>'>Set As Primary</a>
+                                                        <li>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
+                                                        </li>
+                                                        <li runat="server" visible='<%# VisiblePrimary(Eval("Type").ToString(), Eval("Primary")) %>'>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimary" onclick='<%# String.Format("return dataPrimary(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("CustomerId").ToString(), Eval("Type").ToString()) %>'>Set As Primary</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("CustomerId").ToString()) %>'>Delete</a>
@@ -118,6 +121,23 @@
         </section>
     </div>
     
+    <div class="modal fade text-center" id="modalCopy" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Copy Address</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtCopyId" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnCopy" CssClass="btn btn-info" Text="Confirm" OnClick="btnCopy_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalPrimary" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -127,6 +147,7 @@
                 <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtPrimaryId" style="display:none;"></asp:TextBox>
                     <asp:TextBox runat="server" ID="txtPrimaryCustomerId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtTypeAddress" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -224,9 +245,13 @@
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-        function dataPrimary(addressid, customerid) {
+        function dataCopy(addressid) {
+            document.getElementById("<%=txtCopyId.ClientID %>").value = addressid;
+        }
+        function dataPrimary(addressid, customerid, type) {
             document.getElementById("<%=txtPrimaryId.ClientID %>").value = addressid;
             document.getElementById("<%=txtPrimaryCustomerId.ClientID %>").value = customerid;
+            document.getElementById("<%=txtTypeAddress.ClientID %>").value = type;
         }
         function dataDelete(addressid, customerid) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = addressid;
@@ -262,7 +287,7 @@
                 }
             });
         }
-        ["modalDelete", "modalLog", "modalPrimary"].forEach(function (id) {
+        ["modalCopy", "modalDelete", "modalLog", "modalPrimary"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

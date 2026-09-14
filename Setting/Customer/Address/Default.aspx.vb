@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Security.Policy
 
 Partial Class Setting_Customer_Address_Default
     Inherits Page
@@ -53,15 +54,45 @@ Partial Class Setting_Customer_Address_Default
         BuildPager()
     End Sub
 
+    Protected Sub btnCopy_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim addressId As String = txtCopyId.Text
+            Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerAddress ORDER BY Id DESC")
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress SELECT @NewId, CustomerId, NULL, Address, Suburb, State, PostCode, Note, 0 FROM CustomerAddress WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", addressId)
+                    thisCmd.Parameters.AddWithValue("@NewId", newId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"CustomerAddress", lblId.Text, Session("LoginId").ToString(), "Created Customer Address"}
+            settingClass.Logs(dataLog)
+
+            Session("SearchCustomerAddress") = txtSearch.Text
+            Response.Redirect("~/setting/customer/address", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnPrimary_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
             Dim thisId As String = txtPrimaryId.Text
             Dim thisCustomerId As String = txtPrimaryCustomerId.Text
+            Dim addressType As String = txtTypeAddress.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET [Primary]=0 WHERE CustomerId=@CustomerId; UPDATE CustomerAddress SET [Primary]=1 WHERE Id=@Id;", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET [Primary]=0 WHERE CustomerId=@CustomerId AND Type=@Type; UPDATE CustomerAddress SET [Primary]=1 WHERE Id=@Id;", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Type", addressType)
                     thisCmd.Parameters.AddWithValue("@CustomerId", thisCustomerId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
@@ -185,8 +216,13 @@ Partial Class Setting_Customer_Address_Default
         Return result
     End Function
 
-    Protected Function VisiblePrimary(primary As Boolean) As Boolean
-        If primary = False Then Return True
+    Protected Function VisiblePrimary(type As String, primary As Boolean) As Boolean
+        If Not String.IsNullOrEmpty(type) Then
+            If primary = False Then
+                Return True
+            End If
+            Return False
+        End If
         Return False
     End Function
 

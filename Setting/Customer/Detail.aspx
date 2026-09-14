@@ -273,7 +273,7 @@
                                                                 <li>
                                                                     <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteAddress" onclick='<%# String.Format("return dataDeleteAddress(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                                 </li>
-                                                                <li runat="server" visible='<%# VisiblePrimaryAddress(Eval("Primary")) %>'>
+                                                                <li runat="server" visible='<%# VisiblePrimaryAddress(Eval("Type").ToString(), Eval("Primary")) %>'>
                                                                     <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalPrimaryAddress" onclick='<%# String.Format("return dataPrimaryAddress(`{0}`);", Eval("Id").ToString()) %>'>Set As Primary</a>
                                                                 </li>
                                                                 <li>

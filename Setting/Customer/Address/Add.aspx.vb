@@ -89,7 +89,6 @@ Partial Class Setting_Customer_Address_Add
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Suburb", txtSuburb.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())

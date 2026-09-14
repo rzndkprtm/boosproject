@@ -646,7 +646,7 @@ Partial Class Setting_Customer_Detail
             Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerAddress ORDER BY Id DESC")
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress SELECT @NewId, CustomerId, Type, Address, Suburb, State, PostCode, Note, 0 FROM CustomerAddress WHERE Id=@Id", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress SELECT @NewId, CustomerId, NULL, Address, Suburb, State, PostCode, Note, 0 FROM CustomerAddress WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", addressId)
                     thisCmd.Parameters.AddWithValue("@NewId", newId)
                     thisConn.Open()
@@ -739,8 +739,13 @@ Partial Class Setting_Customer_Detail
         Return result
     End Function
 
-    Protected Function VisiblePrimaryAddress(primary As Boolean) As Boolean
-        If primary = False Then Return True
+    Protected Function VisiblePrimaryAddress(type As String, primary As Boolean) As Boolean
+        If Not String.IsNullOrEmpty(type) Then
+            If primary = False Then
+                Return True
+            End If
+            Return False
+        End If
         Return False
     End Function
 
