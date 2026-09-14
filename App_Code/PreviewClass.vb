@@ -2497,7 +2497,7 @@ Public Class PreviewClass
                         items(0, i) = "Item : " & number
                         items(1, i) = venetianPartData.Rows(i)("Mounting").ToString()
                         items(2, i) = venetianPartData.Rows(i)("BlindName").ToString()
-                        items(3, i) = venetianPartData.Rows(i)("ColourName").ToString()
+                        items(3, i) = venetianPartData.Rows(i)("ProductName").ToString()
                         items(4, i) = venetianPartData.Rows(i)("ValanceType").ToString()
                         items(5, i) = valancesizeText
                         items(6, i) = venetianPartData.Rows(i)("ReturnPosition").ToString()
@@ -2511,7 +2511,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Mounting", "Part Type", "Colour", "Valance Type", "Valance Size", "Return Position", "Return Length", "Special Information"}
+                        Dim headers As String() = {"", "Mounting", "Type", "Product", "Valance Type", "Valance Size", "Return Position", "Return Length", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
