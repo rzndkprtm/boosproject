@@ -310,7 +310,7 @@ Public Class InvoiceClass
                 End If
             End If
 
-            Dim customerAddress As DataRow = GetDataRow("SELECT CONCAT(Customers.Name, CASE WHEN NULLIF(LTRIM(RTRIM(CustomerAddress.Address)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.Suburb)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.State)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.PostCode)), '') IS NOT NULL THEN CONCAT(CHAR(13), CHAR(10), CHAR(13), CHAR(10), CustomerAddress.Address, CHAR(13), CHAR(10), CustomerAddress.Suburb, ', ', CustomerAddress.State, ', ', CustomerAddress.PostCode, CHAR(13), CHAR(10), 'Australia') ELSE '' END) AS InvoiceTo FROM Customers LEFT JOIN CustomerAddress ON CustomerAddress.CustomerId = Customers.Id AND CustomerAddress.[Primary] = 1 WHERE Customers.Id = '" & customerId & "'")
+            Dim customerAddress As DataRow = GetDataRow("SELECT CONCAT(Customers.Name, CASE WHEN NULLIF(LTRIM(RTRIM(CustomerAddress.Address)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.Suburb)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.State)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.PostCode)), '') IS NOT NULL THEN CONCAT(CHAR(13), CHAR(10), CHAR(13), CHAR(10), CustomerAddress.Address, CHAR(13), CHAR(10), CustomerAddress.Suburb, ', ', CustomerAddress.State, ', ', CustomerAddress.PostCode, CHAR(13), CHAR(10), 'Australia') ELSE '' END) AS InvoiceTo FROM Customers LEFT JOIN CustomerAddress ON CustomerAddress.CustomerId = Customers.Id WHERE Customers.Id = '" & customerId & "' AND CustomerAddress.Type='Billing' AND CustomerAddress.[Primary] = 1")
             Dim invoiceTo As String = String.Empty
             If customerAddress IsNot Nothing Then
                 invoiceTo = customerAddress("InvoiceTo").ToString()
@@ -627,7 +627,7 @@ Public Class InvoiceClass
             End If
 
             Dim fullAddress As String = String.Empty
-            Dim customerAddress As DataRow = GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+            Dim customerAddress As DataRow = GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND Type='Billing' AND [Primary]=1")
             If customerAddress IsNot Nothing Then
                 Dim address As String = customerAddress("Address").ToString()
                 Dim suburb As String = customerAddress("Suburb").ToString()
@@ -1085,7 +1085,7 @@ Public Class InvoiceClass
             Dim state As String = String.Empty
             Dim postCode As String = String.Empty
 
-            Dim customerAddress As DataRow = GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+            Dim customerAddress As DataRow = GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND Type='Billing' AND [Primary]=1")
 
             If customerAddress IsNot Nothing Then
                 address = customerAddress("Address").ToString()

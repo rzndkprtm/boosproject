@@ -252,12 +252,12 @@
                                                             <%# Container.DataItemIndex + 1 %>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
+                                                    <asp:BoundField DataField="Type" HeaderText="Type" />
                                                     <asp:TemplateField HeaderText="Address">
                                                         <ItemTemplate>
                                                             <%# BindDetailAddress(Eval("Id").ToString()) %>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
-                                                    <asp:BoundField DataField="Tags" HeaderText="DescripTagstion" />
                                                     <asp:BoundField DataField="Note" HeaderText="Note" />
                                                     <asp:BoundField DataField="PrimaryData" HeaderText="Primary" />
                                                     <asp:TemplateField ItemStyle-Width="120px">
@@ -266,6 +266,9 @@
                                                             <ul class="dropdown-menu">
                                                                 <li>
                                                                     <a class="dropdown-item" id="aDetailAddress" href='<%# Page.ResolveUrl("~/setting/customer/address/edit?addressid=" & Eval("Id") & "&returnpage=detail") %>'>Detail / Edit</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopyAddress" onclick='<%# String.Format("return dataCopyAddress(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteAddress" onclick='<%# String.Format("return dataDeleteAddress(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
@@ -957,6 +960,23 @@
             </div>
         </div>
     </div>
+    <div class="modal fade text-center" id="modalCopyAddress" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Copy Address</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtCopyAddressId" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnCopyAddress" CssClass="btn btn-info" Text="Confirm" OnClick="btnCopyAddress_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalDeleteAddress" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -964,7 +984,7 @@
                     <h5 class="modal-title white">Delete Customer Address</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtAddressDeleteId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDeleteAddressId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -982,6 +1002,7 @@
                 </div>
                 <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtPrimaryAddressId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtTypeAddressId" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -1476,10 +1497,14 @@
             document.getElementById("<%=txtPrimaryContactId.ClientID %>").value = contactid;
         }
         function dataDeleteAddress(addressid) {
-            document.getElementById("<%=txtAddressDeleteId.ClientID %>").value = addressid;
+            document.getElementById("<%=txtDeleteAddressId.ClientID %>").value = addressid;
         }
-        function dataPrimaryAddress(addressid) {
+        function dataPrimaryAddress(addressid, type) {
             document.getElementById("<%=txtPrimaryAddressId.ClientID %>").value = addressid;
+            document.getElementById("<%=txtTypeAddressId.ClientID %>").value = type;
+        }
+        function dataCopyAddress(addressid) {
+            document.getElementById("<%=txtCopyAddressId.ClientID %>").value = addressid;
         }
         function dataDeleteBusiness(businessid) {
             document.getElementById("<%=txtBusinessDeleteId.ClientID %>").value = businessid;
@@ -1587,7 +1612,7 @@
             "modalOnStop", "modalCashSale", "modalNewsletter",
             "modalWaiting", , "modalLog",
             "modalDeleteContact", "modalPrimaryContact",
-            "modalDeleteAddress", "modalPrimaryAddress",
+            "modalCopyAddress", "modalDeleteAddress", "modalPrimaryAddress",
             "modalDeleteBusiness", "modalPrimaryBusiness",
             "ModalStatusLogin", "modalDeleteLogin", "modalSendPersonalLogin", "modalChangePasswordLogin", "modalResetPasswordLogin",
             "modalResetMarkup", "modalDeleteMarkup",

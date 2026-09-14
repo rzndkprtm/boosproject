@@ -35,6 +35,10 @@ Partial Class Setting_Customer_Address_Add
                 MessageError(True, "ACCOUNT IS REQURIED !")
                 Exit Sub
             End If
+            If ddlType.SelectedValue = "" Then
+                MessageError(True, "ADDRESS TYPE IS REQURIED !")
+                Exit Sub
+            End If
             If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
                 If Session("CompanyId") = ddlCustomer.SelectedValue Then
                     MessageError(True, "ACCESS DENIED !")
@@ -76,31 +80,20 @@ Partial Class Setting_Customer_Address_Add
             If msgError.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerAddress ORDER BY Id DESC")
 
-                Dim thisTags As String = String.Empty
-                Dim selected As String = String.Empty
-                For Each item As ListItem In lbTags.Items
-                    If item.Selected Then
-                        selected += item.Text & ","
-                    End If
-                Next
-
-                If Not selected = "" Then
-                    thisTags = selected.Remove(selected.Length - 1).ToString()
-                End If
-
-                Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerAddress WHERE CustomerId='" & ddlCustomer.SelectedValue & "'")
+                Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerAddress WHERE CustomerId='" & ddlCustomer.SelectedValue & "' AND Type='" & ddlType.SelectedValue & "'")
                 Dim primaryData As Integer = 0
                 If checkData = 0 Then primaryData = 1
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress VALUES (@Id, @CustomerId, @Address, @Suburb, @State, @PostCode, @Tags, @Note, @Primary)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress VALUES (@Id, @CustomerId, @Type, @Address, @Suburb, @State, @PostCode, @Note, @Primary)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Suburb", txtSuburb.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@PostCode", txtPostCode.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@Tags", thisTags)
                         thisCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Primary", primaryData)
                         thisConn.Open()

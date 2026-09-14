@@ -40,6 +40,17 @@
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-12 form-group">
+                                        <label class="form-label">Type</label>
+                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select">
+                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                            <asp:ListItem Value="Billing" Text="Billing"></asp:ListItem>
+                                            <asp:ListItem Value="Installation" Text="Installation"></asp:ListItem>
+                                            <asp:ListItem Value="Delivery" Text="Delivery"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 form-group">
                                         <label class="form-label">Address</label>
                                         <asp:TextBox runat="server" ID="txtAddress" CssClass="form-control" placeholder="Address ..." autocomplete="off"></asp:TextBox>
                                         <p><small class="text-muted">* Do not add the characters comma (,) and semicolon (;)</small></p>
@@ -57,16 +68,6 @@
                                     <div class="col-4 form-group">
                                         <label class="form-label">Post Code</label>
                                         <asp:TextBox runat="server" ID="txtPostCode" CssClass="form-control" placeholder="Post Code ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Tags</label>
-                                        <asp:ListBox runat="server" ID="lbTags" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
-                                             <asp:ListItem Value="Office" Text="Office"></asp:ListItem>
-                                             <asp:ListItem Value="Delivery" Text="Delivery"></asp:ListItem>
-                                             <asp:ListItem Value="Warehouse" Text="Warehouse"></asp:ListItem>
-                                        </asp:ListBox>
                                     </div>
                                 </div>
                                 <div class="row mb-2">

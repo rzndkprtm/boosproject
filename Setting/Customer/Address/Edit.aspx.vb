@@ -38,6 +38,10 @@ Partial Class Setting_Customer_Address_Edit
                 MessageError(True, "CUSTOMER ACCOUNT IS REQURIED !")
                 Exit Sub
             End If
+            If ddlType.SelectedValue = "" Then
+                MessageError(True, "ADDRESS TYPE IS REQURIED !")
+                Exit Sub
+            End If
             If txtAddress.Text = "" Then
                 MessageError(True, "ADDRESS IS REQUIRED !")
                 Exit Sub
@@ -71,27 +75,15 @@ Partial Class Setting_Customer_Address_Edit
                 Exit Sub
             End If
             If msgError.InnerText = "" Then
-                Dim thisTags As String = String.Empty
-                Dim selected As String = String.Empty
-                For Each item As ListItem In lbTags.Items
-                    If item.Selected Then
-                        selected += item.Text & ","
-                    End If
-                Next
-
-                If Not selected = "" Then
-                    thisTags = selected.Remove(selected.Length - 1).ToString()
-                End If
-
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET CustomerId=@CustomerId, Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode, Tags=@Tags, Note=@Note WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET CustomerId=@CustomerId, Type=@Type, Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode, Note=@Note WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Suburb", txtSuburb.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@PostCode", txtPostCode.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@Tags", thisTags)
                         thisCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
@@ -131,20 +123,12 @@ Partial Class Setting_Customer_Address_Edit
             BindCustomer(thisData("CustomerId").ToString())
 
             ddlCustomer.SelectedValue = thisData("CustomerId").ToString()
+            ddlType.SelectedValue = thisData("Type").ToString()
             txtAddress.Text = thisData("Address").ToString()
             txtSuburb.Text = thisData("Suburb").ToString()
             txtState.Text = thisData("State").ToString()
             txtPostCode.Text = thisData("PostCode").ToString()
             txtNote.Text = thisData("Note").ToString()
-
-            Dim tagsArray() As String = thisData("Tags").ToString().Split(",")
-            Dim tagsList As List(Of String) = tagsArray.ToList()
-
-            For Each i In tagsArray
-                If Not (i.Equals(String.Empty)) Then
-                    lbTags.Items.FindByValue(i).Selected = True
-                End If
-            Next
 
             ddlCustomer.Enabled = False
         Catch ex As Exception

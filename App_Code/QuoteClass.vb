@@ -293,7 +293,7 @@ Public Class QuoteClass
             Dim issueDate As String = Now.ToString("dd MMM yyyy")
 
             Dim fullAddress As String = String.Empty
-            Dim customerAddress As DataRow = GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+            Dim customerAddress As DataRow = GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND Type='Billing' AND [Primary]=1")
             If customerAddress IsNot Nothing Then
                 Dim address As String = customerAddress("Address").ToString()
                 Dim suburb As String = customerAddress("Suburb").ToString()
@@ -1337,7 +1337,7 @@ Public Class QuoteClass
             Dim issueDate As String = Now.ToString("dd MMM yyyy")
 
             Dim fullAddress As String = String.Empty
-            Dim customerAddress As DataRow = GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+            Dim customerAddress As DataRow = GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND Type='Billing' AND [Primary]=1")
             If customerAddress IsNot Nothing Then
                 Dim address As String = customerAddress("Address").ToString()
                 Dim suburb As String = customerAddress("Suburb").ToString()

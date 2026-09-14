@@ -627,8 +627,6 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-
-
     Protected Function VisiblePrimaryContact(primary As Boolean) As Boolean
         If primary = False Then Return True
         Return False
@@ -640,11 +638,40 @@ Partial Class Setting_Customer_Detail
         Response.Redirect(url, False)
     End Sub
 
+    Protected Sub btnCopyAddress_Click(sender As Object, e As EventArgs)
+        MessageError_Address(False, String.Empty)
+        Session("selectedTabCustomer") = "list-address"
+        Try
+            Dim addressId As String = txtCopyAddressId.Text
+            Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerAddress ORDER BY Id DESC")
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress SELECT @NewId, CustomerId, Type, Address, Suburb, State, PostCode, Note, 0 FROM CustomerAddress WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", addressId)
+                    thisCmd.Parameters.AddWithValue("@NewId", newId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"CustomerAddress", lblId.Text, Session("LoginId").ToString(), "Created Customer Address"}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Address(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Address(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnDeleteAddress_Click(sender As Object, e As EventArgs)
         MessageError_Address(False, String.Empty)
         Session("selectedTabCustomer") = "list-address"
         Try
-            Dim addressId As String = txtAddressDeleteId.Text
+            Dim addressId As String = txtDeleteAddressId.Text
 
             Dim fullDesc As String = settingClass.GetItemData("SELECT CONCAT('Description: ', ISNULL(Description, ''), ', ', 'Address: ', ISNULL(Address, ''), ', ', 'Suburb: ', ISNULL(Suburb, ''), ', ', 'State: ', ISNULL(State, ''), ', ', 'PostCode: ', ISNULL(PostCode, '')) AS FullDescription FROM CustomerAddress WHERE Id='" & addressId & "'")
 
@@ -675,10 +702,12 @@ Partial Class Setting_Customer_Detail
         Session("selectedTabCustomer") = "list-address"
         Try
             Dim addressId As String = txtPrimaryAddressId.Text
+            Dim addressType As String = txtTypeAddressId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET [Primary]=0 WHERE CustomerId=@CustomerId; UPDATE CustomerAddress SET [Primary]=1 WHERE Id=@AddressId;", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET [Primary]=0 WHERE CustomerId=@CustomerId AND Type=@Type; UPDATE CustomerAddress SET [Primary]=1 WHERE Id=@AddressId;", thisConn)
                     thisCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@Type", addressType)
                     thisCmd.Parameters.AddWithValue("@AddressId", addressId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()

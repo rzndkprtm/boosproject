@@ -28,14 +28,14 @@ Partial Class Order_Add
             MessageError(False, String.Empty)
             BindDataCustomer()
             BindComponentForm(ddlCustomer.SelectedValue)
-            'GetCustomerContactAddress(ddlCustomer.SelectedValue)
+            GetCustomerContactAddress(ddlCustomer.SelectedValue)
         End If
     End Sub
 
     Protected Sub ddlCustomer_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindComponentForm(ddlCustomer.SelectedValue)
-        'GetCustomerContactAddress(ddlCustomer.SelectedValue)
+        GetCustomerContactAddress(ddlCustomer.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -241,7 +241,7 @@ Partial Class Order_Add
                     hfOrderContact.Value = name & " | " & phone & " | " & email
                 End If
 
-                Dim addressData As DataRow = orderClass.GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+                Dim addressData As DataRow = orderClass.GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND Type='Billing' AND [Primary]=1")
                 If addressData IsNot Nothing Then
                     Dim address As String = addressData("Address").ToString()
                     Dim suburb As String = addressData("Suburb").ToString()
