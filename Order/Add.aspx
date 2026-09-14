@@ -56,7 +56,7 @@
                                         </div>
                                         <div class="row mb-2" runat="server" id="divOrderContact">
                                             <div class="col-12 form-group">
-                                                <label class="form-label">Order Contact</label>
+                                                <label class="form-label">Order Contact (Delivery)</label>
                                                 <div class="input-group">
                                                     <asp:TextBox runat="server" ID="txtOrderContact" CssClass="form-control" ReadOnly="true" ClientIDMode="Static" placeholder="Order Contact ..." autocomplete="off" onclick="openOrderContactModal();"></asp:TextBox>
                                                     <span class="input-group-text" onclick="openOrderContactModal();">CLICK TO CHANGE</span>
@@ -67,7 +67,7 @@
                                         </div>
                                         <div class="row mb-2" runat="server" id="divOrderAddress">
                                             <div class="col-12 form-group">
-                                                <label class="form-label">Order Address</label>
+                                                <label class="form-label">Order Address (Delivery)</label>
                                                 <div class="input-group">
                                                     <asp:TextBox runat="server" ID="txtOrderAddress" CssClass="form-control" ReadOnly="true" ClientIDMode="Static" placeholder="Order Address ..." autocomplete="off" onclick="openOrderAddressModal();"></asp:TextBox>
                                                     <span class="input-group-text" onclick="openOrderAddressModal();">CLICK TO CHANGE</span>
