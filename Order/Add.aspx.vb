@@ -28,14 +28,14 @@ Partial Class Order_Add
             MessageError(False, String.Empty)
             BindDataCustomer()
             BindComponentForm(ddlCustomer.SelectedValue)
-            GetCustomerContactAddress(ddlCustomer.SelectedValue)
+            'GetCustomerContactAddress(ddlCustomer.SelectedValue)
         End If
     End Sub
 
     Protected Sub ddlCustomer_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         BindComponentForm(ddlCustomer.SelectedValue)
-        GetCustomerContactAddress(ddlCustomer.SelectedValue)
+        'GetCustomerContactAddress(ddlCustomer.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -105,10 +105,6 @@ Partial Class Order_Add
                 Dim retry As Integer = 0
                 Dim maxRetry As Integer = 100
                 Dim orderId As String = ""
-
-                orderContact = String.Empty
-                orderAddress = String.Empty
-                orderContainer = String.Empty
 
                 Do While Not success
                     retry += 1
@@ -189,10 +185,10 @@ Partial Class Order_Add
                 If companyDetailName = "JPMD BP" Then divOrderType.Visible = True
             End If
 
-            'If companyDetailName = "JPMD" Then
-            '    divOrderContact.Visible = True
-            '    divOrderAddress.Visible = True
-            'End If
+            If companyDetailName = "JPMD" Then
+                divOrderContact.Visible = True
+                divOrderAddress.Visible = True
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
