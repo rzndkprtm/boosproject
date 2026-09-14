@@ -85,7 +85,7 @@
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Colour Type</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-7 form-group">
                                                 <select id="colourtype" class="form-select"></select>
                                             </div>
                                         </div>
@@ -131,7 +131,12 @@
                                                     <label>Return Position</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <select id="returnposition" class="form-select"></select>
+                                                    <select id="returnposition" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Left">Left</option>
+                                                        <option value="Right">Right</option>
+                                                        <option value="Both Sides">Both Sides</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="row" id="divreturnlength">
@@ -235,5 +240,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/VenetianPart.js?v=1.1.0"></script>
+    <script src="/Scripts/RisaSolihah/VenetianPart.js?v=1.1.1"></script>
 </asp:Content>

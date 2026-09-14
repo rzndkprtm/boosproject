@@ -95,6 +95,10 @@ Partial Class Order_Edit
                     End Select
                 End If
 
+                orderContact = String.Empty
+                orderAddress = String.Empty
+                orderContainer = String.Empty
+
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderId=@OrderId, CustomerId=@CustomerId, OrderNumber=@OrderNumber, OrderName=@OrderName, OrderNote=@OrderNote, OrderType=@OrderType, OrderFactory=@OrderFactory, OrderContact=@OrderContact, OrderAddress=@OrderAddress, OrderContainer=@OrderContainer WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
@@ -271,10 +275,10 @@ Partial Class Order_Edit
                 ddlCustomer.Enabled = False
             End If
 
-            If companyDetailName = "JPMD" Then
-                divOrderContact.Visible = True
-                divOrderAddress.Visible = True
-            End If
+            'If companyDetailName = "JPMD" Then
+            '    divOrderContact.Visible = True
+            '    divOrderAddress.Visible = True
+            'End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

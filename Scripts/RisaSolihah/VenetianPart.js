@@ -12,23 +12,22 @@ let loginId;
 let roleAccess;
 let priceAccess;
 
-initVenetian();
+initVenetianPart();
 
 $("#submit").on("click", process);
 $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 $("#blindtype").on("change", function () {
     bindMounting($(this).val());
-    bindColourType($(this).val());
-    bindValanceType($(this).val());
-    bindValancePosition($(this).val());
+    bindColourType($(this).val());    
 });
 $("#colourtype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
+    bindValanceType($(this).val());
     bindComponentForm(blindtype, $(this).val());
 });
 
-async function initVenetian() {
+async function initVenetianPart() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
     if (!sessionId) return redirectOrder();
@@ -95,7 +94,6 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
         fillSelect("#colourtype", data.ColourTypes);
         fillSelect("#mounting", data.Mountings);
         fillSelect("#valancetype", data.ValanceTypes);
-        fillSelect("#returnposition", data.ValancePositions);
 
         setFormValues(data.ItemData);
 
@@ -347,6 +345,27 @@ function getBlindName(blindType) {
     });
 }
 
+function getProductName(colourType) {
+    if (!colourType) return;
+
+    const type = "ProductName";
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/StringData",
+            data: JSON.stringify({ type: type, dataId: colourType }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                resolve(response.d);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
 function getFormAction(itemAction) {
     const pageAction = document.getElementById("pageaction");
     const submitButton = document.getElementById("submit");
@@ -387,9 +406,7 @@ function bindBlindType(designType) {
             const selectedValue = blindtype.value || "";
             Promise.all([
                 bindMounting(selectedValue),
-                bindColourType(selectedValue),
-                bindValanceType(selectedValue),
-                bindValancePosition(selectedValue)
+                bindColourType(selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
@@ -427,17 +444,13 @@ function bindBlindType(designType) {
                     const selectedValue = blindtype.value || "";
                     Promise.all([
                         bindMounting(selectedValue),
-                        bindColourType(selectedValue),
-                        bindValanceType(selectedValue),
-                        bindValancePosition(selectedValue)
+                        bindColourType(selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = blindtype.value || "";
                     Promise.all([
                         bindMounting(selectedValue),
-                        bindColourType(selectedValue),
-                        bindValanceType(selectedValue),
-                        bindValancePosition(selectedValue)
+                        bindColourType(selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -456,13 +469,14 @@ function bindColourType(blindtype) {
         if (!blindtype) {
             const selectedValue = colourtype.value || "";
             Promise.all([
-                bindComponentForm(blindtype, selectedValue)
+                bindComponentForm(blindtype, selectedValue),
+                bindValanceType(selectedValue)
             ]).then(resolve).catch(reject);
 
             return;
         }
 
-        const listData = { type: "ColourType", blindtype: blindtype, companydetailid: companyDetailId, tubetype: "9", controltype: "17", orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "ProductName", blindtype: blindtype, companydetailid: companyDetailId, tubetype: "9", controltype: "17", orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -494,12 +508,14 @@ function bindColourType(blindtype) {
 
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindComponentForm(blindtype, selectedValue)
+                        bindComponentForm(blindtype, selectedValue),
+                        bindValanceType(selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindComponentForm(blindtype, selectedValue)
+                        bindComponentForm(blindtype, selectedValue),
+                        bindValanceType(selectedValue)
                     ]).then(resolve).catch(reject);
                 }
                 resolve();
@@ -559,17 +575,17 @@ function bindMounting(blindType) {
     });
 }
 
-function bindValanceType(blindType) {
+function bindValanceType(colourType) {
     return new Promise((resolve, reject) => {
         const valancetype = document.getElementById("valancetype");
         valancetype.innerHTML = "";
 
-        if (!blindType) {
+        if (!colourType) {
             resolve();
             return;
         }
 
-        const listData = { type: "ValanceType_Part", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "ValanceType_Part", colourtype: colourType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -608,55 +624,6 @@ function bindValanceType(blindType) {
     });
 }
 
-function bindValancePosition(blindType) {
-    return new Promise((resolve, reject) => {
-        const returnposition = document.getElementById("returnposition");
-        returnposition.innerHTML = "";
-
-        if (!blindType) {
-            resolve();
-            return;
-        }
-
-        const listData = { type: "ValancePosition_Part", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
-
-        $.ajax({
-            type: "POST",
-            url: "Method.aspx/ListData",
-            data: JSON.stringify({ data: listData }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (response) {
-                if (Array.isArray(response.d)) {
-                    returnposition.innerHTML = "";
-
-                    if (response.d.length > 1) {
-                        const defaultOption = document.createElement("option");
-                        defaultOption.text = "";
-                        defaultOption.value = "";
-                        returnposition.add(defaultOption);
-                    }
-
-                    response.d.forEach(function (item) {
-                        const option = document.createElement("option");
-                        option.value = item.Value;
-                        option.text = item.Text;
-                        returnposition.add(option);
-                    });
-
-                    if (response.d.length === 1) {
-                        returnposition.selectedIndex = 0;
-                    }
-                }
-                resolve();
-            },
-            error: function (error) {
-                reject(error);
-            }
-        });
-    });
-}
-
 function bindComponentForm(blindType, colourType) {
     return new Promise((resolve, reject) => {
         const detail = document.getElementById("divdetail");
@@ -682,7 +649,7 @@ function bindComponentForm(blindType, colourType) {
         getBlindName(blindType).then(blindName => {
             let divShow = [];
 
-            if (blindName === "Basswood 50mm Valance" || blindName === "Basswood 63mm Valance" || blindName === "Econo 50mm Valance" || blindName === "Econo 63mm Valance" || blindName === "Ultraslat 50mm Valance" || blindName === "Ultraslat 63mm Valance") {
+            if (blindName === "Valance Only") {
                 divShow.push("divmounting", "divvalancetype", "divvalancesize", "divreturnposition", "divreturnlength");
             }
 

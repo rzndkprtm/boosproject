@@ -106,6 +106,10 @@ Partial Class Order_Add
                 Dim maxRetry As Integer = 100
                 Dim orderId As String = ""
 
+                orderContact = String.Empty
+                orderAddress = String.Empty
+                orderContainer = String.Empty
+
                 Do While Not success
                     retry += 1
                     If retry > maxRetry Then
@@ -185,10 +189,10 @@ Partial Class Order_Add
                 If companyDetailName = "JPMD BP" Then divOrderType.Visible = True
             End If
 
-            If companyDetailName = "JPMD" Then
-                divOrderContact.Visible = True
-                divOrderAddress.Visible = True
-            End If
+            'If companyDetailName = "JPMD" Then
+            '    divOrderContact.Visible = True
+            '    divOrderAddress.Visible = True
+            'End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

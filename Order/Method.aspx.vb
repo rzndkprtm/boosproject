@@ -64,6 +64,7 @@ Partial Class Order_Method
         Dim blindtype As String = data.blindtype
         Dim tubetype As String = data.tubetype
         Dim controltype As String = data.controltype
+        Dim colourtype As String = data.colourtype
         Dim fabrictype As String = data.fabrictype
         Dim bottomtype As String = data.bottomtype
         Dim chaincolour As String = data.chaincolour
@@ -747,15 +748,15 @@ Partial Class Order_Method
         End If
 
         If type = "ValanceType_Part" Then
-            Dim blindName As String = orderClass.GetBlindName(blindtype)
-            If blindName = "Basswood 50mm Valance" OrElse blindName = "Basswood 63mm Valance" Then
+            Dim productName As String = orderClass.GetProductName(colourtype)
+            If productName.Contains("Basswood") Then
                 result.Add(New With {.Value = "75mm Valance", .Text = "75mm"})
                 result.Add(New With {.Value = "89mm Valance", .Text = "89mm"})
             End If
-            If blindName = "Econo 50mm Valance" OrElse blindName = "Econo 63mm Valance" Then
+            If productName.Contains("Econo") Then
                 result.Add(New With {.Value = "76mm Valance", .Text = "76mm"})
             End If
-            If blindName = "Ultraslat 50mm Valance" OrElse blindName = "Ultraslat 63mm Valance" Then
+            If productName.Contains("Ultraslat") Then
                 result.Add(New With {.Value = "76mm Valance", .Text = "76mm"})
             End If
         End If
@@ -11668,6 +11669,7 @@ Partial Class Order_Method
         Dim blindId As String = detailData("BlindType").ToString()
         Dim tubeId As String = detailData("TubeType").ToString()
         Dim controlId As String = detailData("ControlType").ToString()
+        Dim productId As String = detailData("ProductId").ToString()
 
         Dim itemDetail As New Dictionary(Of String, Object)
         For Each col As DataColumn In detailData.Table.Columns
@@ -11675,18 +11677,16 @@ Partial Class Order_Method
         Next
 
         Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim valanceTypeReq As New JSONList With {.type = "ValanceType_Part", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim valancePositionReq As New JSONList With {.type = "ValancePosition_Part", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim valanceTypeReq As New JSONList With {.type = "ValanceType_Part", .colourtype = productId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
             .BlindTypes = ListData(blindReq),
             .ColourTypes = ListData(colourReq),
             .Mountings = ListData(mountingReq),
-            .ValanceTypes = ListData(valanceTypeReq),
-            .ValancePositions = ListData(valancePositionReq)
+            .ValanceTypes = ListData(valanceTypeReq)
         }
         Return result
     End Function
@@ -12056,6 +12056,7 @@ Public Class JSONList
     Public Property blindtype As String
     Public Property tubetype As String
     Public Property controltype As String
+    Public Property colourtype As String
     Public Property fabrictype As String
     Public Property bottomtype As String
     Public Property chaincolour As String
