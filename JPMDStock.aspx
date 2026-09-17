@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/Assets/css/app.css" />
 
     <style>
+        .header-top > .container { max-width: 100%; padding-inline: clamp(.75rem, 3vw, 3rem); }
         .grid-container { width: 100%; height: calc(100vh - 150px); overflow: auto; border: 1px solid #ddd; }
         .grid-container table { width: 100%; border-collapse: collapse; table-layout: auto; }
         .grid-container td, .grid-container th { white-space: nowrap; padding: 6px 10px; }
@@ -65,7 +66,7 @@
                         </div>
                     </div>
                     <nav class="main-navbar">
-                        <div class="container">
+                        <div class="container-fluid px-2 px-md-4 px-xl-5">
                             <ul>
                                 <li class="menu-item">
                                     <a runat="server" href="~/" class='menu-link'>
@@ -83,7 +84,7 @@
                         </div>
                     </nav>
                 </header>
-                <div class="content-wrapper container">
+                <div class="container-fluid px-2 px-md-4 px-xl-5">
                     <div class="page-heading">
                         <div class="page-title">
                             <div class="row">
@@ -513,7 +514,7 @@
                     </div>
                 </div>
                 <footer class="mt-4 py-3 border-top">
-                    <div class="container">
+                    <div class="container-fluid px-2 px-md-4 px-xl-5">
                         <div class="d-flex justify-content-between align-items-center text-muted small">
                             <div>&copy; 2026 <strong>BOOS</strong>. All rights reserved.</div>
                             <div>
