@@ -9027,7 +9027,7 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@TemplateProvided", data.templateprovided)
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                         thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
-                        thisCmd.Parameters.AddWithValue("@TotalItems", panelQty)
+                        thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
 
@@ -9109,7 +9109,7 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@TemplateProvided", data.templateprovided)
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                     thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
-                    thisCmd.Parameters.AddWithValue("@TotalItems", panelQty)
+                    thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
 
@@ -11730,14 +11730,14 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function GetCostings(itemId As String, companyId As String) As Object
+    Public Shared Function GetCostings(itemId As String, customerId As String, companyId As String) As Object
         Dim orderClass As New OrderClass
         Dim AccessClass As New AccessClass
 
-        Dim thisQuery As String = "SELECT *, FORMAT(SellPrice, '$#,##0.00;-$#,##0.00', 'en-US') AS SellPricing, FORMAT(BuyPrice, '$#,##0.00;-$#,##0.00', 'en-US') AS BuyPricing, FORMAT(FactoryPrice, '$#,##0.00;-$#,##0.00', 'en-US') AS FactoryPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
+        Dim thisQuery As String = "SELECT *, FORMAT(CustomerPrice, '$#,##0.00;-$#,##0.00', 'en-US') AS CustomerPricing, FORMAT(SellPrice, '$#,##0.00;-$#,##0.00', 'en-US') AS SellPricing, FORMAT(BuyPrice, '$#,##0.00;-$#,##0.00', 'en-US') AS BuyPricing, FORMAT(FactoryPrice, '$#,##0.00;-$#,##0.00', 'en-US') AS FactoryPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
 
         If companyId = "3" OrElse companyId = "5" Then
-            thisQuery = "SELECT *, FORMAT(SellPrice, 'Rp #,##0.00;-Rp #,##0.00', 'id-ID') AS SellPricing, FORMAT(BuyPrice, 'Rp #,##0.00;-Rp #,##0.00', 'id-ID') AS BuyPricing, FORMAT(FactoryPrice, 'Rp #,##0.00;-Rp #,##0.00', 'id-ID') AS FactoryPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
+            thisQuery = "SELECT *, FORMAT(CustomerPrice, 'Rp #,##0.00;-Rp #,##0.00', 'id-ID') AS CustomerPricing, FORMAT(SellPrice, 'Rp #,##0.00;-Rp #,##0.00', 'id-ID') AS SellPricing, FORMAT(BuyPrice, 'Rp #,##0.00;-Rp #,##0.00', 'id-ID') AS BuyPricing, FORMAT(FactoryPrice, 'Rp #,##0.00;-Rp #,##0.00', 'id-ID') AS FactoryPricing FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type<>'Final' AND Number<>0 ORDER BY Number, CASE WHEN Type='Base' THEN 1 WHEN Type='Surcharge' THEN 2 ELSE 3 END ASC"
         End If
 
         Dim dt = orderClass.GetDataTable(thisQuery)
@@ -11748,6 +11748,7 @@ Partial Class Order_Method
             list.Add(New CostingDto With {
             .Type = r("Type").ToString(),
             .Description = r("Description").ToString(),
+            .CustomerPricing = r("CustomerPricing").ToString(),
             .Price = r("SellPricing").ToString(),
             .SellPricing = r("SellPricing").ToString(),
             .BuyPricing = r("BuyPricing").ToString(),
@@ -11757,10 +11758,20 @@ Partial Class Order_Method
 
         Dim roleId As String = HttpContext.Current.Session("RoleId").ToString()
         Dim levelId As String = HttpContext.Current.Session("LevelId").ToString()
+        Dim roleName As String = HttpContext.Current.Session("RoleName").ToString()
+
+        Dim visiblePriceExlcPromo As Boolean = False
+        If roleName = "Customer" Then
+            Dim promoActive As Integer = orderClass.GetItemData_Integer("SELECT CASE WHEN EXISTS (SELECT 1 FROM CustomerPromos INNER JOIN Promos ON CustomerPromos.PromoId = Promos.Id WHERE CustomerPromos.CustomerId = '" & customerId & "' AND Promos.Status = 'Active' AND CONVERT(DATE, Promos.StartDate) <= CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate) >= CONVERT(DATE, GETDATE())) THEN 1 ELSE 0 END")
+            If promoActive > 0 Then
+                visiblePriceExlcPromo = True
+            End If
+        End If
 
         Return New With {
             .data = list,
             .showType = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Type"),
+            .showCustomer = visiblePriceExlcPromo,
             .showPrice = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Price"),
             .showSell = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Sell Price"),
             .showBuy = AccessClass.GetLoginAccess(roleId, levelId, "Order Detail", "Price Details | Visible Buy Price"),
@@ -12095,6 +12106,7 @@ Public Class CostingDto
     Public Property Type As String
     Public Property Description As String
     Public Property Price As String
+    Public Property CustomerPricing As String
     Public Property SellPricing As String
     Public Property BuyPricing As String
     Public Property FactoryPricing As String

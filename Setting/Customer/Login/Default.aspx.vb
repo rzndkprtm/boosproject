@@ -78,8 +78,8 @@ Partial Class Setting_Customer_Login_Default
             dataLog = {"Logins", thisId, Session("LoginId").ToString(), statusDesc}
             settingClass.Logs(dataLog)
 
-            Session("SearchLoginUser") = txtSearch.Text
-            Response.Redirect("~/setting/login/user", False)
+            Session("SearchCustomerLogin") = txtSearch.Text
+            Response.Redirect("~/setting/customer/login", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -104,8 +104,8 @@ Partial Class Setting_Customer_Login_Default
             dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Login Deleted"}
             settingClass.Logs(dataLog)
 
-            Session("SearchLoginUser") = txtSearch.Text
-            Response.Redirect("~/setting/login/user", False)
+            Session("SearchCustomerLogin") = txtSearch.Text
+            Response.Redirect("~/setting/customer/login", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

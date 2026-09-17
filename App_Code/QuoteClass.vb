@@ -686,10 +686,6 @@ Public Class QuoteClass
                 Dim city As String = orderQuote("City").ToString().Trim()
                 Dim state As String = orderQuote("State").ToString().Trim()
                 Dim postCode As String = orderQuote("PostCode").ToString().Trim()
-                Dim country As String = String.Empty
-
-                If companyId = "2" Then country = "Australia"
-                If companyId = "3" Then country = "Indonesia"
 
                 quoteEmail = orderQuote("Email").ToString()
                 quotePhone = orderQuote("Phone").ToString()
@@ -707,7 +703,7 @@ Public Class QuoteClass
                     quoteFreight = Math.Round(Convert.ToDecimal(orderQuote("Freight")), 2)
                 End If
 
-                If Not String.IsNullOrWhiteSpace(address & suburb & city & state & postCode & country) Then
+                If Not String.IsNullOrWhiteSpace(address & suburb & city & state & postCode) Then
                     Dim lines As New List(Of String)
 
                     If Not String.IsNullOrEmpty(address) Then
@@ -722,7 +718,6 @@ Public Class QuoteClass
                     If Not String.IsNullOrEmpty(postCode) Then areaParts.Add(postCode)
 
                     If areaParts.Count > 0 Then lines.Add(String.Join(", ", areaParts))
-                    If Not String.IsNullOrEmpty(country) Then lines.Add(country)
 
                     fullAddress = String.Join(vbCrLf, lines)
                 End If
@@ -1198,9 +1193,6 @@ Public Class QuoteClass
                         itemDescription &= productName
                     End If
                 End If
-                If designName = "Venetian Part" Then
-                    itemDescription = productName
-                End If
                 If designName = "Vertical" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1}", productName, fabricColourName)
@@ -1212,7 +1204,14 @@ Public Class QuoteClass
                     itemDescription = String.Format("{0} {1}", productName, frameColour)
                 End If
 
-                Dim itemCost As Decimal = GetItemData_Decimal("SELECT SellPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Type='Final'")
+                If designName = "Aluminium Part" Then
+                    itemDescription = productName
+                End If
+                If designName = "Venetian Part" Then
+                    itemDescription = productName
+                End If
+
+                Dim itemCost As Decimal = GetItemData_Decimal("SELECT CustomerPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Type='Final'")
 
                 Dim itemCostMarkUp As Decimal = Math.Round(itemCost + (itemCost * markUp / 100), 2)
 
@@ -1229,7 +1228,7 @@ Public Class QuoteClass
                 table.AddCell(CreateCellDetail(unitPriceText, isBold:=True, alignH:=Element.ALIGN_RIGHT))
             Next
 
-            Dim sumPrice As Decimal = GetItemData_Decimal("SELECT SUM(SellPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND Type='Final'")
+            Dim sumPrice As Decimal = GetItemData_Decimal("SELECT SUM(CustomerPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND Type='Final'")
 
             Dim quoteDiscountText As String = String.Format("- {0}", quoteDiscount.ToString("N2", enUS))
             Dim quoteMeasureText As String = quoteCheckMeasure.ToString("N2", enUS)

@@ -2771,61 +2771,63 @@ Public Class PreviewEvents
         spacingCell.FixedHeight = 8
         rightTable.AddCell(spacingCell)
 
-        If Not String.IsNullOrWhiteSpace(pageOrderContact) Then
-            Dim contactPhrase As New Phrase()
-            contactPhrase.Add(New Chunk("CONTACT", New Font(Font.FontFamily.TIMES_ROMAN, 7, Font.BOLD, BaseColor.GRAY)))
-            contactPhrase.Add(New Chunk(Environment.NewLine))
-            contactPhrase.Add(New Chunk(pageOrderContact, New Font(Font.FontFamily.TIMES_ROMAN, 8)))
+        If pageCompany = "2" Then
+            If Not String.IsNullOrWhiteSpace(PageOrderContact) Then
+                Dim contactPhrase As New Phrase()
+                contactPhrase.Add(New Chunk("CONTACT", New Font(Font.FontFamily.TIMES_ROMAN, 7, Font.BOLD, BaseColor.GRAY)))
+                contactPhrase.Add(New Chunk(Environment.NewLine))
+                contactPhrase.Add(New Chunk(PageOrderContact, New Font(Font.FontFamily.TIMES_ROMAN, 8)))
 
-            Dim contactCell As New PdfPCell(contactPhrase)
+                Dim contactCell As New PdfPCell(contactPhrase)
 
-            contactCell.Border = Rectangle.BOX
-            contactCell.BorderColor = New BaseColor(220, 220, 220)
-            contactCell.BorderWidth = 0.5F
+                contactCell.Border = Rectangle.BOX
+                contactCell.BorderColor = New BaseColor(220, 220, 220)
+                contactCell.BorderWidth = 0.5F
 
-            contactCell.BackgroundColor = New BaseColor(248, 248, 248)
+                contactCell.BackgroundColor = New BaseColor(248, 248, 248)
 
-            contactCell.HorizontalAlignment = Element.ALIGN_RIGHT
-            contactCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                contactCell.HorizontalAlignment = Element.ALIGN_RIGHT
+                contactCell.VerticalAlignment = Element.ALIGN_MIDDLE
 
-            contactCell.PaddingTop = 4
-            contactCell.PaddingBottom = 4
-            contactCell.PaddingLeft = 6
-            contactCell.PaddingRight = 6
+                contactCell.PaddingTop = 4
+                contactCell.PaddingBottom = 4
+                contactCell.PaddingLeft = 6
+                contactCell.PaddingRight = 6
 
-            rightTable.AddCell(contactCell)
-        End If
+                rightTable.AddCell(contactCell)
+            End If
 
-        If Not String.IsNullOrWhiteSpace(pageOrderContact) AndAlso Not String.IsNullOrWhiteSpace(PageOrderAddress) Then
-            Dim smallSpacingCell As New PdfPCell(New Phrase(" "))
-            smallSpacingCell.Border = Rectangle.NO_BORDER
-            smallSpacingCell.FixedHeight = 4
-            rightTable.AddCell(smallSpacingCell)
-        End If
+            If Not String.IsNullOrWhiteSpace(PageOrderContact) AndAlso Not String.IsNullOrWhiteSpace(PageOrderAddress) Then
+                Dim smallSpacingCell As New PdfPCell(New Phrase(" "))
+                smallSpacingCell.Border = Rectangle.NO_BORDER
+                smallSpacingCell.FixedHeight = 4
+                rightTable.AddCell(smallSpacingCell)
+            End If
 
-        If Not String.IsNullOrWhiteSpace(PageOrderAddress) Then
-            Dim addressPhrase As New Phrase()
+            If Not String.IsNullOrWhiteSpace(PageOrderAddress) Then
+                Dim addressPhrase As New Phrase()
 
-            addressPhrase.Add(New Chunk("ADDRESS", New Font(Font.FontFamily.TIMES_ROMAN, 7, Font.BOLD, BaseColor.GRAY)))
-            addressPhrase.Add(New Chunk(Environment.NewLine))
-            addressPhrase.Add(New Chunk(PageOrderAddress, New Font(Font.FontFamily.TIMES_ROMAN, 8)))
-            Dim addressCell As New PdfPCell(addressPhrase)
+                addressPhrase.Add(New Chunk("ADDRESS", New Font(Font.FontFamily.TIMES_ROMAN, 7, Font.BOLD, BaseColor.GRAY)))
+                addressPhrase.Add(New Chunk(Environment.NewLine))
+                addressPhrase.Add(New Chunk(PageOrderAddress, New Font(Font.FontFamily.TIMES_ROMAN, 8)))
+                Dim addressCell As New PdfPCell(addressPhrase)
 
-            addressCell.Border = Rectangle.BOX
-            addressCell.BorderColor = New BaseColor(220, 220, 220)
-            addressCell.BorderWidth = 0.5F
+                addressCell.Border = Rectangle.BOX
+                addressCell.BorderColor = New BaseColor(220, 220, 220)
+                addressCell.BorderWidth = 0.5F
 
-            addressCell.BackgroundColor = New BaseColor(248, 248, 248)
+                addressCell.BackgroundColor = New BaseColor(248, 248, 248)
 
-            addressCell.HorizontalAlignment = Element.ALIGN_RIGHT
-            addressCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                addressCell.HorizontalAlignment = Element.ALIGN_RIGHT
+                addressCell.VerticalAlignment = Element.ALIGN_MIDDLE
 
-            addressCell.PaddingTop = 4
-            addressCell.PaddingBottom = 4
-            addressCell.PaddingLeft = 6
-            addressCell.PaddingRight = 6
+                addressCell.PaddingTop = 4
+                addressCell.PaddingBottom = 4
+                addressCell.PaddingLeft = 6
+                addressCell.PaddingRight = 6
 
-            rightTable.AddCell(addressCell)
+                rightTable.AddCell(addressCell)
+            End If
         End If
 
         Dim thirdHeaderCell As New PdfPCell(rightTable)

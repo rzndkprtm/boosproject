@@ -166,6 +166,7 @@ Partial Class Setting_Specification_Fabric_Detail
                     BindCompanyDetail(lblCompanyDetail.Text)
 
                     txtBoeId.Text = myData("BoeId").ToString()
+                    txtInvId.Text = myData("InventoryId").ToString()
                     ddlFactoryColour.SelectedValue = myData("Factory").ToString()
                     txtNameColour.Text = myData("Colour").ToString()
                     txtWidthColour.Text = myData("Width").ToString()
@@ -244,11 +245,12 @@ Partial Class Setting_Specification_Fabric_Detail
                     Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM FabricColours ORDER BY Id DESC")
 
                     Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO FabricColours VALUES (@Id, @FabricId, @CompanyDetailId, @BoeId, @Factory, @Name, @Colour, @Width, @Status)", thisConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO FabricColours VALUES (@Id, @FabricId, @CompanyDetailId, @BoeId, @InventoryId, @Factory, @Name, @Colour, @Width, @Status)", thisConn)
                             thisCmd.Parameters.AddWithValue("@Id", thisId)
                             thisCmd.Parameters.AddWithValue("@FabricId", lblId.Text)
                             thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
                             thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
+                            thisCmd.Parameters.AddWithValue("@InventoryId", If(String.IsNullOrEmpty(txtInvId.Text), CType(DBNull.Value, Object), txtInvId.Text))
                             thisCmd.Parameters.AddWithValue("@Factory", ddlFactoryColour.SelectedValue)
                             thisCmd.Parameters.AddWithValue("@Name", fabricColourName)
                             thisCmd.Parameters.AddWithValue("@Colour", txtNameColour.Text)
@@ -273,6 +275,7 @@ Partial Class Setting_Specification_Fabric_Detail
                             thisCmd.Parameters.AddWithValue("@FabricId", lblId.Text)
                             thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
                             thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
+                            thisCmd.Parameters.AddWithValue("@InventoryId", If(String.IsNullOrEmpty(txtInvId.Text), CType(DBNull.Value, Object), txtInvId.Text))
                             thisCmd.Parameters.AddWithValue("@Factory", ddlFactoryColour.SelectedValue)
                             thisCmd.Parameters.AddWithValue("@Name", fabricColourName)
                             thisCmd.Parameters.AddWithValue("@Colour", txtNameColour.Text)
@@ -426,7 +429,6 @@ Partial Class Setting_Specification_Fabric_Detail
             gvListColour.DataSource = settingClass.GetDataTableSP("sp_FabricColours_List", params)
             gvListColour.DataBind()
             gvListColour.Columns(1).Visible = LoginAccess("Visible ID Detail")
-            gvListColour.Columns(5).Visible = LoginAccess("Visible Name Detail")
         Catch ex As Exception
             MessageError_Colour(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then

@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_Specification_Fabric_Colour
+Partial Class Setting_Specification_Fabric_Colour_Default
     Inherits Page
 
     Dim settingClass As New SettingClass

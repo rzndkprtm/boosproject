@@ -139,7 +139,7 @@ Partial Class Setting_Log
                     thisQuery = "SELECT Name FROM Companys WHERE Id='" & dataId & "'"
                 End If
                 If type = "CustomerAddress" Then
-                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerAddress.Description FROM CustomerAddress LEFT JOIN Customers ON CustomerAddress.CustomerId=Customers.Id WHERE CustomerAddress.Id='" & dataId & "'"
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerAddress.Type FROM CustomerAddress LEFT JOIN Customers ON CustomerAddress.CustomerId=Customers.Id WHERE CustomerAddress.Id='" & dataId & "'"
                 End If
                 If type = "CustomerBusiness" Then
                     thisQuery = "SELECT Customers.Name + ' | ' + CustomerBusiness.ABNNumber FROM CustomerBusiness LEFT JOIN Customers ON CustomerBusiness.CustomerId=Customers.Id WHERE CustomerBusiness.Id='" & dataId & "'"

@@ -413,7 +413,7 @@ Partial Class Order_Detail
                 Exit Sub
             End If
 
-            Dim checkProduct As DataTable = orderClass.GetDataTable("SELECT ROW_NUMBER() OVER (ORDER BY OrderDetails.Id ASC) AS [Number], OrderDetails.Id, Products.Status FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+            Dim checkProduct As DataTable = orderClass.GetDataTable("SELECT ROW_NUMBER() OVER (ORDER BY OrderDetails.Id ASC) AS [Number], OrderDetails.Id, Products.Status, FC.Status AS FabricColourStatus FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN FabricColours FC ON OrderDetails.FabricColourId=FC.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
             If checkProduct.Rows.Count > 0 Then
                 Dim sb As New StringBuilder()
@@ -421,17 +421,22 @@ Partial Class Order_Detail
                 For i As Integer = 0 To checkProduct.Rows.Count - 1
                     Dim number As String = checkProduct.Rows(i)("Number").ToString()
                     Dim status As String = checkProduct.Rows(i)("Status").ToString()
+                    Dim fabricColourStatus As String = checkProduct.Rows(i)("FabricColourStatus").ToString()
 
                     If status = "" Then
                         Dim thisString As String = "- ITEM " & number & ". THIS PRODUCT IS CURRENTLY UNAVAILABLE. PLEASE CHECK AND CHANGE IT.<br />"
-                    End If
-                    If status = "Out of Stock" Then
+                        sb.AppendLine(thisString)
+
+                    ElseIf status = "Out of Stock" Then
                         Dim thisString As String = "- ITEM " & number & ". THIS PRODUCT IS CURRENTLY " & status.ToUpper() & ". PLEASE CHECK AND CHANGE IT.<br />"
-                        sb.AppendLine()
-                    End If
-                    If status = "Discontinued" Then
-                        Dim thisString As String = "- ITEM " & number & ". THIS PRODUCT IS HAS BEEN " & status.ToUpper() & ". PLEASE CHECK AND CHANGE IT.<br />"
-                        sb.AppendLine()
+                        sb.AppendLine(thisString)
+
+                    ElseIf status = "Discontinued" Then
+                        Dim thisString As String = "- ITEM " & number & ". THIS PRODUCT HAS BEEN " & status.ToUpper() & ". PLEASE CHECK AND CHANGE IT.<br />"
+                        sb.AppendLine(thisString)
+                    ElseIf fabricColourStatus = "Out of Stock" Then
+                        Dim thisString As String = "- ITEM " & number & ". THIS FABRIC IS CURRENTLY " & fabricColourStatus.ToUpper() & ". PLEASE CHECK AND CHANGE IT.<br />"
+                        sb.AppendLine(thisString)
                     End If
                 Next
 
@@ -486,7 +491,7 @@ Partial Class Order_Detail
 
                 orderClass.ResetPriceDetail(lblHeaderId.Text, itemId)
 
-                Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, sellPrice, buyPrice, factoryPrice}
+                Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, sellPrice, sellPrice, buyPrice, factoryPrice}
                 orderClass.OrderCostings(costingArray)
                 orderClass.FinalCostItem(lblHeaderId.Text, itemId)
 
@@ -519,6 +524,13 @@ Partial Class Order_Detail
                          End Function)
 
             End If
+
+            'Dim folderPath As String = Server.MapPath("~/File/Order/" & lblOrderId.Text)
+            'If IO.Directory.Exists(folderPath) Then
+            '    If IO.Directory.GetFiles(folderPath).Length = 0 AndAlso IO.Directory.GetDirectories(folderPath).Length = 0 Then
+            '        IO.Directory.Delete(folderPath)
+            '    End If
+            'End If
 
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
@@ -3387,8 +3399,10 @@ Partial Class Order_Detail
                     aQuoteCustomer.Visible = True
                 End If
 
-                divOrderContact.Visible = True
-                divOrderAddress.Visible = True
+                If lblCompanyId.Text = "2" Then
+                    divOrderContact.Visible = True
+                    divOrderAddress.Visible = True
+                End If
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     btnEditOrder.Visible = True
@@ -3437,15 +3451,21 @@ Partial Class Order_Detail
             gvListItem.Columns(5).Visible = False
             gvListItem.Columns(6).Visible = False
             gvListItem.Columns(7).Visible = False
-            gvListItem.Columns(8).Visible = False ' Mark Up
+            gvListItem.Columns(8).Visible = False
+            gvListItem.Columns(9).Visible = False ' Mark Up
 
             If Session("PriceAccess") = "Yes" Then
-                gvListItem.Columns(4).Visible = LoginAccess("Visible Price")
-                gvListItem.Columns(5).Visible = LoginAccess("Visible Sell Price")
-                gvListItem.Columns(6).Visible = LoginAccess("Visible Buy Price")
-                gvListItem.Columns(7).Visible = LoginAccess("Visible Factory Price")
+                gvListItem.Columns(5).Visible = LoginAccess("Visible Price")
+                gvListItem.Columns(6).Visible = LoginAccess("Visible Sell Price")
+                gvListItem.Columns(7).Visible = LoginAccess("Visible Buy Price")
+                gvListItem.Columns(8).Visible = LoginAccess("Visible Factory Price")
                 If Session("RoleName") = "Customer" Then
-                    gvListItem.Columns(8).Visible = True ' Mark Up
+                    Dim promoActive As Integer = orderClass.GetItemData_Integer("SELECT CASE WHEN EXISTS (SELECT 1 FROM CustomerPromos INNER JOIN Promos ON CustomerPromos.PromoId = Promos.Id WHERE CustomerPromos.CustomerId = '" & lblCustomerId.Text & "' AND Promos.Status = 'Active' AND CONVERT(DATE, Promos.StartDate) <= CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate) >= CONVERT(DATE, GETDATE())) THEN 1 ELSE 0 END")
+                    If promoActive > 0 Then
+                        gvListItem.Columns(4).Visible = True
+                    End If
+
+                    gvListItem.Columns(9).Visible = True ' Mark Up
                 End If
             End If
 
@@ -3623,9 +3643,31 @@ Partial Class Order_Detail
             If lblCompanyId.Text = "3" Then gstSell = priceSell * 11 / 100
             Dim totalSell As Decimal = priceSell + gstSell
 
+            Dim priceCustomer As Decimal = orderClass.GetItemData_Decimal("SELECT SUM(CustomerPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & lblHeaderId.Text & "' AND Type='Final'")
+            Dim gstCustomer As Decimal = priceCustomer * 10 / 100
+            If lblCompanyId.Text = "3" Then gstCustomer = priceCustomer * 11 / 100
+            Dim totalCustomer As Decimal = priceCustomer + gstCustomer
+
             lblPriceOrder.Text = "$ " & priceSell.ToString("N2", enUS)
             lblGst.Text = "$ " & gstSell.ToString("N2", enUS)
             lblFinalPriceOrder.Text = "$ " & totalSell.ToString("N2", enUS)
+
+            lblPriceOrderExclude.Text = " [ Exclude Promo : $ " & priceCustomer.ToString("N2", enUS) & " ]"
+            lblGstExclude.Text = " [ Exclude Promo : $ " & gstCustomer.ToString("N2", enUS) & " ]"
+            lblFinalPriceOrderExclude.Text = " [ Exclude Promo : $ " & totalCustomer.ToString("N2", enUS) & " ]"
+
+            lblPriceOrderExclude.Visible = False
+            lblGstExclude.Visible = False
+            lblFinalPriceOrderExclude.Visible = False
+
+            If Session("RoleName") = "Customer" Then
+                Dim promoActive As Integer = orderClass.GetItemData_Integer("SELECT CASE WHEN EXISTS (SELECT 1 FROM CustomerPromos INNER JOIN Promos ON CustomerPromos.PromoId = Promos.Id WHERE CustomerPromos.CustomerId = '" & lblCustomerId.Text & "' AND Promos.Status = 'Active' AND CONVERT(DATE, Promos.StartDate) <= CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate) >= CONVERT(DATE, GETDATE())) THEN 1 ELSE 0 END")
+                If promoActive > 0 Then
+                    lblPriceOrderExclude.Visible = True
+                    lblGstExclude.Visible = True
+                    lblFinalPriceOrderExclude.Visible = True
+                End If
+            End If
 
             If lblCompanyId.Text = "3" Then
                 lblPriceOrder.Text = "Rp " & priceSell.ToString("N2", idIDR)
@@ -3792,7 +3834,11 @@ Partial Class Order_Detail
     End Sub
 
     Protected Function BindProductDescription(itemId As String) As String
-        Return orderClass.GetProductDescription(itemId)
+        Dim showStock As Boolean = False
+        If lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Quoted" OrElse lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Proforma Sent" OrElse lblOrderStatus.Text = "Payment Received" OrElse lblOrderStatus.Text = "New Order" Then
+            showStock = True
+        End If
+        Return orderClass.GetProductDescription(itemId, showStock)
     End Function
 
     Protected Function ItemCosting(itemId As String, type As String) As String

@@ -22,7 +22,7 @@ Partial Class Setting_Price_Surcharge_Default
             BindDesignType()
             ddlDesignType.SelectedValue = Session("DesignSurcharge")
 
-            BindPriceGroup(ddlDesignType.SelectedValue)
+            BindPriceGroup()
             ddlPriceGroup.SelectedValue = Session("PriceGroupSurcharge")
 
             txtSearch.Text = Session("SearchSurcharge")
@@ -69,7 +69,6 @@ Partial Class Setting_Price_Surcharge_Default
         gvList.PageIndex = 0
 
         MessageError(False, String.Empty)
-        BindPriceGroup(ddlDesignType.SelectedValue)
 
         BindData(txtSearch.Text, ddlDesignType.SelectedValue, ddlPriceGroup.SelectedValue)
 
@@ -264,27 +263,16 @@ Partial Class Setting_Price_Surcharge_Default
         End Try
     End Sub
 
-    Protected Sub BindPriceGroup(designid As String)
+    Protected Sub BindPriceGroup()
         ddlPriceGroup.Items.Clear()
         Try
-            If Not String.IsNullOrEmpty(designid) Then
-                Dim type As String = settingClass.GetItemData("SELECT Type FROM Designs WHERE Id='" & designid & "' AND Active=1")
-                If Not String.IsNullOrEmpty(type) Then
-                    Dim thisQuery As String = "SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND Status='Active' ORDER BY Name ASC"
+            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Status='Active' ORDER BY Name ASC")
+            ddlPriceGroup.DataTextField = "Name"
+            ddlPriceGroup.DataValueField = "Id"
+            ddlPriceGroup.DataBind()
 
-                    If Session("RoleName") = "Sales" OrElse Session("LevelName") = "Account" Then
-                        thisQuery = "SELECT Id, Name FROM PriceGroups WHERE Type='" & type & "' AND CompanyId='" & Session("CompanyId").ToString() & "' AND Status='Active' ORDER BY Name ASC"
-                    End If
-
-                    ddlPriceGroup.DataSource = settingClass.GetDataTable(thisQuery)
-                    ddlPriceGroup.DataTextField = "Name"
-                    ddlPriceGroup.DataValueField = "Id"
-                    ddlPriceGroup.DataBind()
-
-                    If ddlPriceGroup.Items.Count > 1 Then
-                        ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
-                    End If
-                End If
+            If ddlPriceGroup.Items.Count > 1 Then
+                ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

@@ -355,6 +355,7 @@
                                         </div>
                                         <div class="finance-value">
                                             <asp:Label runat="server" ID="lblPriceOrder"></asp:Label>
+                                            <asp:Label runat="server" ID="lblPriceOrderExclude"></asp:Label>
                                         </div>
                                     </div>
                                     <div class="detail-row">
@@ -363,6 +364,7 @@
                                         </div>
                                         <div class="finance-value">
                                             <asp:Label runat="server" ID="lblGst"></asp:Label>
+                                            <asp:Label runat="server" ID="lblGstExclude"></asp:Label>
                                         </div>
                                     </div>
                                     <hr />
@@ -372,6 +374,7 @@
                                         </div>
                                         <div class="finance-value">
                                             <asp:Label runat="server" ID="lblFinalPriceOrder"></asp:Label>
+                                            <asp:Label runat="server" ID="lblFinalPriceOrderExclude"></asp:Label>
                                         </div>
                                     </div>
                                 </div>
@@ -381,7 +384,7 @@
                 </div>
             </div>
         </section>
-        <section class="row mb-3">
+        <section class="row">
             <div class="col-12">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-white">
@@ -430,7 +433,12 @@
                                                 <%# BindProductDescription(Eval("Id")) %>
                                             </ItemTemplate>
                                         </asp:TemplateField>
-                                        <asp:TemplateField HeaderText="Price" ItemStyle-Width="120px">
+                                        <asp:TemplateField HeaderText="Price (Excl. Promo)" ItemStyle-Width="160px">
+                                            <ItemTemplate>
+                                                <%# ItemCosting(Eval("Id").ToString(), "CustomerPrice") %>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Final Price" ItemStyle-Width="120px">
                                             <ItemTemplate>
                                                 <%# ItemCosting(Eval("Id").ToString(), "SellPrice") %>
                                             </ItemTemplate>
@@ -478,7 +486,7 @@
                                                         <hr class="dropdown-divider" />
                                                     </li>
                                                     <li runat="server" visible='<%# VisibleCosting() %>'>
-                                                        <a href="javascript:void(0);" class="dropdown-item" onclick="loadCostings('<%# Eval("Id") %>', '<%= lblCompanyId.Text %>')">Costing</a>
+                                                        <a href="javascript:void(0);" class="dropdown-item" onclick="loadCostings('<%# Eval("Id") %>', '<%= lblCustomerId.Text %>', '<%= lblCompanyId.Text %>')">Costing</a>
                                                     </li>
                                                     <li runat="server" visible='<%# VisibleEditPrice() %>'>
                                                         <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkEditCosting" Text="Edit Costing" CommandName="EditCosting" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
@@ -1805,7 +1813,7 @@
                 }
             });
         }
-        function loadCostings(itemId, companyId) {
+        function loadCostings(itemId, customerId, companyId) {
             $("#costingError").addClass("d-none").html("");
             $("#costingHead").html("");
             $("#costingBody").html("");
@@ -1814,12 +1822,13 @@
             $.ajax({
                 type: "POST",
                 url: "Method.aspx/GetCostings",
-                data: JSON.stringify({ itemId, companyId }),
+                data: JSON.stringify({ itemId, customerId, companyId }),
                 contentType: "application/json",
                 dataType: "json",
                 success: res => {
                     const perm = {
                         showType: res.d.showType,
+                        showCustomer: res.d.showCustomer,
                         showPrice: res.d.showPrice,
                         showSell: res.d.showSell,
                         showBuy: res.d.showBuy,                        
@@ -1837,7 +1846,8 @@
             let headHtml = "<tr>";
             if (perm.showType) headHtml += "<th>Type</th>";
             headHtml += "<th>Description</th>";
-            if (perm.showPrice) headHtml += "<th>Price</th>";
+            if (perm.showCustomer) headHtml += "<th>Price (Excl. Promo)</th>";
+            if (perm.showPrice) headHtml += "<th>Final Price</th>";
             if (perm.showSell) headHtml += "<th>Sell Price</th>";
             if (perm.showBuy) headHtml += "<th>Buy Price</th>";            
             if (perm.showFactory) headHtml += "<th>Factory Price</th>";
@@ -1862,6 +1872,7 @@
                 bodyHtml += "<tr>";
                 if (perm.showType) bodyHtml += `<td>${r.Type}</td>`;
                 bodyHtml += `<td>${r.Description}</td>`;
+                if (perm.showCustomer) bodyHtml += `<td>${r.CustomerPricing}</td>`;
                 if (perm.showPrice) bodyHtml += `<td>${r.Price}</td>`;
                 if (perm.showSell) bodyHtml += `<td>${r.SellPricing}</td>`;
                 if (perm.showBuy) bodyHtml += `<td>${r.BuyPricing}</td>`;                

@@ -70,11 +70,8 @@
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                     <ul class="dropdown-menu">
-                                                        <li runat="server" visible='<%# LoginAccess("Detail") %>'>
-                                                            <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/customer/product/edit?productid=" & Eval("Id")) %>'>Edit</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReset" onclick='<%# String.Format("return dataReset(`{0}`);", Eval("Id").ToString()) %>'>Reset</a>
+                                                        <li runat="server" visible='<%# LoginAccess("Edit") %>'>
+                                                            <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/customer/product/edit?productid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CustomerProductAccess', '<%# Eval("Id") %>')">Log</a>
@@ -106,23 +103,6 @@
         </section>
     </div>
     
-    <div class="modal fade text-center" id="modalReset" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Reset Product Access</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    <asp:TextBox runat="server" ID="txtResetId" style="display:none;"></asp:TextBox>
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnReset" CssClass="btn btn-danger" Text="Confirm" OnClick="btnReset_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -184,7 +164,7 @@
                     if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-                    const btn = this.querySelector("a[id*='aDetail']");
+                    const btn = this.querySelector("a[id*='aEdit']");
                     if (btn) btn.click();
                 };
             }
@@ -193,9 +173,6 @@
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-        function dataReset(id) {
-            document.getElementById("<%=txtResetId.ClientID %>").value = id;
-        }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -226,7 +203,7 @@
                 }
             });
         }
-        ["modalLog", "modalReset"].forEach(function (id) {
+        ["modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

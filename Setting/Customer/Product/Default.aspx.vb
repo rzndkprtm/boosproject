@@ -47,35 +47,6 @@ Partial Class Setting_Customer_Product_Default
         BuildPager()
     End Sub
 
-    Protected Sub btnReset_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim thisId As String = txtResetId.Text
-            Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & thisId & "'")
-
-            Using thisConn As New SqlConnection(myConn)
-                Dim desingId As String = settingClass.GetProductAccess(companyId)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerProductAccess SET DesignId=@DesignId WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", thisId)
-                    thisCmd.Parameters.AddWithValue("@DesignId", desingId)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            dataLog = {"CustomerProductAccess", thisId, Session("LoginId").ToString(), "Reset Customer Product Access"}
-            settingClass.Logs(dataLog)
-
-            Session("SearchCustomerProductAccess") = txtSearch.Text
-            Response.Redirect("~/setting/customer/product", False)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub BindData(searchText As String)
         Session("SearchCustomerProductAccess") = String.Empty
         Try

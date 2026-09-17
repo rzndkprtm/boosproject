@@ -181,14 +181,16 @@ Partial Class Order_EditCosting
                             delFinal.ExecuteNonQuery()
                         End Using
 
+                        Dim customerPrice As Decimal = 0
                         Dim sellPrice As Decimal = 0
                         Dim buyPrice As Decimal = 0
                         Dim factoryPrice As Decimal = 0
 
-                        Using cmdSum As New SqlCommand("SELECT ISNULL(SUM(CASE WHEN Type='Base' THEN SellPrice WHEN Type='Discount' THEN -SellPrice WHEN Type='Surcharge' THEN SellPrice ELSE 0 END),0) AS TotalSell, ISNULL(SUM(CASE WHEN Type='Base' THEN BuyPrice WHEN Type='Discount' THEN -BuyPrice WHEN Type='Surcharge' THEN BuyPrice ELSE 0 END),0) AS TotalBuy, ISNULL(SUM(CASE WHEN Type='Base' THEN FactoryPrice WHEN Type='Discount' THEN -FactoryPrice WHEN Type='Surcharge' THEN FactoryPrice ELSE 0 END),0) AS TotalFactory FROM OrderCostings WHERE ItemId=@ItemId", thisConn, tran)
+                        Using cmdSum As New SqlCommand("SELECT ISNULL(SUM(CASE WHEN Type='Base' THEN CustomerPrice WHEN Type='Discount' THEN -CustomerPrice WHEN Type='Surcharge' THEN CustomerPrice ELSE 0 END),0) AS TotalCustomer, ISNULL(SUM(CASE WHEN Type='Base' THEN SellPrice WHEN Type='Discount' THEN -SellPrice WHEN Type='Surcharge' THEN SellPrice ELSE 0 END),0) AS TotalSell, ISNULL(SUM(CASE WHEN Type='Base' THEN BuyPrice WHEN Type='Discount' THEN -BuyPrice WHEN Type='Surcharge' THEN BuyPrice ELSE 0 END),0) AS TotalBuy, ISNULL(SUM(CASE WHEN Type='Base' THEN FactoryPrice WHEN Type='Discount' THEN -FactoryPrice WHEN Type='Surcharge' THEN FactoryPrice ELSE 0 END),0) AS TotalFactory FROM OrderCostings WHERE ItemId=@ItemId", thisConn, tran)
                             cmdSum.Parameters.Add("@ItemId", SqlDbType.Int).Value = lblItemId.Text
                             Using rd = cmdSum.ExecuteReader()
                                 If rd.Read() Then
+                                    customerPrice = Convert.ToDecimal(rd("TotalCustomer"))
                                     sellPrice = Convert.ToDecimal(rd("TotalSell"))
                                     buyPrice = Convert.ToDecimal(rd("TotalBuy"))
                                     factoryPrice = Convert.ToDecimal(rd("TotalFactory"))
@@ -196,7 +198,7 @@ Partial Class Order_EditCosting
                             End Using
                         End Using
 
-                        Dim dataCosting As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Final", "Final Cost This Item", sellPrice, buyPrice, factoryPrice}
+                        Dim dataCosting As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Final", "Final Cost This Item", customerPrice, sellPrice, buyPrice, factoryPrice}
 
                         orderClass.OrderCostings(dataCosting)
 

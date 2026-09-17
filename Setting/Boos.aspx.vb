@@ -35,6 +35,9 @@ Partial Class Setting_Boos
         If thisAction = "downloadboe" Then
             UpdateDownloadBOE()
         End If
+        If thisAction = "deletefolder" Then
+            DeleteFolderOrder()
+        End If
         If thisAction = "shipment" Then
             If String.IsNullOrEmpty(Request.QueryString("OrdID")) Then
                 Exit Sub
@@ -58,6 +61,19 @@ Partial Class Setting_Boos
 
             UpdateShipment(id, status, shipmentNumber, shipDate, containerNumber, courier, invoiceNumber)
         End If
+    End Sub
+
+    Protected Sub DeleteFolderOrder()
+        Try
+            Dim rootPath As String = Server.MapPath("~/File/Order")
+            If Not IO.Directory.Exists(rootPath) Then Exit Sub
+            For Each folderPath As String In IO.Directory.GetDirectories(rootPath)
+                If IO.Directory.GetFileSystemEntries(folderPath).Length = 0 Then
+                    IO.Directory.Delete(folderPath)
+                End If
+            Next
+        Catch ex As Exception
+        End Try
     End Sub
 
     Protected Sub RefreshSales()

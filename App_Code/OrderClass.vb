@@ -737,7 +737,7 @@ Public Class OrderClass
         Return result
     End Function
 
-    Public Function GetProductDescription(itemId As String) As String
+    Public Function GetProductDescription(itemId As String, showStock As Boolean) As String
         Dim result As String = String.Empty
         Try
             Dim param As New List(Of SqlParameter) From {
@@ -806,6 +806,13 @@ Public Class OrderClass
             Dim fabricColourNameE As String = GetFabricColourName(fabricColourIdE)
             Dim fabricColourNameF As String = GetFabricColourName(fabricColourIdF)
 
+            Dim productStatus As String = GetItemData("SELECT Status FROM Products WHERE Id='" & productId & "'")
+
+            Dim fabricColourStatus As String = GetFabricColourStatus(fabricColourId)
+            Dim fabricColourStatusB As String = GetFabricColourStatus(fabricColourIdB)
+            Dim fabricColourStatusC As String = GetFabricColourStatus(fabricColourIdC)
+            Dim fabricColourStatusD As String = GetFabricColourStatus(fabricColourIdD)
+
             Dim squareMetre As Decimal = 0D
             Dim squareMetreB As Decimal = 0D
             Dim squareMetreC As Decimal = 0D
@@ -872,16 +879,70 @@ Public Class OrderClass
                     result &= "<br />"
                     result &= String.Format("{0} {1} {2}", productName, sizeB, squareMetreTextB)
                 End If
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+                End If
             End If
             If designName = "Cellular Shades" Then
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If showStock = True Then
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+
                 If blindName = "Day & Night" Then
                     result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
                     result &= "<br />"
                     result &= fabricColourName
+                    If showStock = True Then
+                        If fabricColourStatus = "Limited Stock" Then
+                            result &= "<span style='color: #B8860B; font-weight: 700;'> [ Limited Stock ! ]</span>"
+                        End If
+                        If fabricColourStatus = "Out of Stock" Then
+                            result &= "<span style='color: #D9534F; font-weight: 700;'> [ Out of Stock ! ]</span>"
+                        End If
+                        If fabricColourStatus = "Discontinued" Then
+                            result &= "<span style='color: #6F42C1; font-weight: 700;'> [ Discountinued ! ]</span>"
+                        End If
+                    End If
                     result &= "<br />"
                     result &= fabricColourNameB
+                    If showStock = True Then
+                        If showStock = True Then
+                            If fabricColourStatusB = "Limited Stock" Then
+                                result &= "<span style='color: #B8860B; font-weight: 700;'> [ Limited Stock ! ]</span>"
+                            End If
+                            If fabricColourStatusB = "Out of Stock" Then
+                                result &= "<span style='color: #D9534F; font-weight: 700;'> [ Out of Stock ! ]</span>"
+                            End If
+                            If fabricColourStatusB = "Discontinued" Then
+                                result &= "<span style='color: #6F42C1; font-weight: 700;'> [ Discountinued ! ]</span>"
+                            End If
+                        End If
+                    End If
                 End If
+
             End If
             If designName = "Curtain" Then
                 result = itemDescription
@@ -907,14 +968,97 @@ Public Class OrderClass
             End If
             If designName = "Design Shades" Then
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+
             End If
             If designName = "Linea Valance" Then
                 result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
             End If
             If designName = "Panel Glide" Then
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
                 If blindName = "Track Only" Then
                     result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
+                End If
+
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
                 End If
             End If
             If designName = "Pelmet" Then
@@ -947,15 +1091,52 @@ Public Class OrderClass
                     result &= "<br />"
                     result &= "<b>[Printed Fabric]</b>"
                 End If
+
+                If showStock = True Then
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+
                 If blindName = "Dual Blinds" Then
                     result = itemDescription
                     result &= "<br />"
                     result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If showStock = True Then
+                        If fabricColourStatus = "Limited Stock" Then
+                            result &= "<span style='color: #B8860B; font-weight: 700;'> [ Limited Stock ! ]</span>"
+                        End If
+                        If fabricColourStatus = "Out of Stock" Then
+                            result &= "<span style='color: #D9534F; font-weight: 700;'> [ Out of Stock ! ]</span>"
+                        End If
+                        If fabricColourStatus = "Discontinued" Then
+                            result &= "<span style='color: #6F42C1; font-weight: 700;'> [ Discountinued ! ]</span>"
+                        End If
+                    End If
                     If Not String.IsNullOrEmpty(printing) Then
                         result &= " (<b>[Printed Fabric]</b>)"
                     End If
                     result &= "<br />"
                     result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If showStock = True Then
+                        If fabricColourStatusB = "Limited Stock" Then
+                            result &= "<span style='color: #B8860B; font-weight: 700;'> [ Limited Stock ! ]</span>"
+                        End If
+                        If fabricColourStatusB = "Out of Stock" Then
+                            result &= "<span style='color: #D9534F; font-weight: 700;'> [ Out of Stock ! ]</span>"
+                        End If
+                        If fabricColourStatusB = "Discontinued" Then
+                            result &= "<span style='color: #6F42C1; font-weight: 700;'> [ Discountinued ! ]</span>"
+                        End If
+                    End If
                     If Not String.IsNullOrEmpty(printingB) Then
                         result &= " (<b>[Printed Fabric]</b>)"
                     End If
@@ -972,6 +1153,20 @@ Public Class OrderClass
                     If Not String.IsNullOrEmpty(printingB) Then
                         result &= " (<b>[Printed Fabric]</b>)"
                     End If
+                    If showStock = True Then
+                        If fabricColourStatus = "Limited Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #B8860B; font-weight: 700;'> Fabric : Limited Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Out of Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #D9534F; font-weight: 700;'> Fabric : Out of Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Discontinued" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #6F42C1; font-weight: 700;'> Fabric : Discountinued !</span>"
+                        End If
+                    End If
                 End If
                 If blindName = "Link 2 Blinds Independent" Then
                     result = itemDescription
@@ -984,6 +1179,20 @@ Public Class OrderClass
                     result &= String.Format("Right Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
                     If Not String.IsNullOrEmpty(printingB) Then
                         result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    If showStock = True Then
+                        If fabricColourStatus = "Limited Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #B8860B; font-weight: 700;'> Fabric : Limited Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Out of Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #D9534F; font-weight: 700;'> Fabric : Out of Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Discontinued" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #6F42C1; font-weight: 700;'> Fabric : Discountinued !</span>"
+                        End If
                     End If
                 End If
                 If blindName = "Link 3 Blinds Dependent" Then
@@ -1003,8 +1212,21 @@ Public Class OrderClass
                     If Not String.IsNullOrEmpty(printingC) Then
                         result &= " (<b>[Printed Fabric]</b>)"
                     End If
+                    If showStock = True Then
+                        If fabricColourStatus = "Limited Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #B8860B; font-weight: 700;'> Fabric : Limited Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Out of Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #D9534F; font-weight: 700;'> Fabric : Out of Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Discontinued" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #6F42C1; font-weight: 700;'> Fabric : Discountinued !</span>"
+                        End If
+                    End If
                 End If
-
                 If blindName = "Link 3 Blinds Independent with Dependent" Then
                     result = itemDescription
                     result &= "<br />"
@@ -1022,33 +1244,22 @@ Public Class OrderClass
                     If Not String.IsNullOrEmpty(printingC) Then
                         result &= " (<b>[Printed Fabric]</b>)"
                     End If
-                End If
-
-                If blindName = "Link 4 Blinds Independent with Dependent" Then
-                    result = itemDescription
-                    result &= "<br />"
-                    result &= String.Format("Left Control Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
-                    If Not String.IsNullOrEmpty(printing) Then
-                        result &= " (<b>[Printed Fabric]</b>)"
-                    End If
-                    result &= "<br />"
-                    result &= String.Format("Middle Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
-                    If Not String.IsNullOrEmpty(printingB) Then
-                        result &= " (<b>[Printed Fabric]</b>)"
-                    End If
-                    result &= "<br />"
-                    result &= String.Format("Middle Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
-                    If Not String.IsNullOrEmpty(printingC) Then
-                        result &= " (<b>[Printed Fabric]</b>)"
-                    End If
-                    result &= "<br />"
-                    result &= String.Format("Right Control Blind : {0} {1} {2}", fabricColourNameD, sizeD, squareMetreTextD)
-                    If Not String.IsNullOrEmpty(printingD) Then
-                        result &= " (<b>[Printed Fabric]</b>)"
+                    If showStock = True Then
+                        If fabricColourStatus = "Limited Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #B8860B; font-weight: 700;'> Fabric : Limited Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Out of Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #D9534F; font-weight: 700;'> Fabric : Out of Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Discontinued" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #6F42C1; font-weight: 700;'> Fabric : Discountinued !</span>"
+                        End If
                     End If
                 End If
-
-                If blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 2 Blinds Independent" Then
+                If blindName = "DB Link 2 Blinds Dependent" Then
                     result = itemDescription
                     result &= "<br />"
                     result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
@@ -1071,8 +1282,63 @@ Public Class OrderClass
                         result &= " (<b>[Printed Fabric]</b>>)"
                     End If
                 End If
-
-                If blindName = "DB Link 3 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" Then
+                If blindName = "DB Link 2 Blinds Independent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Third Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
+                    If Not String.IsNullOrEmpty(printingC) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Fourth Blind : {0} {1} {2}", fabricColourNameD, sizeD, squareMetreTextD)
+                    If Not String.IsNullOrEmpty(printingD) Then
+                        result &= " (<b>[Printed Fabric]</b>>)"
+                    End If
+                End If
+                If blindName = "DB Link 3 Blinds Dependent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Third Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
+                    If Not String.IsNullOrEmpty(printingC) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Fourth Blind : {0} {1} {2}", fabricColourNameD, sizeD, squareMetreTextD)
+                    If Not String.IsNullOrEmpty(printingD) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Fifth Blind : {0} {1} {2}", fabricColourNameE, sizeE, squareMetreTextE)
+                    If Not String.IsNullOrEmpty(printingE) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Sixth Blind : {0} {1} {2}", fabricColourNameF, sizeF, squareMetreTextF)
+                    If Not String.IsNullOrEmpty(printingF) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                End If
+                If blindName = "DB Link 3 Blinds Independent with Dependent" Then
                     result = itemDescription
                     result &= "<br />"
                     result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
@@ -1112,12 +1378,42 @@ Public Class OrderClass
                     result &= "<br />"
                     result &= "<b>[Printed Fabric]</b>"
                 End If
+
+                If showStock = True Then
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
             End If
             If designName = "Soft Roman" Then
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
                 If Not String.IsNullOrEmpty(printing) Then
                     result &= "<br />"
                     result &= "<b>[Printed Fabric]</b>"
+                End If
+
+                If showStock = True Then
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
                 End If
             End If
             If designName = "Sample" Then
@@ -1150,6 +1446,21 @@ Public Class OrderClass
                     result &= "<br />"
                     result &= String.Format("{0} {1} {2}", productName, sizeC, squareMetreTextC)
                 End If
+
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+                End If
             End If
             If designName = "Vertical" Then
                 fabricColourName = fabricColourName.Replace("127mm ", "").Replace("89mm ", "").Trim()
@@ -1157,9 +1468,65 @@ Public Class OrderClass
                 If blindName = "Track Only" Then
                     result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
                 End If
+
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
             End If
             If designName = "Saphora Drape" Then
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
             End If
             If designName = "Window" Then
                 result = String.Format("{0} - {1} {2} {3}", itemDescription, frameColour, size, squareMetreText)
@@ -1169,6 +1536,21 @@ Public Class OrderClass
             End If
             If designName = "Outdoor" Then
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+
+                If showStock = True Then
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
             End If
             If designName = "Roller Horizon" Then
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
@@ -1307,6 +1689,27 @@ Public Class OrderClass
             If Not String.IsNullOrEmpty(fabricColourId) Then
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("SELECT Name FROM FabricColours WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricColourId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetFabricColourStatus(fabricColourId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(fabricColourId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Status FROM FabricColours WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", fabricColourId)
                         thisConn.Open()
                         Dim obj = thisCmd.ExecuteScalar()
@@ -1899,7 +2302,6 @@ Public Class OrderClass
             Dim width As Integer = Convert.ToInt32(data(3))
             Dim category As String = Convert.ToString(data(4))
 
-            'Dim thisString As String = String.Format("SELECT TOP 1 * FROM PriceBases WHERE ProductGroupId='{0}' AND PriceGroupId='{1}' AND Height>='{2}' AND Width>='{3}' AND Category='{4}' AND Price>=0 ORDER BY Height, Width, Price, Conditional ASC", productGroupId, priceGroupId, drop, width, category)
             Dim thisString As String = String.Format("SELECT TOP 1 * FROM PriceBases WHERE ProductGroupId='{0}' AND PriceGroupId='{1}' AND (Height IS NULL OR Height>='{2}') AND (Width IS NULL OR Width>='{3}') AND Category='{4}' AND Price>=0 ORDER BY Height, Width, Price, Conditional ASC", productGroupId, priceGroupId, drop, width, category)
 
             Using thisConn As New SqlConnection(myConn)
@@ -1934,23 +2336,6 @@ Public Class OrderClass
         End Try
     End Sub
 
-    Public Sub UpdateServiceItem(headerId As String, itemId As String, buyPrice As Decimal, sellPrice As Decimal, factoryPrice As Decimal)
-        Try
-            Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderCostings SET SellPrice=@SellPrice, BuyPrice=@BuyPrice, FactoryPrice=@FactoryPrice WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type='Base'", thisConn)
-                    thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
-                    thisCmd.Parameters.AddWithValue("@ItemId", itemId)
-                    thisCmd.Parameters.AddWithValue("@BuyPrice", buyPrice)
-                    thisCmd.Parameters.AddWithValue("@SellPrice", sellPrice)
-                    thisCmd.Parameters.AddWithValue("@FactoryPrice", factoryPrice)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
-        Catch ex As Exception
-        End Try
-    End Sub
-
     Public Sub FinalCostItem(headerId As String, itemId As String)
         Try
             Using thisConn As New SqlConnection(myConn)
@@ -1961,11 +2346,12 @@ Public Class OrderClass
                 End Using
             End Using
 
+            Dim custPrice As Decimal = GetItemData_Decimal("SELECT SUM(CASE WHEN Type='Base' THEN CustomerPrice WHEN Type='Discount' THEN -CustomerPrice WHEN Type='Surcharge' THEN CustomerPrice ELSE 0 END) AS TotalPrice FROM OrderCostings WHERE ItemId='" & itemId & "'")
             Dim sellPrice As Decimal = GetItemData_Decimal("SELECT SUM(CASE WHEN Type='Base' THEN SellPrice WHEN Type='Discount' THEN -SellPrice WHEN Type='Surcharge' THEN SellPrice ELSE 0 END) AS TotalPrice FROM OrderCostings WHERE ItemId='" & itemId & "'")
             Dim buyPrice As Decimal = GetItemData_Decimal("SELECT SUM(CASE WHEN Type='Base' THEN BuyPrice WHEN Type='Discount' THEN -BuyPrice WHEN Type='Surcharge' THEN BuyPrice ELSE 0 END) AS TotalPrice FROM OrderCostings WHERE ItemId='" & itemId & "'")
             Dim factoryPrice As Decimal = GetItemData_Decimal("SELECT SUM(CASE WHEN Type='Base' THEN FactoryPrice WHEN Type='Discount' THEN -FactoryPrice WHEN Type='Surcharge' THEN FactoryPrice ELSE 0 END) AS TotalPrice FROM OrderCostings WHERE ItemId='" & itemId & "'")
 
-            Dim dataCosting As Object() = {headerId, itemId, 0, "Final", "Final Cost This Item", sellPrice, buyPrice, factoryPrice}
+            Dim dataCosting As Object() = {headerId, itemId, 0, "Final", "Final Cost This Item", custPrice, sellPrice, buyPrice, factoryPrice}
             OrderCostings(dataCosting)
         Catch ex As Exception
         End Try
@@ -2344,10 +2730,12 @@ Public Class OrderClass
 
                 Dim itemNumber As Integer = 0
 
+                Dim thisCustomer As Decimal = 0
                 Dim thisSell As Decimal = 0
                 Dim thisBuy As Decimal = 0
                 Dim thisFactory As Decimal = 0
 
+                Dim thisCustomerAdditional As Decimal = 0
                 Dim thisSellAdditional As Decimal = 0
                 Dim thisBuyAdditional As Decimal = 0
                 Dim thisFactoryAdditional As Decimal = 0
@@ -2576,13 +2964,27 @@ Public Class OrderClass
                     Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupCalculation, designId, blindId)
                     Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupCalculation, designId, blindId)
 
+                    Dim sellAdditionalCalculation As DataRow = GetPriceCalculationRule(gridSellAdditional, priceGroupCalculation, designId, blindId)
+                    Dim buyAdditionalCalculation As DataRow = GetPriceCalculationRule(gridBuyAdditional, priceGroupCalculation, designId, blindId)
+                    Dim factoryAdditionalCalculation As DataRow = GetPriceCalculationRule(gridFactoryAdditional, priceGroupCalculation, designId, blindId)
+
+                    thisCustomer = CalculateSell(sellCalculation, costSell, CInt(width), CInt(drop), squareMetre, linearMetre, cutLength)
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(width), CInt(drop), squareMetre, linearMetre, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(width), CInt(drop), squareMetre, linearMetre)
                     thisFactory = CalculateFactory(factoryCalculation, costFactory, CInt(width), CInt(drop), squareMetre, linearMetre)
 
+                    thisCustomerAdditional = CalculateSell(sellAdditionalCalculation, costSellAdditional, CInt(width), CInt(drop), squareMetre, linearMetre, cutLength)
+                    thisSellAdditional = CalculateSell(sellAdditionalCalculation, costSellAdditional, CInt(width), CInt(drop), squareMetre, linearMetre, cutLength)
+                    thisBuyAdditional = CalculateBuy(buyAdditionalCalculation, costBuyAdditional, CInt(width), CInt(drop), squareMetre, linearMetre)
+                    thisFactoryAdditional = CalculateFactory(factoryAdditionalCalculation, costFactoryAdditional, CInt(width), CInt(drop), squareMetre, linearMetre)
+
                     costSell = thisSell
                     costBuy = thisBuy
                     costFactory = thisFactory
+
+                    costSellAdditional = thisSellAdditional
+                    costBuyAdditional = thisBuyAdditional
+                    costFactoryAdditional = thisFactoryAdditional
 
                     Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each sellPromoRow As DataRow In sellPromoData.Rows
@@ -2774,18 +3176,18 @@ Public Class OrderClass
                         costingDescription = String.Format("#1 {0}", priceProductGroupName)
                     End If
 
-                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisSell, thisBuy, thisFactory}
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomer, thisSell, thisBuy, thisFactory}
                     OrderCostings(costingArray)
 
                     If designName = "Curtain" Then
                         If blindName = "Complete Set (Single)" Then
                             costingDescription = priceAdditionalName
-                            costingArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisSellAdditional, thisBuyAdditional, thisFactoryAdditional}
+                            costingArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomerAdditional, thisSellAdditional, thisBuyAdditional, thisFactoryAdditional}
                             OrderCostings(costingArray)
                         End If
                         If blindName = "Complete Set (Double)" Then
                             costingDescription = String.Format("#1 {0}", priceAdditionalName)
-                            costingArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisSellAdditional, thisBuyAdditional, thisFactoryAdditional}
+                            costingArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomerAdditional, thisSellAdditional, thisBuyAdditional, thisFactoryAdditional}
                             OrderCostings(costingArray)
                         End If
                     End If
@@ -2995,13 +3397,27 @@ Public Class OrderClass
                     Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupCalculation, designId, blindId)
                     Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupCalculation, designId, blindId)
 
+                    Dim sellAdditionalCalculation As DataRow = GetPriceCalculationRule(gridSellAdditional, priceGroupCalculation, designId, blindId)
+                    Dim buyAdditionalCalculation As DataRow = GetPriceCalculationRule(gridBuyAdditional, priceGroupCalculation, designId, blindId)
+                    Dim factoryAdditionalCalculation As DataRow = GetPriceCalculationRule(gridFactoryAdditional, priceGroupCalculation, designId, blindId)
+
+                    thisCustomer = CalculateSell(sellCalculation, costSell, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB, cutLength)
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB)
                     thisFactory = CalculateBuy(factoryCalculation, costFactory, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB)
 
+                    thisCustomerAdditional = CalculateSell(sellAdditionalCalculation, costSellAdditional, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB, cutLength)
+                    thisSellAdditional = CalculateSell(sellAdditionalCalculation, costSellAdditional, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB, cutLength)
+                    thisBuyAdditional = CalculateBuy(buyAdditionalCalculation, costBuyAdditional, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB)
+                    thisFactoryAdditional = CalculateFactory(factoryAdditionalCalculation, costFactoryAdditional, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB)
+
                     costSell = thisSell
                     costBuy = thisBuy
                     costFactory = thisFactory
+
+                    costSellAdditional = thisSellAdditional
+                    costBuyAdditional = thisBuyAdditional
+                    costFactoryAdditional = thisFactoryAdditional
 
                     Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each sellPromoRow As DataRow In sellPromoData.Rows
@@ -3332,6 +3748,7 @@ Public Class OrderClass
                     Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId, blindId)
                     Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
 
+                    thisCustomer = CalculateSell(sellCalculation, costSell, CInt(widthC), CInt(dropC), squareMetreC, linearMetreC, cutLength)
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthC), CInt(dropC), squareMetreC, linearMetreC, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthC), CInt(dropC), squareMetreC, linearMetreC)
                     thisFactory = CalculateFactory(factoryCalculation, costFactory, CInt(widthC), CInt(dropC), squareMetreC, linearMetreC)
@@ -3656,6 +4073,7 @@ Public Class OrderClass
                     Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId, blindId)
                     Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
 
+                    thisCustomer = CalculateSell(sellCalculation, costSell, CInt(widthD), CInt(dropD), squareMetreD, linearMetreD, cutLength)
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthD), CInt(dropD), squareMetreD, linearMetreD, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthD), CInt(dropD), squareMetreD, linearMetreD)
                     thisFactory = CalculateBuy(factoryCalculation, costFactory, CInt(widthD), CInt(dropD), squareMetreD, linearMetreD)
@@ -3980,6 +4398,7 @@ Public Class OrderClass
                     Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId, blindId)
                     Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
 
+                    thisCustomer = CalculateSell(sellCalculation, costSell, CInt(widthE), CInt(dropE), squareMetreE, linearMetreE, cutLength)
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthE), CInt(dropE), squareMetreE, linearMetreE, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthE), CInt(dropE), squareMetreE, linearMetreE)
                     thisFactory = CalculateBuy(factoryCalculation, costFactory, CInt(widthE), CInt(dropE), squareMetreE, linearMetreE)
@@ -4304,6 +4723,7 @@ Public Class OrderClass
                     Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId, blindId)
                     Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
 
+                    thisCustomer = CalculateSell(sellCalculation, costSell, CInt(widthF), CInt(dropF), squareMetreF, linearMetreF, cutLength)
                     thisSell = CalculateSell(sellCalculation, costSell, CInt(widthF), CInt(dropF), squareMetreF, linearMetreF, cutLength)
                     thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthF), CInt(dropF), squareMetreF, linearMetreF)
                     thisFactory = CalculateBuy(factoryCalculation, costFactory, CInt(widthF), CInt(dropF), squareMetreF, linearMetreF)
@@ -4525,11 +4945,12 @@ Public Class OrderClass
             If surchargeData.Rows.Count > 0 Then
                 For i As Integer = 0 To surchargeData.Rows.Count - 1
                     Dim name As String = surchargeData.Rows(i)("Name").ToString()
-                    Dim buyCharge As String = surchargeData.Rows(i)("BuyCharge").ToString()
+                    Dim custCharge As String = surchargeData.Rows(i)("SellCharge").ToString()
                     Dim sellCharge As String = surchargeData.Rows(i)("SellCharge").ToString()
+                    Dim buyCharge As String = surchargeData.Rows(i)("BuyCharge").ToString()
                     Dim factoryCharge As String = surchargeData.Rows(i)("FactoryCharge").ToString()
 
-                    Dim dataCosting As Object() = {headerId, itemId, blindNo, "Surcharge", name, sellCharge, buyCharge, factoryCharge}
+                    Dim dataCosting As Object() = {headerId, itemId, blindNo, "Surcharge", name, custCharge, sellCharge, buyCharge, factoryCharge}
                     OrderCostings(dataCosting)
                 Next
             End If
@@ -4539,23 +4960,25 @@ Public Class OrderClass
 
     Public Sub OrderCostings(data As Object())
         Try
-            If data.Length = 8 Then
+            If data.Length = 9 Then
                 Dim headerId As String = Convert.ToString(data(0))
                 Dim itemId As String = Convert.ToString(data(1))
                 Dim number As Integer = Convert.ToInt32(data(2))
                 Dim type As String = Convert.ToString(data(3))
                 Dim desc As String = Convert.ToString(data(4))
-                Dim sellPrice As Decimal = Convert.ToDecimal(data(5))
-                Dim buyPrice As Decimal = Convert.ToDecimal(data(6))
-                Dim factoryPrice As Decimal = Convert.ToDecimal(data(7))
+                Dim custPrice As Decimal = Convert.ToDecimal(data(5))
+                Dim sellPrice As Decimal = Convert.ToDecimal(data(6))
+                Dim buyPrice As Decimal = Convert.ToDecimal(data(7))
+                Dim factoryPrice As Decimal = Convert.ToDecimal(data(8))
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderCostings VALUES(NEWID(), @HeaderId, @ItemId, @Number, @Type, @Description, @SellPrice, @BuyPrice, @FactoryPrice)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderCostings VALUES(NEWID(), @HeaderId, @ItemId, @Number, @Type, @Description, @CustomerPrice, @SellPrice, @BuyPrice, @FactoryPrice)", thisConn)
                         thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
                         thisCmd.Parameters.AddWithValue("@ItemId", itemId)
                         thisCmd.Parameters.AddWithValue("@Number", number)
                         thisCmd.Parameters.AddWithValue("@Type", type)
                         thisCmd.Parameters.AddWithValue("@Description", desc)
+                        thisCmd.Parameters.AddWithValue("@CustomerPrice", Math.Round(custPrice, 2))
                         thisCmd.Parameters.AddWithValue("@SellPrice", Math.Round(sellPrice, 2))
                         thisCmd.Parameters.AddWithValue("@BuyPrice", Math.Round(buyPrice, 2))
                         thisCmd.Parameters.AddWithValue("@FactoryPrice", Math.Round(factoryPrice, 2))
@@ -4570,23 +4993,25 @@ Public Class OrderClass
 
     Public Sub OrderCostings_Note(data As Object())
         Try
-            If data.Length = 8 Then
+            If data.Length = 9 Then
                 Dim headerId As String = Convert.ToString(data(0))
                 Dim itemId As String = Convert.ToString(data(1))
                 Dim number As Integer = Convert.ToInt32(data(2))
                 Dim type As String = Convert.ToString(data(3))
                 Dim desc As String = Convert.ToString(data(4))
-                Dim sellPrice As Decimal = Convert.ToDecimal(data(5))
-                Dim buyPrice As Decimal = Convert.ToDecimal(data(6))
-                Dim factoryPrice As Decimal = Convert.ToDecimal(data(7))
+                Dim custPrice As Decimal = Convert.ToDecimal(data(5))
+                Dim sellPrice As Decimal = Convert.ToDecimal(data(6))
+                Dim buyPrice As Decimal = Convert.ToDecimal(data(7))
+                Dim factoryPrice As Decimal = Convert.ToDecimal(data(8))
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type=@Type; INSERT INTO OrderCostings VALUES(NEWID(), @HeaderId, @ItemId, @Number, @Type, @Description, @SellPrice, @BuyPrice, @FactoryPrice)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type=@Type; INSERT INTO OrderCostings VALUES(NEWID(), @HeaderId, @ItemId, @Number, @Type, @Description, @CustomerPrice, @SellPrice, @BuyPrice, @FactoryPrice)", thisConn)
                         thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
                         thisCmd.Parameters.AddWithValue("@ItemId", itemId)
                         thisCmd.Parameters.AddWithValue("@Number", number)
                         thisCmd.Parameters.AddWithValue("@Type", type)
                         thisCmd.Parameters.AddWithValue("@Description", desc)
+                        thisCmd.Parameters.AddWithValue("@CustomerPrice", Math.Round(custPrice, 2))
                         thisCmd.Parameters.AddWithValue("@SellPrice", Math.Round(sellPrice, 2))
                         thisCmd.Parameters.AddWithValue("@BuyPrice", Math.Round(buyPrice, 2))
                         thisCmd.Parameters.AddWithValue("@FactoryPrice", Math.Round(factoryPrice, 2))

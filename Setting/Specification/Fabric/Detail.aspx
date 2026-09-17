@@ -139,14 +139,16 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:BoundField DataField="Id" HeaderText="ID" />
-                                                    <asp:BoundField DataField="CompanyDetailName" HeaderText="Company Detail Name" />
+                                                    <asp:BoundField DataField="CompanyDetailName" HeaderText="Sub Company" />
                                                     <asp:BoundField DataField="BoeId" HeaderText="BOE ID" />
+                                                    <asp:BoundField DataField="InventoryId" HeaderText="INV ID" />
                                                     <asp:BoundField DataField="Factory" HeaderText="Factory" />
-                                                    <asp:BoundField DataField="Name" HeaderText="Name" />
                                                     <asp:BoundField DataField="Colour" HeaderText="Colour" />
                                                     <asp:BoundField DataField="Width" HeaderText="Width" />
+                                                    <asp:BoundField DataField="RollQuantity" HeaderText="Roll Qty" />
+                                                    <asp:BoundField DataField="EtaFactory" HeaderText="ETA Factory" />
                                                     <asp:BoundField DataField="Status" HeaderText="Status" />
-                                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="150px">
+                                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="120px">
                                                         <ItemTemplate>
                                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                             <ul class="dropdown-menu">
@@ -221,6 +223,12 @@
                             <asp:TextBox runat="server" ID="txtBoeId" CssClass="form-control" placeholder="BOE ID ..." autocomplete="off"></asp:TextBox>
                         </div>
                         <div class="col-6 form-group">
+                            <label class="form-label">INVENTORY ID</label>
+                            <asp:TextBox runat="server" ID="txtInvId" CssClass="form-control" placeholder="Inventory ID ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6 form-group">
                             <label class="form-label">Factory</label>
                             <asp:DropDownList runat="server" ID="ddlFactoryColour" CssClass="form-select">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
@@ -228,19 +236,18 @@
                                 <asp:ListItem Value="Regular" Text="Regular"></asp:ListItem>
                             </asp:DropDownList>
                         </div>
-                    </div>
-                    <div class="row mb-2">
                         <div class="col-6 form-group">
                             <label class="form-label">Colour</label>
                             <asp:TextBox runat="server" ID="txtNameColour" CssClass="form-control" placeholder="Colour ..." autocomplete="off"></asp:TextBox>
                         </div>
+                        
+                    </div>
+                    <div class="row mb-2">
                         <div class="col-6 form-group">
                             <label class="form-label">Width</label>
                             <asp:TextBox runat="server" ID="txtWidthColour" CssClass="form-control" placeholder="Width ..." autocomplete="off"></asp:TextBox>
                         </div>
-                    </div>
-                    <div class="row mb-2" runat="server" id="divStatusColour">
-                        <div class="col-6 form-group">
+                        <div class="col-6 form-group" runat="server" id="divStatusColour">
                             <label class="form-label">Status</label>
                             <asp:DropDownList runat="server" ID="ddlStatusColour" CssClass="form-select">
                                 <asp:ListItem Value="" Text=""></asp:ListItem>
