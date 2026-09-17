@@ -42,31 +42,44 @@ Partial Class JPMDStock
     Protected Sub gvListRoller_RowDataBound(sender As Object, e As GridViewRowEventArgs)
         If e.Row.RowType = DataControlRowType.DataRow Then
             For i As Integer = 1 To 8
-                Dim colName As String = "Col" & i & "Status"
-                Dim isActiveObj = DataBinder.Eval(e.Row.DataItem, colName)
+                Dim colColour As String = "Col" & i
+                Dim colStatus As String = "Col" & i & "Status"
+                Dim colWidth As String = "Col" & i & "Width"
 
-                If isActiveObj IsNot Nothing AndAlso Not IsDBNull(isActiveObj) Then
-                    Dim thisStatus As String = isActiveObj.ToString()
-                    If thisStatus = "In Stock" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.DarkGreen
-                        e.Row.Cells(i).ForeColor = Drawing.Color.White
-                    End If
-                    If thisStatus = "Out of Stock" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.DarkRed
-                        e.Row.Cells(i).ForeColor = Drawing.Color.White
-                    End If
-                    If thisStatus = "Limited Stock" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.Yellow
-                        e.Row.Cells(i).ForeColor = Drawing.Color.Black
-                    End If
-                    If thisStatus = "Discontinued" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.Gray
-                        e.Row.Cells(i).ForeColor = Drawing.Color.White
-                    End If
+                Dim colourObj = DataBinder.Eval(e.Row.DataItem, colColour)
+                Dim statusObj = DataBinder.Eval(e.Row.DataItem, colStatus)
+                Dim widthObj = DataBinder.Eval(e.Row.DataItem, colWidth)
+
+                Dim colour As String = If(colourObj Is Nothing OrElse IsDBNull(colourObj), "", colourObj.ToString())
+                Dim status As String = If(statusObj Is Nothing OrElse IsDBNull(statusObj), "", statusObj.ToString())
+                Dim width As String = If(widthObj Is Nothing OrElse IsDBNull(widthObj), "", widthObj.ToString())
+
+                e.Row.Cells(i).Text = ""
+                e.Row.Cells(i).Attributes.Clear()
+
+                If colour <> "" Then
+                    e.Row.Cells(i).Text =
+                    colour & If(width <> "", "<br/>(Max " & width & "mm)", "")
+                End If
+
+                If status = "In Stock" Then
+                    e.Row.Cells(i).BackColor = Drawing.Color.DarkGreen
+                    e.Row.Cells(i).ForeColor = Drawing.Color.White
+
+                ElseIf status = "Out of Stock" Then
+                    e.Row.Cells(i).BackColor = Drawing.Color.DarkRed
+                    e.Row.Cells(i).ForeColor = Drawing.Color.White
+
+                ElseIf status = "Limited Stock" Then
+                    e.Row.Cells(i).BackColor = Drawing.Color.Yellow
+                    e.Row.Cells(i).ForeColor = Drawing.Color.Black
+
+                ElseIf status = "Discontinued" Then
+                    e.Row.Cells(i).BackColor = Drawing.Color.Gray
+                    e.Row.Cells(i).ForeColor = Drawing.Color.White
                 End If
             Next
         End If
-
         If e.Row.RowType = DataControlRowType.Footer Then
             For i As Integer = 0 To gvListRoller.Columns.Count - 1
                 Dim bf As BoundField = TryCast(gvListRoller.Columns(i), BoundField)
