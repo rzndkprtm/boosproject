@@ -41,37 +41,3 @@ A $4 fuel surcharge will be applied once the order is submitted.
 3%
 
 PG PLANTATION UP (25%) & SEWLESS (35%)
-
-INSERT INTO PriceBases_Backup (Id, Category, Method, ProductGroupId, PriceGroupId, Height, Width, Price, Conditional)
-SELECT ROW_NUMBER() OVER (ORDER BY A.Id) AS Id, A.Category, A.Method, A.ProductGroupId, A.PriceGroupId, A.Height, A.Width, A.Price, A.Conditional FROM PriceBases A;
-
-INSERT INTO PriceSurcharges_Backup (Id, DesignId, PriceGroupId, Name, Type, Formula, SellCharge, BuyCharge, FactoryCharge, Description, Status)
-SELECT ROW_NUMBER() OVER (ORDER BY A.Id) AS Id, A.DesignId, A.PriceGroupId, A.Name, A.Type, A.Formula, A.SellCharge, A.BuyCharge, A.FactoryCharge, A.Description, A.Status FROM PriceSurcharges A;
-
-
-INSERT INTO OrderCostingss SELECT Id,
-HeaderId,
-ItemId,
-Number,
-Type,
-Description,
-SellPrice,
-SellPrice,
-BuyPrice,
-FactoryPrice
-FROM OrderCostings
-
-INSERT INTO FabricColourss SELECT Id,
-FabricId,
-CompanyDetailId,
-BoeId,
-NULL,
-Factory,
-Name,
-Colour,
-Width,
-NULL,
-NULL,
-NULL,
-Status
-FROM FabricColours
