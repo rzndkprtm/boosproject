@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Specification_Fabric_Colour_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Fabric + Colour" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Specification_Fabric_Colour_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Fabric Colour" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -38,7 +38,7 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                        <h5 class="card-title">List Fabric + Colour</h5>
+                                        <h5 class="card-title">List Fabric Colour</h5>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                         <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
@@ -61,7 +61,7 @@
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
-                                            <asp:BoundField DataField="CompanyDetailName" HeaderText="Company Detail Name" />
+                                            <asp:BoundField DataField="CompanyDetailName" HeaderText="Sub Company" />
                                             <asp:BoundField DataField="FabricName" HeaderText="Fabric Type" />
                                             <asp:BoundField DataField="Colour" HeaderText="Colour" />
                                             <asp:BoundField DataField="Status" HeaderText="Status" />
