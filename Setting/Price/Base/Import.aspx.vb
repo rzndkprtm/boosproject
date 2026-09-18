@@ -174,7 +174,7 @@ Partial Class Setting_Price_Base_Import
                             If result <> "" Then
                                 Return result
                             End If
-                        Case "SELL (BUY & FACTORY AUTO)"
+                        Case "SELL ONLY (BUY & FACTORY AUTO)"
                             Dim sellSheet = package.Workbook.Worksheets.FirstOrDefault(Function(x) x.Name.Equals("Sell", StringComparison.OrdinalIgnoreCase))
 
                             If sellSheet Is Nothing Then
@@ -219,7 +219,7 @@ Partial Class Setting_Price_Base_Import
                                 deleteCategories.Add("Sell")
                                 deleteCategories.Add("Buy")
                                 deleteCategories.Add("Factory")
-                            Case "SELL (BUY & FACTORY AUTO)"
+                            Case "SELL ONLY (BUY & FACTORY AUTO)"
                                 deleteCategories.Add("Sell")
                                 deleteCategories.Add("Buy")
                                 deleteCategories.Add("Factory")
@@ -497,7 +497,7 @@ Partial Class Setting_Price_Base_Import
                 ddlUploadType.Items.Add(New ListItem("Factory Only", "Factory"))
                 ddlUploadType.Items.Add(New ListItem("Sell, Buy & Factory", "Complete"))
             ElseIf master = "No" Then
-                ddlUploadType.Items.Add(New ListItem("Sell Only (Buy & Factory Auto)", "Sell & Factory (Buy Auto)"))
+                ddlUploadType.Items.Add(New ListItem("Sell Only (Buy & Factory Auto)", "Sell Only (Buy & Factory Auto)"))
             Else
                 ddlUploadType.Items.Add(New ListItem("", ""))
             End If
