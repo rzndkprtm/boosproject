@@ -145,7 +145,7 @@
                                                     <asp:BoundField DataField="Factory" HeaderText="Factory" />
                                                     <asp:BoundField DataField="Colour" HeaderText="Colour" />
                                                     <asp:BoundField DataField="Width" HeaderText="Width" />
-                                                    <asp:BoundField DataField="RollQuantity" HeaderText="Roll Qty" />
+                                                    <asp:BoundField DataField="RollQty" HeaderText="Roll Qty" />
                                                     <asp:BoundField DataField="EtaFactory" HeaderText="ETA Factory" />
                                                     <asp:BoundField DataField="Status" HeaderText="Status" />
                                                     <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="120px">
