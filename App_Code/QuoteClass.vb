@@ -1607,7 +1607,10 @@ Public Class QuoteClass
                     itemDescription = productName
 
                     If blindName = "Complete Set (Single)" Then
-                        itemDescription = String.Format("{0} {1} {2}", productName, fabricColourName, trackType)
+                        itemDescription = productName
+                        itemDescription &= String.Format("{0} {1} {2}", fabricColourName, size, squareMetreText)
+                        itemDescription &= vbCrLf
+                        itemDescription &= String.Format("{0} {1}", trackType, size)
                     End If
                     If blindName = "Complete Set (Double)" Then
                         itemDescription = productName

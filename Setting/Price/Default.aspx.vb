@@ -22,7 +22,6 @@ Partial Class Setting_Price_Default
 
         If Not IsPostBack Then
             Dim dt As DataTable = settingClass.GetDataTableSP("sp_Dashboard_Price", Nothing)
-
             If dt.Rows.Count > 0 Then
                 PriceGroups = CInt(dt.Rows(0)("PriceGroups"))
                 PriceProductGroups = CInt(dt.Rows(0)("PriceProductGroups"))

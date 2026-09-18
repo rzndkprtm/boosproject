@@ -86,9 +86,7 @@ Partial Class Setting_Price_Base_Discount
     Protected Sub BindPriceGroup()
         ddlPriceGroup.Items.Clear()
         Try
-            Dim thisString As String = "SELECT Id, Name FROM PriceGroups WHERE Type='Blinds' AND (Status='Active' OR Status='Inactive') ORDER BY Id ASC"
-
-            ddlPriceGroup.DataSource = settingClass.GetDataTable(thisString)
+            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups WHERE Type='Blinds' AND (Status='Active' OR Status='Inactive') ORDER BY Id ASC")
             ddlPriceGroup.DataTextField = "Name"
             ddlPriceGroup.DataValueField = "Id"
             ddlPriceGroup.DataBind()
@@ -105,9 +103,7 @@ Partial Class Setting_Price_Base_Discount
         lbProductGroup.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(priceGroupId) Then
-                Dim thisQuery As String = "SELECT Id, Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "' AND Status='Active' ORDER BY Name ASC"
-
-                lbProductGroup.DataSource = settingClass.GetDataTable(thisQuery)
+                lbProductGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "' AND Status='Active' ORDER BY Name ASC")
                 lbProductGroup.DataTextField = "Name"
                 lbProductGroup.DataValueField = "Id"
                 lbProductGroup.DataBind()

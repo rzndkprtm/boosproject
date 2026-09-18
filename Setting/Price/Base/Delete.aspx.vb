@@ -91,9 +91,7 @@ Partial Class Setting_Price_Base_Delete
         lbProductGroup.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(priceGroupId) Then
-                Dim query As String = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'"
-
-                lbProductGroup.DataSource = settingClass.GetDataTable(query)
+                lbProductGroup.DataSource = settingClass.GetDataTable("SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'")
                 lbProductGroup.DataTextField = "Name"
                 lbProductGroup.DataValueField = "Id"
                 lbProductGroup.DataBind()

@@ -143,9 +143,7 @@ Partial Class Setting_Price_Base_Edit
         ddlProductGroup.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(priceGroupId) Then
-                Dim query As String = "SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'"
-
-                ddlProductGroup.DataSource = settingClass.GetDataTable(query)
+                ddlProductGroup.DataSource = settingClass.GetDataTable("SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'")
                 ddlProductGroup.DataTextField = "Name"
                 ddlProductGroup.DataValueField = "Id"
                 ddlProductGroup.DataBind()

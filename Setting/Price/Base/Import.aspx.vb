@@ -330,7 +330,7 @@ Partial Class Setting_Price_Base_Import
                 Exit Sub
             End If
 
-            Using cmd As New SqlCommand("SELECT Method, ProductGroupId, Height, Width, Price, Conditional FROM PriceBases WHERE Category = 'Buy' AND PriceGroupId = @MasterPriceGroupId AND ProductGroupId = @ProductGroupId", conn)
+            Using cmd As New SqlCommand("SELECT Method, ProductGroupId, Height, Width, Price, Conditional FROM PriceBases WHERE Category='Buy' AND PriceGroupId=@MasterPriceGroupId AND ProductGroupId=@ProductGroupId", conn)
                 cmd.Parameters.AddWithValue("@MasterPriceGroupId", masterPriceGroupId)
                 cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
                 Using rd As SqlDataReader = cmd.ExecuteReader()
@@ -359,7 +359,7 @@ Partial Class Setting_Price_Base_Import
     Protected Sub AddFactoryFromMaster(dt As DataTable, productGroupId As Integer, priceGroupId As Integer, ByRef nextId As Integer, conn As SqlConnection)
         Try
             Dim masterPriceGroupId As Integer = 0
-            Using cmd As New SqlCommand("SELECT TOP 1 PG2.Id FROM PriceGroups PG1 INNER JOIN PriceGroups PG2 ON PG2.CompanyId = PG1.CompanyId AND PG2.Type = PG1.Type AND PG2.Master = 'Yes' WHERE PG1.Id = @PriceGroupId", conn)
+            Using cmd As New SqlCommand("SELECT TOP 1 PG2.Id FROM PriceGroups PG1 INNER JOIN PriceGroups PG2 ON PG2.CompanyId=PG1.CompanyId AND PG2.Type=PG1.Type AND PG2.Master='Yes' WHERE PG1.Id=@PriceGroupId", conn)
                 cmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
                 Dim result = cmd.ExecuteScalar()
                 If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
@@ -371,7 +371,7 @@ Partial Class Setting_Price_Base_Import
                 Exit Sub
             End If
 
-            Using cmd As New SqlCommand("SELECT Method, ProductGroupId, Height, Width, Price, Conditional FROM PriceBases WHERE Category = 'Factory' AND PriceGroupId = @MasterPriceGroupId AND ProductGroupId = @ProductGroupId", conn)
+            Using cmd As New SqlCommand("SELECT Method, ProductGroupId, Height, Width, Price, Conditional FROM PriceBases WHERE Category='Factory' AND PriceGroupId=@MasterPriceGroupId AND ProductGroupId=@ProductGroupId", conn)
                 cmd.Parameters.AddWithValue("@MasterPriceGroupId", masterPriceGroupId)
                 cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
                 Using rd As SqlDataReader = cmd.ExecuteReader()
@@ -441,7 +441,7 @@ Partial Class Setting_Price_Base_Import
             End Using
 
             For Each targetPriceGroupId As Integer In priceGroupIds
-                Using cmd As New SqlCommand("DELETE FROM PriceBases WHERE Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId = @PriceGroupId AND Category='Buy'", conn, tran)
+                Using cmd As New SqlCommand("DELETE FROM PriceBases WHERE Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@PriceGroupId AND Category='Buy'", conn, tran)
                     cmd.Parameters.AddWithValue("@Method", method)
                     cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
                     cmd.Parameters.AddWithValue("@PriceGroupId", targetPriceGroupId)
@@ -506,7 +506,7 @@ Partial Class Setting_Price_Base_Import
             End Using
 
             For Each targetPriceGroupId As Integer In priceGroupIds
-                Using cmd As New SqlCommand("DELETE FROM PriceBases WHERE Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId = @PriceGroupId AND Category='Factory'", conn, tran)
+                Using cmd As New SqlCommand("DELETE FROM PriceBases WHERE Method=@Method AND ProductGroupId=@ProductGroupId AND PriceGroupId=@PriceGroupId AND Category='Factory'", conn, tran)
                     cmd.Parameters.AddWithValue("@Method", method)
                     cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
                     cmd.Parameters.AddWithValue("@PriceGroupId", targetPriceGroupId)

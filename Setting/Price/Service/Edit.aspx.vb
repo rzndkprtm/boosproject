@@ -100,16 +100,14 @@ Partial Class Setting_Price_Service_Edit
                 Dim dataLog As Object() = {"OrderDetails", lblId.Text, Session("LoginId"), "Price Service Updated"}
                 settingClass.Logs(dataLog)
 
-                If ddlAutoCreate.SelectedValue = "1" AndAlso lblAutoCreate.Text = "1" Then
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As New SqlCommand("sp_CustomerServices_UpdateByServiceId", thisConn)
-                            thisCmd.CommandType = CommandType.StoredProcedure
-                            thisCmd.Parameters.AddWithValue("@ServiceId", Convert.ToInt32(lblId.Text))
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("sp_CustomerServices_UpdateByServiceId", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+                        thisCmd.Parameters.AddWithValue("@ServiceId", Convert.ToInt32(lblId.Text))
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
                     End Using
-                End If
+                End Using
 
                 If ddlAutoCreate.SelectedValue = "1" AndAlso lblAutoCreate.Text = "0" Then
                     Dim thisData As DataTable = settingClass.GetDataTable("SELECT Id FROM Customers WHERE CompanyDetailId IN (SELECT TRY_CAST(value AS INT) FROM STRING_SPLIT('" & companyDetailId & "', ','));")
