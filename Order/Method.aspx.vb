@@ -9592,6 +9592,7 @@ Partial Class Order_Method
             data.controllength = String.Empty : clvalue = 0
             data.controllengthb = String.Empty : clvalueb = 0
             data.tassel = String.Empty
+            data.controllength = "Custom"
             clvalue = data.wandlengthvalue
         End If
 

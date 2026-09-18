@@ -2106,7 +2106,7 @@ Public Class PreviewClass
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim items(19, venetianData.Rows.Count - 1) As String
+                    Dim items(18, venetianData.Rows.Count - 1) As String
 
                     For i As Integer = 0 To venetianData.Rows.Count - 1
                         Dim number As Integer = i + 1
@@ -2155,13 +2155,12 @@ Public Class PreviewClass
                         items(9, i) = venetianData.Rows(i)("CtrlPosition").ToString()
                         items(10, i) = venetianData.Rows(i)("TiltPosition").ToString()
                         items(11, i) = controlLengthText
-                        items(12, i) = wandLengthText
-                        items(13, i) = venetianData.Rows(i)("ValanceType").ToString()
-                        items(14, i) = valancesizeText
-                        items(15, i) = venetianData.Rows(i)("ReturnPosition").ToString()
-                        items(16, i) = returnLengthText
-                        items(17, i) = venetianData.Rows(i)("Supply").ToString()
-                        items(18, i) = venetianData.Rows(i)("Notes").ToString()
+                        items(12, i) = venetianData.Rows(i)("ValanceType").ToString()
+                        items(13, i) = valancesizeText
+                        items(14, i) = venetianData.Rows(i)("ReturnPosition").ToString()
+                        items(15, i) = returnLengthText
+                        items(16, i) = venetianData.Rows(i)("Supply").ToString()
+                        items(17, i) = venetianData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
@@ -2170,7 +2169,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Venetian Type", "Venetian Colour", "Sub Type", "Width (mm)", "Drop (mm)", "Tassel Colour", "Control Position", "Tilter Position", "Control Length", "Wand Length", "Valance Type", "Valance Size", "Return Position", "Return Length", "Hold Down Clip", "Special Information"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Venetian Type", "Venetian Colour", "Sub Type", "Width (mm)", "Drop (mm)", "Tassel Colour", "Control Position", "Tilter Position", "Control Length", "Valance Type", "Valance Size", "Return Position", "Return Length", "Hold Down Clip", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
