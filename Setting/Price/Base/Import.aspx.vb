@@ -371,7 +371,7 @@ Partial Class Setting_Price_Base_Import
                 Exit Sub
             End If
 
-            Using cmd As New SqlCommand("SELECT Method, ProductGroupId, Height, Width, Price, Conditional FROM PriceBases WHERE Category = 'Buy' AND PriceGroupId = @MasterPriceGroupId AND ProductGroupId = @ProductGroupId", conn)
+            Using cmd As New SqlCommand("SELECT Method, ProductGroupId, Height, Width, Price, Conditional FROM PriceBases WHERE Category = 'Factory' AND PriceGroupId = @MasterPriceGroupId AND ProductGroupId = @ProductGroupId", conn)
                 cmd.Parameters.AddWithValue("@MasterPriceGroupId", masterPriceGroupId)
                 cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
                 Using rd As SqlDataReader = cmd.ExecuteReader()
