@@ -182,12 +182,12 @@ Partial Class Setting_Price_Base_Import
                             End If
 
                             result = ReadSheet(sellSheet, "Sell", method, productGroupId, priceGroupId, dt, nextId)
-
                             If result <> "" Then
                                 Return result
                             End If
 
                             AddBuyFromMaster(dt, productGroupId, priceGroupId, nextId, thisConn)
+                            AddFactoryFromMaster(dt, productGroupId, priceGroupId, nextId, thisConn)
                         Case Else
                             Return "INVALID UPLOAD TYPE !"
                     End Select
@@ -316,6 +316,47 @@ Partial Class Setting_Price_Base_Import
     End Function
 
     Protected Sub AddBuyFromMaster(dt As DataTable, productGroupId As Integer, priceGroupId As Integer, ByRef nextId As Integer, conn As SqlConnection)
+        Try
+            Dim masterPriceGroupId As Integer = 0
+            Using cmd As New SqlCommand("SELECT TOP 1 PG2.Id FROM PriceGroups PG1 INNER JOIN PriceGroups PG2 ON PG2.CompanyId = PG1.CompanyId AND PG2.Type = PG1.Type AND PG2.Master = 'Yes' WHERE PG1.Id = @PriceGroupId", conn)
+                cmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
+                Dim result = cmd.ExecuteScalar()
+                If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
+                    masterPriceGroupId = CInt(result)
+                End If
+            End Using
+
+            If masterPriceGroupId = 0 Then
+                Exit Sub
+            End If
+
+            Using cmd As New SqlCommand("SELECT Method, ProductGroupId, Height, Width, Price, Conditional FROM PriceBases WHERE Category = 'Buy' AND PriceGroupId = @MasterPriceGroupId AND ProductGroupId = @ProductGroupId", conn)
+                cmd.Parameters.AddWithValue("@MasterPriceGroupId", masterPriceGroupId)
+                cmd.Parameters.AddWithValue("@ProductGroupId", productGroupId)
+                Using rd As SqlDataReader = cmd.ExecuteReader()
+                    While rd.Read()
+                        Dim row As DataRow = dt.NewRow()
+
+                        row("Id") = nextId
+                        row("Category") = "Factory"
+                        row("Method") = rd("Method")
+                        row("ProductGroupId") = rd("ProductGroupId")
+                        row("PriceGroupId") = priceGroupId
+                        row("Height") = rd("Height")
+                        row("Width") = rd("Width")
+                        row("Price") = rd("Price")
+                        row("Conditional") = rd("Conditional")
+                        dt.Rows.Add(row)
+                        nextId += 1
+                    End While
+                End Using
+            End Using
+        Catch
+            Throw
+        End Try
+    End Sub
+
+    Protected Sub AddFactoryFromMaster(dt As DataTable, productGroupId As Integer, priceGroupId As Integer, ByRef nextId As Integer, conn As SqlConnection)
         Try
             Dim masterPriceGroupId As Integer = 0
             Using cmd As New SqlCommand("SELECT TOP 1 PG2.Id FROM PriceGroups PG1 INNER JOIN PriceGroups PG2 ON PG2.CompanyId = PG1.CompanyId AND PG2.Type = PG1.Type AND PG2.Master = 'Yes' WHERE PG1.Id = @PriceGroupId", conn)
