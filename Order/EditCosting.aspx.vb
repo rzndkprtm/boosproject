@@ -68,7 +68,7 @@ Partial Class Order_EditCosting
             End Using
 
             If Not String.IsNullOrEmpty(txtDiscountNote.Text) Then
-                Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtDiscountNote.Text.Trim(), 0, 0, 0}
+                Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtDiscountNote.Text.Trim(), 0, 0, 0, 0}
                 orderClass.OrderCostings(costingArray)
             End If
 
@@ -88,7 +88,7 @@ Partial Class Order_EditCosting
     Protected Sub btnAddSurcharge_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, ddlAddItem.SelectedValue, "Surcharge", txtAddDescription.Text, txtAddSellPrice.Text, txtAddBuyPrice.Text, txtAddFactoryPrice.Text}
+            Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, ddlAddItem.SelectedValue, "Surcharge", txtAddDescription.Text, txtAddSellPrice.Text, txtAddSellPrice.Text, txtAddBuyPrice.Text, txtAddFactoryPrice.Text}
             orderClass.OrderCostings(costingArray)
             orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
 
