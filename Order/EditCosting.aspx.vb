@@ -75,10 +75,8 @@ Partial Class Order_EditCosting
             orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
 
             Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
-
         Catch ex As Exception
             MessageError(True, ex.ToString())
-
             If Session("RoleName") <> "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
