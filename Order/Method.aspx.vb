@@ -10466,7 +10466,7 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
-        Dim groupName As String = String.Format("{0}", productName)
+        Dim groupName As String = String.Format("{0} - {1}", designName, productName)
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then

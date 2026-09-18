@@ -35,7 +35,6 @@
                 </div>
             </div>
         </section>
-       
         <div id="divorder" style="display:none;">
             <section class="row">
                 <div class="col-12 col-sm-12 col-lg-7">
@@ -230,7 +229,6 @@
                                                         <div class="divider-text">
                                                             <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('First');">Open Layout (First Blind)</a>
                                                         </div>
-                                                    
                                                     </div>
                                                 </div>
                                             </div>
@@ -476,5 +474,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/Aluminium.js?v=1.2.1"></script>
+    <script src="/Scripts/RisaSolihah/Aluminium.js?v=1.2.5"></script>
 </asp:Content>

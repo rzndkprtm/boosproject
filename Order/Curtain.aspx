@@ -35,7 +35,6 @@
                 </div>
             </div>
         </section>
-
         <div id="divorder" style="display:none;">
             <section class="row">
                 <div class="col-12 col-sm-12 col-lg-7">
@@ -597,5 +596,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/Curtain.js?v=1.2.1"></script>
+    <script src="/Scripts/RisaSolihah/Curtain.js?v=1.2.5"></script>
 </asp:Content>

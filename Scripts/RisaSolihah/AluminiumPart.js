@@ -102,21 +102,6 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
     }
 }
 
-function loader(itemAction) {
-    return new Promise((resolve) => {
-        if (itemAction === "create") {
-            document.getElementById("divloader").style.display = "none";
-            document.getElementById("divorder").style.display = "";
-        }
-        resolve();
-    });
-}
-
-function isError(msg) {
-    $("#modalError").modal("show");
-    document.getElementById("errorMsg").innerHTML = msg;
-}
-
 function getOrderHeader(headerId) {
     return new Promise((resolve, reject) => {
         if (!headerId) return resolve();
@@ -534,6 +519,21 @@ function bindComponentForm(blindType, colourType) {
     });
 }
 
+function loader(itemAction) {
+    return new Promise((resolve) => {
+        if (itemAction === "create") {
+            document.getElementById("divloader").style.display = "none";
+            document.getElementById("divorder").style.display = "";
+        }
+        resolve();
+    });
+}
+
+function isError(msg) {
+    $("#modalError").modal("show");
+    document.getElementById("errorMsg").innerHTML = msg;
+}
+
 function toggleButtonState(disabled, text) {
     $("#submit").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto").text(text);
     $("#cancel").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto");
@@ -677,17 +677,14 @@ document.getElementById("modalSuccess").addEventListener("hide.bs.modal", functi
     document.activeElement.blur();
     document.body.focus();
 });
-
 document.getElementById("modalError").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });
-
 document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });
-
 document.addEventListener("keydown", function (e) {
     if (e.key === "F10") {
         e.preventDefault();

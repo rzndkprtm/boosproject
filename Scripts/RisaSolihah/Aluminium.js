@@ -99,18 +99,6 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
     }
 }
 
-function loader(itemAction) {
-    if (itemAction === "create") {
-        document.getElementById("divloader").style.display = "none";
-        document.getElementById("divorder").style.display = "";
-    }
-}
-
-function isError(msg) {
-    $("#modalError").modal("show");
-    document.getElementById("errorMsg").innerHTML = msg;
-}
-
 function getOrderHeader(headerId) {
     return new Promise((resolve, reject) => {
         if (!headerId) return resolve(null);
@@ -677,6 +665,18 @@ function visibleCustom(type, text, number) {
     });
 }
 
+function loader(itemAction) {
+    if (itemAction === "create") {
+        document.getElementById("divloader").style.display = "none";
+        document.getElementById("divorder").style.display = "";
+    }
+}
+
+function isError(msg) {
+    $("#modalError").modal("show");
+    document.getElementById("errorMsg").innerHTML = msg;
+}
+
 function toggleButtonState(disabled, text) {
     $("#submit").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto").text(text);
     $("#cancel").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto");
@@ -933,17 +933,14 @@ function updateLinkDetail(myId) {
 $("#submit").on("click", process);
 $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-
 $("#blindtype").on("change", function () {
     bindMounting($(this).val());
     bindColourType($(this).val());
 });
-
 $("#colourtype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
     bindSubType(blindtype, $(this).val());
 });
-
 $("#subtype").on("change", function () {
     const colourtype = document.getElementById("colourtype").value;
     const drop = parseFloat(document.getElementById("drop").value) || 0;
@@ -962,29 +959,23 @@ $("#subtype").on("change", function () {
     document.getElementById("wandlengthvalue").value = "";
     document.getElementById("wandlengthvalueb").value = "";
 });
-
 $("#drop").on("input", function () {
     const subtype = document.getElementById("subtype").value;
     otomatisDrop(subtype, "1", $(this).val());
 });
-
 $("#dropb").on("input", function () {
     const subtype = document.getElementById("subtype").value;
     otomatisDrop(subtype, "2", $(this).val());
 });
-
 $("#controllength").on("change", function () {
     visibleCustom("CordLength", $(this).val(), "1");
 });
-
 $("#controllengthb").on("change", function () {
     visibleCustom("CordLength", $(this).val(), "2");
 });
-
 $("#wandlength").on("change", function () {
     visibleCustom("WandLength", $(this).val(), "1");
 });
-
 $("#wandlengthb").on("change", function () {
     visibleCustom("WandLength", $(this).val(), "2");
 });
@@ -993,27 +984,22 @@ document.getElementById("modalSuccess").addEventListener("hide.bs.modal", functi
     document.activeElement.blur();
     document.body.focus();
 });
-
 document.getElementById("modalError").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });
-
 document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });
-
 document.getElementById("modalLayout").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });
-
 document.getElementById("modalGallery").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });
-
 document.addEventListener("keydown", function (e) {
     if (e.key === "F10") {
         e.preventDefault();

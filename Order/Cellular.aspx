@@ -135,7 +135,7 @@
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <div class="divider">
-                                                            <div class="divider-text">Top Fabric</div>
+                                                            <div class="divider-text">TOP FABRIC</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -165,7 +165,7 @@
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <div class="divider">
-                                                            <div class="divider-text">Bottom Fabric</div>
+                                                            <div class="divider-text">BOTTOM FABRIC</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -422,5 +422,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/Cellular.js?v=1.2.1"></script>
+    <script src="/Scripts/RisaSolihah/Cellular.js?v=1.2.5"></script>
 </asp:Content>

@@ -47,7 +47,7 @@ Partial Class Setting_Price_Product_Format_Edit
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceProductGroupFormats VALUES (@Id, @DesignId, @Name, @Format, @Description, @Status)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceProductGroupFormats SET DesignId=@DesignId, Name=@Name, Format=@Format, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@DesignId", ddlDesign.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())

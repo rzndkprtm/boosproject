@@ -17,13 +17,11 @@ initCellular();
 $("#submit").on("click", process);
 $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-
 $("#blindtype").on("change", function () {
     bindMounting($(this).val());
     bindControlType($(this).val());
     document.getElementById("controllength").value = "";
 });
-
 $("#controltype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
 
@@ -34,7 +32,6 @@ $("#controltype").on("change", function () {
 
     document.getElementById("controllength").value = "";
 });
-
 $("#colourtype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
     const controltype = document.getElementById("controltype").value;
@@ -43,29 +40,101 @@ $("#colourtype").on("change", function () {
 
     document.getElementById("controllength").value = "";
 });
-
 $("#fabrictype").on("change", function () {
     bindFabricColour($(this).val());
 });
-
 $("#fabrictypeb").on("change", function () {
     bindFabricColourB($(this).val());
 });
-
 $("#controllength").on("change", function () {
     visibleCustom($(this).val());
 });
 
-function loader(itemAction) {
+async function initCellular() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sessionId = urlParams.get("boos");
+
+    if (!sessionId) return redirectOrder();
+
+    const response = await fetch("Method.aspx/StringData", {
+        method: "POST",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({ type: "OrderContext", dataId: sessionId })
+    });
+
+    const result = await response.json();
+    if (!result?.d) return redirectOrder();
+
+    const params = new URLSearchParams(result.d);
+
+    itemAction = params.get("do");
+    headerId = params.get("orderid");
+    itemId = params.get("itemid");
+    designId = params.get("dtype");
+    loginId = params.get("uid");
+
+    if (!headerId) return redirectOrder();
+
+    updateLinkDetail(headerId);
+
+    if (!itemAction || !designId || !loginId || designId !== designIdOri) {
+        return window.location.href = `/order/detail?orderid=${headerId}`;
+    }
+
+    getFormAction(itemAction);
+
+    await Promise.all([
+        getOrderHeader(headerId),
+        getDesignName(designId),
+        getCompanyOrder(headerId),
+        getCompanyDetailOrder(headerId),
+        getRoleAccess(loginId),
+        getPriceAccess(loginId)
+    ]);
+
     if (itemAction === "create") {
-        document.getElementById("divloader").style.display = "none";
-        document.getElementById("divorder").style.display = "";
+        await bindBlindType(designId);
+        bindComponentForm("", "", "");
+        controlForm(false);
+        loader(itemAction);
+    } else if (["edit", "view", "copy"].includes(itemAction)) {
+        await bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, itemAction);
+        controlForm(itemAction === "view", itemAction === "edit", itemAction === "copy");
     }
 }
 
-function isError(msg) {
-    $("#modalError").modal("show");
-    document.getElementById("errorMsg").innerHTML = msg;
+async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, action) {
+    try {
+        const response = await $.ajax({
+            type: "POST",
+            url: "Method.aspx/CellularDetail",
+            data: JSON.stringify({ itemId, companyDetailId, orderStatus, roleAccess, action }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json"
+        });
+
+        const data = response.d;
+
+        fillSelect("#blindtype", data.BlindTypes);
+        fillSelect("#controltype", data.ControlTypes);
+        fillSelect("#colourtype", data.ColourTypes);
+        fillSelect("#mounting", data.Mountings);
+        fillSelect("#fabrictype", data.Fabrics);
+        fillSelect("#fabrictypeb", data.Fabrics);
+        fillSelect("#fabriccolour", data.FabricColours);
+        fillSelect("#fabriccolourb", data.FabricColoursB);
+        fillSelect("#remote", data.Chains);
+
+        document.getElementById("divloader").style.display = "none";
+        document.getElementById("divorder").style.display = "";
+
+        setFormValues(data.ItemData);
+
+        bindComponentForm(data.ItemData.BlindType, data.ItemData.ControlType, data.ItemData.ProductId);
+        visibleCustom(data.ItemData.ControlLength);
+    } catch (error) {
+        document.getElementById("divloader").style.display = "none";
+    }
 }
 
 function getFormAction(itemAction) {
@@ -923,6 +992,18 @@ function visibleCustom(cordLength) {
     });
 }
 
+function loader(itemAction) {
+    if (itemAction === "create") {
+        document.getElementById("divloader").style.display = "none";
+        document.getElementById("divorder").style.display = "";
+    }
+}
+
+function isError(msg) {
+    $("#modalError").modal("show");
+    document.getElementById("errorMsg").innerHTML = msg;
+}
+
 function toggleButtonState(disabled, text) {
     $("#submit").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto").text(text);
     $("#cancel").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto");
@@ -1063,93 +1144,6 @@ function process() {
     });
 }
 
-async function initCellular() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const sessionId = urlParams.get("boos");
-
-    if (!sessionId) return redirectOrder();
-
-    const response = await fetch("Method.aspx/StringData", {
-        method: "POST",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify({ type: "OrderContext", dataId: sessionId })
-    });
-
-    const result = await response.json();
-    if (!result?.d) return redirectOrder();
-
-    const params = new URLSearchParams(result.d);
-
-    itemAction = params.get("do");
-    headerId = params.get("orderid");
-    itemId = params.get("itemid");
-    designId = params.get("dtype");
-    loginId = params.get("uid");
-
-    if (!headerId) return redirectOrder();
-
-    updateLinkDetail(headerId);
-
-    if (!itemAction || !designId || !loginId || designId !== designIdOri) {
-        return window.location.href = `/order/detail?orderid=${headerId}`;
-    }
-
-    getFormAction(itemAction);
-
-    await Promise.all([
-        getOrderHeader(headerId),
-        getDesignName(designId),
-        getCompanyOrder(headerId),
-        getCompanyDetailOrder(headerId),
-        getRoleAccess(loginId),
-        getPriceAccess(loginId)
-    ]);
-
-    if (itemAction === "create") {
-        await bindBlindType(designId);
-        bindComponentForm("", "", "");
-        controlForm(false);
-        loader(itemAction);
-    } else if (["edit", "view", "copy"].includes(itemAction)) {
-        await bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, itemAction);
-        controlForm(itemAction === "view", itemAction === "edit", itemAction === "copy");
-    }
-}
-
-async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, action) {
-    try {
-        const response = await $.ajax({
-            type: "POST",
-            url: "Method.aspx/CellularDetail",
-            data: JSON.stringify({ itemId, companyDetailId, orderStatus, roleAccess, action }),
-            contentType: "application/json; charset=utf-8",
-            dataType: "json"
-        });
-
-        const data = response.d;
-
-        fillSelect("#blindtype", data.BlindTypes);
-        fillSelect("#controltype", data.ControlTypes);
-        fillSelect("#colourtype", data.ColourTypes);
-        fillSelect("#mounting", data.Mountings);
-        fillSelect("#fabrictype", data.Fabrics);
-        fillSelect("#fabrictypeb", data.Fabrics);
-        fillSelect("#fabriccolour", data.FabricColours);
-        fillSelect("#fabriccolourb", data.FabricColoursB);
-        fillSelect("#remote", data.Chains);
-
-        document.getElementById("divloader").style.display = "none";
-        document.getElementById("divorder").style.display = "";
-
-        setFormValues(data.ItemData);
-
-        bindComponentForm(data.ItemData.BlindType, data.ItemData.ControlType, data.ItemData.ProductId);
-        visibleCustom(data.ItemData.ControlLength);
-    } catch (error) {
-        document.getElementById("divloader").style.display = "none";
-    }
-}
-
 function showInfo(type) {
     let info;
 
@@ -1182,22 +1176,18 @@ document.getElementById("modalSuccess").addEventListener("hide.bs.modal", functi
     document.activeElement.blur();
     document.body.focus();
 });
-
 document.getElementById("modalError").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });
-
 document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });
-
 document.getElementById("modalGallery").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
 });
-
 document.addEventListener("keydown", function (e) {
     if (e.key === "F10") {
         e.preventDefault();

@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row" id="divloader">
             <div class="col-12">
@@ -78,7 +77,7 @@
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Part Type</label>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                 <select id="blindtype" class="form-select"></select>
                                             </div>
                                         </div>
@@ -147,9 +146,7 @@
                             <h4 class="card-title text-center">Information</h4>
                         </div>
                         <div class="card-content">
-                            <div class="card-body">
-
-                            </div>
+                            <div class="card-body"></div>
                         </div>
                     </div>
                 </div>
@@ -201,5 +198,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/AluminiumPart.js?v=1.0.1"></script>
+    <script src="/Scripts/RisaSolihah/AluminiumPart.js?v=1.1.0"></script>
 </asp:Content>
