@@ -445,7 +445,6 @@ Public Class QuoteClass
                 New SqlParameter("@HeaderId", headerId)
             }
             Dim detailData As DataTable = GetDataTableSP("sp_OrderDetails_List_Quote", params)
-
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()
                 Dim itemNumber As String = detailData.Rows(i)("Item").ToString()
@@ -1608,6 +1607,7 @@ Public Class QuoteClass
 
                     If blindName = "Complete Set (Single)" Then
                         itemDescription = productName
+                        itemDescription &= vbCrLf
                         itemDescription &= String.Format("{0} {1} {2}", fabricColourName, size, squareMetreText)
                         itemDescription &= vbCrLf
                         itemDescription &= String.Format("{0} {1}", trackType, size)
