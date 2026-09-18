@@ -107,7 +107,7 @@ Partial Class Order_EditCosting
     Protected Sub btnAddNote_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtNote.Text.Trim(), 0, 0, 0}
+            Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtNote.Text.Trim(), 0, 0, 0, 0}
             orderClass.OrderCostings(costingArray)
             orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
 
