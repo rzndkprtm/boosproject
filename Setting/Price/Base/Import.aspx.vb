@@ -338,7 +338,7 @@ Partial Class Setting_Price_Base_Import
                         Dim row As DataRow = dt.NewRow()
 
                         row("Id") = nextId
-                        row("Category") = "Factory"
+                        row("Category") = "Buy"
                         row("Method") = rd("Method")
                         row("ProductGroupId") = rd("ProductGroupId")
                         row("PriceGroupId") = priceGroupId
@@ -379,7 +379,7 @@ Partial Class Setting_Price_Base_Import
                         Dim row As DataRow = dt.NewRow()
 
                         row("Id") = nextId
-                        row("Category") = "Buy"
+                        row("Category") = "Factory"
                         row("Method") = rd("Method")
                         row("ProductGroupId") = rd("ProductGroupId")
                         row("PriceGroupId") = priceGroupId
