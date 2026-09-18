@@ -23,6 +23,11 @@ Partial Class Setting_Specification_Fabric_Colour_Default
         End If
     End Sub
 
+    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Session("SearchFabricColour") = txtSearch.Text
+        Response.Redirect("~/setting/specification/fabric/colour/add", False)
+    End Sub
+
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 
