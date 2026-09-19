@@ -197,24 +197,10 @@ Partial Class Setting_Specification_Fabric_Detail
     End Sub
 
     Protected Sub btnAddColour_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcessColour(); };"
         Session("selectedTabFabric") = "list-colour"
-        Try
-            lblAction.Text = "Add"
-            titleProcess.InnerText = "Add Fabric Colour"
-            divStatusColour.Visible = True
 
-            BindCompanyDetail(lblCompanyDetail.Text)
-
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
-        End Try
+        url = String.Format("~/setting/specification/fabric/colour/add?fabricid={0}&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
     End Sub
 
     Protected Sub btnProcessColour_Click(sender As Object, e As EventArgs)

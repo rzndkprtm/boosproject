@@ -14,6 +14,7 @@
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting/specification/fabric">Fabric</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/specification/fabric/colour">Colour</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
@@ -34,7 +35,7 @@
                                 <div class="row mb-2">
                                     <div class="col-12 form-group">
                                         <label class="form-label">Fabric Type</label>
-                                        <asp:DropDownList runat="server" ID="ddlFabricType" CssClass="choices form-select"></asp:DropDownList>
+                                        <asp:DropDownList runat="server" ID="ddlFabricType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlFabricType_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="row mb-2">
@@ -108,11 +109,20 @@
                         </div>
                     </div>
                     <div class="card-footer text-center">
-                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" />
-                        <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" />
+                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
+                        <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
                     </div>
                 </div>
             </div>
         </section>
     </div>
+
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblFabricId"></asp:Label>
+        <asp:Label runat="server" ID="lblReturnPage"></asp:Label>
+    </div>
+
+    <script type="text/javascript">
+        window.history.replaceState(null, null, window.location.href);
+    </script>
 </asp:Content>
