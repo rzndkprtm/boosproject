@@ -122,7 +122,7 @@
                                         <asp:Panel runat="server" DefaultButton="btnSearchColour" Width="100%">
                                             <div class="input-group">
                                                 <span class="input-group-text">Search : </span>
-                                                <asp:TextBox runat="server" ID="txtSearchColour" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                                <asp:TextBox runat="server" ID="txtSearchColour" CssClass="form-control" autocomplete="off"></asp:TextBox>
                                                 <asp:Button runat="server" ID="btnSearchColour" CssClass="btn btn-primary" Text="Search" OnClick="btnSearchColour_Click" />
                                             </div>
                                         </asp:Panel>
@@ -131,7 +131,7 @@
                                 <div class="row mt-3">
                                     <div class="col-12">
                                         <div class="table-responsive">
-                                            <asp:GridView runat="server" ID="gvListColour" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center" OnRowCommand="gvListColour_RowCommand">
+                                            <asp:GridView runat="server" ID="gvListColour" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" PageSize="100" EmptyDataRowStyle-HorizontalAlign="Center">
                                                 <Columns>
                                                     <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                         <ItemTemplate>
@@ -152,8 +152,8 @@
                                                         <ItemTemplate>
                                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                             <ul class="dropdown-menu">
-                                                                <li runat="server" visible='<%# LoginAccess("Detail Colour") %>'>
-                                                                    <asp:LinkButton runat="server" ID="linkDetailColour" CssClass="dropdown-item" Text="Detail" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                                <li runat="server" visible='<%# LoginAccess("Edit Colour") %>'>
+                                                                    <a class="dropdown-item" id="aEditColour" href='<%# Page.ResolveUrl("~/setting/specification/fabric/colour/edit?fabriccolourid=" & Eval("Id") & "&returnpage=detail") %>'>Edit</a>
                                                                 </li>
                                                                 <li runat="server" visible='<%# LoginAccess("Change Status Colour") %>'>
                                                                     <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatusColour" onclick='<%# String.Format("return dataChangeStatusColour(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
@@ -200,75 +200,6 @@
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
                     <asp:Button runat="server" ID="btnChangeStatus" CssClass="btn btn-primary" Text="Submit" OnClick="btnChangeStatus_Click" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade text-left" id="modalProcessColour" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 runat="server" class="modal-title" id="titleProcess"></h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row mb-2">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Company Detail</label>
-                            <asp:ListBox runat="server" ID="lbCompanyDetail" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6 form-group">
-                            <label class="form-label">BOE ID</label>
-                            <asp:TextBox runat="server" ID="txtBoeId" CssClass="form-control" placeholder="BOE ID ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-6 form-group">
-                            <label class="form-label">INVENTORY ID</label>
-                            <asp:TextBox runat="server" ID="txtInvId" CssClass="form-control" placeholder="Inventory ID ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6 form-group">
-                            <label class="form-label">Factory</label>
-                            <asp:DropDownList runat="server" ID="ddlFactoryColour" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="Express" Text="Express"></asp:ListItem>
-                                <asp:ListItem Value="Regular" Text="Regular"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                        <div class="col-6 form-group">
-                            <label class="form-label">Colour</label>
-                            <asp:TextBox runat="server" ID="txtNameColour" CssClass="form-control" placeholder="Colour ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        
-                    </div>
-                    <div class="row mb-2">
-                        <div class="col-6 form-group">
-                            <label class="form-label">Width</label>
-                            <asp:TextBox runat="server" ID="txtWidthColour" CssClass="form-control" placeholder="Width ..." autocomplete="off"></asp:TextBox>
-                        </div>
-                        <div class="col-6 form-group" runat="server" id="divStatusColour">
-                            <label class="form-label">Status</label>
-                            <asp:DropDownList runat="server" ID="ddlStatusColour" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
-                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
-                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
-                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-                    <div class="row mb-2" runat="server" id="divErrorProcess">
-                        <div class="col-12">
-                            <div class="alert alert-danger">
-                                <span runat="server" id="msgErrorProcess"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnProcessColour" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcessColour_Click" />
                 </div>
             </div>
         </div>
@@ -342,8 +273,6 @@
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
-        <asp:Label runat="server" ID="lblIdColour"></asp:Label>
-        <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
 
     <script type="text/javascript">
@@ -371,14 +300,11 @@
                     if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-                    const btn = this.querySelector("a[id*='linkDetailColour']");
+                    const btn = this.querySelector("a[id*='aEditColour']");
                     if (btn) btn.click();
                 });
             }
         });
-        function showProcessColour() {
-            $("#modalProcessColour").modal("show");
-        }
         function dataChangeStatusColour(id, name, status) {
             document.getElementById("<%=txtIdStatusColour.ClientID %>").value = id;
             document.getElementById("<%=txtChangeName.ClientID %>").value = name;
@@ -426,7 +352,7 @@
                 dataType: "json"
             });
         }
-        ["modalChangeStatus", "modalProcessColour", "modalChangeStatusColour", "modalLog"].forEach(function (id) {
+        ["modalChangeStatus", "modalChangeStatusColour", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

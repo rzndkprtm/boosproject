@@ -28,7 +28,6 @@ Partial Class Setting_Specification_Fabric_Edit
         lblId.Text = Request.QueryString("fabricid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-
             BindData(lblId.Text)
         End If
     End Sub

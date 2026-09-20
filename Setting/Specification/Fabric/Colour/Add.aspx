@@ -57,7 +57,11 @@
                                 <div class="row mb-2">
                                     <div class="col-12 form-group">
                                         <label class="form-label">Factory</label>
-                                        <asp:DropDownList runat="server" ID="ddlFactory" CssClass="choices form-select"></asp:DropDownList>
+                                        <asp:DropDownList runat="server" ID="ddlFactory" CssClass="choices form-select">
+                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                            <asp:ListItem Value="Express" Text="Express"></asp:ListItem>
+                                            <asp:ListItem Value="Regular" Text="Regular"></asp:ListItem>
+                                        </asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="row mb-2">

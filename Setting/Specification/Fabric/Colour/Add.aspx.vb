@@ -1,5 +1,4 @@
-﻿
-Imports OfficeOpenXml.LoadFunctions
+﻿Imports System.Data.SqlClient
 
 Partial Class Setting_Specification_Fabric_Colour_Add
     Inherits Page
@@ -38,16 +37,71 @@ Partial Class Setting_Specification_Fabric_Colour_Add
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            If ddlFabricType.SelectedValue = "" Then
+                MessageError(True, "FABRIC TYPE IS REQUIRED !")
+                Exit Sub
+            End If
+            If lbCompanyDetail.SelectedValue = "" Then
+                MessageError(True, "SUB COMPANY IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlFactory.SelectedValue = "" Then
+                MessageError(True, "FACTORY IS REQUIRED !")
+                Exit Sub
+            End If
+            If txtColour.Text = "" Then
+                MessageError(True, "COLOUR IS REQUIRED !")
+                Exit Sub
+            End If
+            If msgError.InnerText = "" Then
+                Dim fabricName As String = settingClass.GetItemData("SELECT Name FROM Fabrics WHERE Id='" & ddlFabricType.SelectedValue & "'")
+                Dim fabricColourName As String = String.Format("{0} {1}", fabricName, txtColour.Text.Trim())
 
+                Dim companyDetailId As String = String.Join(",", lbCompanyDetail.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+
+                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM FabricColours ORDER BY Id DESC")
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO FabricColours VALUES (@Id, @FabricId, @CompanyDetailId, @BoeId, @InventoryId, @Factory, @Name, @Colour, @Width, @RollQty, @EtaFactory, @Description, @Status)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@FabricId", ddlFabricType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
+                        thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
+                        thisCmd.Parameters.AddWithValue("@InventoryId", If(String.IsNullOrEmpty(txtInventoryId.Text), CType(DBNull.Value, Object), txtInventoryId.Text))
+                        thisCmd.Parameters.AddWithValue("@Factory", ddlFactory.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Name", fabricColourName)
+                        thisCmd.Parameters.AddWithValue("@Colour", txtColour.Text)
+                        thisCmd.Parameters.AddWithValue("@Width", txtWidth.Text)
+                        thisCmd.Parameters.AddWithValue("@RollQty", If(String.IsNullOrEmpty(txtRollQty.Text), CType(DBNull.Value, Object), txtRollQty.Text))
+                        thisCmd.Parameters.AddWithValue("@EtaFactory", If(String.IsNullOrEmpty(txtETAFactory.Text), CType(DBNull.Value, Object), txtETAFactory.Text))
+                        thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim dataLog As Object() = {"FabricColours", thisId, Session("LoginId").ToString(), "Fabric Colour Created"}
+                settingClass.Logs(dataLog)
+
+                url = "~/setting/specification/fabric/colour"
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", ddlFabricType.SelectedValue)
+                End If
+                Response.Redirect(url, False)
+            End If
         Catch ex As Exception
-
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
         url = "~/setting/specification/fabric/colour"
         If lblReturnPage.Text = "detail" Then
-            url = String.Format("~/setting/specification/fabric/detail?customerid={0}", ddlFabricType.SelectedValue)
+            url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", ddlFabricType.SelectedValue)
         End If
         Response.Redirect(url, False)
     End Sub
@@ -71,7 +125,6 @@ Partial Class Setting_Specification_Fabric_Colour_Add
 
         Catch ex As Exception
             ddlFabricType.Items.Clear()
-
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If

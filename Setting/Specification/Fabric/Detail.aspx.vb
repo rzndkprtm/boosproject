@@ -35,7 +35,6 @@ Partial Class Setting_Specification_Fabric_Detail
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             MessageError_Colour(False, String.Empty)
-            MessageError_Process(False, String.Empty)
 
             BindData(lblId.Text)
             BindDataColour(lblId.Text, txtSearchColour.Text)
@@ -146,145 +145,11 @@ Partial Class Setting_Specification_Fabric_Detail
         BindDataColour(lblId.Text, txtSearchColour.Text)
     End Sub
 
-    Protected Sub gvListColour_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Session("selectedTabFabric") = "list-colour"
-
-            Dim dataId As String = e.CommandArgument.ToString()
-            If e.CommandName = "Detail" Then
-                MessageError_Process(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showProcessColour(); };"
-                Try
-                    lblIdColour.Text = dataId
-                    lblAction.Text = "Edit"
-                    titleProcess.InnerText = "Edit Fabric Colour"
-                    divStatusColour.Visible = False
-
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM FabricColours WHERE Id='" & lblIdColour.Text & "'")
-                    If myData Is Nothing Then Exit Sub
-
-                    BindCompanyDetail(lblCompanyDetail.Text)
-
-                    txtBoeId.Text = myData("BoeId").ToString()
-                    txtInvId.Text = myData("InventoryId").ToString()
-                    ddlFactoryColour.SelectedValue = myData("Factory").ToString()
-                    txtNameColour.Text = myData("Colour").ToString()
-                    txtWidthColour.Text = myData("Width").ToString()
-
-                    If Not String.IsNullOrWhiteSpace(myData("CompanyDetailId").ToString()) Then
-                        For Each i As String In myData("CompanyDetailId").ToString().Split(","c)
-                            Dim value As String = i.Trim()
-
-                            If value <> "" Then
-                                Dim item As ListItem = lbCompanyDetail.Items.FindByValue(value)
-                                If item IsNot Nothing Then
-                                    item.Selected = True
-                                End If
-                            End If
-                        Next
-                    End If
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Process(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
-                End Try
-            End If
-        End If
-    End Sub
-
     Protected Sub btnAddColour_Click(sender As Object, e As EventArgs)
         Session("selectedTabFabric") = "list-colour"
 
         url = String.Format("~/setting/specification/fabric/colour/add?fabricid={0}&returnpage=detail", lblId.Text)
         Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub btnProcessColour_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcessColour(); };"
-        Try
-            If txtNameColour.Text = "" Then
-                MessageError_Process(True, "COLOUR IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
-                Exit Sub
-            End If
-
-            If msgErrorProcess.InnerText = "" Then
-                Dim companyDetailId As String = String.Empty
-                If Not lbCompanyDetail.SelectedValue = "" Then
-                    Dim company As String = String.Empty
-                    For Each item As ListItem In lbCompanyDetail.Items
-                        If item.Selected Then
-                            company += item.Value & ","
-                        End If
-                    Next
-                    companyDetailId = company.Remove(company.Length - 1).ToString()
-                End If
-
-                Dim fabricColourName As String = String.Format("{0} {1}", lblName.Text, txtNameColour.Text.Trim())
-
-                If lblAction.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM FabricColours ORDER BY Id DESC")
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO FabricColours VALUES (@Id, @FabricId, @CompanyDetailId, @BoeId, @InventoryId, @Factory, @Name, @Colour, @Width, @Status)", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", thisId)
-                            thisCmd.Parameters.AddWithValue("@FabricId", lblId.Text)
-                            thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
-                            thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
-                            thisCmd.Parameters.AddWithValue("@InventoryId", If(String.IsNullOrEmpty(txtInvId.Text), CType(DBNull.Value, Object), txtInvId.Text))
-                            thisCmd.Parameters.AddWithValue("@Factory", ddlFactoryColour.SelectedValue)
-                            thisCmd.Parameters.AddWithValue("@Name", fabricColourName)
-                            thisCmd.Parameters.AddWithValue("@Colour", txtNameColour.Text)
-                            thisCmd.Parameters.AddWithValue("@Width", txtWidthColour.Text)
-                            thisCmd.Parameters.AddWithValue("@Status", ddlStatusColour.SelectedValue)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"FabricColours", thisId, Session("LoginId").ToString(), "Fabric Colour Created"}
-                    settingClass.Logs(dataLog)
-
-                    url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
-                    Response.Redirect(url, False)
-                End If
-
-                If lblAction.Text = "Edit" Then
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours Set BoeId=@BoeId, CompanyDetailId=@CompanyDetailId, Factory=@Factory, Name=@Name, Colour=@Colour, Width=@Width WHERE Id=@Id", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", lblIdColour.Text)
-                            thisCmd.Parameters.AddWithValue("@FabricId", lblId.Text)
-                            thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
-                            thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
-                            thisCmd.Parameters.AddWithValue("@InventoryId", If(String.IsNullOrEmpty(txtInvId.Text), CType(DBNull.Value, Object), txtInvId.Text))
-                            thisCmd.Parameters.AddWithValue("@Factory", ddlFactoryColour.SelectedValue)
-                            thisCmd.Parameters.AddWithValue("@Name", fabricColourName)
-                            thisCmd.Parameters.AddWithValue("@Colour", txtNameColour.Text)
-                            thisCmd.Parameters.AddWithValue("@Width", txtWidthColour.Text)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"FabricColours", lblIdColour.Text, Session("LoginId").ToString(), "Fabric Colour Updated"}
-                    settingClass.Logs(dataLog)
-
-                    url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
-                    Response.Redirect(url, False)
-                End If
-            End If
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessColour", thisScript, True)
-        End Try
     End Sub
 
     Protected Sub btnChangeStatusColour_Click(sender As Object, e As EventArgs)
@@ -423,39 +288,12 @@ Partial Class Setting_Specification_Fabric_Detail
         End Try
     End Sub
 
-    Protected Sub BindCompanyDetail(companyDetailId As String)
-        lbCompanyDetail.Items.Clear()
-        Try
-            lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM CompanyDetails WHERE Id IN (SELECT value FROM STRING_SPLIT('" & companyDetailId & "', ','))")
-            lbCompanyDetail.DataTextField = "Name"
-            lbCompanyDetail.DataValueField = "Id"
-            lbCompanyDetail.DataBind()
-
-            For Each item As ListItem In lbCompanyDetail.Items
-                item.Selected = True
-            Next
-
-            If lbCompanyDetail.Items.Count > 0 Then
-                lbCompanyDetail.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
     Protected Sub MessageError_Colour(visible As Boolean, message As String)
         divErrorColour.Visible = visible : msgErrorColour.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_Process(visible As Boolean, message As String)
-        divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
     End Sub
 
     Protected Function LoginAccess(action As String) As Boolean
