@@ -8,11 +8,11 @@ Partial Class Setting_Specification_Fabric_Colour_Add
     Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'Dim pageAccess As Boolean = LoginAccess("Load")
-        'If pageAccess = False Then
-        '    Response.Redirect("~/setting/specification/fabric/colour", False)
-        '    Exit Sub
-        'End If
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/specification/fabric/colour", False)
+            Exit Sub
+        End If
 
         If Not String.IsNullOrEmpty(Request.QueryString("fabricid")) Then
             lblFabricId.Text = Request.QueryString("fabricid").ToString()
