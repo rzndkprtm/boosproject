@@ -1,1 +1,0 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Boos.aspx.vb" Inherits="Setting_Boos" Debug="true" %>
