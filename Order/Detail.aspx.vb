@@ -1841,11 +1841,11 @@ Partial Class Order_Detail
                     Dim buyPrice As Decimal = dataService("BuyPrice")
                     Dim factoryPrice As Decimal = dataService("FactoryPrice")
 
-                    Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, sellPrice, buyPrice, factoryPrice}
+                    Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, sellPrice, sellPrice, buyPrice, factoryPrice}
                     orderClass.OrderCostings(costingArray)
 
                     If Not String.IsNullOrEmpty(txtNoteService.Text.Trim()) Then
-                        costingArray = {lblHeaderId.Text, itemId, 0, "Note", txtNoteService.Text, 0, 0, 0}
+                        costingArray = {lblHeaderId.Text, itemId, 0, "Note", txtNoteService.Text, 0, 0, 0, 0}
                         orderClass.OrderCostings(costingArray)
                     End If
                     orderClass.FinalCostItem(lblHeaderId.Text, itemId)
@@ -1856,7 +1856,7 @@ Partial Class Order_Detail
                     orderClass.OrderCostings(costingArray)
 
                     If Not String.IsNullOrEmpty(txtNoteService.Text.Trim()) Then
-                        costingArray = {lblHeaderId.Text, itemId, 0, "Note", txtNoteService.Text, 0, 0, 0}
+                        costingArray = {lblHeaderId.Text, itemId, 0, "Note", txtNoteService.Text, 0, 0, 0, 0}
                         orderClass.OrderCostings(costingArray)
                     End If
                     orderClass.FinalCostItem(lblHeaderId.Text, itemId)
