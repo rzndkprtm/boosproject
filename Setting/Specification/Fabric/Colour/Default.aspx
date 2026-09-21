@@ -74,6 +74,9 @@
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
+                                                        <li runat="server" visible='<%# LoginAccess("Edit") %>'>
+                                                            <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/specification/fabric/colour/edit?fabriccolourid=" & Eval("Id")) %>'>Edit</a>
+                                                        </li>
                                                         <li runat="server" visible='<%# LoginAccess("Change Status") %>'>
                                                             <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatus" onclick='<%# String.Format("return dataChangeStatus(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
                                                         </li>
@@ -198,8 +201,20 @@
                 if (loading) loading.style.display = "none";
             });
         }
-        document.addEventListener("DOMContentLoaded", function () {
-            initUpdatePanelLoading();
+        document.addEventListener('DOMContentLoaded', function () {
+            const gv = document.getElementById('<%= gvList.ClientID %>');
+            if (!gv) return;
+            for (let i = 1; i < gv.rows.length; i++) {
+                const row = gv.rows[i];
+                row.style.cursor = 'pointer';
+                row.addEventListener('click', function (e) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
+                        return;
+                    }
+                    const btn = this.querySelector("a[id*='aEdit']");
+                    if (btn) btn.click();
+                });
+            }
         });
         function dataChangeStatus(id, name, status) {
             document.getElementById("<%=txtIdStatus.ClientID %>").value = id;
