@@ -3446,8 +3446,8 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
         If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
         If data.rolename = "Customer" Then
-            If blindName = "Wire Guide" AndAlso drop > 3500 Then Return "MAXIMUM WIDTH IS 3500MM !"
-            If blindName = "Zipper" AndAlso drop > 4500 Then Return "MAXIMUM WIDTH IS 4500MM !"
+            If blindName = "Wire Guide" AndAlso drop > 3500 Then Return "MAXIMUM DROP IS 3500MM !"
+            If blindName = "Zipper" AndAlso drop > 4500 Then Return "MAXIMUM DROP IS 4500MM !"
         End If
 
         If controlName = "Aok" OrElse controlName = "Somfy Altus 50 RTS 40/17" Then
