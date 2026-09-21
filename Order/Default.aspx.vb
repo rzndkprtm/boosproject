@@ -919,7 +919,7 @@ Partial Class Order_Default
                 End If
                 Return String.Format("{0}<br /><span style='font-size:13px; color:red;'>(Sales : {1})</span>", customerName, sales)
             End If
-            If Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Leader" Then
+            If Session("RoleName") = "Sales" Then
                 If String.IsNullOrWhiteSpace(sales) Then
                     Return customerName
                 End If
