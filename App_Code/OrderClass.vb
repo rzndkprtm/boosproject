@@ -3615,9 +3615,9 @@ Public Class OrderClass
                         OrderCostings(costingArray)
                     End If
 
-                    Dim surchargeArray As Object() = {headerId, itemId, itemNumber, priceGroupId}
+                    Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroupId}
                     If designName = "Door" Then
-                        surchargeArray = {headerId, itemId, itemNumber, doorPriceGroup}
+                        surchargeArray = {headerId, itemId, designId, itemNumber, doorPriceGroup}
                     End If
                     CalculateSurcharge(surchargeArray)
                 End If
