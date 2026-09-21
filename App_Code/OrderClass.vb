@@ -3606,12 +3606,12 @@ Public Class OrderClass
                         costingDescription = priceProductGroupNameB
                     End If
 
-                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisSell, thisBuy, thisFactory}
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomer, thisSell, thisBuy, thisFactory}
                     OrderCostings(costingArray)
 
                     If designName = "Curtain" AndAlso blindName = "Complete Set (Double)" Then
                         costingDescription = String.Format("#2 {0}", priceAdditionalNameB)
-                        costingArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisSellAdditional, thisBuyAdditional, thisFactoryAdditional}
+                        costingArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomerAdditional, thisSellAdditional, thisBuyAdditional, thisFactoryAdditional}
                         OrderCostings(costingArray)
                     End If
 
@@ -3940,7 +3940,7 @@ Public Class OrderClass
                     Next
 
                     Dim costingDescription As String = String.Format("#3 {0}", priceProductGroupNameC)
-                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisSell, thisBuy, thisFactory}
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomer, thisSell, thisBuy, thisFactory}
                     Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroupId}
 
                     OrderCostings(costingArray)
@@ -4265,7 +4265,7 @@ Public Class OrderClass
                     Next
 
                     Dim costingDescription As String = String.Format("#4 {0}", priceProductGroupNameD)
-                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisSell, thisBuy, thisFactory}
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomer, thisSell, thisBuy, thisFactory}
                     Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroupId}
 
                     OrderCostings(costingArray)
@@ -4590,7 +4590,7 @@ Public Class OrderClass
                     Next
 
                     Dim costingDescription As String = String.Format("#5 {0}", priceProductGroupNameE)
-                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisSell, thisBuy, thisFactory}
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomer, thisSell, thisBuy, thisFactory}
                     Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroupId}
 
                     OrderCostings(costingArray)
@@ -4915,7 +4915,7 @@ Public Class OrderClass
                     Next
 
                     Dim costingDescription As String = String.Format("#6 {0}", priceProductGroupNameF)
-                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisSell, thisBuy, thisFactory}
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomer, thisSell, thisBuy, thisFactory}
                     Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroupId}
 
                     OrderCostings(costingArray)

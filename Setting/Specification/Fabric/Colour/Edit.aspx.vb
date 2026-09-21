@@ -75,7 +75,6 @@ Partial Class Setting_Specification_Fabric_Colour_Edit
                         thisCmd.Parameters.AddWithValue("@RollQty", If(String.IsNullOrEmpty(txtRollQty.Text), CType(DBNull.Value, Object), txtRollQty.Text))
                         thisCmd.Parameters.AddWithValue("@EtaFactory", If(String.IsNullOrEmpty(txtETAFactory.Text), CType(DBNull.Value, Object), txtETAFactory.Text))
                         thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
-                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using

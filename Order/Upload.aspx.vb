@@ -3275,7 +3275,6 @@ Partial Class Order_Upload
                                             orderClass.Logs(dataLog)
                                         End If
                                     End If
-
                                 Next
                             End Using
                         End Using
