@@ -10748,6 +10748,124 @@ Partial Class Order_Method
         Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
     End Function
 
+    <WebMethod()>
+    Public Shared Function RollerPartProcess(data As ProccessData) As String
+        Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+
+        Dim qty As Integer
+
+        Dim markup As Integer
+
+        Dim linearMetre As Decimal = 0
+        Dim squareMetre As Decimal = 0
+
+        Dim totalItems As Integer = 1
+
+        Dim designName As String = String.Empty
+        Dim blindName As String = String.Empty
+        Dim productName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+        If Not String.IsNullOrEmpty(data.colourtype) Then productName = orderClass.GetProductName(data.colourtype)
+
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+
+        If String.IsNullOrEmpty(data.blindtype) Then Return "PART TYPE IS REQUIRED !"
+        If String.IsNullOrEmpty(data.colourtype) Then Return "PRODUCT IS REQUIRED !"
+        If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
+        If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
+
+        If Not String.IsNullOrEmpty(data.notes) Then
+            If data.notes.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.notes.Contains("&=") OrElse data.notes.Contains("&+") Then
+                Return "SPECIAL INFORMATION MUST NOT CONTAIN: , & ` ' &= &+"
+            End If
+            If data.notes.Trim().Length > 1000 Then Return "MAXIMUM 1000 CHARACTERS !"
+        End If
+
+        If Not String.IsNullOrEmpty(data.markup) Then
+            If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
+        End If
+
+        Dim groupName As String = String.Format("{0} - {1}", designName, productName)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
+
+        If data.itemaction = "create" OrElse data.itemaction = "copy" Then
+            For i As Integer = 1 To qty
+                Dim itemId As String = orderClass.GetNewOrderItemId()
+
+                Using thisConn As SqlConnection = New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_RollerPart", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+
+                        thisCmd.Parameters.AddWithValue("@Id", itemId)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
+                        thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
+                        thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                        thisCmd.Parameters.AddWithValue("@Width", 0)
+                        thisCmd.Parameters.AddWithValue("@Drop", 0)
+                        thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
+                        thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
+                        thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
+                        thisCmd.Parameters.AddWithValue("@Notes", data.notes)
+                        thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+
+                Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
+                orderClass.Logs(dataLog)
+            Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
+            Return "Success"
+        End If
+
+        If data.itemaction = "edit" OrElse data.itemaction = "view" Then
+            Dim itemId As String = data.itemid
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("sp_OrderDetails_Update_RollerPart", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+
+                    thisCmd.Parameters.AddWithValue("@Id", itemId)
+                    thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
+                    thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                    thisCmd.Parameters.AddWithValue("@Width", 0)
+                    thisCmd.Parameters.AddWithValue("@Drop", 0)
+                    thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
+                    thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
+                    thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
+                    thisCmd.Parameters.AddWithValue("@Notes", data.notes)
+                    thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            orderClass.ResetPriceDetail(data.headerid, itemId)
+            orderClass.CalculatePrice(data.headerid, itemId)
+            orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
+
+            Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
+            orderClass.Logs(dataLog)
+
+            Return "Success"
+        End If
+
+        Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
+    End Function
+
 
     'DETAIL
 
@@ -11712,6 +11830,33 @@ Partial Class Order_Method
         Return result
     End Function
 
+    <WebMethod()>
+    Public Shared Function RollerPartDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
+        Dim orderClass As New OrderClass
+
+        Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
+        If detailData Is Nothing Then Return Nothing
+
+        Dim designId As String = detailData("DesignId").ToString()
+        Dim blindId As String = detailData("BlindType").ToString()
+        Dim tubeId As String = detailData("TubeType").ToString()
+        Dim controlId As String = detailData("ControlType").ToString()
+
+        Dim itemDetail As New Dictionary(Of String, Object)
+        For Each col As DataColumn In detailData.Table.Columns
+            itemDetail(col.ColumnName) = detailData(col.ColumnName)
+        Next
+
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+
+        Dim result = New With {
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .ColourTypes = ListData(colourReq)
+        }
+        Return result
+    End Function
     ' OTHER
 
     <WebMethod()>

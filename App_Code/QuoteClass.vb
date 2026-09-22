@@ -485,6 +485,9 @@ Public Class QuoteClass
                 If designName = "Aluminium Blind" Then
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
                 End If
+                If designName = "Aluminium Part" Then
+                    itemDescription = invoiceName
+                End If
                 If designName = "Cellular Shades" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
@@ -548,6 +551,9 @@ Public Class QuoteClass
                 If designName = "Roller Horizon" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                End If
+                If designName = "Roller Part" Then
+                    itemDescription = invoiceName
                 End If
                 If designName = "Roman Blind" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
@@ -850,7 +856,7 @@ Public Class QuoteClass
 
             Dim sumItemPrice As Decimal = 0D
 
-            Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Type<>'Service' ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' OR Designs.Type='Doors' OR Designs.Type='Samples' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
+            Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Type<>'Services' ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' OR Designs.Type='Doors' OR Designs.Type='Samples' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()
                 Dim room As String = detailData.Rows(i)("Room").ToString()
@@ -1209,6 +1215,9 @@ Public Class QuoteClass
                 If designName = "Venetian Part" Then
                     itemDescription = productName
                 End If
+                If designName = "Roller Part" Then
+                    itemDescription = productName
+                End If
 
                 Dim itemCost As Decimal = GetItemData_Decimal("SELECT CustomerPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Type='Final'")
 
@@ -1453,7 +1462,7 @@ Public Class QuoteClass
 
             Dim sumItemPrice As Decimal = 0D
 
-            Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Type<>'Service' ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' OR Designs.Type='Doors' OR Designs.Type='Samples' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
+            Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Type<>'Services' ORDER BY CASE WHEN Designs.Type='Blinds' OR Designs.Type='Shutters' OR Designs.Type='Doors' OR Designs.Type='Samples' THEN 1 ELSE 2 END, OrderDetails.Id ASC")
             For i As Integer = 0 To detailData.Rows.Count - 1
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()
 
@@ -1585,6 +1594,9 @@ Public Class QuoteClass
                         itemDescription &= vbCrLf
                         itemDescription &= productName
                     End If
+                End If
+                If designName = "Aluminium Part" Then
+                    itemDescription = productName
                 End If
                 If designName = "Cellular Shades" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
@@ -1762,6 +1774,9 @@ Public Class QuoteClass
                 If designName = "Roller Horizon" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1}", productName, fabricColourName)
+                End If
+                If designName = "Roller Part" Then
+                    itemDescription = productName
                 End If
                 If designName = "Roman Blind" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
