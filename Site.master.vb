@@ -217,9 +217,6 @@ Partial Public Class SiteMaster
 
             liCustomer.Visible = False
             liSpecification.Visible = False
-            liTubeType.Visible = False
-            liControlType.Visible = False
-            liColourType.Visible = False
             liJob.Visible = False
             liPrice.Visible = False
             liDatabase.Visible = False
@@ -248,7 +245,6 @@ Partial Public Class SiteMaster
 
                 liCustomer.Visible = True
                 liSpecification.Visible = True
-                liTubeType.Visible = True : liControlType.Visible = True : liColourType.Visible = True
                 liJob.Visible = True
                 liPrice.Visible = True
                 liDatabase.Visible = True

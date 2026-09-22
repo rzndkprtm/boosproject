@@ -1,4 +1,5 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="ColourType.aspx.vb" Inherits="Setting_Specification_ColourType" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Colour Type" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="TubeType.aspx.vb" Inherits="Setting_Specification_Product_TubeType" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Tube Type" %>
+
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -14,6 +15,7 @@
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/setting/specification">Specification</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/specification/product">Product</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
@@ -30,7 +32,7 @@
                             <div class="col-12 col-sm-12 col-lg-6 mb-2">
                                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
                             </div>
-                            <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
+                            <div class="col-12 col-sm-12 col-lg-6 mb-2 d-flex justify-content-end">
                                 <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
                                     <div class="input-group">
                                         <span class="input-group-text">Search : </span>
@@ -61,7 +63,8 @@
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                             <asp:BoundField DataField="Name" HeaderText="Name" />
-                                            <asp:BoundField DataField="Description" HeaderText="Description" />
+                                            <asp:BoundField DataField="Alias" HeaderText="Alias" />
+                                             <asp:BoundField DataField="Description" HeaderText="Description" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
@@ -70,7 +73,7 @@
                                                             <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                         </li>
                                                         <li>
-                                                            <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('ProductColours', '<%# Eval("Id") %>')">Log</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('ProductTubes', '<%# Eval("Id") %>')">Log</a>
                                                         </li>
                                                     </ul>
                                                 </ItemTemplate>
@@ -89,7 +92,7 @@
         </section>
     </div>
 
-    <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-labelledby="titleProcess" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -111,6 +114,22 @@
                     </div>
                     <div class="row">
                         <div class="col-12 form-group">
+                            <label class="form-label">Alias</label>
+                            <asp:TextBox runat="server" ID="txtAlias" CssClass="form-control" placeholder="Alias ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Applies To</label>
+                            <asp:ListBox runat="server" ID="lbApplies" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
+                                <asp:ListItem Value="Fabrics" Text="Fabrics"></asp:ListItem>
+                                <asp:ListItem Value="Chains" Text="Chains"></asp:ListItem>
+                                <asp:ListItem Value="Bottoms" Text="Bottoms"></asp:ListItem>
+                            </asp:ListBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
                             <label class="form-label">Description</label>
                             <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                         </div>
@@ -118,7 +137,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
+                    <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
                 </div>
             </div>
         </div>
@@ -199,7 +218,7 @@
                 }
             });
         }
-        ["modalProcess", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalProcess", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

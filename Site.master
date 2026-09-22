@@ -239,15 +239,6 @@
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/product" class="subsubmenu-link">Product</a>
                                                         </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liTubeType">
-                                                            <a runat="server" href="~/setting/specification/tubetype" class="subsubmenu-link">Tube Type</a>
-                                                        </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liControlType">
-                                                            <a runat="server" href="~/setting/specification/controltype" class="subsubmenu-link">Control Type</a>
-                                                        </li>
-                                                        <li class="subsubmenu-item" runat="server" id="liColourType">
-                                                            <a runat="server" href="~/setting/specification/colourtype" class="subsubmenu-link">Colour Type</a>
-                                                        </li>
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/specification/fabric" class="subsubmenu-link">Fabric</a>
                                                         </li>

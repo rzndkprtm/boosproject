@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_Specification_ColourType
+Partial Class Setting_Specification_Product_TubeType
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -10,25 +10,26 @@ Partial Class Setting_Specification_ColourType
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/setting/specification", False)
+            Response.Redirect("~/setting/specification/product", False)
             Exit Sub
         End If
 
         If Not IsPostBack Then
+            txtSearch.Text = Session("SearchTube")
+
             MessageError(False, String.Empty)
-            txtSearch.Text = Session("SearchColour")
             BindData(txtSearch.Text)
         End If
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         MessageError_Process(False, String.Empty)
-        Session("SearchColour") = txtSearch.Text
+        Session("SearchTube") = txtSearch.Text
 
         Dim thisScript As String = "window.onload = function() { showProcess(); };"
         Try
             lblAction.Text = "Add"
-            titleProcess.InnerText = "Add Colour Type"
+            titleProcess.InnerText = "Add Tube Type"
 
             ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
         Catch ex As Exception
@@ -47,13 +48,14 @@ Partial Class Setting_Specification_ColourType
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         gvList.PageIndex = e.NewPageIndex
+
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
     End Sub
 
     Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
         If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Session("SearchColour") = txtSearch.Text
+            Session("SearchTube") = txtSearch.Text
 
             Dim dataId As String = e.CommandArgument.ToString()
             If e.CommandName = "Detail" Then
@@ -62,13 +64,27 @@ Partial Class Setting_Specification_ColourType
                 Try
                     lblId.Text = dataId
                     lblAction.Text = "Edit"
-                    titleProcess.InnerText = "Edit Colour Type"
+                    titleProcess.InnerText = "Edit Tube Type"
 
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM ProductColours WHERE Id='" & lblId.Text & "'")
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM ProductTubes WHERE Id='" & lblId.Text & "'")
+
                     If myData Is Nothing Then Exit Sub
 
                     txtName.Text = myData("Name").ToString()
+                    txtAlias.Text = myData("Alias").ToString()
                     txtDescription.Text = myData("Description").ToString()
+
+                    If Not myData("AppliesTo").ToString() = "" Then
+                        Dim applyArray() As String = myData("AppliesTo").ToString().Split(",")
+                        For Each i In applyArray
+                            If Not String.IsNullOrEmpty(i) Then
+                                Dim item = lbApplies.Items.FindByValue(i)
+                                If item IsNot Nothing Then
+                                    item.Selected = True
+                                End If
+                            End If
+                        Next
+                    End If
 
                     ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Catch ex As Exception
@@ -88,48 +104,62 @@ Partial Class Setting_Specification_ColourType
         Try
             If txtName.Text = "" Then
                 MessageError_Process(True, "NAME IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProccess", thisScript, True)
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
                 Exit Sub
             End If
 
             If msgErrorProcess.InnerText = "" Then
+                Dim aliasName As String = txtAlias.Text.Trim()
+                If String.IsNullOrEmpty(txtAlias.Text) Then
+                    aliasName = txtName.Text.Trim()
+                End If
+
+                Dim applyTo As String = String.Empty
+                If Not lbApplies.SelectedValue = "" Then
+                    applyTo = String.Join(",", lbApplies.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 If lblAction.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductColours ORDER BY Id DESC")
+                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductTubes ORDER BY Id DESC")
                     Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductColours VALUES (@Id, @Name, @Description)", thisConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductTubes VALUES (@Id, @Name, @Alias, @AppliesTo, @Description)", thisConn)
                             thisCmd.Parameters.AddWithValue("@Id", thisId)
                             thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Alias", aliasName)
+                            thisCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
                             thisCmd.Parameters.AddWithValue("@Description", descText)
                             thisConn.Open()
                             thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"ProductColours", thisId, Session("LoginId").ToString(), "Product Colour Created"}
+                    Dim dataLog As Object() = {"ProductTubes", thisId, Session("LoginId").ToString(), "Product Tube Created"}
                     settingClass.Logs(dataLog)
 
-                    Session("SearchColour") = txtSearch.Text
-                    Response.Redirect("~/setting/specification/colourtype", False)
+                    Session("SearchTube") = txtSearch.Text
+                    Response.Redirect("~/setting/specification/product/tubetype", False)
                 End If
 
                 If lblAction.Text = "Edit" Then
                     Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE ProductColours SET Name=@Name, Description=@Description WHERE Id=@Id", thisConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE ProductTubes SET Name=@Name, Alias=@Alias, AppliesTo=@AppliesTo, Description=@Description WHERE Id=@Id", thisConn)
                             thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                             thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Alias", aliasName)
+                            thisCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
                             thisCmd.Parameters.AddWithValue("@Description", descText)
                             thisConn.Open()
                             thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
 
-                    Dim dataLog As Object() = {"ProductColours", lblId.Text, Session("LoginId").ToString(), "Product Colour Updated"}
+                    Dim dataLog As Object() = {"ProductTubes", lblId.Text, Session("LoginId").ToString(), "Product Tube Updated"}
                     settingClass.Logs(dataLog)
 
-                    Session("SearchColour") = txtSearch.Text
-                    Response.Redirect("~/setting/specification/colourtype", False)
+                    Session("SearchTube") = txtSearch.Text
+                    Response.Redirect("~/setting/specification/product/tubetype", False)
                 End If
             End If
         Catch ex As Exception
@@ -142,14 +172,14 @@ Partial Class Setting_Specification_ColourType
     End Sub
 
     Protected Sub BindData(searchText As String)
-        Session("SearchColour") = String.Empty
+        Session("SearchTube") = String.Empty
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
-                search = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
+                search = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Alias LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
             End If
 
-            Dim thisString As String = String.Format("SELECT * FROM ProductColours {0} ORDER BY Name ASC", search)
+            Dim thisString As String = String.Format("SELECT * FROM ProductTubes {0} ORDER BY Name ASC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
@@ -164,7 +194,7 @@ Partial Class Setting_Specification_ColourType
         End Try
     End Sub
 
-    Private Sub MessageError(visible As Boolean, message As String)
+    Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 

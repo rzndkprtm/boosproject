@@ -81,6 +81,45 @@ Partial Class Setting_Specification_Product_Default
         Response.Redirect("~/setting/specification/product/alias", False)
     End Sub
 
+    Protected Sub btnTubeType_Click(sender As Object, e As EventArgs)
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
+
+        Response.Redirect("~/setting/specification/product/tubetype", False)
+    End Sub
+
+    Protected Sub btnControlType_Click(sender As Object, e As EventArgs)
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
+
+        Response.Redirect("~/setting/specification/product/controltype", False)
+    End Sub
+
+    Protected Sub btnColourType_Click(sender As Object, e As EventArgs)
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
+
+        Response.Redirect("~/setting/specification/product/colourtype", False)
+    End Sub
+
     Protected Sub ddlDesignSort_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 
@@ -376,6 +415,7 @@ Partial Class Setting_Specification_Product_Default
             btnAdd.Visible = LoginAccess("Add")
             btnChange.Visible = LoginAccess("Change")
             btnAlias.Visible = LoginAccess("Alias")
+            'btnAnother.Visible = LoginAccess("Another")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
