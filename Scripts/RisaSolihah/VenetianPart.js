@@ -20,10 +20,10 @@ $("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=
 $("#blindtype").on("change", function () {
     bindMounting($(this).val());
     bindColourType($(this).val());    
+    bindValanceType($(this).val());
 });
 $("#colourtype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
-    bindValanceType($(this).val());
     bindComponentForm(blindtype, $(this).val());
 });
 
@@ -406,7 +406,8 @@ function bindBlindType(designType) {
             const selectedValue = blindtype.value || "";
             Promise.all([
                 bindMounting(selectedValue),
-                bindColourType(selectedValue)
+                bindColourType(selectedValue),
+                bindValanceType(selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
@@ -444,13 +445,15 @@ function bindBlindType(designType) {
                     const selectedValue = blindtype.value || "";
                     Promise.all([
                         bindMounting(selectedValue),
-                        bindColourType(selectedValue)
+                        bindColourType(selectedValue),
+                        bindValanceType(selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = blindtype.value || "";
                     Promise.all([
                         bindMounting(selectedValue),
-                        bindColourType(selectedValue)
+                        bindColourType(selectedValue),
+                        bindValanceType(selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -469,8 +472,7 @@ function bindColourType(blindtype) {
         if (!blindtype) {
             const selectedValue = colourtype.value || "";
             Promise.all([
-                bindComponentForm(blindtype, selectedValue),
-                bindValanceType(selectedValue)
+                bindComponentForm(blindtype, selectedValue)
             ]).then(resolve).catch(reject);
 
             return;
@@ -508,14 +510,12 @@ function bindColourType(blindtype) {
 
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindComponentForm(blindtype, selectedValue),
-                        bindValanceType(selectedValue)
+                        bindComponentForm(blindtype, selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindComponentForm(blindtype, selectedValue),
-                        bindValanceType(selectedValue)
+                        bindComponentForm(blindtype, selectedValue)
                     ]).then(resolve).catch(reject);
                 }
                 resolve();
@@ -575,17 +575,17 @@ function bindMounting(blindType) {
     });
 }
 
-function bindValanceType(colourType) {
+function bindValanceType(blindType) {
     return new Promise((resolve, reject) => {
         const valancetype = document.getElementById("valancetype");
         valancetype.innerHTML = "";
 
-        if (!colourType) {
+        if (!blindType) {
             resolve();
             return;
         }
 
-        const listData = { type: "ValanceType_Part", colourtype: colourType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "ValanceType_Part", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -649,7 +649,7 @@ function bindComponentForm(blindType, colourType) {
         getBlindName(blindType).then(blindName => {
             let divShow = [];
 
-            if (blindName === "Valance Only") {
+            if (blindName === "Basswood Valance" || blindName === "Econo Valance" || blindName === "Ultraslat Valance") {
                 divShow.push("divmounting", "divvalancetype", "divvalancesize", "divreturnposition", "divreturnlength");
             }
 

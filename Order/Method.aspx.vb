@@ -748,15 +748,12 @@ Partial Class Order_Method
         End If
 
         If type = "ValanceType_Part" Then
-            Dim productName As String = orderClass.GetProductName(colourtype)
-            If productName.Contains("Basswood") Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Basswood Valance" Then
                 result.Add(New With {.Value = "75mm Valance", .Text = "75mm"})
                 result.Add(New With {.Value = "89mm Valance", .Text = "89mm"})
             End If
-            If productName.Contains("Econo") Then
-                result.Add(New With {.Value = "76mm Valance", .Text = "76mm"})
-            End If
-            If productName.Contains("Ultraslat") Then
+            If blindName = "Econo Valance" OrElse blindName = "Ultraslat Valance" Then
                 result.Add(New With {.Value = "76mm Valance", .Text = "76mm"})
             End If
         End If
@@ -10581,7 +10578,7 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.colourtype) Then Return "VENETIAN COLOUR IS REQUIRED !"
         If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
         If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
-        If blindName.Contains("Valance") Then
+        If blindName = "Basswood Valance" OrElse blindName = "Econo Valance" OrElse blindName = "Ultraslat Valance" Then
             If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
 
             If String.IsNullOrEmpty(data.valancetype) Then Return "VALANCE TYPE IS REQUIRED !"
@@ -10593,7 +10590,6 @@ Partial Class Order_Method
                 If Not Integer.TryParse(data.returnlengthvalue, rlvalue) OrElse rlvalue <= 0 Then Return "PLEASE CHECK YOUR VALANCE RETURN LENGTH VALUE ORDER !"
             End If
         End If
-
         If Not String.IsNullOrEmpty(data.notes) Then
             If data.notes.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.notes.Contains("&=") OrElse data.notes.Contains("&+") Then
                 Return "SPECIAL INFORMATION MUST NOT CONTAIN: , & ` ' &= &+"
@@ -10605,9 +10601,12 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
-        If blindName.Contains("Valance") Then
+        If blindName = "Basswood Valance" OrElse blindName = "Econo Valance" OrElse blindName = "Ultraslat Valance" Then
             width = data.valancesizevalue
-            data.valancesize = "Custom" : data.returnlength = "Custom"
+            data.valancesize = "Custom"
+            If Not String.IsNullOrEmpty(data.returnlength) Then
+                data.returnlength = "Custom"
+            End If
         End If
 
         If blindName = "Metal Accorn" OrElse blindName = "Other" Then
@@ -10631,32 +10630,12 @@ Partial Class Order_Method
             rlvalue = 0
         End If
 
-        Dim groupName As String = String.Empty
+        Dim groupName As String = String.Format("{0} - {1}", designName, blindName)
         If blindName = "Metal Accorn" Then
             groupName = String.Format("{0} - {1}", designName, blindName)
         End If
         If blindName = "Other" Then
-            groupName = String.Format("{0}", productName)
-        End If
-        If blindName = "Valance Only" Then
-            If productName.Contains("Basswood 50mm") Then
-                groupName = String.Format("{0} - Basswood 50mm Valance", designName)
-            End If
-            If productName.Contains("Basswood 63mm") Then
-                groupName = String.Format("{0} - Basswood 63mm Valance", designName)
-            End If
-            If productName.Contains("Econo 50mm") Then
-                groupName = String.Format("{0} - Econo 50mm Valance", designName)
-            End If
-            If productName.Contains("Econo 63mm") Then
-                groupName = String.Format("{0} - Econo 63mm Valance", designName)
-            End If
-            If productName.Contains("Ultraslat 50mm") Then
-                groupName = String.Format("{0} - Ultraslat 50mm Valance", designName)
-            End If
-            If productName.Contains("Ultraslat 63mm") Then
-                groupName = String.Format("{0} - Ultraslat 63mm Valance", designName)
-            End If
+            groupName = String.Format("{0} - {1}", designName, productName)
         End If
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
@@ -11818,7 +11797,7 @@ Partial Class Order_Method
         Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim valanceTypeReq As New JSONList With {.type = "ValanceType_Part", .colourtype = productId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim valanceTypeReq As New JSONList With {.type = "ValanceType_Part", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
