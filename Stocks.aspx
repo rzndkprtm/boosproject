@@ -80,7 +80,7 @@
                                                                             <ItemTemplate>
                                                                                 <div class="border rounded p-3 mb-2">
                                                                                     <div class="row">
-                                                                                        <div class="col-md-3"><div class="text-muted small">Fabric Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Maximum Width</div><strong><%# Eval("Width") %></strong></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
@@ -133,7 +133,7 @@
                                                                             <ItemTemplate>
                                                                                 <div class="border rounded p-3 mb-2">
                                                                                     <div class="row">
-                                                                                        <div class="col-md-3"><div class="text-muted small">Fabric Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
                                                                                         <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory") %></strong></div>
@@ -174,7 +174,7 @@
                                                                             <ItemTemplate>
                                                                                 <div class="border rounded p-3 mb-2">
                                                                                     <div class="row">
-                                                                                        <div class="col-md-3"><div class="text-muted small">Fabric Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Maximum Width</div><strong><%# Eval("Width") %></strong></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
@@ -216,7 +216,7 @@
                                                                             <ItemTemplate>
                                                                                 <div class="border rounded p-3 mb-2">
                                                                                     <div class="row">
-                                                                                        <div class="col-md-3"><div class="text-muted small">Fabric Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Maximum Width</div><strong><%# Eval("Width") %></strong></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
@@ -269,7 +269,7 @@
                                                                             <ItemTemplate>
                                                                                 <div class="border rounded p-3 mb-2">
                                                                                     <div class="row">
-                                                                                        <div class="col-md-3"><div class="text-muted small">Fabric Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Maximum Width</div><strong><%# Eval("Width") %></strong></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
@@ -288,7 +288,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
                                     <div class="tab-pane fade" id="list-venetian" role="tabpanel" aria-labelledby="listVenetian">
                                         <div class="row mt-5" runat="server" id="divErrorVenetian">
                                             <div class="col-12">
