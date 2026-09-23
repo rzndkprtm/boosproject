@@ -89,9 +89,9 @@
                                         </div>
                                     </div>
                                     <div class="col-12 col-lg-3">
-                                        <div class="input-group" runat="server" id="divType">
-                                            <span class="input-group-text">Order Type</span>
-                                            <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged"></asp:DropDownList>
+                                        <div class="input-group" runat="server" id="divState">
+                                            <span class="input-group-text">State</span>
+                                            <asp:DropDownList runat="server" ID="ddlState" CssClass="form-select" AutoPostBack="true"></asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="col-12 col-lg-6">
@@ -102,6 +102,12 @@
                                                 <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
                                             </div>
                                         </asp:Panel>
+                                    </div>
+                                    <div class="col-12 col-lg-3">
+                                        <div class="input-group" runat="server" id="divType">
+                                            <span class="input-group-text">Order Type</span>
+                                            <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged"></asp:DropDownList>
+                                        </div>
                                     </div>
                                     <div class="col-12 col-lg-3" runat="server" id="divCompany">
                                         <div class="input-group">
