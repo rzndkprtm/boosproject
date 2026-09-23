@@ -806,7 +806,7 @@ Partial Class Order_Default
             divActive.Visible = LoginAccess("Active")
             divCompany.Visible = LoginAccess("Filter Company")
             divType.Visible = LoginAccess("Filter Type")
-            divState.Visible = LoginAccess("Filter Type")
+            divState.Visible = LoginAccess("Filter State")
             If Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Member" AndAlso Session("UserName") = "felicity" Then
                 divType.Visible = True
             End If
