@@ -1618,7 +1618,6 @@ Partial Class Order_Method
             End If
         End If
 
-
         If blindName = "Complete Set (Single)" OrElse blindName = "Curtain Only" Then
             If data.companydetailid = "5" OrElse data.companydetailid = "9" Then
                 If String.IsNullOrEmpty(data.cutlength) Then Return "FABRIC CUT LENGTH IS REQUIRED !"
@@ -1744,6 +1743,7 @@ Partial Class Order_Method
             data.trackdraw = String.Empty
             data.controlcolour = String.Empty : controllength = 0
             data.stackposition = String.Empty
+            data.fullness = String.Empty
 
             returnLengthValue = 0
             returnLengthValueB = 0
@@ -1799,6 +1799,8 @@ Partial Class Order_Method
             data.tracktypeb = String.Empty : data.trackcolourb = String.Empty : data.trackdrawb = String.Empty
             data.stackpositionb = String.Empty
             data.controlcolourb = String.Empty : controllengthB = 0
+            data.fullness = String.Empty
+
             returnLengthValueC = 0 : returnLengthValueD = 0
 
             linearmetre = width / 1000
@@ -1915,6 +1917,7 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@ReturnLengthValueC", returnLengthValueC)
                         thisCmd.Parameters.AddWithValue("@ReturnLengthValueD", returnLengthValueD)
 
+                        thisCmd.Parameters.AddWithValue("@Fullness", data.fullness)
                         thisCmd.Parameters.AddWithValue("@BottomHem", data.bottomhem)
                         thisCmd.Parameters.AddWithValue("@Supply", data.tieback)
 
@@ -2001,6 +2004,7 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@ReturnLengthValueC", returnLengthValueC)
                     thisCmd.Parameters.AddWithValue("@ReturnLengthValueD", returnLengthValueD)
 
+                    thisCmd.Parameters.AddWithValue("@Fullness", data.fullness)
                     thisCmd.Parameters.AddWithValue("@BottomHem", data.bottomhem)
                     thisCmd.Parameters.AddWithValue("@Supply", data.tieback)
 
@@ -4462,8 +4466,9 @@ Partial Class Order_Method
         If data.companyid = "2" AndAlso data.rolename = "Customer" Then
             squareMetre = width * drop / 1000000
             If tubeName.Contains("Gear Reduction") Then
+                If width > 1810 AndAlso (tubeName = "Gear Reduction 38mm" OrElse tubeName = "Gear Reduction Hybrid 43mm") Then Return "MAXIMUM WIDTH BLIND FOR GEAR REDUCTION 38MM IS 1810MM !"
                 If tubeName = "Gear Reduction 38mm" AndAlso width > 1810 Then Return "MAXIMUM WIDTH BLIND FOR GEAR REDUCTION 38MM IS 1810MM !"
-                If squareMetre >= 6 AndAlso (tubeName = "Gear Reduction 38mm" OrElse tubeName = "Gear Reduction 45mm") Then
+                If squareMetre >= 6 AndAlso (tubeName = "Gear Reduction 38mm" OrElse tubeName = "Gear Reduction 45mm" OrElse tubeName = "Gear Reduction Hybrid 43mm" OrElse tubeName = "Gear Reduction Hybrid 45mm") Then
                     Return "YOUR BLIND AREA EXCEEDS 6 SQM.<br />PLEASE USE <b>GEAR REDUCTION 49MM</b> IF YOU WISH TO CONTINUE USING THE GEAR REDUCTION SYSTEM.<br />OUR ALTERNATIVE RECOMMENDATION:<br />ACMEDA SYSTEM: <b>ACMEDA 49MM</b><br />SUNBOSS SYSTEM: <b>SUNBOSS 43MM</b> OR <b>SUNBOSS 50MM</b>"
                 End If
             End If
@@ -4538,7 +4543,7 @@ Partial Class Order_Method
             If data.companyid = "2" AndAlso data.rolename = "Customer" Then
                 squareMetreB = widthb * dropb / 1000000
                 If tubeName.Contains("Gear Reduction") Then
-                    If tubeName = "Gear Reduction 38mm" AndAlso widthb > 1810 Then Return "MAXIMUM WIDTH FOR SECOND BLIND GEAR REDUCTION 38MM IS 1810MM !"
+                    If widthb > 1810 AndAlso (tubeName = "Gear Reduction 38mm" OrElse tubeName = "Gear Reduction Hybrid 43mm") Then Return "MAXIMUM WIDTH FOR SECOND BLIND GEAR REDUCTION 38MM IS 1810MM !"
                     If squareMetreB >= 6 AndAlso (tubeName = "Gear Reduction 38mm" OrElse tubeName = "Gear Reduction 45mm") Then
                         Return "YOUR BLIND AREA EXCEEDS 6 SQM.<br />PLEASE USE <b>GEAR REDUCTION 49MM</b> IF YOU WISH TO CONTINUE USING THE GEAR REDUCTION SYSTEM.<br />OUR ALTERNATIVE RECOMMENDATION:<br />ACMEDA SYSTEM: <b>ACMEDA 49MM</b><br />SUNBOSS SYSTEM: <b>SUNBOSS 43MM</b> OR <b>SUNBOSS 50MM</b>"
                     End If
@@ -12106,6 +12111,7 @@ Public Class ProccessData
     Public Property bottomjoining As String
     Public Property heading As String
     Public Property headingb As String
+    Public Property fullness As String
     Public Property bottomhem As String
     Public Property tieback As String
     Public Property panelqty As String

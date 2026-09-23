@@ -146,7 +146,7 @@
                                                     <asp:BoundField DataField="Colour" HeaderText="Colour" />
                                                     <asp:BoundField DataField="Width" HeaderText="Width" />
                                                     <asp:BoundField DataField="RollQty" HeaderText="Roll Qty" />
-                                                    <asp:BoundField DataField="EtaFactory" HeaderText="ETA Factory" />
+                                                    <asp:BoundField DataField="EtaFactory" HeaderText="ETA Factory" DataFormatString="{0:dd MMM yyyy}" />
                                                     <asp:BoundField DataField="Status" HeaderText="Status" />
                                                     <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="120px">
                                                         <ItemTemplate>
@@ -156,7 +156,7 @@
                                                                     <a class="dropdown-item" id="aEditColour" href='<%# Page.ResolveUrl("~/setting/specification/fabric/colour/edit?fabriccolourid=" & Eval("Id") & "&returnpage=detail") %>'>Edit</a>
                                                                 </li>
                                                                 <li runat="server" visible='<%# LoginAccess("Change Status Colour") %>'>
-                                                                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatusColour" onclick='<%# String.Format("return dataChangeStatusColour(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
+                                                                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatusColour" onclick='<%# String.Format("return dataChangeStatusColour(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`);", Eval("Id"), Eval("Name"), Eval("Status"), Eval("RollQty"), If(IsDBNull(Eval("EtaFactory")) OrElse String.IsNullOrEmpty(Eval("EtaFactory").ToString()), "", Convert.ToDateTime(Eval("EtaFactory")).ToString("yyyy-MM-dd"))) %>'>Change Status</a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('FabricColours', '<%# Eval("Id") %>')">Log</a>
@@ -242,6 +242,16 @@
                             </asp:DropDownList>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Roll Qty</label>
+                            <asp:TextBox runat="server" ID="txtNewRollQty" TextMode="Number" CssClass="form-control" autocomplete="off" placeholder="Roll Qty"></asp:TextBox>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">ETA Factory</label>
+                            <asp:TextBox runat="server" ID="txtNewEtaFactory" TextMode="Date" CssClass="form-control"></asp:TextBox>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
@@ -305,11 +315,13 @@
                 });
             }
         });
-        function dataChangeStatusColour(id, name, status) {
+        function dataChangeStatusColour(id, name, status, rollqty, etafactory) {
             document.getElementById("<%=txtIdStatusColour.ClientID %>").value = id;
             document.getElementById("<%=txtChangeName.ClientID %>").value = name;
             document.getElementById("<%=ddlOldStatusColour.ClientID %>").value = status;
-        }        
+            document.getElementById("<%=txtNewRollQty.ClientID %>").value = rollqty;
+            document.getElementById("<%=txtNewEtaFactory.ClientID %>").value = etafactory || "";
+        }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");

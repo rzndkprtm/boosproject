@@ -378,7 +378,7 @@ Public Class PreviewClass
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim items(21, curtainData.Rows.Count - 1) As String
+                    Dim items(22, curtainData.Rows.Count - 1) As String
 
                     For i As Integer = 0 To curtainData.Rows.Count - 1
                         Dim controlLengthText As String = curtainData.Rows(i)("ControlLengthValue").ToString()
@@ -414,20 +414,21 @@ Public Class PreviewClass
                         items(4, i) = curtainData.Rows(i)("Heading").ToString()
                         items(5, i) = fabricType
                         items(6, i) = fabricColour
-                        items(7, i) = curtainData.Rows(i)("Width").ToString()
-                        items(8, i) = curtainData.Rows(i)("Height").ToString()
-                        items(9, i) = cutLengthText
-                        items(10, i) = curtainData.Rows(i)("TrackType").ToString()
-                        items(11, i) = curtainData.Rows(i)("TrackColour").ToString()
-                        items(12, i) = curtainData.Rows(i)("TrackDraw").ToString()
-                        items(13, i) = curtainData.Rows(i)("StackPosition").ToString()
-                        items(14, i) = curtainData.Rows(i)("ControlColour").ToString()
-                        items(15, i) = controlLengthText
-                        items(16, i) = rlLeft
-                        items(17, i) = rlRight
-                        items(18, i) = curtainData.Rows(i)("BottomHem").ToString()
-                        items(19, i) = curtainData.Rows(i)("Supply").ToString()
-                        items(20, i) = curtainData.Rows(i)("Notes").ToString()
+                        items(7, i) = curtainData.Rows(i)("Fullness").ToString()
+                        items(8, i) = curtainData.Rows(i)("Width").ToString()
+                        items(9, i) = curtainData.Rows(i)("Height").ToString()
+                        items(10, i) = cutLengthText
+                        items(11, i) = curtainData.Rows(i)("TrackType").ToString()
+                        items(12, i) = curtainData.Rows(i)("TrackColour").ToString()
+                        items(13, i) = curtainData.Rows(i)("TrackDraw").ToString()
+                        items(14, i) = curtainData.Rows(i)("StackPosition").ToString()
+                        items(15, i) = curtainData.Rows(i)("ControlColour").ToString()
+                        items(16, i) = controlLengthText
+                        items(17, i) = rlLeft
+                        items(18, i) = rlRight
+                        items(19, i) = curtainData.Rows(i)("BottomHem").ToString()
+                        items(20, i) = curtainData.Rows(i)("Supply").ToString()
+                        items(21, i) = curtainData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
@@ -436,9 +437,9 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Special Information"}
-                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
-                            headers = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Fabric Cut Length (mm)", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Special Information"}
+                        Dim headers As String() = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "", "Width (mm)", "Drop (mm)", "", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Special Information"}
+                        If companyId = "3" Then
+                            headers = {"", "Location", "Fitting", "Curtain Type", "Heading", "Fabric Type", "Fabric Colour", "Fullness", "Width (mm)", "Drop (mm)", "Fabric Cut Length (mm)", "Track Type", "Track Colour", "Track Draw", "Stack Position", "Control Colour", "Control Length", "Return Length (L)", "Return Length (R)", "Bottom HEM", "Tie Back Req", "Special Information"}
                         End If
 
                         For row As Integer = 0 To headers.Length - 1

@@ -1504,7 +1504,7 @@ Partial Class Order_Upload
                                         Dim squareMetre As Decimal = width * drop / 1000000
 
                                         Dim groupFabric As String = orderClass.GetFabricGroup(fabricId)
-                                        Dim groupName As String = String.Format("Roman Blind - {0} - {1}", tubeName, groupFabric)
+                                        Dim groupName As String = String.Format("Roman Blind - {0} - {1}", romanType, groupFabric)
                                         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, priceGroupId)
 
                                         Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -2584,6 +2584,14 @@ Partial Class Order_Upload
                                                 If widthData > 1810 OrElse widthDataB > 1810 Then tubeType = "Gear Reduction 45mm"
                                                 If squareMetre >= 6 OrElse squareMetreB >= 6 Then tubeType = "Gear Reduction 49mm"
                                             End If
+                                            'If blindName = "Link 2 Blinds Independent" Then
+                                            '    tubeType = "Gear Reduction Hybrid 49mm"
+                                            '    If controlType = "Chain" Then
+                                            '        tubeType = "Gear Reduction Hybrid 43mm"
+                                            '        If widthData > 1810 OrElse widthDataB > 1810 Then tubeType = "Gear Reduction Hybrid 45mm"
+                                            '        If squareMetre >= 6 OrElse squareMetreB >= 6 Then tubeType = "Gear Reduction Hybrid 49mm"
+                                            '    End If
+                                            'End If
                                         End If
 
                                         If blindType = "Single: Linked (3 Blinds)" Then

@@ -198,6 +198,17 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                            <div class="row" id="divfullness">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Fullness</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <select id="fullness" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Yes">Yes</option>
+                                                    </select>
+                                                </div>
+                                            </div>
                                             <div class="row" id="divwidth">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Width</label>
@@ -596,5 +607,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/Curtain.js?v=1.2.5"></script>
+    <script src="/Scripts/RisaSolihah/Curtain.js?v=1.2.6"></script>
 </asp:Content>

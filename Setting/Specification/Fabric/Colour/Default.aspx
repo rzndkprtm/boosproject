@@ -66,11 +66,15 @@
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
+                                            <asp:BoundField DataField="BoeId" HeaderText="BOE ID" />
+                                            <asp:BoundField DataField="InventoryId" HeaderText="Inventory ID" />
                                             <asp:BoundField DataField="CompanyDetailName" HeaderText="Sub Company" />
                                             <asp:BoundField DataField="FabricName" HeaderText="Fabric Type" />
                                             <asp:BoundField DataField="Colour" HeaderText="Colour" />
+                                            <asp:BoundField DataField="RollQty" HeaderText="Roll Qty" />
+                                            <asp:BoundField DataField="EtaFactory" HeaderText="ETA Factory" />
                                             <asp:BoundField DataField="Status" HeaderText="Status" />
-                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="200px">
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="120px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">

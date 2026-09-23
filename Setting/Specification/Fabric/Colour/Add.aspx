@@ -91,7 +91,7 @@
                                     </div>
                                 </div>
                                 <div class="row mb-2">
-                                    <div class="col-12 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
                                         <label class="form-label">Status</label>
                                         <asp:DropDownList runat="server" ID="ddlStatus" CssClass="choices form-select">
                                             <asp:ListItem Value="" Text=""></asp:ListItem>

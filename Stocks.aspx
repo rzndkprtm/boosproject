@@ -84,7 +84,7 @@
                                                                                         <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Maximum Width</div><strong><%# Eval("Width") %></strong></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
-                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory") %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory", "{0:dd MMM yyyy}") %></strong></div>
                                                                                     </div>
                                                                                 </div>
                                                                             </ItemTemplate>
@@ -136,7 +136,7 @@
                                                                                         <div class="col-md-3"><div class="text-muted small">Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
-                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory") %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory", "{0:dd MMM yyyy}") %></strong></div>
                                                                                     </div>
                                                                                 </div>
                                                                             </ItemTemplate>
@@ -178,7 +178,7 @@
                                                                                         <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Maximum Width</div><strong><%# Eval("Width") %></strong></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
-                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory") %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory", "{0:dd MMM yyyy}") %></strong></div>
                                                                                     </div>
                                                                                 </div>
                                                                             </ItemTemplate>
@@ -220,7 +220,7 @@
                                                                                         <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Maximum Width</div><strong><%# Eval("Width") %></strong></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
-                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory") %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory", "{0:dd MMM yyyy}") %></strong></div>
                                                                                     </div>
                                                                                 </div>
                                                                             </ItemTemplate>
@@ -273,7 +273,7 @@
                                                                                         <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Maximum Width</div><strong><%# Eval("Width") %></strong></div>
                                                                                         <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
-                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory") %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory", "{0:dd MMM yyyy}") %></strong></div>
                                                                                     </div>
                                                                                 </div>
                                                                             </ItemTemplate>

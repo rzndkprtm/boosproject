@@ -1155,7 +1155,7 @@ function bindComponentForm(blindType, colourType) {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
 
-        const divsToHide = ["divfirst", "divfirstend", "divsecond", "divsecondend", "divmouting", "divheading", "divheadingb", "divfabric", "divfabricb", "divtrack", "divtrackb", "divstackposition", "divstackpositionb", "divwidth", "divwidthb", "divdrop", "divdropb", "divcutlength", "divcontrolcolour", "divcontrolcolourb", "divcontrollength", "divcontrollengthb", "divreturnlength", "divreturnlengthb", "divbottomhem", "divtieback"].map(id => document.getElementById(id));
+        const divsToHide = ["divfirst", "divfirstend", "divsecond", "divsecondend", "divmouting", "divheading", "divheadingb", "divfabric", "divfabricb", "divtrack", "divtrackb", "divstackposition", "divstackpositionb", "divfullness", "divwidth", "divwidthb", "divdrop", "divdropb", "divcutlength", "divcontrolcolour", "divcontrolcolourb", "divcontrollength", "divcontrollengthb", "divreturnlength", "divreturnlengthb", "divbottomhem", "divtieback"].map(id => document.getElementById(id));
 
         const toggleDisplay = (el, show) => {
             if (el) el.style.display = show ? "" : "none";
@@ -1174,15 +1174,15 @@ function bindComponentForm(blindType, colourType) {
 
             if (blindName === "Complete Set (Single)") {
                 divShow.push("divmouting", "divheading", "divfabric", "divtrack", "divstackposition", "divwidth", "divdrop", "divbottomhem", "divtieback");
-                if (companyDetailId === "5" || companyDetailId === "9") {
-                    divShow.push("divcutlength");
+                if (companyId === "3") {
+                    divShow.push("divcutlength", "divfullness");
                 }
             } else if (blindName === "Complete Set (Double)") {
                 divShow.push("divfirst", "divfirstend", "divsecond", "divsecondend", "divmouting", "divheading", "divheadingb", "divfabric", "divfabricb", "divtrack", "divtrackb", "divstackposition", "divstackpositionb", "divwidth", "divwidthb", "divdrop", "divdropb", "divbottomhem", "divtieback");
             } else if (blindName === "Curtain Only") {
                 divShow.push("divmouting", "divheading", "divfabric", "divwidth", "divdrop", "divstackposition", "divbottomhem", "divtieback");
-                if (companyDetailId === "5" || companyDetailId === "9") {
-                    divShow.push("divcutlength");
+                if (companyId === "3") {
+                    divShow.push("divcutlength", "divfullness");
                 }
             } else if (blindName === "Track Only") {
                 divShow.push("divmouting", "divheading", "divtrack", "divstackposition", "divwidth");
@@ -1316,7 +1316,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = ["blindtype", "colourtype", "qty", "room", "mounting", "heading", "headingb", "fabrictype", "fabrictypeb", "fabriccolour", "fabriccolourb", "tracktype", "tracktypeb", "trackcolour", "trackcolourb", "trackdraw", "trackdrawb", "stackposition", "stackpositionb", "width", "widthb", "drop", "dropb", "cutlength", "controlcolour", "controlcolourb", "controllength", "controllengthc", "returnlengthvalue", "returnlengthvalueb", "returnlengthvaluec", "returnlengthvalued", "bottomhem", "tieback", "notes", "markup"];
+    const inputs = ["blindtype", "colourtype", "qty", "room", "mounting", "heading", "headingb", "fabrictype", "fabrictypeb", "fabriccolour", "fabriccolourb", "tracktype", "tracktypeb", "trackcolour", "trackcolourb", "trackdraw", "trackdrawb", "stackposition", "stackpositionb", "width", "widthb", "drop", "dropb", "cutlength", "controlcolour", "controlcolourb", "controllength", "controllengthc", "returnlengthvalue", "returnlengthvalueb", "returnlengthvaluec", "returnlengthvalued", "fullness", "bottomhem", "tieback", "notes", "markup"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
@@ -1378,6 +1378,7 @@ function setFormValues(itemData) {
         drop: "Drop",
         dropb: "DropB",
         cutlength: "LouvreSize",
+        fullness: "Fullness",
         bottomhem: "BottomHem",
         tieback: "Supply",
         notes: "Notes",
@@ -1405,7 +1406,7 @@ function setFormValues(itemData) {
 function process() {
     toggleButtonState(true, "Processing...");
 
-    const fields = ["blindtype", "colourtype", "qty", "room", "mounting", "heading", "headingb", "fabrictype", "fabrictypeb", "fabriccolour", "fabriccolourb", "tracktype", "tracktypeb", "trackcolour", "trackcolourb", "trackdraw", "trackdrawb", "stackposition", "stackpositionb", "width", "widthb", "drop", "dropb", "cutlength", "controlcolour", "controlcolourb", "controllength", "controllengthb", "returnlengthvalue", "returnlengthvalueb", "returnlengthvaluec", "returnlengthvalued", "bottomhem", "tieback", "notes", "markup"];
+    const fields = ["blindtype", "colourtype", "qty", "room", "mounting", "heading", "headingb", "fabrictype", "fabrictypeb", "fabriccolour", "fabriccolourb", "tracktype", "tracktypeb", "trackcolour", "trackcolourb", "trackdraw", "trackdrawb", "stackposition", "stackpositionb", "width", "widthb", "drop", "dropb", "cutlength", "controlcolour", "controlcolourb", "controllength", "controllengthb", "returnlengthvalue", "returnlengthvalueb", "returnlengthvaluec", "returnlengthvalued", "fullness", "bottomhem", "tieback", "notes", "markup"];
 
     const formData = {
         headerid: headerId,
