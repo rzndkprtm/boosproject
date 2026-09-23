@@ -339,7 +339,6 @@ Partial Class Stocks
     End Sub
 
 
-
     ' VENETIAN
 
     Protected Sub BindVenetian(companyDetail As String)

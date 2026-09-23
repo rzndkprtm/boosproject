@@ -2584,14 +2584,15 @@ Partial Class Order_Upload
                                                 If widthData > 1810 OrElse widthDataB > 1810 Then tubeType = "Gear Reduction 45mm"
                                                 If squareMetre >= 6 OrElse squareMetreB >= 6 Then tubeType = "Gear Reduction 49mm"
                                             End If
-                                            'If blindName = "Link 2 Blinds Independent" Then
-                                            '    tubeType = "Gear Reduction Hybrid 49mm"
-                                            '    If controlType = "Chain" Then
-                                            '        tubeType = "Gear Reduction Hybrid 43mm"
-                                            '        If widthData > 1810 OrElse widthDataB > 1810 Then tubeType = "Gear Reduction Hybrid 45mm"
-                                            '        If squareMetre >= 6 OrElse squareMetreB >= 6 Then tubeType = "Gear Reduction Hybrid 49mm"
-                                            '    End If
-                                            'End If
+                                            If blindName = "Link 2 Blinds Independent" Then
+                                                tubeType = "Gear Reduction 49mm"
+                                                'tubeType = "Gear Reduction Hybrid 49mm"
+                                                If controlType = "Chain" Then
+                                                    tubeType = "Gear Reduction Hybrid 43mm"
+                                                    If widthData > 1810 OrElse widthDataB > 1810 Then tubeType = "Gear Reduction Hybrid 45mm"
+                                                    If squareMetre >= 6 OrElse squareMetreB >= 6 Then tubeType = "Gear Reduction Hybrid 49mm"
+                                                End If
+                                            End If
                                         End If
 
                                         If blindType = "Single: Linked (3 Blinds)" Then
