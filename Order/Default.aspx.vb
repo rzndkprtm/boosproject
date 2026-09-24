@@ -28,36 +28,72 @@ Partial Class Order_Default
             BindCompany()
             BindOrderType()
 
-            ddlStatus.SelectedValue = Session("OrderStatus")
             If Not String.IsNullOrEmpty(Session("OrderCompany")) Then
                 ddlCompany.SelectedValue = Session("OrderCompany")
             End If
+            ddlState.SelectedValue = Session("OrderState")
+            ddlType.SelectedValue = Session("OrderType")
+
+            ddlStatus.SelectedValue = Session("OrderStatus")
             txtSearch.Text = Session("OrderSearch")
             ddlActive.SelectedValue = Session("OrderActive")
-            ddlType.SelectedValue = Session("OrderType")
-            ddlState.SelectedValue = Session("OrderState")
 
             BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlState.SelectedValue, ddlActive.SelectedValue)
         End If
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderStatus") = ddlStatus.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderActive") = ddlActive.SelectedValue
+
         Response.Redirect("~/order/add", False)
     End Sub
 
     Protected Sub btnInsert_Click(sender As Object, e As EventArgs)
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderStatus") = ddlStatus.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderActive") = ddlActive.SelectedValue
+
         Response.Redirect("~/order/add", False)
     End Sub
 
     Protected Sub btnUpload_Click(sender As Object, e As EventArgs)
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderStatus") = ddlStatus.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderActive") = ddlActive.SelectedValue
+
         Response.Redirect("~/order/upload", False)
     End Sub
 
     Protected Sub btnRework_Click(sender As Object, e As EventArgs)
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderStatus") = ddlStatus.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderActive") = ddlActive.SelectedValue
+
         Response.Redirect("~/order/rework", False)
     End Sub
 
     Protected Sub btnFile_Click(sender As Object, e As EventArgs)
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderStatus") = ddlStatus.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderActive") = ddlActive.SelectedValue
+
         Response.Redirect("~/order/file", False)
     End Sub
 
@@ -67,12 +103,12 @@ Partial Class Order_Default
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlState.SelectedValue, ddlActive.SelectedValue)
 
-        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderSearch") = txtSearch.Text
         Session("OrderActive") = ddlActive.SelectedValue
-        Session("OrderType") = ddlType.SelectedValue
-        Session("OrderState") = ddlState.SelectedValue
     End Sub
 
     Protected Sub ddlState_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -81,12 +117,12 @@ Partial Class Order_Default
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlState.SelectedValue, ddlActive.SelectedValue)
 
-        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderSearch") = txtSearch.Text
         Session("OrderActive") = ddlActive.SelectedValue
-        Session("OrderType") = ddlType.SelectedValue
-        Session("OrderState") = ddlState.SelectedValue
     End Sub
 
     Protected Sub ddlStatus_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -95,12 +131,12 @@ Partial Class Order_Default
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlState.SelectedValue, ddlActive.SelectedValue)
 
-        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderSearch") = txtSearch.Text
         Session("OrderActive") = ddlActive.SelectedValue
-        Session("OrderType") = ddlType.SelectedValue
-        Session("OrderState") = ddlState.SelectedValue
     End Sub
 
     Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -109,12 +145,12 @@ Partial Class Order_Default
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlState.SelectedValue, ddlActive.SelectedValue)
 
-        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderSearch") = txtSearch.Text
         Session("OrderActive") = ddlActive.SelectedValue
-        Session("OrderType") = ddlType.SelectedValue
-        Session("OrderState") = ddlState.SelectedValue
     End Sub
 
     Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -123,12 +159,12 @@ Partial Class Order_Default
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlState.SelectedValue, ddlActive.SelectedValue)
 
-        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderSearch") = txtSearch.Text
         Session("OrderActive") = ddlActive.SelectedValue
-        Session("OrderType") = ddlType.SelectedValue
-        Session("OrderState") = ddlState.SelectedValue
     End Sub
 
     Protected Sub ddlActive_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -137,11 +173,12 @@ Partial Class Order_Default
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlState.SelectedValue, ddlActive.SelectedValue)
 
-        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderSearch") = txtSearch.Text
         Session("OrderActive") = ddlActive.SelectedValue
-        Session("OrderType") = ddlType.SelectedValue
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
