@@ -622,7 +622,7 @@ Partial Class Order_Default
     Protected Sub BindDataOrder(search As String, status As String, company As String, orderType As String, state As String, active As String)
         Try
             divFilter.Visible = LoginAccess("Visible Filter")
-            divType.Visible = LoginAccess("Filter Type")
+            divType.Visible = LoginAccess("Visible Filter Type")
             If Session("RoleName") = "Sales" AndAlso Session("UserName") = "felicity" Then
                 divType.Visible = True
             End If
