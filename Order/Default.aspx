@@ -397,7 +397,7 @@
             <div class="col-12">
                 <asp:UpdatePanel runat="server" ID="upList" UpdateMode="Conditional">
                     <ContentTemplate>
-                        <section class="row mb-3" runat="server" id="divFilter">
+                        <section class="row" runat="server" id="divFilter">
                             <div class="col-12">
                                 <div class="card order-filter-card">
                                     <div class="card-header">
