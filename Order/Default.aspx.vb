@@ -3,8 +3,6 @@ Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Threading.Tasks
 Imports System.Web.Services
-Imports iTextSharp.text
-Imports Org.BouncyCastle.Asn1.Cmp
 
 Partial Class Order_Default
     Inherits Page
