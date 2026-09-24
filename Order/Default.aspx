@@ -151,7 +151,7 @@
                                         <div class="row mt-5">
                                             <div class="col-12">
                                                 <div class="table-responsive">
-                                                    <asp:GridView runat="server" ID="gvListUnsubmit" CssClass="table table-striped table-hover align-middle order-grid" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnPageIndexChanging="gvListUnsubmit_PageIndexChanging" OnDataBound="gvListUnsubmit_DataBound">
+                                                    <asp:GridView runat="server" ID="gvListUnsubmit" CssClass="table table-striped table-hover align-middle order-grid" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" AllowPaging="true" PagerSettings-Visible="false" PageSize="50" OnPageIndexChanging="gvListUnsubmit_PageIndexChanging" OnDataBound="gvListUnsubmit_DataBound">
                                                         <Columns>
                                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                                 <ItemTemplate>
