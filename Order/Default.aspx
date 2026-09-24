@@ -91,7 +91,17 @@
                                     <div class="col-12 col-lg-3">
                                         <div class="input-group" runat="server" id="divState">
                                             <span class="input-group-text">State</span>
-                                            <asp:DropDownList runat="server" ID="ddlState" CssClass="form-select" AutoPostBack="true"></asp:DropDownList>
+                                            <asp:DropDownList runat="server" ID="ddlState" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlState_SelectedIndexChanged">
+                                                <asp:ListItem Value="" Text="All"></asp:ListItem>
+                                                <asp:ListItem Value="ACT" Text="ACT"></asp:ListItem>
+                                                <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
+                                                <asp:ListItem Value="NT" Text="NT"></asp:ListItem>
+                                                <asp:ListItem Value="QLD" Text="QLD"></asp:ListItem>
+                                                <asp:ListItem Value="SA" Text="SA"></asp:ListItem>
+                                                <asp:ListItem Value="TAS" Text="TAS"></asp:ListItem>
+                                                <asp:ListItem Value="VIC" Text="VIC"></asp:ListItem>
+                                                <asp:ListItem Value="WA" Text="WA"></asp:ListItem>
+                                            </asp:DropDownList>
                                         </div>
                                     </div>
                                     <div class="col-12 col-lg-6">

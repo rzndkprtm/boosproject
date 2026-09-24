@@ -75,6 +75,20 @@ Partial Class Order_Default
         Session("OrderState") = ddlState.SelectedValue
     End Sub
 
+    Protected Sub ddlState_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
+        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlState.SelectedValue, ddlActive.SelectedValue)
+
+        Session("OrderStatus") = ddlStatus.SelectedValue
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderActive") = ddlActive.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+    End Sub
+
     Protected Sub ddlStatus_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
 
