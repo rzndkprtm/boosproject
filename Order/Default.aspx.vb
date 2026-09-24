@@ -962,6 +962,7 @@ Partial Class Order_Default
                 gvListUnshipment.Columns(3).Visible = True
             End If
             gvListShipped.Columns(7).Visible = LoginAccess("Visible Factory")
+
             If gvListProduction.Rows.Count > 0 Then
                 selected_tab.Value = "list-production"
             ElseIf gvListNew.Rows.Count > 0 Then
