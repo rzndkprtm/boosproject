@@ -447,12 +447,13 @@
                                         <div class="row mt-3 g-2 align-items-center">
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <div class="input-group">
-                                                    <span class="input-group-text">Status</span>
+                                                    <span class="input-group-text">Status :</span>
                                                     <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged"></asp:DropDownList>
                                                 </div>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-7 ms-auto">
                                                 <div class="input-group">
+                                                    <span class="input-group-text">Search :</span>
                                                     <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholder="Search..." autocomplete="off" />
                                                     <asp:Button runat="server" ID="btnSearch" Text="Search" CssClass="btn btn-primary" OnClick="btnSearch_Click" />
                                                 </div>
