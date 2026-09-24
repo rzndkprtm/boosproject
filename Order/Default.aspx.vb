@@ -3,6 +3,8 @@ Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Threading.Tasks
 Imports System.Web.Services
+Imports iTextSharp.text
+Imports Org.BouncyCastle.Asn1.Cmp
 
 Partial Class Order_Default
     Inherits Page
@@ -101,6 +103,8 @@ Partial Class Order_Default
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+        gvListUnsubmit.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
 
@@ -112,6 +116,8 @@ Partial Class Order_Default
     End Sub
 
     Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvListUnsubmit.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
 
@@ -123,6 +129,8 @@ Partial Class Order_Default
     End Sub
 
     Protected Sub ddlState_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvListUnsubmit.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
 
@@ -134,6 +142,8 @@ Partial Class Order_Default
     End Sub
 
     Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvListUnsubmit.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
 
@@ -145,6 +155,8 @@ Partial Class Order_Default
     End Sub
 
     Protected Sub ddlActive_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvListUnsubmit.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
 
@@ -612,6 +624,23 @@ Partial Class Order_Default
         End Try
     End Sub
 
+    Protected Sub rptUnsubmit_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        If e.CommandName = "Page" Then
+            gvListUnsubmit.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
+        End If
+    End Sub
+
+    Protected Sub gvListUnsubmit_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvListUnsubmit.PageIndex = e.NewPageIndex
+        MessageError(False, String.Empty)
+        BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
+    End Sub
+
+    Protected Sub gvListUnsubmit_DataBound(sender As Object, e As EventArgs)
+        PagerUnsubmitted()
+    End Sub
+
     Protected Sub BindDataOrder(company As String, state As String, search As String, type As String, active As String)
         Try
             btnAdd.Visible = False
@@ -1050,6 +1079,42 @@ Partial Class Order_Default
             End If
         Catch ex As Exception
             ddlType.Items.Clear()
+        End Try
+    End Sub
+
+    Protected Sub PagerUnsubmitted()
+        Try
+            If gvListUnsubmit.PageCount <= 1 Then
+                navUnsubmit.Visible = False
+                Return
+            End If
+
+            navUnsubmit.Visible = True
+
+            Dim currentPage As Integer = gvListUnsubmit.PageIndex
+            Dim totalPages As Integer = gvListUnsubmit.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+            End If
+
+            rptUnsubmit.DataSource = pages
+            rptUnsubmit.DataBind()
+        Catch ex As Exception
+            rptUnsubmit.Visible = False
         End Try
     End Sub
 
