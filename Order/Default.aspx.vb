@@ -102,6 +102,7 @@ Partial Class Order_Default
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
         gvListUnsubmit.PageIndex = 0
+        gvListQuote.PageIndex = 0
 
         MessageError(False, String.Empty)
         BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
@@ -115,6 +116,7 @@ Partial Class Order_Default
 
     Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvListUnsubmit.PageIndex = 0
+        gvListQuote.PageIndex = 0
 
         MessageError(False, String.Empty)
         BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
@@ -128,6 +130,7 @@ Partial Class Order_Default
 
     Protected Sub ddlState_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvListUnsubmit.PageIndex = 0
+        gvListQuote.PageIndex = 0
 
         MessageError(False, String.Empty)
         BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
@@ -141,6 +144,7 @@ Partial Class Order_Default
 
     Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvListUnsubmit.PageIndex = 0
+        gvListQuote.PageIndex = 0
 
         MessageError(False, String.Empty)
         BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
@@ -154,6 +158,7 @@ Partial Class Order_Default
 
     Protected Sub ddlActive_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvListUnsubmit.PageIndex = 0
+        gvListQuote.PageIndex = 0
 
         MessageError(False, String.Empty)
         BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
@@ -639,6 +644,23 @@ Partial Class Order_Default
         PagerUnsubmitted()
     End Sub
 
+    Protected Sub rptQuote_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        If e.CommandName = "Page" Then
+            gvListQuote.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
+        End If
+    End Sub
+
+    Protected Sub gvListQuote_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvListQuote.PageIndex = e.NewPageIndex
+        MessageError(False, String.Empty)
+        BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
+    End Sub
+
+    Protected Sub gvListQuote_DataBound(sender As Object, e As EventArgs)
+        PagerQuote()
+    End Sub
+
     Protected Sub BindDataOrder(company As String, state As String, search As String, type As String, active As String)
         Try
             btnAdd.Visible = False
@@ -1113,6 +1135,42 @@ Partial Class Order_Default
             rptUnsubmit.DataBind()
         Catch ex As Exception
             rptUnsubmit.Visible = False
+        End Try
+    End Sub
+
+    Protected Sub PagerQuote()
+        Try
+            If gvListQuote.PageCount <= 1 Then
+                navQuote.Visible = False
+                Return
+            End If
+
+            navQuote.Visible = True
+
+            Dim currentPage As Integer = gvListQuote.PageIndex
+            Dim totalPages As Integer = gvListQuote.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+            End If
+
+            rptQuote.DataSource = pages
+            rptQuote.DataBind()
+        Catch ex As Exception
+            rptQuote.Visible = False
         End Try
     End Sub
 

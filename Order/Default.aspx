@@ -252,7 +252,7 @@
                                         <div class="row mt-5">
                                             <div class="col-12">
                                                 <div class="table-responsive">
-                                                    <asp:GridView runat="server" ID="gvListQuote" CssClass="table table-striped table-hover align-middle order-grid" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
+                                                    <asp:GridView runat="server" ID="gvListQuote" CssClass="table table-striped table-hover align-middle order-grid" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" AllowPaging="true" PagerSettings-Visible="false" PageSize="50" OnPageIndexChanging="gvListQuote_PageIndexChanging" OnDataBound="gvListQuote_DataBound">
                                                         <Columns>
                                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center">
                                                                 <ItemTemplate>
@@ -333,6 +333,19 @@
                                                             </asp:TemplateField>
                                                         </Columns>
                                                     </asp:GridView>
+                                                </div>
+                                                <div class="d-flex justify-content-end mt-2">
+                                                    <nav id="navQuote" runat="server" visible="false">
+                                                        <ul class="pagination pagination mb-0">
+                                                            <asp:Repeater ID="rptQuote" runat="server" OnItemCommand="rptQuote_ItemCommand"
+                                                                <ItemTemplate>
+                                                                    <li class='page-item <%# Eval("CssClass") %>'>
+                                                                        <asp:LinkButton runat="server" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                                                                    </li>
+                                                                </ItemTemplate>
+                                                            </asp:Repeater>
+                                                        </ul>
+                                                    </nav>
                                                 </div>
                                             </div>
                                         </div>
