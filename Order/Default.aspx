@@ -337,7 +337,7 @@
                                                 <div class="d-flex justify-content-end mt-2">
                                                     <nav id="navQuote" runat="server" visible="false">
                                                         <ul class="pagination pagination mb-0">
-                                                            <asp:Repeater ID="rptQuote" runat="server" OnItemCommand="rptQuote_ItemCommand"
+                                                            <asp:Repeater ID="rptQuote" runat="server" OnItemCommand="rptQuote_ItemCommand">
                                                                 <ItemTemplate>
                                                                     <li class='page-item <%# Eval("CssClass") %>'>
                                                                         <asp:LinkButton runat="server" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
