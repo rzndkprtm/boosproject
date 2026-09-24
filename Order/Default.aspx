@@ -1403,6 +1403,7 @@
             var selectedTab = $("#<%=selected_tab.ClientID%>");
             var tabId = selectedTab.val() != "" ? selectedTab.val() : "list-unsubmit";
             $('#divTabList a[href="#' + tabId + '"]').tab('show');
+
             $("#divTabList a").click(function () {
                 selectedTab.val($(this).attr("href").substring(1));
             });

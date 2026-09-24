@@ -962,6 +962,40 @@ Partial Class Order_Default
                 gvListUnshipment.Columns(3).Visible = True
             End If
             gvListShipped.Columns(7).Visible = LoginAccess("Visible Factory")
+            If gvListProduction.Rows.Count > 0 Then
+                selected_tab.Value = "list-production"
+            ElseIf gvListNew.Rows.Count > 0 Then
+                selected_tab.Value = "list-new"
+
+            ElseIf gvListQuote.Rows.Count > 0 Then
+                selected_tab.Value = "list-quote"
+
+            ElseIf gvListWaiting.Rows.Count > 0 Then
+                selected_tab.Value = "list-waiting"
+
+            ElseIf gvListSent.Rows.Count > 0 Then
+                selected_tab.Value = "list-sent"
+
+            ElseIf gvListReceive.Rows.Count > 0 Then
+                selected_tab.Value = "list-receive"
+
+            ElseIf gvListUnsubmit.Rows.Count > 0 Then
+                selected_tab.Value = "list-unsubmit"
+
+            ElseIf gvListHold.Rows.Count > 0 Then
+                selected_tab.Value = "list-hold"
+
+            ElseIf gvListShipped.Rows.Count > 0 Then
+                selected_tab.Value = "list-shipped"
+
+            ElseIf gvListCancel.Rows.Count > 0 Then
+                selected_tab.Value = "list-cancel"
+
+            ElseIf gvListUnshipment.Rows.Count > 0 Then
+                selected_tab.Value = "list-unshipment"
+            Else
+                selected_tab.Value = "list-unsubmit"
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
