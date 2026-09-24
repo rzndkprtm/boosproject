@@ -409,13 +409,13 @@
                                         <div class="row mt-2 g-3">
                                             <div class="col-12 col-md-4">
                                                 <div class="input-group">
-                                                    <span class="input-group-text">Company</span>
+                                                    <span class="input-group-text">Company :</span>
                                                     <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
                                                 </div>
                                             </div>
                                             <div class="col-12 col-md-4">
                                                 <div class="input-group">
-                                                    <span class="input-group-text">State</span>
+                                                    <span class="input-group-text">State :</span>
                                                     <asp:DropDownList runat="server" ID="ddlState" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlState_SelectedIndexChanged">
                                                         <asp:ListItem Value="" Text="All"></asp:ListItem>
                                                         <asp:ListItem Value="ACT" Text="ACT"></asp:ListItem>
@@ -431,7 +431,7 @@
                                             </div>
                                             <div class="col-12 col-md-4" runat="server" id="divType">
                                                 <div class="input-group">
-                                                    <span class="input-group-text">Order Type</span>
+                                                    <span class="input-group-text">Order Type : </span>
                                                     <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged"></asp:DropDownList>
                                                 </div>
                                             </div>
