@@ -60,11 +60,19 @@ Partial Class Setting_Specification_Fabric_Colour_Default
             Dim thisId As String = txtIdStatus.Text
             Dim newStatus As String = ddlNewStatus.SelectedValue
             Dim oldStatus As String = ddlOldStatus.SelectedValue
+            Dim rollQty As String = txtRollQty.Text
+            Dim etaFactory As String = txtEtaFactory.Text
+
+            If newStatus = "In Stock" OrElse newStatus = "Discontinued" Then
+                etaFactory = String.Empty
+            End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status, RollQty=@RollQty, EtaFactory=@EtaFactory WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisCmd.Parameters.AddWithValue("@Status", newStatus)
+                    thisCmd.Parameters.AddWithValue("@RollQty", rollQty)
+                    thisCmd.Parameters.AddWithValue("@EtaFactory", If(String.IsNullOrEmpty(etaFactory), CType(DBNull.Value, Object), etaFactory))
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using

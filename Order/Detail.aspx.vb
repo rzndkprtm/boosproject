@@ -3688,7 +3688,7 @@ Partial Class Order_Detail
         End If
 
         If lblCompanyId.Text = "2" Then
-            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" Then
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse (Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Leader") Then
                 divCosting.Attributes.Add("onclick", "showCostingBuy()")
                 divCosting.Style.Add("cursor", "pointer")
             End If

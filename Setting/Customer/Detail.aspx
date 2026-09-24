@@ -705,8 +705,6 @@
             </div>
         </section>
     </div>
-
-    <asp:HiddenField ID="selected_tab" runat="server" />
     
     <div class="modal modal-blur fade" id="modalRecalculate" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -1358,6 +1356,8 @@
             </div>
         </div>
     </div>
+
+    <asp:HiddenField ID="selected_tab" runat="server" />
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblIdContact"></asp:Label>

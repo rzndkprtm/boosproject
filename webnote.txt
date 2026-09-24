@@ -41,3 +41,18 @@ A $4 fuel surcharge will be applied once the order is submitted.
 3%
 
 PG PLANTATION UP (25%) & SEWLESS (35%)
+
+INSERT INTO [dbo].[LoginAccess]([Id], [RoleId], [LevelId], [Page], [Action], [Description], [Active]) VALUES (NEWID(), 1, 2, N'List Order', N'Filter State', N'', '1');
+INSERT INTO [dbo].[LoginAccess]([Id], [RoleId], [LevelId], [Page], [Action], [Description], [Active]) VALUES (NEWID(), 1, 1, N'List Order', N'Filter State', N'', '1');
+
+
+INSERT INTO [dbo].[LoginAccess]([Id], [RoleId], [LevelId], [Page], [Action], [Description], [Active]) VALUES (NEWID(), 2, 2, N'List Order', N'Filter State', N'', '1');
+INSERT INTO [dbo].[LoginAccess]([Id], [RoleId], [LevelId], [Page], [Action], [Description], [Active]) VALUES (NEWID(), 2, 1, N'List Order', N'Filter State', N'', '1');
+
+INSERT INTO [dbo].[LoginAccess]([Id], [RoleId], [LevelId], [Page], [Action], [Description], [Active]) VALUES (NEWID(), 3, 2, N'List Order', N'Filter State', N'', '1');
+INSERT INTO [dbo].[LoginAccess]([Id], [RoleId], [LevelId], [Page], [Action], [Description], [Active]) VALUES (NEWID(), 3, 1, N'List Order', N'Filter State', N'', '1');
+
+INSERT INTO [dbo].[LoginAccess]([Id], [RoleId], [LevelId], [Page], [Action], [Description], [Active]) VALUES (NEWID(), 4, 2, N'List Order', N'Filter State', N'', '1');
+INSERT INTO [dbo].[LoginAccess]([Id], [RoleId], [LevelId], [Page], [Action], [Description], [Active]) VALUES (NEWID(), 4, 1, N'List Order', N'Filter State', N'', '1');
+
+

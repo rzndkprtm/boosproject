@@ -652,8 +652,7 @@
                     <h5 class="modal-title white">Download BOE</h5>
                 </div>
                 <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />
-                    Teks
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>

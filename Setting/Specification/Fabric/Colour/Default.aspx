@@ -82,7 +82,7 @@
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/specification/fabric/colour/edit?fabriccolourid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Change Status") %>'>
-                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatus" onclick='<%# String.Format("return dataChangeStatus(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatus" onclick='<%# String.Format("return dataChangeStatus(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`);", Eval("Id"), Eval("Name"), Eval("Status"), Eval("RollQty"), If(IsDBNull(Eval("EtaFactory")) OrElse String.IsNullOrEmpty(Eval("EtaFactory").ToString()), "", Convert.ToDateTime(Eval("EtaFactory")).ToString("yyyy-MM-dd"))) %>'>Change Status</a>
                                                         </li>
                                                         <li><a href="javascript:void(0);" class="dropdown-item" onclick="showLog('FabricColours', '<%# Eval("Id") %>')">Log</a></li>
                                                     </ul>
@@ -149,6 +149,16 @@
                                 <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
                                 <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
                             </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Roll Qty</label>
+                            <asp:TextBox runat="server" ID="txtRollQty" TextMode="Number" CssClass="form-control" autocomplete="off" placeholder="Roll Qty"></asp:TextBox>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">ETA Factory</label>
+                            <asp:TextBox runat="server" ID="txtEtaFactory" TextMode="Date" CssClass="form-control"></asp:TextBox>
                         </div>
                     </div>
                 </div>
@@ -220,11 +230,12 @@
                 });
             }
         });
-        function dataChangeStatus(id, name, status) {
+        function dataChangeStatus(id, name, status, rollqty, etafactory) {
             document.getElementById("<%=txtIdStatus.ClientID %>").value = id;
             document.getElementById("<%=txtName.ClientID %>").value = name;
-            document.getElementById("<%=txtOldStatus.ClientID %>").value = status;
             document.getElementById("<%=ddlOldStatus.ClientID %>").value = status;
+            document.getElementById("<%=txtRollQty.ClientID %>").value = rollqty;
+            document.getElementById("<%=txtEtaFactory.ClientID %>").value = etafactory || "";
         }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");

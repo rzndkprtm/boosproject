@@ -2,6 +2,7 @@
 Imports System.Data.SqlClient
 Imports System.IO
 Imports System.Threading.Tasks
+Imports System.Web.Services
 
 Partial Class Order_Default
     Inherits Page
@@ -11,11 +12,21 @@ Partial Class Order_Default
     Dim url As String = String.Empty
     Dim dataLog As Object() = Nothing
 
+
+    <WebMethod(EnableSession:=True)>
+    Public Shared Sub UpdateSession(value As String)
+        HttpContext.Current.Session("selectedTabOrder") = value
+    End Sub
+
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
             Response.Redirect("~/", False)
             Exit Sub
+        End If
+
+        If Not Session("selectedTabOrder") = "" Then
+            selected_tab.Value = Session("selectedTabOrder").ToString()
         End If
 
         If Not IsPostBack Then
@@ -24,123 +35,124 @@ Partial Class Order_Default
             MessageError_CancelOrder(False, String.Empty)
             MessageError_ShipmentOrder(False, String.Empty)
 
-            BindStatusOrder()
             BindCompany()
             BindOrderType()
 
-            ddlStatus.SelectedValue = Session("OrderStatus")
             If Not String.IsNullOrEmpty(Session("OrderCompany")) Then
                 ddlCompany.SelectedValue = Session("OrderCompany")
             End If
+            ddlState.SelectedValue = Session("OrderState")
             txtSearch.Text = Session("OrderSearch")
-            ddlActive.SelectedValue = Session("OrderActive")
             ddlType.SelectedValue = Session("OrderType")
+            ddlActive.SelectedValue = Session("OrderActive")
 
-            BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
+            BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
         End If
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderActive") = ddlActive.SelectedValue
+
         Response.Redirect("~/order/add", False)
     End Sub
 
     Protected Sub btnInsert_Click(sender As Object, e As EventArgs)
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderActive") = ddlActive.SelectedValue
+
         Response.Redirect("~/order/add", False)
     End Sub
 
     Protected Sub btnUpload_Click(sender As Object, e As EventArgs)
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderActive") = ddlActive.SelectedValue
+
         Response.Redirect("~/order/upload", False)
     End Sub
 
     Protected Sub btnRework_Click(sender As Object, e As EventArgs)
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderActive") = ddlActive.SelectedValue
+
         Response.Redirect("~/order/rework", False)
     End Sub
 
     Protected Sub btnFile_Click(sender As Object, e As EventArgs)
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderActive") = ddlActive.SelectedValue
+
         Response.Redirect("~/order/file", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        gvList.PageIndex = 0
-
         MessageError(False, String.Empty)
-        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
+        BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
 
-        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
         Session("OrderSearch") = txtSearch.Text
-        Session("OrderActive") = ddlActive.SelectedValue
         Session("OrderType") = ddlType.SelectedValue
-    End Sub
-
-    Protected Sub ddlStatus_SelectedIndexChanged(sender As Object, e As EventArgs)
-        gvList.PageIndex = 0
-
-        MessageError(False, String.Empty)
-        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
-
-        Session("OrderStatus") = ddlStatus.SelectedValue
-        Session("OrderCompany") = ddlCompany.SelectedValue
-        Session("OrderSearch") = txtSearch.Text
         Session("OrderActive") = ddlActive.SelectedValue
-        Session("OrderType") = ddlType.SelectedValue
     End Sub
 
     Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
-        gvList.PageIndex = 0
-
         MessageError(False, String.Empty)
-        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
+        BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
 
-        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
         Session("OrderSearch") = txtSearch.Text
-        Session("OrderActive") = ddlActive.SelectedValue
         Session("OrderType") = ddlType.SelectedValue
+        Session("OrderActive") = ddlActive.SelectedValue
+    End Sub
+
+    Protected Sub ddlState_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
+
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderActive") = ddlActive.SelectedValue
     End Sub
 
     Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
-        gvList.PageIndex = 0
-
         MessageError(False, String.Empty)
-        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
+        BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
 
-        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
         Session("OrderSearch") = txtSearch.Text
-        Session("OrderActive") = ddlActive.SelectedValue
         Session("OrderType") = ddlType.SelectedValue
+        Session("OrderActive") = ddlActive.SelectedValue
     End Sub
 
     Protected Sub ddlActive_SelectedIndexChanged(sender As Object, e As EventArgs)
-        gvList.PageIndex = 0
-
         MessageError(False, String.Empty)
-        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
+        BindDataOrder(ddlCompany.SelectedValue, ddlState.SelectedValue, txtSearch.Text, ddlType.SelectedValue, ddlActive.SelectedValue)
 
-        Session("OrderStatus") = ddlStatus.SelectedValue
         Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
         Session("OrderSearch") = txtSearch.Text
-        Session("OrderActive") = ddlActive.SelectedValue
         Session("OrderType") = ddlType.SelectedValue
-    End Sub
-
-    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
-        If e.CommandName = "Page" Then
-            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-            BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
-        End If
-    End Sub
-
-    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
-        gvList.PageIndex = e.NewPageIndex
-
-        MessageError(False, String.Empty)
-        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlCompany.SelectedValue, ddlType.SelectedValue, ddlActive.SelectedValue)
-    End Sub
-
-    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
-        BuildPager()
+        Session("OrderActive") = ddlActive.SelectedValue
     End Sub
 
     Protected Sub btnStatusOrder_Click(sender As Object, e As EventArgs)
@@ -600,191 +612,8 @@ Partial Class Order_Default
         End Try
     End Sub
 
-    Protected Sub BindStatusOrder()
-        ddlStatus.Items.Clear()
+    Protected Sub BindDataOrder(company As String, state As String, search As String, type As String, active As String)
         Try
-            ddlStatus.Items.Add(New ListItem("All Orders", ""))
-            If Session("RoleName") = "Developer" Then
-                ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
-                ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
-                ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
-                ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
-                ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
-                ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
-                ddlStatus.Items.Add(New ListItem("Pending Payment", "Pending Payment"))
-                ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
-                ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
-                ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
-                ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
-                ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
-                ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
-            End If
-
-            If Session("RoleName") = "IT" Then
-                ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
-                ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
-                ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
-                ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
-                ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
-                ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
-                ddlStatus.Items.Add(New ListItem("Pending Payment", "Pending Payment"))
-                ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
-                ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
-                ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
-                ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
-                ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
-                ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
-            End If
-
-            If Session("RoleName") = "Factory Office" Then
-                ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
-                ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
-                ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
-                ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
-                ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
-                ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
-                ddlStatus.Items.Add(New ListItem("Pending Payment", "Pending Payment"))
-                ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
-                ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
-                ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
-                ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
-                ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
-                ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
-            End If
-
-            If Session("RoleName") = "Sales" Then
-                ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
-                ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
-                ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
-                ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
-                ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
-                ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
-                ddlStatus.Items.Add(New ListItem("Pending Payment", "Pending Payment"))
-                ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
-                ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
-                ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
-                ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
-                ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
-                ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
-            End If
-
-            If Session("RoleName") = "Account" Then
-                ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
-                ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
-                ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
-                ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
-                ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
-                ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
-                ddlStatus.Items.Add(New ListItem("Pending Payment", "Pending Payment"))
-                ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
-                ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
-                ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
-                ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
-                ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
-            End If
-
-            If Session("RoleName") = "Data Entry" Then
-                ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
-                ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
-                ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
-                ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
-                ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
-                ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
-                ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
-                ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
-                ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
-                ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
-            End If
-
-            If Session("RoleName") = "Export" Then
-                ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
-                ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
-                ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
-                ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
-                ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
-            End If
-
-            If Session("RoleName") = "Customer" Then
-                ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
-                ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
-                ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
-                ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
-                ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
-                ddlStatus.Items.Add(New ListItem("Pending Payment", "Pending Payment"))
-                ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
-                ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
-                ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
-                ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
-                ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
-                If Session("CompanyId") = "3" Then
-                    ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
-                    ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
-                    ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
-                    ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
-                    ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
-                    ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
-                    ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
-                End If
-            End If
-
-            If Session("RoleName") = "Installer" Then
-                ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
-                ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
-                ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
-                ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
-                ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))
-                ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
-            End If
-        Catch ex As Exception
-            ddlStatus.Items.Clear()
-            ddlStatus.Items.Add(New ListItem("All Order", ""))
-        End Try
-    End Sub
-
-    Protected Sub BindOrderType()
-        ddlType.Items.Clear()
-        Try
-            ddlType.Items.Add(New ListItem("All", ""))
-            ddlType.Items.Add(New ListItem("Regular", "Regular"))
-            ddlType.Items.Add(New ListItem("Builder", "Builder"))
-            ddlType.Items.Add(New ListItem("Rework", "Rework"))
-
-            If Session("RoleName") = "Installer" Then
-                ddlType.Items.Clear()
-                ddlType.Items.Add(New ListItem("Builder", "Builder"))
-            End If
-        Catch ex As Exception
-            ddlType.Items.Clear()
-        End Try
-    End Sub
-
-    Protected Sub BindDataOrder(search As String, status As String, company As String, orderType As String, active As String)
-        Try
-            Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@Search", search.Trim()),
-                New SqlParameter("@Status", status),
-                New SqlParameter("@CompanyId", company),
-                New SqlParameter("@Active", active),
-                New SqlParameter("@RoleName", Session("RoleName").ToString()),
-                New SqlParameter("@LevelName", Session("LevelName").ToString()),
-                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
-                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
-                New SqlParameter("@LoginId", Session("LoginId").ToString()),
-                New SqlParameter("@RoleId", Session("RoleId").ToString()),
-                New SqlParameter("@OrderType", orderType)
-            }
-            gvList.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", params)
-            gvList.DataBind()
-
-            gvList.Columns(1).Visible = LoginAccess("Visible ID")
-            gvList.Columns(3).Visible = LoginAccess("Visible Customer Name")
-            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
-                gvList.Columns(3).Visible = True
-            End If
-            gvList.Columns(7).Visible = LoginAccess("Visible Created Date")
-            gvList.Columns(10).Visible = LoginAccess("Visible Factory")
-            gvList.Columns(12).Visible = LoginAccess("Visible BOE")
-
             btnAdd.Visible = False
             btnAddOrder.Visible = False
             If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
@@ -800,21 +629,339 @@ Partial Class Order_Default
                     btnAddOrder.Visible = True
                 End If
             End If
+
             btnRework.Visible = LoginAccess("Rework")
             btnFile.Visible = LoginAccess("File")
 
-            divActive.Visible = LoginAccess("Active")
             divCompany.Visible = LoginAccess("Filter Company")
-            divType.Visible = LoginAccess("Filter Type")
             divState.Visible = LoginAccess("Filter State")
+            divType.Visible = LoginAccess("Filter Type")
+
             If Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Member" AndAlso Session("UserName") = "felicity" Then
                 divType.Visible = True
             End If
+            divActive.Visible = LoginAccess("Active")
 
             If Session("RoleName") = "Customer" Then
                 Dim onStop As Boolean = orderClass.GetCustomerOnStop(Session("CustomerId").ToString())
                 If onStop = True Then btnAdd.Visible = True
             End If
+
+            listQuote.Visible = False
+            If Session("RoleName") = "Developer" Then
+                listQuote.Visible = True
+            End If
+            If Session("RoleName") = "IT" Then
+                listQuote.Visible = True
+            End If
+            If Session("RoleName") = "Factory Office" Then
+                listQuote.Visible = True
+            End If
+            If Session("RoleName") = "Sales" Then
+                listQuote.Visible = True
+            End If
+            If Session("RoleName") = "Account" Then
+                listQuote.Visible = True
+            End If
+            If Session("RoleName") = "Data Entry" Then
+                listQuote.Visible = True
+            End If
+            If Session("RoleName") = "Installer" Then
+                listQuote.Visible = True
+            End If
+
+            ' UNSUBMIT
+            Dim unsubmitParams As New List(Of SqlParameter) From {
+                New SqlParameter("@Search", search.Trim()),
+                New SqlParameter("@Status", "Unsubmitted"),
+                New SqlParameter("@CompanyId", company),
+                New SqlParameter("@Active", active),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
+                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId").ToString()),
+                New SqlParameter("@RoleId", Session("RoleId").ToString()),
+                New SqlParameter("@OrderType", type),
+                New SqlParameter("@CustomerState", state)
+            }
+            gvListUnsubmit.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", unsubmitParams)
+            gvListUnsubmit.DataBind()
+
+            gvListUnsubmit.Columns(1).Visible = LoginAccess("Visible ID")
+            gvListUnsubmit.Columns(3).Visible = LoginAccess("Visible Customer Name")
+            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
+                gvListUnsubmit.Columns(3).Visible = True
+            End If
+            gvListUnsubmit.Columns(7).Visible = LoginAccess("Visible Factory")
+            gvListUnsubmit.Columns(8).Visible = LoginAccess("Visible BOE")
+
+
+            ' QUOTE
+            Dim quoteParams As New List(Of SqlParameter) From {
+                New SqlParameter("@Search", search.Trim()),
+                New SqlParameter("@Status", "Quoted"),
+                New SqlParameter("@CompanyId", company),
+                New SqlParameter("@Active", active),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
+                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId").ToString()),
+                New SqlParameter("@RoleId", Session("RoleId").ToString()),
+                New SqlParameter("@OrderType", type),
+                New SqlParameter("@CustomerState", state)
+            }
+            gvListQuote.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", quoteParams)
+            gvListQuote.DataBind()
+
+            gvListQuote.Columns(1).Visible = LoginAccess("Visible ID")
+            gvListQuote.Columns(3).Visible = LoginAccess("Visible Customer Name")
+            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
+                gvListQuote.Columns(3).Visible = True
+            End If
+            gvListQuote.Columns(8).Visible = LoginAccess("Visible Factory")
+            gvListQuote.Columns(9).Visible = LoginAccess("Visible BOE")
+
+
+            ' WAITING
+            Dim waitingParams As New List(Of SqlParameter) From {
+                New SqlParameter("@Search", search.Trim()),
+                New SqlParameter("@Status", "Waiting Proforma"),
+                New SqlParameter("@CompanyId", company),
+                New SqlParameter("@Active", active),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
+                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId").ToString()),
+                New SqlParameter("@RoleId", Session("RoleId").ToString()),
+                New SqlParameter("@OrderType", type),
+                New SqlParameter("@CustomerState", state)
+            }
+            gvListWaiting.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", waitingParams)
+            gvListWaiting.DataBind()
+
+            gvListWaiting.Columns(1).Visible = LoginAccess("Visible ID")
+            gvListWaiting.Columns(3).Visible = LoginAccess("Visible Customer Name")
+            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
+                gvListWaiting.Columns(3).Visible = True
+            End If
+            gvListWaiting.Columns(7).Visible = LoginAccess("Visible Factory")
+            gvListWaiting.Columns(8).Visible = LoginAccess("Visible BOE")
+
+
+            ' PROFORMA SENT
+            Dim sentParams As New List(Of SqlParameter) From {
+                New SqlParameter("@Search", search.Trim()),
+                New SqlParameter("@Status", "Proforma Sent"),
+                New SqlParameter("@CompanyId", company),
+                New SqlParameter("@Active", active),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
+                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId").ToString()),
+                New SqlParameter("@RoleId", Session("RoleId").ToString()),
+                New SqlParameter("@OrderType", type),
+                New SqlParameter("@CustomerState", state)
+            }
+            gvListSent.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", sentParams)
+            gvListSent.DataBind()
+
+            gvListSent.Columns(1).Visible = LoginAccess("Visible ID")
+            gvListSent.Columns(3).Visible = LoginAccess("Visible Customer Name")
+            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
+                gvListSent.Columns(3).Visible = True
+            End If
+            gvListSent.Columns(8).Visible = LoginAccess("Visible Factory")
+            gvListSent.Columns(9).Visible = LoginAccess("Visible BOE")
+
+
+            ' PAYMENT RECEIVED
+            Dim receiveParams As New List(Of SqlParameter) From {
+                New SqlParameter("@Search", search.Trim()),
+                New SqlParameter("@Status", "Payment Received"),
+                New SqlParameter("@CompanyId", company),
+                New SqlParameter("@Active", active),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
+                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId").ToString()),
+                New SqlParameter("@RoleId", Session("RoleId").ToString()),
+                New SqlParameter("@OrderType", type),
+                New SqlParameter("@CustomerState", state)
+            }
+            gvListReceive.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", receiveParams)
+            gvListReceive.DataBind()
+
+            gvListReceive.Columns(1).Visible = LoginAccess("Visible ID")
+            gvListReceive.Columns(3).Visible = LoginAccess("Visible Customer Name")
+            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
+                gvListReceive.Columns(3).Visible = True
+            End If
+            gvListReceive.Columns(9).Visible = LoginAccess("Visible Factory")
+            gvListReceive.Columns(10).Visible = LoginAccess("Visible BOE")
+
+
+            ' NEW ORDER
+            Dim newParams As New List(Of SqlParameter) From {
+                New SqlParameter("@Search", search.Trim()),
+                New SqlParameter("@Status", "New Order"),
+                New SqlParameter("@CompanyId", company),
+                New SqlParameter("@Active", active),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
+                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId").ToString()),
+                New SqlParameter("@RoleId", Session("RoleId").ToString()),
+                New SqlParameter("@OrderType", type),
+                New SqlParameter("@CustomerState", state)
+            }
+            gvListNew.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", newParams)
+            gvListNew.DataBind()
+
+            gvListNew.Columns(1).Visible = LoginAccess("Visible ID")
+            gvListNew.Columns(3).Visible = LoginAccess("Visible Customer Name")
+            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
+                gvListNew.Columns(3).Visible = True
+            End If
+            gvListNew.Columns(7).Visible = LoginAccess("Visible Factory")
+            gvListNew.Columns(8).Visible = LoginAccess("Visible BOE")
+
+
+            ' PRODUCTION
+            Dim productionParams As New List(Of SqlParameter) From {
+                New SqlParameter("@Search", search.Trim()),
+                New SqlParameter("@Status", "In Production"),
+                New SqlParameter("@CompanyId", company),
+                New SqlParameter("@Active", active),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
+                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId").ToString()),
+                New SqlParameter("@RoleId", Session("RoleId").ToString()),
+                New SqlParameter("@OrderType", type),
+                New SqlParameter("@CustomerState", state)
+            }
+            gvListProduction.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", productionParams)
+            gvListProduction.DataBind()
+
+            gvListProduction.Columns(1).Visible = LoginAccess("Visible ID")
+            gvListProduction.Columns(3).Visible = LoginAccess("Visible Customer Name")
+            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
+                gvListProduction.Columns(3).Visible = True
+            End If
+            gvListProduction.Columns(8).Visible = LoginAccess("Visible Factory")
+            gvListProduction.Columns(9).Visible = LoginAccess("Visible BOE")
+
+
+            ' ON HOLD
+            Dim holdParams As New List(Of SqlParameter) From {
+                New SqlParameter("@Search", search.Trim()),
+                New SqlParameter("@Status", "On Hold"),
+                New SqlParameter("@CompanyId", company),
+                New SqlParameter("@Active", active),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
+                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId").ToString()),
+                New SqlParameter("@RoleId", Session("RoleId").ToString()),
+                New SqlParameter("@OrderType", type),
+                New SqlParameter("@CustomerState", state)
+            }
+            gvListHold.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", holdParams)
+            gvListHold.DataBind()
+
+            gvListHold.Columns(1).Visible = LoginAccess("Visible ID")
+            gvListHold.Columns(3).Visible = LoginAccess("Visible Customer Name")
+            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
+                gvListHold.Columns(3).Visible = True
+            End If
+            gvListHold.Columns(9).Visible = LoginAccess("Visible Factory")
+            gvListHold.Columns(10).Visible = LoginAccess("Visible BOE")
+
+
+            ' SHIPPED OUT
+            Dim shippedParams As New List(Of SqlParameter) From {
+                New SqlParameter("@Search", search.Trim()),
+                New SqlParameter("@Status", "Shipped Out"),
+                New SqlParameter("@CompanyId", company),
+                New SqlParameter("@Active", active),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
+                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId").ToString()),
+                New SqlParameter("@RoleId", Session("RoleId").ToString()),
+                New SqlParameter("@OrderType", type),
+                New SqlParameter("@CustomerState", state)
+            }
+            gvListShipped.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", shippedParams)
+            gvListShipped.DataBind()
+
+            gvListShipped.Columns(1).Visible = LoginAccess("Visible ID")
+            gvListShipped.Columns(3).Visible = LoginAccess("Visible Customer Name")
+            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
+                gvListShipped.Columns(3).Visible = True
+            End If
+            gvListShipped.Columns(8).Visible = LoginAccess("Visible Factory")
+            gvListShipped.Columns(9).Visible = LoginAccess("Visible BOE")
+
+
+            ' CANCELED
+            Dim cancelParams As New List(Of SqlParameter) From {
+                New SqlParameter("@Search", search.Trim()),
+                New SqlParameter("@Status", "Canceled"),
+                New SqlParameter("@CompanyId", company),
+                New SqlParameter("@Active", active),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
+                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId").ToString()),
+                New SqlParameter("@RoleId", Session("RoleId").ToString()),
+                New SqlParameter("@OrderType", type),
+                New SqlParameter("@CustomerState", state)
+            }
+            gvListCancel.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", cancelParams)
+            gvListCancel.DataBind()
+
+            gvListCancel.Columns(1).Visible = LoginAccess("Visible ID")
+            gvListCancel.Columns(3).Visible = LoginAccess("Visible Customer Name")
+            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
+                gvListCancel.Columns(3).Visible = True
+            End If
+
+
+            ' CANCELED
+            Dim unshipmentParams As New List(Of SqlParameter) From {
+                New SqlParameter("@Search", search.Trim()),
+                New SqlParameter("@Status", "Unshipment"),
+                New SqlParameter("@CompanyId", company),
+                New SqlParameter("@Active", active),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
+                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId").ToString()),
+                New SqlParameter("@RoleId", Session("RoleId").ToString()),
+                New SqlParameter("@OrderType", type),
+                New SqlParameter("@CustomerState", state)
+            }
+            gvListUnshipment.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", unshipmentParams)
+            gvListUnshipment.DataBind()
+
+            gvListUnshipment.Columns(1).Visible = LoginAccess("Visible ID")
+            gvListUnshipment.Columns(3).Visible = LoginAccess("Visible Customer Name")
+            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
+                gvListUnshipment.Columns(3).Visible = True
+            End If
+            gvListShipped.Columns(7).Visible = LoginAccess("Visible Factory")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -829,6 +976,7 @@ Partial Class Order_Default
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
+            ddlCompany.Enabled = True
             ddlCompany.DataSource = orderClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Status='Active' ORDER BY Name ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
@@ -837,45 +985,36 @@ Partial Class Order_Default
             ddlCompany.Items.Insert(0, New ListItem("All", ""))
             If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
                 ddlCompany.SelectedValue = Session("CompanyId").ToString()
+                ddlCompany.Enabled = False
             End If
         Catch ex As Exception
             ddlCompany.Items.Clear()
         End Try
     End Sub
 
-    Protected Sub BuildPager()
+    Protected Sub BindOrderType()
+        ddlType.Items.Clear()
         Try
-            If gvList.PageCount <= 1 Then
-                navPager.Visible = False
-                Return
+            ddlType.Items.Add(New ListItem("All", ""))
+            ddlType.Items.Add(New ListItem("Regular", "Regular"))
+            ddlType.Items.Add(New ListItem("Builder", "Builder"))
+            ddlType.Items.Add(New ListItem("Rework", "Rework"))
+
+            If Session("RoleName") = "Sales" Then
+                ddlType.Items.Clear()
+                ddlType.Items.Add(New ListItem("Regular", "Regular"))
+                ddlType.Items.Add(New ListItem("Rework", "Rework"))
+                If Session("LevelName") = "Leader" OrElse Session("UserName") = "felicity" Then
+                    ddlType.Items.Add(New ListItem("Builder", "Builder"))
+                End If
             End If
 
-            navPager.Visible = True
-
-            Dim currentPage As Integer = gvList.PageIndex
-            Dim totalPages As Integer = gvList.PageCount
-
-            Dim pages As New List(Of Object)
-
-            If currentPage > 0 Then
-                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            If Session("RoleName") = "Installer" Then
+                ddlType.Items.Clear()
+                ddlType.Items.Add(New ListItem("Builder", "Builder"))
             End If
-
-            Dim startPage As Integer = Math.Max(0, currentPage - 2)
-            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
-
-            For i As Integer = startPage To endPage
-                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
-            Next
-
-            If currentPage < totalPages - 1 Then
-                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
-            End If
-
-            rptPager.DataSource = pages
-            rptPager.DataBind()
         Catch ex As Exception
-            navPager.Visible = False
+            ddlType.Items.Clear()
         End Try
     End Sub
 
