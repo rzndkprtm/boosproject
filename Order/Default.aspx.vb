@@ -619,6 +619,123 @@ Partial Class Order_Default
         End Try
     End Sub
 
+    Protected Sub BindDataOrder(search As String, status As String, company As String, orderType As String, state As String, active As String)
+        Try
+            divFilter.Visible = LoginAccess("Visible Filter")
+            divType.Visible = LoginAccess("Filter Type")
+            If Session("RoleName") = "Sales" AndAlso Session("UserName") = "felicity" Then
+                divType.Visible = True
+            End If
+
+            btnAdd.Visible = False
+            btnAddOrder.Visible = False
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
+                btnAddOrder.Visible = True
+            End If
+            If Session("RoleName") = "Data Entry" OrElse Session("RoleName") = "Sales" Then
+                btnAdd.Visible = True
+            End If
+            If Session("RoleName") = "Customer" Then
+                btnAdd.Visible = True
+                If Session("CustomerId") = "127" Then
+                    btnAdd.Visible = False
+                    btnAddOrder.Visible = True
+                End If
+            End If
+            If Session("RoleName") = "Customer" Then
+                Dim onStop As Boolean = orderClass.GetCustomerOnStop(Session("CustomerId").ToString())
+                If onStop = True Then btnAdd.Visible = True
+            End If
+
+            btnRework.Visible = LoginAccess("Rework")
+            btnFile.Visible = LoginAccess("File")
+
+            divActive.Visible = LoginAccess("Active")
+
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@Search", search.Trim()),
+                New SqlParameter("@Status", status),
+                New SqlParameter("@CompanyId", company),
+                New SqlParameter("@Active", active),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
+                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
+                New SqlParameter("@LoginId", Session("LoginId").ToString()),
+                New SqlParameter("@RoleId", Session("RoleId").ToString()),
+                New SqlParameter("@OrderType", orderType),
+                New SqlParameter("@CustomerState", state)
+            }
+            gvList.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", params)
+            gvList.DataBind()
+
+            gvList.Columns(1).Visible = LoginAccess("Visible ID")
+            gvList.Columns(3).Visible = LoginAccess("Visible Customer Name")
+            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
+                gvList.Columns(3).Visible = True
+            End If
+            gvList.Columns(7).Visible = LoginAccess("Visible Created Date")
+            gvList.Columns(10).Visible = LoginAccess("Visible Factory")
+            gvList.Columns(12).Visible = LoginAccess("Visible BOE")
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindCompany()
+        ddlCompany.Items.Clear()
+        Try
+            ddlCompany.Enabled = True
+            ddlCompany.DataSource = orderClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Status='Active' ORDER BY Name ASC")
+            ddlCompany.DataTextField = "Alias"
+            ddlCompany.DataValueField = "Id"
+            ddlCompany.DataBind()
+
+            ddlCompany.Items.Insert(0, New ListItem("All", ""))
+            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
+                ddlCompany.SelectedValue = Session("CompanyId").ToString()
+                ddlCompany.Enabled = False
+            End If
+        Catch ex As Exception
+            ddlCompany.Items.Clear()
+        End Try
+    End Sub
+
+    Protected Sub BindOrderType()
+        ddlType.Items.Clear()
+        Try
+            ddlType.Items.Add(New ListItem("All", ""))
+            ddlType.Items.Add(New ListItem("Regular", "Regular"))
+            ddlType.Items.Add(New ListItem("Builder", "Builder"))
+            ddlType.Items.Add(New ListItem("Rework", "Rework"))
+
+            If Session("RoleName") = "Sales" Then
+                ddlType.Items.Clear()
+                ddlType.Items.Add(New ListItem("All", ""))
+                ddlType.Items.Add(New ListItem("Regular", "Regular"))
+                ddlType.Items.Add(New ListItem("Rework", "Rework"))
+                If Session("LevelName") = "Leader" Then
+                    ddlType.Items.Add(New ListItem("Builder", "Builder"))
+                End If
+                If Session("LevelName") = "Member" AndAlso Session("UserName") = "felicity" Then
+                    ddlType.Items.Add(New ListItem("Builder", "Builder"))
+                End If
+            End If
+            If Session("RoleName") = "Installer" Then
+                ddlType.Items.Clear()
+                ddlType.Items.Add(New ListItem("Builder", "Builder"))
+            End If
+        Catch ex As Exception
+            ddlType.Items.Clear()
+        End Try
+    End Sub
+
     Protected Sub BindStatusOrder()
         ddlStatus.Items.Clear()
         Try
@@ -757,109 +874,6 @@ Partial Class Order_Default
         Catch ex As Exception
             ddlStatus.Items.Clear()
             ddlStatus.Items.Add(New ListItem("All Order", ""))
-        End Try
-    End Sub
-
-    Protected Sub BindOrderType()
-        ddlType.Items.Clear()
-        Try
-            ddlType.Items.Add(New ListItem("All", ""))
-            ddlType.Items.Add(New ListItem("Regular", "Regular"))
-            ddlType.Items.Add(New ListItem("Builder", "Builder"))
-            ddlType.Items.Add(New ListItem("Rework", "Rework"))
-
-            If Session("RoleName") = "Installer" Then
-                ddlType.Items.Clear()
-                ddlType.Items.Add(New ListItem("Builder", "Builder"))
-            End If
-        Catch ex As Exception
-            ddlType.Items.Clear()
-        End Try
-    End Sub
-
-    Protected Sub BindDataOrder(search As String, status As String, company As String, orderType As String, state As String, active As String)
-        Try
-            Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@Search", search.Trim()),
-                New SqlParameter("@Status", status),
-                New SqlParameter("@CompanyId", company),
-                New SqlParameter("@Active", active),
-                New SqlParameter("@RoleName", Session("RoleName").ToString()),
-                New SqlParameter("@LevelName", Session("LevelName").ToString()),
-                New SqlParameter("@CustomerLevel", Session("CustomerLevel").ToString()),
-                New SqlParameter("@CustomerId", Session("CustomerId").ToString()),
-                New SqlParameter("@LoginId", Session("LoginId").ToString()),
-                New SqlParameter("@RoleId", Session("RoleId").ToString()),
-                New SqlParameter("@OrderType", orderType),
-                New SqlParameter("@CustomerState", state)
-            }
-            gvList.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_List", params)
-            gvList.DataBind()
-
-            gvList.Columns(1).Visible = LoginAccess("Visible ID")
-            gvList.Columns(3).Visible = LoginAccess("Visible Customer Name")
-            If Session("CustomerLevel") = "Primary" AndAlso Session("LevelName") = "Leader" Then
-                gvList.Columns(3).Visible = True
-            End If
-            gvList.Columns(7).Visible = LoginAccess("Visible Created Date")
-            gvList.Columns(10).Visible = LoginAccess("Visible Factory")
-            gvList.Columns(12).Visible = LoginAccess("Visible BOE")
-
-            btnAdd.Visible = False
-            btnAddOrder.Visible = False
-            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
-                btnAddOrder.Visible = True
-            End If
-            If Session("RoleName") = "Data Entry" OrElse Session("RoleName") = "Sales" Then
-                btnAdd.Visible = True
-            End If
-            If Session("RoleName") = "Customer" Then
-                btnAdd.Visible = True
-                If Session("CustomerId") = "127" Then
-                    btnAdd.Visible = False
-                    btnAddOrder.Visible = True
-                End If
-            End If
-            btnRework.Visible = LoginAccess("Rework")
-            btnFile.Visible = LoginAccess("File")
-
-            divActive.Visible = LoginAccess("Active")
-            divCompany.Visible = LoginAccess("Filter Company")
-            divType.Visible = LoginAccess("Filter Type")
-            divState.Visible = LoginAccess("Filter State")
-            If Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Member" AndAlso Session("UserName") = "felicity" Then
-                divType.Visible = True
-            End If
-
-            If Session("RoleName") = "Customer" Then
-                Dim onStop As Boolean = orderClass.GetCustomerOnStop(Session("CustomerId").ToString())
-                If onStop = True Then btnAdd.Visible = True
-            End If
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-            End If
-        End Try
-    End Sub
-
-    Protected Sub BindCompany()
-        ddlCompany.Items.Clear()
-        Try
-            ddlCompany.DataSource = orderClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Status='Active' ORDER BY Name ASC")
-            ddlCompany.DataTextField = "Alias"
-            ddlCompany.DataValueField = "Id"
-            ddlCompany.DataBind()
-
-            ddlCompany.Items.Insert(0, New ListItem("All", ""))
-            If Session("RoleName") = "Sales" OrElse Session("RoleName") = "Account" Then
-                ddlCompany.SelectedValue = Session("CompanyId").ToString()
-            End If
-        Catch ex As Exception
-            ddlCompany.Items.Clear()
         End Try
     End Sub
 
