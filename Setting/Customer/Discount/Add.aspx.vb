@@ -184,7 +184,7 @@ Partial Class Setting_Customer_Discount_Add
                 Exit Sub
             End If
 
-            If discType = "Designs" OrElse discType = "PriceProductGroups" Then
+            If discType = "Designs" Then
                 Dim checkData As DataRow = settingClass.GetDataRow("SELECT COUNT(*) AS Total FROM CustomerDiscounts WHERE CustomerId='" & customerId & "'")
                 Dim totalDiscount As Integer = 0
                 If checkData IsNot Nothing Then
