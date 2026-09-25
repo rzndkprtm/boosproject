@@ -802,7 +802,7 @@ Partial Class Order_Detail
             dataLog = {"OrderReworks", reworkId, Session("LoginId").ToString(), "Order Rework Created"}
             orderClass.Logs(dataLog)
 
-            url = String.Format("~/order/rework/detail?reworkid={0}", lblHeaderId.Text)
+            url = String.Format("~/order/rework/detail?reworkid={0}", reworkId)
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -1567,7 +1567,6 @@ Partial Class Order_Detail
                         Response.TransmitFile(filePath)
                         Response.End()
                     End If
-
                 Case "DeleteFile"
                     If IO.File.Exists(filePath) Then
                         IO.File.Delete(filePath)
