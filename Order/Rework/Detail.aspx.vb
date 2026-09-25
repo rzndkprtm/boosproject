@@ -567,7 +567,7 @@ Partial Class Order_Rework_Detail
             End If
             lblCreatedBy.Text = reworkData("CreatedFullName").ToString()
 
-            rptRework.DataSource = orderClass.GetDataTable("SELECT OrderReworkDetails.*, 'Item ' + OrderDetails.Id + ' : ' + OrderDetails.Room AS TitleItem FROM OrderReworkDetails LEFT JOIN OrderDetails ON OrderReworkDetails.ItemId=OrderDetails.Id WHERE OrderReworkDetails.ReworkId='" & reworkId & "' AND OrderReworkDetails.Active=1 ORDER BY Id ASC")
+            rptRework.DataSource = orderClass.GetDataTable("SELECT OrderReworkDetails.*, 'Item ' + CONVERT(VARCHAR, OrderDetails.Id) + ' : ' + CONVERT(VARCHAR, OrderDetails.Room) AS TitleItem FROM OrderReworkDetails LEFT JOIN OrderDetails ON OrderReworkDetails.ItemId=OrderDetails.Id WHERE OrderReworkDetails.ReworkId='" & reworkId & "' AND OrderReworkDetails.Active=1 ORDER BY Id ASC")
             rptRework.DataBind()
 
             BindAddItem(lblHeaderId.Text)
