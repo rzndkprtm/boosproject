@@ -452,11 +452,13 @@
                                                 </div>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-7 ms-auto">
-                                                <div class="input-group">
-                                                    <span class="input-group-text">Search :</span>
-                                                    <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholder="Search..." autocomplete="off" />
-                                                    <asp:Button runat="server" ID="btnSearch" Text="Search" CssClass="btn btn-primary" OnClick="btnSearch_Click" />
-                                                </div>
+                                                <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Search :</span>
+                                                        <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholder="Search..." autocomplete="off" />
+                                                        <asp:Button runat="server" ID="btnSearch" Text="Search" CssClass="btn btn-primary" OnClick="btnSearch_Click" />
+                                                    </div>
+                                                </asp:Panel>
                                             </div>
                                         </div>
                                     </div>
