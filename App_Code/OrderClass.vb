@@ -3175,10 +3175,6 @@ Public Class OrderClass
                         costingDescription = String.Format("#1 {0}", priceProductGroupName)
                     End If
 
-                    If designName = "Door" AndAlso (tubeName = "Hinged Double" OrElse tubeName = "Sliding Double") Then
-                        costingDescription = String.Format("#1 {0}", priceProductGroupName)
-                    End If
-
                     Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomer, thisSell, thisBuy, thisFactory}
                     OrderCostings(costingArray)
 
