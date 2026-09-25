@@ -3219,23 +3219,7 @@ Public Class OrderClass
                     Dim buyArray As Object() = {priceProductGroupIdB, priceGroupId, dropB, widthB, "Buy"}
                     Dim factoryArray As Object() = {priceProductGroupIdB, priceGroupId, dropB, widthB, "Factory"}
 
-                    If designName = "Door" Then
-                        sellArray = {priceProductGroupIdB, doorPriceGroup, drop, width, "Sell"}
-                    End If
-                    If designName = "Door" Then
-                        buyArray = {priceProductGroupIdB, doorPriceGroup, drop, width, "Buy"}
-                    End If
-                    If designName = "Door" Then
-                        factoryArray = {priceProductGroupIdB, doorPriceGroup, drop, width, "Factory"}
-                    End If
-
                     Dim priceGroupCalculation As String = priceGroupId
-                    If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" Then
-                        priceGroupCalculation = shutterPriceGroup
-                    End If
-                    If designName = "Door" OrElse designName = "Window" Then
-                        priceGroupCalculation = doorPriceGroup
-                    End If
 
                     Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
                     Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
@@ -3619,9 +3603,6 @@ Public Class OrderClass
                     End If
 
                     Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroupId}
-                    If designName = "Door" Then
-                        surchargeArray = {headerId, itemId, designId, itemNumber, doorPriceGroup}
-                    End If
                     CalculateSurcharge(surchargeArray)
                 End If
 

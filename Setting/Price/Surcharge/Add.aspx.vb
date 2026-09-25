@@ -224,6 +224,19 @@ Partial Class Setting_Price_Surcharge_Add
                     End If
                 End If
 
+                If fieldName = "[Tube Type]" Then
+                    ddlFormulaData.Items.Clear()
+
+                    ddlFormulaData.DataSource = settingClass.GetDataTable("SELECT Id, Name AS DataName FROM ProductTubes")
+                    ddlFormulaData.DataTextField = "DataName"
+                    ddlFormulaData.DataValueField = "Id"
+                    ddlFormulaData.DataBind()
+
+                    If ddlFormulaData.Items.Count > 0 Then
+                        ddlFormulaData.Items.Insert(0, New ListItem("", ""))
+                    End If
+                End If
+
                 If fieldName = "[Bottom Type]" Then
                     ddlFormulaData.Items.Clear()
 
@@ -304,6 +317,19 @@ Partial Class Setting_Price_Surcharge_Add
                     ddlFormulaDataB.Items.Clear()
 
                     ddlFormulaDataB.DataSource = settingClass.GetDataTable("SELECT Id, Name AS DataName FROM Blinds")
+                    ddlFormulaDataB.DataTextField = "DataName"
+                    ddlFormulaDataB.DataValueField = "Id"
+                    ddlFormulaDataB.DataBind()
+
+                    If ddlFormulaDataB.Items.Count > 0 Then
+                        ddlFormulaDataB.Items.Insert(0, New ListItem("", ""))
+                    End If
+                End If
+
+                If fieldName = "[Tube Type]" Then
+                    ddlFormulaDataB.Items.Clear()
+
+                    ddlFormulaDataB.DataSource = settingClass.GetDataTable("SELECT Id, Name AS DataName FROM ProductTubes")
                     ddlFormulaDataB.DataTextField = "DataName"
                     ddlFormulaDataB.DataValueField = "Id"
                     ddlFormulaDataB.DataBind()
