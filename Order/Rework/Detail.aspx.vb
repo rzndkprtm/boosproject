@@ -55,10 +55,12 @@ Partial Class Order_Rework_Detail
                     Exit For
                 End If
 
-                Dim files As String() = Directory.GetFiles(folderPath)
-                If files.Length = 0 Then
-                    MessageError(True, String.Format("FILE IS REQUIRED FOR ITEM ID : {0}", itemId))
-                    Exit For
+                If Session("RoleName") = "Customer" Then
+                    Dim files As String() = Directory.GetFiles(folderPath)
+                    If files.Length = 0 Then
+                        MessageError(True, String.Format("FILE IS REQUIRED FOR ITEM ID : {0}", itemId))
+                        Exit For
+                    End If
                 End If
             Next
 
@@ -189,18 +191,28 @@ Partial Class Order_Rework_Detail
             dataLog = {"OrderHeaders", newHeaderId, Session("LoginId").ToString(), "Order Created | Rework Approved"}
             orderClass.Logs(dataLog)
 
-            Dim itemRework As DataTable = orderClass.GetDataTable("SELECT ItemId FROM OrderReworkDetails WHERE ReworkId='" & lblReworkId.Text & "'")
+            Dim itemRework As DataTable = orderClass.GetDataTable("SELECT ItemId, Description FROM OrderReworkDetails WHERE ReworkId='" & lblReworkId.Text & "'")
             For i As Integer = 0 To itemRework.Rows.Count - 1
                 Dim itemId As String = itemRework.Rows(i)("ItemId").ToString()
+                Dim description As String = itemRework.Rows(i)("Description").ToString()
                 Dim newIdDetail As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As New SqlConnection(myConn)
+                    thisConn.Open()
+
+                    ' Copy OrderDetail
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Copy", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
                         thisCmd.Parameters.AddWithValue("@ItemIdOld", itemId)
                         thisCmd.Parameters.AddWithValue("@NewId", newIdDetail)
                         thisCmd.Parameters.AddWithValue("@HeaderId", newHeaderId)
-                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+
+                    ' Update Notes
+                    Using thisCmd As New SqlCommand("UPDATE OrderDetails SET Notes=@Description WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", newIdDetail)
+                        thisCmd.Parameters.AddWithValue("@Description", description)
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
@@ -555,7 +567,7 @@ Partial Class Order_Rework_Detail
             End If
             lblCreatedBy.Text = reworkData("CreatedFullName").ToString()
 
-            rptRework.DataSource = orderClass.GetDataTable("SELECT OrderReworkDetails.*, 'Item : ' + OrderDetails.Room AS TitleItem FROM OrderReworkDetails LEFT JOIN OrderDetails ON OrderReworkDetails.ItemId=OrderDetails.Id WHERE OrderReworkDetails.ReworkId='" & reworkId & "' AND OrderReworkDetails.Active=1 ORDER BY Id ASC")
+            rptRework.DataSource = orderClass.GetDataTable("SELECT OrderReworkDetails.*, 'Item ' + OrderDetails.Id + ' : ' + OrderDetails.Room AS TitleItem FROM OrderReworkDetails LEFT JOIN OrderDetails ON OrderReworkDetails.ItemId=OrderDetails.Id WHERE OrderReworkDetails.ReworkId='" & reworkId & "' AND OrderReworkDetails.Active=1 ORDER BY Id ASC")
             rptRework.DataBind()
 
             BindAddItem(lblHeaderId.Text)
