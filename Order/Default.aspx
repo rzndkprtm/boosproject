@@ -2,354 +2,391 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        /* =========================================================
-           FILTER CARD
-           ========================================================= */
+    /* =========================================================
+       FILTER CARD
+       ========================================================= */
 
-        .order-filter-card {
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            overflow: hidden;
-            background: #fff;
-        }
+    .order-filter-card {
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .order-filter-card .card-header {
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+        padding: 0.85rem 1.25rem;
+    }
+
+    .order-filter-card .filter-title {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        margin: 0;
+        color: #495057;
+        font-size: 0.9rem;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    .order-filter-card .filter-title i {
+        font-size: 0.95rem;
+    }
+
+    .order-filter-card .card-body {
+        padding: 1rem 1.25rem;
+    }
+
+    .order-filter-card .input-group {
+        height: 42px;
+    }
+
+    .order-filter-card .input-group-text {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 95px;
+        padding: 0.375rem 0.75rem;
+        background: #f8f9fa;
+        border-color: #dee2e6;
+        color: #495057;
+        font-size: 0.85rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .order-filter-card .form-select {
+        height: 42px;
+        border-color: #dee2e6;
+        color: #495057;
+        font-size: 0.9rem;
+        box-shadow: none;
+        cursor: pointer;
+    }
+
+    .order-filter-card .form-select:hover {
+        border-color: #adb5bd;
+    }
+
+    .order-filter-card .form-select:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
+    }
+
+
+    /* =========================================================
+       ORDER LIST CARD
+       ========================================================= */
+
+    .order-list-card {
+        border: 1px solid #e9ecef;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+        /* IMPORTANT:
+           Dropdown Actions must be allowed outside card */
+        overflow: visible !important;
+
+        background: #fff;
+    }
+
+    .order-list-card .card-header {
+        background: #fff;
+        border-bottom: 1px solid #e9ecef;
+        padding: 1rem 1.25rem;
+
+        /* Allow dropdown/content to escape */
+        overflow: visible !important;
+    }
+
+    .order-list-card .card-body {
+        overflow: visible !important;
+    }
+
+    .order-list-card .input-group {
+        height: 42px;
+    }
+
+    .order-list-card .input-group-text {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 75px;
+        padding: 0.375rem 0.75rem;
+        background: #f8f9fa;
+        border-color: #dee2e6;
+        color: #495057;
+        font-size: 0.85rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .order-list-card .form-select,
+    .order-list-card .form-control {
+        height: 42px;
+        border-color: #dee2e6;
+        color: #495057;
+        font-size: 0.9rem;
+        box-shadow: none;
+    }
+
+    .order-list-card .form-select:focus,
+    .order-list-card .form-control:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
+    }
+
+    .order-list-card .btn-primary {
+        min-width: 90px;
+        font-weight: 500;
+    }
+
+
+    /* =========================================================
+       ORDER GRID
+       ========================================================= */
+
+    .order-grid-responsive {
+        width: 100%;
+        overflow: visible !important;
+    }
+
+    .order-grid {
+        width: 100%;
+        font-size: 0.95rem;
+        margin-bottom: 0;
+    }
+
+    .order-grid thead th {
+        background: #f8f9fa;
+        color: #495057;
+        font-size: 0.85rem;
+        font-weight: 600;
+        white-space: nowrap;
+        vertical-align: middle;
+        border-bottom: 1px solid #dee2e6;
+        padding: 0.7rem 0.65rem;
+    }
+
+    .order-grid tbody td {
+        padding: 0.65rem 0.65rem;
+        vertical-align: middle;
+    }
+
+    .order-grid tbody tr {
+        transition: background-color 0.15s ease;
+    }
+
+    .order-grid tbody tr:hover {
+        background-color: rgba(13, 110, 253, 0.035);
+    }
+
+    .order-grid .btn-sm {
+        font-size: 0.78rem;
+        padding: 0.3rem 0.65rem;
+    }
+
+
+    /* =========================================================
+       ACTION DROPDOWN
+       ========================================================= */
+
+    .order-grid td:last-child {
+        position: relative;
+        white-space: nowrap;
+    }
+
+    .order-grid td:last-child .dropdown {
+        position: static;
+    }
+
+    .order-grid .dropdown-menu {
+        font-size: 0.85rem;
+        min-width: 170px;
+
+        border: 1px solid #e9ecef;
+        box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.10);
+
+        z-index: 9999 !important;
+    }
+
+    .order-grid .dropdown-item {
+        padding: 0.45rem 0.85rem;
+    }
+
+
+    /* =========================================================
+       GRID BODY
+       ========================================================= */
+
+    .order-grid-body {
+        padding: 1rem 1.25rem 1.25rem !important;
+        overflow: visible !important;
+    }
+
+
+    /* =========================================================
+       PAGINATION
+       ========================================================= */
+
+    #navPager .pagination {
+        gap: 3px;
+    }
+
+    #navPager .page-link {
+        border-radius: 6px !important;
+        border: 1px solid #dee2e6;
+        font-size: 0.82rem;
+        min-width: 34px;
+        text-align: center;
+    }
+
+    #navPager .page-item.active .page-link {
+        font-weight: 600;
+    }
+
+
+    /* =========================================================
+       FOOTER
+       ========================================================= */
+
+    .order-filter-footer {
+        background: #fff;
+        border-top: 1px solid #e9ecef;
+        padding: 0.85rem 1.25rem !important;
+    }
+
+    .order-filter-footer .form-select {
+        min-width: 130px;
+        height: 38px;
+        font-size: 0.85rem;
+        border-color: #dee2e6;
+        box-shadow: none;
+    }
+
+    .order-filter-footer .form-select:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
+    }
+
+
+    /* =========================================================
+       ACTION BUTTONS
+       ========================================================= */
+
+    .order-action-buttons {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .order-action-buttons .btn {
+        min-height: 38px;
+    }
+
+
+    /* =========================================================
+       MOBILE
+       ========================================================= */
+
+    @media (max-width: 991.98px) {
 
         .order-filter-card .card-header {
-            background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.85rem 1.25rem;
-        }
-
-        .order-filter-card .filter-title {
-            display: flex;
-            align-items: center;
-            gap: 0.55rem;
-            margin: 0;
-            color: #495057;
-            font-size: 0.9rem;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-
-        .order-filter-card .filter-title i {
-            font-size: 0.95rem;
+            padding: 0.75rem 1rem;
         }
 
         .order-filter-card .card-body {
-            padding: 1rem 1.25rem;
+            padding: 0.85rem 1rem;
         }
 
         .order-filter-card .input-group {
-            height: 42px;
+            height: 40px;
         }
 
         .order-filter-card .input-group-text {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 95px;
-            padding: 0.375rem 0.75rem;
-            background: #f8f9fa;
-            border-color: #dee2e6;
-            color: #495057;
-            font-size: 0.85rem;
-            font-weight: 600;
-            white-space: nowrap;
+            min-width: 90px;
+            font-size: 0.82rem;
         }
 
         .order-filter-card .form-select {
-            height: 42px;
-            border-color: #dee2e6;
-            color: #495057;
-            font-size: 0.9rem;
-            box-shadow: none;
-            cursor: pointer;
+            height: 40px;
+            font-size: 0.88rem;
         }
 
-        .order-filter-card .form-select:hover {
-            border-color: #adb5bd;
-        }
-
-        .order-filter-card .form-select:focus {
-            border-color: #86b7fe;
-            box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
-        }
-
-
-        /* =========================================================
-           ORDER LIST CARD
-           ========================================================= */
-
-        .order-list-card {
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            overflow: hidden;
-            background: #fff;
-        }
 
         .order-list-card .card-header {
-            background: #fff;
-            border-bottom: 1px solid #e9ecef;
-            padding: 1rem 1.25rem;
+            padding: 0.85rem 1rem;
         }
 
         .order-list-card .input-group {
-            height: 42px;
+            height: 40px;
         }
 
         .order-list-card .input-group-text {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 75px;
-            padding: 0.375rem 0.75rem;
-            background: #f8f9fa;
-            border-color: #dee2e6;
-            color: #495057;
-            font-size: 0.85rem;
-            font-weight: 600;
-            white-space: nowrap;
+            min-width: 70px;
+            font-size: 0.82rem;
         }
 
         .order-list-card .form-select,
         .order-list-card .form-control {
-            height: 42px;
-            border-color: #dee2e6;
-            color: #495057;
-            font-size: 0.9rem;
-            box-shadow: none;
+            height: 40px;
+            font-size: 0.88rem;
         }
 
-        .order-list-card .form-select:focus,
-        .order-list-card .form-control:focus {
-            border-color: #86b7fe;
-            box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
-        }
-
-        .order-list-card .btn-primary {
-            min-width: 90px;
-            font-weight: 500;
-        }
-
-
-        /* =========================================================
-           ORDER GRID
-           ========================================================= */
-
-        .order-grid {
-            font-size: 0.95rem;
-        }
-
-        .order-grid thead th {
-            background: #f8f9fa;
-            color: #495057;
-            font-size: 0.85rem;
-            font-weight: 600;
-            white-space: nowrap;
-            vertical-align: middle;
-            border-bottom: 1px solid #dee2e6;
-            padding: 0.7rem 0.65rem;
-        }
-
-        .order-grid tbody td {
-            padding: 0.65rem 0.65rem;
-            vertical-align: middle;
-        }
-
-        .order-grid tbody tr {
-            transition: background-color 0.15s ease;
-        }
-
-        .order-grid tbody tr:hover {
-            background-color: rgba(13, 110, 253, 0.035);
-        }
-
-        .order-grid .btn-sm {
-            font-size: 0.78rem;
-            padding: 0.3rem 0.65rem;
-        }
-
-        .order-grid .dropdown-menu {
-            font-size: 0.85rem;
-            box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.10);
-            border: 1px solid #e9ecef;
-        }
-
-        .order-grid .dropdown-item {
-            padding: 0.45rem 0.85rem;
-        }
-
-
-        /* =========================================================
-           ORDER GRID BODY
-           ========================================================= */
 
         .order-grid-body {
-            padding: 1rem 1.25rem 1.25rem !important;
+            padding: 0.75rem !important;
         }
-
-
-        /* =========================================================
-           FOOTER
-           ========================================================= */
 
         .order-filter-footer {
-            background: #fff;
-            border-top: 1px solid #e9ecef;
-            padding: 0.85rem 1.25rem !important;
+            padding: 0.75rem 1rem !important;
+        }
+    }
+
+
+    /* =========================================================
+       SMALL MOBILE
+       ========================================================= */
+
+    @media (max-width: 575.98px) {
+
+        .order-filter-card {
+            border-radius: 8px;
         }
 
-        .order-filter-footer .form-select {
-            min-width: 130px;
-            height: 38px;
+        .order-list-card {
+            border-radius: 8px;
+        }
+
+        .order-filter-card .filter-title {
             font-size: 0.85rem;
-            border-color: #dee2e6;
-            box-shadow: none;
         }
 
-        .order-filter-footer .form-select:focus {
-            border-color: #86b7fe;
-            box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
+        .order-filter-card .input-group-text {
+            min-width: 85px;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
         }
 
-
-        /* =========================================================
-           PAGINATION
-           ========================================================= */
-
-        #navPager .pagination {
-            gap: 3px;
+        .order-list-card .input-group-text {
+            min-width: 65px;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
         }
-
-        #navPager .page-link {
-            border-radius: 6px !important;
-            border: 1px solid #dee2e6;
-            font-size: 0.82rem;
-            min-width: 34px;
-            text-align: center;
-        }
-
-        #navPager .page-item.active .page-link {
-            font-weight: 600;
-        }
-
-
-        /* =========================================================
-           ACTION BUTTONS
-           ========================================================= */
 
         .order-action-buttons {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
+            justify-content: stretch;
         }
 
         .order-action-buttons .btn {
-            min-height: 38px;
+            flex: 1 1 auto;
         }
-
-
-        /* =========================================================
-           MOBILE
-           ========================================================= */
-
-        @media (max-width: 991.98px) {
-
-            .order-filter-card .card-header {
-                padding: 0.75rem 1rem;
-            }
-
-            .order-filter-card .card-body {
-                padding: 0.85rem 1rem;
-            }
-
-            .order-filter-card .input-group {
-                height: 40px;
-            }
-
-            .order-filter-card .input-group-text {
-                min-width: 90px;
-                font-size: 0.82rem;
-            }
-
-            .order-filter-card .form-select {
-                height: 40px;
-                font-size: 0.88rem;
-            }
-
-
-            .order-list-card .card-header {
-                padding: 0.85rem 1rem;
-            }
-
-            .order-list-card .input-group {
-                height: 40px;
-            }
-
-            .order-list-card .input-group-text {
-                min-width: 70px;
-                font-size: 0.82rem;
-            }
-
-            .order-list-card .form-select,
-            .order-list-card .form-control {
-                height: 40px;
-                font-size: 0.88rem;
-            }
-
-
-            .order-grid-body {
-                padding: 0.75rem !important;
-            }
-
-            .order-filter-footer {
-                padding: 0.75rem 1rem !important;
-            }
-        }
-
-
-        /* =========================================================
-           SMALL MOBILE
-           ========================================================= */
-
-        @media (max-width: 575.98px) {
-
-            .order-filter-card {
-                border-radius: 8px;
-            }
-
-            .order-list-card {
-                border-radius: 8px;
-            }
-
-            .order-filter-card .filter-title {
-                font-size: 0.85rem;
-            }
-
-            .order-filter-card .input-group-text {
-                min-width: 85px;
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-            }
-
-            .order-list-card .input-group-text {
-                min-width: 65px;
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-            }
-
-            .order-action-buttons {
-                justify-content: stretch;
-            }
-
-            .order-action-buttons .btn {
-                flex: 1 1 auto;
-            }
-        }
-    </style>
+    }
+</style>
     
     <div class="page-heading">
         <div class="page-title">
@@ -463,7 +500,7 @@
                                         </div>
                                     </div>
                                     <div class="card-body order-grid-body">
-                                        <div class="table-responsive">
+                                        <div class="order-grid-responsive">
                                             <asp:GridView runat="server" ID="gvList" CssClass="table table-striped table-hover align-middle order-grid" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
                                                 <Columns>
                                                     <asp:TemplateField ItemStyle-HorizontalAlign="Center">
