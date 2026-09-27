@@ -384,7 +384,10 @@
                     },
                     body: '{}'
                 })
-                    .then(response => response.json()).then(data => {
+                    .then(response => response.json())
+
+                    .then(data => {
+
                         let notifications = data.d || [];
                         notifications.forEach(function (item) {
                             if (!loadedPopupIds.has(item.popupId)) {
@@ -408,42 +411,123 @@
 
             function showNextPopup() {
                 if (popupQueue.length === 0) return;
-
                 currentPopup = popupQueue.shift();
 
                 document.getElementById("titleNotification").innerText = currentPopup.title;
-                document.getElementById("messageNotification").innerHTML = currentPopup.message.replace(/\r\n/g, "<br>").replace(/\n/g, "<br>");
 
-                var modalEl = document.getElementById('modalNotification');
+                document.getElementById("messageNotification").innerHTML =
+                    currentPopup.message
+                        .replace(/\r\n/g, "<br>")
+                        .replace(/\n/g, "<br>");
 
-                var modal = bootstrap.Modal.getInstance(modalEl);
+                var modalEl =
+                    document.getElementById('modalNotification');
+
+
+                var modal =
+                    bootstrap.Modal.getInstance(modalEl);
+
+
                 if (!modal) {
+
                     modal = new bootstrap.Modal(modalEl, {
                         backdrop: 'static',
                         keyboard: false
                     });
+
                 }
+
                 modal.show();
+
             }
+
 
             function savePopupLog(popupId) {
+
                 fetch('/Setting/General/Notification/Default.aspx/SavePopupLog', {
+
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ popupId: popupId })
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    body: JSON.stringify({
+                        popupId: popupId
+                    })
+
                 });
+
             }
+
+
+            //========================================================
+            // KEEP SESSION ALIVE
+            //========================================================
+
             setInterval(() => {
-                fetch('/Setting/UpdateSession.ashx', {
+
+                fetch('/Setting/UpdateSession.aspx', {
+
                     credentials: 'same-origin',
+
                     cache: 'no-store'
+
                 }).catch(() => { });
+
             }, 240000);
 
-            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
-                var newTitle = '<%= String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %>';
-                document.title = newTitle;
-            });
+
+            //========================================================
+            // UPDATE CURRENT PAGE
+            //========================================================
+
+            function updateCurrentPage() {
+
+                fetch('/Setting/UpdateSession.aspx/UpdateCurrentPage', {
+
+                    method: 'POST',
+
+                    credentials: 'same-origin',
+
+                    cache: 'no-store',
+
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+
+                    body: JSON.stringify({
+                        page: window.location.pathname
+                    })
+
+                }).catch(() => { });
+
+            }
+
+
+            // Jalankan pertama kali
+            updateCurrentPage();
+
+
+            // Update setiap 5 detik
+            setInterval(updateCurrentPage, 5000);
+
+
+            //========================================================
+            // UPDATE TITLE AFTER AJAX POSTBACK
+            //========================================================
+
+            Sys.WebForms.PageRequestManager
+                .getInstance()
+                .add_endRequest(function () {
+
+                    var newTitle =
+                '<%= String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %>';
+
+            document.title = newTitle;
+
+        });
+
         </script>
         
         <script src="/Assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>

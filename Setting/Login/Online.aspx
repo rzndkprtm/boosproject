@@ -66,9 +66,17 @@
                                             <asp:BoundField DataField="Device" HeaderText="Device" />
                                             <asp:BoundField DataField="OS" HeaderText="OS" />
                                             <asp:BoundField DataField="LastActiveMinute" HeaderText="Active (Min Ago)" />
-                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="120px">
                                                 <ItemTemplate>
-                                                    <a href="javascript:void(0);" runat="server" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalDeleteSession" onclick='<%# String.Format("return dataDeleteSession(`{0}`);", Eval("Id").ToString()) %>'>Delete Session</a>
+                                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                                        <ul class="dropdown-menu">
+                                                            <li>
+                                                                <a href="javascript:void(0);" class="dropdown-item" data-loginid='<%# Eval("LoginId") %>' onclick="checkUserPage(this.getAttribute('data-loginid')); return false;">Check Page</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteSession" onclick='<%# String.Format("return dataDeleteSession(`{0}`);", Eval("Id").ToString()) %>'>Delete Session</a>
+                                                            </li>
+                                                        </ul>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                         </Columns>
@@ -135,15 +143,64 @@
             </div>
         </div>
     </div>
+    
+    <div class="modal fade" id="modalUserStatus" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">User Current Page</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="userPageResult"></div>
+            </div>
+        </div>
+    </div>
 
     <asp:HiddenField runat="server" ID="fieldMessage" />
     <asp:HiddenField runat="server" ID="hfMessage" />
 
     <script type="text/javascript">
+        function checkUserPage(loginId) {
+
+            fetch('/Setting/UpdateSession.aspx/GetCurrentPage', {
+                method: 'POST',
+                credentials: 'same-origin',
+                cache: 'no-store',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    loginId: loginId
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+
+                    document.getElementById('userPageResult').innerHTML = data.d;
+
+                    var modalElement = document.getElementById('modalUserStatus');
+
+                    var modal = bootstrap.Modal.getInstance(modalElement);
+
+                    if (!modal) {
+                        modal = new bootstrap.Modal(modalElement, {
+                            backdrop: 'static',
+                            keyboard: false
+                        });
+                    }
+
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+            return false;
+        }
         function dataDeleteSession(id) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
         }
-        ["modalDeleteSession"].forEach(function (id) {
+        ["modalDeleteSession", "modalUserStatus"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
