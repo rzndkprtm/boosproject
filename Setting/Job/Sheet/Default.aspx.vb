@@ -49,14 +49,22 @@ Partial Class Setting_Job_Sheet_Default
         BuildPager()
     End Sub
 
+    Protected Sub btnCopy_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtCopyId.Text
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
     Protected Sub BindData(searchText As String)
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText)),
                 New SqlParameter("@RoleName", Session("RoleName").ToString())
             }
-            Dim thisData As DataTable = jobClass.GetDataTableSP("sp_JobSheets_List", params)
-            gvList.DataSource = thisData
+            gvList.DataSource = jobClass.GetDataTableSP("sp_JobSheets_List", params)
             gvList.DataBind()
 
             btnAdd.Visible = LoginAccess("Add")
@@ -103,6 +111,23 @@ Partial Class Setting_Job_Sheet_Default
             navPager.Visible = False
         End Try
     End Sub
+
+    Protected Function BindCompanyDetail(jobSheetId As String) As String
+        If Not String.IsNullOrEmpty(jobSheetId) Then
+            Dim myData As DataTable = jobClass.GetDataTable("SELECT CompanyDetails.Name AS CompanyName FROM JobSheets CROSS APPLY STRING_SPLIT(JobSheets.CompanyDetailId, ',') AS splitArray LEFT JOIN CompanyDetails ON splitArray.VALUE=CompanyDetails.Id WHERE JobSheets.Id='" & jobSheetId & "' ORDER BY CompanyDetails.Id ASC")
+            Dim hasil As String = String.Empty
+            If myData.Rows.Count > 0 Then
+                For i As Integer = 0 To myData.Rows.Count - 1
+                    Dim companyDetailName As String = myData.Rows(i)("CompanyName").ToString()
+                    hasil += companyDetailName & ", "
+                Next
+                Return hasil.Remove(hasil.Length - 2).ToString()
+            Else
+                Return String.Empty
+            End If
+        End If
+        Return "Error"
+    End Function
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message

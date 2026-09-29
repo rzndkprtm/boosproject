@@ -1134,8 +1134,8 @@
             document.getElementById("titleStatus").textContent = status;
 
             document.getElementById("<%=txtStatusOrderId.ClientID %>").value = id;
-        document.getElementById("<%=txtStatusOrderNew.ClientID %>").value = status;
-        document.getElementById("<%=txtStatusOrderOld.ClientID %>").value = oldStatus;
+            document.getElementById("<%=txtStatusOrderNew.ClientID %>").value = status;
+            document.getElementById("<%=txtStatusOrderOld.ClientID %>").value = oldStatus;
 
         }
 
@@ -1145,41 +1145,32 @@
            ========================================================= */
 
         function dataDuplicateOrder(id, customerid) {
-
             document.getElementById("<%=txtDuplicateOrderId.ClientID %>").value = id;
-        document.getElementById("<%=txtDuplicateOrderCustomerId.ClientID %>").value = customerid;
+            document.getElementById("<%=txtDuplicateOrderCustomerId.ClientID %>").value = customerid;
+        }
 
-    }
-
-
-    function showDuplicateOrder() {
-
-        $("#modalDuplicateOrder").modal("show");
-
-    }
+        function showDuplicateOrder() {
+            $("#modalDuplicateOrder").modal("show");
+        }
 
 
-    /* =========================================================
-       SHIPMENT ORDER
-       ========================================================= */
+        /* =========================================================
+           SHIPMENT ORDER
+           ========================================================= */
 
-    function dataShipmentOrder(id) {
-
-        document.getElementById("<%=txtShipmentOrderId.ClientID %>").value = id;
-
-    }
+        function dataShipmentOrder(id) {
+            document.getElementById("<%=txtShipmentOrderId.ClientID %>").value = id;
+        }
 
 
-    function showShipmentOrder() {
-
-        $("#modalShipmentOrder").modal("show");
-
-    }
+        function showShipmentOrder() {
+            $("#modalShipmentOrder").modal("show");
+        }
 
 
-    /* =========================================================
-       CANCEL ORDER
-       ========================================================= */
+        /* =========================================================
+           CANCEL ORDER
+           ========================================================= */
 
     function dataCancelOrder(id) {
 

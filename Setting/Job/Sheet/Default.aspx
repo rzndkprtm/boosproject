@@ -68,7 +68,7 @@
                                             <asp:BoundField DataField="Name" HeaderText="Name" />
                                             <asp:BoundField DataField="Alias" HeaderText="Alias" />
                                             <asp:BoundField DataField="Status" HeaderText="Status" />
-                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="120px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
@@ -77,6 +77,9 @@
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/job/sheet/edit?sheetid=" & Eval("Id")) %>'>Edit</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Name").ToString()) %>'>Copy</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('JobSheets', '<%# Eval("Id") %>')">Log</a>
@@ -108,6 +111,42 @@
         </section>
     </div>
 
+    <div class="modal fade text-left" id="modalCopy" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Copy Job Sheet</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtCopyId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtCopyName" style="display:none;"></asp:TextBox>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Name (New)</label>
+                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="New Job Sheet Name ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Alias (New)</label>
+                            <asp:TextBox runat="server" ID="txtAlias" CssClass="form-control" placeholder="New Job Sheet Alias ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Description (New)</label>
+                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="130px" CssClass="form-control" placeholder="Description ...." autocomplete="off" style="resize: none"></asp:TextBox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnCopy" CssClass="btn btn-primary" Text="Submit" OnClick="btnCopy_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -178,6 +217,10 @@
             initUpdatePanelLoading();
             bindGridRowClick();
         });
+        function dataCopy(id, jobSheetName) {
+            document.getElementById("<%=txtCopyId.ClientID %>").value = id;
+            document.getElementById("<%=txtCopyName.ClientID %>").value = jobSheetName;
+        }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -211,6 +254,13 @@
                 }
             });
         }
+
+        ["modalCopy", "modalLog"].forEach(function (id) {
+            document.getElementById(id).addEventListener("hide.bs.modal", function () {
+                document.activeElement.blur();
+                document.body.focus();
+            });
+        });
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>
