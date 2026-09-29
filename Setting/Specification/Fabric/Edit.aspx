@@ -69,9 +69,9 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Group</label>
-                                                <asp:DropDownList runat="server" ID="ddlGroup" CssClass="form-select">
+                                                <asp:DropDownList runat="server" ID="ddlGroup" CssClass="choices form-select">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
                                                     <asp:ListItem Value="Group 1" Text="Group 1"></asp:ListItem>
                                                     <asp:ListItem Value="Group 2" Text="Group 2"></asp:ListItem>
@@ -83,11 +83,18 @@
                                                     <asp:ListItem Value="Semi Opaque" Text="Semi Opaque"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">No Rail Road</label>
-                                                <asp:DropDownList runat="server" ID="ddlNoRailRoad" CssClass="form-select">
+                                                <asp:DropDownList runat="server" ID="ddlNoRailRoad" CssClass="choices form-select">
                                                     <asp:ListItem Value="1" Text="Yes"></asp:ListItem>
                                                     <asp:ListItem Value="0" Text="No"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Status</label>
+                                                <asp:DropDownList runat="server" ID="ddlStatus" CssClass="choices form-select">
+                                                    <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
+                                                    <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>

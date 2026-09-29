@@ -93,11 +93,8 @@
                                             <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Status</label>
                                                 <asp:DropDownList runat="server" ID="ddlStatus" CssClass="choices form-select">
-                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                    <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
-                                                    <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
-                                                    <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
-                                                    <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                                                    <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
+                                                    <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>

@@ -46,89 +46,19 @@ Partial Class Setting_Specification_Fabric_Detail
         Response.Redirect(url, False)
     End Sub
 
-    Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim newStatus As String = ddlNewStatus.SelectedValue
-
-            If newStatus = "" Then
-                url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
-                Response.Redirect(url, False)
-                Exit Sub
-            End If
-
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
+                Using thisCmd As New SqlCommand("UPDATE Fabrics SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim changeDesc As String = String.Format("Change Status Fabric Type : {0}", newStatus)
-            dataLog = {"Fabrics", lblId.Text, Session("LoginId").ToString(), changeDesc}
+            dataLog = {"Fabrics", lblId.Text, Session("LoginId").ToString(), "Fabric Type Deleted"}
             settingClass.Logs(dataLog)
-
-            Dim detailData As DataTable = settingClass.GetDataTable("SELECT * FROM FabricColours WHERE FabricId='" & lblId.Text & "' AND Status='" & lblStatus.Text & "'")
-            If Not detailData.Rows.Count = 0 Then
-                For i As Integer = 0 To detailData.Rows.Count - 1
-                    Dim detailId As String = detailData.Rows(i)("Id").ToString()
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", detailId)
-                            thisCmd.Parameters.AddWithValue("@Status", newStatus)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    changeDesc = String.Format("Change Status Fabric Colour : {0}", newStatus)
-
-                    dataLog = {"FabricColours", detailId, Session("LoginId").ToString(), changeDesc}
-                    settingClass.Logs(dataLog)
-                Next
-            End If
-
-            Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM FabricAlias WHERE Type='Fabrics' AND FirstId='" & lblId.Text & "'")
-            If aliasData IsNot Nothing Then
-                Dim aliasId As String = aliasData(0).ToString()
-
-                Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET Status=@Status WHERE Id=@Id", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", aliasId)
-                        thisCmd.Parameters.AddWithValue("@Status", newStatus)
-                        thisConn.Open()
-                        thisCmd.ExecuteNonQuery()
-                    End Using
-                End Using
-
-                changeDesc = String.Format("Change Status Fabric Type : {0}", newStatus)
-                dataLog = {"Fabrics", aliasId, Session("LoginId").ToString(), changeDesc}
-                settingClass.Logs(dataLog)
-
-                Dim detailAliasData As DataTable = settingClass.GetDataTable("SELECT * FROM FabricColours WHERE FabricId='" & aliasId & "' AND Status='" & lblStatus.Text & "'")
-                If Not detailAliasData.Rows.Count = 0 Then
-                    For i As Integer = 0 To detailAliasData.Rows.Count - 1
-                        Dim detailId As String = detailAliasData.Rows(i)("Id").ToString()
-
-                        Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
-                                thisCmd.Parameters.AddWithValue("@Id", detailId)
-                                thisCmd.Parameters.AddWithValue("@Status", newStatus)
-                                thisConn.Open()
-                                thisCmd.ExecuteNonQuery()
-                            End Using
-                        End Using
-
-                        changeDesc = String.Format("Change Status Fabric Colour : {0}", newStatus)
-
-                        dataLog = {"FabricColours", detailId, Session("LoginId").ToString(), changeDesc}
-                        settingClass.Logs(dataLog)
-                    Next
-                End If
-            End If
 
             url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
             Response.Redirect(url, False)
@@ -211,7 +141,7 @@ Partial Class Setting_Specification_Fabric_Detail
 
     Protected Sub BindData(fabricId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Fabrics WHERE Id='" & fabricId & "'")
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Fabrics WHERE Id='" & fabricId & "' AND (Status='Active' OR Status='In Active')")
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/specification/fabric", False)
                 Exit Sub
@@ -269,7 +199,7 @@ Partial Class Setting_Specification_Fabric_Detail
             End If
 
             btnEditFabric.Visible = LoginAccess("Edit")
-            aChangeStatus.Visible = LoginAccess("Change Status")
+            aDeleteFabric.Visible = LoginAccess("Delete")
             btnAddColour.Visible = LoginAccess("Add Colour")
         Catch ex As Exception
             MessageError(True, ex.ToString)

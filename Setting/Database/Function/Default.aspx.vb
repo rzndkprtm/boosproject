@@ -74,7 +74,7 @@ Partial Class Setting_Database_Function_Default
             If Not searchText = "" Then
                 search = "WHERE name LIKE '%" & searchText & "%'"
             End If
-            Dim thisString As String = String.Format("SELECT * FROM sys.procedures {0} ORDER BY name ASC", search)
+            Dim thisString As String = String.Format("SELECT * FROM sys.procedures {0} ORDER BY modify_date DESC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()

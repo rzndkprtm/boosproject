@@ -434,6 +434,7 @@ Partial Class Order_Detail
                     ElseIf status = "Discontinued" Then
                         Dim thisString As String = "- ITEM " & number & ". THIS PRODUCT HAS BEEN " & status.ToUpper() & ". PLEASE CHECK AND CHANGE IT.<br />"
                         sb.AppendLine(thisString)
+
                     ElseIf fabricColourStatus = "Out of Stock" Then
                         Dim thisString As String = "- ITEM " & number & ". THIS FABRIC IS CURRENTLY " & fabricColourStatus.ToUpper() & ". PLEASE CHECK AND CHANGE IT.<br />"
                         sb.AppendLine(thisString)

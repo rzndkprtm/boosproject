@@ -41,3 +41,9 @@ A $4 fuel surcharge will be applied once the order is submitted.
 3%
 
 PG PLANTATION UP (25%) & SEWLESS (35%)
+
+DELETE FABRIC TYPE Change Status
+ADD FABRIC TYPE Delete
+
+DELETE Fabric Detail Change Status
+ADD Fabric Detail Delete

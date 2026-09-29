@@ -2,392 +2,494 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-    /* =========================================================
-       FILTER CARD
-       ========================================================= */
+        /* =========================================================
+           FILTER CARD
+           ========================================================= */
 
-    .order-filter-card {
-        border: 1px solid #e9ecef;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-        overflow: hidden;
-        background: #fff;
-    }
-
-    .order-filter-card .card-header {
-        background: #f8f9fa;
-        border-bottom: 1px solid #e9ecef;
-        padding: 0.85rem 1.25rem;
-    }
-
-    .order-filter-card .filter-title {
-        display: flex;
-        align-items: center;
-        gap: 0.55rem;
-        margin: 0;
-        color: #495057;
-        font-size: 0.9rem;
-        font-weight: 600;
-        line-height: 1.2;
-    }
-
-    .order-filter-card .filter-title i {
-        font-size: 0.95rem;
-    }
-
-    .order-filter-card .card-body {
-        padding: 1rem 1.25rem;
-    }
-
-    .order-filter-card .input-group {
-        height: 42px;
-    }
-
-    .order-filter-card .input-group-text {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 95px;
-        padding: 0.375rem 0.75rem;
-        background: #f8f9fa;
-        border-color: #dee2e6;
-        color: #495057;
-        font-size: 0.85rem;
-        font-weight: 600;
-        white-space: nowrap;
-    }
-
-    .order-filter-card .form-select {
-        height: 42px;
-        border-color: #dee2e6;
-        color: #495057;
-        font-size: 0.9rem;
-        box-shadow: none;
-        cursor: pointer;
-    }
-
-    .order-filter-card .form-select:hover {
-        border-color: #adb5bd;
-    }
-
-    .order-filter-card .form-select:focus {
-        border-color: #86b7fe;
-        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
-    }
-
-
-    /* =========================================================
-       ORDER LIST CARD
-       ========================================================= */
-
-    .order-list-card {
-        border: 1px solid #e9ecef;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-
-        /* IMPORTANT:
-           Dropdown Actions must be allowed outside card */
-        overflow: visible !important;
-
-        background: #fff;
-    }
-
-    .order-list-card .card-header {
-        background: #fff;
-        border-bottom: 1px solid #e9ecef;
-        padding: 1rem 1.25rem;
-
-        /* Allow dropdown/content to escape */
-        overflow: visible !important;
-    }
-
-    .order-list-card .card-body {
-        overflow: visible !important;
-    }
-
-    .order-list-card .input-group {
-        height: 42px;
-    }
-
-    .order-list-card .input-group-text {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 75px;
-        padding: 0.375rem 0.75rem;
-        background: #f8f9fa;
-        border-color: #dee2e6;
-        color: #495057;
-        font-size: 0.85rem;
-        font-weight: 600;
-        white-space: nowrap;
-    }
-
-    .order-list-card .form-select,
-    .order-list-card .form-control {
-        height: 42px;
-        border-color: #dee2e6;
-        color: #495057;
-        font-size: 0.9rem;
-        box-shadow: none;
-    }
-
-    .order-list-card .form-select:focus,
-    .order-list-card .form-control:focus {
-        border-color: #86b7fe;
-        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
-    }
-
-    .order-list-card .btn-primary {
-        min-width: 90px;
-        font-weight: 500;
-    }
-
-
-    /* =========================================================
-       ORDER GRID
-       ========================================================= */
-
-    .order-grid-responsive {
-        width: 100%;
-        overflow: visible !important;
-    }
-
-    .order-grid {
-        width: 100%;
-        font-size: 0.95rem;
-        margin-bottom: 0;
-    }
-
-    .order-grid thead th {
-        background: #f8f9fa;
-        color: #495057;
-        font-size: 0.85rem;
-        font-weight: 600;
-        white-space: nowrap;
-        vertical-align: middle;
-        border-bottom: 1px solid #dee2e6;
-        padding: 0.7rem 0.65rem;
-    }
-
-    .order-grid tbody td {
-        padding: 0.65rem 0.65rem;
-        vertical-align: middle;
-    }
-
-    .order-grid tbody tr {
-        transition: background-color 0.15s ease;
-    }
-
-    .order-grid tbody tr:hover {
-        background-color: rgba(13, 110, 253, 0.035);
-    }
-
-    .order-grid .btn-sm {
-        font-size: 0.78rem;
-        padding: 0.3rem 0.65rem;
-    }
-
-
-    /* =========================================================
-       ACTION DROPDOWN
-       ========================================================= */
-
-    .order-grid td:last-child {
-        position: relative;
-        white-space: nowrap;
-    }
-
-    .order-grid td:last-child .dropdown {
-        position: static;
-    }
-
-    .order-grid .dropdown-menu {
-        font-size: 0.85rem;
-        min-width: 170px;
-
-        border: 1px solid #e9ecef;
-        box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.10);
-
-        z-index: 9999 !important;
-    }
-
-    .order-grid .dropdown-item {
-        padding: 0.45rem 0.85rem;
-    }
-
-
-    /* =========================================================
-       GRID BODY
-       ========================================================= */
-
-    .order-grid-body {
-        padding: 1rem 1.25rem 1.25rem !important;
-        overflow: visible !important;
-    }
-
-
-    /* =========================================================
-       PAGINATION
-       ========================================================= */
-
-    #navPager .pagination {
-        gap: 3px;
-    }
-
-    #navPager .page-link {
-        border-radius: 6px !important;
-        border: 1px solid #dee2e6;
-        font-size: 0.82rem;
-        min-width: 34px;
-        text-align: center;
-    }
-
-    #navPager .page-item.active .page-link {
-        font-weight: 600;
-    }
-
-
-    /* =========================================================
-       FOOTER
-       ========================================================= */
-
-    .order-filter-footer {
-        background: #fff;
-        border-top: 1px solid #e9ecef;
-        padding: 0.85rem 1.25rem !important;
-    }
-
-    .order-filter-footer .form-select {
-        min-width: 130px;
-        height: 38px;
-        font-size: 0.85rem;
-        border-color: #dee2e6;
-        box-shadow: none;
-    }
-
-    .order-filter-footer .form-select:focus {
-        border-color: #86b7fe;
-        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
-    }
-
-
-    /* =========================================================
-       ACTION BUTTONS
-       ========================================================= */
-
-    .order-action-buttons {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .order-action-buttons .btn {
-        min-height: 38px;
-    }
-
-
-    /* =========================================================
-       MOBILE
-       ========================================================= */
-
-    @media (max-width: 991.98px) {
+        .order-filter-card {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            background: #fff;
+        }
 
         .order-filter-card .card-header {
-            padding: 0.75rem 1rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+            padding: 0.85rem 1.25rem;
+        }
+
+        .order-filter-card .filter-title {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin: 0;
+            color: #495057;
+            font-size: 0.9rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .order-filter-card .filter-title i {
+            font-size: 0.95rem;
         }
 
         .order-filter-card .card-body {
-            padding: 0.85rem 1rem;
+            padding: 1rem 1.25rem;
         }
 
         .order-filter-card .input-group {
-            height: 40px;
+            height: 42px;
         }
 
         .order-filter-card .input-group-text {
-            min-width: 90px;
-            font-size: 0.82rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 95px;
+            padding: 0.375rem 0.75rem;
+            background: #f8f9fa;
+            border-color: #dee2e6;
+            color: #495057;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
         }
 
         .order-filter-card .form-select {
-            height: 40px;
-            font-size: 0.88rem;
+            height: 42px;
+            border-color: #dee2e6;
+            color: #495057;
+            font-size: 0.9rem;
+            box-shadow: none;
+            cursor: pointer;
+        }
+
+        .order-filter-card .form-select:hover {
+            border-color: #adb5bd;
+        }
+
+        .order-filter-card .form-select:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
         }
 
 
+        /* =========================================================
+           ORDER LIST CARD
+           ========================================================= */
+
+        .order-list-card {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            overflow: visible !important;
+            background: #fff;
+        }
+
         .order-list-card .card-header {
-            padding: 0.85rem 1rem;
+            background: #fff;
+            border-bottom: 1px solid #e9ecef;
+            padding: 1rem 1.25rem;
+            overflow: visible !important;
+        }
+
+        .order-list-card .card-body {
+            overflow: visible !important;
         }
 
         .order-list-card .input-group {
-            height: 40px;
+            height: 42px;
         }
 
         .order-list-card .input-group-text {
-            min-width: 70px;
-            font-size: 0.82rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 75px;
+            padding: 0.375rem 0.75rem;
+            background: #f8f9fa;
+            border-color: #dee2e6;
+            color: #495057;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
         }
 
         .order-list-card .form-select,
         .order-list-card .form-control {
-            height: 40px;
-            font-size: 0.88rem;
+            height: 42px;
+            border-color: #dee2e6;
+            color: #495057;
+            font-size: 0.9rem;
+            box-shadow: none;
         }
 
+        .order-list-card .form-select:focus,
+        .order-list-card .form-control:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
+        }
+
+        .order-list-card .btn-primary {
+            min-width: 90px;
+            font-weight: 500;
+        }
+
+
+        /* =========================================================
+           GRID RESPONSIVE
+           ========================================================= */
+
+        .order-grid-responsive {
+            width: 100%;
+            max-width: 100%;
+
+            /*
+             * IMPORTANT:
+             * Horizontal scroll tetap ada.
+             * Vertical scroll TIDAK dibuat oleh table container.
+             */
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
+            scrollbar-width: thin;
+        }
+
+
+        /* =========================================================
+           GRID TABLE
+           ========================================================= */
+
+        .order-grid {
+            width: 100%;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        .order-grid thead th {
+            background: #f8f9fa;
+            color: #495057;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+            vertical-align: middle;
+            border-bottom: 1px solid #dee2e6;
+            padding: 0.7rem 0.65rem;
+        }
+
+        .order-grid tbody td {
+            padding: 0.65rem 0.65rem;
+            vertical-align: middle;
+        }
+
+        .order-grid tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+        .order-grid tbody tr:hover {
+            background-color: rgba(13, 110, 253, 0.035);
+        }
+
+        .order-grid .btn-sm {
+            font-size: 0.78rem;
+            padding: 0.3rem 0.65rem;
+        }
+
+
+        /* =========================================================
+           ACTION COLUMN
+           ========================================================= */
+
+        .order-grid td:last-child {
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .order-grid td:last-child .dropdown {
+            position: static;
+        }
+
+        .order-grid .dropdown-toggle {
+            white-space: nowrap;
+        }
+
+
+        /* =========================================================
+           NORMAL DROPDOWN
+           ========================================================= */
+
+        .order-grid .dropdown-menu {
+            font-size: 0.85rem;
+            min-width: 170px;
+
+            border: 1px solid #e9ecef;
+
+            box-shadow:
+                0 0.35rem 1rem rgba(0, 0, 0, 0.10);
+
+            z-index: 99999 !important;
+
+            /*
+             * JS akan memindahkan dropdown ke BODY
+             * ketika dibuka.
+             */
+            position: fixed !important;
+
+            margin: 0 !important;
+
+            max-height: calc(100vh - 20px);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .order-grid .dropdown-menu.show {
+            display: block !important;
+        }
+
+        .order-grid .dropdown-item {
+            padding: 0.45rem 0.85rem;
+            white-space: nowrap;
+        }
+
+        .order-grid .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+
+        /* =========================================================
+           GRID BODY
+           ========================================================= */
 
         .order-grid-body {
-            padding: 0.75rem !important;
+            padding: 1rem 1.25rem 1.25rem !important;
+            overflow: visible !important;
         }
+
+
+        /* =========================================================
+           PAGINATION
+           ========================================================= */
+
+        #navPager .pagination {
+            gap: 3px;
+        }
+
+        #navPager .page-link {
+            border-radius: 6px !important;
+            border: 1px solid #dee2e6;
+            font-size: 0.82rem;
+            min-width: 34px;
+            text-align: center;
+        }
+
+        #navPager .page-item.active .page-link {
+            font-weight: 600;
+        }
+
+
+        /* =========================================================
+           FOOTER
+           ========================================================= */
 
         .order-filter-footer {
-            padding: 0.75rem 1rem !important;
-        }
-    }
-
-
-    /* =========================================================
-       SMALL MOBILE
-       ========================================================= */
-
-    @media (max-width: 575.98px) {
-
-        .order-filter-card {
-            border-radius: 8px;
+            background: #fff;
+            border-top: 1px solid #e9ecef;
+            padding: 0.85rem 1.25rem !important;
         }
 
-        .order-list-card {
-            border-radius: 8px;
-        }
-
-        .order-filter-card .filter-title {
+        .order-filter-footer .form-select {
+            min-width: 130px;
+            height: 38px;
             font-size: 0.85rem;
+            border-color: #dee2e6;
+            box-shadow: none;
         }
 
-        .order-filter-card .input-group-text {
-            min-width: 85px;
-            padding-left: 0.5rem;
-            padding-right: 0.5rem;
+        .order-filter-footer .form-select:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
         }
 
-        .order-list-card .input-group-text {
-            min-width: 65px;
-            padding-left: 0.5rem;
-            padding-right: 0.5rem;
-        }
+
+        /* =========================================================
+           ACTION BUTTONS
+           ========================================================= */
 
         .order-action-buttons {
-            justify-content: stretch;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .order-action-buttons .btn {
-            flex: 1 1 auto;
+            min-height: 38px;
         }
-    }
-</style>
-    
+
+
+        /* =========================================================
+           MOBILE / TABLET
+           ========================================================= */
+
+        @media (max-width: 991.98px) {
+
+            .order-filter-card .card-header {
+                padding: 0.75rem 1rem;
+            }
+
+            .order-filter-card .card-body {
+                padding: 0.85rem 1rem;
+            }
+
+            .order-filter-card .input-group {
+                height: 40px;
+            }
+
+            .order-filter-card .input-group-text {
+                min-width: 90px;
+                font-size: 0.82rem;
+            }
+
+            .order-filter-card .form-select {
+                height: 40px;
+                font-size: 0.88rem;
+            }
+
+
+            .order-list-card .card-header {
+                padding: 0.85rem 1rem;
+            }
+
+            .order-list-card .input-group {
+                height: 40px;
+            }
+
+            .order-list-card .input-group-text {
+                min-width: 70px;
+                font-size: 0.82rem;
+            }
+
+            .order-list-card .form-select,
+            .order-list-card .form-control {
+                height: 40px;
+                font-size: 0.88rem;
+            }
+
+
+            .order-grid-body {
+                padding: 0.75rem !important;
+            }
+
+
+            /*
+             * MOBILE:
+             * Table tetap horizontal scroll.
+             */
+            .order-grid-responsive {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior-x: contain;
+            }
+
+
+            .order-grid {
+                width: max-content;
+                min-width: 100%;
+            }
+
+            .order-grid th,
+            .order-grid td {
+                white-space: nowrap;
+            }
+
+
+            .order-filter-footer {
+                padding: 0.75rem 1rem !important;
+            }
+        }
+
+
+        /* =========================================================
+           SMALL MOBILE
+           ========================================================= */
+
+        @media (max-width: 575.98px) {
+
+            .order-filter-card {
+                border-radius: 8px;
+            }
+
+            .order-list-card {
+                border-radius: 8px;
+            }
+
+            .order-filter-card .filter-title {
+                font-size: 0.85rem;
+            }
+
+            .order-filter-card .input-group-text {
+                min-width: 85px;
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+
+            .order-list-card .input-group-text {
+                min-width: 65px;
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+
+            .order-action-buttons {
+                justify-content: stretch;
+            }
+
+            .order-action-buttons .btn {
+                flex: 1 1 auto;
+            }
+
+
+            .order-grid-responsive {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior-x: contain;
+            }
+
+
+            .order-grid {
+                width: max-content;
+                min-width: 100%;
+            }
+
+            .order-grid th,
+            .order-grid td {
+                white-space: nowrap;
+            }
+
+
+            .order-filter-footer {
+                padding: 0.75rem 1rem !important;
+            }
+
+
+            .order-grid .dropdown-menu {
+                min-width: 165px;
+                max-width: calc(100vw - 20px);
+            }
+        }
+    </style>
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -500,7 +602,7 @@
                                         </div>
                                     </div>
                                     <div class="card-body order-grid-body">
-                                        <div class="order-grid-responsive">
+                                        <div class="table-responsive order-grid-responsive">
                                             <asp:GridView runat="server" ID="gvList" CssClass="table table-striped table-hover align-middle order-grid" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
                                                 <Columns>
                                                     <asp:TemplateField ItemStyle-HorizontalAlign="Center">
@@ -886,82 +988,230 @@
     </div>
 
     <script type="text/javascript">
+
+        /* =========================================================
+           PAGE SHOW / UPDATE PANEL LOADING
+           ========================================================= */
+
         window.addEventListener("pageshow", function () {
+
             var loading = document.getElementById("loadingOverlay");
-            if (loading) loading.style.display = "none";
+
+            if (loading) {
+                loading.style.display = "none";
+            }
+
         });
+
+
         function initUpdatePanelLoading() {
-            if (typeof Sys === "undefined") return;
+
+            if (typeof Sys === "undefined") {
+                return;
+            }
+
             var prm = Sys.WebForms.PageRequestManager.getInstance();
+
             prm.add_beginRequest(function () {
+
                 var loading = document.getElementById("loadingOverlay");
-                if (loading) loading.style.display = "block";
+
+                if (loading) {
+                    loading.style.display = "block";
+                }
+
             });
+
             prm.add_endRequest(function () {
+
                 var loading = document.getElementById("loadingOverlay");
-                if (loading) loading.style.display = "none";
+
+                if (loading) {
+                    loading.style.display = "none";
+                }
+
                 bindGridRowClick();
+
             });
+
         }
+
+
+        /* =========================================================
+           GRID ROW CLICK
+           ========================================================= */
+
         function bindGridRowClick() {
+
             const gv = document.getElementById('<%= gvList.ClientID %>');
-            if (!gv) return;
+
+            if (!gv) {
+                return;
+            }
+
             for (let i = 1; i < gv.rows.length; i++) {
+
                 const row = gv.rows[i];
+
                 row.style.cursor = "pointer";
+
                 row.onclick = function (e) {
-                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
+
+                    /*
+                     * Jangan trigger Detail jika user sedang
+                     * berinteraksi dengan Action / Button / Link.
+                     */
+                    if (
+                        e.target.closest("a") ||
+                        e.target.closest("button") ||
+                        e.target.closest("[data-bs-toggle]") ||
+                        e.target.closest(".dropdown-menu")
+                    ) {
                         return;
                     }
+
+                    /*
+                     * Klik row biasa -> Detail.
+                     */
                     const btn = this.querySelector("a[id*='aDetail']");
-                    if (btn) btn.click();
+
+                    if (btn) {
+                        btn.click();
+                    }
+
                 };
+
             }
+
         }
+
+
+        /* =========================================================
+           DOM READY
+           ========================================================= */
+
         document.addEventListener("DOMContentLoaded", function () {
+
             initUpdatePanelLoading();
             bindGridRowClick();
+
         });
+
+
+        /* =========================================================
+           SHIPMENT DATA
+           ========================================================= */
+
         function dataShipment(number, date, container, coneta, courier) {
+
             document.getElementById("spanShipmentNumber").innerText = number;
             document.getElementById("spanShipmentDate").innerText = date;
             document.getElementById("spanContainerNumber").innerText = container;
             document.getElementById("spanContainerEta").innerText = coneta;
             document.getElementById("spanCourier").innerText = courier;
+
         }
+
+
+        /* =========================================================
+           BOE DOWNLOAD DATA
+           ========================================================= */
+
         function dataBOEDownload(status, date) {
+
             document.getElementById("spanBOEDownloadStatus").innerText = status;
             document.getElementById("spanBOEDownloadDate").innerText = date;
+
         }
+
+
+        /* =========================================================
+           ORDER STATUS DATA
+           ========================================================= */
+
         function dataStatusOrder(id, status, oldStatus) {
+
             document.getElementById("titleStatus").textContent = status;
+
             document.getElementById("<%=txtStatusOrderId.ClientID %>").value = id;
-            document.getElementById("<%=txtStatusOrderNew.ClientID %>").value = status;
-            document.getElementById("<%=txtStatusOrderOld.ClientID %>").value = oldStatus;            
+        document.getElementById("<%=txtStatusOrderNew.ClientID %>").value = status;
+        document.getElementById("<%=txtStatusOrderOld.ClientID %>").value = oldStatus;
+
         }
+
+
+        /* =========================================================
+           DUPLICATE ORDER
+           ========================================================= */
+
         function dataDuplicateOrder(id, customerid) {
-            document.getElementById("<%=txtDuplicateOrderId.ClientID %>").value = id;            
-            document.getElementById("<%=txtDuplicateOrderCustomerId.ClientID %>").value = customerid;            
+
+            document.getElementById("<%=txtDuplicateOrderId.ClientID %>").value = id;
+        document.getElementById("<%=txtDuplicateOrderCustomerId.ClientID %>").value = customerid;
+
+    }
+
+
+    function showDuplicateOrder() {
+
+        $("#modalDuplicateOrder").modal("show");
+
+    }
+
+
+    /* =========================================================
+       SHIPMENT ORDER
+       ========================================================= */
+
+    function dataShipmentOrder(id) {
+
+        document.getElementById("<%=txtShipmentOrderId.ClientID %>").value = id;
+
+    }
+
+
+    function showShipmentOrder() {
+
+        $("#modalShipmentOrder").modal("show");
+
+    }
+
+
+    /* =========================================================
+       CANCEL ORDER
+       ========================================================= */
+
+    function dataCancelOrder(id) {
+
+        document.getElementById("<%=txtCancelOrderId.ClientID %>").value = id;
+
+    }
+
+
+    function showCancelOrder() {
+
+        $("#modalCancelOrder").modal("show");
+
+    }
+
+
+    /* =========================================================
+       OCEAN
+       ========================================================= */
+
+    function dataOcean(id) {
+
+        document.getElementById("<%=txtOceanId.ClientID %>").value = id;
+
         }
-        function showDuplicateOrder() {
-            $("#modalDuplicateOrder").modal("show");
-        }
-        function dataShipmentOrder(id) {
-            document.getElementById("<%=txtShipmentOrderId.ClientID %>").value = id;
-        }
-        function showShipmentOrder() {
-            $("#modalShipmentOrder").modal("show");
-        }
-        function dataCancelOrder(id) {
-            document.getElementById("<%=txtCancelOrderId.ClientID %>").value = id;
-        }
-        function showCancelOrder() {
-            $("#modalCancelOrder").modal("show");
-        }
-        function dataOcean(id) {
-            document.getElementById("<%=txtOceanId.ClientID %>").value = id;
-        }
+
+
+        /* =========================================================
+           LOG
+           ========================================================= */
+
         function showLog(type, dataId) {
+
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
             $("#modalLog").modal("show");
@@ -969,47 +1219,341 @@
             $.ajax({
                 type: "POST",
                 url: "Method.aspx/GetLogs",
-                data: JSON.stringify({ type: type, dataId: dataId }),
+                data: JSON.stringify({
+                    type: type,
+                    dataId: dataId
+                }),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
+
                 success: function (res) {
+
                     const logs = res.d;
 
                     if (!logs || logs.length === 0) {
+
                         $("#tblLogs tbody").html(
                             `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
                         );
+
                         return;
                     }
 
                     let html = "";
+
                     logs.forEach(r => {
+
                         html += `<tr><td>${r.TextLog}</td></tr>`;
+
                     });
 
                     $("#tblLogs tbody").html(html);
+
                 },
+
                 error: function (err) {
-                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
+
+                    $("#logError")
+                        .removeClass("d-none")
+                        .html("FAILED TO LOAD LOG DATA");
+
                 }
+
             });
+
         }
+
+
+        /* =========================================================
+           WAITING MODAL
+           ========================================================= */
+
         function showWaiting(hideModal = null) {
+
             $("#modalWaiting").modal("show");
+
             setTimeout(function () {
+
                 $("#modalWaiting").modal("hide");
+
                 if (hideModal) {
                     $(`#${hideModal}`).modal("hide");
                 }
+
             }, 5000);
+
             return true;
+
         }
-        ["modalBOEDownload", "modalShipment", "modalStatusOrder", "modalDuplicateOrder", "modalCancelOrder", "modalShipmentOrder", "modalOcean", "modalLog"].forEach(function (id) {
-            document.getElementById(id).addEventListener("hide.bs.modal", function () {
-                document.activeElement.blur();
-                document.body.focus();
-            });
+
+
+        /* =========================================================
+           MODAL BLUR / FOCUS
+           ========================================================= */
+
+        [
+            "modalBOEDownload",
+            "modalShipment",
+            "modalStatusOrder",
+            "modalDuplicateOrder",
+            "modalCancelOrder",
+            "modalShipmentOrder",
+            "modalOcean",
+            "modalLog"
+        ].forEach(function (id) {
+
+            document.getElementById(id).addEventListener(
+                "hide.bs.modal",
+                function () {
+
+                    document.activeElement.blur();
+                    document.body.focus();
+
+                }
+            );
+
         });
-        window.history.replaceState(null, null, window.location.href);
+
+
+        /* =========================================================
+           HISTORY
+           ========================================================= */
+
+        window.history.replaceState(
+            null,
+            null,
+            window.location.href
+        );
+
+
+        /* =========================================================
+           GRID ACTION DROPDOWN
+           ========================================================= */
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+
+            /* -----------------------------------------------------
+               DROPDOWN OPEN
+               ----------------------------------------------------- */
+
+            document.addEventListener(
+                "shown.bs.dropdown",
+                function (event) {
+
+                    var button = event.target;
+
+                    if (!button.closest(".order-grid")) {
+                        return;
+                    }
+
+                    var dropdown =
+                        button.parentElement.querySelector(".dropdown-menu");
+
+                    if (!dropdown) {
+                        return;
+                    }
+
+
+                    /*
+                     * Simpan parent asli.
+                     */
+                    if (!dropdown._originalParent) {
+
+                        dropdown._originalParent =
+                            dropdown.parentElement;
+
+                        dropdown._originalNextSibling =
+                            dropdown.nextSibling;
+
+                    }
+
+
+                    /*
+                     * Simpan button yang membuka dropdown.
+                     */
+                    dropdown._dropdownButton = button;
+
+
+                    /*
+                     * Pindahkan dropdown keluar dari
+                     * table-responsive.
+                     */
+                    document.body.appendChild(dropdown);
+
+
+                    /*
+                     * Hitung posisi tombol Actions.
+                     */
+                    var rect = button.getBoundingClientRect();
+
+                    var dropdownWidth =
+                        dropdown.offsetWidth;
+
+                    var dropdownHeight =
+                        dropdown.offsetHeight;
+
+                    var left =
+                        rect.right - dropdownWidth;
+
+                    var top =
+                        rect.bottom + 4;
+
+
+                    /*
+                     * Jangan sampai keluar sisi kanan layar.
+                     */
+                    if (left < 10) {
+                        left = 10;
+                    }
+
+                    if (
+                        left + dropdownWidth >
+                        window.innerWidth - 10
+                    ) {
+
+                        left =
+                            window.innerWidth -
+                            dropdownWidth -
+                            10;
+
+                    }
+
+
+                    /*
+                     * Kalau tidak cukup ruang di bawah,
+                     * tampilkan di atas tombol.
+                     */
+                    if (
+                        top + dropdownHeight >
+                        window.innerHeight - 10
+                    ) {
+
+                        top =
+                            rect.top -
+                            dropdownHeight -
+                            4;
+
+                    }
+
+
+                    /*
+                     * Safety agar tidak keluar bagian atas.
+                     */
+                    if (top < 10) {
+                        top = 10;
+                    }
+
+
+                    /*
+                     * Set posisi dropdown.
+                     */
+                    dropdown.style.position = "fixed";
+                    dropdown.style.left = left + "px";
+                    dropdown.style.top = top + "px";
+                    dropdown.style.right = "auto";
+                    dropdown.style.bottom = "auto";
+                    dropdown.style.transform = "none";
+                    dropdown.style.margin = "0";
+                    dropdown.style.zIndex = "999999";
+
+                }
+            );
+
+
+            /* -----------------------------------------------------
+               DROPDOWN CLOSE
+               ----------------------------------------------------- */
+
+            document.addEventListener(
+                "hidden.bs.dropdown",
+                function (event) {
+
+                    var button = event.target;
+
+                    if (!button.closest(".order-grid")) {
+                        return;
+                    }
+
+
+                    /*
+                     * Setelah dropdown dipindahkan ke BODY,
+                     * parent button sudah tidak memiliki dropdown.
+                     *
+                     * Karena itu cari dropdown berdasarkan
+                     * reference button yang disimpan sebelumnya.
+                     */
+                    var dropdown =
+                        document.querySelector(
+                            "body > .dropdown-menu"
+                        );
+
+
+                    if (
+                        !dropdown ||
+                        dropdown._dropdownButton !== button
+                    ) {
+                        return;
+                    }
+
+
+                    /*
+                     * Ambil parent asli.
+                     */
+                    var originalParent =
+                        dropdown._originalParent;
+
+                    var originalNextSibling =
+                        dropdown._originalNextSibling;
+
+
+                    /*
+                     * Kembalikan dropdown ke posisi semula.
+                     */
+                    if (originalParent) {
+
+                        if (
+                            originalNextSibling &&
+                            originalNextSibling.parentNode ===
+                            originalParent
+                        ) {
+
+                            originalParent.insertBefore(
+                                dropdown,
+                                originalNextSibling
+                            );
+
+                        } else {
+
+                            originalParent.appendChild(
+                                dropdown
+                            );
+
+                        }
+
+                    }
+
+
+                    /*
+                     * Bersihkan inline style.
+                     */
+                    dropdown.style.position = "";
+                    dropdown.style.left = "";
+                    dropdown.style.top = "";
+                    dropdown.style.right = "";
+                    dropdown.style.bottom = "";
+                    dropdown.style.transform = "";
+                    dropdown.style.margin = "";
+                    dropdown.style.zIndex = "";
+
+
+                    /*
+                     * Bersihkan reference button.
+                     */
+                    dropdown._dropdownButton = null;
+
+                }
+            );
+        });
     </script>
 </asp:Content>

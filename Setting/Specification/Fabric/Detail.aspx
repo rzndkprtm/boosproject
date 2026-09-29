@@ -101,7 +101,7 @@
                                 <div class="border-top pt-3 mt-4">
                                     <div class="d-flex flex-wrap gap-2">
                                         <asp:Button runat="server" ID="btnEditFabric" CssClass="btn btn-primary" Text="Edit Fabric" OnClick="btnEditFabric_Click" />
-                                        <a href="javascript:void(0);" runat="server" id="aChangeStatus" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#modalChangeStatus">Change Status</a>
+                                        <a href="javascript:void(0);" runat="server" id="aDeleteFabric" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete Fabric</a>
                                         <a href="javascript:void(0);" class="btn btn-outline-secondary" onclick="showLog('Fabrics', '<%= lblId.Text %>')">View Log</a>
                                     </div>
                                 </div>
@@ -177,29 +177,18 @@
         </section>
     </div>
 
-    <div class="modal fade text-left" id="modalChangeStatus" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal modal-blur fade" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Change Status</h4>
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Fabric</h5>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">New Status</label>
-                            <asp:DropDownList runat="server" ID="ddlNewStatus" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
-                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
-                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
-                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnChangeStatus" CssClass="btn btn-primary" Text="Submit" OnClick="btnChangeStatus_Click" />
+                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
                 </div>
             </div>
         </div>
@@ -364,7 +353,7 @@
                 dataType: "json"
             });
         }
-        ["modalChangeStatus", "modalChangeStatusColour", "modalLog"].forEach(function (id) {
+        ["modalDelete", "modalChangeStatusColour", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

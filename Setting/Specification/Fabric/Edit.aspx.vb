@@ -90,7 +90,7 @@ Partial Class Setting_Specification_Fabric_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET DesignId=@DesignId, TubeId=@TubeId, CompanyDetailId=@CompanyDetailId, Name=@Name, Type=@Type, [Group]=@Group, NoRailRoad=@NoRailRoad WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET DesignId=@DesignId, TubeId=@TubeId, CompanyDetailId=@CompanyDetailId, Name=@Name, Type=@Type, [Group]=@Group, NoRailRoad=@NoRailRoad, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@DesignId", designType)
                         thisCmd.Parameters.AddWithValue("@TubeId", tubeType)
@@ -99,6 +99,7 @@ Partial Class Setting_Specification_Fabric_Edit
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Group", ddlGroup.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@NoRailRoad", ddlNoRailRoad.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -155,6 +156,7 @@ Partial Class Setting_Specification_Fabric_Edit
             ddlType.SelectedValue = thisData("Type").ToString()
             ddlGroup.SelectedValue = thisData("Group").ToString()
             ddlNoRailRoad.SelectedValue = Convert.ToInt32(thisData("NoRailRoad"))
+            ddlStatus.SelectedValue = thisData("Status").ToString()
 
             If Not String.IsNullOrWhiteSpace(thisData("DesignId").ToString()) Then
                 For Each i As String In thisData("DesignId").ToString().Split(","c)
