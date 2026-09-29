@@ -9495,9 +9495,9 @@ Partial Class Order_Method
         End If
         If data.subtype = "Single" AndAlso String.IsNullOrEmpty(data.tilterposition) Then Return "TILTER POSITION IS REQUIRED !"
 
-        'If width > 250 And width < 310 AndAlso data.controlposition <> "No Control" Then
+        If width > 250 And width < 310 AndAlso data.controlposition <> "No Control" Then
 
-        'End If
+        End If
 
         If width > 310 AndAlso width <= 410 AndAlso data.controlposition = data.tilterposition Then
             Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS !"

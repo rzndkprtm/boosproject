@@ -2,10 +2,6 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        /* =========================================================
-           FILTER CARD
-           ========================================================= */
-
         .order-filter-card {
             border: 1px solid #e9ecef;
             border-radius: 10px;
@@ -988,79 +984,44 @@
     </div>
 
     <script type="text/javascript">
-
-        /* =========================================================
-           PAGE SHOW / UPDATE PANEL LOADING
-           ========================================================= */
-
         window.addEventListener("pageshow", function () {
-
             var loading = document.getElementById("loadingOverlay");
-
             if (loading) {
                 loading.style.display = "none";
             }
-
         });
 
-
         function initUpdatePanelLoading() {
-
             if (typeof Sys === "undefined") {
                 return;
             }
-
             var prm = Sys.WebForms.PageRequestManager.getInstance();
-
             prm.add_beginRequest(function () {
-
                 var loading = document.getElementById("loadingOverlay");
-
                 if (loading) {
                     loading.style.display = "block";
                 }
-
             });
 
             prm.add_endRequest(function () {
-
                 var loading = document.getElementById("loadingOverlay");
-
                 if (loading) {
                     loading.style.display = "none";
                 }
-
                 bindGridRowClick();
-
             });
-
         }
 
-
-        /* =========================================================
-           GRID ROW CLICK
-           ========================================================= */
-
         function bindGridRowClick() {
-
             const gv = document.getElementById('<%= gvList.ClientID %>');
-
             if (!gv) {
                 return;
             }
 
             for (let i = 1; i < gv.rows.length; i++) {
-
                 const row = gv.rows[i];
-
                 row.style.cursor = "pointer";
-
                 row.onclick = function (e) {
-
-                    /*
-                     * Jangan trigger Detail jika user sedang
-                     * berinteraksi dengan Action / Button / Link.
-                     */
                     if (
                         e.target.closest("a") ||
                         e.target.closest("button") ||
@@ -1070,139 +1031,60 @@
                         return;
                     }
 
-                    /*
-                     * Klik row biasa -> Detail.
-                     */
                     const btn = this.querySelector("a[id*='aDetail']");
 
                     if (btn) {
                         btn.click();
                     }
-
                 };
-
             }
-
         }
 
-
-        /* =========================================================
-           DOM READY
-           ========================================================= */
-
         document.addEventListener("DOMContentLoaded", function () {
-
             initUpdatePanelLoading();
             bindGridRowClick();
-
         });
 
-
-        /* =========================================================
-           SHIPMENT DATA
-           ========================================================= */
-
         function dataShipment(number, date, container, coneta, courier) {
-
             document.getElementById("spanShipmentNumber").innerText = number;
             document.getElementById("spanShipmentDate").innerText = date;
             document.getElementById("spanContainerNumber").innerText = container;
             document.getElementById("spanContainerEta").innerText = coneta;
             document.getElementById("spanCourier").innerText = courier;
-
         }
-
-
-        /* =========================================================
-           BOE DOWNLOAD DATA
-           ========================================================= */
-
         function dataBOEDownload(status, date) {
-
             document.getElementById("spanBOEDownloadStatus").innerText = status;
             document.getElementById("spanBOEDownloadDate").innerText = date;
-
         }
-
-
-        /* =========================================================
-           ORDER STATUS DATA
-           ========================================================= */
-
         function dataStatusOrder(id, status, oldStatus) {
-
             document.getElementById("titleStatus").textContent = status;
-
             document.getElementById("<%=txtStatusOrderId.ClientID %>").value = id;
             document.getElementById("<%=txtStatusOrderNew.ClientID %>").value = status;
             document.getElementById("<%=txtStatusOrderOld.ClientID %>").value = oldStatus;
-
         }
-
-
-        /* =========================================================
-           DUPLICATE ORDER
-           ========================================================= */
-
         function dataDuplicateOrder(id, customerid) {
             document.getElementById("<%=txtDuplicateOrderId.ClientID %>").value = id;
             document.getElementById("<%=txtDuplicateOrderCustomerId.ClientID %>").value = customerid;
         }
-
         function showDuplicateOrder() {
             $("#modalDuplicateOrder").modal("show");
         }
-
-
-        /* =========================================================
-           SHIPMENT ORDER
-           ========================================================= */
-
         function dataShipmentOrder(id) {
             document.getElementById("<%=txtShipmentOrderId.ClientID %>").value = id;
         }
-
-
         function showShipmentOrder() {
             $("#modalShipmentOrder").modal("show");
         }
-
-
-        /* =========================================================
-           CANCEL ORDER
-           ========================================================= */
-
-    function dataCancelOrder(id) {
-
-        document.getElementById("<%=txtCancelOrderId.ClientID %>").value = id;
-
-    }
-
-
-    function showCancelOrder() {
-
-        $("#modalCancelOrder").modal("show");
-
-    }
-
-
-    /* =========================================================
-       OCEAN
-       ========================================================= */
-
-    function dataOcean(id) {
-
-        document.getElementById("<%=txtOceanId.ClientID %>").value = id;
-
+        function dataCancelOrder(id) {
+            document.getElementById("<%=txtCancelOrderId.ClientID %>").value = id;
         }
-
-
-        /* =========================================================
-           LOG
-           ========================================================= */
-
+        function showCancelOrder() {
+            $("#modalCancelOrder").modal("show");
+        }
+        function dataOcean(id) {
+            document.getElementById("<%=txtOceanId.ClientID %>").value = id;
+        }
         function showLog(type, dataId) {
-
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
             $("#modalLog").modal("show");
@@ -1210,77 +1092,45 @@
             $.ajax({
                 type: "POST",
                 url: "Method.aspx/GetLogs",
-                data: JSON.stringify({
-                    type: type,
-                    dataId: dataId
-                }),
+                data: JSON.stringify({type: type, dataId: dataId}),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
 
                 success: function (res) {
-
                     const logs = res.d;
 
                     if (!logs || logs.length === 0) {
-
                         $("#tblLogs tbody").html(
                             `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
                         );
-
                         return;
                     }
 
                     let html = "";
-
                     logs.forEach(r => {
-
                         html += `<tr><td>${r.TextLog}</td></tr>`;
-
                     });
-
                     $("#tblLogs tbody").html(html);
-
                 },
-
                 error: function (err) {
-
                     $("#logError")
                         .removeClass("d-none")
                         .html("FAILED TO LOAD LOG DATA");
-
                 }
-
             });
-
         }
 
-
-        /* =========================================================
-           WAITING MODAL
-           ========================================================= */
-
         function showWaiting(hideModal = null) {
-
             $("#modalWaiting").modal("show");
 
             setTimeout(function () {
-
                 $("#modalWaiting").modal("hide");
-
                 if (hideModal) {
                     $(`#${hideModal}`).modal("hide");
                 }
-
             }, 5000);
-
             return true;
-
         }
-
-
-        /* =========================================================
-           MODAL BLUR / FOCUS
-           ========================================================= */
 
         [
             "modalBOEDownload",
@@ -1292,259 +1142,94 @@
             "modalOcean",
             "modalLog"
         ].forEach(function (id) {
-
-            document.getElementById(id).addEventListener(
-                "hide.bs.modal",
-                function () {
-
-                    document.activeElement.blur();
-                    document.body.focus();
-
-                }
-            );
-
+            document.getElementById(id).addEventListener("hide.bs.modal", function () {
+                document.activeElement.blur();
+                document.body.focus();
+            });
         });
 
-
-        /* =========================================================
-           HISTORY
-           ========================================================= */
-
-        window.history.replaceState(
-            null,
-            null,
-            window.location.href
-        );
-
-
-        /* =========================================================
-           GRID ACTION DROPDOWN
-           ========================================================= */
+        window.history.replaceState(null, null, window.location.href);
 
         document.addEventListener("DOMContentLoaded", function () {
-
-
-            /* -----------------------------------------------------
-               DROPDOWN OPEN
-               ----------------------------------------------------- */
-
-            document.addEventListener(
-                "shown.bs.dropdown",
-                function (event) {
-
-                    var button = event.target;
-
-                    if (!button.closest(".order-grid")) {
-                        return;
-                    }
-
-                    var dropdown =
-                        button.parentElement.querySelector(".dropdown-menu");
-
-                    if (!dropdown) {
-                        return;
-                    }
-
-
-                    /*
-                     * Simpan parent asli.
-                     */
-                    if (!dropdown._originalParent) {
-
-                        dropdown._originalParent =
-                            dropdown.parentElement;
-
-                        dropdown._originalNextSibling =
-                            dropdown.nextSibling;
-
-                    }
-
-
-                    /*
-                     * Simpan button yang membuka dropdown.
-                     */
-                    dropdown._dropdownButton = button;
-
-
-                    /*
-                     * Pindahkan dropdown keluar dari
-                     * table-responsive.
-                     */
-                    document.body.appendChild(dropdown);
-
-
-                    /*
-                     * Hitung posisi tombol Actions.
-                     */
-                    var rect = button.getBoundingClientRect();
-
-                    var dropdownWidth =
-                        dropdown.offsetWidth;
-
-                    var dropdownHeight =
-                        dropdown.offsetHeight;
-
-                    var left =
-                        rect.right - dropdownWidth;
-
-                    var top =
-                        rect.bottom + 4;
-
-
-                    /*
-                     * Jangan sampai keluar sisi kanan layar.
-                     */
-                    if (left < 10) {
-                        left = 10;
-                    }
-
-                    if (
-                        left + dropdownWidth >
-                        window.innerWidth - 10
-                    ) {
-
-                        left =
-                            window.innerWidth -
-                            dropdownWidth -
-                            10;
-
-                    }
-
-
-                    /*
-                     * Kalau tidak cukup ruang di bawah,
-                     * tampilkan di atas tombol.
-                     */
-                    if (
-                        top + dropdownHeight >
-                        window.innerHeight - 10
-                    ) {
-
-                        top =
-                            rect.top -
-                            dropdownHeight -
-                            4;
-
-                    }
-
-
-                    /*
-                     * Safety agar tidak keluar bagian atas.
-                     */
-                    if (top < 10) {
-                        top = 10;
-                    }
-
-
-                    /*
-                     * Set posisi dropdown.
-                     */
-                    dropdown.style.position = "fixed";
-                    dropdown.style.left = left + "px";
-                    dropdown.style.top = top + "px";
-                    dropdown.style.right = "auto";
-                    dropdown.style.bottom = "auto";
-                    dropdown.style.transform = "none";
-                    dropdown.style.margin = "0";
-                    dropdown.style.zIndex = "999999";
-
+            document.addEventListener("shown.bs.dropdown", function (event) {
+                var button = event.target;
+                if (!button.closest(".order-grid")) {
+                    return;
                 }
-            );
 
-
-            /* -----------------------------------------------------
-               DROPDOWN CLOSE
-               ----------------------------------------------------- */
-
-            document.addEventListener(
-                "hidden.bs.dropdown",
-                function (event) {
-
-                    var button = event.target;
-
-                    if (!button.closest(".order-grid")) {
-                        return;
-                    }
-
-
-                    /*
-                     * Setelah dropdown dipindahkan ke BODY,
-                     * parent button sudah tidak memiliki dropdown.
-                     *
-                     * Karena itu cari dropdown berdasarkan
-                     * reference button yang disimpan sebelumnya.
-                     */
-                    var dropdown =
-                        document.querySelector(
-                            "body > .dropdown-menu"
-                        );
-
-
-                    if (
-                        !dropdown ||
-                        dropdown._dropdownButton !== button
-                    ) {
-                        return;
-                    }
-
-
-                    /*
-                     * Ambil parent asli.
-                     */
-                    var originalParent =
-                        dropdown._originalParent;
-
-                    var originalNextSibling =
-                        dropdown._originalNextSibling;
-
-
-                    /*
-                     * Kembalikan dropdown ke posisi semula.
-                     */
-                    if (originalParent) {
-
-                        if (
-                            originalNextSibling &&
-                            originalNextSibling.parentNode ===
-                            originalParent
-                        ) {
-
-                            originalParent.insertBefore(
-                                dropdown,
-                                originalNextSibling
-                            );
-
-                        } else {
-
-                            originalParent.appendChild(
-                                dropdown
-                            );
-
-                        }
-
-                    }
-
-
-                    /*
-                     * Bersihkan inline style.
-                     */
-                    dropdown.style.position = "";
-                    dropdown.style.left = "";
-                    dropdown.style.top = "";
-                    dropdown.style.right = "";
-                    dropdown.style.bottom = "";
-                    dropdown.style.transform = "";
-                    dropdown.style.margin = "";
-                    dropdown.style.zIndex = "";
-
-
-                    /*
-                     * Bersihkan reference button.
-                     */
-                    dropdown._dropdownButton = null;
-
+                var dropdown = button.parentElement.querySelector(".dropdown-menu");
+                if (!dropdown) {
+                    return;
                 }
-            );
+
+                if (!dropdown._originalParent) {
+                    dropdown._originalParent = dropdown.parentElement;
+                    dropdown._originalNextSibling = dropdown.nextSibling;
+                }
+                dropdown._dropdownButton = button;
+
+                document.body.appendChild(dropdown);
+
+                var rect = button.getBoundingClientRect();
+                var dropdownWidth = dropdown.offsetWidth;
+                var dropdownHeight = dropdown.offsetHeight;
+                var left = rect.right - dropdownWidth;
+                var top = rect.bottom + 4;
+
+                if (left < 10) {
+                    left = 10;
+                }
+                if (left + dropdownWidth > window.innerWidth - 10) {
+                    left = window.innerWidth - dropdownWidth - 10;
+                }
+                if (top + dropdownHeight > window.innerHeight - 10) {
+                    top = rect.top - dropdownHeight - 4;
+                }
+                if (top < 10) {
+                    top = 10;
+                }
+                dropdown.style.position = "fixed";
+                dropdown.style.left = left + "px";
+                dropdown.style.top = top + "px";
+                dropdown.style.right = "auto";
+                dropdown.style.bottom = "auto";
+                dropdown.style.transform = "none";
+                dropdown.style.margin = "0";
+                dropdown.style.zIndex = "999999";
+            });
+
+            document.addEventListener("hidden.bs.dropdown", function (event) {
+                var button = event.target;
+                if (!button.closest(".order-grid")) {
+                    return;
+                }
+
+                var dropdown = document.querySelector("body > .dropdown-menu");
+                if (!dropdown || dropdown._dropdownButton !== button) {
+                    return;
+                }
+
+                var originalParent = dropdown._originalParent;
+                var originalNextSibling = dropdown._originalNextSibling;
+
+                if (originalParent) {
+                    if (originalNextSibling && originalNextSibling.parentNode === originalParent) {
+                        originalParent.insertBefore(dropdown, originalNextSibling);
+                    } else {
+                        originalParent.appendChild(dropdown);
+                    }
+                }
+
+                dropdown.style.position = "";
+                dropdown.style.left = "";
+                dropdown.style.top = "";
+                dropdown.style.right = "";
+                dropdown.style.bottom = "";
+                dropdown.style.transform = "";
+                dropdown.style.margin = "";
+                dropdown.style.zIndex = "";
+                dropdown._dropdownButton = null;
+            });
         });
     </script>
 </asp:Content>
