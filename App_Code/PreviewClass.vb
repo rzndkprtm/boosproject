@@ -863,11 +863,6 @@ Public Class PreviewClass
                     For i As Integer = 0 To panelData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim layoutCode As String = panelData.Rows(i)("LayoutCode").ToString()
-                        If panelData.Rows(i)("LayoutCode") = "Custom" Then
-                            layoutCode = panelData.Rows(i)("LayoutCodeCustom").ToString()
-                        End If
-
                         Dim wandLength As String = panelData.Rows(i)("WandLength").ToString()
                         Dim wandLengthValue As String = panelData.Rows(i)("WandLengthValue").ToString()
 
@@ -888,9 +883,9 @@ Public Class PreviewClass
                         items(9, i) = If(panelData.Rows(i)("Drop").ToString() <> "" AndAlso panelData.Rows(i)("Drop").ToString() <> "0", panelData.Rows(i)("Drop").ToString(), "")
                         items(10, i) = panelData.Rows(i)("WandColour").ToString()
                         items(11, i) = wandLengthText
-                        items(12, i) = If(panelData.Rows(i)("PanelQty").ToString() <> "" AndAlso panelData.Rows(i)("PanelQty").ToString() <> "0", panelData.Rows(i)("PanelQty").ToString(), "")
-                        items(13, i) = panelData.Rows(i)("TrackType").ToString()
-                        items(14, i) = layoutCode
+                        items(12, i) = panelData.Rows(i)("TrackType").ToString()
+                        items(13, i) = If(panelData.Rows(i)("PanelQty").ToString() <> "" AndAlso panelData.Rows(i)("PanelQty").ToString() <> "0", panelData.Rows(i)("PanelQty").ToString(), "")
+                        items(14, i) = panelData.Rows(i)("LayoutCode").ToString()
                         items(15, i) = panelData.Rows(i)("Batten").ToString()
                         items(16, i) = panelData.Rows(i)("Notes").ToString()
                     Next
@@ -901,7 +896,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Panel System", "Panel Style", "Track Colour", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Wand Colour", "Wand Length", "Panel Qty", "Track Type", "Layout Code", "Batten Colour", "Special Information"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Panel System", "Panel Style", "Track Colour", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Wand Colour", "Wand Length", "Track", "Panel", "Layout Code", "Batten Colour", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))

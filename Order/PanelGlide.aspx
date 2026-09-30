@@ -182,9 +182,9 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row mt-3" id="divtracktype">
+                                            <div class="row mt-3" id="divtrack">
                                                 <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Track Type</label>
+                                                    <label>Track</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-2 form-group">
                                                     <select id="tracktype" class="form-select">
@@ -193,40 +193,29 @@
                                                         <option value="3">3</option>
                                                         <option value="4">4</option>
                                                         <option value="5">5</option>
-                                                        <option value="6">6</option>
+                                                        <%--<option value="6">6</option>--%>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="row mt-3" id="divlayoutcode">
+                                            <div class="row" id="divpanelqty">
                                                 <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Layout Code</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <div class="input-group">
-                                                        <select id="layoutcode" class="form-select"></select>
-                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Layout');">?</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row" id="divlayoutcustom">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Custom Layout Code</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <div class="input-group">
-                                                        <input type="text" id="layoutcodecustom" class="form-control" autocomplete="off" placeholder="Ex : LLWWRRR" />
-                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Layout Custom');">?</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row mt-2" id="divpanelqty">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Panel Qty</label>
+                                                    <label>Panel</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-2 form-group">
-                                                    <input type="text" id="panelqty" class="form-control" autocomplete="off" readonly="readonly" />
+                                                    <select id="panelqty" class="form-select"></select>
                                                 </div>
                                             </div>
+                                            <div class="row" id="divlayoutcode">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Layout</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                    <div class="input-group">
+                                                        <select id="layoutcode" class="form-select"></select>
+                                                        <%--<a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Layout');">?</a>--%>
+                                                    </div>
+                                                </div>
+                                            </div>                                            
                                             <div class="row mt-3" id="divbattenfront">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Batten Colour</label>
@@ -356,5 +345,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/PanelGlide.js?v=1.2.1"></script>
+    <script src="/Scripts/RisaSolihah/PanelGlide.js?v=1.2.2"></script>
 </asp:Content>

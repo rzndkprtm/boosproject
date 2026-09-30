@@ -404,22 +404,79 @@ Partial Class Order_Method
             End If
         End If
 
+        If type = "PanelPG" Then
+            If Not String.IsNullOrEmpty(customtype) Then
+                If customtype = "2" Then
+                    result.Add(New With {.Value = "2", .Text = "2"})
+                End If
+                If customtype = "3" Then
+                    result.Add(New With {.Value = "3", .Text = "3"})
+                    result.Add(New With {.Value = "4", .Text = "4"})
+                    result.Add(New With {.Value = "5", .Text = "5"})
+                End If
+                If customtype = "4" Then
+                    result.Add(New With {.Value = "4", .Text = "4"})
+                    result.Add(New With {.Value = "5", .Text = "5"})
+                    result.Add(New With {.Value = "6", .Text = "6"})
+                    result.Add(New With {.Value = "7", .Text = "7"})
+                End If
+                If customtype = "5" Then
+                    result.Add(New With {.Value = "5", .Text = "5"})
+                    result.Add(New With {.Value = "7", .Text = "7"})
+                    result.Add(New With {.Value = "8", .Text = "8"})
+                    result.Add(New With {.Value = "9", .Text = "9"})
+                End If
+            End If
+        End If
+
         If type = "LayoutCodePG" Then
             If Not String.IsNullOrEmpty(customtype) Then
-                result.Add(New With {.Value = "A", .Text = "A"})
-                result.Add(New With {.Value = "B", .Text = "B"})
-                result.Add(New With {.Value = "C", .Text = "C"})
-                result.Add(New With {.Value = "D", .Text = "D"})
-                result.Add(New With {.Value = "E", .Text = "E"})
-                result.Add(New With {.Value = "F", .Text = "F"})
-                result.Add(New With {.Value = "S", .Text = "S"})
-                If customtype = "2" Then
-                    result.Clear()
-                    result.Add(New With {.Value = "A", .Text = "A"})
-                    result.Add(New With {.Value = "B", .Text = "B"})
-                    result.Add(New With {.Value = "C", .Text = "C"})
-                    result.Add(New With {.Value = "D", .Text = "D"})
-                    result.Add(New With {.Value = "S", .Text = "S"})
+                If customtype = "2 - 2" Then
+                    result.Add(New With {.Value = "2L", .Text = "2L"})
+                    result.Add(New With {.Value = "2R", .Text = "2R"})
+                End If
+                If customtype = "3 - 3" Then
+                    result.Add(New With {.Value = "3L", .Text = "3L"})
+                    result.Add(New With {.Value = "3R", .Text = "3R"})
+                End If
+                If customtype = "3 - 4" Then
+                    result.Add(New With {.Value = "2L-2R", .Text = "2L-2R"})
+                End If
+                If customtype = "3 - 5" Then
+                    result.Add(New With {.Value = "3L-2R", .Text = "3L-2R"})
+                    result.Add(New With {.Value = "2L-3R", .Text = "2L-3R"})
+                End If
+                If customtype = "4 - 4" Then
+                    result.Add(New With {.Value = "4L", .Text = "4L"})
+                    result.Add(New With {.Value = "4R", .Text = "4R"})
+                End If
+                If customtype = "4 - 5" Then
+                    result.Add(New With {.Value = "3L-2R", .Text = "3L-2R"})
+                    result.Add(New With {.Value = "2R-3L", .Text = "2R-3L"})
+                End If
+                If customtype = "4 - 6" Then
+                    result.Add(New With {.Value = "2L-4R", .Text = "2L-4R"})
+                    result.Add(New With {.Value = "4L-2R", .Text = "4L-2R"})
+                End If
+                If customtype = "4 - 7" Then
+                    result.Add(New With {.Value = "4L-3R", .Text = "4L-3R"})
+                    result.Add(New With {.Value = "3L-4R", .Text = "3L-4R"})
+                End If
+                If customtype = "5 - 5" Then
+                    result.Add(New With {.Value = "5L", .Text = "5L"})
+                    result.Add(New With {.Value = "5R", .Text = "5R"})
+                End If
+                If customtype = "5 - 7" Then
+                    result.Add(New With {.Value = "5L-2R", .Text = "5L-2R"})
+                    result.Add(New With {.Value = "2L-5R", .Text = "2L-5R"})
+                End If
+                If customtype = "5 - 8" Then
+                    result.Add(New With {.Value = "3L-5R", .Text = "3L-5R"})
+                    result.Add(New With {.Value = "5L-3R", .Text = "5L-3R"})
+                End If
+                If customtype = "5 - 9" Then
+                    result.Add(New With {.Value = "5L-4R", .Text = "5L-4R"})
+                    result.Add(New With {.Value = "4L-5R", .Text = "4L-5R"})
                 End If
             End If
         End If
@@ -3666,18 +3723,9 @@ Partial Class Order_Method
         End If
 
         If blindName = "Complete Set" OrElse blindName = "Track Only" Then
-            If String.IsNullOrEmpty(data.tracktype) Then Return "TRACK TYPE IS REQUIRED !"
-        End If
-
-        If blindName = "Complete Set" OrElse blindName = "Track Only" Then
+            If String.IsNullOrEmpty(data.tracktype) Then Return "TRACK IS REQUIRED !"
+            If String.IsNullOrEmpty(data.panelqty) Then Return "PANEL IS REQUIRED !"
             If String.IsNullOrEmpty(data.layoutcode) Then Return "LAYOUT CODE IS REQUIRED !"
-            If data.layoutcode = "S" AndAlso String.IsNullOrEmpty(data.layoutcodecustom) Then
-                Return "CUSTOM LAYOUT CODE IS REQUIRED !"
-            End If
-        End If
-
-        If Not String.IsNullOrEmpty(data.panelqty) Then
-            If Not Integer.TryParse(data.panelqty, panelQty) OrElse panelQty < 0 Then Return "PLEASE CHECK YOUT PANEL QTY ORDER !"
         End If
 
         If blindName = "Complete Set" OrElse blindName = "Panel Only" Then
@@ -3702,7 +3750,6 @@ Partial Class Order_Method
                 wandlength = Math.Ceiling(drop * 2 / 3)
                 If wandlength > 1000 Then wandlength = 1000
             End If
-            If Not data.layoutcode = "S" Then data.layoutcodecustom = String.Empty
 
             wandcolour = orderClass.GetItemData("SELECT ProductColours.Name FROM ProductColours LEFT JOIN Products ON ProductColours.Id=Products.ColourType WHERE Products.Id='" & data.colourtype & "'")
 
@@ -3725,7 +3772,7 @@ Partial Class Order_Method
             data.wandlength = String.Empty : wandlength = 0
             data.tracktype = String.Empty
             data.layoutcode = String.Empty
-            data.layoutcodecustom = String.Empty
+            data.panelqty = String.Empty
 
             linearMetre = width / 1000
             squareMetre = width * drop / 1000000
@@ -3768,9 +3815,8 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@WandLength", data.wandlength)
                         thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
                         thisCmd.Parameters.AddWithValue("@LayoutCode", data.layoutcode)
-                        thisCmd.Parameters.AddWithValue("@LayoutCodeCustom", data.layoutcodecustom)
                         thisCmd.Parameters.AddWithValue("@TrackType", data.tracktype)
-                        thisCmd.Parameters.AddWithValue("@PanelQty", panelQty)
+                        thisCmd.Parameters.AddWithValue("@PanelQty", If(String.IsNullOrEmpty(data.panelqty), CType(DBNull.Value, Object), data.panelqty))
                         thisCmd.Parameters.AddWithValue("@Batten", data.batten)
                         thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
@@ -3815,9 +3861,8 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@WandLength", data.wandlength)
                     thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
                     thisCmd.Parameters.AddWithValue("@LayoutCode", data.layoutcode)
-                    thisCmd.Parameters.AddWithValue("@LayoutCodeCustom", data.layoutcodecustom)
                     thisCmd.Parameters.AddWithValue("@TrackType", data.tracktype)
-                    thisCmd.Parameters.AddWithValue("@PanelQty", panelQty)
+                    thisCmd.Parameters.AddWithValue("@PanelQty", If(String.IsNullOrEmpty(data.panelqty), CType(DBNull.Value, Object), data.panelqty))
                     thisCmd.Parameters.AddWithValue("@Batten", data.batten)
                     thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
@@ -11176,8 +11221,10 @@ Partial Class Order_Method
         Dim tubeId As String = detailData("TubeType").ToString()
         Dim controlId As String = detailData("ControlType").ToString()
         Dim fabricId As String = detailData("FabricId").ToString()
-        Dim fabricIdB As String = detailData("FabricIdB").ToString()
         Dim trackType As String = detailData("TrackType").ToString()
+        Dim panelQty As String = If(IsDBNull(detailData("PanelQty")), "", detailData("PanelQty").ToString())
+
+        Dim customType As String = trackType & " - " & panelQty
 
         Dim itemDetail As New Dictionary(Of String, Object)
         For Each col As DataColumn In detailData.Table.Columns
@@ -11190,7 +11237,8 @@ Partial Class Order_Method
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim fabricReq As New JSONList With {.type = "FabricType", .designtype = designId, .companydetailid = companyDetailId, .tubetype = tubeId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim fabricColourReq As New JSONList With {.type = "FabricColour", .fabrictype = fabricId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodePG", .customtype = trackType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim panelQtyReq As New JSONList With {.type = "PanelPG", .customtype = trackType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodePG", .customtype = customType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -11200,6 +11248,7 @@ Partial Class Order_Method
             .Mountings = ListData(mountingReq),
             .Fabrics = ListData(fabricReq),
             .FabricColours = ListData(fabricColourReq),
+            .Panels = ListData(panelQtyReq),
             .LayoutCodes = ListData(layoutCodeReq)
         }
         Return result

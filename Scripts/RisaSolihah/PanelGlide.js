@@ -48,17 +48,12 @@ $("#fabrictype").on("change", function () {
 });
 
 $("#tracktype").on("change", function () {
-    const layoutCode = document.getElementById("layoutcode").value;
-
-    bindLayoutCode($(this).val());
-    getPanelQty($(this).val(), layoutCode);
+    bindPanel($(this).val());
 });
 
-$("#layoutcode").on("change", function () {
-    const tracktype = document.getElementById("tracktype").value;
-
-    visibleLayoutCustom($(this).val());
-    getPanelQty(tracktype, $(this).val());
+$("#panelqty").on("change", function () {
+    const trackType = document.getElementById("tracktype").value;
+    bindLayout(trackType, $(this).val());
 });
 
 $("#wandlength").on("change", function () {
@@ -703,17 +698,64 @@ function bindFabricColour(fabricType) {
     });
 }
 
-function bindLayoutCode(trackType) {
+function bindPanel(trackType) {
+    return new Promise((resolve, reject) => {
+        const panelqty = document.getElementById("panelqty");
+
+        if (!trackType) {
+            panelqty.innerHTML = "";
+            resolve();
+            return;
+        }
+
+        const listData = { type: "PanelPG", customtype: trackType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    panelqty.innerHTML = "";
+
+                    if (response.d.length > 0) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        panelqty.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        panelqty.add(option);
+                    });
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+function bindLayout(trackType, panelQty) {
     return new Promise((resolve, reject) => {
         const layoutcode = document.getElementById("layoutcode");
 
-        if (!trackType) {
+        if (!trackType || !panelQty) {
             layoutcode.innerHTML = "";
             resolve();
             return;
         }
 
-        const listData = { type: "LayoutCodePG", customtype: trackType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const customType = trackType + " - " + panelQty
+
+        const listData = { type: "LayoutCodePG", customtype: customType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -725,7 +767,7 @@ function bindLayoutCode(trackType) {
                 if (Array.isArray(response.d)) {
                     layoutcode.innerHTML = "";
 
-                    if (response.d.length > 1) {
+                    if (response.d.length > 0) {
                         const defaultOption = document.createElement("option");
                         defaultOption.text = "";
                         defaultOption.value = "";
@@ -738,10 +780,6 @@ function bindLayoutCode(trackType) {
                         option.text = item.Text;
                         layoutcode.add(option);
                     });
-
-                    if (response.d.length === 1) {
-                        layoutcode.selectedIndex = 0;
-                    }
                 }
                 resolve();
             },
@@ -752,23 +790,6 @@ function bindLayoutCode(trackType) {
     });
 }
 
-function getPanelQty(trackType, layoutCode) {
-    return new Promise((resolve) => {
-        if (!trackType || !layoutCode) {
-            document.getElementById("panelqty").value = '';
-            return resolve();
-        }
-
-        let panelQty = trackType;
-        if (layoutCode === "E" || layoutCode === "F") {
-            panelQty = parseInt(trackType) + (parseInt(trackType) - 1);
-        }
-
-        document.getElementById("panelqty").value = panelQty;
-        resolve();
-    });
-}
-
 function visibleDetail(blindType, tubeType, colourType) {
     return new Promise((resolve) => {
         const detail = document.getElementById("divdetail");
@@ -776,11 +797,10 @@ function visibleDetail(blindType, tubeType, colourType) {
         const fabrictype = document.getElementById("divfabrictype");
         const fabriccolour = document.getElementById("divfabriccolour");
         const drop = document.getElementById("divdrop");
-        const tracktype = document.getElementById("divtracktype");
+        const track = document.getElementById("divtrack");
         const wandlength = document.getElementById("divwandlength");
         const wandlengthvalue = document.getElementById("divwandlengthvalue");
         const layoutcode = document.getElementById("divlayoutcode");
-        const layoutcustom = document.getElementById("divlayoutcustom");
         const panelqty = document.getElementById("divpanelqty");
         const battenfront = document.getElementById("divbattenfront");
         const markup = document.getElementById("divmarkup");
@@ -794,11 +814,10 @@ function visibleDetail(blindType, tubeType, colourType) {
         toggleDisplay(fabrictype, false);
         toggleDisplay(fabriccolour, false);
         toggleDisplay(drop, false);
-        toggleDisplay(tracktype, false);
+        toggleDisplay(track, false);
         toggleDisplay(wandlength, false);
         toggleDisplay(wandlengthvalue, false);
         toggleDisplay(layoutcode, false);
-        toggleDisplay(layoutcustom, false);
         toggleDisplay(panelqty, false);
         toggleDisplay(battenfront, false);
         toggleDisplay(markup, false);
@@ -819,7 +838,7 @@ function visibleDetail(blindType, tubeType, colourType) {
                 toggleDisplay(fabrictype, true);
                 toggleDisplay(fabriccolour, true);
                 toggleDisplay(drop, true);
-                toggleDisplay(tracktype, true);
+                toggleDisplay(track, true);
                 toggleDisplay(wandlength, true);
                 toggleDisplay(layoutcode, true);
                 toggleDisplay(panelqty, true);
@@ -829,7 +848,7 @@ function visibleDetail(blindType, tubeType, colourType) {
                 }
             } else if (blindName === "Track Only") {
                 toggleDisplay(mounting, true);
-                toggleDisplay(tracktype, true);
+                toggleDisplay(track, true);
                 toggleDisplay(wandlength, true);
                 toggleDisplay(layoutcode, true);
                 toggleDisplay(panelqty, true);
@@ -869,22 +888,10 @@ function visibleWandLength(wandLength) {
     });
 }
 
-function visibleLayoutCustom(layout) {
-    return new Promise((resolve, reject) => {
-        let thisDiv = document.getElementById("divlayoutcustom");
-        thisDiv.style.display = "none";
-
-        if (layout === "S") {
-            thisDiv.style.display = "";
-        }
-        resolve();
-    });
-}
-
 function process() {
     toggleButtonState(true, "Processing...");
 
-    const fields = ["blindtype", "tubetype", "colourtype", "qty", "room", "mounting", "fabrictype", "fabriccolour", "width", "drop", "tracktype", "wandlength", "wandlengthvalue", "layoutcode", "layoutcodecustom", "panelqty", "batten", "notes", "markup"];
+    const fields = ["blindtype", "tubetype", "colourtype", "qty", "room", "mounting", "fabrictype", "fabriccolour", "width", "drop", "tracktype", "wandlength", "wandlengthvalue", "layoutcode", "panelqty", "batten", "notes", "markup"];
 
     const formData = {
         headerid: headerId,
@@ -965,6 +972,7 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
         fillSelect("#mounting", data.Mountings);
         fillSelect("#fabrictype", data.Fabrics);
         fillSelect("#fabriccolour", data.FabricColours);
+        fillSelect("#panelqty", data.Panels);
         fillSelect("#layoutcode", data.LayoutCodes);
 
         setFormValues(data.ItemData);
@@ -973,7 +981,6 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
         document.getElementById("divorder").style.display = "";
 
         visibleDetail(data.ItemData.BlindType, data.ItemData.TubeType, data.ItemData.ProductId);
-        visibleLayoutCustom(data.ItemData.LayoutCode);
         visibleWandLength(data.ItemData.WandLength);
     } catch (error) {
         document.getElementById("divloader").style.display = "none";
@@ -996,7 +1003,6 @@ function setFormValues(itemData) {
         wandlength: "WandLength",
         wandlengthvalue: "WandLengthValue",
         layoutcode: "LayoutCode",
-        layoutcodecustom: "LayoutCodeCustom",
         panelqty: "PanelQty",
         batten: "Batten",
         notes: "Notes",
@@ -1043,7 +1049,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = ["blindtype", "tubetype", "colourtype", "qty", "room", "mounting", "fabrictype", "fabriccolour", "width", "drop", "tracktype", "wandlength", "wandlengthvalue", "layoutcode", "layoutcodecustom", "panelqty", "batten", "notes", "markup"];
+    const inputs = ["blindtype", "tubetype", "colourtype", "qty", "room", "mounting", "fabrictype", "fabriccolour", "width", "drop", "tracktype", "wandlength", "wandlengthvalue", "layoutcode", "panelqty", "batten", "notes", "markup"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
@@ -1119,10 +1125,6 @@ function showInfo(type) {
 
         let urlImage = "https://ordersblindonline.com/Assets/images/products/panelglide/layoutoption.jpg";
         info += `<img src="${urlImage}" style="max-width:100%;height:auto;">`;
-    } else if (type === "Layout Custom") {
-        info = "Layout Custom Information";
-        info += "<br /><br />";
-        info += "L for Left Panel<br/>R for Right Panel<br/>W for Wand<br/><br/>Example: LLWWRRR";
     } else if (type === "Wand Length") {
         info = "Wand Length Information";
         info += "<br /><br />";
