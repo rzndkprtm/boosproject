@@ -161,27 +161,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row mt-3" id="divwandlength">
-                                                <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Wand Length</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <div class="input-group">
-                                                        <select id="wandlength" class="form-select">
-                                                            <option value=""></option>
-                                                            <option value="Standard">Standard</option>
-                                                            <option value="Custom">Custom</option>
-                                                        </select>
-                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Wand Length');"> ? </a>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group" id="divwandlengthvalue">
-                                                    <div class="input-group">
-                                                        <input type="number" id="wandlengthvalue" class="form-control" autocomplete="off" placeholder="Length ...." />
-                                                        <span class="input-group-text">mm</span>
-                                                    </div>
-                                                </div>
-                                            </div>
                                             <div class="row mt-3" id="divtrack">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Track</label>
@@ -215,7 +194,28 @@
                                                         <%--<a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Layout');">?</a>--%>
                                                     </div>
                                                 </div>
-                                            </div>                                            
+                                            </div>
+                                            <div class="row mt-3" id="divwandlength">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Wand Length</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <div class="input-group">
+                                                        <select id="wandlength" class="form-select">
+                                                            <option value=""></option>
+                                                            <option value="Standard">Standard</option>
+                                                            <option value="Custom">Custom</option>
+                                                        </select>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Wand Length');"> ? </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group" id="divwandlengthvalue">
+                                                    <div class="input-group">
+                                                        <input type="number" id="wandlengthvalue" class="form-control" autocomplete="off" placeholder="Length ...." />
+                                                        <span class="input-group-text">mm</span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="row mt-3" id="divbattenfront">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Batten Colour</label>
