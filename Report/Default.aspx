@@ -44,7 +44,7 @@
             </div>
         </section>
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-3">
+            <div class="col-12 col-sm-12 col-lg-6">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Report Filters</h4>
@@ -52,13 +52,11 @@
                     <div class="card-body">
                         <div class="form form-vertical">
                             <div class="row">
-                                <div class="col-12 form-group">
+                                <div class="col-12 col-sm-12 col-lg-6 form-group">
                                     <label class="form-label">Company</label>
                                     <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select"></asp:DropDownList>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 form-group">
+                                <div class="col-12 col-sm-12 col-lg-6 form-group">
                                     <label class="form-label">Status</label>
                                     <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
                                         <asp:ListItem Value="" Text=""></asp:ListItem>
@@ -69,26 +67,26 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-12 form-group">
+                                <div class="col-12 col-sm-12 col-lg-6 form-group">
                                     <label class="form-label">Start Date</label>
                                     <asp:TextBox runat="server" ID="txtStartDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 form-group">
+                                <div class="col-12 col-sm-12 col-lg-6 form-group">
                                     <label class="form-label">End Date</label>
                                     <asp:TextBox runat="server" ID="txtEndDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer text-center">
+                    <div class="card-footer text-start">
                         <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
                         <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-9">
+        </section>
+        <section class="row">
+            <div class="col-12">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Report Outputs</h4>
