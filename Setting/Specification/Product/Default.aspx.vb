@@ -55,7 +55,7 @@ Partial Class Setting_Specification_Product_Default
         Response.Redirect("~/setting/specification/product/add", False)
     End Sub
 
-    Protected Sub btnChange_Click(sender As Object, e As EventArgs)
+    Protected Sub btnMultipleChange_Click(sender As Object, e As EventArgs)
         Session("DesignProduct") = ddlDesignSort.SelectedValue
         Session("BlindProduct") = ddlBlindSort.SelectedValue
         Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
@@ -66,6 +66,32 @@ Partial Class Setting_Specification_Product_Default
         Session("SearchProduct") = txtSearch.Text
 
         Response.Redirect("~/setting/specification/product/change", False)
+    End Sub
+
+    Protected Sub btnCopyProduct_Click(sender As Object, e As EventArgs)
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
+
+        Response.Redirect("~/setting/specification/product/copy", False)
+    End Sub
+
+    Protected Sub btnDeleteProduct_Click(sender As Object, e As EventArgs)
+        Session("DesignProduct") = ddlDesignSort.SelectedValue
+        Session("BlindProduct") = ddlBlindSort.SelectedValue
+        Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
+        Session("TubeProduct") = ddlTubeSort.SelectedValue
+        Session("ControlProduct") = ddlControlSort.SelectedValue
+        Session("ColourProduct") = ddlColourSort.SelectedValue
+        Session("ActiveProduct") = ddlStatusSort.SelectedValue
+        Session("SearchProduct") = txtSearch.Text
+
+        Response.Redirect("~/setting/specification/product/delete", False)
     End Sub
 
     Protected Sub btnAlias_Click(sender As Object, e As EventArgs)
@@ -413,9 +439,9 @@ Partial Class Setting_Specification_Product_Default
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
             btnAdd.Visible = LoginAccess("Add")
-            btnChange.Visible = LoginAccess("Change")
             btnAlias.Visible = LoginAccess("Alias")
-            'btnAnother.Visible = LoginAccess("Another")
+            btnMultiple.Visible = LoginAccess("Multiple")
+            btnAnother.Visible = LoginAccess("Another")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

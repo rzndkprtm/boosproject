@@ -30,10 +30,15 @@
             </div>
         </section>
         <section class="row mb-3">
-            <div class="col-12 d-flex flex-wrap justify-content-end gap-1">
+            <div class="col-12 d-flex flex-wrap justify-content-end gap-2">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
-                <asp:Button runat="server" ID="btnChange" CssClass="btn btn-secondary" Text="Change Multiple Statuses" OnClick="btnChange_Click" />
                 <asp:Button runat="server" ID="btnAlias" CssClass="btn btn-info" Text="Product Alias" OnClick="btnAlias_Click" />
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnMultiple">Multiple</button>
+                <ul class="dropdown-menu">
+                    <li><asp:Button runat="server" ID="btnMultipleChange" CssClass="dropdown-item" Text="Change Status" OnClick="btnMultipleChange_Click" /></li>
+                    <li><asp:Button runat="server" ID="btnCopyProduct" CssClass="dropdown-item" Text="Copy Product" OnClick="btnCopyProduct_Click" /></li>
+                    <li><asp:Button runat="server" ID="btnDeleteProduct" CssClass="dropdown-item" Text="Delete Product" OnClick="btnDeleteProduct_Click" /></li>
+                </ul>
                 <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnAnother">Another</button>
                 <ul class="dropdown-menu">
                     <li><asp:Button runat="server" ID="btnTubeType" CssClass="dropdown-item" Text="Tube Type" OnClick="btnTubeType_Click" /></li>

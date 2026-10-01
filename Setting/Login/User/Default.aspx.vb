@@ -65,11 +65,13 @@ Partial Class Setting_Login_User_Default
             Dim thisId As String = txtStatusId.Text
             Dim thisStatus As String = txtStatusText.Text
 
-            Dim newStatus As String = "Inactive"
+            Dim newStatus As String = "Deleted"
+            If thisStatus = "Active" Then : newStatus = "Inactive" : End If
             If thisStatus = "Inactive" Then : newStatus = "Active" : End If
+            If thisStatus = "Blocked" Then : newStatus = "Active" : End If
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Status=@Status WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Status=@Status, FailedCount=0, ResetLogin=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
@@ -299,7 +301,7 @@ Partial Class Setting_Login_User_Default
     End Function
 
     Protected Function VisibleStatus(status As String) As Boolean
-        If status = "Active" OrElse status = "Inactive" Then Return True
+        If status = "Active" OrElse status = "Inactive" OrElse status = "Blocked" Then Return True
         Return False
     End Function
 

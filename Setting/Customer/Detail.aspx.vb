@@ -569,6 +569,50 @@ Partial Class Setting_Customer_Detail
         Response.Redirect(url, False)
     End Sub
 
+    Protected Sub btnAddAddress_Click(sender As Object, e As EventArgs)
+        Session("selectedTabCustomer") = "list-address"
+        url = String.Format("~/setting/customer/address/add?custid={0}&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnAddBusiness_Click(sender As Object, e As EventArgs)
+        Session("selectedTabCustomer") = "list-business"
+        url = String.Format("~/setting/customer/business/add?custid={0}&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnAddLogin_Click(sender As Object, e As EventArgs)
+        Session("selectedTabCustomer") = "list-login"
+        url = String.Format("~/setting/customer/login/add?custid={0}&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnAddMarkup_Click(sender As Object, e As EventArgs)
+        Session("selectedTabCustomer") = "list-markup"
+        url = String.Format("~/setting/customer/markup/add?custid={0}&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnAddDiscount_Click(sender As Object, e As EventArgs)
+        Session("selectedTabCustomer") = "list-discount"
+        url = String.Format("~/setting/customer/discount/add?custid={0}&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnAddPromo_Click(sender As Object, e As EventArgs)
+        Session("selectedTabCustomer") = "list-promo"
+        url = String.Format("~/setting/customer/promo/add?custid={0}&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnAddService_Click(sender As Object, e As EventArgs)
+        Session("selectedTabCustomer") = "list-service"
+        url = String.Format("~/setting/customer/service/add?custid={0}&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+
+
     Protected Sub btnDeleteContact_Click(sender As Object, e As EventArgs)
         MessageError_Contact(False, String.Empty)
         Session("selectedTabCustomer") = "list-contact"
@@ -595,74 +639,6 @@ Partial Class Setting_Customer_Detail
             MessageError_Contact(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub btnPrimaryContact_Click(sender As Object, e As EventArgs)
-        MessageError_Contact(False, String.Empty)
-        Session("selectedTabCustomer") = "list-contact"
-        Try
-            Dim contactId As String = txtPrimaryContactId.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET [Primary]=0 WHERE CustomerId=@CustomerId; UPDATE CustomerContacts SET Tags='Confirming,Invoicing,Quoting,Newsletter', [Primary]=1 WHERE Id=@ContactId", thisConn)
-                    thisCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-                    thisCmd.Parameters.AddWithValue("@ContactId", contactId)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            dataLog = {"CustomerContacts", contactId, Session("LoginId"), "Set As Primary Contact"}
-            settingClass.Logs(dataLog)
-
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Contact(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Function VisiblePrimaryContact(primary As Boolean) As Boolean
-        If primary = False Then Return True
-        Return False
-    End Function
-
-    Protected Sub btnAddAddress_Click(sender As Object, e As EventArgs)
-        Session("selectedTabCustomer") = "list-address"
-        url = String.Format("~/setting/customer/address/add?custid={0}&returnpage=detail", lblId.Text)
-        Response.Redirect(url, False)
-    End Sub
-
-    Protected Sub btnCopyAddress_Click(sender As Object, e As EventArgs)
-        MessageError_Address(False, String.Empty)
-        Session("selectedTabCustomer") = "list-address"
-        Try
-            Dim addressId As String = txtCopyAddressId.Text
-            Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerAddress ORDER BY Id DESC")
-
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress SELECT @NewId, CustomerId, NULL, Address, Suburb, State, PostCode, Note, 0 FROM CustomerAddress WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", addressId)
-                    thisCmd.Parameters.AddWithValue("@NewId", newId)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            dataLog = {"CustomerAddress", lblId.Text, Session("LoginId").ToString(), "Created Customer Address"}
-            settingClass.Logs(dataLog)
-
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Address(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Address(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
@@ -697,68 +673,6 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Sub btnPrimaryAddress_Click(sender As Object, e As EventArgs)
-        MessageError_Address(False, String.Empty)
-        Session("selectedTabCustomer") = "list-address"
-        Try
-            Dim addressId As String = txtPrimaryAddressId.Text
-            Dim addressType As String = txtTypeAddressId.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET [Primary]=0 WHERE CustomerId=@CustomerId AND Type=@Type; UPDATE CustomerAddress SET [Primary]=1 WHERE Id=@AddressId;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
-                    thisCmd.Parameters.AddWithValue("@Type", addressType)
-                    thisCmd.Parameters.AddWithValue("@AddressId", addressId)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            dataLog = {"CustomerAddress", addressId, Session("LoginId"), "Set As Primary Address"}
-            settingClass.Logs(dataLog)
-
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Address(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Address(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Function BindDetailAddress(addressId As String) As String
-        Dim result As String = String.Empty
-        If Not addressId = "" Then
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT ISNULL(Address,'') + ', ' + ISNULL(Suburb,'') + ', ' + ISNULL(State,'') + ' ' + ISNULL(PostCode,'') AS FullAddress FROM CustomerAddress WHERE Id='" & addressId & "'")
-
-            If thisData IsNot Nothing Then
-                result = thisData("FullAddress").ToString()
-            End If
-        End If
-        Return result
-    End Function
-
-    Protected Function VisiblePrimaryAddress(type As String, primary As Boolean) As Boolean
-        If Not String.IsNullOrEmpty(type) Then
-            If primary = False Then
-                Return True
-            End If
-            Return False
-        End If
-        Return False
-    End Function
-
-    Protected Sub MessageError_Address(visible As Boolean, message As String)
-        divErrorAddress.Visible = visible : msgErrorAddress.InnerText = message
-    End Sub
-
-    Protected Sub btnAddBusiness_Click(sender As Object, e As EventArgs)
-        Session("selectedTabCustomer") = "list-business"
-        url = String.Format("~/setting/customer/business/add?custid={0}&returnpage=detail", lblId.Text)
-        Response.Redirect(url, False)
-    End Sub
-
     Protected Sub btnDeleteBusiness_Click(sender As Object, e As EventArgs)
         MessageError_Business(False, String.Empty)
         Session("selectedTabCustomer") = "list-business"
@@ -785,6 +699,227 @@ Partial Class Setting_Customer_Detail
             MessageError_Business(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError_Business(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDeleteLogin_Click(sender As Object, e As EventArgs)
+        MessageError_Login(False, String.Empty)
+        Session("selectedTabCustomer") = "list-login"
+        Try
+            Dim thisId As String = txtDeleteLoginId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("UPDATE Logins SET Status='Deleted', UserName=CASE WHEN UserName LIKE '%(DELETED)%' THEN UserName ELSE UserName + ' (DELETED)' END, FullName=CASE WHEN FullName LIKE '%(DELETED)%' THEN FullName ELSE FullName + ' (DELETED)' END WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Login Deleted"}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Login(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDeleteMarkup_Click(sender As Object, e As EventArgs)
+        MessageError_Markup(False, String.Empty)
+        Session("selectedTabCustomer") = "list-markup"
+        Try
+            Dim thisId As String = txtDeleteMarkupId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerMarkups WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerMarkups' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Markup(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Markup(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDeleteDiscount_Click(sender As Object, e As EventArgs)
+        MessageError_Discount(False, String.Empty)
+        Session("selectedTabCustomer") = "list-discount"
+        Try
+            Dim thisId As String = txtDeleteDiscountId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerDiscounts WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerDiscounts' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Discount(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Discount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDeletePromo_Click(sender As Object, e As EventArgs)
+        MessageError_Promo(False, String.Empty)
+        Session("selectedTabCustomer") = "list-promo"
+        Try
+            Dim thisId As String = txtDeletePromoId.Text
+            Dim promoid As String = txtDeleteDetailPromoId.Text
+            Dim promoName As String = settingClass.GetItemData("SELECT Name FROM Promos WHERE Id='" & promoid & "'")
+
+            Dim stringLog As String = String.Format("Customer Promo Deleted | {0}", promoName)
+            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), stringLog}
+            settingClass.Logs(dataLog)
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Promo(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Promo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDeleteService_Click(sender As Object, e As EventArgs)
+        MessageError_Service(False, String.Empty)
+        Session("selectedTabCustomer") = "list-service"
+        Try
+            Dim serviceId As String = txtDeleteServiceId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerServices WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerServices' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", serviceId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            'Dim stringLog As String = String.Format("Customer Service Deleted | {0}", fullContact)
+            'dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), stringLog}
+            'settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Contact(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnCopyAddress_Click(sender As Object, e As EventArgs)
+        MessageError_Address(False, String.Empty)
+        Session("selectedTabCustomer") = "list-address"
+        Try
+            Dim addressId As String = txtCopyAddressId.Text
+            Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerAddress ORDER BY Id DESC")
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerAddress SELECT @NewId, CustomerId, NULL, Address, Suburb, State, PostCode, Note, 0 FROM CustomerAddress WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", addressId)
+                    thisCmd.Parameters.AddWithValue("@NewId", newId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"CustomerAddress", lblId.Text, Session("LoginId").ToString(), "Created Customer Address"}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Address(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Address(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+
+    Protected Sub btnPrimaryContact_Click(sender As Object, e As EventArgs)
+        MessageError_Contact(False, String.Empty)
+        Session("selectedTabCustomer") = "list-contact"
+        Try
+            Dim contactId As String = txtPrimaryContactId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerContacts SET [Primary]=0 WHERE CustomerId=@CustomerId; UPDATE CustomerContacts SET Tags='Confirming,Invoicing,Quoting,Newsletter', [Primary]=1 WHERE Id=@ContactId", thisConn)
+                    thisCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@ContactId", contactId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"CustomerContacts", contactId, Session("LoginId"), "Set As Primary Contact"}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Contact(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnPrimaryAddress_Click(sender As Object, e As EventArgs)
+        MessageError_Address(False, String.Empty)
+        Session("selectedTabCustomer") = "list-address"
+        Try
+            Dim addressId As String = txtPrimaryAddressId.Text
+            Dim addressType As String = txtTypeAddressId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET [Primary]=0 WHERE CustomerId=@CustomerId AND Type=@Type; UPDATE CustomerAddress SET [Primary]=1 WHERE Id=@AddressId;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@CustomerId", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@Type", addressType)
+                    thisCmd.Parameters.AddWithValue("@AddressId", addressId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"CustomerAddress", addressId, Session("LoginId"), "Set As Primary Address"}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Address(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Address(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
@@ -819,16 +954,66 @@ Partial Class Setting_Customer_Detail
 
 
 
+
+    Protected Function VisiblePrimaryContact(primary As Boolean) As Boolean
+        If primary = False Then Return True
+        Return False
+    End Function
+
+    Protected Function VisiblePrimaryAddress(type As String, primary As Boolean) As Boolean
+        If Not String.IsNullOrEmpty(type) Then
+            If primary = False Then
+                Return True
+            End If
+            Return False
+        End If
+        Return False
+    End Function
+
     Protected Function VisiblePrimaryBusiness(primary As Boolean) As Boolean
         If primary = False Then Return True
         Return False
     End Function
 
-    Protected Sub btnAddLogin_Click(sender As Object, e As EventArgs)
-        Session("selectedTabCustomer") = "list-login"
-        url = String.Format("~/setting/customer/login/add?custid={0}&returnpage=detail", lblId.Text)
-        Response.Redirect(url, False)
-    End Sub
+    Protected Function VisibleStatusLogin(status As String) As Boolean
+        If status = "Active" OrElse status = "Inactive" Or status = "Blocked" Then Return True
+        Return False
+    End Function
+
+    Protected Function VisibleSendPersonalLogin(status As String) As Boolean
+        If status = "Active" Then Return True
+        Return False
+    End Function
+
+
+
+    Protected Function BindDetailAddress(addressId As String) As String
+        Dim result As String = String.Empty
+        If Not addressId = "" Then
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT ISNULL(Address,'') + ', ' + ISNULL(Suburb,'') + ', ' + ISNULL(State,'') + ' ' + ISNULL(PostCode,'') AS FullAddress FROM CustomerAddress WHERE Id='" & addressId & "'")
+
+            If thisData IsNot Nothing Then
+                result = thisData("FullAddress").ToString()
+            End If
+        End If
+        Return result
+    End Function
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     Protected Sub btnStatusLogin_Click(sender As Object, e As EventArgs)
         MessageError_Login(False, String.Empty)
@@ -852,33 +1037,6 @@ Partial Class Setting_Customer_Detail
             If newStatus = "Inactive" Then statusDesc = "Login Has Been Deactivated"
 
             dataLog = {"Logins", loginId, Session("LoginId").ToString(), statusDesc}
-            settingClass.Logs(dataLog)
-
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Login(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Login(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
-
-    Protected Sub btnDeleteLogin_Click(sender As Object, e As EventArgs)
-        MessageError_Login(False, String.Empty)
-        Session("selectedTabCustomer") = "list-login"
-        Try
-            Dim thisId As String = txtDeleteLoginId.Text
-
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("UPDATE Logins SET Status='Deleted', UserName=CASE WHEN UserName LIKE '%(DELETED)%' THEN UserName ELSE UserName + ' (DELETED)' END, FullName=CASE WHEN FullName LIKE '%(DELETED)%' THEN FullName ELSE FullName + ' (DELETED)' END WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", thisId)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Login Deleted"}
             settingClass.Logs(dataLog)
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
@@ -1000,15 +1158,7 @@ Partial Class Setting_Customer_Detail
         End Try
     End Sub
 
-    Protected Function VisibleStatusLogin(status As String) As Boolean
-        If status = "Active" OrElse status = "Inactive" Or status = "Blocked" Then Return True
-        Return False
-    End Function
 
-    Protected Function VisibleSendPersonalLogin(status As String) As Boolean
-        If status = "Active" Then Return True
-        Return False
-    End Function
 
     Protected Function TextStatus_Login(status As String) As String
         If status = "Active" Then Return "Deactivate Login"
@@ -1017,35 +1167,9 @@ Partial Class Setting_Customer_Detail
 
 
 
-    Protected Sub btnAddMarkup_Click(sender As Object, e As EventArgs)
-        Session("selectedTabCustomer") = "list-markup"
-        url = String.Format("~/setting/customer/markup/add?custid={0}&returnpage=detail", lblId.Text)
-        Response.Redirect(url, False)
-    End Sub
 
-    Protected Sub btnDeleteMarkup_Click(sender As Object, e As EventArgs)
-        MessageError_Markup(False, String.Empty)
-        Session("selectedTabCustomer") = "list-markup"
-        Try
-            Dim thisId As String = txtDeleteMarkupId.Text
 
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerMarkups WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerMarkups' AND DataId=@Id;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", thisId)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
 
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Markup(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Markup(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
 
     Protected Sub btnResetMarkup_Click(sender As Object, e As EventArgs)
         MessageError_Markup(False, String.Empty)
@@ -1135,35 +1259,9 @@ Partial Class Setting_Customer_Detail
 
 
 
-    Protected Sub btnAddDiscount_Click(sender As Object, e As EventArgs)
-        Session("selectedTabCustomer") = "list-discount"
-        url = String.Format("~/setting/customer/discount/add?custid={0}&returnpage=detail", lblId.Text)
-        Response.Redirect(url, False)
-    End Sub
 
-    Protected Sub btnDeleteDiscount_Click(sender As Object, e As EventArgs)
-        MessageError_Discount(False, String.Empty)
-        Session("selectedTabCustomer") = "list-discount"
-        Try
-            Dim thisId As String = txtDeleteDiscountId.Text
 
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerDiscounts WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerDiscounts' AND DataId=@Id;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", thisId)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
 
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Discount(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Discount(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
 
     Protected Sub btnResetDiscount_Click(sender As Object, e As EventArgs)
         MessageError_Discount(False, String.Empty)
@@ -1273,41 +1371,9 @@ Partial Class Setting_Customer_Detail
         divErrorDiscount.Visible = visible : msgErrorDiscount.InnerText = message
     End Sub
 
-    Protected Sub btnAddPromo_Click(sender As Object, e As EventArgs)
-        Session("selectedTabCustomer") = "list-promo"
-        url = String.Format("~/setting/customer/promo/add?custid={0}&returnpage=detail", lblId.Text)
-        Response.Redirect(url, False)
-    End Sub
 
-    Protected Sub btnDeletePromo_Click(sender As Object, e As EventArgs)
-        MessageError_Promo(False, String.Empty)
-        Session("selectedTabCustomer") = "list-promo"
-        Try
-            Dim thisId As String = txtDeletePromoId.Text
-            Dim promoid As String = txtDeleteDetailPromoId.Text
-            Dim promoName As String = settingClass.GetItemData("SELECT Name FROM Promos WHERE Id='" & promoid & "'")
 
-            Dim stringLog As String = String.Format("Customer Promo Deleted | {0}", promoName)
-            dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), stringLog}
-            settingClass.Logs(dataLog)
 
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerPromos WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerPromos' AND DataId=@Id;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", thisId)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Promo(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Promo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
 
     Protected Sub MessageError_Promo(visible As Boolean, message As String)
         divErrorPromo.Visible = visible : msgErrorPromo.InnerText = message
@@ -1381,39 +1447,9 @@ Partial Class Setting_Customer_Detail
         Return result
     End Function
 
-    Protected Sub btnAddService_Click(sender As Object, e As EventArgs)
-        Session("selectedTabCustomer") = "list-service"
-        url = String.Format("~/setting/customer/service/add?custid={0}&returnpage=detail", lblId.Text)
-        Response.Redirect(url, False)
-    End Sub
 
-    Protected Sub btnDeleteService_Click(sender As Object, e As EventArgs)
-        MessageError_Service(False, String.Empty)
-        Session("selectedTabCustomer") = "list-service"
-        Try
-            Dim serviceId As String = txtDeleteServiceId.Text
 
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM CustomerServices WHERE Id=@Id; DELETE FROM Logs WHERE Type='CustomerServices' AND DataId=@Id;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", serviceId)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
 
-            'Dim stringLog As String = String.Format("Customer Service Deleted | {0}", fullContact)
-            'dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), stringLog}
-            'settingClass.Logs(dataLog)
-
-            url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
-            Response.Redirect(url, False)
-        Catch ex As Exception
-            MessageError_Contact(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-        End Try
-    End Sub
 
     Protected Function BindServiceDecimal(value As Object) As String
         Try
@@ -1459,6 +1495,10 @@ Partial Class Setting_Customer_Detail
 
     Protected Sub MessageError_Contact(visible As Boolean, message As String)
         divErrorContact.Visible = visible : msgErrorContact.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Address(visible As Boolean, message As String)
+        divErrorAddress.Visible = visible : msgErrorAddress.InnerText = message
     End Sub
 
     Protected Sub MessageError_Business(visible As Boolean, message As String)

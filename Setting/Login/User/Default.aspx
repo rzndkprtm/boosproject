@@ -30,7 +30,7 @@
             </div>
         </section>
         <section class="row mb-3">
-            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
+            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-2">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
                 <asp:Button runat="server" ID="btnInstaller" CssClass="btn btn-info" Text="Installer" OnClick="btnInstaller_Click" />
             </div>
