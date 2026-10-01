@@ -203,7 +203,7 @@ Partial Class Setting_Login_User_Default
             Dim newPassword As String = settingClass.Encrypt(txtResetPasswordNew.Text)
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, ResetLogin=1 WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET Password=@Password, ResetLogin=1, Status='Active' WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisCmd.Parameters.AddWithValue("@Password", newPassword)
                     thisConn.Open()
