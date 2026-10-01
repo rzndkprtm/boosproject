@@ -43,6 +43,9 @@
                                     <a class="list-group-item list-group-item-action" id="listCellular" data-bs-toggle="list" href="#list-cellular" role="tab">Cellular Shades</a>
                                     <a class="list-group-item list-group-item-action" id="listDesignShades" data-bs-toggle="list" href="#list-designshades" role="tab">Design Shades</a>
                                     <a class="list-group-item list-group-item-action" id="listCurtain" data-bs-toggle="list" href="#list-curtain" role="tab">Curtain</a>
+                                    <% If Convert.ToString(Session("CompanyId")) <> "2" Then %>
+                                    <a class="list-group-item list-group-item-action" id="listOutdoor" data-bs-toggle="list" href="#list-outdoor" role="tab">Outdoor</a>
+                                    <% End If %>
                                     <a class="list-group-item list-group-item-action" id="listVenetian" data-bs-toggle="list" href="#list-venetian" role="tab">Venetian Blind</a>
                                     <a class="list-group-item list-group-item-action" id="listAluminium" data-bs-toggle="list" href="#list-aluminium" role="tab">Aluminium Blind</a>
                                     <a class="list-group-item list-group-item-action" id="listFabricChart" data-bs-toggle="list" href="#list-fabricchart" role="tab">Fabric Chart</a>
@@ -288,6 +291,48 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="tab-pane fade" id="list-outdoor" role="tabpanel" aria-labelledby="listOutdoor">
+                                        <div class="row mt-5" runat="server" id="divErrorOutdoor">
+                                            <div class="col-12">
+                                                <div class="alert alert-danger">
+                                                    <span runat="server" id="msgErrorOutdoor"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-12">
+                                                <div class="accordion" id="accordionOutdoor">
+                                                    <asp:Repeater runat="server" ID="rptOutdoor" OnItemDataBound="rptOutdoor_ItemDataBound">
+                                                        <ItemTemplate>
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header" id="headingOutdoor_<%# Container.ItemIndex %>">
+                                                                    <button type="button" class="accordion-button <%# If(Container.ItemIndex = 0, "", "collapsed") %>" data-bs-toggle="collapse" data-bs-target="#collapseOutdoor_<%# Container.ItemIndex %>" aria-expanded="<%# If(Container.ItemIndex = 0, "true", "false") %>" aria-controls="collapseOutdoor_<%# Container.ItemIndex %>"><strong><%# Eval("Name") %></strong></button>
+                                                                </h2>
+                                                                <div id="collapseOutdoor_<%# Container.ItemIndex %>" class="accordion-collapse collapse <%# If(Container.ItemIndex = 0, "show", "") %>" aria-labelledby="headingOutdoor_<%# Container.ItemIndex %>" data-bs-parent="#accordionOutdoor">
+                                                                    <div class="accordion-body">
+                                                                        <asp:Repeater ID="rptOutdoorColour" runat="server">
+                                                                            <ItemTemplate>
+                                                                                <div class="border rounded p-3 mb-2">
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-3"><div class="text-muted small">Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Maximum Width</div><strong><%# Eval("Width") %></strong></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory", "{0:dd MMM yyyy}") %></strong></div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </ItemTemplate>
+                                                                        </asp:Repeater>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ItemTemplate>
+                                                    </asp:Repeater>
+                                                </div>
+                                                <asp:Panel ID="pnlNoDataOutdoor" runat="server" Visible="false" CssClass="text-center text-muted py-5">No fabric stock found.</asp:Panel>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="tab-pane fade" id="list-venetian" role="tabpanel" aria-labelledby="listVenetian">
                                         <div class="row mt-5" runat="server" id="divErrorVenetian">
                                             <div class="col-12">
@@ -456,8 +501,16 @@
         }
         function activateCurrentTab() {
             var tabId = $("#<%= selected_tab.ClientID %>").val();
-            if (!tabId) tabId = "list-roller";
-            $('#dvTab a[href="#' + tabId + '"]').tab('show');
+
+            if (!tabId) {
+                tabId = "list-roller";
+            }
+
+            var $tab = $('#dvTab a[href="#' + tabId + '"]');
+
+            if ($tab.length) {
+                $tab.tab('show');
+            }
         }
         function pageInit() {
             $(document).off("click.stocktab").on("click.stocktab", "#dvTab a", function () {

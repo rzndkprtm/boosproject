@@ -21,6 +21,7 @@ Partial Class Stocks
             BindCellularShades(ddlCompanyDetail.SelectedValue)
             BindDesignShades(ddlCompanyDetail.SelectedValue)
             BindCurtain(txtSearchCurtain.Text, ddlCompanyDetail.SelectedValue)
+            BindOutdoor(ddlCompanyDetail.SelectedValue)
 
             BindVenetian(ddlCompanyDetail.SelectedValue)
             BindAluminium(ddlCompanyDetail.SelectedValue)
@@ -35,6 +36,7 @@ Partial Class Stocks
         BindRoller(txtSearchRoller.Text, ddlCompanyDetail.SelectedValue)
         BindDesignShades(ddlCompanyDetail.SelectedValue)
         BindCurtain(txtSearchCurtain.Text, ddlCompanyDetail.SelectedValue)
+        BindOutdoor(ddlCompanyDetail.SelectedValue)
         BindVertical(txtSearchVertical.Text, ddlCompanyDetail.SelectedValue)
         BindVenetian(ddlCompanyDetail.SelectedValue)
         BindAluminium(ddlCompanyDetail.SelectedValue)
@@ -335,6 +337,56 @@ Partial Class Stocks
             rptCurtainColour.DataBind()
         Catch ex As Exception
             MessageError_Curtain(True, ex.Message)
+        End Try
+    End Sub
+
+    Protected Sub BindOutdoor(companyDetail As String)
+        MessageError_Outdoor(False, String.Empty)
+        Try
+            Dim paramsItem As New List(Of SqlParameter) From {
+                New SqlParameter("@DesignId", "18"),
+                New SqlParameter("@CompanyDetailId", companyDetail),
+                New SqlParameter("@SearchText", String.Empty),
+                New SqlParameter("@Type", "OUTDOOR")
+            }
+            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
+
+            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
+                rptOutdoor.DataSource = Nothing
+                rptOutdoor.DataBind()
+                pnlNoDataOutdoor.Visible = True
+                Return
+            End If
+
+            pnlNoDataOutdoor.Visible = False
+
+            rptOutdoor.DataSource = dt
+            rptOutdoor.DataBind()
+        Catch ex As Exception
+            MessageError_Outdoor(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub MessageError_Outdoor(visible As Boolean, message As String)
+        divErrorOutdoor.Visible = visible : msgErrorOutdoor.InnerText = message
+    End Sub
+
+    Protected Sub rptOutdoor_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
+        Try
+            If e.Item.ItemType <> ListItemType.Item AndAlso e.Item.ItemType <> ListItemType.AlternatingItem Then
+                Return
+            End If
+
+            Dim fabricId As Integer = Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "Id"))
+
+            Dim rptOutdoorColour As Repeater = CType(e.Item.FindControl("rptOutdoorColour"), Repeater)
+
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Colour")
+
+            rptOutdoorColour.DataSource = dt
+            rptOutdoorColour.DataBind()
+        Catch ex As Exception
+            MessageError_Outdoor(True, ex.Message)
         End Try
     End Sub
 
