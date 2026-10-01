@@ -44,6 +44,11 @@
                     <div class="dashboard-title">Price Product Group</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
+                <a href="/setting/price/discount" class="dashboard-card">
+                    <div class="dashboard-number"><%= PriceProductDiscounts %> Data</div>
+                    <div class="dashboard-title">Price Product Discount</div>
+                    <div class="dashboard-desc">Description</div>
+                </a>
                 <a href="/setting/price/base" class="dashboard-card">
                     <div class="dashboard-number"><%= PriceBases %> Data</div>
                     <div class="dashboard-title">Price Base</div>

@@ -24,7 +24,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12">
+            <div class="col-12 col-sm-12 col-lg-7">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Price Calculation Form</h4>
@@ -35,29 +35,19 @@
                                 <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
                                         <div class="row mb-2">
-                                            <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                            <div class="col-12 form-group">
                                                 <label class="form-label">Name</label>
-                                                <asp:TextBox runat="server" ID="txtName" CssClass="form-control" Height="45px" placeholder="Name ..." autocomplete="off"></asp:TextBox>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                <label class="form-label">Price Group</label>
-                                                <asp:DropDownList runat="server" ID="ddlPriceGroup" CssClass="choices form-select"></asp:DropDownList>
+                                                <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-12 col-sm-12 col-lg-2 form-group">
-                                                <label class="form-label">Data Type</label>
-                                                <asp:DropDownList runat="server" ID="ddlDataType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDataType_SelectedIndexChanged">
-                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                    <asp:ListItem Value="Designs" Text="Design Type"></asp:ListItem>
-                                                    <asp:ListItem Value="Blinds" Text="Blind Type"></asp:ListItem>
-                                                </asp:DropDownList>
+                                            <div class="col-12">
+                                                <label class="form-label">Price Group</label>
+                                                <asp:ListBox runat="server" ID="lbPriceGroup" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                             </div>
+                                        </div>
+                                        <div class="row mb-2">
                                             <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                                <label class="form-label">Data Name</label>
-                                                <asp:DropDownList runat="server" ID="ddlDataId" CssClass="choices form-select"></asp:DropDownList>
-                                            </div>
-                                            <div class="col-12 col-sm-12 col-lg-2 form-group">
                                                 <label class="form-label">Method</label>
                                                 <asp:DropDownList runat="server" ID="ddlMethod" CssClass="choices form-select">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
@@ -67,7 +57,7 @@
                                                     <asp:ListItem Value="Feet" Text="Feet"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
                                                 <label class="form-label">Formula</label>
                                                 <asp:DropDownList runat="server" ID="ddlFormula" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlFormula_SelectedIndexChanged">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
@@ -80,6 +70,20 @@
                                                     <asp:ListItem Value="CUT_LENGTH" Text="CUT_LENGTH"></asp:ListItem>
                                                     <asp:ListItem Value="FEET" Text="FEET"></asp:ListItem>
                                                 </asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Data Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlDataType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDataType_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Designs" Text="Design Type"></asp:ListItem>
+                                                    <asp:ListItem Value="Blinds" Text="Blind Type"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                                <label class="form-label">Product</label>
+                                                <asp:DropDownList runat="server" ID="ddlDataId" CssClass="choices form-select"></asp:DropDownList>
                                             </div>
                                         </div>
                                         <div class="row mb-2" runat="server" id="divMinimumSize">
@@ -138,7 +142,7 @@
                                                 <asp:TextBox runat="server" ID="txtFactoryFormula" CssClass="form-control" placeholder="Factory Formula ..." autocomplete="off"></asp:TextBox>
                                             </div>
                                         </div>
-                                        <div class="row mb-2">
+                                        <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Status</label>
                                                 <asp:DropDownList runat="server" ID="ddlStatus" CssClass="choices form-select">
@@ -206,10 +210,14 @@
                 if (el.choices) {
                     el.choices.destroy();
                 }
+
+                var isMultiple = el.multiple;
+
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',
                     shouldSort: false,
+                    removeItemButton: isMultiple,
                     searchResultLimit: 50
                 });
             });

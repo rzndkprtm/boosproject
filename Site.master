@@ -277,6 +277,9 @@
                                                             <a runat="server" href="~/setting/price/product" class="subsubmenu-link">Product Group</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/price/discount" class="subsubmenu-link">Product Discount</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/price/base" class="subsubmenu-link">Base</a>
                                                         </li>
                                                         <li class="subsubmenu-item">

@@ -39,7 +39,7 @@ Partial Class Setting_Price_Calculation_Add
                 MessageError(True, "CALCULATION NAME IS REQUIRED !")
                 Exit Sub
             End If
-            If ddlPriceGroup.SelectedValue = "" Then
+            If lbPriceGroup.SelectedValue = "" Then
                 MessageError(True, "PRICE GROUP IS REQUIRED !")
                 Exit Sub
             End If
@@ -54,6 +54,8 @@ Partial Class Setting_Price_Calculation_Add
 
             If msgError.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceCalculations ORDER BY Id DESC")
+
+                Dim priceGroup As String = String.Join(",", lbPriceGroup.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
 
                 If ddlFormula.SelectedValue = "COST" Then
                     txtSellMinSize.Text = "" : txtBuyMinSize.Text = "" : txtFactoryMinSize.Text = ""
@@ -100,14 +102,14 @@ Partial Class Setting_Price_Calculation_Add
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceCalculations VALUES (@Id, @Name, @Method, @PriceGroupId, @DataType, @DataId, @Formula, @SellMinSize, @BuyMinSize, @FactoryMinSize, @SellMinWidth, @BuyMinWidth, @FactoryMinWidth, @SellMinDrop, @BuyMinDrop, @FactoryMinDrop, @SellFormula, @BuyFormula, @FactoryFormula, @Status)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceCalculations VALUES (@Id, @Name, @PriceGroupId, @Method, @Formula, @DataType, @DataId, @SellMinSize, @BuyMinSize, @FactoryMinSize, @SellMinWidth, @BuyMinWidth, @FactoryMinWidth, @SellMinDrop, @BuyMinDrop, @FactoryMinDrop, @SellFormula, @BuyFormula, @FactoryFormula, @Status)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
+                        thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroup)
                         thisCmd.Parameters.AddWithValue("@Method", ddlMethod.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Formula", ddlFormula.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@DataType", If(String.IsNullOrEmpty(ddlDataType.SelectedValue), CType(DBNull.Value, Object), ddlDataType.SelectedValue))
                         thisCmd.Parameters.AddWithValue("@DataId", If(String.IsNullOrEmpty(ddlDataId.SelectedValue), CType(DBNull.Value, Object), ddlDataId.SelectedValue))
-                        thisCmd.Parameters.AddWithValue("@Formula", ddlFormula.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@SellMinSize", If(String.IsNullOrEmpty(txtSellMinSize.Text), CType(DBNull.Value, Object), txtSellMinSize.Text))
                         thisCmd.Parameters.AddWithValue("@BuyMinSize", If(String.IsNullOrEmpty(txtBuyMinSize.Text), CType(DBNull.Value, Object), txtBuyMinSize.Text))
                         thisCmd.Parameters.AddWithValue("@FactoryMinSize", If(String.IsNullOrEmpty(txtFactoryMinSize.Text), CType(DBNull.Value, Object), txtFactoryMinSize.Text))
@@ -173,18 +175,18 @@ Partial Class Setting_Price_Calculation_Add
     End Sub
 
     Protected Sub BindPriceGroup()
-        ddlPriceGroup.Items.Clear()
+        lbPriceGroup.Items.Clear()
         Try
-            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups")
-            ddlPriceGroup.DataTextField = "Name"
-            ddlPriceGroup.DataValueField = "Id"
-            ddlPriceGroup.DataBind()
+            lbPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups")
+            lbPriceGroup.DataTextField = "Name"
+            lbPriceGroup.DataValueField = "Id"
+            lbPriceGroup.DataBind()
 
-            If ddlPriceGroup.Items.Count > 0 Then
-                ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
+            If lbPriceGroup.Items.Count > 0 Then
+                lbPriceGroup.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            ddlPriceGroup.Items.Clear()
+            lbPriceGroup.Items.Clear()
         End Try
     End Sub
 

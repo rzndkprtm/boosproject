@@ -43,7 +43,7 @@ Partial Class Setting_Price_Calculation_Edit
                 MessageError(True, "CALCULATION NAME IS REQUIRED !")
                 Exit Sub
             End If
-            If ddlPriceGroup.SelectedValue = "" Then
+            If lbPriceGroup.SelectedValue = "" Then
                 MessageError(True, "PRICE GROUP IS REQUIRED !")
                 Exit Sub
             End If
@@ -57,7 +57,7 @@ Partial Class Setting_Price_Calculation_Edit
             End If
 
             If msgError.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceCalculations ORDER BY Id DESC")
+                Dim priceGroup As String = String.Join(",", lbPriceGroup.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
 
                 If ddlFormula.SelectedValue = "COST" Then
                     txtSellMinSize.Text = "" : txtBuyMinSize.Text = "" : txtFactoryMinSize.Text = ""
@@ -104,14 +104,14 @@ Partial Class Setting_Price_Calculation_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceCalculations SET Name=@Name, Method=@Method, PriceGroupId=@PriceGroupId, DataType=@DataType, DataId=@DataId, Formula=@Formula, SellMinSize=@SellMinSize, BuyMinSize=@BuyMinSize, FactoryMinSize=@FactoryMinSize, SellMinWidth=@SellMinWidth, BuyMinWidth=@BuyMinWidth, FactoryMinWidth=@FactoryMinWidth, SellMinDrop=@SellMinDrop, BuyMinDrop=@BuyMinDrop, FactoryMinDrop=@FactoryMinDrop, SellFormula=@SellFormula, BuyFormula=@BuyFormula, FactoryFormula=@FactoryFormula, Status=@Status WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceCalculations SET Name=@Name, PriceGroupId=@PriceGroupId, Method=@Method, Formula=@Formula, DataType=@DataType, DataId=@DataId, SellMinSize=@SellMinSize, BuyMinSize=@BuyMinSize, FactoryMinSize=@FactoryMinSize, SellMinWidth=@SellMinWidth, BuyMinWidth=@BuyMinWidth, FactoryMinWidth=@FactoryMinWidth, SellMinDrop=@SellMinDrop, BuyMinDrop=@BuyMinDrop, FactoryMinDrop=@FactoryMinDrop, SellFormula=@SellFormula, BuyFormula=@BuyFormula, FactoryFormula=@FactoryFormula, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
+                        thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroup)
                         thisCmd.Parameters.AddWithValue("@Method", ddlMethod.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@PriceGroupId", ddlPriceGroup.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Formula", ddlFormula.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@DataType", If(String.IsNullOrEmpty(ddlDataType.SelectedValue), CType(DBNull.Value, Object), ddlDataType.SelectedValue))
                         thisCmd.Parameters.AddWithValue("@DataId", If(String.IsNullOrEmpty(ddlDataId.SelectedValue), CType(DBNull.Value, Object), ddlDataId.SelectedValue))
-                        thisCmd.Parameters.AddWithValue("@Formula", ddlFormula.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@SellMinSize", If(String.IsNullOrEmpty(txtSellMinSize.Text), CType(DBNull.Value, Object), txtSellMinSize.Text))
                         thisCmd.Parameters.AddWithValue("@BuyMinSize", If(String.IsNullOrEmpty(txtBuyMinSize.Text), CType(DBNull.Value, Object), txtBuyMinSize.Text))
                         thisCmd.Parameters.AddWithValue("@FactoryMinSize", If(String.IsNullOrEmpty(txtFactoryMinSize.Text), CType(DBNull.Value, Object), txtFactoryMinSize.Text))
@@ -161,7 +161,6 @@ Partial Class Setting_Price_Calculation_Edit
             BindForm(myData("Formula").ToString())
 
             txtName.Text = myData("Name").ToString()
-            ddlPriceGroup.SelectedValue = myData("PriceGroupId").ToString()
             ddlDataType.SelectedValue = myData("DataType").ToString()
             ddlDataId.SelectedValue = myData("DataId").ToString()
             ddlMethod.SelectedValue = myData("Method").ToString()
@@ -180,6 +179,18 @@ Partial Class Setting_Price_Calculation_Edit
             txtBuyFormula.Text = myData("BuyFormula").ToString()
             txtFactoryFormula.Text = myData("FactoryFormula").ToString()
             ddlStatus.SelectedValue = myData("Status").ToString()
+
+            If Not myData("PriceGroupId").ToString() = "" Then
+                Dim priceGroupArray() As String = myData("PriceGroupId").ToString().Split(",")
+                For Each i In priceGroupArray
+                    If Not String.IsNullOrEmpty(i) Then
+                        Dim item = lbPriceGroup.Items.FindByValue(i)
+                        If item IsNot Nothing Then
+                            item.Selected = True
+                        End If
+                    End If
+                Next
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -217,18 +228,18 @@ Partial Class Setting_Price_Calculation_Edit
     End Sub
 
     Protected Sub BindPriceGroup()
-        ddlPriceGroup.Items.Clear()
+        lbPriceGroup.Items.Clear()
         Try
-            ddlPriceGroup.DataSource = settingClass.GetDataTable("SELECT * FROM PriceGroups")
-            ddlPriceGroup.DataTextField = "Name"
-            ddlPriceGroup.DataValueField = "Id"
-            ddlPriceGroup.DataBind()
+            lbPriceGroup.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM PriceGroups")
+            lbPriceGroup.DataTextField = "Name"
+            lbPriceGroup.DataValueField = "Id"
+            lbPriceGroup.DataBind()
 
-            If ddlPriceGroup.Items.Count > 0 Then
-                ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
+            If lbPriceGroup.Items.Count > 0 Then
+                lbPriceGroup.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            ddlPriceGroup.Items.Clear()
+            lbPriceGroup.Items.Clear()
         End Try
     End Sub
 

@@ -2378,7 +2378,7 @@ Public Class OrderClass
 
     Private Function GetPriceCalculationRule(method As String, priceGroupId As String, designId As String, blindId As String) As DataRow
         Try
-            Dim thisSql As String = "SELECT TOP 1 * FROM PriceCalculations WHERE Status='Active' AND Method=@Method AND PriceGroupId=@PriceGroupId AND ((DataType='Designs' AND DataId=@DesignId) OR (DataType='Blinds' AND DataId=@BlindId) OR (DataType IS NULL OR DataType='')) ORDER BY CASE WHEN DataType='Designs' AND DataId=@DesignId THEN 2 WHEN DataType='Blinds' AND DataId=@BlindId THEN 2 WHEN DataType IS NULL OR DataType='' THEN 1 ELSE 0 END DESC, Id"
+            Dim thisSql As String = "SELECT TOP 1 * FROM PriceCalculations WHERE Status='Active' AND Method=@Method AND EXISTS (SELECT 1 FROM STRING_SPLIT(PriceGroupId, ',') AS PG WHERE LTRIM(RTRIM(PG.value))=@PriceGroupId) AND ((DataType='Designs' AND DataId=@DesignId) OR (DataType='Blinds' AND DataId=@BlindId) OR (DataType IS NULL OR DataType='')) ORDER BY CASE WHEN DataType='Designs' AND DataId=@DesignId THEN 2 WHEN DataType='Blinds' AND DataId=@BlindId THEN 2 WHEN DataType IS NULL OR DataType='' THEN 1 ELSE 0 END DESC, Id"
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand(thisSql, thisConn)
@@ -2397,6 +2397,7 @@ Public Class OrderClass
                     End If
                 End Using
             End Using
+
             Return Nothing
         Catch
             Return Nothing

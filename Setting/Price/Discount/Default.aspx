@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Price_Calculation_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Price Calculation" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Setting_Price_Discount_Default" MaintainScrollPositionOnPostback="true" MasterPageFile="~/Site.Master" Debug="true" Title="Price Product Discount" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -30,8 +30,9 @@
             </div>
         </section>
         <section class="row mb-3">
-            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
+            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-2">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
+                <asp:Button runat="server" ID="btnFormat" CssClass="btn btn-info" Text="Format Product" OnClick="btnFormat_Click" />
             </div>
         </section>
         <section class="row">
@@ -42,7 +43,7 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                        <h4 class="card-title">List Calculation Rule</h4>
+                                        <h5 class="card-title">List Product Discount</h5>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                         <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
@@ -59,36 +60,16 @@
                                 <div class="table-responsive">
                                     <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
                                         <Columns>
-                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="50px">
                                                 <ItemTemplate>
                                                     <%# Container.DataItemIndex + 1 %>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:BoundField DataField="Id" HeaderText="ID" />
-                                            <asp:BoundField DataField="Name" HeaderText="Name" />
+                                            <asp:BoundField DataField="Id" HeaderText="ID" ItemStyle-Width="80px" />
+                                            <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-Width="500px" />
                                             <asp:BoundField DataField="PriceGroupName" HeaderText="Price Group" />
-                                            <asp:BoundField DataField="Method" HeaderText="Method" />
-                                            <asp:BoundField DataField="Formula" HeaderText="Formula" />
-                                            <asp:BoundField DataField="DataName" HeaderText="Product" />
-                                            <asp:TemplateField ItemStyle-Width="120px">
-                                                <ItemTemplate>
-                                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
-                                                    <ul class="dropdown-menu">
-                                                        <li>
-                                                            <a class="dropdown-item" id="aDetail" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDetail" onclick='<%# String.Format("return dataDetail(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`, `{5}`, `{6}`, `{7}`, `{8}`, `{9}`, `{10}`, `{11}`);", Eval("SellMinSize").ToString(), Eval("BuyMinSize").ToString(), Eval("FactoryMinSize").ToString(), Eval("SellMinWidth").ToString(), Eval("BuyMinWidth").ToString(), Eval("FactoryMinWidth").ToString(), Eval("SellMinDrop").ToString(), Eval("BuyMinDrop").ToString(), Eval("FactoryMinDrop").ToString(), Eval("SellFormula").ToString(), Eval("BuyFormula").ToString(), Eval("FactoryFormula").ToString()) %>'>Detail</a>
-                                                        </li>
-                                                        <li runat="server" visible='<%# LoginAccess("Edit") %>'>
-                                                            <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/price/calculation/edit?calculationid=" & Eval("Id")) %>'>Edit</a>
-                                                        </li>
-                                                        <li runat="server" visible='<%# LoginAccess("Delete") %>'>
-                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('PriceCalculations', '<%# Eval("Id") %>')">Log</a>
-                                                        </li>
-                                                    </ul>
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
+                                            <asp:BoundField DataField="Status" HeaderText="Status" ItemStyle-Width="90px" />
+                                            
                                         </Columns>
                                     </asp:GridView>
                                 </div>
@@ -113,82 +94,11 @@
         </section>
     </div>
 
-    <div class="modal fade text-center" id="modalDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-full modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Detail Calculation</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover w-100 mb-3">
-                            <tr>
-                                <th>Sell Minimum Size</th>
-                                <th>Buy Minimum Size</th>
-                                <th>Factory Minimum Size</th>
-                            </tr>
-                            <tr>
-                                <td><span id="spanSellMinSize"></span></td>
-                                <td><span id="spanBuyMinSize"></span></td>
-                                <td><span id="spanFactoryMinSize"></span></td>
-                            </tr>
-                        </table>
-
-                        <!-- MINIMUM WIDTH -->
-                        <table class="table table-bordered table-hover w-100 mb-3">
-                            <tr>
-                                <th>Sell Minimum Width</th>
-                                <th>Buy Minimum Width</th>
-                                <th>Factory Minimum Width</th>
-                            </tr>
-                            <tr>
-                                <td><span id="spanSellMinWidth"></span></td>
-                                <td><span id="spanBuyMinWidth"></span></td>
-                                <td><span id="spanFactoryMinWidth"></span></td>
-                            </tr>
-                        </table>
-
-                        <!-- MINIMUM DROP -->
-                        <table class="table table-bordered table-hover w-100 mb-3">
-                            <tr>
-                                <th>Sell Minimum Drop</th>
-                                <th>Buy Minimum Drop</th>
-                                <th>Factory Minimum Drop</th>
-                            </tr>
-                            <tr>
-                                <td><span id="spanSellMinDrop"></span></td>
-                                <td><span id="spanBuyMinDrop"></span></td>
-                                <td><span id="spanFactoryMinDrop"></span></td>
-                            </tr>
-                        </table>
-
-                        <!-- CUSTOM FORMULA -->
-                        <table class="table table-bordered table-hover w-100">
-                            <tr>
-                                <th>Sell Custom Formula</th>
-                                <th>Buy Custom Formula</th>
-                                <th>Factory Custom Formula</th>
-                            </tr>
-                            <tr>
-                                <td><span id="spanSellFormula"></span></td>
-                                <td><span id="spanBuyFormula"></span></td>
-                                <td><span id="spanFactoryFormula"></span></td>
-                            </tr>
-                        </table>
-
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="modal modal-blur fade" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
-                    <h5 class="modal-title white">Delete Calculation</h5>
+                    <h5 class="modal-title white">Delete Product Discount</h5>
                 </div>
                 <div class="modal-body text-center py-4">
                     <asp:TextBox runat="server" ID="txtDeleteId" style="display:none;"></asp:TextBox>
@@ -258,7 +168,7 @@
                     if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
-                    const btn = this.querySelector("a[id*='aDetail']");
+                    const btn = this.querySelector("a[id*='aEdit']");
                     if (btn) btn.click();
                 };
             }
@@ -267,26 +177,6 @@
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-        function dataDetail(sellminsize, buyminsize, factoryminsize, sellminwidth, buyminwidth, factoryminwidth, sellmindrop, buymindrop, factorymindrop, sellformula, buyformula, factoryformula) {
-            function displayValue(value) {
-                return (value === null || value === undefined || String(value).trim() === "")
-                    ? "Nothing Calculation"
-                    : value;
-            }
-
-            document.getElementById("spanSellMinSize").innerText = displayValue(sellminsize);
-            document.getElementById("spanBuyMinSize").innerText = displayValue(buyminsize);
-            document.getElementById("spanFactoryMinSize").innerText = displayValue(factoryminsize);
-            document.getElementById("spanSellMinWidth").innerText = displayValue(sellminwidth);
-            document.getElementById("spanBuyMinWidth").innerText = displayValue(buyminwidth);
-            document.getElementById("spanFactoryMinWidth").innerText = displayValue(factoryminwidth);
-            document.getElementById("spanSellMinDrop").innerText = displayValue(sellmindrop);
-            document.getElementById("spanBuyMinDrop").innerText = displayValue(buymindrop);
-            document.getElementById("spanFactoryMinDrop").innerText = displayValue(factorymindrop);
-            document.getElementById("spanSellFormula").innerText = displayValue(sellformula);
-            document.getElementById("spanBuyFormula").innerText = displayValue(buyformula);
-            document.getElementById("spanFactoryFormula").innerText = displayValue(factoryformula);
-        }
         function dataDelete(id) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
         }
@@ -323,7 +213,7 @@
                 }
             });
         }
-        ["modalDetail", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

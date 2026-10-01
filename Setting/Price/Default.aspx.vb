@@ -7,6 +7,7 @@ Partial Class Setting_Price_Default
 
     Protected PriceGroups As Integer
     Protected PriceProductGroups As Integer
+    Protected PriceProductDiscounts As Integer
     Protected PriceBases As Integer
     Protected PriceSurcharges As Integer
     Protected PriceServices As Integer
@@ -25,6 +26,7 @@ Partial Class Setting_Price_Default
             If dt.Rows.Count > 0 Then
                 PriceGroups = CInt(dt.Rows(0)("PriceGroups"))
                 PriceProductGroups = CInt(dt.Rows(0)("PriceProductGroups"))
+                PriceProductDiscounts = CInt(dt.Rows(0)("PriceProductDiscounts"))
                 PriceBases = CInt(dt.Rows(0)("PriceBases"))
                 PriceSurcharges = CInt(dt.Rows(0)("PriceSurcharges"))
                 PriceServices = CInt(dt.Rows(0)("PriceServices"))
