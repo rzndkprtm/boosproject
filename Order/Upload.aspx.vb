@@ -4769,6 +4769,7 @@ Partial Class Order_Upload
                                     If batten = "Midnight" Then battenColour = "Black"
                                 End If
 
+                                If valanceOption = "Facade" Then valanceOption = "Cover Valance and Cord at Front"
                                 If valanceOption = "Retrousse" Then valanceOption = "No Cover Valance and Cord at Back"
 
                                 Dim linearMetre As Decimal = width / 1000
