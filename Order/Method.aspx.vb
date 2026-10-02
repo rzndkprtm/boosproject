@@ -8155,12 +8155,14 @@ Partial Class Order_Method
             Return "ROOM TO INSTALL IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+"
         End If
 
-        If blindName = "Complete Set" Then
+        If blindName = "Complete Set" OrElse blindName = "Track Only" Then
             If String.IsNullOrEmpty(data.mounting) Then Return "MOUNTING IS REQUIRED !"
         End If
 
-        If String.IsNullOrEmpty(data.fabrictype) Then Return "FABRIC TYPE IS REQUIRED !"
-        If String.IsNullOrEmpty(data.fabriccolour) Then Return "FABRIC COLOUR IS REQUIRED !"
+        If blindName = "Complete Set" OrElse blindName = "Fabric Only" Then
+            If String.IsNullOrEmpty(data.fabrictype) Then Return "FABRIC TYPE IS REQUIRED !"
+            If String.IsNullOrEmpty(data.fabriccolour) Then Return "FABRIC COLOUR IS REQUIRED !"
+        End If
 
         If String.IsNullOrEmpty(data.width) Then Return "WIDTH IS REQUIRED !"
         If Not Integer.TryParse(data.width, width) OrElse width <= 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
@@ -8171,21 +8173,35 @@ Partial Class Order_Method
             If width > 5477 Then Return "MAXIMUM WIDTH IS 5477"
         End If
 
-        If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
-        If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
-        If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
-            If drop < 300 Then Return "MINIMUM DROP IS 300MM !"
-        End If
-        If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
-            If drop > 3050 Then Return "MAXIMUM DROP IS 3050MM !"
+        If blindName = "Complete Set" OrElse blindName = "Fabric Only" Then
+            If String.IsNullOrEmpty(data.drop) Then Return "DROP IS REQUIRED !"
+            If Not Integer.TryParse(data.drop, drop) OrElse drop <= 0 Then Return "PLEASE CHECK YOUR DROP ORDER !"
+            If data.rolename = "Customer" OrElse data.rolename = "Installer" Then
+                If drop < 300 Then Return "MINIMUM DROP IS 300MM !"
+            End If
+            If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
+                If drop > 3050 Then Return "MAXIMUM DROP IS 3050MM !"
+            End If
         End If
 
-        If blindName = "Complete Set" Then
+        If blindName = "Complete Set" OrElse blindName = "Track Only" Then
             If String.IsNullOrEmpty(data.stackposition) Then Return "STACK POSITION IS REQUIRED !"
             If String.IsNullOrEmpty(data.controlposition) Then Return "CONTROL POSITION IS REQUIRED !"
             If String.IsNullOrEmpty(data.wandcolour) Then Return "WAND COLOUR IS REQUIRED !"
-            If String.IsNullOrEmpty(data.controllength) Then Return "WAND LENGTH IS REQUIRED !"
+        End If
 
+        If blindName = "Complete Set" Then
+            If String.IsNullOrEmpty(data.controllength) Then Return "WAND LENGTH IS REQUIRED !"
+        End If
+
+        If blindName = "Track Only" Then
+            If String.IsNullOrEmpty(data.controllengthvalue) Then Return "WAND LENGTH VALUE IS REQUIRED !"
+            If Not Integer.TryParse(data.controllengthvalue, controllengthValue) OrElse controllengthValue <= 0 Then Return "PLEASE CHECK YOUR WAND LENGTH ORDER !"
+
+            If controllengthValue > 2000 Then Return "MAXIMUM CONTROL LENGTH IS 2000MM !"
+        End If
+
+        If blindName = "Complete Set" OrElse blindName = "Track Only" Then
             If data.controllength = "Custom" Then
                 If String.IsNullOrEmpty(data.controllengthvalue) Then Return "WAND LENGTH VALUE IS REQUIRED !"
                 If Not Integer.TryParse(data.controllengthvalue, controllengthValue) OrElse controllengthValue <= 0 Then Return "PLEASE CHECK YOUR WAND LENGTH ORDER !"
@@ -8227,6 +8243,16 @@ Partial Class Order_Method
             data.chaincolour = String.Empty : data.wandcolour = String.Empty
             data.stackposition = String.Empty
             data.controlposition = String.Empty
+        End If
+
+        If blindName = "Track Only" Then
+            drop = 0
+            data.controllength = "Custom"
+            controllengthValue = data.controllengthvalue
+            wandlengthValue = controllengthValue
+
+            If data.stackposition = "Left" Then data.controlposition = "Right"
+            If data.stackposition = "Right" Then data.controlposition = "Left"
         End If
 
         Dim linearMetre As Decimal = width / 1000

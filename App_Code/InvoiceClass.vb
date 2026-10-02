@@ -526,7 +526,11 @@ Public Class InvoiceClass
                 End If
                 If designName = "Saphora Drape" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
+                    If blindName = "Track Only" Then
+                        itemDescription = String.Format("{0} ({1}) {2}", invoiceName, width, linearMetreText)
+                    End If
                 End If
                 If designName = "Service" Then
                     itemDescription = GetItemData("SELECT Name FROM PriceServices WHERE Id='" & serviceId & "'")
@@ -807,8 +811,13 @@ Public Class InvoiceClass
                 End If
                 If designName = "Saphora Drape" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
-                    namaBarang = "Vertical"
+                    If blindName = "Track Only" Then
+                        itemDescription = String.Format("{0} ({1})", invoiceName, width)
+                    End If
+
+                    namaBarang = designName
                 End If
                 If designName = "Service" Then
                     itemDescription = String.Format("{0}", invoiceName)

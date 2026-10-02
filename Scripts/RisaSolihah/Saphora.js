@@ -798,7 +798,7 @@ function visibleDetail(blindtype, colourtype) {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
 
-        const divsToHide = ["divmounting", "divstackposition", "divcontrolposition", "divwandcolour", "divcontrollength", "divcontrollengthvalue", "divextbracket", "divmarkup"];
+        const divsToHide = ["divmounting", "divdrop", "divfabrictype", "divfabriccolour", "divstackposition", "divcontrolposition", "divwandcolour", "divcontrollength", "divcontrollengthoption", "divcontrollengthvalue", "divextbracket", "divmarkup"];
 
         const toggleDisplay = (el, show) => {
             if (el) el.style.display = show ? "" : "none";
@@ -815,7 +815,15 @@ function visibleDetail(blindtype, colourtype) {
             let divShow = [];
 
             if (blindName === "Complete Set") {
-                divShow.push("divmounting", "divstackposition", "divcontrolposition", "divwandcolour", "divcontrollength", "divextbracket");
+                divShow.push("divmounting", "divfabrictype", "divfabriccolour", "divdrop", "divstackposition", "divcontrolposition", "divwandcolour", "divcontrollength", "divcontrollengthoption", "divextbracket");
+
+                divShow.forEach(id => toggleDisplay(document.getElementById(id), true));
+            } else if (blindName === "Fabric Only") {
+                divShow.push("divfabrictype", "divfabriccolour", "divdrop");
+
+                divShow.forEach(id => toggleDisplay(document.getElementById(id), true));
+            } else if (blindName === "Track Only") {
+                divShow.push("divmounting", "divstackposition", "divcontrolposition", "divwandcolour", "divcontrollength", "divcontrollengthvalue", "divextbracket");
 
                 divShow.forEach(id => toggleDisplay(document.getElementById(id), true));
             }

@@ -115,7 +115,7 @@
                                                     <select id="mounting" class="form-select"></select>
                                                 </div>
                                             </div>
-                                            <div class="row mt-3">
+                                            <div class="row mt-3" id="divfabrictype">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Fabric Type</label>
                                                 </div>
@@ -123,7 +123,7 @@
                                                     <select id="fabrictype" class="form-select"></select>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div class="row" id="divfabriccolour">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Fabric Colour</label>
                                                 </div>
@@ -142,7 +142,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div class="row" id="divdrop">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Drop</label>
                                                 </div>
@@ -196,7 +196,7 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Wand Length</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group" id="divcontrollengthoption">
                                                     <div class="input-group">
                                                         <select id="controllength" class="form-select">
                                                             <option value=""></option>
@@ -333,5 +333,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/Saphora.js?v=1.2.2"></script>
+    <script src="/Scripts/RisaSolihah/Saphora.js?v=1.2.3"></script>
 </asp:Content>

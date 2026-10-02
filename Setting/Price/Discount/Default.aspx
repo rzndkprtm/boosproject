@@ -32,7 +32,6 @@
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-2">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
-                <asp:Button runat="server" ID="btnFormat" CssClass="btn btn-info" Text="Format Product" OnClick="btnFormat_Click" />
             </div>
         </section>
         <section class="row">
@@ -66,10 +65,23 @@
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" ItemStyle-Width="80px" />
-                                            <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-Width="500px" />
                                             <asp:BoundField DataField="PriceGroupName" HeaderText="Price Group" />
+                                            <asp:BoundField DataField="Method" HeaderText="Method" />
+                                            <asp:BoundField DataField="Product" HeaderText="ProductName" />
+                                            <asp:TemplateField HeaderText="Discount">
+                                                <ItemTemplate>
+                                                    <%# DiscountValue(Eval("Method").ToString(), Eval("Discount")) %>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
                                             <asp:BoundField DataField="Status" HeaderText="Status" ItemStyle-Width="90px" />
-                                            
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="100px">
+                                                <ItemTemplate>
+                                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                                    <ul class="dropdown-menu">
+                                                        <li></li>
+                                                    </ul>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
                                         </Columns>
                                     </asp:GridView>
                                 </div>

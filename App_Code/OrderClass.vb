@@ -1500,6 +1500,10 @@ Public Class OrderClass
             If designName = "Saphora Drape" Then
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
 
+                If blindName = "Track Only" Then
+                    result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
+                End If
+
                 If showStock = True Then
                     If productStatus = "Limited Stock" Then
                         result &= "<br />"

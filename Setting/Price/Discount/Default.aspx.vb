@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Globalization
 
 Partial Class Setting_Price_Discount_Default
     Inherits Page
@@ -7,6 +8,7 @@ Partial Class Setting_Price_Discount_Default
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim dataLog As Object() = Nothing
+    Dim enUS As CultureInfo = New CultureInfo("en-US")
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -85,17 +87,13 @@ Partial Class Setting_Price_Discount_Default
     Protected Sub BindData(searchText As String)
         Try
             Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)),
-                New SqlParameter("@RoleName", If(String.IsNullOrWhiteSpace(Session("RoleName")), CType(DBNull.Value, Object), Session("RoleName").ToString())),
-                New SqlParameter("@CompanyId", If(String.IsNullOrWhiteSpace(Session("CompanyId")), CType(DBNull.Value, Object), Session("CompanyId").ToString()))
+                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText))
             }
-            gvList.DataSource = settingClass.GetDataTableSP("sp_PriceProductGroups_List", params)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_PriceProductDiscounts_List", params)
             gvList.DataBind()
-            gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
-            gvList.Columns(3).Visible = LoginAccess("Visible Price Group") ' PRICE GROUP NAME
+            gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
             btnAdd.Visible = LoginAccess("Add")
-            btnFormat.Visible = LoginAccess("Format")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -139,6 +137,15 @@ Partial Class Setting_Price_Discount_Default
             navPager.Visible = False
         End Try
     End Sub
+
+    Protected Function DiscountValue(method As String, data As Decimal) As String
+        If data > 0 Then
+            If method = "Percent" Then
+                Return data.ToString("G29", enUS) & "%"
+            End If
+        End If
+        Return "ERROR"
+    End Function
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
