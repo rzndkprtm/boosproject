@@ -2994,6 +2994,28 @@ Public Class OrderClass
                     costBuyAdditional = thisBuyAdditional
                     costFactoryAdditional = thisFactoryAdditional
 
+
+
+                    Dim defaultDiscountData As DataTable = GetDataTable("SELECT * FROM PriceProductDiscounts WHERE Status='Active'")
+                    For Each defaultDiscountRow As DataRow In defaultDiscountData.Rows
+                        Dim type As String = defaultDiscountRow("Type").ToString()
+                        Dim method As String = defaultDiscountRow("Method").ToString()
+                        Dim dataId As String = defaultDiscountRow("DataId").ToString()
+                        Dim discount As Decimal = CDec(defaultDiscountRow("Discount"))
+                        If method = "Percent" Then discount = Math.Round(CDec(defaultDiscountRow("Discount")) / 100, 2)
+
+                        If (type = "Designs" AndAlso dataId = designId) OrElse (type = "Blinds" AndAlso dataId = blindId) Then
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costSell * discount, 4)
+
+                            thisSell = Math.Round(costSell - discountValue, 4)
+                            thisBuy = Math.Round(costBuy - discountValue, 4)
+                        End If
+
+                        costSell = thisSell
+                        costBuy = thisBuy
+                    Next
+
                     Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
                     For Each sellPromoRow As DataRow In sellPromoData.Rows
                         Dim promoId As String = sellPromoRow("PromoId").ToString()

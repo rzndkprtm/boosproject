@@ -65,15 +65,14 @@
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" ItemStyle-Width="80px" />
-                                            <asp:BoundField DataField="PriceGroupName" HeaderText="Price Group" />
-                                            <asp:BoundField DataField="Method" HeaderText="Method" />
-                                            <asp:BoundField DataField="Product" HeaderText="ProductName" />
+                                            <asp:BoundField DataField="ProductName" HeaderText="Product" />
                                             <asp:TemplateField HeaderText="Discount">
                                                 <ItemTemplate>
                                                     <%# DiscountValue(Eval("Method").ToString(), Eval("Discount")) %>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:BoundField DataField="Status" HeaderText="Status" ItemStyle-Width="90px" />
+                                            <asp:BoundField DataField="Description" HeaderText="Description" />
+                                            <asp:BoundField DataField="Status" HeaderText="Status" ItemStyle-Width="120px" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="100px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
