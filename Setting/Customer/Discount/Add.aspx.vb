@@ -50,6 +50,9 @@ Partial Class Setting_Customer_Discount_Add
         If type = "Designs" Then
             dataName = settingClass.GetItemData("Select Name FROM Designs WHERE Id='" & dataId & "'")
         End If
+        If type = "Blinds" Then
+            dataName = settingClass.GetItemData("Select Name FROM Blinds WHERE Id='" & dataId & "'")
+        End If
         If type = "PriceProductGroups" Then
             dataName = settingClass.GetItemData("SELECT CASE WHEN Status='Active' THEN Name ELSE Name + ' [' + UPPER(Status) + ']' END FROM PriceProductGroups WHERE Id='" & dataId & "'")
         End If

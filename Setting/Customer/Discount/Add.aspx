@@ -48,7 +48,8 @@
                                         <label class="form-label">Type</label>
                                         <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="Designs" Text="Product"></asp:ListItem>
+                                            <asp:ListItem Value="Designs" Text="Design Type"></asp:ListItem>
+                                            <asp:ListItem Value="Blinds" Text="Blind Type"></asp:ListItem>
                                             <asp:ListItem Value="PriceProductGroups" Text="Product Group"></asp:ListItem>
                                             <asp:ListItem Value="RollerFabrics" Text="Fabric Type (Roller)"></asp:ListItem>
                                             <asp:ListItem Value="RollerFabricColours" Text="Fabric Colour (Roller)"></asp:ListItem>

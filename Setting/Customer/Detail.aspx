@@ -1334,7 +1334,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnSubmitResetProduct" CssClass="btn btn-danger" Text="Confirm" OnClick="btnSubmitResetProduct_Click" />
+                    <asp:Button runat="server" ID="btnResetProduct" CssClass="btn btn-danger" Text="Confirm" OnClick="btnResetProduct_Click" />
                 </div>
             </div>
         </div>
