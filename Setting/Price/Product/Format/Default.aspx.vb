@@ -57,15 +57,18 @@ Partial Class Setting_Price_Product_Format_Default
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim priceProductGroupId As String = txtDeleteId.Text
+            Dim priceProductGroupFormatId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("UPDATE PriceProductGroupFormats SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(priceProductGroupId)
+                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(priceProductGroupFormatId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
+
+            Dim dataLog As Object() = {"PriceProductGroupFormats", priceProductGroupFormatId, Session("LoginId").ToString(), "Price Product Group Format Deleted"}
+            settingClass.Logs(dataLog)
 
             Session("SearchFormatProductGroup") = txtSearch.Text
             Response.Redirect("~/setting/price/product")

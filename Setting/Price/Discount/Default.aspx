@@ -77,7 +77,15 @@
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
-                                                        <li></li>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Edit") %>'>
+                                                            <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/price/discount/edit?productdiscountid=" & Eval("Id")) %>'>Edit</a>
+                                                        </li>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Delete") %>'>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('PriceProductDiscounts', '<%# Eval("Id") %>')">Log</a>
+                                                        </li>
                                                     </ul>
                                                 </ItemTemplate>
                                             </asp:TemplateField>

@@ -19,19 +19,14 @@ Partial Class Setting_Price_Discount_Default
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            txtSearch.Text = Session("SearchProductGroup")
+            txtSearch.Text = Session("SearchProductDiscount")
             BindData(txtSearch.Text)
         End If
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
-        Session("SearchProductGroup") = txtSearch.Text
-        Response.Redirect("~/setting/price/product/add", False)
-    End Sub
-
-    Protected Sub btnFormat_Click(sender As Object, e As EventArgs)
-        Session("SearchProductGroup") = txtSearch.Text
-        Response.Redirect("~/setting/price/product/format", False)
+        Session("SearchProductDiscount") = txtSearch.Text
+        Response.Redirect("~/setting/price/discount/add", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
@@ -40,7 +35,7 @@ Partial Class Setting_Price_Discount_Default
         MessageError(False, String.Empty)
         BindData(txtSearch.Text)
 
-        Session("SearchProductGroup") = txtSearch.Text
+        Session("SearchProductDiscount") = txtSearch.Text
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
@@ -67,15 +62,18 @@ Partial Class Setting_Price_Discount_Default
             Dim priceProductGroupId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("UPDATE PriceProductGroups SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                Using thisCmd As New SqlCommand("UPDATE PriceProductDiscounts SET Status='Deleted' WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(priceProductGroupId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Session("SearchProductGroup") = txtSearch.Text
-            Response.Redirect("~/setting/price/product")
+            Dim dataLog As Object() = {"PriceProductDiscounts", priceProductGroupId, Session("LoginId").ToString(), "Price Product Discount Deleted"}
+            settingClass.Logs(dataLog)
+
+            Session("SearchProductDiscount") = txtSearch.Text
+            Response.Redirect("~/setting/price/discount")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

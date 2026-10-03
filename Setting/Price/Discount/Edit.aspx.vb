@@ -1,6 +1,7 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
-Partial Class Setting_Price_Discount_Add
+Partial Class Setting_Price_Discount_Edit
     Inherits Page
 
     Dim settingClass As New SettingClass
@@ -14,9 +15,15 @@ Partial Class Setting_Price_Discount_Add
             Exit Sub
         End If
 
+        If String.IsNullOrEmpty(Request.QueryString("productdiscountid")) Then
+            Response.Redirect("~/setting/price/discount", False)
+            Exit Sub
+        End If
+
+        lblId.Text = Request.QueryString("productdiscountid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindDataProduct(ddlType.SelectedValue)
+            BindData(lblId.Text)
         End If
     End Sub
 
@@ -46,13 +53,11 @@ Partial Class Setting_Price_Discount_Add
             End If
 
             If msgError.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM PriceProductDiscounts ORDER BY Id DESC")
-
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO PriceProductDiscounts VALUES (@Id, @Type, @Method, @DataId, @Discount, @Description, @Status)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE PriceProductDiscounts SET Type=@Type, Method=@Method, DataId=@DataId, Discount=@Discount, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Method", ddlMethod.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@DataId", ddlProduct.SelectedValue)
@@ -64,7 +69,7 @@ Partial Class Setting_Price_Discount_Add
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"PriceProductDiscounts", thisId, Session("LoginId").ToString(), "Price Product Discount Created"}
+                Dim dataLog As Object() = {"PriceProductDiscounts", lblId.Text, Session("LoginId").ToString(), "Price Product Discount Updated"}
                 settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/price/discount", False)
@@ -79,6 +84,35 @@ Partial Class Setting_Price_Discount_Add
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/setting/price/discount", False)
+    End Sub
+
+    Protected Sub BindData(productDiscountId As String)
+        Try
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM PriceProductDiscounts WHERE Id='" & productDiscountId & "'")
+            If myData Is Nothing Then
+                Response.Redirect("~/setting/price/discount", False)
+                Exit Sub
+            End If
+
+            BindDataProduct(myData("Type").ToString())
+
+            ddlType.SelectedValue = myData("Type").ToString()
+            ddlProduct.SelectedValue = myData("DataId").ToString()
+            ddlMethod.SelectedValue = myData("Method").ToString()
+            Dim discount As Decimal
+            If myData("Discount") IsNot DBNull.Value AndAlso Decimal.TryParse(myData("Discount").ToString(), discount) Then
+                txtDiscount.Text = discount.ToString("0.##")
+            Else
+                txtDiscount.Text = ""
+            End If
+            txtDescription.Text = myData("Description").ToString()
+            ddlStatus.SelectedValue = myData("Status").ToString()
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub BindDataProduct(type As String)

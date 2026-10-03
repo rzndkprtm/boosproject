@@ -2994,8 +2994,6 @@ Public Class OrderClass
                     costBuyAdditional = thisBuyAdditional
                     costFactoryAdditional = thisFactoryAdditional
 
-
-
                     Dim defaultDiscountData As DataTable = GetDataTable("SELECT * FROM PriceProductDiscounts WHERE Status='Active'")
                     For Each defaultDiscountRow As DataRow In defaultDiscountData.Rows
                         Dim type As String = defaultDiscountRow("Type").ToString()

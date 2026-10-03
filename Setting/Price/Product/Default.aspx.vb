@@ -72,6 +72,9 @@ Partial Class Setting_Price_Product_Default
                 End Using
             End Using
 
+            Dim dataLog As Object() = {"PriceProductGroups", priceProductGroupId, Session("LoginId").ToString(), "Price Product Group Deleted"}
+            settingClass.Logs(dataLog)
+
             Session("SearchProductGroup") = txtSearch.Text
             Response.Redirect("~/setting/price/product")
         Catch ex As Exception
