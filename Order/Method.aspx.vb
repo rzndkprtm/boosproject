@@ -7840,10 +7840,11 @@ Partial Class Order_Method
                 If controlName = "Chain" Then
                     If chainLength = "Static" Then
                         If String.IsNullOrEmpty(data.chainlengthvalue) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
+                        If Not Integer.TryParse(data.chainlengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE ORDER !"
                     End If
                     If chainLength = "Flexible" Then
-                        If String.IsNullOrEmpty(data.chainlengthvalue) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
-                        If Not Integer.TryParse(data.chainlengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE ORDER !"
+                        If String.IsNullOrEmpty(data.cordlengthvalue) Then Return "CHAIN LENGTH VALUE IS REQUIRED !"
+                        If Not Integer.TryParse(data.cordlengthvalue, controllength) OrElse controllength <= 0 Then Return "PLEASE CHECK YOUR CHAIN LENGTH VALUE ORDER !"
                     End If
                 End If
                 If controlName = "Reg Cord Lock" Then
