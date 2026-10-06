@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="boos.aspx.vb" Inherits="Setting_boos" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Boos.aspx.vb" Inherits="Setting_Boos" %>
 
 <!DOCTYPE html>
 

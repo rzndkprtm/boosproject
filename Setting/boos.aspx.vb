@@ -1,12 +1,15 @@
 ﻿Imports System.Data.SqlClient
 
-Partial Class Setting_boos
+Partial Class Setting_Boos
     Inherits Page
 
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        'Response.Redirect("https://boe.ordersblindonline.com/setting.aspx" & Request.Url.Query, False)
+        'Context.ApplicationInstance.CompleteRequest()
+
         If String.IsNullOrEmpty(Request.QueryString("action")) Then
             Exit Sub
         End If
