@@ -867,7 +867,7 @@ Public Class OrderClass
             Dim room As String = thisData("Room").ToString()
             Dim itemDescription As String = String.Format("<b>{0}</b>, {1}", room, productName)
             If String.IsNullOrEmpty(room) Then
-                itemDescription = String.Format("<b>{0}</b>", productName)
+                itemDescription = productName
             End If
 
             If designName = "Aluminium Blind" Then
@@ -1571,6 +1571,12 @@ Public Class OrderClass
             End If
             If designName = "Roller Part" Then
                 result = String.Format("{0} - {1}", designName, productName)
+            End If
+            If designName = "Shutter Express Part" Then
+                result = itemDescription
+            End If
+            If designName = "Shutter Ocean Part" Then
+                result = itemDescription
             End If
 
             Dim checkNote As String = GetItemData("SELECT Description FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Note'")

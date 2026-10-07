@@ -579,6 +579,12 @@ Public Class QuoteClass
                         itemDescription = String.Format("{0} - French Door Cut-Out {1} {2}", invoiceName, size, squareMetreText)
                     End If
                 End If
+                If designName = "Shutter Express Part" Then
+                    itemDescription = invoiceName
+                End If
+                If designName = "Shutter Ocean Part" Then
+                    itemDescription = invoiceName
+                End If
                 If designName = "Soft Roman" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
@@ -1225,6 +1231,12 @@ Public Class QuoteClass
                 If designName = "Roller Part" Then
                     itemDescription = productName
                 End If
+                If designName = "Shutter Express Part" Then
+                    itemDescription = productName
+                End If
+                If designName = "Shutter Ocean Part" Then
+                    itemDescription = productName
+                End If
 
                 Dim itemCost As Decimal = GetItemData_Decimal("SELECT CustomerPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Type='Final'")
 
@@ -1807,6 +1819,12 @@ Public Class QuoteClass
                     If doorCutOut = "Yes" Then
                         itemDescription = String.Format("{0} - French Door Cut-Out", productName)
                     End If
+                End If
+                If designName = "Shutter Express Part" Then
+                    itemDescription = productName
+                End If
+                If designName = "Shutter Ocean Part" Then
+                    itemDescription = productName
                 End If
                 If designName = "Soft Roman" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)

@@ -2615,6 +2615,140 @@ Public Class PreviewClass
             End Try
             ' END ROLLER PART
 
+            ' START SHUTTER EXPRESS PART
+            Try
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@HeaderId", headerId)
+                }
+                Dim thisData As DataTable = GetDataTableSP("sp_OrderDetails_Get_ShutterExpressPart", params)
+
+                If thisData.Rows.Count > 0 Then
+                    pageEvent.PageTitle = "Shutter Express"
+                    pageEvent.PageTitle2 = "Part"
+                    Dim table As New PdfPTable(5)
+                    table.WidthPercentage = 100
+
+                    Dim items(6, thisData.Rows.Count - 1) As String
+
+                    For i As Integer = 0 To thisData.Rows.Count - 1
+                        Dim number As Integer = i + 1
+
+                        items(0, i) = "Item : " & number
+                        items(1, i) = thisData.Rows(i)("BlindName").ToString()
+                        items(2, i) = thisData.Rows(i)("ProductName").ToString()
+                        items(3, i) = thisData.Rows(i)("PartColour").ToString()
+                        items(4, i) = thisData.Rows(i)("Width").ToString()
+                        items(5, i) = thisData.Rows(i)("Notes").ToString()
+                    Next
+
+                    For i As Integer = 0 To items.GetLength(1) - 1 Step 4
+                        If i > 0 Then doc.NewPage()
+
+                        Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
+                        Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
+
+                        Dim headers As String() = {"", "Type", "Product", "Colour", "Length", "Special Information"}
+
+                        For row As Integer = 0 To headers.Length - 1
+                            Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
+                            cellHeader.HorizontalAlignment = Element.ALIGN_RIGHT
+                            cellHeader.VerticalAlignment = Element.ALIGN_MIDDLE
+                            cellHeader.BackgroundColor = New BaseColor(200, 200, 200)
+                            cellHeader.MinimumHeight = 22
+                            table.AddCell(cellHeader)
+
+                            For col As Integer = i To Math.Min(i + 3, items.GetLength(1) - 1)
+                                Dim cellContent As New PdfPCell(New Phrase(items(row, col), fontContent))
+                                cellContent.HorizontalAlignment = Element.ALIGN_CENTER
+                                cellContent.VerticalAlignment = Element.ALIGN_MIDDLE
+                                cellContent.MinimumHeight = 22
+                                table.AddCell(cellContent)
+                            Next
+
+                            For col As Integer = items.GetLength(1) To i + 3
+                                Dim emptyCell As New PdfPCell(New Phrase("", fontContent))
+                                emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
+                                emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                                emptyCell.MinimumHeight = 22
+                                table.AddCell(emptyCell)
+                            Next
+                        Next
+                        doc.Add(table)
+                        table.DeleteBodyRows()
+                        doc.NewPage()
+                    Next
+                End If
+            Catch ex As Exception
+            End Try
+            ' END SHUTTER EXPRESS PART
+
+            ' START SHUTTER OCEAN PART
+            Try
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@HeaderId", headerId)
+                }
+                Dim thisData As DataTable = GetDataTableSP("sp_OrderDetails_Get_ShutterOceanPart", params)
+
+                If thisData.Rows.Count > 0 Then
+                    pageEvent.PageTitle = "Shutter Ocean"
+                    pageEvent.PageTitle2 = "Part"
+                    Dim table As New PdfPTable(5)
+                    table.WidthPercentage = 100
+
+                    Dim items(6, thisData.Rows.Count - 1) As String
+
+                    For i As Integer = 0 To thisData.Rows.Count - 1
+                        Dim number As Integer = i + 1
+
+                        items(0, i) = "Item : " & number
+                        items(1, i) = thisData.Rows(i)("BlindName").ToString()
+                        items(2, i) = thisData.Rows(i)("ProductName").ToString()
+                        items(3, i) = thisData.Rows(i)("PartColour").ToString()
+                        items(4, i) = thisData.Rows(i)("Width").ToString()
+                        items(5, i) = thisData.Rows(i)("Notes").ToString()
+                    Next
+
+                    For i As Integer = 0 To items.GetLength(1) - 1 Step 4
+                        If i > 0 Then doc.NewPage()
+
+                        Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
+                        Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
+
+                        Dim headers As String() = {"", "Type", "Product", "Colour", "Length", "Special Information"}
+
+                        For row As Integer = 0 To headers.Length - 1
+                            Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
+                            cellHeader.HorizontalAlignment = Element.ALIGN_RIGHT
+                            cellHeader.VerticalAlignment = Element.ALIGN_MIDDLE
+                            cellHeader.BackgroundColor = New BaseColor(200, 200, 200)
+                            cellHeader.MinimumHeight = 22
+                            table.AddCell(cellHeader)
+
+                            For col As Integer = i To Math.Min(i + 3, items.GetLength(1) - 1)
+                                Dim cellContent As New PdfPCell(New Phrase(items(row, col), fontContent))
+                                cellContent.HorizontalAlignment = Element.ALIGN_CENTER
+                                cellContent.VerticalAlignment = Element.ALIGN_MIDDLE
+                                cellContent.MinimumHeight = 22
+                                table.AddCell(cellContent)
+                            Next
+
+                            For col As Integer = items.GetLength(1) To i + 3
+                                Dim emptyCell As New PdfPCell(New Phrase("", fontContent))
+                                emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
+                                emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                                emptyCell.MinimumHeight = 22
+                                table.AddCell(emptyCell)
+                            Next
+                        Next
+                        doc.Add(table)
+                        table.DeleteBodyRows()
+                        doc.NewPage()
+                    Next
+                End If
+            Catch ex As Exception
+            End Try
+            ' END SHUTTER OCEAN PART
+
             pageTotalItem = String.Format("{0} Item", totalItems)
             If totalItems > 1 Then pageTotalItem = String.Format("{0} Items", totalItems)
 

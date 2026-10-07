@@ -555,7 +555,7 @@ Partial Class Order_Method
             If blindName = "Flyscreen" Then
                 result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
                 result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
-                result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
+                'result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
             End If
         End If
 
@@ -683,6 +683,104 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "HD3 Offset (5 mm) with HD9 F Interlock", .Text = "HD3 Offset (5 mm) with HD9 F Interlock"})
                 result.Add(New With {.Value = "HD2 Flat (1.5 mm) with HD9 F Interlock", .Text = "HD2 Flat (1.5 mm) with HD9 F Interlock"})
                 result.Add(New With {.Value = "HD10 Large Offset with HD9 F Interlock", .Text = "HD10 Large Offset with HD9 F Interlock"})
+            End If
+        End If
+
+        If type = "PartColour_Shuuter" Then
+            Dim designName As String = orderClass.GetDesignName(designtype)
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            Dim productName As String = orderClass.GetProductName(colourtype)
+
+            If designName = "Shutter Express Part" Then
+                If blindName = "Extrusion" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Fixed Frame" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinged Frame" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Sliding Frame" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinges" Then
+                    result.Add(New With {.Value = "Stainless Steel", .Text = "Stainless Steel"})
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                End If
+                If blindName = "Louvres" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                    If productName = "Standard Louvre Pin" OrElse productName = "Repair Louvre Pin" Then
+                        result.Clear()
+                        result.Add(New With {.Value = "White", .Text = "White"})
+                    End If
+                End If
+                If blindName = "Magnets & Strikers" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Misc" Then
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                End If
+                If blindName = "Posts" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+            End If
+
+            If designName = "Shutter Ocean Part" Then
+                If blindName = "Extrusion" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Fixed Frame" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinged Frame" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Sliding Frame" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinges" Then
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                    result.Add(New With {.Value = "Stainless Steel", .Text = "Stainless Steel"})
+                End If
+                If blindName = "Louvres" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                    If productName = "Standard Louvre Pin" OrElse productName = "Repair Louvre Pin" Then
+                        result.Clear()
+                        result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                        result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                        result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                        result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                    End If
+                End If
+                If blindName = "Magnets & Strikers" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Misc" Then
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                End If
+                If blindName = "Posts" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
             End If
         End If
 
@@ -1079,10 +1177,6 @@ Partial Class Order_Method
                     End If
                 End If
             End If
-        End If
-
-        If type = "MidrailCriticalShutter" Then
-
         End If
 
         Return result
@@ -3647,7 +3741,6 @@ Partial Class Order_Method
         Dim drop As Integer
         Dim wandcolour As String = String.Empty
         Dim wandlength As Integer
-        Dim panelQty As Integer
         Dim markup As Integer
 
         Dim linearMetre As Decimal
@@ -10916,6 +11009,128 @@ Partial Class Order_Method
         Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
     End Function
 
+    <WebMethod()>
+    Public Shared Function ShutterPartProcess(data As ProccessData) As String
+        Dim orderClass As New OrderClass
+
+        Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+
+        Dim qty As Integer
+        Dim width As Integer
+        Dim markup As Integer
+
+        Dim totalItems As Integer = 1
+
+        Dim designName As String = String.Empty
+        Dim blindName As String = String.Empty
+        Dim productName As String = String.Empty
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+        If Not String.IsNullOrEmpty(data.colourtype) Then productName = orderClass.GetProductName(data.colourtype)
+
+        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+
+        If String.IsNullOrEmpty(data.blindtype) Then Return "PART TYPE IS REQUIRED !"
+        If String.IsNullOrEmpty(data.colourtype) Then Return "PRODUCT IS REQUIRED !"
+        If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
+        If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
+
+        If Not Integer.TryParse(data.width, width) OrElse width < 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
+
+        If Not String.IsNullOrEmpty(data.notes) Then
+            If data.notes.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.notes.Contains("&=") OrElse data.notes.Contains("&+") Then
+                Return "SPECIAL INFORMATION MUST NOT CONTAIN: , & ` ' &= &+"
+            End If
+            If data.notes.Trim().Length > 1000 Then Return "MAXIMUM 1000 CHARACTERS !"
+        End If
+
+        If Not String.IsNullOrEmpty(data.markup) Then
+            If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
+        End If
+
+        Dim linearMetre As Decimal = width / 1000
+        Dim squareMetre As Decimal = 0
+
+        Dim groupName As String = String.Format("{0} - {1}", designName, productName)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
+
+        If data.itemaction = "create" OrElse data.itemaction = "copy" Then
+            For i As Integer = 1 To qty
+                Dim itemId As String = orderClass.GetNewOrderItemId()
+
+                Using thisConn As SqlConnection = New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_ShutterPart", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+
+                        thisCmd.Parameters.AddWithValue("@Id", itemId)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
+                        thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
+                        thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                        thisCmd.Parameters.AddWithValue("@Width", width)
+                        thisCmd.Parameters.AddWithValue("@Drop", 0)
+                        thisCmd.Parameters.AddWithValue("@PartColour", data.partcolour)
+                        thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
+                        thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
+                        thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
+                        thisCmd.Parameters.AddWithValue("@Notes", data.notes)
+                        thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+
+                Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Added"}
+                orderClass.Logs(dataLog)
+            Next
+            orderClass.UpdateOrderFactory(data.headerid)
+
+            Return "Success"
+        End If
+
+        If data.itemaction = "edit" OrElse data.itemaction = "view" Then
+            Dim itemId As String = data.itemid
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("sp_OrderDetails_Update_ShutterPart", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+
+                    thisCmd.Parameters.AddWithValue("@Id", itemId)
+                    thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
+                    thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                    thisCmd.Parameters.AddWithValue("@Width", width)
+                    thisCmd.Parameters.AddWithValue("@Drop", 0)
+                    thisCmd.Parameters.AddWithValue("@PartColour", data.partcolour)
+                    thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
+                    thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
+                    thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
+                    thisCmd.Parameters.AddWithValue("@Notes", data.notes)
+                    thisCmd.Parameters.AddWithValue("@MarkUp", markup)
+
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            orderClass.ResetPriceDetail(data.headerid, itemId)
+            orderClass.CalculatePrice(data.headerid, itemId)
+            orderClass.FinalCostItem(data.headerid, itemId)
+            orderClass.UpdateOrderFactory(data.headerid)
+
+            Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
+            orderClass.Logs(dataLog)
+
+            Return "Success"
+        End If
+
+        Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
+    End Function
+
 
     'DETAIL
 
@@ -11911,6 +12126,37 @@ Partial Class Order_Method
         }
         Return result
     End Function
+
+    <WebMethod()>
+    Public Shared Function ShutterPartDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
+        Dim orderClass As New OrderClass
+
+        Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
+        If detailData Is Nothing Then Return Nothing
+
+        Dim designId As String = detailData("DesignId").ToString()
+        Dim blindId As String = detailData("BlindType").ToString()
+        Dim tubeId As String = detailData("TubeType").ToString()
+        Dim controlId As String = detailData("ControlType").ToString()
+        Dim productId As String = detailData("ProductId").ToString()
+
+        Dim itemDetail As New Dictionary(Of String, Object)
+        For Each col As DataColumn In detailData.Table.Columns
+            itemDetail(col.ColumnName) = detailData(col.ColumnName)
+        Next
+
+        Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim partColour As New JSONList With {.type = "PartColour_Shuuter", .designtype = designId, .blindtype = blindId, .colourtype = productId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+
+        Dim result = New With {
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .ColourTypes = ListData(colourReq),
+            .PartColours = ListData(partColour)
+        }
+        Return result
+    End Function
     ' OTHER
 
     <WebMethod()>
@@ -12235,6 +12481,7 @@ Public Class ProccessData
     Public Property cutout As String
     Public Property specialshape As String
     Public Property templateprovided As String
+    Public Property partcolour As String
 
     ' DOOR PUNYA
     Public Property midrailposition As String
