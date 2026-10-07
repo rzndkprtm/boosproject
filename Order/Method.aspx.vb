@@ -11029,7 +11029,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.colourtype) Then productName = orderClass.GetProductName(data.colourtype)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        Dim shutterPriceGroupId As String = orderClass.GetShutterPriceGroupByOrder(data.headerid)
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "PART TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PRODUCT IS REQUIRED !"
@@ -11053,7 +11053,7 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = 0
 
         Dim groupName As String = String.Format("{0} - {1}", designName, productName)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, shutterPriceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
