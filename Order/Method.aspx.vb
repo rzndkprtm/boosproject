@@ -11038,7 +11038,7 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.blindtype) Then Return "PART TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PRODUCT IS REQUIRED !"
         If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
-        If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
+        If Not Integer.TryParse(data.qty, qty) OrElse qty < 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
 
         If Not Integer.TryParse(data.width, width) OrElse width < 0 Then Return "PLEASE CHECK YOUR WIDTH ORDER !"
 
