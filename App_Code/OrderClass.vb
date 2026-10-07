@@ -2768,6 +2768,12 @@ Public Class OrderClass
                     If designName = "Skyline Shutter Ocean" Then
                         sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
                     End If
+                    If designName = "Shutter Express Part" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Shutter Ocean Part" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
                     If designName = "Door" Then
                         sellArray = {priceProductGroupId, doorPriceGroup, drop, width, "Sell"}
                     End If
@@ -2782,7 +2788,13 @@ Public Class OrderClass
                     If designName = "Skyline Shutter Express" Then
                         buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
                     End If
+                    If designName = "Shutter Express Part" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
                     If designName = "Skyline Shutter Ocean" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Shutter Ocean Part" Then
                         buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
                     End If
                     If designName = "Door" Then
@@ -2796,7 +2808,13 @@ Public Class OrderClass
                     If designName = "Skyline Shutter Express" Then
                         factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
                     End If
+                    If designName = "Shutter Express Part" Then
+                        factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
+                    End If
                     If designName = "Skyline Shutter Ocean" Then
+                        factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
+                    End If
+                    If designName = "Shutter Ocean Part" Then
                         factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
                     End If
                     If designName = "Door" Then
@@ -2808,6 +2826,9 @@ Public Class OrderClass
 
                     Dim priceGroupCalculation As String = priceGroupId
                     If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Shutter Express Part" OrElse designName = "Shutter Ocean Part" Then
                         priceGroupCalculation = shutterPriceGroup
                     End If
                     If designName = "Door" OrElse designName = "Window" Then
@@ -3226,7 +3247,13 @@ Public Class OrderClass
                     If designName = "Skyline Shutter Express" Then
                         surchargeArray = {headerId, itemId, designId, itemNumber, shutterPriceGroup}
                     End If
+                    If designName = "Shutter Express Part" Then
+                        surchargeArray = {headerId, itemId, designId, itemNumber, shutterPriceGroup}
+                    End If
                     If designName = "Skyline Shutter Ocean" Then
+                        surchargeArray = {headerId, itemId, designId, itemNumber, shutterPriceGroup}
+                    End If
+                    If designName = "Shutter Ocean Part" Then
                         surchargeArray = {headerId, itemId, designId, itemNumber, shutterPriceGroup}
                     End If
                     If designName = "Door" Then
