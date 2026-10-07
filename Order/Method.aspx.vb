@@ -11031,6 +11031,10 @@ Partial Class Order_Method
 
         Dim shutterPriceGroupId As String = orderClass.GetShutterPriceGroupByOrder(data.headerid)
 
+        If String.IsNullOrEmpty(data.qty) Then
+            data.qty = 0
+        End If
+
         If String.IsNullOrEmpty(data.blindtype) Then Return "PART TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PRODUCT IS REQUIRED !"
         If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
