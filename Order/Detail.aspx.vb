@@ -2533,6 +2533,7 @@ Partial Class Order_Detail
                     If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Quoted" Then
@@ -2544,6 +2545,7 @@ Partial Class Order_Detail
                     aSendQuote.Visible = True
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Waiting Proforma" Then
@@ -2561,6 +2563,7 @@ Partial Class Order_Detail
                     aUpdateInvoiceNumber.Visible = True
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -2601,6 +2604,7 @@ Partial Class Order_Detail
                     End If
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Pending Payment" Then
@@ -2647,6 +2651,7 @@ Partial Class Order_Detail
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
                         aAddProduct.Visible = True
+                        aAddPart.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -2680,6 +2685,7 @@ Partial Class Order_Detail
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
                         aAddProduct.Visible = True
+                        aAddPart.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -2712,6 +2718,7 @@ Partial Class Order_Detail
                         aRePrice.Visible = True
                         aSendInvoice.Visible = True
                         aAddProduct.Visible = True
+                        aAddPart.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -2786,6 +2793,7 @@ Partial Class Order_Detail
                     aSendQuote.Visible = True
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Quoted" Then
@@ -2797,6 +2805,7 @@ Partial Class Order_Detail
                     aSendQuote.Visible = True
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Waiting Proforma" Then
@@ -2812,6 +2821,7 @@ Partial Class Order_Detail
                     aSendInvoice.Visible = True
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -2877,6 +2887,7 @@ Partial Class Order_Detail
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
                         aAddProduct.Visible = True
+                        aAddPart.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -2909,6 +2920,7 @@ Partial Class Order_Detail
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
                         aAddProduct.Visible = True
+                        aAddPart.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -2939,6 +2951,7 @@ Partial Class Order_Detail
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
                         aAddProduct.Visible = True
+                        aAddPart.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -3000,10 +3013,12 @@ Partial Class Order_Detail
                         If Session("LoginId") = lblCreatedBy.Text Then aDeleteOrder.Visible = True
                         aSubmitOrder.Visible = True
                         aAddProduct.Visible = True
+                        aAddPart.Visible = True
                     End If
                     If lblOrderType.Text = "Builder" Then
                         aQuoteOrder.Visible = True
                         aAddProduct.Visible = True
+                        aAddPart.Visible = True
                     End If
 
                 End If
@@ -3015,6 +3030,7 @@ Partial Class Order_Detail
                     aSendQuote.Visible = True
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Waiting Proforma" Then
@@ -3028,6 +3044,7 @@ Partial Class Order_Detail
                     aUpdateInvoiceNumber.Visible = True
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -3112,6 +3129,7 @@ Partial Class Order_Detail
                     aSendQuote.Visible = True
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Quoted" Then
@@ -3135,6 +3153,7 @@ Partial Class Order_Detail
                     aUpdateInvoiceNumber.Visible = True
 
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Proforma Sent" Then
@@ -3186,8 +3205,9 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
-                        aAddService.Visible = True
                         aAddProduct.Visible = True
+                        aAddPart.Visible = True
+                        aAddService.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "In Production" Then
@@ -3199,6 +3219,7 @@ Partial Class Order_Detail
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
                         aAddProduct.Visible = True
+                        aAddPart.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -3211,6 +3232,7 @@ Partial Class Order_Detail
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
                         aAddProduct.Visible = True
+                        aAddPart.Visible = True
                         aAddService.Visible = True
                     End If
                 End If
@@ -3252,11 +3274,13 @@ Partial Class Order_Detail
                         aQuoteOrder.Visible = True : aRePrice.Visible = True
                     End If
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                 End If
                 If lblOrderStatus.Text = "Quoted" Then
                     btnQuoteAction.Visible = True
                     aFile.Visible = True
                     aAddProduct.Visible = True
+                    aAddPart.Visible = True
                     If lblOrderType.Text = "Builder" Then
                         aRePrice.Visible = True
                     End If

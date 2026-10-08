@@ -17,13 +17,13 @@ Public Class Sunlight : Implements IHttpHandler
         Dim validApiKey As String = System.Configuration.ConfigurationManager.AppSettings("ApiKey")
 
         If String.IsNullOrEmpty(apiKeyHeader) OrElse apiKeyHeader <> validApiKey Then
-            context.Response.StatusCode = 401 ' Unauthorized
+            context.Response.StatusCode = 401
             context.Response.Write("{""status"": ""error"", ""message"": ""Invalid or missing API key""}")
             Return
         End If
 
         If context.Request.HttpMethod <> "POST" Then
-            context.Response.StatusCode = 405 ' Method Not Allowed
+            context.Response.StatusCode = 405
             context.Response.Write("{""status"": ""error"", ""message"": ""Method not allowed""}")
             Return
         End If
@@ -48,7 +48,7 @@ Public Class Sunlight : Implements IHttpHandler
                 Try
                     Dim headerId As String = orderClass.GetNewOrderHeaderId()
 
-                    '#OrderHeader
+                    ' ORDER HEADERS
                     Using thisCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, OrderFactory, OrderContact, OrderAddress, OrderContainer, Status, CreatedBy, CreatedDate, SubmittedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, 'Regular', 'BIG', '', '', 'NSW', 'New Order', 1568, GETDATE(), GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn, transaction)
                         thisCmd.Parameters.AddWithValue("@Id", headerId)
                         thisCmd.Parameters.AddWithValue("@OrderId", orderData.OrderId)
@@ -60,8 +60,18 @@ Public Class Sunlight : Implements IHttpHandler
                         thisCmd.ExecuteNonQuery()
                     End Using
 
+                    ' ORDER DETAILS
                     If orderData.Details IsNot Nothing AndAlso orderData.Details.Count > 0 Then
-
+                        For Each detail As OrderDetail In orderData.Details
+                            Select Case detail.DesignName.Trim().ToLower()
+                                Case "Aluminium Blinds"
+                                    InsertAluminium(thisConn, transaction, headerId, detail)
+                                Case "Venetian Blinds"
+                                    InsertAluminium(thisConn, transaction, headerId, detail)
+                                Case Else
+                                    Throw New Exception("DesignName tidak dikenali: " & detail.DesignName)
+                            End Select
+                        Next
                     End If
 
                     transaction.Commit()
@@ -81,6 +91,82 @@ Public Class Sunlight : Implements IHttpHandler
             context.Response.Write("{""status"": ""error"", ""message"": ""Invalid JSON format"", ""details"": """ & ex.Message & """}")
             context.ApplicationInstance.CompleteRequest()
         End Try
+    End Sub
+
+    Private Sub InsertAluminium(koneksi As SqlConnection, trans As SqlTransaction, headerId As String, detail As OrderDetail)
+
+        detail.BlindName = "0.21mm"
+        Dim designId As String = "1"
+        Dim blindId As String = "2"
+        Dim priceGroupId As String = "14"
+
+        Dim productColourId As String = "SELECT Id FROM ProductColours WHERE Name='" & detail.ColourType & "'"
+
+        Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS subCompanyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='9' AND ControlType='17' AND ColourType='" & productColourId & "' AND subCompanyArray.VALUE='7'")
+
+        Dim productGroupName As String = String.Format("{0} - {1}", detail.DesignName, detail.BlindName)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productGroupName, designId, priceGroupId)
+
+        Dim controlLength As String = "Custom"
+        Dim controlLengthValue As Integer = detail.ChainLength
+
+        If detail.ChainLength = 0 Then
+            controlLength = "Standard"
+            controlLengthValue = Math.Ceiling(detail.Drop * 2 / 3)
+            If controlLengthValue < 450 Then controlLengthValue = 450
+        End If
+
+        Dim linearMetre As Decimal = detail.Width / 1000
+        Dim squareMetre As Decimal = detail.Width * detail.Drop / 1000000
+
+        For i As Integer = 1 To detail.Qty
+            Dim itemId As String = orderClass.GetNewOrderItemId()
+
+            Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Aluminium", koneksi, trans)
+                thisCmd.Parameters.AddWithValue("@Id", itemId)
+                thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                thisCmd.Parameters.AddWithValue("@ProductId", productId)
+                thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                thisCmd.Parameters.AddWithValue("@PriceProductGroupIdB", CType(DBNull.Value, Object))
+                thisCmd.Parameters.AddWithValue("@Room", detail.Room)
+                thisCmd.Parameters.AddWithValue("@Mounting", detail.Mounting)
+                thisCmd.Parameters.AddWithValue("@SubType", "Single")
+                thisCmd.Parameters.AddWithValue("@ControlPosition", detail.ControlPosition)
+                thisCmd.Parameters.AddWithValue("@TilterPosition", detail.TilterPosition)
+                thisCmd.Parameters.AddWithValue("@Width", detail.Width)
+                thisCmd.Parameters.AddWithValue("@Drop", detail.Drop)
+                thisCmd.Parameters.AddWithValue("@ControlLength", controlLength)
+                thisCmd.Parameters.AddWithValue("@ControlLengthValue", controlLengthValue)
+                thisCmd.Parameters.AddWithValue("@WandLength", controlLength)
+                thisCmd.Parameters.AddWithValue("@WandLengthValue", controlLengthValue)
+                thisCmd.Parameters.AddWithValue("@ControlPositionB", String.Empty)
+                thisCmd.Parameters.AddWithValue("@TilterPositionB", String.Empty)
+                thisCmd.Parameters.AddWithValue("@WidthB", 0)
+                thisCmd.Parameters.AddWithValue("@DropB", 0)
+                thisCmd.Parameters.AddWithValue("@ControlLengthB", String.Empty)
+                thisCmd.Parameters.AddWithValue("@ControlLengthValueB", 0)
+                thisCmd.Parameters.AddWithValue("@WandLengthB", String.Empty)
+                thisCmd.Parameters.AddWithValue("@WandLengthValueB", 0)
+                thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
+                thisCmd.Parameters.AddWithValue("@LinearMetreB", 0)
+                thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
+                thisCmd.Parameters.AddWithValue("@SquareMetreB", 0)
+                thisCmd.Parameters.AddWithValue("@Supply", detail.BottomHoldDown)
+                thisCmd.Parameters.AddWithValue("@TotalItems", 1)
+                thisCmd.Parameters.AddWithValue("@Notes", detail.Notes)
+                thisCmd.Parameters.AddWithValue("@MarkUp", 0)
+
+                thisCmd.ExecuteNonQuery()
+            End Using
+
+            orderClass.ResetPriceDetail(headerId, itemId)
+            orderClass.CalculatePrice(headerId, itemId)
+            orderClass.FinalCostItem(headerId, itemId)
+
+            Dim dataLog As Object() = {"OrderDetails", itemId, 2, "Order Item Added"}
+            orderClass.Logs(dataLog)
+        Next
+        orderClass.UpdateOrderFactory(headerId)
     End Sub
 
     Public ReadOnly Property IsReusable() As Boolean Implements IHttpHandler.IsReusable
@@ -111,67 +197,17 @@ Public Class OrderDetail
     Public Property Number As Integer
     Public Property HeaderId As Integer
     Public Property ProductId As String
+    Public Property DesignName As String
     Public Property BlindName As String
-    Public Property Colour As String
-    Public Property ExactId As String
-    Public Property ProductPriceGroupId As String
+    Public Property ColourType As String
     Public Property Qty As Integer
     Public Property Room As String
     Public Property Mounting As String
     Public Property Width As Integer
     Public Property Drop As Integer
-    Public Property TrackLength As Integer
-    Public Property TrackQty As Integer
-    Public Property Layout As String
-    Public Property LayoutSpecial As String
-    Public Property PanelQty As Integer
-    Public Property CustomHeaderLength As Integer
-    Public Property SemiInsideMount As String
-    Public Property BottomTrackType As String
-    Public Property BottomTrackRecess As String
-    Public Property LouvreSize As String
-    Public Property LouvrePosition As String
-    Public Property HingeColour As String
-    Public Property HingeQtyPerPanel As Integer
-    Public Property PanelQtyWithHinge As Integer
-    Public Property MidrailHeight1 As Integer
-    Public Property MidrailHeight2 As Integer
-    Public Property MidrailCritical As String
-    Public Property FrameType As String
-    Public Property FrameLeft As String
-    Public Property FrameRight As String
-    Public Property FrameTop As String
-    Public Property FrameBottom As String
-    Public Property Buildout As String
-    Public Property BuildoutPosition As String
-    Public Property LocationTPost1 As String
-    Public Property LocationTPost2 As String
-    Public Property LocationTPost3 As String
-    Public Property LocationTPost4 As String
-    Public Property LocationTPost5 As String
-    Public Property HorizontalTPost As String
-    Public Property HorizontalTPostHeight As Integer
-    Public Property JoinedPanels As String
-    Public Property TiltrodType As String
-    Public Property TiltrodSplit As String
-    Public Property SplitHeight1 As Integer
-    Public Property SplitHeight2 As Integer
-    Public Property ReverseHinged As String
-    Public Property PelmetFlat As String
-    Public Property ExtraFascia As String
-    Public Property HingesLoose As String
-    Public Property DoorCutOut As String
-    Public Property SpecialShape As String
-    Public Property TemplateProvided As String
-    Public Property LinearMetre As Decimal
-    Public Property SquareMetre As Decimal
+    Public Property ControlPosition As String
+    Public Property TilterPosition As String
+    Public Property BottomHoldDown As String ' Hold Down Clip
+    Public Property ChainLength As Integer ' Cord Length
     Public Property Notes As String
-    Public Property Cost As Decimal
-    Public Property CostOverride As Decimal
-    Public Property Discount As Decimal
-    Public Property FinalCost As Decimal
-    Public Property MarkUp As Decimal
-    Public Property TotalBlinds As Integer
-    Public Property Production As String
-    Public Property Paid As Integer
 End Class
