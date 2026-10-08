@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Change.aspx.vb" Inherits="Setting_Specification_Product_Change" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Product Change" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="ChangeStatus.aspx.vb" Inherits="Setting_Specification_Product_ChangeStatus" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Product Status Change" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -24,59 +24,48 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-7">
+            <div class="col-12 col-sm-12 col-lg-8">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Change Form</h4>
+                        <h4 class="card-title">Change Status Form</h4>
                     </div>
                     <div class="card-body">
-                        <div class="form form-horizontal">
+                        <div class="form form-vertical">
                             <div class="form-body">
                                 <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-3">
-                                        <label>Design Type</label>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <label class="form-label">Design Type</label>
                                         <asp:DropDownList runat="server" ID="ddlDesignType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignType_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-3">
-                                        <label>Blind Type</label>
-                                    </div>
                                     <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                        <label class="form-label">Blind Type</label>
                                         <asp:DropDownList runat="server" ID="ddlBlindType" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-3">
-                                        <label>Tube Type</label>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <label class="form-label">Tube Type</label>
                                         <asp:DropDownList runat="server" ID="ddlTubeType" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-3">
-                                        <label>Control Type</label>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <label class="form-label">Control Type</label>
                                         <asp:DropDownList runat="server" ID="ddlControlType" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-3">
-                                        <label>Colour Type</label>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <label class="form-label">Colour Type</label>
                                         <asp:DropDownList runat="server" ID="ddlColourType" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-3">
-                                        <label>Status</label>
+                                    <div class="col-12">
+                                        <div class="divider">
+                                            <div class="divider-text">NEW STATUS PRODUCT</div>
+                                        </div>
                                     </div>
+                                </div>
+                                <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <label class="form-label">Status</label>
                                         <asp:DropDownList runat="server" ID="ddlStatus" CssClass="choices form-select">
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
                                             <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>

@@ -1573,10 +1573,10 @@ Public Class OrderClass
                 result = String.Format("{0} - {1}", designName, productName)
             End If
             If designName = "Shutter Express Part" Then
-                result = itemDescription
+                result = String.Format("{0} - {1}", designName, productName)
             End If
             If designName = "Shutter Ocean Part" Then
-                result = itemDescription
+                result = String.Format("{0} - {1}", designName, productName)
             End If
 
             Dim checkNote As String = GetItemData("SELECT Description FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Note'")
@@ -2204,7 +2204,7 @@ Public Class OrderClass
                     Dim isTaiwan As Boolean = False
                     Dim isChina As Boolean = False
 
-                    If designName = "Aluminium Blind" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" OrElse designName = "Panel Glide" OrElse designName = "Pelmet" OrElse designName = "Roman Blind" OrElse designName = "Soft Roman" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Vertical" OrElse designName = "Roller Blind" OrElse designName = "Sample" OrElse designName = "Skyline Shutter Express" OrElse designName = "Outdoor" OrElse designName = "Saphora Drape" OrElse designName = "Roller Horizon" OrElse designName = "Venetian Part" Then
+                    If designName = "Aluminium Blind" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" OrElse designName = "Panel Glide" OrElse designName = "Pelmet" OrElse designName = "Roman Blind" OrElse designName = "Soft Roman" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Vertical" OrElse designName = "Roller Blind" OrElse designName = "Sample" OrElse designName = "Skyline Shutter Express" OrElse designName = "Outdoor" OrElse designName = "Saphora Drape" OrElse designName = "Roller Horizon" OrElse designName = "Venetian Part" OrElse designName = "Aluminium Part" OrElse designName = "Roller Part" OrElse designName = "Shutter Express Part" Then
                         isBig = True
                     End If
 
@@ -2259,7 +2259,7 @@ Public Class OrderClass
                         End If
                     End If
 
-                    If designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Ocean" Then
+                    If designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Ocean" OrElse designName = "Shutter Ocean Part" Then
                         isChina = True
                     End If
 

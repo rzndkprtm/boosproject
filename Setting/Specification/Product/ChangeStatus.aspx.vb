@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Setting_Specification_Product_Change
+Partial Class Setting_Specification_Product_ChangeStatus
     Inherits Page
 
     Dim settingClass As New SettingClass

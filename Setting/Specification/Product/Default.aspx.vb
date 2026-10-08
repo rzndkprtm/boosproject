@@ -55,7 +55,7 @@ Partial Class Setting_Specification_Product_Default
         Response.Redirect("~/setting/specification/product/add", False)
     End Sub
 
-    Protected Sub btnMultipleChange_Click(sender As Object, e As EventArgs)
+    Protected Sub btnMultipleStatusChange_Click(sender As Object, e As EventArgs)
         Session("DesignProduct") = ddlDesignSort.SelectedValue
         Session("BlindProduct") = ddlBlindSort.SelectedValue
         Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue
@@ -65,7 +65,7 @@ Partial Class Setting_Specification_Product_Default
         Session("ActiveProduct") = ddlStatusSort.SelectedValue
         Session("SearchProduct") = txtSearch.Text
 
-        Response.Redirect("~/setting/specification/product/change", False)
+        Response.Redirect("~/setting/specification/product/changestatus", False)
     End Sub
 
     Protected Sub btnCopyProduct_Click(sender As Object, e As EventArgs)

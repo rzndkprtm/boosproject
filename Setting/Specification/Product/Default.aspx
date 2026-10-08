@@ -35,7 +35,7 @@
                 <asp:Button runat="server" ID="btnAlias" CssClass="btn btn-info" Text="Product Alias" OnClick="btnAlias_Click" />
                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnMultiple">Multiple</button>
                 <ul class="dropdown-menu">
-                    <li><asp:Button runat="server" ID="btnMultipleChange" CssClass="dropdown-item" Text="Change Status" OnClick="btnMultipleChange_Click" /></li>
+                    <li><asp:Button runat="server" ID="btnMultipleStatusChange" CssClass="dropdown-item" Text="Status Change" OnClick="btnMultipleStatusChange_Click" /></li>
                     <li><asp:Button runat="server" ID="btnCopyProduct" CssClass="dropdown-item" Text="Copy Product" OnClick="btnCopyProduct_Click" /></li>
                     <li><asp:Button runat="server" ID="btnDeleteProduct" CssClass="dropdown-item" Text="Delete Product" OnClick="btnDeleteProduct_Click" /></li>
                 </ul>
