@@ -40,7 +40,7 @@ Partial Class Ticket_Default
 
     <WebMethod(EnableSession:=True)>
     <ScriptMethod(ResponseFormat:=ResponseFormat.Json)>
-    Public Shared Function GetTickets() As Object
+    Public Shared Function GetTickets(type As String) As Object
         Try
             Dim loginId As Integer = GetLoginId()
             Dim isInternal As Boolean = IsInternalUser()
@@ -51,10 +51,10 @@ Partial Class Ticket_Default
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Dim thisSql As String = "SELECT T.Id, T.TicketNo, T.LoginId, L.FullName, C.Name AS CustomerName, T.Subject, T.Status, T.Priority, T.CreatedDate, M.LastMessageDate, M.LastMessage, ISNULL(U.UnreadCount, 0) AS UnreadCount FROM Tickets T LEFT JOIN Logins L ON T.LoginId = L.Id LEFT JOIN Customers C ON L.CustomerId = C.Id OUTER APPLY (SELECT TOP 1 X.CreatedDate AS LastMessageDate, X.LastMessage FROM (SELECT CM.CreatedDate, CM.Message AS LastMessage, CM.Id, 1 AS SortType FROM TicketMessages CM WHERE CM.TicketId = T.Id UNION ALL SELECT F.CreatedDate, F.FileName AS LastMessage, F.Id, 2 AS SortType FROM TicketFiles F WHERE F.TicketId = T.Id) X ORDER BY X.CreatedDate DESC, X.SortType DESC, X.Id DESC) M OUTER APPLY (SELECT COUNT(*) AS UnreadCount FROM TicketMessages CM2 WHERE CM2.TicketId = T.Id AND CM2.SenderType = @SenderType AND NOT EXISTS (SELECT 1 FROM STRING_SPLIT(ISNULL(CM2.ReadBy, ''), ',') S WHERE LTRIM(RTRIM(S.value)) = CAST(@LoginId AS NVARCHAR(20)))) U"
+                Dim thisSql As String = "SELECT T.Id, T.TicketNo, T.LoginId, L.FullName, C.Name AS CustomerName, T.Type, T.Subject, T.Status, T.Priority, T.CreatedDate, M.LastMessageDate, M.LastMessage, ISNULL(U.UnreadCount, 0) AS UnreadCount FROM Tickets T LEFT JOIN Logins L ON T.LoginId = L.Id LEFT JOIN Customers C ON L.CustomerId = C.Id OUTER APPLY (SELECT TOP 1 X.CreatedDate AS LastMessageDate, X.LastMessage FROM (SELECT CM.CreatedDate, CM.Message AS LastMessage, CM.Id, 1 AS SortType FROM TicketMessages CM WHERE CM.TicketId = T.Id UNION ALL SELECT F.CreatedDate, F.FileName AS LastMessage, F.Id, 2 AS SortType FROM TicketFiles F WHERE F.TicketId = T.Id) X ORDER BY X.CreatedDate DESC, X.SortType DESC, X.Id DESC) M OUTER APPLY (SELECT COUNT(*) AS UnreadCount FROM TicketMessages CM2 WHERE CM2.TicketId = T.Id AND CM2.SenderType = @SenderType AND NOT EXISTS (SELECT 1 FROM STRING_SPLIT(ISNULL(CM2.ReadBy, ''), ',') S WHERE LTRIM(RTRIM(S.value)) = CAST(@LoginId AS NVARCHAR(20)))) U WHERE (@Type = '' OR T.Type = @Type)"
 
                 If Not isInternal Then
-                    thisSql &= " WHERE T.LoginId = @LoginId"
+                    thisSql &= " AND T.LoginId = @LoginId"
                 End If
 
                 thisSql &= " ORDER BY ISNULL(M.LastMessageDate, T.CreatedDate) DESC, T.Id DESC"
@@ -62,6 +62,7 @@ Partial Class Ticket_Default
                 Using thisCmd As New SqlCommand(thisSql, thisConn)
                     thisCmd.Parameters.Add("@LoginId", SqlDbType.Int).Value = loginId
                     thisCmd.Parameters.Add("@SenderType", SqlDbType.NVarChar, 20).Value = If(isInternal, "Customer", "Internal")
+                    thisCmd.Parameters.Add("@Type", SqlDbType.NVarChar, 50).Value = If(type, "").Trim()
 
                     thisConn.Open()
 
@@ -73,6 +74,7 @@ Partial Class Ticket_Default
                             .LoginId = Convert.ToInt32(dr("LoginId")),
                             .FullName = If(IsDBNull(dr("FullName")), "", dr("FullName").ToString()),
                             .CustomerName = If(IsDBNull(dr("CustomerName")), "", dr("CustomerName").ToString()),
+                            .Type = dr("Type").ToString(),
                             .Subject = dr("Subject").ToString(),
                             .Status = dr("Status").ToString(),
                             .Priority = dr("Priority").ToString(),

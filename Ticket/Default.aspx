@@ -117,6 +117,13 @@
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary btn-new-ticket" Text="New Ticket" OnClick="btnAdd_Click" />
             </div>
             <div class="sidebar-search">
+                <select id="ddlTicketType" class="form-select mb-2">
+                    <option value="">All Types</option>
+                    <option value="Pricing">Pricing</option>
+                    <option value="Product">Product</option>
+                    <option value="Shipment">Shipment</option>
+                    <option value="General">General</option>
+                </select>
                 <div class="input-group">
                     <span class="input-group-text">
                         <i class="bi bi-search"></i>
@@ -130,13 +137,11 @@
             <div class="chat-header">
                 <div class="customer-info">
                     <h5 id="lblTicketNo">Select a ticket</h5>
+                    <small id="lblType"></small>
                 </div>
                 <div class="header-actions">
                     <span id="lblStatus" class="badge bg-secondary">-</span>
-                    <button type="button" id="btnCloseTicket" class="btn btn-outline-danger btn-sm" style="display:none;">
-                        <i class="bi bi-check-circle"></i>
-                        Close Ticket
-                    </button>
+                    <button type="button" id="btnCloseTicket" class="btn btn-outline-danger btn-sm" style="display:none;">Close Ticket</button>
                 </div>
             </div>
             <div class="chat-body">
@@ -168,6 +173,7 @@
         let lastTicketSignature = "";
         let lastMessageId = 0;
         let searchText = "";
+        let selectedType = "";
 
         $(document).ready(function () {
             loadTickets(false);
@@ -182,6 +188,12 @@
             $("#txtTicketSearch").on("input", function () {
                 searchText = $(this).val().toLowerCase().trim();
                 renderTickets();
+            });
+
+            // Filter Type
+            $("#ddlTicketType").on("change", function () {
+                selectedType = $(this).val();
+                loadTickets(false);
             });
 
             // Enter
@@ -222,7 +234,7 @@
 
             isLoadingTickets = true;
 
-            ajaxCall("GetTickets").done(function (response) {
+            ajaxCall("GetTickets", { type: selectedType }).done(function (response) {
                 const result = response.d;
 
                 if (!result.success) {
@@ -281,7 +293,7 @@
                 if (!searchText)
                     return true;
 
-                return (ticket.TicketNo.toLowerCase().includes(searchText) || ticket.Subject.toLowerCase().includes(searchText) || String(ticket.LoginId).includes(searchText) || ticket.FullName.toLowerCase().includes(searchText) || ticket.CustomerName.toLowerCase().includes(searchText));
+                return (ticket.TicketNo.toLowerCase().includes(searchText) || ticket.Subject.toLowerCase().includes(searchText) || String(ticket.LoginId).includes(searchText) || ticket.FullName.toLowerCase().includes(searchText) || ticket.CustomerName.toLowerCase().includes(searchText) || ticket.Type.toLowerCase().includes(searchText));
             });
 
             if (filtered.length === 0) {
@@ -560,6 +572,7 @@
 
         function updateTicketHeader(ticket) {
             $("#lblTicketNo").text(ticket.TicketNo);
+            $("#lblType").text("Type : " + ticket.Type);
 
             $("#lblStatus").removeClass().addClass("badge " + getStatusClass(ticket.Status)).text(ticket.Status);
 

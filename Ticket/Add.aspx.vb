@@ -22,7 +22,11 @@ Partial Class Ticket_Add
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If ddlSubject.SelectedValue = "" Then
+            If ddlType.SelectedValue = "" Then
+                MessageError(True, "TYPE IS REQUIRED !")
+                Exit Sub
+            End If
+            If txtSubject.Text = "" Then
                 MessageError(True, "SUBJECT IS REQUIRED !")
                 Exit Sub
             End If
@@ -50,11 +54,12 @@ Partial Class Ticket_Add
                     ticketNo = String.Format("BOOS{0}", randomCode)
                     Try
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As New SqlCommand("INSERT INTO Tickets VALUES (@Id, @TicketNo, @LoginId, @Subject, 'Open', 'Normal', GETDATE(), NULL); INSERT INTO TicketMessages VALUES (@ChatMessageId, @Id, 'Customer', @LoginId, @Message, GETDATE(), 0);", thisConn)
+                            Using thisCmd As New SqlCommand("INSERT INTO Tickets VALUES (@Id, @TicketNo, @LoginId, @Type, @Subject, 'Open', 'Normal', GETDATE(), NULL); INSERT INTO TicketMessages VALUES (@ChatMessageId, @Id, 'Customer', @LoginId, @Message, GETDATE(), 0);", thisConn)
                                 thisCmd.Parameters.AddWithValue("@Id", chatTicketId)
                                 thisCmd.Parameters.AddWithValue("@TicketNo", ticketNo)
                                 thisCmd.Parameters.AddWithValue("@LoginId", Session("LoginId").ToString())
-                                thisCmd.Parameters.AddWithValue("@Subject", ddlSubject.SelectedValue)
+                                thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                                thisCmd.Parameters.AddWithValue("@Subject", txtSubject.Text.Trim())
                                 thisCmd.Parameters.AddWithValue("@ChatMessageId", chatTicketMsgId)
                                 thisCmd.Parameters.AddWithValue("@Message", txtMessage.Text)
 
