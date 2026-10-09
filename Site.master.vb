@@ -327,12 +327,12 @@ Partial Public Class SiteMaster
                 liOldOrder.Visible = True
                 liStocks.Visible = True
                 liReport.Visible = True
-                liTicket.Visible = True
             End If
             If Session("RoleName") = "Customer" Then
                 liOldOrder.Visible = True
                 liGuide.Visible = True
                 liStocks.Visible = True
+                liTicket.Visible = True
                 If Session("PriceAccess") = "Yes" Then
                     liQuotation.Visible = True
                 End If
