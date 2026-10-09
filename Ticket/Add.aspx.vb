@@ -36,8 +36,8 @@ Partial Class Ticket_Add
             End If
 
             If msgError.InnerText = "" Then
-                Dim chatTicketId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM Tickets ORDER BY Id DESC")
-                Dim chatTicketMsgId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM TicketMessages ORDER BY Id DESC")
+                Dim ticketId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM Tickets ORDER BY Id DESC")
+                Dim messageId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM TicketMessages ORDER BY Id DESC")
 
                 Dim success As Boolean = False
                 Dim retry As Integer = 0
@@ -55,12 +55,12 @@ Partial Class Ticket_Add
                     Try
                         Using thisConn As New SqlConnection(myConn)
                             Using thisCmd As New SqlCommand("INSERT INTO Tickets VALUES (@Id, @TicketNo, @LoginId, @Type, @Subject, 'Open', 'Normal', GETDATE(), NULL); INSERT INTO TicketMessages VALUES (@ChatMessageId, @Id, 'Customer', @LoginId, @Message, GETDATE(), 0);", thisConn)
-                                thisCmd.Parameters.AddWithValue("@Id", chatTicketId)
+                                thisCmd.Parameters.AddWithValue("@Id", ticketId)
                                 thisCmd.Parameters.AddWithValue("@TicketNo", ticketNo)
                                 thisCmd.Parameters.AddWithValue("@LoginId", Session("LoginId").ToString())
                                 thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                                 thisCmd.Parameters.AddWithValue("@Subject", txtSubject.Text.Trim())
-                                thisCmd.Parameters.AddWithValue("@ChatMessageId", chatTicketMsgId)
+                                thisCmd.Parameters.AddWithValue("@ChatMessageId", messageId)
                                 thisCmd.Parameters.AddWithValue("@Message", txtMessage.Text)
 
                                 thisConn.Open()
@@ -81,6 +81,9 @@ Partial Class Ticket_Add
                 If Not Directory.Exists(directoryOrder) Then
                     Directory.CreateDirectory(directoryOrder)
                 End If
+
+                Dim mailingClass As New MailingClass
+                mailingClass.Ticket(ticketId)
 
                 Response.Redirect("~/ticket", False)
             End If

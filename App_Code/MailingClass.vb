@@ -1741,23 +1741,21 @@ Public Class MailingClass
             Dim ticketData As DataRow = GetDataRow("SELECT * FROM Tickets WHERE Id='" & ticketId & "'")
             If ticketData Is Nothing Then Exit Sub
 
-            Dim ticketCode As String = ticketData("TicketCode").ToString()
-            Dim ticketIssue As String = ticketData("Issue").ToString()
+            Dim ticketNo As String = ticketData("TicketNo").ToString()
+            Dim ticketType As String = ticketData("Type").ToString()
             Dim ticketSubject As String = ticketData("Subject").ToString()
-            Dim ticketMessage As String = ticketData("Message").ToString()
-            Dim safeMessage As String = ticketMessage.Replace(vbCrLf, "<br>").Replace(vbLf, "<br>")
 
-            Dim ticketBy As String = ticketData("CreatedBy").ToString()
+            Dim ticketBy As String = ticketData("LoginId").ToString()
             Dim createdName As String = GetItemData("SELECT FullName FROM Logins WHERE Id='" & ticketBy & "'")
             Dim customerName As String = GetItemData("SELECT Customers.Name AS CustomerName FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Logins.Id='" & ticketBy & "'")
             Dim companyId As String = GetItemData("SELECT Customers.CompanyId FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id WHERE Logins.Id='" & ticketBy & "'")
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
 
             Dim mailName As String = String.Empty
-            If ticketIssue = "Web Issue" Then mailName = "Ticket Web"
-            If ticketIssue = "Product Issue" Then mailName = "Ticket Product"
-            If ticketIssue = "Pricing Issue" Then mailName = "Ticket Pricing"
-            If ticketIssue = "Other Issue" Then mailName = "Ticket Other"
+            If ticketType = "General" Then mailName = "Ticket General"
+            If ticketType = "Product" Then mailName = "Ticket Product"
+            If ticketType = "Pricing" Then mailName = "Ticket Pricing"
+            If ticketType = "Shipment" Then mailName = "Ticket Shipment"
 
             If String.IsNullOrEmpty(mailName) Then Exit Sub
 
@@ -1795,17 +1793,16 @@ Public Class MailingClass
             mailBody &= "<tr><td valign='top'>Company</td><td valign='top'>:</td><td valign='top'><b>" & companyName & "</b></td></tr>"
             mailBody &= "<tr><td valign='top'>Customer Name</td><td valign='top'>:</td><td valign='top'><b>" & customerName & "</b></td></tr>"
             mailBody &= "<tr><td valign='top'>Created By</td><td valign='top'>:</td><td valign='top'><b>" & createdName & "</b></td></tr>"
-            mailBody &= "<tr><td valign='top'>Ticket Code</td><td valign='top'>:</td><td valign='top'><b>" & ticketCode & "</b></td></tr>"
-            mailBody &= "<tr><td valign='top'>Issue</td><td valign='top'>:</td><td valign='top'><b>" & ticketIssue & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'>Ticket No</td><td valign='top'>:</td><td valign='top'><b>" & ticketNo & "</b></td></tr>"
+            mailBody &= "<tr><td valign='top'>Type</td><td valign='top'>:</td><td valign='top'><b>" & ticketType & "</b></td></tr>"
             mailBody &= "<tr><td valign='top'>Subject</td><td valign='top'>:</td><td valign='top'><b>" & ticketSubject & "</b></td></tr>"
-            mailBody &= "<tr><td valign='top'>Message</td><td valign='top'>:</td><td valign='top'><b>" & safeMessage & "</b></td></tr>"
             mailBody &= "</table>"
 
             mailBody &= "<br /><br />"
 
             mailBody &= "<span style='font-family: Cambria; font-size: 16px;'>Please check it on the online ordering portal and take the necessary action as soon as possible.</span>"
             mailBody &= "<br /><br />"
-            mailBody &= "<span style='font-family: Cambria; font-size: 14px; font-style: italic;'>* Please use the <u>Ticket Code</u> as the keyword when searching on the Ticket page in BOOS.</span>"
+            mailBody &= "<span style='font-family: Cambria; font-size: 14px; font-style: italic;'>* Please use the <u>Ticket No</u> as the keyword when searching on the Ticket page in BOOS.</span>"
 
             mailBody &= "<br /><br /><br />"
 
@@ -1817,7 +1814,7 @@ Public Class MailingClass
             mailBody &= "<br /><br /><br />"
 
             Dim myMail As New MailMessage()
-            myMail.Subject = String.Format("[{0}] {1}", ticketCode, ticketSubject)
+            myMail.Subject = String.Format("[{0}] {1}", ticketNo, ticketSubject)
             myMail.From = New MailAddress(mailServer, mailAlias)
 
             If Not String.IsNullOrEmpty(mailTo) Then
