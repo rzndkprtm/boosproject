@@ -127,4 +127,19 @@ Public Class TicketClass
         End Try
         Return result
     End Function
+
+    Public Function GenerateRandomCode() As String
+        Try
+            Dim chars As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            Dim rnd As New Random()
+            Dim result As New StringBuilder()
+            For i As Integer = 1 To 5
+                Dim idx As Integer = rnd.Next(0, chars.Length)
+                result.Append(chars(idx))
+            Next
+            Return result.ToString()
+        Catch ex As Exception
+            Return String.Empty
+        End Try
+    End Function
 End Class

@@ -22,4 +22,8 @@ Password : 4Y_xv&nbC4Hw3fio
 Face Fit = Outside
 Reveal Fit = Inside
 
-UPDATE LoginAccess SET Page = 'Product Status Change' WHERE Page = 'Product Change'
+INSERT INTO [dbo].[LoginAccess]([Id], [RoleId], [LevelId], [Page], [Action], [Description], [Active]) VALUES (NEWID(), 8, 1, N'Ticket', N'Add', N'', '1');
+INSERT INTO [dbo].[LoginAccess]([Id], [RoleId], [LevelId], [Page], [Action], [Description], [Active]) VALUES (NEWID(), 8, 2, N'Ticket', N'Add', N'', '1');
+
+INSERT INTO [dbo].[LoginAccess]([Id], [RoleId], [LevelId], [Page], [Action], [Description], [Active]) VALUES (NEWID(), 8, 1, N'Add Ticket', N'Load', N'', '1');
+INSERT INTO [dbo].[LoginAccess]([Id], [RoleId], [LevelId], [Page], [Action], [Description], [Active]) VALUES (NEWID(), 8, 2, N'Add Ticket', N'Load', N'', '1');
