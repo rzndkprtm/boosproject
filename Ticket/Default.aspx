@@ -281,8 +281,7 @@
                 if (!searchText)
                     return true;
 
-                return (ticket.TicketNo.toLowerCase().includes(searchText) || ticket.Subject.toLowerCase().includes(searchText) || String(ticket.LoginId).includes(searchText)
-                );
+                return (ticket.TicketNo.toLowerCase().includes(searchText) || ticket.Subject.toLowerCase().includes(searchText) || String(ticket.LoginId).includes(searchText) || ticket.FullName.toLowerCase().includes(searchText) || ticket.CustomerName.toLowerCase().includes(searchText));
             });
 
             if (filtered.length === 0) {

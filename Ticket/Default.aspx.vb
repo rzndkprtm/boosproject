@@ -51,7 +51,7 @@ Partial Class Ticket_Default
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Dim thisSql As String = "SELECT T.Id, T.TicketNo, T.LoginId, T.Subject, T.Status, T.Priority, T.CreatedDate, M.LastMessageDate, M.LastMessage, ISNULL(U.UnreadCount, 0) AS UnreadCount FROM Tickets T OUTER APPLY (SELECT TOP 1 X.CreatedDate AS LastMessageDate, X.LastMessage FROM (SELECT CM.CreatedDate, CM.Message AS LastMessage, CM.Id, 1 AS SortType FROM TicketMessages CM WHERE CM.TicketId = T.Id UNION ALL SELECT F.CreatedDate, F.FileName AS LastMessage, F.Id, 2 AS SortType FROM TicketFiles F WHERE F.TicketId = T.Id) X ORDER BY X.CreatedDate DESC, X.SortType DESC, X.Id DESC) M OUTER APPLY (SELECT COUNT(*) AS UnreadCount FROM TicketMessages CM2 WHERE CM2.TicketId = T.Id AND CM2.SenderType = @SenderType AND NOT EXISTS (SELECT 1 FROM STRING_SPLIT(ISNULL(CM2.ReadBy, ''), ',') S WHERE LTRIM(RTRIM(S.value)) = CAST(@LoginId AS NVARCHAR(20)))) U"
+                Dim thisSql As String = "SELECT T.Id, T.TicketNo, T.LoginId, L.FullName, C.Name AS CustomerName, T.Subject, T.Status, T.Priority, T.CreatedDate, M.LastMessageDate, M.LastMessage, ISNULL(U.UnreadCount, 0) AS UnreadCount FROM Tickets T LEFT JOIN Logins L ON T.LoginId = L.Id LEFT JOIN Customers C ON L.CustomerId = C.Id OUTER APPLY (SELECT TOP 1 X.CreatedDate AS LastMessageDate, X.LastMessage FROM (SELECT CM.CreatedDate, CM.Message AS LastMessage, CM.Id, 1 AS SortType FROM TicketMessages CM WHERE CM.TicketId = T.Id UNION ALL SELECT F.CreatedDate, F.FileName AS LastMessage, F.Id, 2 AS SortType FROM TicketFiles F WHERE F.TicketId = T.Id) X ORDER BY X.CreatedDate DESC, X.SortType DESC, X.Id DESC) M OUTER APPLY (SELECT COUNT(*) AS UnreadCount FROM TicketMessages CM2 WHERE CM2.TicketId = T.Id AND CM2.SenderType = @SenderType AND NOT EXISTS (SELECT 1 FROM STRING_SPLIT(ISNULL(CM2.ReadBy, ''), ',') S WHERE LTRIM(RTRIM(S.value)) = CAST(@LoginId AS NVARCHAR(20)))) U"
 
                 If Not isInternal Then
                     thisSql &= " WHERE T.LoginId = @LoginId"
@@ -71,6 +71,8 @@ Partial Class Ticket_Default
                             .Id = Convert.ToInt32(dr("Id")),
                             .TicketNo = dr("TicketNo").ToString(),
                             .LoginId = Convert.ToInt32(dr("LoginId")),
+                            .FullName = If(IsDBNull(dr("FullName")), "", dr("FullName").ToString()),
+                            .CustomerName = If(IsDBNull(dr("CustomerName")), "", dr("CustomerName").ToString()),
                             .Subject = dr("Subject").ToString(),
                             .Status = dr("Status").ToString(),
                             .Priority = dr("Priority").ToString(),
@@ -86,7 +88,7 @@ Partial Class Ticket_Default
 
             Return New With {.success = True, .data = result}
         Catch ex As Exception
-            Return New With { .success = False, .message = ex.Message }
+            Return New With {.success = False, .message = ex.Message}
         End Try
     End Function
 
