@@ -1,4 +1,5 @@
 ﻿Imports System.Data.SqlClient
+Imports System.IO
 
 Partial Class Ticket_Add
     Inherits Page
@@ -31,8 +32,8 @@ Partial Class Ticket_Add
             End If
 
             If msgError.InnerText = "" Then
-                Dim chatTicketId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM ChatTickets ORDER BY Id DESC")
-                Dim chatTicketMsgId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM ChatTicketMessages ORDER BY Id DESC")
+                Dim chatTicketId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM Tickets ORDER BY Id DESC")
+                Dim chatTicketMsgId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM TicketMessages ORDER BY Id DESC")
 
                 Dim success As Boolean = False
                 Dim retry As Integer = 0
@@ -46,10 +47,10 @@ Partial Class Ticket_Add
                     End If
 
                     Dim randomCode As String = ticketClass.GenerateRandomCode()
-                    ticketNo = String.Format("BOOS - {0}", randomCode)
+                    ticketNo = String.Format("BOOS{0}", randomCode)
                     Try
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As New SqlCommand("INSERT INTO ChatTickets VALUES (@Id, @TicketNo, @LoginId, @Subject, 'Open', 'Normal', GETDATE(), NULL); INSERT INTO ChatTicketMessages VALUES (@ChatMessageId, @Id, 'Customer', @LoginId, @Message, GETDATE(), 0);", thisConn)
+                            Using thisCmd As New SqlCommand("INSERT INTO Tickets VALUES (@Id, @TicketNo, @LoginId, @Subject, 'Open', 'Normal', GETDATE(), NULL); INSERT INTO TicketMessages VALUES (@ChatMessageId, @Id, 'Customer', @LoginId, @Message, GETDATE(), 0);", thisConn)
                                 thisCmd.Parameters.AddWithValue("@Id", chatTicketId)
                                 thisCmd.Parameters.AddWithValue("@TicketNo", ticketNo)
                                 thisCmd.Parameters.AddWithValue("@LoginId", Session("LoginId").ToString())
@@ -71,13 +72,18 @@ Partial Class Ticket_Add
                     End Try
                 Loop
 
+                Dim directoryOrder As String = Server.MapPath(String.Format("~/File/Ticket/{0}/", ticketNo))
+                If Not Directory.Exists(directoryOrder) Then
+                    Directory.CreateDirectory(directoryOrder)
+                End If
+
                 Response.Redirect("~/ticket", False)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            'If Session("RoleName") = "Customer" Then
-            '    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-            'End If
+            If Session("RoleName") = "Customer" Then
+                MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+            End If
         End Try
     End Sub
 

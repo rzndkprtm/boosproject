@@ -46,8 +46,12 @@ Partial Class Ticket_Default
             Dim isInternal As Boolean = IsInternalUser()
             Dim result As New List(Of Object)
 
+            If loginId <= 0 Then
+                Return New With {.success = False, .message = "Session expired. Please log in again."}
+            End If
+
             Using thisConn As New SqlConnection(myConn)
-                Dim thisSql As String = "SELECT T.Id, T.TicketNo, T.LoginId, T.Subject, T.Status, T.Priority, T.CreatedDate, M.LastMessageDate, M.LastMessage, ISNULL(U.UnreadCount, 0) AS UnreadCount FROM ChatTickets T OUTER APPLY (SELECT TOP 1 CM.CreatedDate AS LastMessageDate, CM.Message AS LastMessage FROM ChatTicketMessages CM WHERE CM.TicketId = T.Id ORDER BY CM.CreatedDate DESC, CM.Id DESC) M OUTER APPLY (SELECT COUNT(*) AS UnreadCount FROM ChatTicketMessages CM2 WHERE CM2.TicketId = T.Id AND CM2.SenderType = @SenderType AND NOT EXISTS (SELECT 1 FROM STRING_SPLIT(ISNULL(CM2.ReadBy, ''), ',') S WHERE LTRIM(RTRIM(S.value)) = CAST(@LoginId AS NVARCHAR(20)))) U"
+                Dim thisSql As String = "SELECT T.Id, T.TicketNo, T.LoginId, T.Subject, T.Status, T.Priority, T.CreatedDate, M.LastMessageDate, M.LastMessage, ISNULL(U.UnreadCount, 0) AS UnreadCount FROM Tickets T OUTER APPLY (SELECT TOP 1 X.CreatedDate AS LastMessageDate, X.LastMessage FROM (SELECT CM.CreatedDate, CM.Message AS LastMessage, CM.Id, 1 AS SortType FROM TicketMessages CM WHERE CM.TicketId = T.Id UNION ALL SELECT F.CreatedDate, F.FileName AS LastMessage, F.Id, 2 AS SortType FROM TicketFiles F WHERE F.TicketId = T.Id) X ORDER BY X.CreatedDate DESC, X.SortType DESC, X.Id DESC) M OUTER APPLY (SELECT COUNT(*) AS UnreadCount FROM TicketMessages CM2 WHERE CM2.TicketId = T.Id AND CM2.SenderType = @SenderType AND NOT EXISTS (SELECT 1 FROM STRING_SPLIT(ISNULL(CM2.ReadBy, ''), ',') S WHERE LTRIM(RTRIM(S.value)) = CAST(@LoginId AS NVARCHAR(20)))) U"
 
                 If Not isInternal Then
                     thisSql &= " WHERE T.LoginId = @LoginId"
@@ -82,7 +86,7 @@ Partial Class Ticket_Default
 
             Return New With {.success = True, .data = result}
         Catch ex As Exception
-            Return New With {.success = False, .message = ex.Message}
+            Return New With { .success = False, .message = ex.Message }
         End Try
     End Function
 
@@ -93,55 +97,70 @@ Partial Class Ticket_Default
         Try
             Dim loginId As Integer = GetLoginId()
             Dim isInternal As Boolean = IsInternalUser()
+            Dim result As New List(Of Object)
 
             If loginId <= 0 Then
                 Return New With {.success = False, .message = "Session expired. Please log in again."}
             End If
 
-            Dim result As New List(Of Object)
+            If ticketId <= 0 Then
+                Return New With {.success = False, .message = "Invalid ticket ID."}
+            End If
 
             Using thisConn As New SqlConnection(myConn)
-                Dim thisSql As String = "SELECT CM.Id, CM.TicketId, CM.SenderType, CM.SenderId, CM.Message, CM.CreatedDate, CM.ReadBy, CASE WHEN CM.SenderType = 'Customer' THEN L.FullName ELSE LR.Name + ' - ' + L.FullName END AS SenderName FROM ChatTicketMessages CM INNER JOIN ChatTickets T ON T.Id = CM.TicketId INNER JOIN Logins L ON CM.SenderId = L.Id INNER JOIN LoginRoles LR ON L.RoleId = LR.Id WHERE CM.TicketId = @TicketId"
+                thisConn.Open()
 
-                If Not isInternal Then
-                    thisSql &= " AND T.LoginId = @LoginId"
-                End If
+                Dim ticketSql As String = "SELECT Id, LoginId, Status FROM Tickets WHERE Id = @TicketId"
 
-                thisSql &= " ORDER BY CM.CreatedDate ASC, CM.Id ASC"
+                Using ticketCmd As New SqlCommand(ticketSql, thisConn)
+                    ticketCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
+
+                    Using ticketDr As SqlDataReader = ticketCmd.ExecuteReader()
+                        If Not ticketDr.Read() Then
+                            Return New With {.success = False, .message = "Ticket not found."}
+                        End If
+
+                        Dim ticketLoginId As Integer = Convert.ToInt32(ticketDr("LoginId"))
+
+                        If Not isInternal AndAlso ticketLoginId <> loginId Then
+                            Return New With {.success = False, .message = "You do not have permission to access this ticket."}
+                        End If
+                    End Using
+                End Using
+
+                Dim thisSql As String = "SELECT CM.Id, CM.TicketId, CM.SenderType, CM.SenderId, CM.Message, CM.CreatedDate, CM.ReadBy, CASE WHEN F.Id IS NOT NULL THEN 'File' ELSE 'Text' END AS MessageType, F.Id AS FileId, F.FileName, F.FilePath, F.FileSize, F.ContentType, L.FullName AS SenderName FROM TicketMessages CM LEFT JOIN TicketFiles F ON F.MessageId = CM.Id LEFT JOIN Logins L ON L.Id = CM.SenderId WHERE CM.TicketId = @TicketId ORDER BY CM.Id ASC"
 
                 Using thisCmd As New SqlCommand(thisSql, thisConn)
                     thisCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
 
-                    If Not isInternal Then
-                        thisCmd.Parameters.Add("@LoginId", SqlDbType.Int).Value = loginId
-                    End If
-
-                    thisConn.Open()
-
                     Using dr As SqlDataReader = thisCmd.ExecuteReader()
                         While dr.Read()
-                            Dim senderType As String = dr("SenderType").ToString()
-                            Dim senderId As Integer = Convert.ToInt32(dr("SenderId"))
-                            Dim isMine As Boolean
+                            Dim senderType As String = Convert.ToString(dr("SenderType"))
+                            Dim senderId As Integer = If(IsDBNull(dr("SenderId")), 0, Convert.ToInt32(dr("SenderId")))
+                            Dim isMine As Boolean = (senderId = loginId)
 
-                            If isInternal Then
-                                isMine = senderType = "Internal" AndAlso senderId = loginId
-                            Else
-                                isMine = senderType = "Customer" AndAlso senderId = loginId
-                            End If
+                            Dim messageType As String = Convert.ToString(dr("MessageType"))
+                            Dim fileName As String = If(IsDBNull(dr("FileName")), "", Convert.ToString(dr("FileName")))
+                            Dim filePath As String = If(IsDBNull(dr("FilePath")), "", Convert.ToString(dr("FilePath")))
+                            Dim fileSize As Long = If(IsDBNull(dr("FileSize")), 0L, Convert.ToInt64(dr("FileSize")))
+                            Dim contentType As String = If(IsDBNull(dr("ContentType")), "", Convert.ToString(dr("ContentType")))
 
-                            Dim readBy As String = If(IsDBNull(dr("ReadBy")), "", dr("ReadBy").ToString())
-                            Dim isRead As Boolean = readBy.Split(","c).Any(Function(x) x.Trim() = loginId.ToString())
+                            Dim senderName As String = If(IsDBNull(dr("SenderName")), senderType, Convert.ToString(dr("SenderName")))
 
                             result.Add(New With {
                             .Id = Convert.ToInt32(dr("Id")),
                             .TicketId = Convert.ToInt32(dr("TicketId")),
                             .SenderType = senderType,
                             .SenderId = senderId,
-                            .SenderName = dr("SenderName").ToString(),
-                            .Message = dr("Message").ToString(),
+                            .SenderName = senderName,
+                            .Message = If(IsDBNull(dr("Message")), "", Convert.ToString(dr("Message"))),
                             .CreatedDate = Convert.ToDateTime(dr("CreatedDate")).ToString("yyyy-MM-dd HH:mm:ss"),
-                            .IsRead = isRead,
+                            .MessageType = messageType,
+                            .FileId = If(IsDBNull(dr("FileId")), CType(Nothing, Integer?), Convert.ToInt32(dr("FileId"))),
+                            .FileName = fileName,
+                            .FilePath = filePath,
+                            .FileSize = fileSize,
+                            .ContentType = contentType,
                             .IsMine = isMine
                         })
                         End While
@@ -179,7 +198,7 @@ Partial Class Ticket_Default
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
-                Dim checkSql As String = "SELECT COUNT(*) FROM ChatTickets WHERE Id = @TicketId"
+                Dim checkSql As String = "SELECT COUNT(*) FROM Tickets WHERE Id = @TicketId"
 
                 If Not isInternal Then
                     checkSql &= " AND LoginId = @LoginId"
@@ -200,9 +219,9 @@ Partial Class Ticket_Default
                 End Using
 
                 Dim ticketClass As New TicketClass()
-                Dim messageId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM ChatTicketMessages ORDER BY Id DESC")
+                Dim messageId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM TicketMessages ORDER BY Id DESC")
 
-                Dim insertSql As String = "INSERT INTO ChatTicketMessages (Id, TicketId, SenderType, SenderId, Message, CreatedDate, ReadBy) VALUES (@Id, @TicketId, @SenderType, @SenderId, @Message, GETDATE(), NULL)"
+                Dim insertSql As String = "INSERT INTO TicketMessages (Id, TicketId, SenderType, SenderId, Message, CreatedDate, ReadBy) VALUES (@Id, @TicketId, @SenderType, @SenderId, @Message, GETDATE(), NULL)"
 
                 Using thisCmd As New SqlCommand(insertSql, thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", messageId)
@@ -213,7 +232,7 @@ Partial Class Ticket_Default
                     thisCmd.ExecuteNonQuery()
                 End Using
 
-                Dim updateSql As String = "UPDATE ChatTickets SET Status = CASE WHEN Status = 'Closed' THEN 'Open' ELSE Status END WHERE Id = @TicketId"
+                Dim updateSql As String = "UPDATE Tickets SET Status = CASE WHEN Status = 'Closed' THEN 'Open' ELSE Status END WHERE Id = @TicketId"
 
                 Using thisCmd As New SqlCommand(updateSql, thisConn)
                     thisCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
@@ -222,7 +241,6 @@ Partial Class Ticket_Default
             End Using
 
             Return New With {.success = True}
-
         Catch ex As Exception
             Return New With {.success = False, .message = ex.Message}
         End Try
@@ -241,7 +259,7 @@ Partial Class Ticket_Default
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Dim thisSql As String = "UPDATE ChatTickets SET Status = 'Closed', ClosedDate = GETDATE() WHERE Id = @TicketId"
+                Dim thisSql As String = "UPDATE Tickets SET Status = 'Closed', ClosedDate = GETDATE() WHERE Id = @TicketId"
 
                 If Not isInternal Then
                     thisSql &= " AND LoginId = @LoginId"
@@ -265,7 +283,6 @@ Partial Class Ticket_Default
             End Using
 
             Return New With {.success = True}
-
         Catch ex As Exception
             Return New With {.success = False, .message = ex.Message}
         End Try
@@ -279,7 +296,7 @@ Partial Class Ticket_Default
             If loginId <= 0 Then Exit Sub
 
             Using thisConn As New SqlConnection(myConn)
-                Dim thisSql As String = "UPDATE CM SET ReadBy = CASE WHEN NULLIF(LTRIM(RTRIM(CM.ReadBy)), '') IS NULL THEN CAST(@LoginId AS NVARCHAR(20)) ELSE CM.ReadBy + ',' + CAST(@LoginId AS NVARCHAR(20)) END FROM ChatTicketMessages CM INNER JOIN ChatTickets T ON T.Id = CM.TicketId WHERE CM.TicketId = @TicketId AND (CM.ReadBy IS NULL OR NOT EXISTS (SELECT 1 FROM STRING_SPLIT(CM.ReadBy, ',') S WHERE LTRIM(RTRIM(S.value)) = CAST(@LoginId AS NVARCHAR(20))))"
+                Dim thisSql As String = "UPDATE CM SET ReadBy = CASE WHEN NULLIF(LTRIM(RTRIM(CM.ReadBy)), '') IS NULL THEN CAST(@LoginId AS NVARCHAR(20)) ELSE CM.ReadBy + ',' + CAST(@LoginId AS NVARCHAR(20)) END FROM TicketMessages CM INNER JOIN Tickets T ON T.Id = CM.TicketId WHERE CM.TicketId = @TicketId AND (CM.ReadBy IS NULL OR NOT EXISTS (SELECT 1 FROM STRING_SPLIT(CM.ReadBy, ',') S WHERE LTRIM(RTRIM(S.value)) = CAST(@LoginId AS NVARCHAR(20))))"
 
                 If isInternal Then
                     thisSql &= " AND CM.SenderType = 'Customer'"
