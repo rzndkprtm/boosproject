@@ -43,6 +43,8 @@ Partial Class Ticket_Default
         Try
             Dim loginId As Integer = GetLoginId()
             Dim isInternal As Boolean = IsInternalUser()
+            Dim roleName As String = Convert.ToString(HttpContext.Current.Session("RoleName"))
+
             Dim result As New List(Of Object)
 
             Using thisConn As New SqlConnection(myConn)
@@ -96,7 +98,7 @@ Partial Class Ticket_Default
             Dim result As New List(Of Object)
 
             Using thisConn As New SqlConnection(myConn)
-                Dim thisSql As String = "SELECT CM.Id, CM.TicketId, CM.SenderType, CM.SenderId, CM.Message, CM.CreatedDate, CM.IsRead, L.FullName FROM ChatTicketMessages CM INNER JOIN ChatTickets T ON T.Id=CM.TicketId INNER JOIN Logins L ON CM.SenderId=L.Id WHERE CM.TicketId=@TicketId"
+                Dim thisSql As String = "SELECT CM.Id, CM.TicketId, CM.SenderType, CM.SenderId, CM.Message, CM.CreatedDate, CM.IsRead, CASE WHEN CM.SenderType = 'Customer' THEN L.FullName ELSE LR.Name + ' - ' + L.FullName END AS SenderName FROM ChatTicketMessages CM INNER JOIN ChatTickets T ON T.Id=CM.TicketId INNER JOIN Logins L ON CM.SenderId=L.Id INNER JOIN LoginRoles LR ON L.RoleId=LR.Id WHERE CM.TicketId=@TicketId"
 
                 If Not isInternal Then
                     thisSql &= " AND T.LoginId=@LoginId"
@@ -129,7 +131,7 @@ Partial Class Ticket_Default
                                 .TicketId = Convert.ToInt32(dr("TicketId")),
                                 .SenderType = senderType,
                                 .SenderId = senderId,
-                                .SenderName = dr("FullName").ToString(),
+                                .SenderName = dr("SenderName").ToString(),
                                 .Message = dr("Message").ToString(),
                                 .CreatedDate = Convert.ToDateTime(dr("CreatedDate")).ToString("yyyy-MM-dd HH:mm:ss"),
                                 .IsRead = Convert.ToBoolean(dr("IsRead")),
