@@ -85,7 +85,7 @@ Partial Class Ticket_Add
                 Dim mailingClass As New MailingClass
                 mailingClass.NewTicket(ticketId)
 
-                Response.Redirect("~/ticket", False)
+                ClientScript.RegisterStartupScript(Me.GetType(), "ShowSuccessModal", "showSuccessModal('" & ticketNo.Replace("\", "\\").Replace("'", "\'") & "');", True)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

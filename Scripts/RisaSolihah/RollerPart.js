@@ -486,7 +486,7 @@ function bindComponentForm(blindType, colourType) {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
 
-        const divsToHide = [""].map(id => document.getElementById(id));
+        const divsToHide = ["divwidth"].map(id => document.getElementById(id));
 
         const toggleDisplay = (el, show) => {
             if (el) el.style.display = show ? "" : "none";
@@ -505,6 +505,10 @@ function bindComponentForm(blindType, colourType) {
 
         getBlindName(blindType).then(blindName => {
             let divShow = [];
+
+            if (blindName === "Bottom Rail") {
+                divShow.push("divwidth");
+            }
 
             divShow.forEach(id => toggleDisplay(document.getElementById(id), true));
 
@@ -562,7 +566,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = ["blindtype", "colourtype", "qty", "notes", "markup"];
+    const inputs = ["blindtype", "colourtype", "qty", "width", "notes", "markup"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
@@ -583,6 +587,7 @@ function setFormValues(itemData) {
         blindtype: "BlindType",
         colourtype: "ProductId",
         qty: "Qty",
+        width: "Width",
         notes: "Notes",
         markup: "MarkUp"
     };
@@ -620,7 +625,7 @@ function fillSelect(selector, list, selected = null) {
 function process() {
     toggleButtonState(true, "Processing...");
 
-    const fields = ["blindtype", "colourtype", "qty", "notes", "markup"];
+    const fields = ["blindtype", "colourtype", "qty", "width", "notes", "markup"];
 
     const formData = {
         headerid: headerId,

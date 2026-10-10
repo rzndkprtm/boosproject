@@ -2555,23 +2555,24 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim aluminiumPartData As DataTable = GetDataTableSP("sp_OrderDetails_Get_RollerPart", params)
+                Dim rollerPartData As DataTable = GetDataTableSP("sp_OrderDetails_Get_RollerPart", params)
 
-                If aluminiumPartData.Rows.Count > 0 Then
+                If rollerPartData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Roller"
                     pageEvent.PageTitle2 = "Part"
                     Dim table As New PdfPTable(5)
                     table.WidthPercentage = 100
 
-                    Dim items(4, aluminiumPartData.Rows.Count - 1) As String
+                    Dim items(5, rollerPartData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To aluminiumPartData.Rows.Count - 1
+                    For i As Integer = 0 To rollerPartData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = aluminiumPartData.Rows(i)("BlindName").ToString()
-                        items(2, i) = aluminiumPartData.Rows(i)("ProductName").ToString()
-                        items(3, i) = aluminiumPartData.Rows(i)("Notes").ToString()
+                        items(1, i) = rollerPartData.Rows(i)("BlindName").ToString()
+                        items(2, i) = rollerPartData.Rows(i)("ProductName").ToString()
+                        items(3, i) = rollerPartData.Rows(i)("Width").ToString()
+                        items(4, i) = rollerPartData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 4
@@ -2580,7 +2581,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Type", "Product", "Special Information"}
+                        Dim headers As String() = {"", "Type", "Product", "Width", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))

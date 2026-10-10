@@ -72,4 +72,49 @@
             </div>
         </section>
     </div>
+
+    <div class="modal fade text-center" id="modalSuccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-success">
+                    <h5 class="modal-title white">Successfully</h5>
+                </div>
+                <div class="modal-body text-center">
+                    <b>Your ticket has been successfully submitted.</b><br /><br />
+                    Your Ticket Reference Number is:<br />
+                    <strong id="lblTicketNo"></strong>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" id="btnCloseSuccess" class="btn btn-success w-100">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
+            document.activeElement.blur();
+            document.body.focus();
+        });
+
+        var ticketRedirectTimer;
+
+        function showSuccessModal(ticketNo) {
+            document.getElementById("lblTicketNo").textContent = ticketNo;
+
+            var modalElement = document.getElementById("modalSuccess");
+            var modal = new bootstrap.Modal(modalElement);
+
+            modal.show();
+
+            ticketRedirectTimer = setTimeout(function () {
+                window.location.href = '<%= ResolveUrl("~/ticket") %>';
+            }, 5000);
+        }
+
+        document.getElementById("btnCloseSuccess").addEventListener("click", function () {
+            clearTimeout(ticketRedirectTimer);
+            window.location.href = '<%= ResolveUrl("~/ticket") %>';
+        });
+    </script>
 </asp:Content>

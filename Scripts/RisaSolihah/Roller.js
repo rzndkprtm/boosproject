@@ -2102,7 +2102,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
             const textsixth = document.getElementById("textsixth");
 
             if (blindName === "Single Blind") {
-                divShow.push("divfabric", "divroll", "divcontrolposition", "divbottomtype", "divbottomcolour", "divsize");                
+                divShow.push("divfabric", "divroll", "divcontrolposition", "divbottomtype", "divbottomcolour", "divsize");
 
                 if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
                     divShow.push("divbracketextension");

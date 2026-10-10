@@ -373,7 +373,9 @@
                 updateTicketHeader(ticket);
             }
 
-            $("#txtReply").prop("disabled", false);
+            if (ticket) {
+                updateTicketHeader(ticket);
+            }
 
             loadMessages(ticketId, false);
         }
@@ -576,13 +578,17 @@
 
             $("#lblStatus").removeClass().addClass("badge " + getStatusClass(ticket.Status)).text(ticket.Status);
 
-            if (ticket.Status === "Closed") {
+            const isClosed = String(ticket.Status || "").toLowerCase() === "closed";
+
+            if (isClosed) {
                 $("#btnCloseTicket").hide();
-                $("#txtReply").prop("disabled", true);
+                $("#txtReply").prop("disabled", true).attr("placeholder", "This ticket is closed.");
+                $("#btnUploadFile").prop("disabled", true);
             }
             else {
                 $("#btnCloseTicket").show();
-                $("#txtReply").prop("disabled", false);
+                $("#txtReply").prop("disabled", false).attr("placeholder", "Type your reply here...");
+                $("#btnUploadFile").prop("disabled", false);
             }
         }
 
@@ -724,7 +730,15 @@
         });
 
         function uploadTicketFiles(files, ticketId) {
+            const selectedTicket = tickets.find(function (x) {
+                return x.Id === Number(ticketId);
+            });
 
+            if (selectedTicket && String(selectedTicket.Status || "").toLowerCase() === "closed") {
+                $("#fileTicketUpload").val("");
+                alert("This ticket is closed. You can no longer upload files.");
+                return;
+            }
             if (!files || files.length === 0) {
                 alert("Please select a file to upload.");
                 return;

@@ -196,17 +196,24 @@ Partial Class Ticket_Default
                 Return New With {.success = False, .message = "Session expired. Please log in again."}
             End If
 
+            If ticketId <= 0 Then
+                Return New With {.success = False, .message = "Invalid ticket ID."}
+            End If
+
             Dim senderType As String = If(isInternal, "Internal", "Customer")
             Dim senderId As Integer = loginId
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
-                Dim checkSql As String = "SELECT COUNT(*) FROM Tickets WHERE Id = @TicketId"
+                ' VALIDASI TICKET DAN STATUS
+                Dim checkSql As String = "SELECT Status FROM Tickets WHERE Id = @TicketId"
 
                 If Not isInternal Then
                     checkSql &= " AND LoginId = @LoginId"
                 End If
+
+                Dim ticketStatus As String = ""
 
                 Using thisCmd As New SqlCommand(checkSql, thisConn)
                     thisCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
@@ -215,12 +222,19 @@ Partial Class Ticket_Default
                         thisCmd.Parameters.Add("@LoginId", SqlDbType.Int).Value = loginId
                     End If
 
-                    Dim exists As Integer = Convert.ToInt32(thisCmd.ExecuteScalar())
+                    Dim statusResult As Object = thisCmd.ExecuteScalar()
 
-                    If exists = 0 Then
+                    If statusResult Is Nothing OrElse IsDBNull(statusResult) Then
                         Return New With {.success = False, .message = "Ticket not found or access denied."}
                     End If
+
+                    ticketStatus = Convert.ToString(statusResult)
                 End Using
+
+                ' CUSTOMER TIDAK BOLEH MENGIRIM PESAN JIKA CLOSED
+                If Not isInternal AndAlso String.Equals(ticketStatus, "Closed", StringComparison.OrdinalIgnoreCase) Then
+                    Return New With {.success = False, .message = "This ticket is closed. You can no longer send messages."}
+                End If
 
                 Dim ticketClass As New TicketClass()
                 Dim messageId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM TicketMessages ORDER BY Id DESC")
@@ -236,15 +250,20 @@ Partial Class Ticket_Default
                     thisCmd.ExecuteNonQuery()
                 End Using
 
-                Dim updateSql As String = "UPDATE Tickets SET Status = CASE WHEN Status = 'Closed' THEN 'Open' ELSE Status END WHERE Id = @TicketId"
+                ' INTERNAL BOLEH MEMBUKA KEMBALI TICKET CLOSED
+                ' CUSTOMER TIDAK AKAN MENGUBAH STATUS CLOSED MENJADI OPEN
+                If isInternal Then
+                    Dim updateSql As String = "UPDATE Tickets SET Status = CASE WHEN Status = 'Closed' THEN 'Open' ELSE Status END WHERE Id = @TicketId"
 
-                Using thisCmd As New SqlCommand(updateSql, thisConn)
-                    thisCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
-                    thisCmd.ExecuteNonQuery()
-                End Using
+                    Using thisCmd As New SqlCommand(updateSql, thisConn)
+                        thisCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End If
             End Using
 
             Return New With {.success = True}
+
         Catch ex As Exception
             Return New With {.success = False, .message = ex.Message}
         End Try

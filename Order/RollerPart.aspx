@@ -99,6 +99,14 @@
                                                     <input type="number" id="qty" class="form-control" autocomplete="off" placeholder="Quantity" value="1" />
                                                 </div>
                                             </div>
+                                            <div class="row" id="divwidth">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Width</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                    <input type="number" id="width" class="form-control" autocomplete="off" placeholder="Width" />
+                                                </div>
+                                            </div>
                                             <div class="row mt-3">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Special Information</label>
@@ -187,5 +195,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/RollerPart.js?v=1.0.0"></script>
+    <script src="/Scripts/RisaSolihah/RollerPart.js?v=1.0.1"></script>
 </asp:Content>
