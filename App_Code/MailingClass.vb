@@ -1708,33 +1708,7 @@ Public Class MailingClass
         End Try
     End Sub
 
-    Public Sub TicketRemainder(issue As String)
-        Try
-            If String.IsNullOrEmpty(issue) Then Exit Sub
-
-            Dim ticketData As DataTable = GetDataTable("SELECT * FROM Tickets WHERE Issue='" & issue & "' AND Status=1")
-
-            If ticketData.Rows.Count > 0 Then
-                Dim dataTicketId As New List(Of String)
-
-                For i As Integer = 0 To ticketData.Rows.Count - 1
-
-                    Dim ticketId As String = ticketData.Rows(i)("Id").ToString()
-
-                    Dim ticketDetails As DataRow = GetDataRow("SELECT TOP 1 TicketDetails.*, Logins.RoleId AS RoleId FROM TicketDetails LEFT JOIN Logins ON TicketDetails.ReplyBy=Logins.Id WHERE TicketDetails.TicketId='" & ticketId & "' AND TicketDetails.CreatedDate < DATEADD(hour, -1, GETDATE()) AND Logins.RoleId='8' ORDER BY TicketDetails.CreatedDate DESC")
-
-                    If ticketDetails IsNot Nothing AndAlso ticketDetails("RoleId").ToString() = "8" Then
-                        dataTicketId.Add(ticketId)
-                    End If
-
-                Next
-                Dim arrTicketId() As String = dataTicketId.ToArray()
-            End If
-        Catch ex As Exception
-        End Try
-    End Sub
-
-    Public Sub Ticket(ticketId As String)
+    Public Sub NewTicket(ticketId As String)
         Try
             If String.IsNullOrEmpty(ticketId) Then Exit Sub
 
@@ -1814,7 +1788,7 @@ Public Class MailingClass
             mailBody &= "<br /><br /><br />"
 
             Dim myMail As New MailMessage()
-            myMail.Subject = String.Format("[{0}] {1}", ticketNo, ticketSubject)
+            myMail.Subject = String.Format("New Ticket : {0} #{1}", ticketNo, ticketType)
             myMail.From = New MailAddress(mailServer, mailAlias)
 
             If Not String.IsNullOrEmpty(mailTo) Then
@@ -1852,6 +1826,32 @@ Public Class MailingClass
             End If
 
             smtpClient.Send(myMail)
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Public Sub TicketRemainder(issue As String)
+        Try
+            If String.IsNullOrEmpty(issue) Then Exit Sub
+
+            Dim ticketData As DataTable = GetDataTable("SELECT * FROM Tickets WHERE Issue='" & issue & "' AND Status=1")
+
+            If ticketData.Rows.Count > 0 Then
+                Dim dataTicketId As New List(Of String)
+
+                For i As Integer = 0 To ticketData.Rows.Count - 1
+
+                    Dim ticketId As String = ticketData.Rows(i)("Id").ToString()
+
+                    Dim ticketDetails As DataRow = GetDataRow("SELECT TOP 1 TicketDetails.*, Logins.RoleId AS RoleId FROM TicketDetails LEFT JOIN Logins ON TicketDetails.ReplyBy=Logins.Id WHERE TicketDetails.TicketId='" & ticketId & "' AND TicketDetails.CreatedDate < DATEADD(hour, -1, GETDATE()) AND Logins.RoleId='8' ORDER BY TicketDetails.CreatedDate DESC")
+
+                    If ticketDetails IsNot Nothing AndAlso ticketDetails("RoleId").ToString() = "8" Then
+                        dataTicketId.Add(ticketId)
+                    End If
+
+                Next
+                Dim arrTicketId() As String = dataTicketId.ToArray()
+            End If
         Catch ex As Exception
         End Try
     End Sub

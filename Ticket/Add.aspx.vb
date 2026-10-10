@@ -83,7 +83,7 @@ Partial Class Ticket_Add
                 End If
 
                 Dim mailingClass As New MailingClass
-                mailingClass.Ticket(ticketId)
+                mailingClass.NewTicket(ticketId)
 
                 Response.Redirect("~/ticket", False)
             End If
