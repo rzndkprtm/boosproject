@@ -164,6 +164,7 @@
             </div>
         </div>
     </div>
+
     <script type="text/javascript">
         let selectedTicketId = 0;
         let tickets = [];
@@ -183,35 +184,24 @@
                     loadMessages(selectedTicketId,true);
                 }
             }, 3000);
-
-            // Search
             $("#txtTicketSearch").on("input", function () {
                 searchText = $(this).val().toLowerCase().trim();
                 renderTickets();
             });
-
-            // Filter Type
             $("#ddlTicketType").on("change", function () {
                 selectedType = $(this).val();
                 loadTickets(false);
             });
-
-            // Enter
             $("#txtReply").on("keydown", function (e) {
                 if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage();
                 }
             });
-            // Close
             $("#btnCloseTicket").on("click", function () {
                 closeTicket();
             });
         });
-
-        // ============================================================
-        // AJAX
-        // ============================================================
 
         function ajaxCall(method, data) {
             return $.ajax({
@@ -223,11 +213,6 @@
                 cache: false
             });
         }
-
-        // ============================================================
-        // LOAD TICKETS
-        // ============================================================
-
         function loadTickets(background) {
             if (isLoadingTickets)
                 return;
@@ -259,10 +244,6 @@
                     lastTicketSignature = signature;
                     renderTickets();
                 }
-
-                // Tidak ada auto-select tiket pertama.
-                // Chat hanya ditampilkan setelah user memilih tiket.
-
                 if (selectedTicketId > 0) {
                     const current = tickets.find(function (x) {
                         return x.Id === selectedTicketId;
@@ -272,19 +253,12 @@
                         updateTicketHeader(current);
                     }
                 }
-
             }).fail(function (xhr) {
                 console.error("GetTickets error:", xhr.responseText);
-
             }).always(function () {
                 isLoadingTickets = false;
             });
         }
-
-        // ============================================================
-        // RENDER TICKETS
-        // ============================================================
-
         function renderTickets() {
             const container = $(".ticket-list");
             container.empty();
@@ -343,18 +317,11 @@
                 `;
                 container.append(html);
             });
-
-            // Click
             container.find(".ticket-item").off("click").on("click", function () {
                 const ticketId = parseInt($(this).attr("data-ticket-id"));
                 selectTicket(ticketId);
             });
         }
-
-        // ============================================================
-        // SELECT TICKET
-        // ============================================================
-
         function selectTicket(ticketId) {
             if (!ticketId)
                 return;
@@ -379,12 +346,7 @@
 
             loadMessages(ticketId, false);
         }
-
-        // ============================================================
-        // LOAD MESSAGES
-        // ============================================================
-
-        function loadMessages(ticketId,background) {
+        function loadMessages(ticketId, background) {
             if (!ticketId || isLoadingMessages)
                 return;
             isLoadingMessages = true;
@@ -423,7 +385,6 @@
                 isLoadingMessages = false;
             });
         }
-
         function renderMessages(data, scrollBottom) {
             const body = $(".chat-body");
 
@@ -513,11 +474,6 @@
                 body.scrollTop(body[0].scrollHeight);
             }
         }
-
-        // ============================================================
-        // SEND MESSAGE
-        // ============================================================
-
         function sendMessage() {
             if (!selectedTicketId)
                 return;
@@ -544,11 +500,6 @@
                 textbox.focus();
             });
         }
-
-        // ============================================================
-        // CLOSE TICKET
-        // ============================================================
-
         function closeTicket() {
             if (!selectedTicketId)
                 return;
@@ -567,11 +518,6 @@
                 console.error(xhr.responseText);
             });
         }
-
-        // ============================================================
-        // HEADER
-        // ============================================================
-
         function updateTicketHeader(ticket) {
             $("#lblTicketNo").text(ticket.TicketNo);
             $("#lblType").text("Type : " + ticket.Type);
@@ -591,11 +537,6 @@
                 $("#btnUploadFile").prop("disabled", false);
             }
         }
-
-        // ============================================================
-        // STATUS
-        // ============================================================
-
         function getStatusClass(status) {
             switch (status) {
                 case "Open":
@@ -610,11 +551,6 @@
                     return "bg-secondary";
             }
         }
-
-        // ============================================================
-        // DATE
-        // ============================================================
-
         function parseDate(value) {
             if (!value)
                 return new Date();
@@ -635,7 +571,6 @@
                 }
             );
         }
-
         function formatRelativeTime(value) {
             if (!value)
                 return "";
@@ -663,7 +598,6 @@
 
             return date.toLocaleDateString();
         }
-
         function formatFileSize(bytes) {
             bytes = Number(bytes) || 0;
             if (bytes < 1024) {
@@ -677,58 +611,11 @@
             }
             return (bytes / 1073741824).toFixed(1) + " GB";
         }
-
-        // ============================================================
-        // ESCAPE HTML
-        // ============================================================
-
         function escapeHtml(value) {
             if (value === null || value === undefined)
                 return "";
             return $("<div>").text(value).html();
         }
-
-        // ============================================================
-        // UPLOAD FILE
-        // ============================================================
-        // ============================================================
-        // UPLOAD FILE BUTTON
-        // ============================================================
-
-        $("#btnUploadFile").on("click", function (e) {
-            e.preventDefault();
-
-            if (!selectedTicketId || selectedTicketId <= 0) {
-                alert("Please select a ticket first.");
-                return;
-            }
-
-            $("#fileTicketUpload").trigger("click");
-        });
-
-        // ============================================================
-        // FILE SELECTED
-        // ============================================================
-
-        $("#fileTicketUpload").on("change", function () {
-            const fileInput = this;
-
-            if (!fileInput.files || fileInput.files.length === 0) {
-                return;
-            }
-
-            if (!selectedTicketId || selectedTicketId <= 0) {
-                alert("Please select a ticket first.");
-                fileInput.value = "";
-                return;
-            }
-
-            const files = Array.from(fileInput.files);
-            const ticketId = selectedTicketId;
-
-            uploadTicketFiles(files, ticketId);
-        });
-
         function uploadTicketFiles(files, ticketId) {
             const selectedTicket = tickets.find(function (x) {
                 return x.Id === Number(ticketId);
@@ -784,7 +671,6 @@
                     cache: false,
 
                     success: function (response) {
-
                         if (typeof response === "string") {
                             try {
                                 response = JSON.parse(response);
@@ -825,7 +711,6 @@
                     }
                 });
             }
-
             function resetUploadButton() {
                 uploadButton.prop("disabled", false);
                 uploadButton.html('<i class="bi bi-paperclip"></i>');
@@ -835,6 +720,34 @@
             uploadNext();
         }
 
-        window.history.replaceState(null,null,window.location.href);
+        $("#btnUploadFile").on("click", function (e) {
+            e.preventDefault();
+
+            if (!selectedTicketId || selectedTicketId <= 0) {
+                alert("Please select a ticket first.");
+                return;
+            }
+
+            $("#fileTicketUpload").trigger("click");
+        });
+        $("#fileTicketUpload").on("change", function () {
+            const fileInput = this;
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                return;
+            }
+
+            if (!selectedTicketId || selectedTicketId <= 0) {
+                alert("Please select a ticket first.");
+                fileInput.value = "";
+                return;
+            }
+
+            const files = Array.from(fileInput.files);
+            const ticketId = selectedTicketId;
+
+            uploadTicketFiles(files, ticketId);
+        });
+        window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

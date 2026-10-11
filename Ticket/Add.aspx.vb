@@ -54,7 +54,7 @@ Partial Class Ticket_Add
                     ticketNo = String.Format("BOOS{0}", randomCode)
                     Try
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As New SqlCommand("INSERT INTO Tickets VALUES (@Id, @TicketNo, @LoginId, @Type, @Subject, 'Open', 'Normal', GETDATE(), NULL); INSERT INTO TicketMessages VALUES (@ChatMessageId, @Id, 'Customer', @LoginId, @Message, GETDATE(), 0);", thisConn)
+                            Using thisCmd As New SqlCommand("INSERT INTO Tickets VALUES (@Id, @TicketNo, @LoginId, @Type, @Subject, 'Open', 'Normal', GETDATE(), NULL, NULL); INSERT INTO TicketMessages VALUES (@ChatMessageId, @Id, 'Customer', @LoginId, @Message, GETDATE(), 0);", thisConn)
                                 thisCmd.Parameters.AddWithValue("@Id", ticketId)
                                 thisCmd.Parameters.AddWithValue("@TicketNo", ticketNo)
                                 thisCmd.Parameters.AddWithValue("@LoginId", Session("LoginId").ToString())

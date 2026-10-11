@@ -44,6 +44,10 @@ Partial Class Ticket_Default
         Try
             Dim loginId As Integer = GetLoginId()
             Dim isInternal As Boolean = IsInternalUser()
+
+            Dim roleName As String = Convert.ToString(HttpContext.Current.Session("RoleName"))
+            Dim companyId As String = Convert.ToString(HttpContext.Current.Session("CompanyId"))
+
             Dim result As New List(Of Object)
 
             If loginId <= 0 Then
@@ -57,13 +61,19 @@ Partial Class Ticket_Default
                     thisSql &= " AND T.LoginId = @LoginId"
                 End If
 
+                If roleName = "Sales" OrElse roleName = "Account" Then
+                    thisSql &= " AND C.CompanyId = @CompanyId"
+                End If
+
                 thisSql &= " ORDER BY ISNULL(M.LastMessageDate, T.CreatedDate) DESC, T.Id DESC"
 
                 Using thisCmd As New SqlCommand(thisSql, thisConn)
                     thisCmd.Parameters.Add("@LoginId", SqlDbType.Int).Value = loginId
                     thisCmd.Parameters.Add("@SenderType", SqlDbType.NVarChar, 20).Value = If(isInternal, "Customer", "Internal")
                     thisCmd.Parameters.Add("@Type", SqlDbType.NVarChar, 50).Value = If(type, "").Trim()
-
+                    If roleName = "Sales" OrElse roleName = "Account" Then
+                        thisCmd.Parameters.Add("@CompanyId", SqlDbType.NVarChar, 50).Value = companyId
+                    End If
                     thisConn.Open()
 
                     Using dr As SqlDataReader = thisCmd.ExecuteReader()
@@ -282,14 +292,15 @@ Partial Class Ticket_Default
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Dim thisSql As String = "UPDATE Tickets SET Status = 'Closed', ClosedDate = GETDATE() WHERE Id = @TicketId"
+                Dim thisSql As String = "UPDATE Tickets SET Status='Closed', ClosedDate=GETDATE(), ClosedBy=@ClosedBy WHERE Id=@TicketId"
 
                 If Not isInternal Then
-                    thisSql &= " AND LoginId = @LoginId"
+                    thisSql &= " AND LoginId=@LoginId"
                 End If
 
                 Using thisCmd As New SqlCommand(thisSql, thisConn)
                     thisCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
+                    thisCmd.Parameters.Add("@ClosedBy", SqlDbType.Int).Value = loginId
 
                     If Not isInternal Then
                         thisCmd.Parameters.Add("@LoginId", SqlDbType.Int).Value = loginId
