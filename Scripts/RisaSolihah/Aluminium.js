@@ -599,7 +599,7 @@ function bindComponentForm(colourType, subType) {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
 
-        const divsToHide = ["divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divcontrolposition", "divtilterposition", "divwidthb", "divdropb", "divcordlength", "divwandlength", "divcordlengthb", "divwandlengthb", "divcordlengthvalue", "divwandlengthvalue", "divcordlengthvalueb", "divwandlengthvalueb"].map(id => document.getElementById(id));
+        const divsToHide = ["divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divcontrolposition", "divtilterposition", "divwidthb", "divdropb", "divcordlength", "divwandlength", "divcordlengthb", "divwandlengthb", "divcordlengthvalue", "divwandlengthvalue", "divcordlengthvalueb", "divwandlengthvalueb", "divcutout"].map(id => document.getElementById(id));
 
         const toggleDisplay = (el, show) => {
             if (el) el.style.display = show ? "" : "none";
@@ -617,6 +617,7 @@ function bindComponentForm(colourType, subType) {
 
         if (subType === "Single") {
             divShow.push("divcontrolposition", "divtilterposition", "divcordlength", "divwandlength");
+            //divShow.push("divcontrolposition", "divtilterposition", "divcordlength", "divwandlength", "divcutout");
         } else if (subType === "2 on 1 Left-Left") {
             divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divcordlength", "divwandlength", "divwidthb", "divdropb", "divcordlengthb");
         } else if (subType === "2 on 1 Right-Right") {

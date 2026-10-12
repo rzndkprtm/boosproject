@@ -326,6 +326,105 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                            <div id="divcutout" style="display:none;">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="divider">
+                                                            <div class="divider-text">Cut Out</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="divider">
+                                                            <div class="divider-text">Top Section</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                        <label>Left Side</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Width</span>
+                                                            <input type="number" id="cuttopleftwidth" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Height</span>
+                                                            <input type="number" id="cuttopleftheight" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                        <label>Right Side</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Width</span>
+                                                            <input type="number" id="cuttoprightwidth" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Height</span>
+                                                            <input type="number" id="cuttoprightheight" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="divider">
+                                                            <div class="divider-text">Bottom Section</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                        <label>Left Side</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Width</span>
+                                                            <input type="number" id="cutbottomleftwidth" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Height</span>
+                                                            <input type="number" id="cutbottomleftheight" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                        <label>Right Side</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Width</span>
+                                                            <input type="number" id="cutbottomrightwidth" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Height</span>
+                                                            <input type="number" id="cutbottomrightheight" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="row mt-3">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Special Information</label>
