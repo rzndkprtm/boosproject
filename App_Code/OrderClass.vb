@@ -1578,6 +1578,12 @@ Public Class OrderClass
             If designName = "Shutter Ocean Part" Then
                 result = String.Format("{0} - {1}", designName, productName)
             End If
+            If designName = "Vertical Part" Then
+                result = String.Format("{0} - {1}", designName, productName)
+            End If
+            If designName = "Saphora Drape Part" Then
+                result = String.Format("{0} - {1}", designName, productName)
+            End If
 
             Dim checkNote As String = GetItemData("SELECT Description FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Note'")
             If Not String.IsNullOrEmpty(checkNote) Then

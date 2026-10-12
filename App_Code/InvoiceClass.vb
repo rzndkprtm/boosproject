@@ -566,6 +566,12 @@ Public Class InvoiceClass
                         itemDescription = String.Format("{0} ({1}) {2}", invoiceName, width, linearMetreText)
                     End If
                 End If
+                If designName = "Vertical Part" Then
+                    itemDescription = invoiceName
+                End If
+                If designName = "Saphora Drape Part" Then
+                    itemDescription = invoiceName
+                End If
                 If designName = "Window" Then
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, frameColour, size, squareMetreText)
                 End If

@@ -70,14 +70,11 @@ Public Class UploadTicketFile : Implements IHttpHandler, System.Web.SessionState
             Dim extension As String = Path.GetExtension(originalFileName)
             Dim storedFileName As String = Guid.NewGuid().ToString("N") & extension
 
-            Dim ticketNo As String = ""
+            Dim ticketNo As String = String.Empty
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-
-                Dim ticketSql As String = "SELECT TicketNo FROM Tickets WHERE Id = @TicketId"
-
-                Using ticketCmd As New SqlCommand(ticketSql, thisConn)
+                Using ticketCmd As New SqlCommand("SELECT TicketNo FROM Tickets WHERE Id=@TicketId", thisConn)
                     ticketCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
 
                     Dim ticketResult As Object = ticketCmd.ExecuteScalar()
@@ -112,10 +109,7 @@ Public Class UploadTicketFile : Implements IHttpHandler, System.Web.SessionState
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-
-                Dim ticketSql As String = "SELECT Id, LoginId, Status FROM Tickets WHERE Id = @TicketId"
-
-                Using ticketCmd As New SqlCommand(ticketSql, thisConn)
+                Using ticketCmd As New SqlCommand("SELECT Id, LoginId, Status FROM Tickets WHERE Id=@TicketId", thisConn)
                     ticketCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
 
                     Using dr As SqlDataReader = ticketCmd.ExecuteReader()
@@ -151,9 +145,7 @@ Public Class UploadTicketFile : Implements IHttpHandler, System.Web.SessionState
                         Dim messageId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM TicketMessages ORDER BY Id DESC")
                         Dim fileId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM TicketFiles ORDER BY Id DESC")
 
-                        Dim messageSql As String = "INSERT INTO TicketMessages VALUES (@Id, @TicketId, @SenderType, @SenderId, @Message, GETDATE(), NULL)"
-
-                        Using messageCmd As New SqlCommand(messageSql, thisConn, thisTrans)
+                        Using messageCmd As New SqlCommand("INSERT INTO TicketMessages VALUES (@Id, @TicketId, @SenderType, @SenderId, @Message, GETDATE(), NULL)", thisConn, thisTrans)
                             messageCmd.Parameters.Add("@Id", SqlDbType.Int).Value = messageId
                             messageCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
                             messageCmd.Parameters.Add("@SenderType", SqlDbType.NVarChar, 20).Value = senderType
@@ -164,9 +156,7 @@ Public Class UploadTicketFile : Implements IHttpHandler, System.Web.SessionState
                             messageCmd.ExecuteNonQuery()
                         End Using
 
-                        Dim fileSql As String = "INSERT INTO TicketFiles VALUES (@Id, @TicketId, @MessageId, @SenderType, @SenderId, @FileName, @FilePath, @FileSize, @ContentType, GETDATE())"
-
-                        Using fileCmd As New SqlCommand(fileSql, thisConn, thisTrans)
+                        Using fileCmd As New SqlCommand("INSERT INTO TicketFiles VALUES (@Id, @TicketId, @MessageId, @SenderType, @SenderId, @FileName, @FilePath, @FileSize, @ContentType, GETDATE())", thisConn, thisTrans)
                             fileCmd.Parameters.Add("@Id", SqlDbType.Int).Value = fileId
                             fileCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
                             fileCmd.Parameters.Add("@MessageId", SqlDbType.Int).Value = messageId

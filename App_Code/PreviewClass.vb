@@ -1993,59 +1993,59 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim thisData As DataTable = GetDataTableSP("sp_OrderDetails_Get_SoftRoman", params)
+                Dim softRomanData As DataTable = GetDataTableSP("sp_OrderDetails_Get_SoftRoman", params)
 
-                If thisData.Rows.Count > 0 Then
+                If softRomanData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Soft"
                     pageEvent.PageTitle2 = "Roman"
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim items(18, thisData.Rows.Count - 1) As String
+                    Dim items(18, softRomanData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To thisData.Rows.Count - 1
+                    For i As Integer = 0 To softRomanData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
-                        Dim controlName As String = thisData.Rows(i)("ControlName").ToString()
+                        Dim controlName As String = softRomanData.Rows(i)("ControlName").ToString()
 
-                        Dim chainName As String = GetItemData("SELECT Name FROM Chains WHERE Id='" & thisData.Rows(i)("ChainId").ToString() & "'")
+                        Dim chainName As String = GetItemData("SELECT Name FROM Chains WHERE Id='" & softRomanData.Rows(i)("ChainId").ToString() & "'")
 
                         Dim controlColour As String = String.Empty
                         Dim remoteType As String = String.Empty
 
                         If controlName = "Chain" Then controlColour = chainName
                         If controlName = "Reg Cord Lock" Then
-                            controlColour = thisData.Rows(i)("ControlColour").ToString()
+                            controlColour = softRomanData.Rows(i)("ControlColour").ToString()
                         End If
                         If controlName.Contains("Alpha DC Motor") OrElse controlName.Contains("Somfy") OrElse controlName = "Motorised" Then
                             remoteType = chainName
                         End If
 
-                        Dim controlLength As String = thisData.Rows(i)("ControlLength").ToString()
-                        Dim controlLengthValue As String = thisData.Rows(i)("ControlLengthValue").ToString()
+                        Dim controlLength As String = softRomanData.Rows(i)("ControlLength").ToString()
+                        Dim controlLengthValue As String = softRomanData.Rows(i)("ControlLengthValue").ToString()
                         Dim controlLengthText As String = controlLength
                         If controlLength = "Standard" OrElse controlLength = "Custom" Then
                             controlLengthText = String.Format("{0} : {1}mm", controlLength, controlLengthValue)
                         End If
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = thisData.Rows(i)("Room").ToString()
-                        items(2, i) = thisData.Rows(i)("Mounting").ToString()
-                        items(3, i) = thisData.Rows(i)("FabricName").ToString()
-                        items(4, i) = thisData.Rows(i)("FabricColour").ToString()
-                        items(5, i) = thisData.Rows(i)("Width").ToString()
-                        items(6, i) = thisData.Rows(i)("Drop").ToString()
-                        items(7, i) = thisData.Rows(i)("TubeName").ToString()
-                        items(8, i) = thisData.Rows(i)("ControlName").ToString()
-                        items(9, i) = thisData.Rows(i)("ControlPosition").ToString()
+                        items(1, i) = softRomanData.Rows(i)("Room").ToString()
+                        items(2, i) = softRomanData.Rows(i)("Mounting").ToString()
+                        items(3, i) = softRomanData.Rows(i)("FabricName").ToString()
+                        items(4, i) = softRomanData.Rows(i)("FabricColour").ToString()
+                        items(5, i) = softRomanData.Rows(i)("Width").ToString()
+                        items(6, i) = softRomanData.Rows(i)("Drop").ToString()
+                        items(7, i) = softRomanData.Rows(i)("TubeName").ToString()
+                        items(8, i) = softRomanData.Rows(i)("ControlName").ToString()
+                        items(9, i) = softRomanData.Rows(i)("ControlPosition").ToString()
                         items(10, i) = controlColour
                         items(11, i) = controlLengthText
                         items(12, i) = remoteType
-                        items(13, i) = thisData.Rows(i)("Charger").ToString()
-                        items(14, i) = thisData.Rows(i)("ExtensionCable").ToString()
-                        items(15, i) = thisData.Rows(i)("Supply").ToString()
-                        items(16, i) = thisData.Rows(i)("ValanceOption").ToString()
-                        items(17, i) = thisData.Rows(i)("Notes").ToString()
+                        items(13, i) = softRomanData.Rows(i)("Charger").ToString()
+                        items(14, i) = softRomanData.Rows(i)("ExtensionCable").ToString()
+                        items(15, i) = softRomanData.Rows(i)("Supply").ToString()
+                        items(16, i) = softRomanData.Rows(i)("ValanceOption").ToString()
+                        items(17, i) = softRomanData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
@@ -2621,25 +2621,25 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim thisData As DataTable = GetDataTableSP("sp_OrderDetails_Get_ShutterExpressPart", params)
+                Dim shutterPartData As DataTable = GetDataTableSP("sp_OrderDetails_Get_ShutterExpressPart", params)
 
-                If thisData.Rows.Count > 0 Then
+                If shutterPartData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Shutter Express"
                     pageEvent.PageTitle2 = "Part"
                     Dim table As New PdfPTable(5)
                     table.WidthPercentage = 100
 
-                    Dim items(6, thisData.Rows.Count - 1) As String
+                    Dim items(6, shutterPartData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To thisData.Rows.Count - 1
+                    For i As Integer = 0 To shutterPartData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = thisData.Rows(i)("BlindName").ToString()
-                        items(2, i) = thisData.Rows(i)("ProductName").ToString()
-                        items(3, i) = thisData.Rows(i)("PartColour").ToString()
-                        items(4, i) = thisData.Rows(i)("Width").ToString()
-                        items(5, i) = thisData.Rows(i)("Notes").ToString()
+                        items(1, i) = shutterPartData.Rows(i)("BlindName").ToString()
+                        items(2, i) = shutterPartData.Rows(i)("ProductName").ToString()
+                        items(3, i) = shutterPartData.Rows(i)("PartColour").ToString()
+                        items(4, i) = shutterPartData.Rows(i)("Width").ToString()
+                        items(5, i) = shutterPartData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 4
@@ -2688,25 +2688,25 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim thisData As DataTable = GetDataTableSP("sp_OrderDetails_Get_ShutterOceanPart", params)
+                Dim shutterPartData As DataTable = GetDataTableSP("sp_OrderDetails_Get_ShutterOceanPart", params)
 
-                If thisData.Rows.Count > 0 Then
+                If shutterPartData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "Shutter Ocean"
                     pageEvent.PageTitle2 = "Part"
                     Dim table As New PdfPTable(5)
                     table.WidthPercentage = 100
 
-                    Dim items(6, thisData.Rows.Count - 1) As String
+                    Dim items(6, shutterPartData.Rows.Count - 1) As String
 
-                    For i As Integer = 0 To thisData.Rows.Count - 1
+                    For i As Integer = 0 To shutterPartData.Rows.Count - 1
                         Dim number As Integer = i + 1
 
                         items(0, i) = "Item : " & number
-                        items(1, i) = thisData.Rows(i)("BlindName").ToString()
-                        items(2, i) = thisData.Rows(i)("ProductName").ToString()
-                        items(3, i) = thisData.Rows(i)("PartColour").ToString()
-                        items(4, i) = thisData.Rows(i)("Width").ToString()
-                        items(5, i) = thisData.Rows(i)("Notes").ToString()
+                        items(1, i) = shutterPartData.Rows(i)("BlindName").ToString()
+                        items(2, i) = shutterPartData.Rows(i)("ProductName").ToString()
+                        items(3, i) = shutterPartData.Rows(i)("PartColour").ToString()
+                        items(4, i) = shutterPartData.Rows(i)("Width").ToString()
+                        items(5, i) = shutterPartData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 4
@@ -2749,6 +2749,71 @@ Public Class PreviewClass
             Catch ex As Exception
             End Try
             ' END SHUTTER OCEAN PART
+
+            ' START VERTICAL PART
+            Try
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@HeaderId", headerId)
+                }
+                Dim verticalPartData As DataTable = GetDataTableSP("sp_OrderDetails_Get_VerticalPart", params)
+
+                If verticalPartData.Rows.Count > 0 Then
+                    pageEvent.PageTitle = "Vertical"
+                    pageEvent.PageTitle2 = "Part"
+                    Dim table As New PdfPTable(5)
+                    table.WidthPercentage = 100
+
+                    Dim items(4, verticalPartData.Rows.Count - 1) As String
+
+                    For i As Integer = 0 To verticalPartData.Rows.Count - 1
+                        Dim number As Integer = i + 1
+
+                        items(0, i) = "Item : " & number
+                        items(1, i) = verticalPartData.Rows(i)("BlindName").ToString()
+                        items(2, i) = verticalPartData.Rows(i)("ProductName").ToString()
+                        items(3, i) = verticalPartData.Rows(i)("Notes").ToString()
+                    Next
+
+                    For i As Integer = 0 To items.GetLength(1) - 1 Step 4
+                        If i > 0 Then doc.NewPage()
+
+                        Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
+                        Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
+
+                        Dim headers As String() = {"", "Type", "Product", "Special Information"}
+
+                        For row As Integer = 0 To headers.Length - 1
+                            Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
+                            cellHeader.HorizontalAlignment = Element.ALIGN_RIGHT
+                            cellHeader.VerticalAlignment = Element.ALIGN_MIDDLE
+                            cellHeader.BackgroundColor = New BaseColor(200, 200, 200)
+                            cellHeader.MinimumHeight = 22
+                            table.AddCell(cellHeader)
+
+                            For col As Integer = i To Math.Min(i + 3, items.GetLength(1) - 1)
+                                Dim cellContent As New PdfPCell(New Phrase(items(row, col), fontContent))
+                                cellContent.HorizontalAlignment = Element.ALIGN_CENTER
+                                cellContent.VerticalAlignment = Element.ALIGN_MIDDLE
+                                cellContent.MinimumHeight = 22
+                                table.AddCell(cellContent)
+                            Next
+
+                            For col As Integer = items.GetLength(1) To i + 3
+                                Dim emptyCell As New PdfPCell(New Phrase("", fontContent))
+                                emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
+                                emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                                emptyCell.MinimumHeight = 22
+                                table.AddCell(emptyCell)
+                            Next
+                        Next
+                        doc.Add(table)
+                        table.DeleteBodyRows()
+                        doc.NewPage()
+                    Next
+                End If
+            Catch ex As Exception
+            End Try
+            ' END VERTICAL PART
 
             pageTotalItem = String.Format("{0} Item", totalItems)
             If totalItems > 1 Then pageTotalItem = String.Format("{0} Items", totalItems)

@@ -567,6 +567,9 @@ Public Class QuoteClass
                         itemDescription = String.Format("{0} ({1}mm) {2}", invoiceName, width, linearMetreText)
                     End If
                 End If
+                If designName = "Saphora Drape Part" Then
+                    itemDescription = invoiceName
+                End If
                 If designName = "Service" Then
                     itemDescription = GetItemData("SELECT Name FROM PriceServices WHERE Id='" & serviceId & "'")
                 End If
@@ -603,6 +606,9 @@ Public Class QuoteClass
                     If blindName = "Track Only" Then
                         itemDescription = String.Format("{0} ({1}mm) {2}", invoiceName, width, linearMetreText)
                     End If
+                End If
+                If designName = "Vertical Part" Then
+                    itemDescription = invoiceName
                 End If
                 If designName = "Window" Then
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, frameColour, size, squareMetreText)
@@ -1237,6 +1243,12 @@ Public Class QuoteClass
                 If designName = "Shutter Ocean Part" Then
                     itemDescription = productName
                 End If
+                If designName = "Vertical Part" Then
+                    itemDescription = productName
+                End If
+                If designName = "Saphora Drape Part" Then
+                    itemDescription = productName
+                End If
 
                 Dim itemCost As Decimal = GetItemData_Decimal("SELECT CustomerPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Type='Final'")
 
@@ -1808,6 +1820,9 @@ Public Class QuoteClass
                         itemDescription = productName
                     End If
                 End If
+                If designName = "Saphora Drape Part" Then
+                    itemDescription = productName
+                End If
                 If designName = "Service" Then
                     itemDescription = GetItemData("SELECT Name FROM PriceServices WHERE Id='" & serviceId & "'")
                 End If
@@ -1847,6 +1862,9 @@ Public Class QuoteClass
                     If blindName = "Track Only" Then
                         itemDescription = productName
                     End If
+                End If
+                If designName = "Vertical Part" Then
+                    itemDescription = productName
                 End If
                 If designName = "Window" Then
                     itemDescription = String.Format("{0} {1}", productName, frameColour)
