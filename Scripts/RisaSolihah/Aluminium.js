@@ -94,6 +94,8 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
         visibleCustom("CordLength", data.ItemData.ControlLengthB, "2");
         visibleCustom("WandLength", data.ItemData.WandLength, "1");
         visibleCustom("WandLength", data.ItemData.WandLengthB, "2");
+        visibleCutOut(data.ItemData.CutOut, "1");
+        visibleCutOut(data.ItemData.CutOutB, "2");
     } catch (error) {
         document.getElementById("divloader").style.display = "none";
     }
@@ -599,7 +601,7 @@ function bindComponentForm(colourType, subType) {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
 
-        const divsToHide = ["divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divcontrolposition", "divtilterposition", "divwidthb", "divdropb", "divcordlength", "divwandlength", "divcordlengthb", "divwandlengthb", "divcordlengthvalue", "divwandlengthvalue", "divcordlengthvalueb", "divwandlengthvalueb", "divcutout"].map(id => document.getElementById(id));
+        const divsToHide = ["divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divcontrolposition", "divtilterposition", "divwidthb", "divdropb", "divcordlength", "divwandlength", "divcordlengthb", "divwandlengthb", "divcordlengthvalue", "divwandlengthvalue", "divcordlengthvalueb", "divwandlengthvalueb", "divcutout", "divcutoutdetail", "divcutoutb", "divcutoutdetailb"].map(id => document.getElementById(id));
 
         const toggleDisplay = (el, show) => {
             if (el) el.style.display = show ? "" : "none";
@@ -616,14 +618,13 @@ function bindComponentForm(colourType, subType) {
         const divShow = [];
 
         if (subType === "Single") {
-            divShow.push("divcontrolposition", "divtilterposition", "divcordlength", "divwandlength");
-            //divShow.push("divcontrolposition", "divtilterposition", "divcordlength", "divwandlength", "divcutout");
+            divShow.push("divcontrolposition", "divtilterposition", "divcordlength", "divwandlength", "divcutout");
         } else if (subType === "2 on 1 Left-Left") {
-            divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divcordlength", "divwandlength", "divwidthb", "divdropb", "divcordlengthb");
+            divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divcordlength", "divwandlength", "divwidthb", "divdropb", "divcordlengthb", "divcutout", "divcutoutb");
         } else if (subType === "2 on 1 Right-Right") {
-            divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divcordlength", "divwidthb", "divdropb", "divcordlengthb", "divwandlengthb");
+            divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divcordlength", "divwidthb", "divdropb", "divcordlengthb", "divwandlengthb", "divcutout", "divcutoutb");
         } else if (subType === "2 on 1 Left-Right") {
-            divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divcordlength", "divwandlength", "divwidthb", "divdropb", "divcordlengthb", "divwandlengthb");
+            divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divcordlength", "divwandlength", "divwidthb", "divdropb", "divcordlengthb", "divwandlengthb", "divcutout", "divcutoutb");
         }
 
         divShow.forEach(id => {
@@ -659,6 +660,26 @@ function visibleCustom(type, text, number) {
         if (thisDiv) {
             thisDiv.style.display = "none";
             if (text === "Custom") {
+                thisDiv.style.display = "";
+            }
+            resolve();
+        }
+    });
+}
+
+function visibleCutOut(text, number) {
+    return new Promise((resolve, reject) => {
+        let thisDiv;
+
+        if (number === "1") {
+            thisDiv = document.getElementById("divcutoutdetail");
+        } else if (number === "2") {
+            thisDiv = document.getElementById("divcutoutdetailb");
+        }
+
+        if (thisDiv) {
+            thisDiv.style.display = "none";
+            if (text === "Yes") {
                 thisDiv.style.display = "";
             }
             resolve();
@@ -706,7 +727,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = ["blindtype", "colourtype", "qty", "room", "mounting", "subtype", "controlposition", "tilterposition", "width", "drop", "widthb", "dropb", "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb", "wandlength", "wandlengthvalue", "wandlengthb", "wandlengthvalueb", "supply", "notes", "markup"];
+    const inputs = ["blindtype", "colourtype", "qty", "room", "mounting", "subtype", "controlposition", "tilterposition", "width", "drop", "widthb", "dropb", "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb", "wandlength", "wandlengthvalue", "wandlengthb", "wandlengthvalueb", "supply", "cutout", "cuttopleftwidth", "cuttopleftheight", "cuttoprightwidth", "cuttoprightheight", "cutbottomleftwidth", "cutbottomleftheight", "cutbottomrightwidth", "cutbottomrightheight", "cutoutb", "cuttopleftwidthb", "cuttopleftheightb", "cuttoprightwidthb", "cuttoprightheightb", "cutbottomleftwidthb", "cutbottomleftheightb", "cutbottomrightwidthb", "cutbottomrightheightb", "notes", "markup"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
@@ -765,6 +786,24 @@ function setFormValues(itemData) {
         wandlengthvalueb: "WandLengthValueB",
         supply: "Supply",
         notes: "Notes",
+        cutout: "CutOut",
+        cuttopleftwidth: "CutTopLeftWidth",
+        cuttopleftheight: "CutTopLeftHeight",
+        cuttoprightwidth: "CutTopRightWidth",
+        cuttoprightheight: "CutTopRightHeight",
+        cutbottomleftwidth: "CutBottomLeftWidth",
+        cutbottomleftheight: "CutBottomLeftHeight",
+        cutbottomrightwidth: "CutBottomRightWidth",
+        cutbottomrightheight: "CutBottomRightHeight",
+        cutoutb: "CutOutB",
+        cuttopleftwidthb: "CutTopLeftWidthB",
+        cuttopleftheightb: "CutTopLeftHeightB",
+        cuttoprightwidthb: "CutTopRightWidthB",
+        cuttoprightheightb: "CutTopRightHeightB",
+        cutbottomleftwidthb: "CutBottomLeftWidthB",
+        cutbottomleftheightb: "CutBottomLeftHeightB",
+        cutbottomrightwidthb: "CutBottomRightWidthB",
+        cutbottomrightheightb: "CutBottomRightHeightB",
         markup: "MarkUp"
     };
 
@@ -789,7 +828,7 @@ function setFormValues(itemData) {
 function process() {
     toggleButtonState(true, "Processing...");
 
-    const fields = ["blindtype", "colourtype", "qty", "room", "mounting", "subtype", "controlposition", "tilterposition", "width", "drop", "widthb", "dropb", "controllength", "wandlength", "controllengthb", "wandlengthb", "controllengthvalue", "wandlengthvalue", "controllengthvalueb", "wandlengthvalueb", "supply", "notes", "markup"];
+    const fields = ["blindtype", "colourtype", "qty", "room", "mounting", "subtype", "controlposition", "tilterposition", "width", "drop", "widthb", "dropb", "controllength", "wandlength", "controllengthb", "wandlengthb", "controllengthvalue", "wandlengthvalue", "controllengthvalueb", "wandlengthvalueb", "supply", "notes", "cutout", "cuttopleftwidth", "cuttopleftheight", "cuttoprightwidth", "cuttoprightheight", "cutbottomleftwidth", "cutbottomleftheight", "cutbottomrightwidth", "cutbottomrightheight", "cutoutb", "cuttopleftwidthb", "cuttopleftheightb", "cuttoprightwidthb", "cuttoprightheightb", "cutbottomleftwidthb", "cutbottomleftheightb", "cutbottomrightwidthb", "cutbottomrightheightb", "markup"];
 
     const formData = {
         headerid: headerId,
@@ -959,6 +998,9 @@ $("#subtype").on("change", function () {
     document.getElementById("wandlengthb").value = "";
     document.getElementById("wandlengthvalue").value = "";
     document.getElementById("wandlengthvalueb").value = "";
+
+    document.getElementById("cutout").value = "";
+    document.getElementById("cutoutb").value = "";
 });
 $("#drop").on("input", function () {
     const subtype = document.getElementById("subtype").value;
@@ -979,6 +1021,12 @@ $("#wandlength").on("change", function () {
 });
 $("#wandlengthb").on("change", function () {
     visibleCustom("WandLength", $(this).val(), "2");
+});
+$("#cutout").on("change", function () {
+    visibleCutOut($(this).val(), "1");
+});
+$("#cutoutb").on("change", function () {
+    visibleCutOut($(this).val(), "2");
 });
 
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {

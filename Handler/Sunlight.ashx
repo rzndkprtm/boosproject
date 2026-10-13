@@ -11,7 +11,6 @@ Imports System.Data.SqlClient
 Public Class Sunlight : Implements IHttpHandler
 
     Private ReadOnly orderClass As New OrderClass
-
     Private ReadOnly myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Public Sub ProcessRequest(ByVal context As HttpContext) Implements IHttpHandler.ProcessRequest
@@ -67,6 +66,8 @@ Public Class Sunlight : Implements IHttpHandler
                 Select Case detail.DesignName.Trim()
                     Case "Aluminium Blinds"
                         InsertAluminium(headerId, detail)
+                    Case "Venetian Blinds"
+                        InsertVenetian(headerId, detail)
                     Case Else
                         Throw New Exception("DesignName tidak dikenali: " & detail.DesignName)
                 End Select
@@ -107,9 +108,9 @@ Public Class Sunlight : Implements IHttpHandler
         Dim designName As String = "Aluminium Blind"
         Dim blindName As String = "0.21mm"
         Dim designId As String = "1"
-        Dim blindId As String = "2"
         Dim priceGroupId As String = "14"
 
+        Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds WHERE Name='" & blindName & "' AND DesignId='" & designId & "'")
         Dim productColourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & detail.ColourType & "'")
         Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS subCompanyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='9' AND ControlType='17' AND ColourType='" & productColourId & "' AND subCompanyArray.VALUE='7'")
 
@@ -122,8 +123,8 @@ Public Class Sunlight : Implements IHttpHandler
         If detail.ControlLength = 0 Then
             controlLength = "Standard"
             controlLengthValue = CInt(Math.Ceiling(detail.Drop * 2.0 / 3.0))
-            If controlLengthValue < 450 Then
-                controlLengthValue = 450
+            If controlLengthValue < 550 Then
+                controlLengthValue = 550
             End If
         End If
 
@@ -132,6 +133,11 @@ Public Class Sunlight : Implements IHttpHandler
             fixControl = "Left"
         ElseIf detail.ControlPosition = "RHC" Then
             fixControl = "Right"
+        End If
+
+        Dim cutOut As String = String.Empty
+        If detail.CutOut_LeftTop = 1 OrElse detail.CutOut_RightTop = 1 OrElse detail.CutOut_LeftBottom = 1 OrElse detail.CutOut_RightBottom = 1 Then
+            cutOut = "Yes"
         End If
 
         Dim linearMetre As Decimal = detail.Width / 1000D
@@ -171,6 +177,24 @@ Public Class Sunlight : Implements IHttpHandler
                     thisCmd.Parameters.AddWithValue("@LinearMetreB", 0)
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                     thisCmd.Parameters.AddWithValue("@SquareMetreB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutOut", cutOut)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftWidth", detail.LHSWidth_Top)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftHeight", detail.LHSHeight_Top)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightWidth", detail.RHSWidth_Top)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightHeight", detail.RHSHeight_Top)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftWidth", detail.LHSWidth_Bottom)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftHeight", detail.LHSHeight_Bottom)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightWidth", detail.RHSWidth_Bottom)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightHeight", detail.RHSHeight_Bottom)
+                    thisCmd.Parameters.AddWithValue("@CutOutB", String.Empty)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftWidthB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftHeightB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightWidthB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightHeightB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftWidthB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftHeightB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightWidthB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightHeightB", 0)
                     thisCmd.Parameters.AddWithValue("@Supply", If(detail.BottomHoldDown Is Nothing, "", detail.BottomHoldDown))
                     thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                     thisCmd.Parameters.AddWithValue("@Notes", If(detail.Notes Is Nothing, "", detail.Notes))
@@ -179,6 +203,181 @@ Public Class Sunlight : Implements IHttpHandler
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
+            orderClass.ResetPriceDetail(headerId, itemId)
+            orderClass.CalculatePrice(headerId, itemId)
+            orderClass.FinalCostItem(headerId, itemId)
+
+            Dim dataLog As Object() = {"OrderDetails", itemId, 2, "Order Item Added"}
+            orderClass.Logs(dataLog)
+        Next
+        orderClass.UpdateOrderFactory(headerId)
+    End Sub
+
+    Private Sub InsertVenetian(headerId As String, detail As OrderDetail)
+        Dim designName As String = "Venetian Blind"
+        Dim blindName As String = String.Empty
+        Dim designId As String = "10"
+        Dim priceGroupId As String = "14"
+
+        If detail.BlindName = "50mm Wooden" Then
+            blindName = "Basswood 50mm"
+        End If
+        If detail.BlindName = "63mm Wooden" Then
+            blindName = "Basswood 63mm"
+        End If
+        If detail.BlindName = "50mm Mockwood" Then
+            blindName = "Econo 50mm"
+        End If
+        If detail.BlindName = "63mm Mockwood" Then
+            blindName = "Econo 63mm"
+        End If
+
+        Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds WHERE Name='" & blindName & "' AND DesignId='" & designId & "'")
+
+        Dim productColourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & detail.ColourType & "'")
+        Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS subCompanyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='9' AND ControlType='17' AND ColourType='" & productColourId & "' AND subCompanyArray.VALUE='7'")
+
+        Dim productGroupName As String = String.Format("{0} - {1}", designName, blindName)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productGroupName, designId, priceGroupId)
+
+        Dim controlLength As String = "Custom"
+        Dim controlLengthValue As Integer = detail.ControlLength
+
+        Dim clvalue As Integer = Math.Ceiling(detail.Drop * 2 / 3)
+        If clvalue < 550 Then clvalue = 550
+
+        Dim cutOut As String = String.Empty
+        If detail.CutOut_LeftTop = 1 OrElse detail.CutOut_RightTop = 1 OrElse detail.CutOut_LeftBottom = 1 OrElse detail.CutOut_RightBottom = 1 Then
+            cutOut = "Yes"
+        End If
+
+        Dim valanceType As String = String.Empty
+        If blindName.Contains("Basswood") Then
+            valanceType = "75mm Valance"
+        End If
+        If blindName.Contains("Econo") Then
+            valanceType = "76mm Valance"
+        End If
+        Dim valanceSize As Integer = detail.PelmetWidth
+        Dim returnPosition As String = String.Empty
+        If detail.PelmetType = "With Return" Then
+            returnPosition = "Both Sides"
+        End If
+        If detail.PelmetType = "Single Left Return" Then
+            returnPosition = "Left"
+        End If
+        If detail.PelmetType = "Single Right Return" Then
+            returnPosition = "Right"
+        End If
+
+        Dim returnLength As Integer = 0
+        If detail.PelmetType = "With Return" Then
+            returnLength = detail.PelmetReturnLeft
+        End If
+        If detail.PelmetType = "Single Left Return" Then
+            returnLength = detail.PelmetReturnLeft
+        End If
+        If detail.PelmetType = "Single Right Return" Then
+            returnLength = detail.PelmetReturnRight
+        End If
+        Dim linearMetre As Decimal = detail.Width / 1000D
+        Dim squareMetre As Decimal = CDec(detail.Width) * CDec(detail.Drop) / 1000000D
+
+        For i As Integer = 1 To detail.Qty
+            Dim itemId As String = orderClass.GetNewOrderItemId()
+
+            Using thisConn As SqlConnection = New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Venetian", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+
+                    thisCmd.Parameters.AddWithValue("@Id", itemId)
+                    thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                    thisCmd.Parameters.AddWithValue("@ProductId", productId)
+                    thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                    thisCmd.Parameters.AddWithValue("@PriceProductGroupIdB", CType(DBNull.Value, Object))
+                    thisCmd.Parameters.AddWithValue("@PriceProductGroupIdC", CType(DBNull.Value, Object))
+                    thisCmd.Parameters.AddWithValue("@Room", detail.Room)
+                    thisCmd.Parameters.AddWithValue("@Mounting", detail.Mounting)
+                    thisCmd.Parameters.AddWithValue("@SubType", "Single")
+
+                    thisCmd.Parameters.AddWithValue("@ControlPosition", detail.ControlLift)
+                    thisCmd.Parameters.AddWithValue("@ControlPositionB", String.Empty)
+                    thisCmd.Parameters.AddWithValue("@ControlPositionC", String.Empty)
+
+                    thisCmd.Parameters.AddWithValue("@TilterPosition", detail.ControlLift)
+                    thisCmd.Parameters.AddWithValue("@TilterPositionB", String.Empty)
+                    thisCmd.Parameters.AddWithValue("@TilterPositionC", String.Empty)
+
+                    thisCmd.Parameters.AddWithValue("@Width", detail.Width)
+                    thisCmd.Parameters.AddWithValue("@WidthB", 0)
+                    thisCmd.Parameters.AddWithValue("@WidthC", 0)
+                    thisCmd.Parameters.AddWithValue("@Drop", detail.Drop)
+                    thisCmd.Parameters.AddWithValue("@DropB", 0)
+                    thisCmd.Parameters.AddWithValue("@DropC", 0)
+
+                    thisCmd.Parameters.AddWithValue("@ControlLength", "Standard")
+                    thisCmd.Parameters.AddWithValue("@ControlLengthB", String.Empty)
+                    thisCmd.Parameters.AddWithValue("@ControlLengthC", String.Empty)
+                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", clvalue)
+                    thisCmd.Parameters.AddWithValue("@ControlLengthValueB", 0)
+                    thisCmd.Parameters.AddWithValue("@ControlLengthValueC", 0)
+                    thisCmd.Parameters.AddWithValue("@WandLengthValue", 0)
+
+                    thisCmd.Parameters.AddWithValue("@ValanceType", valanceType)
+                    thisCmd.Parameters.AddWithValue("@ValanceSize", "Custom")
+                    thisCmd.Parameters.AddWithValue("@ValanceSizeValue", valanceSize)
+
+                    thisCmd.Parameters.AddWithValue("@ReturnPosition", returnPosition)
+                    thisCmd.Parameters.AddWithValue("@ReturnLength", "Custom")
+                    thisCmd.Parameters.AddWithValue("@ReturnLengthValue", returnLength)
+
+                    thisCmd.Parameters.AddWithValue("@CutOut", cutOut)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftWidth", detail.LHSWidth_Top)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftHeight", detail.LHSHeight_Top)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightWidth", detail.RHSWidth_Top)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightHeight", detail.RHSHeight_Top)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftWidth", detail.LHSWidth_Bottom)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftHeight", detail.LHSHeight_Bottom)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightWidth", detail.RHSWidth_Bottom)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightHeight", detail.RHSHeight_Bottom)
+                    thisCmd.Parameters.AddWithValue("@CutOutB", String.Empty)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftWidthB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftHeightB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightWidthB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightHeightB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftWidthB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftHeightB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightWidthB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightHeightB", 0)
+                    thisCmd.Parameters.AddWithValue("@CutOutC", String.Empty)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftWidthC", 0)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftHeightC", 0)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightWidthC", 0)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightHeightC", 0)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftWidthC", 0)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftHeightC", 0)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightWidthC", 0)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightHeightC", 0)
+
+                    thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
+                    thisCmd.Parameters.AddWithValue("@LinearMetreB", 0)
+                    thisCmd.Parameters.AddWithValue("@LinearMetreC", 0)
+
+                    thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
+                    thisCmd.Parameters.AddWithValue("@SquareMetreB", 0)
+                    thisCmd.Parameters.AddWithValue("@SquareMetreC", 0)
+
+                    thisCmd.Parameters.AddWithValue("@Tassel", "Plastic")
+                    thisCmd.Parameters.AddWithValue("@Supply", detail.BottomHoldDown)
+                    thisCmd.Parameters.AddWithValue("@TotalItems", 1)
+                    thisCmd.Parameters.AddWithValue("@Notes", detail.Notes)
+                    thisCmd.Parameters.AddWithValue("@MarkUp", 0)
+
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
             orderClass.ResetPriceDetail(headerId, itemId)
             orderClass.CalculatePrice(headerId, itemId)
             orderClass.FinalCostItem(headerId, itemId)
@@ -225,8 +424,29 @@ Public Class OrderDetail
     Public Property Width As Integer
     Public Property Drop As Integer
     Public Property ControlPosition As String
+    Public Property ControlLift As String
+    Public Property ControlTilt As String
     Public Property BottomHoldDown As String
     Public Property ControlLength As Integer
-    Public Property Notes As String
 
+    Public Property CutOut_LeftTop As Integer
+    Public Property CutOut_RightTop As Integer
+    Public Property CutOut_LeftBottom As Integer
+    Public Property CutOut_RightBottom As Integer
+
+    Public Property LHSWidth_Top As Integer
+    Public Property LHSHeight_Top As Integer
+    Public Property RHSWidth_Top As Integer
+    Public Property RHSHeight_Top As Integer
+    Public Property LHSWidth_Bottom As Integer
+    Public Property LHSHeight_Bottom As Integer
+    Public Property RHSWidth_Bottom As Integer
+    Public Property RHSHeight_Bottom As Integer
+
+    Public Property PelmetType As String
+    Public Property PelmetWidth As Integer
+    Public Property PelmetReturnLeft As Integer
+    Public Property PelmetReturnRight As Integer
+
+    Public Property Notes As String
 End Class

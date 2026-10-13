@@ -223,117 +223,18 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row" id="divfirstend">
-                                                <div class="col-12">
-                                                    <div class="divider">
-                                                        <div class="divider-text">
-                                                            <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('First');">Open Layout (First Blind)</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row" id="divsecondblind">
-                                                <div class="col-12">
-                                                    <div class="divider">
-                                                        <div class="divider-text">Second Blind / Blind B</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row" id="divwidthb">
+                                            <div class="row" id="divcutout">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                    <label>Width</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                    <div class="input-group">
-                                                        <input type="number" id="widthb" class="form-control" autocomplete="off" placeholder="Width ...." />
-                                                        <span class="input-group-text">mm</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row" id="divdropb">
-                                                <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                    <label>Drop</label>
-                                                </div>
-                                                <div class="col-7 col-sm-7 col-lg-4 form-group">
-                                                    <div class="input-group">
-                                                        <input type="number" id="dropb" class="form-control" autocomplete="off" placeholder="Drop ...." />
-                                                        <span class="input-group-text">mm</span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-2 form-group">
-                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Second Drop');">Info</a>
-                                                </div>
-                                            </div>
-                                            <div class="row" id="divcordlengthb">
-                                                <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                    <label>Cord Length</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <div class="input-group">
-                                                        <select id="controllengthb" class="form-select">
-                                                            <option value=""></option>
-                                                            <option value="Standard">Standard</option>
-                                                            <option value="Custom">Custom</option>
-                                                        </select>
-                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Cord Length');"> ? </a>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group" id="divcordlengthvalueb">
-                                                    <div class="input-group">
-                                                        <input type="number" id="controllengthvalueb" class="form-control" autocomplete="off" placeholder="Length ...." />
-                                                        <span class="input-group-text">mm</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row" id="divwandlengthb">
-                                                <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                    <label>Wand Length</label>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <div class="input-group">
-                                                        <select id="wandlengthb" class="form-select">
-                                                            <option value=""></option>
-                                                            <option value="Standard">Standard</option>
-                                                            <option value="Custom">Custom</option>
-                                                        </select>
-                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Wand Length');"> ? </a>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 col-sm-12 col-lg-4 form-group" id="divwandlengthvalueb">
-                                                    <div class="input-group">
-                                                        <input type="number" id="wandlengthvalueb" class="form-control" autocomplete="off" placeholder="Length ...." />
-                                                        <span class="input-group-text">mm</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row" id="divsecondend">
-                                                <div class="col-12">
-                                                    <div class="divider">
-                                                        <div class="divider-text">
-                                                            <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Second');">Open Layout (Second Blind)</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row mt-4 mb-2">
-                                                <div class="col-12 col-sm-12 col-lg-3 mb-1">
-                                                    <label>Hold Down Clip</label>
+                                                    <label>Cut Out</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-2 form-group">
-                                                    <select id="supply" class="form-select">
+                                                    <select id="cutout" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Yes">Yes</option>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div id="divcutout" style="display:none;">
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <div class="divider">
-                                                            <div class="divider-text">Cut Out</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                            <div id="divcutoutdetail">
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <div class="divider">
@@ -423,6 +324,212 @@
                                                             <span class="input-group-text">mm</span>
                                                         </div>
                                                     </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" id="divfirstend">
+                                                <div class="col-12">
+                                                    <div class="divider">
+                                                        <div class="divider-text">
+                                                            <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('First');">Open Layout (First Blind)</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" id="divsecondblind">
+                                                <div class="col-12">
+                                                    <div class="divider">
+                                                        <div class="divider-text">Second Blind / Blind B</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" id="divwidthb">
+                                                <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                    <label>Width</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" id="widthb" class="form-control" autocomplete="off" placeholder="Width ...." />
+                                                        <span class="input-group-text">mm</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" id="divdropb">
+                                                <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                    <label>Drop</label>
+                                                </div>
+                                                <div class="col-7 col-sm-7 col-lg-4 form-group">
+                                                    <div class="input-group">
+                                                        <input type="number" id="dropb" class="form-control" autocomplete="off" placeholder="Drop ...." />
+                                                        <span class="input-group-text">mm</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-2 form-group">
+                                                    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Second Drop');">Info</a>
+                                                </div>
+                                            </div>
+                                            <div class="row" id="divcordlengthb">
+                                                <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                    <label>Cord Length</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <div class="input-group">
+                                                        <select id="controllengthb" class="form-select">
+                                                            <option value=""></option>
+                                                            <option value="Standard">Standard</option>
+                                                            <option value="Custom">Custom</option>
+                                                        </select>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Cord Length');"> ? </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group" id="divcordlengthvalueb">
+                                                    <div class="input-group">
+                                                        <input type="number" id="controllengthvalueb" class="form-control" autocomplete="off" placeholder="Length ...." />
+                                                        <span class="input-group-text">mm</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" id="divwandlengthb">
+                                                <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                    <label>Wand Length</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                    <div class="input-group">
+                                                        <select id="wandlengthb" class="form-select">
+                                                            <option value=""></option>
+                                                            <option value="Standard">Standard</option>
+                                                            <option value="Custom">Custom</option>
+                                                        </select>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Wand Length');"> ? </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-4 form-group" id="divwandlengthvalueb">
+                                                    <div class="input-group">
+                                                        <input type="number" id="wandlengthvalueb" class="form-control" autocomplete="off" placeholder="Length ...." />
+                                                        <span class="input-group-text">mm</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" id="divcutoutb">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Cut Out</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                    <select id="cutoutb" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Yes">Yes</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="divcutoutdetailb">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="divider">
+                                                            <div class="divider-text">Top Section</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                        <label>Left Side</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Width</span>
+                                                            <input type="number" id="cuttopleftwidthb" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Height</span>
+                                                            <input type="number" id="cuttopleftheightb" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                        <label>Right Side</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Width</span>
+                                                            <input type="number" id="cuttoprightwidthb" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Height</span>
+                                                            <input type="number" id="cuttoprightheightb" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="divider">
+                                                            <div class="divider-text">Bottom Section</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3">
+                                                        <label>Left Side</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Width</span>
+                                                            <input type="number" id="cutbottomleftwidthb" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Height</span>
+                                                            <input type="number" id="cutbottomleftheightb" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                        <label>Right Side</label>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Width</span>
+                                                            <input type="number" id="cutbottomrightwidthb" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">Height</span>
+                                                            <input type="number" id="cutbottomrightheightb" class="form-control" autocomplete="off" placeholder="" />
+                                                            <span class="input-group-text">mm</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row" id="divsecondend">
+                                                <div class="col-12">
+                                                    <div class="divider">
+                                                        <div class="divider-text">
+                                                            <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Second');">Open Layout (Second Blind)</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-4 mb-2">
+                                                <div class="col-12 col-sm-12 col-lg-3 mb-1">
+                                                    <label>Hold Down Clip</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                    <select id="supply" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Yes">Yes</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="row mt-3">
@@ -573,5 +680,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/Aluminium.js?v=1.2.5"></script>
+    <script src="/Scripts/RisaSolihah/Aluminium.js?v=1.2.6"></script>
 </asp:Content>

@@ -39,6 +39,10 @@ $("#subtype").on("change", function () {
     document.getElementById("controllengthc").value = "";
     document.getElementById("valancesize").value = "";
     document.getElementById("returnlength").value = "";
+
+    document.getElementById("cutout").value = "";
+    document.getElementById("cutoutb").value = "";
+    document.getElementById("cutoutc").value = "";
 });
 
 $("#drop").on("input", function () {
@@ -74,6 +78,16 @@ $("#valancesize").on("change", function () {
 
 $("#returnlength").on("change", function () {
     visibleCustom("ValanceLength", $(this).val(), "");
+});
+
+$("#cutout").on("change", function () {
+    visibleCutOut($(this).val(), "1");
+});
+$("#cutoutb").on("change", function () {
+    visibleCutOut($(this).val(), "2");
+});
+$("#cutoutc").on("change", function () {
+    visibleCutOut($(this).val(), "3");
 });
 
 function loader(itemAction) {
@@ -264,6 +278,7 @@ function getCompanyDetailName(companyDetailId) {
         });
     });
 }
+
 function getDesignName(designType) {
     return new Promise((resolve, reject) => {
         const cardTitle = document.getElementById("cardtitle");
@@ -676,7 +691,7 @@ function bindComponentForm(blindType, subType) {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
 
-        const divsToHide = ["divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divthirdblind", "divthirdend", "divtassel", "divcontrolposition", "divtilterposition", "divcordlength", "divcordlengthb", "divcordlengthc", "divcordlengthvalue", "divcordlengthvalueb", "divcordlengthvaluec", "divsize", "divsizeb", "divsizec", "divwandlength", "divvalancesection", "divvalancesizevalue", "divvalancelengthvalue"].map(id => document.getElementById(id));
+        const divsToHide = ["divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divthirdblind", "divthirdend", "divtassel", "divcontrolposition", "divtilterposition", "divcordlength", "divcordlengthb", "divcordlengthc", "divcordlengthvalue", "divcordlengthvalueb", "divcordlengthvaluec", "divsize", "divsizeb", "divsizec", "divwandlength", "divvalancesection", "divvalancesizevalue", "divvalancelengthvalue", "divcutout", "divcutoutdetail", "divcutoutb", "divcutoutdetailb", "divcutoutc", "divcutoutdetailc"].map(id => document.getElementById(id));
 
         const toggleDisplay = (el, show) => {
             if (el) el.style.display = show ? "" : "none";
@@ -700,17 +715,17 @@ function bindComponentForm(blindType, subType) {
                 divShow.push("divtassel", "divvalancesection");
 
                 if (subType === "Single") {
-                    divShow.push("divcontrolposition", "divtilterposition", "divsize", "divcordlength");
+                    divShow.push("divcontrolposition", "divtilterposition", "divsize", "divcordlength", "divcutout");
                 }
                 else if (subType === "2 on 1 Left-Left" || subType === "2 on 1 Right-Right") {
-                    divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divsize", "divsizeb", "divcordlength", "divcordlengthb");
+                    divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divsize", "divsizeb", "divcordlength", "divcordlengthb", "divcutout", "divcutoutb");
                 }
                 else if (subType === "2 on 1 Left-Right") {
-                    divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divsize", "divsizeb", "divcordlength", "divcordlengthb");
+                    divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divsize", "divsizeb", "divcordlength", "divcordlengthb", "divcutout", "divcutoutb");
                 } else if (subType === "3 on 1 Left-Left-Right") {
-                    divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divthirdblind", "divthirdend", "divsize", "divsizeb", "divsizec", "divcordlength", "divcordlengthb", "divcordlengthc");
+                    divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divthirdblind", "divthirdend", "divsize", "divsizeb", "divsizec", "divcordlength", "divcordlengthb", "divcordlengthc", "divcutout", "divcutoutb");
                 } else if (subType === "3 on 1 Left-Right-Right") {
-                    divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divthirdblind", "divthirdend", "divsize", "divsizeb", "divsizec", "divcordlength", "divcordlengthb", "divcordlengthc");
+                    divShow.push("divfirstblind", "divfirstend", "divsecondblind", "divsecondend", "divthirdblind", "divthirdend", "divsize", "divsizeb", "divsizec", "divcordlength", "divcordlengthb", "divcordlengthc", "divcutout", "divcutoutb");
                 }
             } else if (blindName === "Econo 50mm (Cordless)" || blindName === "Ultraslat 50mm (Cordless)") {
                 divShow.push("divsize", "divtilterposition", "divwandlength", "divvalancesection",);
@@ -761,6 +776,28 @@ function visibleCustom(type, text, number) {
     });
 }
 
+function visibleCutOut(text, number) {
+    return new Promise((resolve, reject) => {
+        let thisDiv;
+
+        if (number === "1") {
+            thisDiv = document.getElementById("divcutoutdetail");
+        } else if (number === "2") {
+            thisDiv = document.getElementById("divcutoutdetailb");
+        } else if (number === "3") {
+            thisDiv = document.getElementById("divcutoutdetailc");
+        }
+
+        if (thisDiv) {
+            thisDiv.style.display = "none";
+            if (text === "Yes") {
+                thisDiv.style.display = "";
+            }
+            resolve();
+        }
+    });
+}
+
 function toggleButtonState(disabled, text) {
     $("#submit").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto").text(text);
     $("#cancel").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto");
@@ -789,7 +826,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = ["blindtype", "colourtype", "qty", "room", "mounting", "subtype", "controlposition", "tilterposition", "width", "drop", "widthb", "dropb", "widthc", "dropc", "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb", "controllengthc", "controllengthvaluec", "valancetype", "valancesize", "valancesizevalue", "returnposition", "returnlength", "returnlengthvalue", "wandlengthvalue", "tassel", "supply", "notes", "markup"];
+    const inputs = ["blindtype", "colourtype", "qty", "room", "mounting", "subtype", "controlposition", "tilterposition", "width", "drop", "widthb", "dropb", "widthc", "dropc", "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb", "controllengthc", "controllengthvaluec", "valancetype", "valancesize", "valancesizevalue", "returnposition", "returnlength", "returnlengthvalue", "wandlengthvalue", "tassel", "supply", "cutout", "cuttopleftwidth", "cuttopleftheight", "cuttoprightwidth", "cuttoprightheight", "cutbottomleftwidth", "cutbottomleftheight", "cutbottomrightwidth", "cutbottomrightheight", "cutoutb", "cuttopleftwidthb", "cuttopleftheightb", "cuttoprightwidthb", "cuttoprightheightb", "cutbottomleftwidthb", "cutbottomleftheightb", "cutbottomrightwidthb", "cutbottomrightheightb", "cutoutc", "cuttopleftwidthc", "cuttopleftheightc", "cuttoprightwidthc", "cuttoprightheightc", "cutbottomleftwidthc", "cutbottomleftheightc", "cutbottomrightwidthc", "cutbottomrightheightc", "notes", "markup"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
@@ -834,6 +871,33 @@ function setFormValues(itemData) {
         returnposition: "ReturnPosition",
         returnlength: "ReturnLength",
         returnlengthvalue: "ReturnLengthValue",
+        cutout: "CutOut",
+        cuttopleftwidth: "CutTopLeftWidth",
+        cuttopleftheight: "CutTopLeftHeight",
+        cuttoprightwidth: "CutTopRightWidth",
+        cuttoprightheight: "CutTopRightHeight",
+        cutbottomleftwidth: "CutBottomLeftWidth",
+        cutbottomleftheight: "CutBottomLeftHeight",
+        cutbottomrightwidth: "CutBottomRightWidth",
+        cutbottomrightheight: "CutBottomRightHeight",
+        cutoutb: "CutOutB",
+        cuttopleftwidthb: "CutTopLeftWidthB",
+        cuttopleftheightb: "CutTopLeftHeightB",
+        cuttoprightwidthb: "CutTopRightWidthB",
+        cuttoprightheightb: "CutTopRightHeightB",
+        cutbottomleftwidthb: "CutBottomLeftWidthB",
+        cutbottomleftheightb: "CutBottomLeftHeightB",
+        cutbottomrightwidthb: "CutBottomRightWidthB",
+        cutbottomrightheightb: "CutBottomRightHeightB",
+        cutoutc: "CutOutC",
+        cuttopleftwidthc: "CutTopLeftWidthC",
+        cuttopleftheightc: "CutTopLeftHeightC",
+        cuttoprightwidthc: "CutTopRightWidthC",
+        cuttoprightheightc: "CutTopRightHeightC",
+        cutbottomleftwidthc: "CutBottomLeftWidthC",
+        cutbottomleftheightc: "CutBottomLeftHeightC",
+        cutbottomrightwidthc: "CutBottomRightWidthC",
+        cutbottomrightheightc: "CutBottomRightHeightC",
         tassel: "Tassel",
         supply: "Supply",
         notes: "Notes",
@@ -873,7 +937,7 @@ function fillSelect(selector, list, selected = null) {
 function process() {
     toggleButtonState(true, "Processing...");
 
-    const fields = ["blindtype", "colourtype", "qty", "room", "mounting", "subtype", "controlposition", "tilterposition", "width", "drop", "widthb", "dropb", "widthc", "dropc", "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb", "controllengthc", "controllengthvaluec", "valancetype", "valancesize", "valancesizevalue", "returnposition", "returnlength", "returnlengthvalue", "wandlengthvalue", "tassel", "supply", "notes", "markup"];
+    const fields = ["blindtype", "colourtype", "qty", "room", "mounting", "subtype", "controlposition", "tilterposition", "width", "drop", "widthb", "dropb", "widthc", "dropc", "controllength", "controllengthvalue", "controllengthb", "controllengthvalueb", "controllengthc", "controllengthvaluec", "valancetype", "valancesize", "valancesizevalue", "returnposition", "returnlength", "returnlengthvalue", "wandlengthvalue", "tassel", "cutout", "cuttopleftwidth", "cuttopleftheight", "cuttoprightwidth", "cuttoprightheight", "cutbottomleftwidth", "cutbottomleftheight", "cutbottomrightwidth", "cutbottomrightheight", "cutoutb", "cuttopleftwidthb", "cuttopleftheightb", "cuttoprightwidthb", "cuttoprightheightb", "cutbottomleftwidthb", "cutbottomleftheightb", "cutbottomrightwidthb", "cutbottomrightheightb", "cutoutc", "cuttopleftwidthc", "cuttopleftheightc", "cuttoprightwidthc", "cuttoprightheightc", "cutbottomleftwidthc", "cutbottomleftheightc", "cutbottomrightwidthc", "cutbottomrightheightc", "supply", "notes", "markup"];
 
     const formData = {
         headerid: headerId,
@@ -995,6 +1059,9 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
         visibleCustom("CordLength", data.ItemData.ControlLengthB, "3");
         visibleCustom("ValanceSize", data.ItemData.ValanceSize, "");
         visibleCustom("ValanceLength", data.ItemData.ReturnLength, "");
+        visibleCutOut(data.ItemData.CutOut, "1");
+        visibleCutOut(data.ItemData.CutOutB, "2");
+        visibleCutOut(data.ItemData.CutOutC, "3");
     } catch (error) {
         document.getElementById("divloader").style.display = "none";
     }

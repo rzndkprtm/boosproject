@@ -1197,6 +1197,24 @@ Partial Class Order_Method
         Dim controllength As Integer = 0 : Dim controllengthb As Integer = 0
         Dim wandlength As Integer = 0 : Dim wandlengthb As Integer = 0
 
+        Dim cuttopleftwidth As Integer = 0
+        Dim cuttopleftheight As Integer = 0
+        Dim cuttoprightwidth As Integer = 0
+        Dim cuttoprightheight As Integer = 0
+        Dim cutbottomleftwidth As Integer = 0
+        Dim cutbottomleftheight As Integer = 0
+        Dim cutbottomrightwidth As Integer = 0
+        Dim cutbottomrightheight As Integer = 0
+
+        Dim cuttopleftwidthb As Integer = 0
+        Dim cuttopleftheightb As Integer = 0
+        Dim cuttoprightwidthb As Integer = 0
+        Dim cuttoprightheightb As Integer = 0
+        Dim cutbottomleftwidthb As Integer = 0
+        Dim cutbottomleftheightb As Integer = 0
+        Dim cutbottomrightwidthb As Integer = 0
+        Dim cutbottomrightheightb As Integer = 0
+
         Dim linearmetre As Decimal = 0D : Dim linearmetreb As Decimal = 0D
         Dim squaremetre As Decimal = 0D : Dim squaremetreb As Decimal = 0D
 
@@ -1227,6 +1245,28 @@ Partial Class Order_Method
         width = data.width : drop = data.drop
         linearmetre = data.width / 1000D
         squaremetre = data.width * data.drop / 1000000D
+
+        If data.cutout = "Yes" Then
+            If Not String.IsNullOrEmpty(data.cuttopleftwidth) Then cuttopleftwidth = data.cuttopleftwidth
+            If Not String.IsNullOrEmpty(data.cuttopleftheight) Then cuttopleftheight = data.cuttopleftheight
+            If Not String.IsNullOrEmpty(data.cuttoprightwidth) Then cuttoprightwidth = data.cuttoprightwidth
+            If Not String.IsNullOrEmpty(data.cuttoprightheight) Then cuttoprightheight = data.cuttoprightheight
+            If Not String.IsNullOrEmpty(data.cutbottomleftwidth) Then cutbottomleftwidth = data.cutbottomleftwidth
+            If Not String.IsNullOrEmpty(data.cutbottomleftheight) Then cutbottomleftheight = data.cutbottomleftheight
+            If Not String.IsNullOrEmpty(data.cutbottomrightwidth) Then cutbottomrightwidth = data.cutbottomrightwidth
+            If Not String.IsNullOrEmpty(data.cutbottomrightheight) Then cutbottomrightheight = data.cutbottomrightheight
+        End If
+
+        If data.cutoutb = "Yes" Then
+            If Not String.IsNullOrEmpty(data.cuttopleftwidthb) Then cuttopleftwidthb = data.cuttopleftwidthb
+            If Not String.IsNullOrEmpty(data.cuttopleftheightb) Then cuttopleftheightb = data.cuttopleftheightb
+            If Not String.IsNullOrEmpty(data.cuttoprightwidthb) Then cuttoprightwidthb = data.cuttoprightwidthb
+            If Not String.IsNullOrEmpty(data.cuttoprightheightb) Then cuttoprightheightb = data.cuttoprightheightb
+            If Not String.IsNullOrEmpty(data.cutbottomleftwidthb) Then cutbottomleftwidthb = data.cutbottomleftwidthb
+            If Not String.IsNullOrEmpty(data.cutbottomleftheightb) Then cutbottomleftheightb = data.cutbottomleftheightb
+            If Not String.IsNullOrEmpty(data.cutbottomrightwidthb) Then cutbottomrightwidthb = data.cutbottomrightwidthb
+            If Not String.IsNullOrEmpty(data.cutbottomrightheightb) Then cutbottomrightheightb = data.cutbottomrightheightb
+        End If
 
         If data.subtype = "Single" Then
             widthb = 0 : dropb = 0
@@ -1338,6 +1378,24 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@ControlLengthValueB", controllengthb)
                         thisCmd.Parameters.AddWithValue("@WandLengthB", data.wandlengthb)
                         thisCmd.Parameters.AddWithValue("@WandLengthValueB", wandlengthb)
+                        thisCmd.Parameters.AddWithValue("@CutOut", data.cutout)
+                        thisCmd.Parameters.AddWithValue("@CutTopLeftWidth", cuttopleftwidth)
+                        thisCmd.Parameters.AddWithValue("@CutTopLeftHeight", cuttopleftheight)
+                        thisCmd.Parameters.AddWithValue("@CutTopRightWidth", cuttoprightwidth)
+                        thisCmd.Parameters.AddWithValue("@CutTopRightHeight", cuttoprightheight)
+                        thisCmd.Parameters.AddWithValue("@CutBottomLeftWidth", cutbottomleftwidth)
+                        thisCmd.Parameters.AddWithValue("@CutBottomLeftHeight", cutbottomleftheight)
+                        thisCmd.Parameters.AddWithValue("@CutBottomRightWidth", cutbottomrightwidth)
+                        thisCmd.Parameters.AddWithValue("@CutBottomRightHeight", cutbottomrightheight)
+                        thisCmd.Parameters.AddWithValue("@CutOutB", data.cutoutb)
+                        thisCmd.Parameters.AddWithValue("@CutTopLeftWidthB", cuttopleftwidthb)
+                        thisCmd.Parameters.AddWithValue("@CutTopLeftHeightB", cuttopleftheightb)
+                        thisCmd.Parameters.AddWithValue("@CutTopRightWidthB", cuttoprightwidthb)
+                        thisCmd.Parameters.AddWithValue("@CutTopRightHeightB", cuttoprightheightb)
+                        thisCmd.Parameters.AddWithValue("@CutBottomLeftWidthB", cutbottomleftwidthb)
+                        thisCmd.Parameters.AddWithValue("@CutBottomLeftHeightB", cutbottomleftheightb)
+                        thisCmd.Parameters.AddWithValue("@CutBottomRightWidthB", cutbottomrightwidthb)
+                        thisCmd.Parameters.AddWithValue("@CutBottomRightHeightB", cutbottomrightheightb)
                         thisCmd.Parameters.AddWithValue("@LinearMetre", linearmetre)
                         thisCmd.Parameters.AddWithValue("@LinearMetreB", linearmetreb)
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squaremetre)
@@ -1394,6 +1452,24 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@ControlLengthValueB", controllengthb)
                     thisCmd.Parameters.AddWithValue("@WandLengthB", data.wandlengthb)
                     thisCmd.Parameters.AddWithValue("@WandLengthValueB", wandlengthb)
+                    thisCmd.Parameters.AddWithValue("@CutOut", data.cutout)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftWidth", cuttopleftwidth)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftHeight", cuttopleftheight)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightWidth", cuttoprightwidth)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightHeight", cuttoprightheight)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftWidth", cutbottomleftwidth)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftHeight", cutbottomleftheight)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightWidth", cutbottomrightwidth)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightHeight", cutbottomrightheight)
+                    thisCmd.Parameters.AddWithValue("@CutOutB", data.cutoutb)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftWidthB", cuttopleftwidthb)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftHeightB", cuttopleftheightb)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightWidthB", cuttoprightwidthb)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightHeightB", cuttoprightheightb)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftWidthB", cutbottomleftwidthb)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftHeightB", cutbottomleftheightb)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightWidthB", cutbottomrightwidthb)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightHeightB", cutbottomrightheightb)
                     thisCmd.Parameters.AddWithValue("@LinearMetre", linearmetre)
                     thisCmd.Parameters.AddWithValue("@LinearMetreB", linearmetreb)
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squaremetre)
@@ -9562,8 +9638,34 @@ Partial Class Order_Method
         Dim controlpositionc As String = String.Empty
         Dim tilterpositionc As String = String.Empty
 
-        Dim linearMetre As Decimal : Dim linearMetreB As Decimal : Dim linearMetreC As Decimal
+        Dim cuttopleftwidth As Integer = 0
+        Dim cuttopleftheight As Integer = 0
+        Dim cuttoprightwidth As Integer = 0
+        Dim cuttoprightheight As Integer = 0
+        Dim cutbottomleftwidth As Integer = 0
+        Dim cutbottomleftheight As Integer = 0
+        Dim cutbottomrightwidth As Integer = 0
+        Dim cutbottomrightheight As Integer = 0
 
+        Dim cuttopleftwidthb As Integer = 0
+        Dim cuttopleftheightb As Integer = 0
+        Dim cuttoprightwidthb As Integer = 0
+        Dim cuttoprightheightb As Integer = 0
+        Dim cutbottomleftwidthb As Integer = 0
+        Dim cutbottomleftheightb As Integer = 0
+        Dim cutbottomrightwidthb As Integer = 0
+        Dim cutbottomrightheightb As Integer = 0
+
+        Dim cuttopleftwidthc As Integer = 0
+        Dim cuttopleftheightc As Integer = 0
+        Dim cuttoprightwidthc As Integer = 0
+        Dim cuttoprightheightc As Integer = 0
+        Dim cutbottomleftwidthc As Integer = 0
+        Dim cutbottomleftheightc As Integer = 0
+        Dim cutbottomrightwidthc As Integer = 0
+        Dim cutbottomrightheightc As Integer = 0
+
+        Dim linearMetre As Decimal : Dim linearMetreB As Decimal : Dim linearMetreC As Decimal
         Dim squareMetre As Decimal : Dim squareMetreB As Decimal : Dim squareMetreC As Decimal
 
         Dim totalItems As Integer = 1
@@ -9679,6 +9781,132 @@ Partial Class Order_Method
 
         If blindName = "Econo 50mm (Cordless)" AndAlso String.IsNullOrEmpty(data.wandlengthvalue) Then Return "WAND LENGTH IS REQUIRED !"
 
+        If data.cutout = "Yes" Then
+            If String.IsNullOrEmpty(data.cuttopleftwidth) AndAlso String.IsNullOrEmpty(data.cuttoprightwidth) AndAlso String.IsNullOrEmpty(data.cutbottomleftwidth) AndAlso String.IsNullOrEmpty(data.cutbottomrightwidth) Then
+                Return "CUT OUT VALUE IS REQUIRED !"
+            End If
+
+            If Not String.IsNullOrEmpty(data.cuttopleftwidth) Then
+                If Not Integer.TryParse(data.cuttopleftwidth, cuttopleftwidth) OrElse cuttopleftwidth < 0 Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "PLEASE CHECK YOUR FIRST CUT TOP LEFT WIDTH ORDER !"
+                    End If
+                    Return "PLEASE CHECK YOUR CUT TOP LEFT WIDTH ORDER !"
+                End If
+                If String.IsNullOrEmpty(data.cuttopleftheight) Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "FIRST CUT TOP LEFT HEIGHT IS REQURIED !"
+                    End If
+                    Return "CUT TOP LEFT HEIGHT IS REQURIED !"
+                End If
+            End If
+
+            If Not String.IsNullOrEmpty(data.cuttopleftheight) Then
+                If Not Integer.TryParse(data.cuttopleftheight, cuttopleftheight) OrElse cuttopleftheight < 0 Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "PLEASE CHECK YOUR FIRST CUT TOP LEFT HEIGHT ORDER !"
+                    End If
+                    Return "PLEASE CHECK YOUR CUT TOP LEFT HEIGHT ORDER !"
+                End If
+                If String.IsNullOrEmpty(data.cuttopleftwidth) Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "FIRST CUT TOP LEFT WIDTH IS REQUIRED !"
+                    End If
+                    Return "CUT TOP LEFT WIDTH IS REQUIRED !"
+                End If
+            End If
+
+            If Not String.IsNullOrEmpty(data.cuttoprightwidth) Then
+                If Not Integer.TryParse(data.cuttoprightwidth, cuttoprightwidth) OrElse cuttoprightwidth < 0 Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "PLEASE CHECK YOUR FIRST CUT TOP RIGHT WIDTH ORDER !"
+                    End If
+                    Return "PLEASE CHECK YOUR CUT TOP RIGHT WIDTH ORDER !"
+                End If
+                If String.IsNullOrEmpty(data.cuttoprightheight) Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "FIRST CUT TOP RIGHT HEIGHT IS REQUIRED !"
+                    End If
+                    Return "CUT TOP RIGHT HEIGHT IS REQUIRED !"
+                End If
+            End If
+
+            If Not String.IsNullOrEmpty(data.cuttoprightheight) Then
+                If Not Integer.TryParse(data.cuttoprightheight, cuttoprightheight) OrElse cuttoprightheight < 0 Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "PLEASE CHECK YOUR FIRST CUT TOP RIGHT HEIGHT ORDER !"
+                    End If
+                    Return "PLEASE CHECK YOUR CUT TOP RIGHT HEIGHT ORDER !"
+                End If
+                If String.IsNullOrEmpty(data.cuttoprightwidth) Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "FIRST CUT TOP RIGHT WIDTH IS REQUIRED !"
+                    End If
+                    Return "CUT TOP RIGHT WIDTH IS REQUIRED !"
+                End If
+            End If
+
+            If Not String.IsNullOrEmpty(data.cutbottomleftwidth) Then
+                If Not Integer.TryParse(data.cutbottomleftwidth, cutbottomleftwidth) OrElse cutbottomleftwidth < 0 Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "PLEASE CHECK YOUR FIRST CUT BOTTOM LEFT WIDTH ORDER !"
+                    End If
+                    Return "PLEASE CHECK YOUR CUT BOTTOM LEFT WIDTH ORDER !"
+                End If
+                If String.IsNullOrEmpty(data.cutbottomleftheight) Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "FIRST CUT BOTTOM LEFT HEIGHT IS REQUIRED !"
+                    End If
+                    Return "CUT BOTTOM LEFT HEIGHT IS REQUIRED !"
+                End If
+            End If
+
+            If Not String.IsNullOrEmpty(data.cutbottomleftheight) Then
+                If Not Integer.TryParse(data.cutbottomleftheight, cutbottomleftheight) OrElse cutbottomleftheight < 0 Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "PLEASE CHECK YOUR FIRST CUT BOTTOM LEFT HEIGHT ORDER !"
+                    End If
+                    Return "PLEASE CHECK YOUR CUT BOTTOM LEFT HEIGHT ORDER !"
+                End If
+                If String.IsNullOrEmpty(data.cutbottomleftwidth) Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "FIRST CUT BOTTOM LEFT WIDTH IS REQUIRED !"
+                    End If
+                    Return "CUT BOTTOM LEFT WIDTH IS REQUIRED !"
+                End If
+            End If
+
+            If Not String.IsNullOrEmpty(data.cutbottomrightwidth) Then
+                If Not Integer.TryParse(data.cutbottomrightwidth, cutbottomrightwidth) OrElse cutbottomrightwidth < 0 Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "PLEASE CHECK YOUR FIRST CUT BOTTOM RIGHT WIDTH ORDER !"
+                    End If
+                    Return "PLEASE CHECK YOUR CUT BOTTOM RIGHT WIDTH ORDER !"
+                End If
+                If String.IsNullOrEmpty(data.cutbottomrightheight) Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "FIRST CUT BOTTOM RIGHT HEIGHT IS REQUIRED !"
+                    End If
+                    Return "CUT BOTTOM RIGHT HEIGHT IS REQUIRED !"
+                End If
+            End If
+
+            If Not String.IsNullOrEmpty(data.cutbottomrightheight) Then
+                If Not Integer.TryParse(data.cutbottomrightheight, cutbottomrightheight) OrElse cutbottomrightheight < 0 Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "PLEASE CHECK YOUR FIRST CUT BOTTOM RIGHT HEIGHT ORDER !"
+                    End If
+                    Return "PLEASE CHECK YOUR CUT BOTTOM RIGHT HEIGHT ORDER !"
+                End If
+                If String.IsNullOrEmpty(data.cutbottomrightwidth) Then
+                    If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
+                        Return "FIRST CUT BOTTOM RIGHT WIDTH IS REQUIRED !"
+                    End If
+                    Return "CUT BOTTOM RIGHT WIDTH IS REQUIRED !"
+                End If
+            End If
+        End If
+
         If data.subtype.Contains("2 on 1") OrElse data.subtype.Contains("3 on 1") Then
             If String.IsNullOrEmpty(data.widthb) Then Return "SECOND WIDTH IS REQUIRED !"
             If Not Integer.TryParse(data.widthb, widthb) OrElse widthb <= 0 Then Return "PLEASE CHECK YOUR SECOND WIDTH ORDER !"
@@ -9695,6 +9923,84 @@ Partial Class Order_Method
                 If String.IsNullOrEmpty(data.controllengthvalueb) Then Return "SECOND CORD LENGTH VALUE IS REQUIRED !"
                 If Not String.IsNullOrEmpty(data.controllengthvalueb) Then
                     If Not Integer.TryParse(data.controllengthvalueb, clvalueb) OrElse clvalueb <= 0 Then Return "PLEASE CHECK YOUR SECOND CORD LENGTH ORDER !"
+                End If
+            End If
+
+            If data.cutoutb = "Yes" Then
+                If String.IsNullOrEmpty(data.cuttopleftwidthb) AndAlso String.IsNullOrEmpty(data.cuttoprightwidthb) AndAlso String.IsNullOrEmpty(data.cutbottomleftwidthb) AndAlso String.IsNullOrEmpty(data.cutbottomrightwidthb) Then
+                    Return "SECOND CUT OUT VALUE IS REQUIRED !"
+                End If
+
+                If Not String.IsNullOrEmpty(data.cuttopleftwidthb) Then
+                    If Not Integer.TryParse(data.cuttopleftwidthb, cuttopleftwidthb) OrElse cuttopleftwidthb < 0 Then
+                        Return "PLEASE CHECK YOUR SECOND CUT TOP LEFT WIDTH ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cuttopleftheightb) Then
+                        Return "SECOND CUT TOP LEFT HEIGHT IS REQUIRED !"
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.cuttopleftheightb) Then
+                    If Not Integer.TryParse(data.cuttopleftheightb, cuttopleftheightb) OrElse cuttopleftheightb < 0 Then
+                        Return "PLEASE CHECK YOUR SECOND CUT TOP LEFT HEIGHT ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cuttopleftwidthb) Then
+                        Return "SECOND CUT TOP LEFT WIDTH IS REQUIRED !"
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.cuttoprightwidthb) Then
+                    If Not Integer.TryParse(data.cuttoprightwidthb, cuttoprightwidthb) OrElse cuttoprightwidthb < 0 Then
+                        Return "PLEASE CHECK YOUR SECOND CUT TOP RIGHT WIDTH ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cuttoprightheightb) Then
+                        Return "SECOND CUT TOP RIGHT HEIGHT IS REQUIRED !"
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.cuttoprightheightb) Then
+                    If Not Integer.TryParse(data.cuttoprightheightb, cuttoprightheightb) OrElse cuttoprightheightb < 0 Then
+                        Return "PLEASE CHECK YOUR SECOND CUT TOP RIGHT HEIGHT ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cuttoprightwidthb) Then
+                        Return "SECOND CUT TOP RIGHT WIDTH IS REQUIRED !"
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.cutbottomleftwidthb) Then
+                    If Not Integer.TryParse(data.cutbottomleftwidthb, cutbottomleftwidthb) OrElse cutbottomleftwidthb < 0 Then
+                        Return "PLEASE CHECK YOUR SECOND CUT BOTTOM LEFT WIDTH ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cutbottomleftheightb) Then
+                        Return "SECOND CUT BOTTOM LEFT HEIGHT IS REQUIRED !"
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.cutbottomleftheightb) Then
+                    If Not Integer.TryParse(data.cutbottomleftheightb, cutbottomleftheightb) OrElse cutbottomleftheightb < 0 Then
+                        Return "PLEASE CHECK YOUR SECOND CUT BOTTOM LEFT HEIGHT ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cutbottomleftwidthb) Then
+                        Return "SECOND CUT BOTTOM LEFT WIDTH IS REQUIRED !"
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.cutbottomrightwidthb) Then
+                    If Not Integer.TryParse(data.cutbottomrightwidthb, cutbottomrightwidthb) OrElse cutbottomrightwidthb < 0 Then
+                        Return "PLEASE CHECK YOUR SECOND CUT BOTTOM RIGHT WIDTH ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cutbottomrightheightb) Then
+                        Return "PLEASE CHECK YOUR SECOND CUT BOTTOM RIGHT HEIGHT ORDER !"
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.cutbottomrightheightb) Then
+                    If Not Integer.TryParse(data.cutbottomrightheightb, cutbottomrightheightb) OrElse cutbottomrightheight < 0 Then
+                        Return "PLEASE CHECK YOUR SECOND CUT BOTTOM RIGHT HEIGHT ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cutbottomrightwidthb) Then
+                        Return "PLEASE CHECK YOUR SECOND CUT BOTTOM RIGHT WIDTH ORDER !"
+                    End If
                 End If
             End If
         End If
@@ -9714,6 +10020,84 @@ Partial Class Order_Method
                 If String.IsNullOrEmpty(data.controllengthvaluec) Then Return "THIRD CORD LENGTH VALUE IS REQUIRED !"
                 If Not String.IsNullOrEmpty(data.controllengthvaluec) Then
                     If Not Integer.TryParse(data.controllengthvaluec, clvaluec) OrElse clvaluec <= 0 Then Return "PLEASE CHECK YOUR THIRD CORD LENGTH ORDER !"
+                End If
+            End If
+
+            If data.cutoutc = "Yes" Then
+                If String.IsNullOrEmpty(data.cuttopleftwidthc) AndAlso String.IsNullOrEmpty(data.cuttoprightwidthc) AndAlso String.IsNullOrEmpty(data.cutbottomleftwidthc) AndAlso String.IsNullOrEmpty(data.cutbottomrightwidthc) Then
+                    Return "THIRD CUT OUT VALUE IS REQUIRED !"
+                End If
+
+                If Not String.IsNullOrEmpty(data.cuttopleftwidthc) Then
+                    If Not Integer.TryParse(data.cuttopleftwidthc, cuttopleftwidthc) OrElse cuttopleftwidthc < 0 Then
+                        Return "PLEASE CHECK YOUR THIRD CUT TOP LEFT WIDTH ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cuttopleftheightc) Then
+                        Return "THIRD CUT TOP LEFT HEIGHT IS REQUIRED !"
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.cuttopleftheightc) Then
+                    If Not Integer.TryParse(data.cuttopleftheightc, cuttopleftheightc) OrElse cuttopleftheightc < 0 Then
+                        Return "PLEASE CHECK YOUR THIRD CUT TOP LEFT HEIGHT ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cuttopleftwidthc) Then
+                        Return "THIRD CUT TOP LEFT WIDTH IS REQUIRED !"
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.cuttoprightwidthc) Then
+                    If Not Integer.TryParse(data.cuttoprightwidthc, cuttoprightwidthc) OrElse cuttoprightwidthc < 0 Then
+                        Return "PLEASE CHECK YOUR THIRD CUT TOP RIGHT WIDTH ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cuttoprightheightc) Then
+                        Return "THIRD CUT TOP RIGHT HEIGHT IS REQUIRED !"
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.cuttoprightheightc) Then
+                    If Not Integer.TryParse(data.cuttoprightheightc, cuttoprightheightc) OrElse cuttoprightheightc < 0 Then
+                        Return "PLEASE CHECK YOUR THIRD CUT TOP RIGHT HEIGHT ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cuttoprightwidthc) Then
+                        Return "THIRD CUT TOP RIGHT WIDTH IS REQUIRED !"
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.cutbottomleftwidthc) Then
+                    If Not Integer.TryParse(data.cutbottomleftwidthc, cutbottomleftwidthc) OrElse cutbottomleftwidthc < 0 Then
+                        Return "PLEASE CHECK YOUR THIRD CUT BOTTOM LEFT WIDTH ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cutbottomleftheightc) Then
+                        Return "THIRD CUT BOTTOM LEFT HEIGHT IS REQUIRED !"
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.cutbottomleftheightc) Then
+                    If Not Integer.TryParse(data.cutbottomleftheightc, cutbottomleftheightc) OrElse cutbottomleftheightc < 0 Then
+                        Return "PLEASE CHECK YOUR THIRD CUT BOTTOM LEFT HEIGHT ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cutbottomleftwidthc) Then
+                        Return "THIRD CUT BOTTOM LEFT WIDTH IS REQUIRED !"
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.cutbottomrightwidthc) Then
+                    If Not Integer.TryParse(data.cutbottomrightwidthc, cutbottomrightwidthc) OrElse cutbottomrightwidthc < 0 Then
+                        Return "PLEASE CHECK YOUR THIRD CUT BOTTOM RIGHT WIDTH ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cutbottomrightheightc) Then
+                        Return "THIRD CUT BOTTOM RIGHT HEIGHT IS REQUIRED !"
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(data.cutbottomrightheightc) Then
+                    If Not Integer.TryParse(data.cutbottomrightheightc, cutbottomrightheightc) OrElse cutbottomrightheightc < 0 Then
+                        Return "PLEASE CHECK YOUR THIRD CUT BOTTOM RIGHT HEIGHT ORDER !"
+                    End If
+                    If String.IsNullOrEmpty(data.cutbottomrightwidthc) Then
+                        Return "THIRD CUT BOTTOM RIGHT WIDTH IS REQUIRED !"
+                    End If
                 End If
             End If
         End If
@@ -9746,6 +10130,39 @@ Partial Class Order_Method
 
         linearMetre = width / 1000
         squareMetre = width * drop / 1000000
+
+        If data.cutout = "Yes" Then
+            If Not String.IsNullOrEmpty(data.cuttopleftwidth) Then cuttopleftwidth = data.cuttopleftwidth
+            If Not String.IsNullOrEmpty(data.cuttopleftheight) Then cuttopleftheight = data.cuttopleftheight
+            If Not String.IsNullOrEmpty(data.cuttoprightwidth) Then cuttoprightwidth = data.cuttoprightwidth
+            If Not String.IsNullOrEmpty(data.cuttoprightheight) Then cuttoprightheight = data.cuttoprightheight
+            If Not String.IsNullOrEmpty(data.cutbottomleftwidth) Then cutbottomleftwidth = data.cutbottomleftwidth
+            If Not String.IsNullOrEmpty(data.cutbottomleftheight) Then cutbottomleftheight = data.cutbottomleftheight
+            If Not String.IsNullOrEmpty(data.cutbottomrightwidth) Then cutbottomrightwidth = data.cutbottomrightwidth
+            If Not String.IsNullOrEmpty(data.cutbottomrightheight) Then cutbottomrightheight = data.cutbottomrightheight
+        End If
+
+        If data.cutoutb = "Yes" Then
+            If Not String.IsNullOrEmpty(data.cuttopleftwidthb) Then cuttopleftwidthb = data.cuttopleftwidthb
+            If Not String.IsNullOrEmpty(data.cuttopleftheightb) Then cuttopleftheightb = data.cuttopleftheightb
+            If Not String.IsNullOrEmpty(data.cuttoprightwidthb) Then cuttoprightwidthb = data.cuttoprightwidthb
+            If Not String.IsNullOrEmpty(data.cuttoprightheightb) Then cuttoprightheightb = data.cuttoprightheightb
+            If Not String.IsNullOrEmpty(data.cutbottomleftwidthb) Then cutbottomleftwidthb = data.cutbottomleftwidthb
+            If Not String.IsNullOrEmpty(data.cutbottomleftheightb) Then cutbottomleftheightb = data.cutbottomleftheightb
+            If Not String.IsNullOrEmpty(data.cutbottomrightwidthb) Then cutbottomrightwidthb = data.cutbottomrightwidthb
+            If Not String.IsNullOrEmpty(data.cutbottomrightheightb) Then cutbottomrightheightb = data.cutbottomrightheightb
+        End If
+
+        If data.cutoutc = "Yes" Then
+            If Not String.IsNullOrEmpty(data.cuttopleftwidthc) Then cuttopleftwidthc = data.cuttopleftwidthc
+            If Not String.IsNullOrEmpty(data.cuttopleftheightc) Then cuttopleftheightc = data.cuttopleftheightc
+            If Not String.IsNullOrEmpty(data.cuttoprightwidthc) Then cuttoprightwidthc = data.cuttoprightwidthc
+            If Not String.IsNullOrEmpty(data.cuttoprightheightc) Then cuttoprightheightc = data.cuttoprightheightc
+            If Not String.IsNullOrEmpty(data.cutbottomleftwidthc) Then cutbottomleftwidthc = data.cutbottomleftwidthc
+            If Not String.IsNullOrEmpty(data.cutbottomleftheightc) Then cutbottomleftheightc = data.cutbottomleftheightc
+            If Not String.IsNullOrEmpty(data.cutbottomrightwidthc) Then cutbottomrightwidthc = data.cutbottomrightwidthc
+            If Not String.IsNullOrEmpty(data.cutbottomrightheightc) Then cutbottomrightheightc = data.cutbottomrightheightc
+        End If
 
         If blindName = "Econo 50mm (Cordless)" Then
             widthb = 0 : dropb = 0
@@ -9939,6 +10356,34 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@ReturnLength", data.returnlength)
                         thisCmd.Parameters.AddWithValue("@ReturnLengthValue", rlvalue)
 
+                        thisCmd.Parameters.AddWithValue("@CutOut", data.cutout)
+                        thisCmd.Parameters.AddWithValue("@CutTopLeftWidth", cuttopleftwidth)
+                        thisCmd.Parameters.AddWithValue("@CutTopLeftHeight", cuttopleftheight)
+                        thisCmd.Parameters.AddWithValue("@CutTopRightWidth", cuttoprightwidth)
+                        thisCmd.Parameters.AddWithValue("@CutTopRightHeight", cuttoprightheight)
+                        thisCmd.Parameters.AddWithValue("@CutBottomLeftWidth", cutbottomleftwidth)
+                        thisCmd.Parameters.AddWithValue("@CutBottomLeftHeight", cutbottomleftheight)
+                        thisCmd.Parameters.AddWithValue("@CutBottomRightWidth", cutbottomrightwidth)
+                        thisCmd.Parameters.AddWithValue("@CutBottomRightHeight", cutbottomrightheight)
+                        thisCmd.Parameters.AddWithValue("@CutOutB", data.cutoutb)
+                        thisCmd.Parameters.AddWithValue("@CutTopLeftWidthB", cuttopleftwidthb)
+                        thisCmd.Parameters.AddWithValue("@CutTopLeftHeightB", cuttopleftheightb)
+                        thisCmd.Parameters.AddWithValue("@CutTopRightWidthB", cuttoprightwidthb)
+                        thisCmd.Parameters.AddWithValue("@CutTopRightHeightB", cuttoprightheightb)
+                        thisCmd.Parameters.AddWithValue("@CutBottomLeftWidthB", cutbottomleftwidthb)
+                        thisCmd.Parameters.AddWithValue("@CutBottomLeftHeightB", cutbottomleftheightb)
+                        thisCmd.Parameters.AddWithValue("@CutBottomRightWidthB", cutbottomrightwidthb)
+                        thisCmd.Parameters.AddWithValue("@CutBottomRightHeightB", cutbottomrightheightb)
+                        thisCmd.Parameters.AddWithValue("@CutOutC", data.cutoutc)
+                        thisCmd.Parameters.AddWithValue("@CutTopLeftWidthC", cuttopleftwidthc)
+                        thisCmd.Parameters.AddWithValue("@CutTopLeftHeightC", cuttopleftheightc)
+                        thisCmd.Parameters.AddWithValue("@CutTopRightWidthC", cuttoprightwidthc)
+                        thisCmd.Parameters.AddWithValue("@CutTopRightHeightC", cuttoprightheightc)
+                        thisCmd.Parameters.AddWithValue("@CutBottomLeftWidthC", cutbottomleftwidthc)
+                        thisCmd.Parameters.AddWithValue("@CutBottomLeftHeightC", cutbottomleftheightc)
+                        thisCmd.Parameters.AddWithValue("@CutBottomRightWidthC", cutbottomrightwidthc)
+                        thisCmd.Parameters.AddWithValue("@CutBottomRightHeightC", cutbottomrightheightc)
+
                         thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                         thisCmd.Parameters.AddWithValue("@LinearMetreB", linearMetreB)
                         thisCmd.Parameters.AddWithValue("@LinearMetreC", linearMetreC)
@@ -10016,6 +10461,34 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@ReturnPosition", data.returnposition)
                     thisCmd.Parameters.AddWithValue("@ReturnLength", data.returnlength)
                     thisCmd.Parameters.AddWithValue("@ReturnLengthValue", rlvalue)
+
+                    thisCmd.Parameters.AddWithValue("@CutOut", data.cutout)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftWidth", cuttopleftwidth)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftHeight", cuttopleftheight)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightWidth", cuttoprightwidth)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightHeight", cuttoprightheight)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftWidth", cutbottomleftwidth)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftHeight", cutbottomleftheight)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightWidth", cutbottomrightwidth)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightHeight", cutbottomrightheight)
+                    thisCmd.Parameters.AddWithValue("@CutOutB", data.cutoutb)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftWidthB", cuttopleftwidthb)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftHeightB", cuttopleftheightb)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightWidthB", cuttoprightwidthb)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightHeightB", cuttoprightheightb)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftWidthB", cutbottomleftwidthb)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftHeightB", cutbottomleftheightb)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightWidthB", cutbottomrightwidthb)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightHeightB", cutbottomrightheightb)
+                    thisCmd.Parameters.AddWithValue("@CutOutC", data.cutoutc)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftWidthC", cuttopleftwidthc)
+                    thisCmd.Parameters.AddWithValue("@CutTopLeftHeightC", cuttopleftheightc)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightWidthC", cuttoprightwidthc)
+                    thisCmd.Parameters.AddWithValue("@CutTopRightHeightC", cuttoprightheightc)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftWidthC", cutbottomleftwidthc)
+                    thisCmd.Parameters.AddWithValue("@CutBottomLeftHeightC", cutbottomleftheightc)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightWidthC", cutbottomrightwidthc)
+                    thisCmd.Parameters.AddWithValue("@CutBottomRightHeightC", cutbottomrightheightc)
 
                     thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                     thisCmd.Parameters.AddWithValue("@LinearMetreB", linearMetreB)
@@ -12737,6 +13210,34 @@ Public Class ProccessData
     Public Property printingg As String
     Public Property printingh As String
     Public Property adjusting As String
+    Public Property cutout As String
+    Public Property cuttopleftwidth As String
+    Public Property cuttopleftheight As String
+    Public Property cuttoprightwidth As String
+    Public Property cuttoprightheight As String
+    Public Property cutbottomleftwidth As String
+    Public Property cutbottomleftheight As String
+    Public Property cutbottomrightwidth As String
+    Public Property cutbottomrightheight As String
+    Public Property cutoutb As String
+    Public Property cuttopleftwidthb As String
+    Public Property cuttopleftheightb As String
+    Public Property cuttoprightwidthb As String
+    Public Property cuttoprightheightb As String
+    Public Property cutbottomleftwidthb As String
+    Public Property cutbottomleftheightb As String
+    Public Property cutbottomrightwidthb As String
+    Public Property cutbottomrightheightb As String
+    Public Property cutoutc As String
+    Public Property cuttopleftwidthc As String
+    Public Property cuttopleftheightc As String
+    Public Property cuttoprightwidthc As String
+    Public Property cuttoprightheightc As String
+    Public Property cutbottomleftwidthc As String
+    Public Property cutbottomleftheightc As String
+    Public Property cutbottomrightwidthc As String
+    Public Property cutbottomrightheightc As String
+
     Public Property cutlength As String
 
     'SHUTTER PUNYA
@@ -12775,7 +13276,6 @@ Public Class ProccessData
     Public Property pelmetflat As String
     Public Property extrafascia As String
     Public Property hingesloose As String
-    Public Property cutout As String
     Public Property specialshape As String
     Public Property templateprovided As String
     Public Property partcolour As String

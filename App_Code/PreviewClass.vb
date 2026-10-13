@@ -201,7 +201,7 @@ Public Class PreviewClass
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim items(14, aluminiumData.Rows.Count - 1) As String
+                    Dim items(19, aluminiumData.Rows.Count - 1) As String
 
                     For i As Integer = 0 To aluminiumData.Rows.Count - 1
                         Dim number As Integer = i + 1
@@ -221,6 +221,43 @@ Public Class PreviewClass
                         Dim subType As String = "Single"
                         If totalBlinds > 1 Then subType = "2 on 1"
 
+                        Dim cutOut As String = aluminiumData.Rows(i)("COut").ToString()
+
+                        Dim topLeft As String = String.Empty
+                        Dim topRight As String = String.Empty
+                        Dim bottomLeft As String = String.Empty
+                        Dim bottomRight As String = String.Empty
+
+                        If cutOut = "Yes" Then
+                            Dim tlw As String = If(IsDBNull(aluminiumData.Rows(i)("CTLeftWidth")), "0", aluminiumData.Rows(i)("CTLeftWidth").ToString())
+                            Dim tlh As String = If(IsDBNull(aluminiumData.Rows(i)("CTLeftHeight")), "0", aluminiumData.Rows(i)("CTLeftHeight").ToString())
+
+                            If tlw <> "0" OrElse tlh <> "0" Then
+                                topLeft = "W: " & tlw & " | H: " & tlh
+                            End If
+
+                            Dim trw As String = If(IsDBNull(aluminiumData.Rows(i)("CTRightWidth")), "0", aluminiumData.Rows(i)("CTRightWidth").ToString())
+                            Dim trh As String = If(IsDBNull(aluminiumData.Rows(i)("CTRightHeight")), "0", aluminiumData.Rows(i)("CTRightHeight").ToString())
+
+                            If trw <> "0" OrElse trh <> "0" Then
+                                topRight = "W: " & trw & " | H: " & trh
+                            End If
+
+                            Dim blw As String = If(IsDBNull(aluminiumData.Rows(i)("CBLeftWidth")), "0", aluminiumData.Rows(i)("CBLeftWidth").ToString())
+                            Dim blh As String = If(IsDBNull(aluminiumData.Rows(i)("CBLeftHeight")), "0", aluminiumData.Rows(i)("CBLeftHeight").ToString())
+
+                            If blw <> "0" OrElse blh <> "0" Then
+                                bottomLeft = "W: " & blw & " | H: " & blh
+                            End If
+
+                            Dim brw As String = If(IsDBNull(aluminiumData.Rows(i)("CBRightWidth")), "0", aluminiumData.Rows(i)("CBRightWidth").ToString())
+                            Dim brh As String = If(IsDBNull(aluminiumData.Rows(i)("CBRightHeight")), "0", aluminiumData.Rows(i)("CBRightHeight").ToString())
+
+                            If brw <> "0" OrElse brh <> "0" Then
+                                bottomRight = "W: " & brw & " | H: " & brh
+                            End If
+                        End If
+
                         items(0, i) = "Item : " & number
                         items(1, i) = aluminiumData.Rows(i)("Room").ToString()
                         items(2, i) = aluminiumData.Rows(i)("Mounting").ToString()
@@ -233,8 +270,13 @@ Public Class PreviewClass
                         items(9, i) = aluminiumData.Rows(i)("TiltPosition").ToString()
                         items(10, i) = cordLengthText
                         items(11, i) = wandLengthText
-                        items(12, i) = aluminiumData.Rows(i)("Supply").ToString()
-                        items(13, i) = aluminiumData.Rows(i)("Notes").ToString()
+                        items(12, i) = aluminiumData.Rows(i)("COut").ToString()
+                        items(13, i) = topLeft
+                        items(14, i) = topRight
+                        items(15, i) = bottomLeft
+                        items(16, i) = bottomRight
+                        items(17, i) = aluminiumData.Rows(i)("Supply").ToString()
+                        items(18, i) = aluminiumData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
@@ -243,7 +285,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Aluminium Type", "Aluminium Colour", "Sub Type", "Width (mm)", "Drop (mm)", "Control Position", "Tilter Position", "Cord Length", "Wand Length", "Hold Down Clip", "Special Information"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Aluminium Type", "Aluminium Colour", "Sub Type", "Width (mm)", "Drop (mm)", "Control Position", "Tilter Position", "Cord Length", "Wand Length", "Cut Out", "Cut Top (Left)", "Cut Top (Right)", "Cut Bottom (Left)", "Cut Bottom (Right)", "Hold Down Clip", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -2102,7 +2144,7 @@ Public Class PreviewClass
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim items(18, venetianData.Rows.Count - 1) As String
+                    Dim items(23, venetianData.Rows.Count - 1) As String
 
                     For i As Integer = 0 To venetianData.Rows.Count - 1
                         Dim number As Integer = i + 1
@@ -2139,6 +2181,43 @@ Public Class PreviewClass
                             returnLengthText = String.Format("{0} : {1}mm", returnLength, returnLengthValue)
                         End If
 
+                        Dim cutOut As String = venetianData.Rows(i)("COut").ToString()
+
+                        Dim topLeft As String = String.Empty
+                        Dim topRight As String = String.Empty
+                        Dim bottomLeft As String = String.Empty
+                        Dim bottomRight As String = String.Empty
+
+                        If cutOut = "Yes" Then
+                            Dim tlw As String = If(IsDBNull(venetianData.Rows(i)("CTLeftWidth")), "0", venetianData.Rows(i)("CTLeftWidth").ToString())
+                            Dim tlh As String = If(IsDBNull(venetianData.Rows(i)("CTLeftHeight")), "0", venetianData.Rows(i)("CTLeftHeight").ToString())
+
+                            If tlw <> "0" OrElse tlh <> "0" Then
+                                topLeft = "W: " & tlw & " | H: " & tlh
+                            End If
+
+                            Dim trw As String = If(IsDBNull(venetianData.Rows(i)("CTRightWidth")), "0", venetianData.Rows(i)("CTRightWidth").ToString())
+                            Dim trh As String = If(IsDBNull(venetianData.Rows(i)("CTRightHeight")), "0", venetianData.Rows(i)("CTRightHeight").ToString())
+
+                            If trw <> "0" OrElse trh <> "0" Then
+                                topRight = "W: " & trw & " | H: " & trh
+                            End If
+
+                            Dim blw As String = If(IsDBNull(venetianData.Rows(i)("CBLeftWidth")), "0", venetianData.Rows(i)("CBLeftWidth").ToString())
+                            Dim blh As String = If(IsDBNull(venetianData.Rows(i)("CBLeftHeight")), "0", venetianData.Rows(i)("CBLeftHeight").ToString())
+
+                            If blw <> "0" OrElse blh <> "0" Then
+                                bottomLeft = "W: " & blw & " | H: " & blh
+                            End If
+
+                            Dim brw As String = If(IsDBNull(venetianData.Rows(i)("CBRightWidth")), "0", venetianData.Rows(i)("CBRightWidth").ToString())
+                            Dim brh As String = If(IsDBNull(venetianData.Rows(i)("CBRightHeight")), "0", venetianData.Rows(i)("CBRightHeight").ToString())
+
+                            If brw <> "0" OrElse brh <> "0" Then
+                                bottomRight = "W: " & brw & " | H: " & brh
+                            End If
+                        End If
+
                         items(0, i) = "Item : " & number
                         items(1, i) = venetianData.Rows(i)("Room").ToString()
                         items(2, i) = venetianData.Rows(i)("Mounting").ToString()
@@ -2155,8 +2234,13 @@ Public Class PreviewClass
                         items(13, i) = valancesizeText
                         items(14, i) = venetianData.Rows(i)("ReturnPosition").ToString()
                         items(15, i) = returnLengthText
-                        items(16, i) = venetianData.Rows(i)("Supply").ToString()
-                        items(17, i) = venetianData.Rows(i)("Notes").ToString()
+                        items(16, i) = venetianData.Rows(i)("COut").ToString()
+                        items(17, i) = topLeft
+                        items(18, i) = topRight
+                        items(19, i) = bottomLeft
+                        items(20, i) = bottomRight
+                        items(21, i) = venetianData.Rows(i)("Supply").ToString()
+                        items(22, i) = venetianData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
@@ -2165,7 +2249,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Venetian Type", "Venetian Colour", "Sub Type", "Width (mm)", "Drop (mm)", "Tassel Colour", "Control Position", "Tilter Position", "Control Length", "Valance Type", "Valance Size", "Return Position", "Return Length", "Hold Down Clip", "Special Information"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Venetian Type", "Venetian Colour", "Sub Type", "Width (mm)", "Drop (mm)", "Tassel Colour", "Control Position", "Tilter Position", "Control Length", "Valance Type", "Valance Size", "Return Position", "Return Length", "Cut Out", "Cut Top (Left)", "Cut Top (Right)", "Cut Bottom (Left)", "Cut Bottom (Right)", "Hold Down Clip", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
