@@ -1246,32 +1246,11 @@ Partial Class Order_Method
         linearmetre = data.width / 1000D
         squaremetre = data.width * data.drop / 1000000D
 
-        If data.cutout = "Yes" Then
-            If Not String.IsNullOrEmpty(data.cuttopleftwidth) Then cuttopleftwidth = data.cuttopleftwidth
-            If Not String.IsNullOrEmpty(data.cuttopleftheight) Then cuttopleftheight = data.cuttopleftheight
-            If Not String.IsNullOrEmpty(data.cuttoprightwidth) Then cuttoprightwidth = data.cuttoprightwidth
-            If Not String.IsNullOrEmpty(data.cuttoprightheight) Then cuttoprightheight = data.cuttoprightheight
-            If Not String.IsNullOrEmpty(data.cutbottomleftwidth) Then cutbottomleftwidth = data.cutbottomleftwidth
-            If Not String.IsNullOrEmpty(data.cutbottomleftheight) Then cutbottomleftheight = data.cutbottomleftheight
-            If Not String.IsNullOrEmpty(data.cutbottomrightwidth) Then cutbottomrightwidth = data.cutbottomrightwidth
-            If Not String.IsNullOrEmpty(data.cutbottomrightheight) Then cutbottomrightheight = data.cutbottomrightheight
-        End If
-
-        If data.cutoutb = "Yes" Then
-            If Not String.IsNullOrEmpty(data.cuttopleftwidthb) Then cuttopleftwidthb = data.cuttopleftwidthb
-            If Not String.IsNullOrEmpty(data.cuttopleftheightb) Then cuttopleftheightb = data.cuttopleftheightb
-            If Not String.IsNullOrEmpty(data.cuttoprightwidthb) Then cuttoprightwidthb = data.cuttoprightwidthb
-            If Not String.IsNullOrEmpty(data.cuttoprightheightb) Then cuttoprightheightb = data.cuttoprightheightb
-            If Not String.IsNullOrEmpty(data.cutbottomleftwidthb) Then cutbottomleftwidthb = data.cutbottomleftwidthb
-            If Not String.IsNullOrEmpty(data.cutbottomleftheightb) Then cutbottomleftheightb = data.cutbottomleftheightb
-            If Not String.IsNullOrEmpty(data.cutbottomrightwidthb) Then cutbottomrightwidthb = data.cutbottomrightwidthb
-            If Not String.IsNullOrEmpty(data.cutbottomrightheightb) Then cutbottomrightheightb = data.cutbottomrightheightb
-        End If
-
         If data.subtype = "Single" Then
             widthb = 0 : dropb = 0
             data.controllengthb = String.Empty : data.wandlengthb = String.Empty
             controllengthb = 0 : wandlengthb = 0
+            data.cutoutb = String.Empty
         End If
         If data.subtype = "2 on 1 Left-Left" Then
             widthb = data.widthb : dropb = data.dropb
@@ -1306,6 +1285,29 @@ Partial Class Order_Method
             squaremetreb = data.widthb * data.dropb / 1000000D
 
             totalItems = 2
+        End If
+
+        ' CUT OUT
+        If data.cutout = "Yes" Then
+            If Not String.IsNullOrEmpty(data.cuttopleftwidth) Then cuttopleftwidth = data.cuttopleftwidth
+            If Not String.IsNullOrEmpty(data.cuttopleftheight) Then cuttopleftheight = data.cuttopleftheight
+            If Not String.IsNullOrEmpty(data.cuttoprightwidth) Then cuttoprightwidth = data.cuttoprightwidth
+            If Not String.IsNullOrEmpty(data.cuttoprightheight) Then cuttoprightheight = data.cuttoprightheight
+            If Not String.IsNullOrEmpty(data.cutbottomleftwidth) Then cutbottomleftwidth = data.cutbottomleftwidth
+            If Not String.IsNullOrEmpty(data.cutbottomleftheight) Then cutbottomleftheight = data.cutbottomleftheight
+            If Not String.IsNullOrEmpty(data.cutbottomrightwidth) Then cutbottomrightwidth = data.cutbottomrightwidth
+            If Not String.IsNullOrEmpty(data.cutbottomrightheight) Then cutbottomrightheight = data.cutbottomrightheight
+        End If
+
+        If data.cutoutb = "Yes" Then
+            If Not String.IsNullOrEmpty(data.cuttopleftwidthb) Then cuttopleftwidthb = data.cuttopleftwidthb
+            If Not String.IsNullOrEmpty(data.cuttopleftheightb) Then cuttopleftheightb = data.cuttopleftheightb
+            If Not String.IsNullOrEmpty(data.cuttoprightwidthb) Then cuttoprightwidthb = data.cuttoprightwidthb
+            If Not String.IsNullOrEmpty(data.cuttoprightheightb) Then cuttoprightheightb = data.cuttoprightheightb
+            If Not String.IsNullOrEmpty(data.cutbottomleftwidthb) Then cutbottomleftwidthb = data.cutbottomleftwidthb
+            If Not String.IsNullOrEmpty(data.cutbottomleftheightb) Then cutbottomleftheightb = data.cutbottomleftheightb
+            If Not String.IsNullOrEmpty(data.cutbottomrightwidthb) Then cutbottomrightwidthb = data.cutbottomrightwidthb
+            If Not String.IsNullOrEmpty(data.cutbottomrightheightb) Then cutbottomrightheightb = data.cutbottomrightheightb
         End If
 
         ' CONTROL LENGTH
@@ -10131,38 +10133,7 @@ Partial Class Order_Method
         linearMetre = width / 1000
         squareMetre = width * drop / 1000000
 
-        If data.cutout = "Yes" Then
-            If Not String.IsNullOrEmpty(data.cuttopleftwidth) Then cuttopleftwidth = data.cuttopleftwidth
-            If Not String.IsNullOrEmpty(data.cuttopleftheight) Then cuttopleftheight = data.cuttopleftheight
-            If Not String.IsNullOrEmpty(data.cuttoprightwidth) Then cuttoprightwidth = data.cuttoprightwidth
-            If Not String.IsNullOrEmpty(data.cuttoprightheight) Then cuttoprightheight = data.cuttoprightheight
-            If Not String.IsNullOrEmpty(data.cutbottomleftwidth) Then cutbottomleftwidth = data.cutbottomleftwidth
-            If Not String.IsNullOrEmpty(data.cutbottomleftheight) Then cutbottomleftheight = data.cutbottomleftheight
-            If Not String.IsNullOrEmpty(data.cutbottomrightwidth) Then cutbottomrightwidth = data.cutbottomrightwidth
-            If Not String.IsNullOrEmpty(data.cutbottomrightheight) Then cutbottomrightheight = data.cutbottomrightheight
-        End If
 
-        If data.cutoutb = "Yes" Then
-            If Not String.IsNullOrEmpty(data.cuttopleftwidthb) Then cuttopleftwidthb = data.cuttopleftwidthb
-            If Not String.IsNullOrEmpty(data.cuttopleftheightb) Then cuttopleftheightb = data.cuttopleftheightb
-            If Not String.IsNullOrEmpty(data.cuttoprightwidthb) Then cuttoprightwidthb = data.cuttoprightwidthb
-            If Not String.IsNullOrEmpty(data.cuttoprightheightb) Then cuttoprightheightb = data.cuttoprightheightb
-            If Not String.IsNullOrEmpty(data.cutbottomleftwidthb) Then cutbottomleftwidthb = data.cutbottomleftwidthb
-            If Not String.IsNullOrEmpty(data.cutbottomleftheightb) Then cutbottomleftheightb = data.cutbottomleftheightb
-            If Not String.IsNullOrEmpty(data.cutbottomrightwidthb) Then cutbottomrightwidthb = data.cutbottomrightwidthb
-            If Not String.IsNullOrEmpty(data.cutbottomrightheightb) Then cutbottomrightheightb = data.cutbottomrightheightb
-        End If
-
-        If data.cutoutc = "Yes" Then
-            If Not String.IsNullOrEmpty(data.cuttopleftwidthc) Then cuttopleftwidthc = data.cuttopleftwidthc
-            If Not String.IsNullOrEmpty(data.cuttopleftheightc) Then cuttopleftheightc = data.cuttopleftheightc
-            If Not String.IsNullOrEmpty(data.cuttoprightwidthc) Then cuttoprightwidthc = data.cuttoprightwidthc
-            If Not String.IsNullOrEmpty(data.cuttoprightheightc) Then cuttoprightheightc = data.cuttoprightheightc
-            If Not String.IsNullOrEmpty(data.cutbottomleftwidthc) Then cutbottomleftwidthc = data.cutbottomleftwidthc
-            If Not String.IsNullOrEmpty(data.cutbottomleftheightc) Then cutbottomleftheightc = data.cutbottomleftheightc
-            If Not String.IsNullOrEmpty(data.cutbottomrightwidthc) Then cutbottomrightwidthc = data.cutbottomrightwidthc
-            If Not String.IsNullOrEmpty(data.cutbottomrightheightc) Then cutbottomrightheightc = data.cutbottomrightheightc
-        End If
 
         If blindName = "Econo 50mm (Cordless)" Then
             widthb = 0 : dropb = 0
@@ -10172,6 +10143,9 @@ Partial Class Order_Method
             data.tassel = String.Empty
             data.controllength = "Custom"
             clvalue = data.wandlengthvalue
+            data.cutout = String.Empty
+            data.cutoutb = String.Empty
+            data.cutoutc = String.Empty
         End If
 
         If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" OrElse blindName = "Econo 50mm" OrElse blindName = "Econo 63mm" OrElse blindName = "Ultraslat 50mm" OrElse blindName = "Ultraslat 63mm" Then
@@ -10183,6 +10157,9 @@ Partial Class Order_Method
                 data.controllengthc = String.Empty
 
                 clvalueb = 0 : clvaluec = 0
+
+                data.cutoutb = String.Empty
+                data.cutoutc = String.Empty
             End If
             If data.subtype = "2 on 1 Left-Left" Then
                 data.controlposition = "Left"
@@ -10256,6 +10233,39 @@ Partial Class Order_Method
 
                 totalItems = 3
             End If
+            If data.cutout = "Yes" Then
+                If Not String.IsNullOrEmpty(data.cuttopleftwidth) Then cuttopleftwidth = data.cuttopleftwidth
+                If Not String.IsNullOrEmpty(data.cuttopleftheight) Then cuttopleftheight = data.cuttopleftheight
+                If Not String.IsNullOrEmpty(data.cuttoprightwidth) Then cuttoprightwidth = data.cuttoprightwidth
+                If Not String.IsNullOrEmpty(data.cuttoprightheight) Then cuttoprightheight = data.cuttoprightheight
+                If Not String.IsNullOrEmpty(data.cutbottomleftwidth) Then cutbottomleftwidth = data.cutbottomleftwidth
+                If Not String.IsNullOrEmpty(data.cutbottomleftheight) Then cutbottomleftheight = data.cutbottomleftheight
+                If Not String.IsNullOrEmpty(data.cutbottomrightwidth) Then cutbottomrightwidth = data.cutbottomrightwidth
+                If Not String.IsNullOrEmpty(data.cutbottomrightheight) Then cutbottomrightheight = data.cutbottomrightheight
+            End If
+
+            If data.cutoutb = "Yes" Then
+                If Not String.IsNullOrEmpty(data.cuttopleftwidthb) Then cuttopleftwidthb = data.cuttopleftwidthb
+                If Not String.IsNullOrEmpty(data.cuttopleftheightb) Then cuttopleftheightb = data.cuttopleftheightb
+                If Not String.IsNullOrEmpty(data.cuttoprightwidthb) Then cuttoprightwidthb = data.cuttoprightwidthb
+                If Not String.IsNullOrEmpty(data.cuttoprightheightb) Then cuttoprightheightb = data.cuttoprightheightb
+                If Not String.IsNullOrEmpty(data.cutbottomleftwidthb) Then cutbottomleftwidthb = data.cutbottomleftwidthb
+                If Not String.IsNullOrEmpty(data.cutbottomleftheightb) Then cutbottomleftheightb = data.cutbottomleftheightb
+                If Not String.IsNullOrEmpty(data.cutbottomrightwidthb) Then cutbottomrightwidthb = data.cutbottomrightwidthb
+                If Not String.IsNullOrEmpty(data.cutbottomrightheightb) Then cutbottomrightheightb = data.cutbottomrightheightb
+            End If
+
+            If data.cutoutc = "Yes" Then
+                If Not String.IsNullOrEmpty(data.cuttopleftwidthc) Then cuttopleftwidthc = data.cuttopleftwidthc
+                If Not String.IsNullOrEmpty(data.cuttopleftheightc) Then cuttopleftheightc = data.cuttopleftheightc
+                If Not String.IsNullOrEmpty(data.cuttoprightwidthc) Then cuttoprightwidthc = data.cuttoprightwidthc
+                If Not String.IsNullOrEmpty(data.cuttoprightheightc) Then cuttoprightheightc = data.cuttoprightheightc
+                If Not String.IsNullOrEmpty(data.cutbottomleftwidthc) Then cutbottomleftwidthc = data.cutbottomleftwidthc
+                If Not String.IsNullOrEmpty(data.cutbottomleftheightc) Then cutbottomleftheightc = data.cutbottomleftheightc
+                If Not String.IsNullOrEmpty(data.cutbottomrightwidthc) Then cutbottomrightwidthc = data.cutbottomrightwidthc
+                If Not String.IsNullOrEmpty(data.cutbottomrightheightc) Then cutbottomrightheightc = data.cutbottomrightheightc
+            End If
+
             If data.controllength = "Standard" Then
                 clvalue = Math.Ceiling(drop * 2 / 3)
                 If clvalue < 550 Then clvalue = 550
