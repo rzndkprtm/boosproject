@@ -161,6 +161,9 @@
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/general/notification" class="subsubmenu-link">Notification</a>
                                                         </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/general/ticket" class="subsubmenu-link">Ticket</a>
+                                                        </li>
                                                     </ul>
                                                 </li>
                                                 <li class="submenu-item has-sub" runat="server" id="liLogin">

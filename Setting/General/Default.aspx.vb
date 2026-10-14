@@ -10,6 +10,7 @@ Partial Class Setting_General_Default
     Protected Newsletters As Integer
     Protected Tutorials As Integer
     Protected Notifications As Integer
+    Protected Tickets As Integer
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -27,6 +28,7 @@ Partial Class Setting_General_Default
                 Newsletters = CInt(dt.Rows(0)("Newsletters"))
                 Tutorials = CInt(dt.Rows(0)("Tutorials"))
                 Notifications = CInt(dt.Rows(0)("Notifications"))
+                Tickets = CInt(dt.Rows(0)("Tickets"))
             End If
         End If
     End Sub

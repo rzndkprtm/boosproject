@@ -80,7 +80,7 @@
                                                             <a id="aDetail" class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDetail" onclick='<%# String.Format("return dataDetail(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`, `{5}`, `{6}`,);", Eval("CompanyAlias").ToString(), Eval("Name").ToString(), Eval("Alias").ToString(), Eval("Subject").ToString(), Eval("To").ToString(), Eval("Cc").ToString(), Eval("Bcc").ToString()) %>'>Detail</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Edit") %>'>
-                                                            <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/general/mailing/edit?mailid=" & Eval("Id")) %>'> Edit</a>
+                                                            <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/general/mailing/edit?mailid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Copy") %>'>
                                                             <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>

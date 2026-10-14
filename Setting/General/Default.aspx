@@ -59,6 +59,11 @@
                     <div class="dashboard-title">Notification</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
+                <a href="/setting/general/ticket" class="dashboard-card">
+                    <div class="dashboard-number"><%= Tickets %> Data</div>
+                    <div class="dashboard-title">Ticket</div>
+                    <div class="dashboard-desc">Description</div>
+                </a>
             </div>
         </section>
     </div>
