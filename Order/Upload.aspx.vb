@@ -68,7 +68,7 @@ Partial Class Order_Upload
 
                         Dim orderNumber As String = worksheet.Cells(2, 1).Text
                         Dim orderName As String = worksheet.Cells(2, 2).Text
-                        Dim orderNote As String = worksheet.Cells(2, 5).Text
+                        Dim orderNote As String = worksheet.Cells(1, 6).Text
 
                         Dim orderAddress As String = worksheet.Cells(1, 8).Text
                         Dim orderContainer As String = worksheet.Cells(1, 7).Text
@@ -2563,6 +2563,7 @@ Partial Class Order_Upload
                                         If controlType = "Motorized" OrElse controlType = "Motorised" Then
                                             controlType = chainColour
                                             If controlType = "Battery Wand" Then controlType = "Battery Remote"
+                                            If controlType = "240V (Hardwired) Matter Enabled / Remote" Then controlType = "240V (Hardwired) Remote"
                                             chainName = "No Remote"
                                         End If
 
