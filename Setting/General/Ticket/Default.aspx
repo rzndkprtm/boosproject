@@ -66,6 +66,8 @@
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                             <asp:BoundField DataField="TicketNo" HeaderText="TicketNo" />
                                             <asp:BoundField DataField="Type" HeaderText="Type" />
+                                            <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" />
+                                            <asp:BoundField DataField="CreatedDate" HeaderText="Created" DataFormatString="{0:dd MMM yyyy}" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
