@@ -3512,9 +3512,9 @@ Partial Class Order_Detail
     Protected Sub BindProduct()
         ddlProduct.Items.Clear()
         Try
-            Dim thisQuery As String = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type IN ('Blinds', 'Shutters', 'Doors') ORDER BY Designs.Name ASC"
+            Dim thisQuery As String = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type IN ('Blinds', 'Shutters', 'Doors', 'Samples') ORDER BY Designs.Name ASC"
             If Session("RoleName") = "Customer" Then
-                thisQuery = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type IN ('Blinds', 'Shutters', 'Doors') AND Designs.Active=1 ORDER BY Designs.Name ASC"
+                thisQuery = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type IN ('Blinds', 'Shutters', 'Doors', 'Samples') AND Designs.Active=1 ORDER BY Designs.Name ASC"
             End If
             ddlProduct.DataSource = orderClass.GetDataTable(thisQuery)
             ddlProduct.DataTextField = "NameText"
