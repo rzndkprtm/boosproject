@@ -790,7 +790,7 @@ Public Class MailingClass
             Dim customerName As String = orderData("CustomerName").ToString()
             Dim companyId As String = orderData("CompanyId").ToString()
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
-            If companyId = "3" Then companyName = "PT Bumi Indah Global"
+            If companyId = "3" OrElse companyId = "4" Then companyName = "PT Bumi Indah Global"
 
             Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='New Order' AND Active=1")
             If mailData Is Nothing Then Exit Sub

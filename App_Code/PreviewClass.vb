@@ -2997,7 +2997,7 @@ Public Class PreviewEvents
             logoPath = HttpContext.Current.Server.MapPath("~/Assets/images/logo/bigblinds.png")
         End If
         If pageCompany = "4" Then
-            logoPath = HttpContext.Current.Server.MapPath("~/Assets/images/logo/sunlight.jpg")
+            logoPath = HttpContext.Current.Server.MapPath("~/Assets/images/logo/sp.png")
         End If
         Dim logoImage As Image = Image.GetInstance(logoPath)
         logoImage.ScaleToFit(120.0F, 40.0F)
@@ -3044,6 +3044,25 @@ Public Class PreviewEvents
             phraseTitle.Add(New Chunk("Serang, Banten 42177", New Font(Font.FontFamily.TIMES_ROMAN, 8)))
             phraseTitle.Add(New Chunk(Environment.NewLine))
             phraseTitle.Add(New Chunk(Environment.NewLine))
+            Dim textCell As New PdfPCell(phraseTitle)
+            textCell.Border = 0
+            textCell.HorizontalAlignment = Element.ALIGN_LEFT
+            innerTable.AddCell(textCell)
+        End If
+
+        If pageCompany = "4" Then
+            Dim phraseTitle As New Phrase()
+            phraseTitle.Add(New Chunk("Sunlight Products Pty Ltd", New Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD)))
+            phraseTitle.Add(New Chunk(Environment.NewLine))
+            phraseTitle.Add(New Chunk(Environment.NewLine))
+            phraseTitle.Add(New Chunk("28 Stoddart Road", New Font(Font.FontFamily.TIMES_ROMAN, 8)))
+            phraseTitle.Add(New Chunk(Environment.NewLine))
+            phraseTitle.Add(New Chunk("Prospect, NSW 2148", New Font(Font.FontFamily.TIMES_ROMAN, 8)))
+            phraseTitle.Add(New Chunk(Environment.NewLine))
+            phraseTitle.Add(New Chunk(Environment.NewLine))
+            phraseTitle.Add(New Chunk("Phone : 02 9688 1555", New Font(Font.FontFamily.TIMES_ROMAN, 8)))
+            phraseTitle.Add(New Chunk(Environment.NewLine))
+            phraseTitle.Add(New Chunk("Email : customerservice@sunlight.com.au", New Font(Font.FontFamily.TIMES_ROMAN, 8)))
             Dim textCell As New PdfPCell(phraseTitle)
             textCell.Border = 0
             textCell.HorizontalAlignment = Element.ALIGN_LEFT

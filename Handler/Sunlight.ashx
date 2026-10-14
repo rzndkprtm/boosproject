@@ -11,6 +11,8 @@ Imports System.Data.SqlClient
 Public Class Sunlight : Implements IHttpHandler
 
     Private ReadOnly orderClass As New OrderClass
+    Private ReadOnly mailingClass As New MailingClass
+
     Private ReadOnly myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Public Sub ProcessRequest(ByVal context As HttpContext) Implements IHttpHandler.ProcessRequest
@@ -72,6 +74,8 @@ Public Class Sunlight : Implements IHttpHandler
                         Throw New Exception("DesignName tidak dikenali: " & detail.DesignName)
                 End Select
             Next
+
+            mailingClass.NewOrder(headerId)
 
             WriteJson(context, 200, New With {.status = "success", .message = "Data diterima dan disimpan dengan sukses", .headerId = headerId})
         Catch ex As Exception
@@ -140,6 +144,9 @@ Public Class Sunlight : Implements IHttpHandler
             cutOut = "Yes"
         End If
 
+        Dim supply As String = detail.BottomHoldDown
+        If supply = "No" Then supply = String.Empty
+
         Dim linearMetre As Decimal = detail.Width / 1000D
         Dim squareMetre As Decimal = CDec(detail.Width) * CDec(detail.Drop) / 1000000D
 
@@ -195,7 +202,7 @@ Public Class Sunlight : Implements IHttpHandler
                     thisCmd.Parameters.AddWithValue("@CutBottomLeftHeightB", 0)
                     thisCmd.Parameters.AddWithValue("@CutBottomRightWidthB", 0)
                     thisCmd.Parameters.AddWithValue("@CutBottomRightHeightB", 0)
-                    thisCmd.Parameters.AddWithValue("@Supply", If(detail.BottomHoldDown Is Nothing, "", detail.BottomHoldDown))
+                    thisCmd.Parameters.AddWithValue("@Supply", supply)
                     thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                     thisCmd.Parameters.AddWithValue("@Notes", If(detail.Notes Is Nothing, "", detail.Notes))
                     thisCmd.Parameters.AddWithValue("@MarkUp", 0)
@@ -258,28 +265,31 @@ Public Class Sunlight : Implements IHttpHandler
         If blindName.Contains("Econo") Then
             valanceType = "76mm Valance"
         End If
+
         Dim valanceSize As Integer = detail.PelmetWidth
         Dim returnPosition As String = String.Empty
+        Dim returnLength As String = String.Empty
+        Dim returnLengthValue As Integer = 0
+
         If detail.PelmetType = "With Return" Then
+            returnLength = "Custom"
             returnPosition = "Both Sides"
+            returnLengthValue = detail.PelmetReturnLeft
         End If
         If detail.PelmetType = "Single Left Return" Then
+            returnLength = "Custom"
             returnPosition = "Left"
+            returnLengthValue = detail.PelmetReturnLeft
         End If
         If detail.PelmetType = "Single Right Return" Then
+            returnLength = "Custom"
             returnPosition = "Right"
+            returnLengthValue = detail.PelmetReturnRight
         End If
 
-        Dim returnLength As Integer = 0
-        If detail.PelmetType = "With Return" Then
-            returnLength = detail.PelmetReturnLeft
-        End If
-        If detail.PelmetType = "Single Left Return" Then
-            returnLength = detail.PelmetReturnLeft
-        End If
-        If detail.PelmetType = "Single Right Return" Then
-            returnLength = detail.PelmetReturnRight
-        End If
+        Dim supply As String = detail.BottomHoldDown
+        If supply = "No" Then supply = String.Empty
+
         Dim linearMetre As Decimal = detail.Width / 1000D
         Dim squareMetre As Decimal = CDec(detail.Width) * CDec(detail.Drop) / 1000000D
 
@@ -329,7 +339,7 @@ Public Class Sunlight : Implements IHttpHandler
 
                     thisCmd.Parameters.AddWithValue("@ReturnPosition", returnPosition)
                     thisCmd.Parameters.AddWithValue("@ReturnLength", "Custom")
-                    thisCmd.Parameters.AddWithValue("@ReturnLengthValue", returnLength)
+                    thisCmd.Parameters.AddWithValue("@ReturnLengthValue", returnLengthValue)
 
                     thisCmd.Parameters.AddWithValue("@CutOut", cutOut)
                     thisCmd.Parameters.AddWithValue("@CutTopLeftWidth", detail.LHSWidth_Top)
@@ -368,7 +378,7 @@ Public Class Sunlight : Implements IHttpHandler
                     thisCmd.Parameters.AddWithValue("@SquareMetreC", 0)
 
                     thisCmd.Parameters.AddWithValue("@Tassel", "Plastic")
-                    thisCmd.Parameters.AddWithValue("@Supply", detail.BottomHoldDown)
+                    thisCmd.Parameters.AddWithValue("@Supply", supply)
                     thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                     thisCmd.Parameters.AddWithValue("@Notes", detail.Notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", 0)
