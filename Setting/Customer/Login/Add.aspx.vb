@@ -176,9 +176,12 @@ Partial Class Setting_Customer_Login_Add
     End Sub
 
     Protected Sub BindLoginName(customerId As String)
+        txtUserName.Enabled = False
         Try
             txtUserName.Text = settingClass.GenerateUsername(GetCustomerName(customerId))
             txtFullName.Text = txtUserName.Text
+
+            txtUserName.Enabled = True
         Catch ex As Exception
             txtUserName.Text = String.Empty
             txtFullName.Text = String.Empty
