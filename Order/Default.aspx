@@ -2,488 +2,98 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
-        .order-filter-card {
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            overflow: hidden;
-            background: #fff;
-        }
-
-        .order-filter-card .card-header {
-            background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.85rem 1.25rem;
-        }
-
-        .order-filter-card .filter-title {
-            display: flex;
-            align-items: center;
-            gap: 0.55rem;
-            margin: 0;
-            color: #495057;
-            font-size: 0.9rem;
-            font-weight: 600;
-            line-height: 1.2;
-        }
-
-        .order-filter-card .filter-title i {
-            font-size: 0.95rem;
-        }
-
-        .order-filter-card .card-body {
-            padding: 1rem 1.25rem;
-        }
-
-        .order-filter-card .input-group {
-            height: 42px;
-        }
-
-        .order-filter-card .input-group-text {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 95px;
-            padding: 0.375rem 0.75rem;
-            background: #f8f9fa;
-            border-color: #dee2e6;
-            color: #495057;
-            font-size: 0.85rem;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .order-filter-card .form-select {
-            height: 42px;
-            border-color: #dee2e6;
-            color: #495057;
-            font-size: 0.9rem;
-            box-shadow: none;
-            cursor: pointer;
-        }
-
-        .order-filter-card .form-select:hover {
-            border-color: #adb5bd;
-        }
-
-        .order-filter-card .form-select:focus {
-            border-color: #86b7fe;
-            box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
-        }
-
-
-        /* =========================================================
-           ORDER LIST CARD
-           ========================================================= */
-
-        .order-list-card {
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            overflow: visible !important;
-            background: #fff;
-        }
-
-        .order-list-card .card-header {
-            background: #fff;
-            border-bottom: 1px solid #e9ecef;
-            padding: 1rem 1.25rem;
-            overflow: visible !important;
-        }
-
-        .order-list-card .card-body {
-            overflow: visible !important;
-        }
-
-        .order-list-card .input-group {
-            height: 42px;
-        }
-
-        .order-list-card .input-group-text {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 75px;
-            padding: 0.375rem 0.75rem;
-            background: #f8f9fa;
-            border-color: #dee2e6;
-            color: #495057;
-            font-size: 0.85rem;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .order-list-card .form-select,
-        .order-list-card .form-control {
-            height: 42px;
-            border-color: #dee2e6;
-            color: #495057;
-            font-size: 0.9rem;
-            box-shadow: none;
-        }
-
-        .order-list-card .form-select:focus,
-        .order-list-card .form-control:focus {
-            border-color: #86b7fe;
-            box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
-        }
-
-        .order-list-card .btn-primary {
-            min-width: 90px;
-            font-weight: 500;
-        }
-
-
-        /* =========================================================
-           GRID RESPONSIVE
-           ========================================================= */
-
-        .order-grid-responsive {
-            width: 100%;
-            max-width: 100%;
-
-            /*
-             * IMPORTANT:
-             * Horizontal scroll tetap ada.
-             * Vertical scroll TIDAK dibuat oleh table container.
-             */
-            overflow-x: auto !important;
-            overflow-y: hidden !important;
-
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior-x: contain;
-            scrollbar-width: thin;
-        }
-
-
-        /* =========================================================
-           GRID TABLE
-           ========================================================= */
-
-        .order-grid {
-            width: 100%;
-            font-size: 0.95rem;
-            margin-bottom: 0;
-        }
-
-        .order-grid thead th {
-            background: #f8f9fa;
-            color: #495057;
-            font-size: 0.85rem;
-            font-weight: 600;
-            white-space: nowrap;
-            vertical-align: middle;
-            border-bottom: 1px solid #dee2e6;
-            padding: 0.7rem 0.65rem;
-        }
-
-        .order-grid tbody td {
-            padding: 0.65rem 0.65rem;
-            vertical-align: middle;
-        }
-
-        .order-grid tbody tr {
-            transition: background-color 0.15s ease;
-        }
-
-        .order-grid tbody tr:hover {
-            background-color: rgba(13, 110, 253, 0.035);
-        }
-
-        .order-grid .btn-sm {
-            font-size: 0.78rem;
-            padding: 0.3rem 0.65rem;
-        }
-
-
-        /* =========================================================
-           ACTION COLUMN
-           ========================================================= */
-
-        .order-grid td:last-child {
-            position: relative;
-            white-space: nowrap;
-        }
-
-        .order-grid td:last-child .dropdown {
-            position: static;
-        }
-
-        .order-grid .dropdown-toggle {
-            white-space: nowrap;
-        }
-
-
-        /* =========================================================
-           NORMAL DROPDOWN
-           ========================================================= */
-
-        .order-grid .dropdown-menu {
-            font-size: 0.85rem;
-            min-width: 170px;
-
-            border: 1px solid #e9ecef;
-
-            box-shadow:
-                0 0.35rem 1rem rgba(0, 0, 0, 0.10);
-
-            z-index: 99999 !important;
-
-            /*
-             * JS akan memindahkan dropdown ke BODY
-             * ketika dibuka.
-             */
-            position: fixed !important;
-
-            margin: 0 !important;
-
-            max-height: calc(100vh - 20px);
-            overflow-y: auto;
-            overflow-x: hidden;
-        }
-
-        .order-grid .dropdown-menu.show {
-            display: block !important;
-        }
-
-        .order-grid .dropdown-item {
-            padding: 0.45rem 0.85rem;
-            white-space: nowrap;
-        }
-
-        .order-grid .dropdown-item:hover {
-            background-color: #f8f9fa;
-        }
-
-
-        /* =========================================================
-           GRID BODY
-           ========================================================= */
-
-        .order-grid-body {
-            padding: 1rem 1.25rem 1.25rem !important;
-            overflow: visible !important;
-        }
-
-
-        /* =========================================================
-           PAGINATION
-           ========================================================= */
-
-        #navPager .pagination {
-            gap: 3px;
-        }
-
-        #navPager .page-link {
-            border-radius: 6px !important;
-            border: 1px solid #dee2e6;
-            font-size: 0.82rem;
-            min-width: 34px;
-            text-align: center;
-        }
-
-        #navPager .page-item.active .page-link {
-            font-weight: 600;
-        }
-
-
-        /* =========================================================
-           FOOTER
-           ========================================================= */
-
-        .order-filter-footer {
-            background: #fff;
-            border-top: 1px solid #e9ecef;
-            padding: 0.85rem 1.25rem !important;
-        }
-
-        .order-filter-footer .form-select {
-            min-width: 130px;
-            height: 38px;
-            font-size: 0.85rem;
-            border-color: #dee2e6;
-            box-shadow: none;
-        }
-
-        .order-filter-footer .form-select:focus {
-            border-color: #86b7fe;
-            box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10);
-        }
-
-
-        /* =========================================================
-           ACTION BUTTONS
-           ========================================================= */
-
-        .order-action-buttons {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .order-action-buttons .btn {
-            min-height: 38px;
-        }
-
-
-        /* =========================================================
-           MOBILE / TABLET
-           ========================================================= */
-
+        .order-filter-card { border: 1px solid #e9ecef; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); overflow: hidden; background: #fff; }
+        .order-filter-card .card-header { background: #f8f9fa; border-bottom: 1px solid #e9ecef; padding: 0.85rem 1.25rem; }
+        .order-filter-card .filter-title { display: flex; align-items: center; gap: 0.55rem; margin: 0; color: #495057; font-size: 0.9rem; font-weight: 600; line-height: 1.2; }
+        .order-filter-card .filter-title i { font-size: 0.95rem; }
+        .order-filter-card .card-body { padding: 1rem 1.25rem; }
+        .order-filter-card .input-group { height: 42px; }
+        .order-filter-card .input-group-text { display: flex; align-items: center; justify-content: center; min-width: 95px; padding: 0.375rem 0.75rem; background: #f8f9fa; border-color: #dee2e6; color: #495057; font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
+        .order-filter-card .form-select { height: 42px; border-color: #dee2e6; color: #495057; font-size: 0.9rem; box-shadow: none; cursor: pointer; }
+        .order-filter-card .form-select:hover { border-color: #adb5bd; }
+        .order-filter-card .form-select:focus { border-color: #86b7fe; box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10); }
+
+        /* ORDER LIST CARD */
+        .order-list-card { border: 1px solid #e9ecef; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); overflow: visible !important; background: #fff; }
+        .order-list-card .card-header { background: #fff; border-bottom: 1px solid #e9ecef; padding: 1rem 1.25rem; overflow: visible !important; }
+        .order-list-card .card-body { overflow: visible !important; }
+        .order-list-card .input-group { height: 42px; }
+        .order-list-card .input-group-text { display: flex; align-items: center; justify-content: center; min-width: 75px; padding: 0.375rem 0.75rem; background: #f8f9fa; border-color: #dee2e6; color: #495057; font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
+        .order-list-card .form-select, .order-list-card .form-control { height: 42px; border-color: #dee2e6; color: #495057; font-size: 0.9rem; box-shadow: none; }
+        .order-list-card .form-select:focus, .order-list-card .form-control:focus { border-color: #86b7fe; box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10); }
+        .order-list-card .btn-primary { min-width: 90px; font-weight: 500; }
+
+        /* GRID RESPONSIVE */
+        .order-grid-responsive { width: 100%; max-width: 100%; overflow-x: auto !important; overflow-y: hidden !important; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; scrollbar-width: thin; }
+
+        /* GRID TABLE */
+        .order-grid { width: 100%; font-size: 0.95rem; margin-bottom: 0; }
+        .order-grid thead th { background: #f8f9fa; color: #495057; font-size: 0.85rem; font-weight: 600; white-space: nowrap; vertical-align: middle; border-bottom: 1px solid #dee2e6; padding: 0.7rem 0.65rem; }
+        .order-grid tbody td { padding: 0.65rem 0.65rem; vertical-align: middle; }
+        .order-grid tbody tr { transition: background-color 0.15s ease; }
+        .order-grid tbody tr:hover { background-color: rgba(13, 110, 253, 0.035); }
+        .order-grid .btn-sm { font-size: 0.78rem; padding: 0.3rem 0.65rem; }
+
+        /* ACTION COLUMN */
+        .order-grid td:last-child { position: relative; white-space: nowrap; }
+        .order-grid td:last-child .dropdown { position: static; }
+        .order-grid .dropdown-toggle { white-space: nowrap; }
+
+        /* NORMAL DROPDOWN */
+        .order-grid .dropdown-menu { font-size: 0.85rem; min-width: 170px; border: 1px solid #e9ecef; box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.10); z-index: 99999 !important; position: fixed !important; margin: 0 !important; max-height: calc(100vh - 20px); overflow-y: auto; overflow-x: hidden; }
+        .order-grid .dropdown-menu.show { display: block !important; }
+        .order-grid .dropdown-item { padding: 0.45rem 0.85rem; white-space: nowrap; }
+        .order-grid .dropdown-item:hover { background-color: #f8f9fa; }
+
+        /* GRID BODY */
+        .order-grid-body { padding: 1rem 1.25rem 1.25rem !important; overflow: visible !important; }
+
+        /* PAGINATION */
+        #navPager .pagination { gap: 3px; }
+        #navPager .page-link { border-radius: 6px !important; border: 1px solid #dee2e6; font-size: 0.82rem; min-width: 34px; text-align: center; }
+        #navPager .page-item.active .page-link { font-weight: 600; }
+
+        /* FOOTER */
+        .order-filter-footer { background: #fff; border-top: 1px solid #e9ecef; padding: 0.85rem 1.25rem !important; }
+        .order-filter-footer .form-select { min-width: 130px; height: 38px; font-size: 0.85rem; border-color: #dee2e6; box-shadow: none; }
+        .order-filter-footer .form-select:focus { border-color: #86b7fe; box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10); }
+
+        /* ACTION BUTTONS */
+        .order-action-buttons { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        .order-action-buttons .btn { min-height: 38px; }
+
+        /* MOBILE / TABLET */
         @media (max-width: 991.98px) {
-
-            .order-filter-card .card-header {
-                padding: 0.75rem 1rem;
-            }
-
-            .order-filter-card .card-body {
-                padding: 0.85rem 1rem;
-            }
-
-            .order-filter-card .input-group {
-                height: 40px;
-            }
-
-            .order-filter-card .input-group-text {
-                min-width: 90px;
-                font-size: 0.82rem;
-            }
-
-            .order-filter-card .form-select {
-                height: 40px;
-                font-size: 0.88rem;
-            }
-
-
-            .order-list-card .card-header {
-                padding: 0.85rem 1rem;
-            }
-
-            .order-list-card .input-group {
-                height: 40px;
-            }
-
-            .order-list-card .input-group-text {
-                min-width: 70px;
-                font-size: 0.82rem;
-            }
-
-            .order-list-card .form-select,
-            .order-list-card .form-control {
-                height: 40px;
-                font-size: 0.88rem;
-            }
-
-
-            .order-grid-body {
-                padding: 0.75rem !important;
-            }
-
-
-            /*
-             * MOBILE:
-             * Table tetap horizontal scroll.
-             */
-            .order-grid-responsive {
-                width: 100%;
-                max-width: 100%;
-                overflow-x: auto !important;
-                overflow-y: hidden !important;
-
-                -webkit-overflow-scrolling: touch;
-                overscroll-behavior-x: contain;
-            }
-
-
-            .order-grid {
-                width: max-content;
-                min-width: 100%;
-            }
-
-            .order-grid th,
-            .order-grid td {
-                white-space: nowrap;
-            }
-
-
-            .order-filter-footer {
-                padding: 0.75rem 1rem !important;
-            }
+            .order-filter-card .card-header { padding: 0.75rem 1rem; }
+            .order-filter-card .card-body { padding: 0.85rem 1rem; }
+            .order-filter-card .input-group { height: 40px; }
+            .order-filter-card .input-group-text { min-width: 90px; font-size: 0.82rem; }
+            .order-filter-card .form-select { height: 40px; font-size: 0.88rem; }
+            .order-list-card .card-header { padding: 0.85rem 1rem; }
+            .order-list-card .input-group { height: 40px; }
+            .order-list-card .input-group-text { min-width: 70px; font-size: 0.82rem; }
+            .order-list-card .form-select, .order-list-card .form-control { height: 40px; font-size: 0.88rem; }
+            .order-grid-body { padding: 0.75rem !important; }
+            .order-grid-responsive { width: 100%; max-width: 100%; overflow-x: auto !important; overflow-y: hidden !important; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+            .order-grid { width: max-content; min-width: 100%; }
+            .order-grid th, .order-grid td { white-space: nowrap; }
+            .order-filter-footer { padding: 0.75rem 1rem !important; }
         }
 
-
-        /* =========================================================
-           SMALL MOBILE
-           ========================================================= */
-
+        /* SMALL MOBILE */
         @media (max-width: 575.98px) {
-
-            .order-filter-card {
-                border-radius: 8px;
-            }
-
-            .order-list-card {
-                border-radius: 8px;
-            }
-
-            .order-filter-card .filter-title {
-                font-size: 0.85rem;
-            }
-
-            .order-filter-card .input-group-text {
-                min-width: 85px;
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-            }
-
-            .order-list-card .input-group-text {
-                min-width: 65px;
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-            }
-
-            .order-action-buttons {
-                justify-content: stretch;
-            }
-
-            .order-action-buttons .btn {
-                flex: 1 1 auto;
-            }
-
-
-            .order-grid-responsive {
-                width: 100%;
-                max-width: 100%;
-                overflow-x: auto !important;
-                overflow-y: hidden !important;
-
-                -webkit-overflow-scrolling: touch;
-                overscroll-behavior-x: contain;
-            }
-
-
-            .order-grid {
-                width: max-content;
-                min-width: 100%;
-            }
-
-            .order-grid th,
-            .order-grid td {
-                white-space: nowrap;
-            }
-
-
-            .order-filter-footer {
-                padding: 0.75rem 1rem !important;
-            }
-
-
-            .order-grid .dropdown-menu {
-                min-width: 165px;
-                max-width: calc(100vw - 20px);
-            }
+            .order-filter-card { border-radius: 8px; }
+            .order-list-card { border-radius: 8px; }
+            .order-filter-card .filter-title { font-size: 0.85rem; }
+            .order-filter-card .input-group-text { min-width: 85px; padding-left: 0.5rem; padding-right: 0.5rem; }
+            .order-list-card .input-group-text { min-width: 65px; padding-left: 0.5rem; padding-right: 0.5rem; }
+            .order-action-buttons { justify-content: stretch; }
+            .order-action-buttons .btn { flex: 1 1 auto; }
+            .order-grid-responsive { width: 100%; max-width: 100%; overflow-x: auto !important; overflow-y: hidden !important; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+            .order-grid { width: max-content; min-width: 100%; }
+            .order-grid th, .order-grid td { white-space: nowrap; }
+            .order-filter-footer { padding: 0.75rem 1rem !important; }
+            .order-grid .dropdown-menu { min-width: 165px; max-width: calc(100vw - 20px); }
         }
     </style>
     <div class="page-heading">
