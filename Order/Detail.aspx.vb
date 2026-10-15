@@ -1943,8 +1943,9 @@ Partial Class Order_Detail
             lblOrderStatusDescription.Text = headerData("StatusDescription").ToString()
             lblOrderType.Text = headerData("OrderType").ToString()
             lblOrderFactory.Text = headerData("OrderFactory").ToString()
-            lblOrderContact.Text = headerData("OrderContact").ToString()
-            lblOrderAddress.Text = headerData("OrderAddress").ToString()
+            lblOrderDelivery.Text = headerData("OrderDelivery").ToString()
+            spanOrderContact.InnerText = headerData("OrderContact").ToString()
+            spanOrderAddress.InnerText = headerData("OrderAddress").ToString()
             lblInternalNote.Text = orderClass.GetItemData("SELECT TOP 1 'Noted By ' + ISNULL(Logins.FullName, '') + ' | ' + ISNULL(OrderInternalNotes.Note, '') AS NoteDetail FROM OrderInternalNotes LEFT JOIN Logins ON OrderInternalNotes.CreatedBy=Logins.Id WHERE OrderInternalNotes.HeaderId='" & headerId & "' ORDER BY OrderInternalNotes.CreatedDate DESC;")
             If lblInternalNote.Text = "" Then lblInternalNote.Text = "-"
             lblCreatedBy.Text = headerData("CreatedBy").ToString()
@@ -2149,8 +2150,6 @@ Partial Class Order_Detail
 
             aLog.Visible = False : aLog.Attributes("data-id") = headerId
 
-            divOrderContact.Visible = False
-            divOrderAddress.Visible = False
             divOrderType.Visible = False
             divOrderFactory.Visible = False
             divInternalNote.Visible = False
@@ -3421,11 +3420,6 @@ Partial Class Order_Detail
                 If Session("PriceAccess") = "Yes" Then
                     btnQuoteAction.Visible = True
                     aQuoteCustomer.Visible = True
-                End If
-
-                If lblCompanyId.Text = "2" Then
-                    divOrderContact.Visible = True
-                    divOrderAddress.Visible = True
                 End If
 
                 If lblOrderStatus.Text = "Unsubmitted" Then

@@ -22,7 +22,7 @@
     </div>
     <div class="page-content">
         <section class="row">
-            <div class="col-12 col-sm-12 col-lg-6">
+            <div class="col-12 col-sm-12 col-lg-7">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Order Form</h4>
@@ -30,75 +30,88 @@
                     <div class="card-body">
                         <div class="form form-vertical">
                             <div class="form-body">
-                                <div class="row mb-2" runat="server" id="divCustomer">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Customer Account</label>
-                                        <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Order ID</label>
-                                        <asp:TextBox runat="server" ID="txtOrderId" CssClass="form-control"></asp:TextBox>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                        <label class="form-label">Order Number</label>
-                                        <asp:TextBox runat="server" ID="txtOrderNumber" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-7 form-group">
-                                        <label class="form-label">Order Number</label>
-                                        <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ...." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                </div>
-                                <div class="row mb-2">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Order Note</label>
-                                        <asp:TextBox runat="server" TextMode="MultiLine" ID="txtOrderNote" Height="100px" CssClass="form-control" placeholder="Order Note ...." autocomplete="off" style="resize:none;"></asp:TextBox>
-                                    </div>
-                                </div>
-                                <div class="row mb-2" runat="server" id="divOrderContact">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Order Contact (Delivery)</label>
-                                        <div class="input-group">
-                                            <asp:TextBox runat="server" ID="txtOrderContact" CssClass="form-control" ReadOnly="true" ClientIDMode="Static" placeholder="Order Contact ..." autocomplete="off" onclick="openOrderContactModal();"></asp:TextBox>
-                                            <span class="input-group-text" onclick="openOrderContactModal();">CLICK TO CHANGE</span>
+                                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                                    <ContentTemplate>
+                                        <div class="row mb-2" runat="server" id="divCustomer">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Customer Account</label>
+                                                <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
+                                            </div>
                                         </div>
-                                        <small class="text-muted">Format : {Contact Name} | {Phone} | {Email}</small>
-                                        <asp:HiddenField runat="server" ID="hfOrderContact" ClientIDMode="Static" />
-                                    </div>
-                                </div>
-                                <div class="row mb-2" runat="server" id="divOrderAddress">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Order Address (Delivery)</label>
-                                        <div class="input-group">
-                                            <asp:TextBox runat="server" ID="txtOrderAddress" CssClass="form-control" ReadOnly="true" ClientIDMode="Static" placeholder="Order Address ..." autocomplete="off" onclick="openOrderAddressModal();"></asp:TextBox>
-                                            <span class="input-group-text" onclick="openOrderAddressModal();">CLICK TO CHANGE</span>
+                                        <div class="row mb-2" runat="server" id="divOrderId">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Order ID</label>
+                                                <asp:TextBox runat="server" ID="txtOrderId" CssClass="form-control"></asp:TextBox>
+                                            </div>
                                         </div>
-                                        <small class="text-muted">Format : {Address}, {Suburb}, {State} {Post Code}</small>
-                                        <asp:HiddenField runat="server" ID="hfOrderAddress" ClientIDMode="Static" />
-                                    </div>
-                                </div>
-                                <div class="row mb-2" runat="server" id="divOrderTypeFactory">
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Order Type</label>
-                                        <asp:DropDownList runat="server" ID="ddlOrderType" CssClass="choices form-select">
-                                            <asp:ListItem Value="Regular" Text="Regular"></asp:ListItem>
-                                            <asp:ListItem Value="Builder" Text="Builder"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-8 form-group">
-                                        <label class="form-label">Order Factory</label>
-                                        <asp:ListBox runat="server" ID="lbOrderFactory" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="BIG" Text="BIG"></asp:ListItem>
-                                            <asp:ListItem Value="CHINA" Text="CHINA"></asp:ListItem>
-                                            <asp:ListItem Value="TAIWAN" Text="TAIWAN"></asp:ListItem>
-                                            <asp:ListItem Value="AUS" Text="AUS"></asp:ListItem>
-                                        </asp:ListBox>
-                                    </div>
-                                </div>
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                <label class="form-label">Order Number</label>
+                                                <asp:TextBox runat="server" ID="txtOrderNumber" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-7 form-group">
+                                                <label class="form-label">Order Number</label>
+                                                <asp:TextBox runat="server" ID="txtOrderName" CssClass="form-control" placeholder="Order Name ...." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Order Note</label>
+                                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtOrderNote" Height="100px" CssClass="form-control" placeholder="Order Note ...." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2" runat="server" id="divOrderDelivery">
+                                            <div class="col-4 form-group">
+                                                <label class="form-label">Order Delivery</label>
+                                                <asp:DropDownList runat="server" ID="ddlOrderDelivery" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlOrderDelivery_SelectedIndexChanged">
+                                                    <asp:ListItem Value="Default" Text="Default"></asp:ListItem>
+                                                    <asp:ListItem Value="Special" Text="Special"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div runat="server" id="divOrderDetailDelivery">
+                                            <div class="row mb-2">
+                                                <div class="col-6 form-group">
+                                                    <label class="form-label">Order Contact (Delivery)</label>
+                                                    <div class="input-group">
+                                                        <asp:TextBox runat="server" ID="txtOrderContact" CssClass="form-control" ReadOnly="true" ClientIDMode="Static" placeholder="Order Contact ..." autocomplete="off" onclick="openOrderContactModal();"></asp:TextBox>
+                                                        <span class="input-group-text" onclick="openOrderContactModal();">CHANGE</span>
+                                                    </div>
+                                                    <small class="text-muted">Format : {Contact Name} | {Phone} | {Email}</small>
+                                                    <asp:HiddenField runat="server" ID="hfOrderContact" ClientIDMode="Static" />
+                                                </div>
+                                                <div class="col-6 form-group">
+                                                    <label class="form-label">Order Address (Delivery)</label>
+                                                    <div class="input-group">
+                                                        <asp:TextBox runat="server" ID="txtOrderAddress" CssClass="form-control" ReadOnly="true" ClientIDMode="Static" placeholder="Order Address ..." autocomplete="off" onclick="openOrderAddressModal();"></asp:TextBox>
+                                                        <span class="input-group-text" onclick="openOrderAddressModal();">CHANGE</span>
+                                                    </div>
+                                                    <small class="text-muted">Format : {Address}, {Suburb}, {State} {Post Code}</small>
+                                                    <asp:HiddenField runat="server" ID="hfOrderAddress" ClientIDMode="Static" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2" runat="server" id="divOrderTypeFactory">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Order Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlOrderType" CssClass="choices form-select">
+                                                    <asp:ListItem Value="Regular" Text="Regular"></asp:ListItem>
+                                                    <asp:ListItem Value="Builder" Text="Builder"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                                <label class="form-label">Order Factory</label>
+                                                <asp:ListBox runat="server" ID="lbOrderFactory" CssClass="choices form-select multiple-remove" SelectionMode="Multiple">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="BIG" Text="BIG"></asp:ListItem>
+                                                    <asp:ListItem Value="CHINA" Text="CHINA"></asp:ListItem>
+                                                    <asp:ListItem Value="TAIWAN" Text="TAIWAN"></asp:ListItem>
+                                                    <asp:ListItem Value="AUS" Text="AUS"></asp:ListItem>
+                                                </asp:ListBox>
+                                            </div>
+                                        </div>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
                                 <div class="row" runat="server" id="divError">
                                     <div class="col-12">
                                         <div class="alert alert-danger">
@@ -115,7 +128,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-6">
+            <div class="col-12 col-sm-12 col-lg-5">
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title text-center">Information</h4>
@@ -231,12 +244,56 @@
         </div>
     </div>
 
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblHeaderId"></asp:Label>
         <asp:Label runat="server" ID="lblOrderNo"></asp:Label>
     </div>
 
     <script type="text/javascript">
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) loading.style.display = "none";
+        });
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
+            });
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
+                initChoices();
+            });
+        }
+        function initChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.choices) {
+                    el.choices.destroy();
+                }
+                el.choices = new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false
+                });
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            initChoices();
+        });
         function openOrderContactModal() {
             var orderContact = $("#<%= txtOrderContact.ClientID %>").val().trim();
 

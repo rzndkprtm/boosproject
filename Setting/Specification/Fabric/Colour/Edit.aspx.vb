@@ -15,14 +15,16 @@ Partial Class Setting_Specification_Fabric_Colour_Edit
             Exit Sub
         End If
 
-        If Not String.IsNullOrEmpty(Request.QueryString("fabriccolourid")) Then
-            lblId.Text = Request.QueryString("fabriccolourid").ToString()
+        If String.IsNullOrEmpty(Request.QueryString("fabriccolourid")) Then
+            Response.Redirect("~/setting/specification/fabric/colour", False)
+            Exit Sub
         End If
 
         If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
             lblReturnPage.Text = Request.QueryString("returnpage").ToString()
         End If
 
+        lblId.Text = Request.QueryString("fabriccolourid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindData(lblId.Text)
@@ -59,11 +61,9 @@ Partial Class Setting_Specification_Fabric_Colour_Edit
 
                 Dim companyDetailId As String = String.Join(",", lbCompanyDetail.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
 
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM FabricColours ORDER BY Id DESC")
-
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO FabricColours VALUES (@Id, @FabricId, @CompanyDetailId, @BoeId, @InventoryId, @Factory, @Name, @Colour, @Width, @RollQty, @EtaFactory, @Description, @Status)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET CompanyDetailId=@CompanyDetailId, BoeId=@BoeId, InventoryId=@InventoryId, Factory=@Factory, Name=@Name, Colour=@Colour, Width=@Width, RollQty=@RollQty, EtaFactory=@EtaFactory, Description=@Description WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@FabricId", ddlFabricType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
                         thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
@@ -80,7 +80,7 @@ Partial Class Setting_Specification_Fabric_Colour_Edit
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"FabricColours", thisId, Session("LoginId").ToString(), "Fabric Colour Created"}
+                Dim dataLog As Object() = {"FabricColours", lblId.Text, Session("LoginId").ToString(), "Fabric Colour Updated"}
                 settingClass.Logs(dataLog)
 
                 url = "~/setting/specification/fabric/colour"

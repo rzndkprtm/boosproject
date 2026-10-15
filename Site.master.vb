@@ -221,7 +221,6 @@ Partial Public Class SiteMaster
             liPrice.Visible = False
             liDatabase.Visible = False
             liValidation.Visible = False
-            liXero.Visible = False
             liAKZero.Visible = False
             liLog.Visible = False
 
@@ -249,7 +248,6 @@ Partial Public Class SiteMaster
                 liPrice.Visible = True
                 liDatabase.Visible = True
                 liValidation.Visible = True
-                liXero.Visible = True
                 liAKZero.Visible = True
                 liLog.Visible = True
             End If
@@ -272,7 +270,6 @@ Partial Public Class SiteMaster
                 liPrice.Visible = True
                 liDatabase.Visible = True
                 liValidation.Visible = True
-                liXero.Visible = True
                 liAKZero.Visible = True
                 liLog.Visible = True
             End If
@@ -293,7 +290,6 @@ Partial Public Class SiteMaster
                 liJob.Visible = True
                 liPrice.Visible = True
                 liDatabase.Visible = True
-                liXero.Visible = True
                 liAKZero.Visible = True
                 liLog.Visible = True
             End If
@@ -305,7 +301,6 @@ Partial Public Class SiteMaster
                 liSetting.Visible = True
                 liCustomer.Visible = True
                 liPrice.Visible = True
-                liXero.Visible = True
             End If
             If Session("RoleName") = "Sales" Then
                 liOldOrder.Visible = True
@@ -321,7 +316,6 @@ Partial Public Class SiteMaster
                 liSetting.Visible = True
                 liCustomer.Visible = True
                 liPrice.Visible = True
-                liXero.Visible = True
             End If
             If Session("RoleName") = "Data Entry" Then
                 liOldOrder.Visible = True

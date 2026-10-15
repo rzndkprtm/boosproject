@@ -27,15 +27,18 @@ Partial Class Order_Add
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindDataCustomer()
-            BindComponentForm(ddlCustomer.SelectedValue)
-            GetCustomerContactAddress(ddlCustomer.SelectedValue)
+            BindComponentForm(ddlCustomer.SelectedValue, ddlOrderDelivery.SelectedValue)
         End If
     End Sub
 
     Protected Sub ddlCustomer_SelectedIndexChanged(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
-        BindComponentForm(ddlCustomer.SelectedValue)
-        GetCustomerContactAddress(ddlCustomer.SelectedValue)
+        BindComponentForm(ddlCustomer.SelectedValue, ddlOrderDelivery.SelectedValue)
+    End Sub
+
+    Protected Sub ddlOrderDelivery_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindComponentForm(ddlCustomer.SelectedValue, ddlOrderDelivery.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -72,9 +75,23 @@ Partial Class Order_Add
                 MessageError(True, "ORDER NUMBER ALREADY EXISTS !")
                 Exit Sub
             End If
+            If ddlOrderDelivery.SelectedValue = "Special" Then
+                If hfOrderContact.Value = "" Then
+                    MessageError(True, "ORDER CONTACT (DELIVERY) IS REQUIRED !")
+                    Exit Sub
+                End If
+                If hfOrderAddress.Value = "" Then
+                    MessageError(True, "ORDER ADDRESS (DELIVERY) IS REQUIRED !")
+                    Exit Sub
+                End If
+            End If
 
             If msgError.InnerText = "" Then
                 Dim thisId As String = orderClass.GetNewOrderHeaderId()
+
+                If ddlOrderDelivery.SelectedValue = "Default" Then
+                    GetCustomerContactAddress(ddlCustomer.SelectedValue)
+                End If
 
                 Dim orderContact As String = hfOrderContact.Value.Trim()
                 Dim orderAddress As String = hfOrderAddress.Value.Trim()
@@ -116,7 +133,7 @@ Partial Class Order_Add
                     orderId = companyAlias & randomCode
                     Try
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, OrderContact, OrderAddress, OrderContainer, Status, CreatedBy, CreatedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, @OrderType, @OrderContact, @OrderAddress, @OrderContainer, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
+                            Using thisCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, OrderDelivery, OrderContact, OrderAddress, OrderContainer, Status, CreatedBy, CreatedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, @OrderType, @OrderDelivery, @OrderContact, @OrderAddress, @OrderContainer, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);", thisConn)
                                 thisCmd.Parameters.AddWithValue("@Id", thisId)
                                 thisCmd.Parameters.AddWithValue("@OrderId", orderId)
                                 thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
@@ -124,6 +141,7 @@ Partial Class Order_Add
                                 thisCmd.Parameters.AddWithValue("@OrderName", txtOrderName.Text.Trim())
                                 thisCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
                                 thisCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
+                                thisCmd.Parameters.AddWithValue("@OrderDelivery", ddlOrderDelivery.SelectedValue)
                                 thisCmd.Parameters.AddWithValue("@OrderContact", orderContact)
                                 thisCmd.Parameters.AddWithValue("@OrderAddress", orderAddress)
                                 thisCmd.Parameters.AddWithValue("@OrderContainer", orderContainer)
@@ -168,12 +186,12 @@ Partial Class Order_Add
         Response.Redirect("~/order", False)
     End Sub
 
-    Protected Sub BindComponentForm(customerId As String)
+    Protected Sub BindComponentForm(customerId As String, orderDelivery As String)
         Try
             divCustomer.Visible = False
             divOrderType.Visible = False
-            divOrderContact.Visible = False
-            divOrderAddress.Visible = False
+            divOrderDelivery.Visible = False
+            divOrderDetailDelivery.Visible = False
 
             Dim companyDetailName As String = String.Empty
             If Not String.IsNullOrEmpty(customerId) Then
@@ -185,9 +203,11 @@ Partial Class Order_Add
                 If companyDetailName = "JPMD BP" Then divOrderType.Visible = True
             End If
 
-            If companyDetailName = "JPMD" Then
-                divOrderContact.Visible = True
-                divOrderAddress.Visible = True
+            If companyDetailName = "JPMD" OrElse companyDetailName = "SP" Then
+                divOrderDelivery.Visible = True
+                If orderDelivery = "Special" Then
+                    divOrderDetailDelivery.Visible = True
+                End If
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -231,6 +251,9 @@ Partial Class Order_Add
         txtOrderAddress.Text = String.Empty
         Try
             If Not String.IsNullOrEmpty(customerId) Then
+                hfOrderContact.Value = String.Empty
+                hfOrderAddress.Value = String.Empty
+
                 Dim contactData As DataRow = orderClass.GetDataRow("SELECT * FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
                 If contactData IsNot Nothing Then
                     Dim name As String = contactData("Name").ToString()

@@ -112,7 +112,7 @@ Partial Class Order_Upload
 
                             Try
                                 Using thisConn As New SqlConnection(myConn)
-                                    Using thisCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, OrderContact, OrderAddress, OrderContainer, Status, CreatedBy, CreatedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, 'Regular', @OrderContact, @OrderAddress, @OrderContainer, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);",
+                                    Using thisCmd As New SqlCommand("INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, OrderDelivery, OrderContact, OrderAddress, OrderContainer, Status, CreatedBy, CreatedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, 'Regular', @OrderDelivery, @OrderContact, @OrderAddress, @OrderContainer, 'Unsubmitted', @CreatedBy, GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);",
                                     thisConn)
                                         thisCmd.Parameters.AddWithValue("@Id", headerId)
                                         thisCmd.Parameters.AddWithValue("@OrderId", orderId)
@@ -120,6 +120,7 @@ Partial Class Order_Upload
                                         thisCmd.Parameters.AddWithValue("@OrderNumber", orderNumber)
                                         thisCmd.Parameters.AddWithValue("@OrderName", orderName)
                                         thisCmd.Parameters.AddWithValue("@OrderNote", orderNote)
+                                        thisCmd.Parameters.AddWithValue("@OrderDelivery", "Default")
                                         thisCmd.Parameters.AddWithValue("@OrderContact", String.Empty)
                                         thisCmd.Parameters.AddWithValue("@OrderAddress", orderAddress)
                                         thisCmd.Parameters.AddWithValue("@OrderContainer", orderContainer)

@@ -154,16 +154,11 @@
                                     <asp:Label runat="server" ID="lblOrderStatus"></asp:Label>
                                 </div>
                             </div>
-                            <div class="detail-row" runat="server" id="divOrderContact">
-                                <div class="detail-label">Order Contact</div>
+                            <div class="detail-row">
+                                <div class="detail-label">Order Delivery</div>
                                 <div class="detail-value">
-                                    <asp:Label runat="server" ID="lblOrderContact"></asp:Label>
-                                </div>
-                            </div>
-                            <div class="detail-row" runat="server" id="divOrderAddress">
-                                <div class="detail-label">Order Address</div>
-                                <div class="detail-value">
-                                    <asp:Label runat="server" ID="lblOrderAddress"></asp:Label>
+                                    <asp:Label runat="server" ID="lblOrderDelivery"></asp:Label>
+                                    <a class="btn btn-sm btn-primary ms-2" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalOrderDelivery">Show</a>
                                 </div>
                             </div>
                             <div class="detail-row" runat="server" id="divOrderType">
@@ -516,6 +511,32 @@
                             <tbody></tbody>
                         </table>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalOrderDelivery" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Delivery</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <tr>
+                                <th>Contact</th>
+                                <th>Address</th>
+                            </tr>
+                            <tr>
+                                <td><span runat="server" id="spanOrderContact"></span></td>
+                                <td><span runat="server" id="spanOrderAddress"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
                 </div>
             </div>
         </div>

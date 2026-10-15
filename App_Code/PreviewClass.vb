@@ -157,6 +157,7 @@ Public Class PreviewClass
             Dim orderNumber As String = headerData("OrderNumber").ToString()
             Dim orderName As String = headerData("OrderName").ToString()
             Dim orderNote As String = headerData("OrderNote").ToString()
+            Dim orderDelivery As String = headerData("OrderDelivery").ToString()
             Dim orderContact As String = headerData("OrderContact").ToString()
             Dim orderAddress As String = headerData("OrderAddress").ToString()
             Dim orderContainer As String = headerData("OrderContainer").ToString()
@@ -182,7 +183,7 @@ Public Class PreviewClass
                 .PageSubmitDate = submitDate, .PageCustomerName = customerName,
                 .PageOrderNumber = orderNumber, .PageOrderName = orderName,
                 .PageNote = orderNote, .PageTotalItem = pageTotalItem,
-                .pageCompany = companyId, .PageCreatedBy = orderCreatedBy, .pageOrderContact = orderContact, .PageOrderAddress = orderAddress, .PageOrderContainer = orderContainer
+                .pageCompany = companyId, .PageCreatedBy = orderCreatedBy, .PageOrderDelivery = orderDelivery, .PageOrderContact = orderContact, .PageOrderAddress = orderAddress, .PageOrderContainer = orderContainer
             }
             writer.PageEvent = pageEvent
 
@@ -1153,6 +1154,7 @@ Public Class PreviewClass
 
                         Dim tubeName As String = GetItemData("SELECT Name FROM ProductTubes WHERE Id='" & rollerData.Rows(i)("TubeType").ToString() & "'")
                         Dim tubeAlias As String = GetItemData("SELECT Alias FROM ProductTubes WHERE Id='" & rollerData.Rows(i)("TubeType").ToString() & "'")
+                        Dim controlType As String = GetItemData("SELECT Type FROM ProductControls WHERE Id='" & rollerData.Rows(i)("ControlType").ToString() & "'")
                         Dim controlName As String = GetItemData("SELECT Name FROM ProductControls WHERE Id='" & rollerData.Rows(i)("ControlType").ToString() & "'")
                         Dim controlAlias As String = GetItemData("SELECT Name FROM ProductControls WHERE Id='" & rollerData.Rows(i)("ControlType").ToString() & "'")
                         Dim colourName As String = GetItemData("SELECT Name FROM ProductColours WHERE Id='" & rollerData.Rows(i)("ColourType").ToString() & "'")
@@ -1163,10 +1165,32 @@ Public Class PreviewClass
                         Dim chainName As String = GetItemData("SELECT Name FROM Chains WHERE Id='" & rollerData.Rows(i)("Chain").ToString() & "'")
 
                         Dim chainColour As String = String.Empty
-                        Dim remoteType As String = chainName
+                        Dim remoteType As String = String.Empty
 
-                        If controlName = "Chain" Then
+                        If controlType = "Chain" Then
                             chainColour = chainName : remoteType = ""
+                        End If
+                        If controlType = "Motorised" Then
+                            chainColour = String.Empty
+                            remoteType = chainName
+
+                            If blindName = "Link 2 Blinds Dependent" Then
+                                If itemBlind = "2" Then controlName = "N/A"
+                            End If
+                            If blindName = "Link 3 Blinds Dependent" Then
+                                If itemBlind = "2" Then controlName = "N/A"
+                                If itemBlind = "3" Then controlName = "N/A"
+                            End If
+                            If blindName = "DB Link 2 Blinds Dependent" Then
+                                If itemBlind = "2" Then controlName = "N/A"
+                                If itemBlind = "4" Then controlName = "N/A"
+                            End If
+                            If blindName = "DB Link 3 Blinds Dependent" Then
+                                If itemBlind = "2" Then controlName = "N/A"
+                                If itemBlind = "3" Then controlName = "N/A"
+                                If itemBlind = "5" Then controlName = "N/A"
+                                If itemBlind = "6" Then controlName = "N/A"
+                            End If
                         End If
 
                         Dim controlLength As String = String.Empty
@@ -2920,6 +2944,7 @@ Public Class PreviewEvents
     Public Property PageOrderNumber As String
     Public Property PageOrderName As String
     Public Property PageNote As String
+    Public Property PageOrderDelivery As String
     Public Property PageOrderContact As String
     Public Property PageOrderAddress As String
     Public Property PageOrderContainer As String
@@ -3143,7 +3168,7 @@ Public Class PreviewEvents
         spacingCell.FixedHeight = 8
         rightTable.AddCell(spacingCell)
 
-        If pageCompany = "2" Then
+        If pageCompany = "2" AndAlso PageOrderDelivery = "Special" Then
             If Not String.IsNullOrWhiteSpace(PageOrderContact) Then
                 Dim contactPhrase As New Phrase()
                 contactPhrase.Add(New Chunk("CONTACT", New Font(Font.FontFamily.TIMES_ROMAN, 7, Font.BOLD, BaseColor.GRAY)))
@@ -3296,7 +3321,6 @@ Public Class PreviewEvents
 
         cb.AddTemplate(template, xPos, yPos)
     End Sub
-
 
     Public Overrides Sub OnCloseDocument(writer As PdfWriter, document As Document)
         template.BeginText()
