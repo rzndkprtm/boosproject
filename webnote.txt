@@ -22,8 +22,4 @@ Password : 4Y_xv&nbC4Hw3fio
 Face Fit = Outside
 Reveal Fit = Inside
 
-CASE WHEN CutOut = 'Yes' AND ISNULL(CutTopLeftWidth, 0) > 0 THEN 'Yes' ELSE 'No' END
-
-INSERT INTO OrderHeaders_New SELECT Id, OrderId, CustomerId, OrderJobId, OrderNumber, OrderName, OrderNote, OrderType, OrderFactory, NULL, OrderContact, OrderAddress, OrderContainer, Status, StatusDescription, CreatedBy, CreatedDate, QuotedDate, MeasureDate, MeasureDueDate, SubmittedDate, ProductionDate, OnHoldDate, CanceledDate, ShipmentDate, InstallDate, InstalledDate, CompletedDate, Estimator, Supervisor, InvoiceDate, DueDate, ShipmentNumber, ContainerNumber, ContainerETA, Courier, InvoiceNumber, Collector, Payment, PaymentDate, Amount, Download, DownloadDate, Active FROM OrderHeaders
-
 SELECT OrderHeaders.Id, OrderHeaders.OrderId, OrderHeaders.CustomerId, OrderHeaders.OrderAddress, CASE WHEN CustomerAddress.CustomerId IS NOT NULL THEN ISNULL(CustomerAddress.Address, '') + ', ' + ISNULL(CustomerAddress.Suburb, '') + ', ' + ISNULL(CustomerAddress.State, '') + ', ' + ISNULL(CustomerAddress.PostCode, '') ELSE NULL END AS FullAddress FROM dbo.OrderHeaders INNER JOIN dbo.Customers ON OrderHeaders.CustomerId = Customers.Id LEFT JOIN dbo.CustomerAddress ON Customers.Id = CustomerAddress.CustomerId AND CustomerAddress.[Primary] = 1 WHERE OrderHeaders.Status = 'Unsubmitted' AND OrderHeaders.Active = 1 AND OrderHeaders.CreatedDate > '2026-09-01'

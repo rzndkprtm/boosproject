@@ -158,7 +158,7 @@
                                 <div class="detail-label">Order Delivery</div>
                                 <div class="detail-value">
                                     <asp:Label runat="server" ID="lblOrderDelivery"></asp:Label>
-                                    <a class="btn btn-sm btn-primary ms-2" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalOrderDelivery">Show</a>
+                                    <a class="btn btn-sm btn-primary ms-5" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalOrderDelivery">Show</a>
                                 </div>
                             </div>
                             <div class="detail-row" runat="server" id="divOrderType">
