@@ -63,8 +63,6 @@ Partial Class Stocks
         End Try
     End Sub
 
-    ' ROLLER
-
     Protected Sub BindRoller(searchText As String, companyDetail As String)
         MessageError_Roller(False, String.Empty)
         Try
@@ -120,8 +118,6 @@ Partial Class Stocks
     End Sub
 
 
-    ' VERTICAL
-
     Protected Sub BindVertical(searchText As String, companyDetail As String)
         MessageError_Vertical(False, String.Empty)
         Try
@@ -176,9 +172,6 @@ Partial Class Stocks
         BindVertical(txtSearchVertical.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
-
-    ' CELLULAR SHADES
-
     Protected Sub BindCellularShades(companyDetail As String)
         MessageError_Cellular(False, String.Empty)
         Try
@@ -228,10 +221,6 @@ Partial Class Stocks
             MessageError_Cellular(True, ex.Message)
         End Try
     End Sub
-
-
-
-    ' DESIGN SHADES
 
     Protected Sub BindDesignShades(companyDetail As String)
         MessageError_DesignShades(False, String.Empty)
@@ -283,9 +272,6 @@ Partial Class Stocks
         divErrorDesignShades.Visible = visible : msgErrorDesignShades.InnerText = message
     End Sub
 
-
-    'CURTAIN
-
     Protected Sub BindCurtain(searchText As String, companyDetail As String)
         MessageError_Curtain(False, String.Empty)
         Try
@@ -331,7 +317,7 @@ Partial Class Stocks
 
             Dim rptCurtainColour As Repeater = CType(e.Item.FindControl("rptCurtainColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Colour")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " ORDER BY Colour")
 
             rptCurtainColour.DataSource = dt
             rptCurtainColour.DataBind()
@@ -389,9 +375,6 @@ Partial Class Stocks
             MessageError_Outdoor(True, ex.Message)
         End Try
     End Sub
-
-
-    ' VENETIAN
 
     Protected Sub BindVenetian(companyDetail As String)
         MessageError_Venetian(False, String.Empty)
@@ -465,8 +448,6 @@ Partial Class Stocks
         End If
     End Sub
 
-
-    ' ALUMINIUM
     Protected Sub BindAluminium(companyDetail As String)
         MessageError_Aluminium(False, String.Empty)
         Try
@@ -539,10 +520,6 @@ Partial Class Stocks
         End If
     End Sub
 
-
-
-    ' FABRIC CHART
-
     Protected Sub btnFabricChart_Click(sender As Object, e As EventArgs)
         BindFabricChart(txtSearchFabricChart.Text, ddlCompanyDetail.SelectedValue)
     End Sub
@@ -603,7 +580,6 @@ Partial Class Stocks
             Return False
         End Try
     End Function
-
 
     Protected Function GetStatusClass(status As Object) As String
         If status Is Nothing OrElse status Is DBNull.Value Then

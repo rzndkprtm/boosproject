@@ -19,9 +19,6 @@ Partial Class Stock
         End If
     End Sub
 
-
-    ' ROLLER
-
     Protected Sub BindRoller(searchText As String)
         MessageError_Roller(False, String.Empty)
         Try
@@ -75,9 +72,6 @@ Partial Class Stock
     Protected Sub MessageError_Roller(visible As Boolean, message As String)
         divErrorRoller.Visible = visible : msgErrorRoller.InnerText = message
     End Sub
-
-
-    ' VERTICAL
 
     Protected Sub BindVertical(searchText As String)
         MessageError_Vertical(False, String.Empty)
@@ -133,9 +127,6 @@ Partial Class Stock
         BindVertical(txtSearchVertical.Text)
     End Sub
 
-
-    ' CELLULAR SHADES
-
     Protected Sub BindCellularShades()
         MessageError_Cellular(False, String.Empty)
         Try
@@ -185,9 +176,6 @@ Partial Class Stock
     Protected Sub MessageError_Cellular(visible As Boolean, message As String)
         divErrorCellular.Visible = visible : msgErrorCellular.InnerText = message
     End Sub
-
-
-    ' DESIGN SHADES
 
     Protected Sub BindDesignShades()
         MessageError_DesignShades(False, String.Empty)
@@ -239,9 +227,6 @@ Partial Class Stock
         divErrorDesignShades.Visible = visible : msgErrorDesignShades.InnerText = message
     End Sub
 
-
-    'CURTAIN
-
     Protected Sub BindCurtain(searchText As String)
         MessageError_Curtain(False, String.Empty)
         Try
@@ -287,7 +272,7 @@ Partial Class Stock
 
             Dim rptCurtainColour As Repeater = CType(e.Item.FindControl("rptCurtainColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " ORDER BY Name")
 
             rptCurtainColour.DataSource = dt
             rptCurtainColour.DataBind()
@@ -295,9 +280,6 @@ Partial Class Stock
             MessageError_Curtain(True, ex.Message)
         End Try
     End Sub
-
-
-    ' VENETIAN
 
     Protected Sub BindVenetian()
         MessageError_Venetian(False, String.Empty)
@@ -320,28 +302,44 @@ Partial Class Stock
     Protected Sub gvListVenetian_RowDataBound(sender As Object, e As GridViewRowEventArgs)
         If e.Row.RowType = DataControlRowType.DataRow Then
             For i As Integer = 1 To 6
-                Dim colName As String = "Col" & i & "Status"
-                Dim isActiveObj = DataBinder.Eval(e.Row.DataItem, colName)
+                Dim colColour As String = "Col" & i
+                Dim colStatus As String = "Col" & i & "Status"
+                Dim colDesc As String = "Col" & i & "Description"
 
-                If isActiveObj IsNot Nothing AndAlso Not IsDBNull(isActiveObj) Then
-                    Dim thisStatus As String = isActiveObj.ToString()
+                Dim colourObj = DataBinder.Eval(e.Row.DataItem, colColour)
+                Dim statusObj = DataBinder.Eval(e.Row.DataItem, colStatus)
+                Dim descObj = DataBinder.Eval(e.Row.DataItem, colDesc)
 
-                    If thisStatus = "In Stock" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.DarkGreen
-                        e.Row.Cells(i).ForeColor = Drawing.Color.White
-                    End If
-                    If thisStatus = "Out of Stock" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.DarkRed
-                        e.Row.Cells(i).ForeColor = Drawing.Color.White
-                    End If
-                    If thisStatus = "Limited Stock" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.Yellow
-                        e.Row.Cells(i).ForeColor = Drawing.Color.Black
-                    End If
-                    If thisStatus = "Discontinued" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.Gray
-                        e.Row.Cells(i).ForeColor = Drawing.Color.White
-                    End If
+                Dim colour As String = If(colourObj Is Nothing OrElse IsDBNull(colourObj), "", colourObj.ToString())
+                Dim status As String = If(statusObj Is Nothing OrElse IsDBNull(statusObj), "", statusObj.ToString())
+                Dim desc As String = If(descObj Is Nothing OrElse IsDBNull(descObj), "", descObj.ToString())
+
+                ' RESET CELL
+                e.Row.Cells(i).Text = ""
+                e.Row.Cells(i).Attributes.Clear()
+
+                ' TAMPILKAN
+                If colour <> "" Then
+                    e.Row.Cells(i).Text =
+                    colour & If(desc <> "", "<br/>(" & desc & ")", "")
+                End If
+
+                ' STATUS COLORING
+                If status = "In Stock" Then
+                    e.Row.Cells(i).BackColor = Drawing.Color.DarkGreen
+                    e.Row.Cells(i).ForeColor = Drawing.Color.White
+
+                ElseIf status = "Out of Stock" Then
+                    e.Row.Cells(i).BackColor = Drawing.Color.DarkRed
+                    e.Row.Cells(i).ForeColor = Drawing.Color.White
+
+                ElseIf status = "Limited Stock" Then
+                    e.Row.Cells(i).BackColor = Drawing.Color.Yellow
+                    e.Row.Cells(i).ForeColor = Drawing.Color.Black
+
+                ElseIf status = "Discontinued" Then
+                    e.Row.Cells(i).BackColor = Drawing.Color.Gray
+                    e.Row.Cells(i).ForeColor = Drawing.Color.White
                 End If
             Next
         End If
@@ -354,9 +352,6 @@ Partial Class Stock
             Next
         End If
     End Sub
-
-
-    ' ALUMINIUM
 
     Protected Sub BindAluminium()
         MessageError_Aluminium(False, String.Empty)
@@ -379,28 +374,44 @@ Partial Class Stock
     Protected Sub gvListAluminium_RowDataBound(sender As Object, e As GridViewRowEventArgs)
         If e.Row.RowType = DataControlRowType.DataRow Then
             For i As Integer = 1 To 6
-                Dim colName As String = "Col" & i & "Status"
-                Dim isActiveObj = DataBinder.Eval(e.Row.DataItem, colName)
+                Dim colColour As String = "Col" & i
+                Dim colStatus As String = "Col" & i & "Status"
+                Dim colDesc As String = "Col" & i & "Description"
 
-                If isActiveObj IsNot Nothing AndAlso Not IsDBNull(isActiveObj) Then
-                    Dim thisStatus As String = isActiveObj.ToString()
+                Dim colourObj = DataBinder.Eval(e.Row.DataItem, colColour)
+                Dim statusObj = DataBinder.Eval(e.Row.DataItem, colStatus)
+                Dim descObj = DataBinder.Eval(e.Row.DataItem, colDesc)
 
-                    If thisStatus = "In Stock" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.DarkGreen
-                        e.Row.Cells(i).ForeColor = Drawing.Color.White
-                    End If
-                    If thisStatus = "Out of Stock" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.DarkRed
-                        e.Row.Cells(i).ForeColor = Drawing.Color.White
-                    End If
-                    If thisStatus = "Limited Stock" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.Yellow
-                        e.Row.Cells(i).ForeColor = Drawing.Color.Black
-                    End If
-                    If thisStatus = "Discontinued" Then
-                        e.Row.Cells(i).BackColor = Drawing.Color.Gray
-                        e.Row.Cells(i).ForeColor = Drawing.Color.White
-                    End If
+                Dim colour As String = If(colourObj Is Nothing OrElse IsDBNull(colourObj), "", colourObj.ToString())
+                Dim status As String = If(statusObj Is Nothing OrElse IsDBNull(statusObj), "", statusObj.ToString())
+                Dim desc As String = If(descObj Is Nothing OrElse IsDBNull(descObj), "", descObj.ToString())
+
+                ' RESET CELL
+                e.Row.Cells(i).Text = ""
+                e.Row.Cells(i).Attributes.Clear()
+
+                ' TAMPILKAN
+                If colour <> "" Then
+                    e.Row.Cells(i).Text =
+                    colour & If(desc <> "", "<br/>(" & desc & ")", "")
+                End If
+
+                ' STATUS COLORING
+                If status = "In Stock" Then
+                    e.Row.Cells(i).BackColor = Drawing.Color.DarkGreen
+                    e.Row.Cells(i).ForeColor = Drawing.Color.White
+
+                ElseIf status = "Out of Stock" Then
+                    e.Row.Cells(i).BackColor = Drawing.Color.DarkRed
+                    e.Row.Cells(i).ForeColor = Drawing.Color.White
+
+                ElseIf status = "Limited Stock" Then
+                    e.Row.Cells(i).BackColor = Drawing.Color.Yellow
+                    e.Row.Cells(i).ForeColor = Drawing.Color.Black
+
+                ElseIf status = "Discontinued" Then
+                    e.Row.Cells(i).BackColor = Drawing.Color.Gray
+                    e.Row.Cells(i).ForeColor = Drawing.Color.White
                 End If
             Next
         End If
@@ -414,17 +425,25 @@ Partial Class Stock
         End If
     End Sub
 
-
-
-
-
-    ' FABRIC CHART
-
     Protected Sub btnFabricChart_Click(sender As Object, e As EventArgs)
         BindFabricChart(txtSearchFabricChart.Text)
     End Sub
 
     Protected Sub gvListFabricChart_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType = DataControlRowType.DataRow Then
+            For i As Integer = 1 To e.Row.Cells.Count - 1
+                Dim cellText As String = e.Row.Cells(i).Text.Trim()
+
+                e.Row.Cells(i).HorizontalAlign = HorizontalAlign.Center
+                e.Row.Cells(i).VerticalAlign = VerticalAlign.Middle
+
+                If cellText.Equals("No", StringComparison.OrdinalIgnoreCase) Then
+                    e.Row.Cells(i).BackColor = Drawing.Color.DarkRed
+                    e.Row.Cells(i).ForeColor = Drawing.Color.White
+                    e.Row.Cells(i).Font.Bold = True
+                End If
+            Next
+        End If
         If e.Row.RowType = DataControlRowType.Footer Then
             For i As Integer = 0 To gvListFabricChart.Columns.Count - 1
                 Dim bf As BoundField = TryCast(gvListFabricChart.Columns(i), BoundField)
