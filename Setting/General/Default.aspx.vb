@@ -11,6 +11,8 @@ Partial Class Setting_General_Default
     Protected Tutorials As Integer
     Protected Notifications As Integer
     Protected Tickets As Integer
+    Protected Xeros As Integer
+    Protected Zeros As Integer
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -29,6 +31,8 @@ Partial Class Setting_General_Default
                 Tutorials = CInt(dt.Rows(0)("Tutorials"))
                 Notifications = CInt(dt.Rows(0)("Notifications"))
                 Tickets = CInt(dt.Rows(0)("Tickets"))
+                Xeros = CInt(dt.Rows(0)("Xeros"))
+                Zeros = CInt(dt.Rows(0)("Zeros"))
             End If
         End If
     End Sub

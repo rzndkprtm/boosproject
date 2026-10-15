@@ -64,6 +64,16 @@
                     <div class="dashboard-title">Ticket</div>
                     <div class="dashboard-desc">Description</div>
                 </a>
+                <a href="/setting/general/xero" class="dashboard-card">
+                    <div class="dashboard-number"><%= Xeros %> Data</div>
+                    <div class="dashboard-title">Xero</div>
+                    <div class="dashboard-desc">Description</div>
+                </a>
+                <a href="/setting/general/zero" class="dashboard-card">
+                    <div class="dashboard-number"><%= Zeros %> Data</div>
+                    <div class="dashboard-title">Zero</div>
+                    <div class="dashboard-desc">Description</div>
+                </a>
             </div>
         </section>
     </div>
