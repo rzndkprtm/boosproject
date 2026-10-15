@@ -23,7 +23,7 @@ Partial Class Setting_General_Zero_Default
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         Session("SearchAKZero") = txtSearch.Text
-        Response.Redirect("~/setting/general/xero/add", False)
+        Response.Redirect("~/setting/general/zero/add", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
@@ -57,7 +57,7 @@ Partial Class Setting_General_Zero_Default
             Dim thisId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM AKZero_KodeBarang WHERE Id=@Id; DELETE FROM Logs WHERE Type='AKZero_KodeBarang' AND DataId=@Id;", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM AKZeros WHERE Id=@Id; DELETE FROM Logs WHERE Type='AKZeros' AND DataId=@Id;", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
@@ -80,7 +80,7 @@ Partial Class Setting_General_Zero_Default
             If Not searchText = "" Then
                 search = "WHERE Id LIKE '%" & searchText.Trim() & "%' OR Name LIKE '%" & searchText.Trim() & "%' OR ItemCode LIKE '%" & searchText.Trim() & "%'"
             End If
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM AKZero_KodeBarang {0} ORDER BY Name ASC", search)
+            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM AKZeros {0} ORDER BY Name ASC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
