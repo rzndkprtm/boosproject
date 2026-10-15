@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Stock
+Partial Class StockJpm
     Inherits Page
 
     Dim stockClass As New StockClass
