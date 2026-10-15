@@ -166,6 +166,9 @@
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/general/xero" class="subsubmenu-link">Xero</a>
                                                         </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/general/zero" class="subsubmenu-link">AK Zero</a>
+                                                        </li>
                                                     </ul>
                                                 </li>
                                                 <li class="submenu-item has-sub" runat="server" id="liLogin">
@@ -320,9 +323,6 @@
                                                 </li>
                                                 <li runat="server" id="liValidation" class="submenu-item">
                                                     <a runat="server" href="~/setting/validation" class="subsubmenu-link">Validation</a>
-                                                </li>
-                                                <li runat="server" id="liAKZero" class="submenu-item">
-                                                    <a runat="server" href="~/setting/akzero" class="subsubmenu-link">AK Zero</a>
                                                 </li>
                                                 <li runat="server" id="liLog" class="submenu-item">
                                                     <a runat="server" href="~/setting/log" class="subsubmenu-link">Log</a>

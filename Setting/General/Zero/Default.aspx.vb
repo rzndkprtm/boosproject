@@ -1,5 +1,4 @@
-﻿Imports System.Data
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 
 Partial Class Setting_General_Zero_Default
     Inherits Page
@@ -23,12 +22,15 @@ Partial Class Setting_General_Zero_Default
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
-
+        Session("SearchAKZero") = txtSearch.Text
+        Response.Redirect("~/setting/general/xero/add", False)
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
+        gvList.PageIndex = 0
+        MessageError(False, String.Empty)
         BindData(txtSearch.Text)
+        Session("SearchAKZero") = txtSearch.Text
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
@@ -38,108 +40,15 @@ Partial Class Setting_General_Zero_Default
         BindData(txtSearch.Text)
     End Sub
 
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Session("SearchAKZero") = txtSearch.Text
-
-            Dim dataId As String = e.CommandArgument.ToString()
-            If e.CommandName = "Detail" Then
-                MessageError_Process(False, String.Empty)
-                Dim thisScript As String = "window.onload = function() { showProcess(); };"
-                Try
-                    lblId.Text = dataId
-                    lblAction.Text = "Edit"
-                    titleProcess.InnerText = "Edit AK Zero"
-
-                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM AKZero_KodeBarang WHERE Id='" & lblId.Text & "'")
-                    If myData Is Nothing Then Exit Sub
-
-                    txtName.Text = myData("Name").ToString()
-                    txtItemCode.Text = myData("ItemCode").ToString()
-                    txtDescription.Text = myData("Description").ToString()
-                    ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
-
-                    txtName.Enabled = False
-                    If Session("RoleName") = "Developer" Then txtName.Enabled = True
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Catch ex As Exception
-                    MessageError_Process(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                End Try
-            End If
-        End If
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        BuildPager()
     End Sub
 
-    Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
-        MessageError_Process(False, String.Empty)
-        Dim thisScript As String = "window.onload = function() { showProcess(); };"
-        Try
-            If txtName.Text = "" Then
-                MessageError_Process(True, "NAME IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-            If txtItemCode.Text = "" Then
-                MessageError_Process(True, "ITEM CODE IS REQUIRED !")
-                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-                Exit Sub
-            End If
-            If msgErrorProcess.InnerText = "" Then
-                Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
-
-                If lblAction.Text = "Add" Then
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM AKZero_KodeBarang ORDER BY Id DESC")
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO AKZero_KodeBarang VALUES (@Id, @ItemCode, @Name, @Description, @Active)", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", thisId)
-                            thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            thisCmd.Parameters.AddWithValue("@ItemCode", txtItemCode.Text)
-                            thisCmd.Parameters.AddWithValue("@Description", descText)
-                            thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"AKZero_KodeBarang", thisId, Session("LoginId").ToString(), "AK Zero Created"}
-                    settingClass.Logs(dataLog)
-
-                    Session("SearchAKZero") = txtSearch.Text
-                    Response.Redirect("~/setting/akzero", False)
-                End If
-
-                If lblAction.Text = "Edit" Then
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE AKZero_KodeBarang SET Name=@Name, ItemCode=@ItemCode, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                            thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
-                            thisCmd.Parameters.AddWithValue("@ItemCode", txtItemCode.Text)
-                            thisCmd.Parameters.AddWithValue("@Description", descText)
-                            thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    dataLog = {"AKZero_KodeBarang", lblId.Text, Session("LoginId").ToString(), "AK Zero Updated"}
-                    settingClass.Logs(dataLog)
-
-                    Session("SearchAKZero") = txtSearch.Text
-                    Response.Redirect("~/setting/akzero", False)
-                End If
-            End If
-        Catch ex As Exception
-            MessageError_Process(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
-            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
-        End Try
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        If e.CommandName = "Page" Then
+            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindData(txtSearch.Text)
+        End If
     End Sub
 
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
@@ -156,7 +65,7 @@ Partial Class Setting_General_Zero_Default
             End Using
 
             Session("SearchAKZero") = txtSearch.Text
-            Response.Redirect("~/setting/akzero", False)
+            Response.Redirect("~/setting/general/zero", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -166,7 +75,6 @@ Partial Class Setting_General_Zero_Default
     End Sub
 
     Protected Sub BindData(searchText As String)
-        Session("SearchAKZero") = String.Empty
         Try
             Dim search As String = String.Empty
             If Not searchText = "" Then
@@ -187,12 +95,44 @@ Partial Class Setting_General_Zero_Default
         End Try
     End Sub
 
-    Protected Sub MessageError(visible As Boolean, message As String)
-        divError.Visible = visible : msgError.InnerText = message
+    Protected Sub BuildPager()
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
+            navPager.Visible = False
+        End Try
     End Sub
 
-    Protected Sub MessageError_Process(visible As Boolean, message As String)
-        divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
     End Sub
 
     Protected Function LoginAccess(action As String) As Boolean
