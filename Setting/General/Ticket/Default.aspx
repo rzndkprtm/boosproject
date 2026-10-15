@@ -73,7 +73,7 @@
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
                                                         <li>
-                                                            <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/general/ticket/detail?ticketid=" & Eval("Id")) %>'>Detail</a>
+                                                            <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/general/ticket/detail?ticketid=" & Eval("Id")) %>'>Detail</a>
                                                         </li>
                                                         <li runat="server" visible='<%# LoginAccess("Delete") %>'>
                                                             <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("TicketNo").ToString()) %>'>Delete</a>

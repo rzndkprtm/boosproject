@@ -98,24 +98,12 @@
                 <a href="javascript:void(0);" runat="server" id="aFile" class="btn btn-dark me-1" data-bs-toggle="modal" data-bs-target="#modalFileOrder">Files</a>
                 <button class="btn btn-primary dropdown-toggle me-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnJob">Job</button>
                 <ul class="dropdown-menu">
-                    <li>
-                        <a href="javascript:void(0);" runat="server" id="aConvertOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalConvertOrder">Convert</a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" runat="server" id="aReConvertJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReConvertOrder">Re-Convert</a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" runat="server" id="aDataJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDataJob">Data Job</a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0);" runat="server" id="aUpdateJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalUpdateJobData">Update Job Data</a>
-                    </li>
-                    <li>
-                        <asp:Button runat="server" ID="btnPreviewJob" CssClass="dropdown-item" Text="Preview" />
-                    </li>
-                    <li>
-                        <asp:Button runat="server" ID="btnDownloadJob" CssClass="dropdown-item" Text="Download" OnClick="btnDownloadJob_Click" />
-                    </li>
+                    <li><a href="javascript:void(0);" runat="server" id="aConvertOrder" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalConvertOrder">Convert</a></li>
+                    <li><a href="javascript:void(0);" runat="server" id="aReConvertJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalReConvertOrder">Re-Convert</a></li>
+                    <li><a href="javascript:void(0);" runat="server" id="aDataJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDataJob">Data Job</a></li>
+                    <li><a href="javascript:void(0);" runat="server" id="aUpdateJob" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalUpdateJobData">Update Job Data</a></li>
+                    <li><asp:Button runat="server" ID="btnPreviewJob" CssClass="dropdown-item" Text="Preview" /></li>
+                    <li><asp:Button runat="server" ID="btnDownloadJob" CssClass="dropdown-item" Text="Download" OnClick="btnDownloadJob_Click" /></li>
                 </ul>
                 <a href="javascript:void(0);" runat="server" id="aLog" class="btn btn-secondary me-1" onclick="showLogFromElement(this)">Log</a>
             </div>
@@ -217,9 +205,7 @@
                     <div class="card-body">
                         <div class="section-header">
                             <div class="detail-title">Order Timeline</div>
-                            <div>
-                                <a href="javascript:void(0);" runat="server" id="aMoreDownloadBOE" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalDownloadBOE">Download BOE</a>
-                            </div>
+                            <div><a href="javascript:void(0);" runat="server" id="aMoreDownloadBOE" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalDownloadBOE">Download BOE</a></div>
                         </div>
                         <div class="row" runat="server" id="divDateAction">
                             <div class="col-md-6 timeline-item">
@@ -312,9 +298,7 @@
                     <div class="card-body">
                         <div class="section-header">
                             <div class="detail-title">Financial Information</div>
-                            <div>
-                                <a href="javascript:void(0);" runat="server" id="aRePrice" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#modalRePrice">Re Price Order</a>
-                            </div>
+                            <div><a href="javascript:void(0);" runat="server" id="aRePrice" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#modalRePrice">Re Price Order</a></div>
                         </div>
                         <div class="row">
                             <div class="col-lg-6">
@@ -406,12 +390,8 @@
                                 <ItemTemplate>
                                     <div id="divCol" runat="server" class="mb-2">
                                         <div class="border rounded p-3 bg-light h-100">
-                                            <div class="fw-semibold text-warning mb-1">
-                                                <%# Eval("Name") %>
-                                            </div>
-                                            <div class="small text-muted">
-                                                <%# Eval("Description") %>
-                                            </div>
+                                            <div class="fw-semibold text-warning mb-1"><%# Eval("Name") %></div>
+                                            <div class="small text-muted"><%# Eval("Description") %></div>
                                         </div>
                                     </div>
                                 </ItemTemplate>
@@ -476,9 +456,7 @@
                                                     <li runat="server" visible='<%# VisibleDelete(Eval("ProductId").ToString()) %>'>
                                                         <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDeleteItem" onclick='<%# String.Format("return dataDeleteItem(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                     </li>
-                                                    <li runat="server" visible='<%# VisiblePrinting(Eval("Id").ToString()) %>'>
-                                                        <hr class="dropdown-divider" />
-                                                    </li>
+                                                    <li runat="server" visible='<%# VisiblePrinting(Eval("Id").ToString()) %>'><hr class="dropdown-divider" /></li>
                                                     <li runat="server" visible='<%# VisiblePrinting(Eval("Id").ToString()) %>'>
                                                         <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkPrinting" Text="Printing Fabric" CommandName="Printing" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
                                                     </li>

@@ -55,14 +55,14 @@ Partial Class Ticket_Default
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Dim thisSql As String = "SELECT T.Id, T.TicketNo, T.LoginId, L.FullName, C.Name AS CustomerName, T.Type, T.Subject, T.Status, T.Priority, T.CreatedDate, M.LastMessageDate, M.LastMessage, ISNULL(U.UnreadCount, 0) AS UnreadCount FROM Tickets T LEFT JOIN Logins L ON T.LoginId = L.Id LEFT JOIN Customers C ON L.CustomerId = C.Id OUTER APPLY (SELECT TOP 1 X.CreatedDate AS LastMessageDate, X.LastMessage FROM (SELECT CM.CreatedDate, CM.Message AS LastMessage, CM.Id, 1 AS SortType FROM TicketMessages CM WHERE CM.TicketId = T.Id UNION ALL SELECT F.CreatedDate, F.FileName AS LastMessage, F.Id, 2 AS SortType FROM TicketFiles F WHERE F.TicketId = T.Id) X ORDER BY X.CreatedDate DESC, X.SortType DESC, X.Id DESC) M OUTER APPLY (SELECT COUNT(*) AS UnreadCount FROM TicketMessages CM2 WHERE CM2.TicketId = T.Id AND CM2.SenderType = @SenderType AND NOT EXISTS (SELECT 1 FROM STRING_SPLIT(ISNULL(CM2.ReadBy, ''), ',') S WHERE LTRIM(RTRIM(S.value)) = CAST(@LoginId AS NVARCHAR(20)))) U WHERE (@Type = '' OR T.Type = @Type)"
+                Dim thisSql As String = "SELECT T.Id, T.TicketNo, T.LoginId, L.FullName, C.Name AS CustomerName, T.Type, T.Subject, T.Status, T.Priority, T.CreatedDate, M.LastMessageDate, M.LastMessage, ISNULL(U.UnreadCount, 0) AS UnreadCount FROM Tickets T LEFT JOIN Logins L ON T.LoginId=L.Id LEFT JOIN Customers C ON L.CustomerId=C.Id OUTER APPLY (SELECT TOP 1 X.CreatedDate AS LastMessageDate, X.LastMessage FROM (SELECT CM.CreatedDate, CM.Message AS LastMessage, CM.Id, 1 AS SortType FROM TicketMessages CM WHERE CM.TicketId=T.Id UNION ALL SELECT F.CreatedDate, F.FileName AS LastMessage, F.Id, 2 AS SortType FROM TicketFiles F WHERE F.TicketId=T.Id) X ORDER BY X.CreatedDate DESC, X.SortType DESC, X.Id DESC) M OUTER APPLY (SELECT COUNT(*) AS UnreadCount FROM TicketMessages CM2 WHERE CM2.TicketId=T.Id AND CM2.SenderType=@SenderType AND NOT EXISTS (SELECT 1 FROM STRING_SPLIT(ISNULL(CM2.ReadBy, ''), ',') S WHERE LTRIM(RTRIM(S.value))=CAST(@LoginId AS NVARCHAR(20)))) U WHERE (@Type='' OR T.Type=@Type)"
 
                 If Not isInternal Then
-                    thisSql &= " AND T.LoginId = @LoginId"
+                    thisSql &= " AND T.LoginId=@LoginId"
                 End If
 
                 If roleName = "Sales" OrElse roleName = "Account" Then
-                    thisSql &= " AND C.CompanyId = @CompanyId"
+                    thisSql &= " AND C.CompanyId=@CompanyId"
                 End If
 
                 thisSql &= " ORDER BY ISNULL(M.LastMessageDate, T.CreatedDate) DESC, T.Id DESC"
@@ -124,7 +124,7 @@ Partial Class Ticket_Default
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
-                Dim ticketSql As String = "SELECT Id, LoginId, Status FROM Tickets WHERE Id = @TicketId"
+                Dim ticketSql As String = "SELECT Id, LoginId, Status FROM Tickets WHERE Id=@TicketId"
 
                 Using ticketCmd As New SqlCommand(ticketSql, thisConn)
                     ticketCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
@@ -142,7 +142,7 @@ Partial Class Ticket_Default
                     End Using
                 End Using
 
-                Dim thisSql As String = "SELECT CM.Id, CM.TicketId, CM.SenderType, CM.SenderId, CM.Message, CM.CreatedDate, CM.ReadBy, CASE WHEN F.Id IS NOT NULL THEN 'File' ELSE 'Text' END AS MessageType, F.Id AS FileId, F.FileName, F.FilePath, F.FileSize, F.ContentType, L.FullName AS SenderName FROM TicketMessages CM LEFT JOIN TicketFiles F ON F.MessageId = CM.Id LEFT JOIN Logins L ON L.Id = CM.SenderId WHERE CM.TicketId = @TicketId ORDER BY CM.Id ASC"
+                Dim thisSql As String = "SELECT CM.Id, CM.TicketId, CM.SenderType, CM.SenderId, CM.Message, CM.CreatedDate, CM.ReadBy, CASE WHEN F.Id IS NOT NULL THEN 'File' ELSE 'Text' END AS MessageType, F.Id AS FileId, F.FileName, F.FilePath, F.FileSize, F.ContentType, L.FullName AS SenderName FROM TicketMessages CM LEFT JOIN TicketFiles F ON F.MessageId=CM.Id LEFT JOIN Logins L ON L.Id=CM.SenderId WHERE CM.TicketId=@TicketId ORDER BY CM.Id ASC"
 
                 Using thisCmd As New SqlCommand(thisSql, thisConn)
                     thisCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
@@ -217,7 +217,7 @@ Partial Class Ticket_Default
                 thisConn.Open()
 
                 ' VALIDASI TICKET DAN STATUS
-                Dim checkSql As String = "SELECT Status FROM Tickets WHERE Id = @TicketId"
+                Dim checkSql As String = "SELECT Status FROM Tickets WHERE Id=@TicketId"
 
                 If Not isInternal Then
                     checkSql &= " AND LoginId = @LoginId"
@@ -263,7 +263,7 @@ Partial Class Ticket_Default
                 ' INTERNAL BOLEH MEMBUKA KEMBALI TICKET CLOSED
                 ' CUSTOMER TIDAK AKAN MENGUBAH STATUS CLOSED MENJADI OPEN
                 If isInternal Then
-                    Dim updateSql As String = "UPDATE Tickets SET Status = CASE WHEN Status = 'Closed' THEN 'Open' ELSE Status END WHERE Id = @TicketId"
+                    Dim updateSql As String = "UPDATE Tickets SET Status=CASE WHEN Status = 'Closed' THEN 'Open' ELSE Status END WHERE Id=@TicketId"
 
                     Using thisCmd As New SqlCommand(updateSql, thisConn)
                         thisCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
@@ -330,12 +330,12 @@ Partial Class Ticket_Default
             If loginId <= 0 Then Exit Sub
 
             Using thisConn As New SqlConnection(myConn)
-                Dim thisSql As String = "UPDATE CM SET ReadBy = CASE WHEN NULLIF(LTRIM(RTRIM(CM.ReadBy)), '') IS NULL THEN CAST(@LoginId AS NVARCHAR(20)) ELSE CM.ReadBy + ',' + CAST(@LoginId AS NVARCHAR(20)) END FROM TicketMessages CM INNER JOIN Tickets T ON T.Id = CM.TicketId WHERE CM.TicketId = @TicketId AND (CM.ReadBy IS NULL OR NOT EXISTS (SELECT 1 FROM STRING_SPLIT(CM.ReadBy, ',') S WHERE LTRIM(RTRIM(S.value)) = CAST(@LoginId AS NVARCHAR(20))))"
+                Dim thisSql As String = "UPDATE CM SET ReadBy = CASE WHEN NULLIF(LTRIM(RTRIM(CM.ReadBy)), '') IS NULL THEN CAST(@LoginId AS NVARCHAR(20)) ELSE CM.ReadBy + ',' + CAST(@LoginId AS NVARCHAR(20)) END FROM TicketMessages CM INNER JOIN Tickets T ON T.Id=CM.TicketId WHERE CM.TicketId=@TicketId AND (CM.ReadBy IS NULL OR NOT EXISTS (SELECT 1 FROM STRING_SPLIT(CM.ReadBy, ',') S WHERE LTRIM(RTRIM(S.value))=CAST(@LoginId AS NVARCHAR(20))))"
 
                 If isInternal Then
-                    thisSql &= " AND CM.SenderType = 'Customer'"
+                    thisSql &= " AND CM.SenderType='Customer'"
                 Else
-                    thisSql &= " AND T.LoginId = @LoginId AND CM.SenderType = 'Internal'"
+                    thisSql &= " AND T.LoginId=@LoginId AND CM.SenderType='Internal'"
                 End If
 
                 Using thisCmd As New SqlCommand(thisSql, thisConn)
