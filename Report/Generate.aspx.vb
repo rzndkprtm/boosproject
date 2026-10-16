@@ -119,7 +119,7 @@ Partial Class Report_Generate
                     Response.Clear()
                     Response.ContentType = "text/csv"
 
-                    Response.AddHeader("Content-Disposition", "attachment; filename=" & )
+                    Response.AddHeader("Content-Disposition", "attachment; filename=" & fileName)
                     Response.BinaryWrite(csvBytes)
                     Response.Flush()
                     Response.End()
