@@ -76,10 +76,10 @@ Partial Class Order_Add
                 Exit Sub
             End If
             If ddlOrderDelivery.SelectedValue = "Special" Then
-                If hfOrderContact.Value = "" Then
-                    MessageError(True, "ORDER CONTACT (DELIVERY) IS REQUIRED !")
-                    Exit Sub
-                End If
+                'If hfOrderContact.Value = "" Then
+                '    MessageError(True, "ORDER CONTACT (DELIVERY) IS REQUIRED !")
+                '    Exit Sub
+                'End If
                 If hfOrderAddress.Value = "" Then
                     MessageError(True, "ORDER ADDRESS (DELIVERY) IS REQUIRED !")
                     Exit Sub
