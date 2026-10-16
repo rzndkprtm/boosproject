@@ -18,13 +18,30 @@ Partial Class Report_Generate
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindCompany()
+            BindProduct()
+            BindForm(ddlDataType.SelectedValue)
         End If
+    End Sub
+
+    Protected Sub ddlDataType_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindForm(ddlDataType.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If ddlDataType.SelectedValue = "Job Order" OrElse ddlDataType.SelectedValue = "Customer (Order)" Then
+            If ddlDataType.SelectedValue = "OrderHeaders" Then
+                If txtStartDate.Text = "" Then
+                    MessageError(True, "START DATE IS REQUIRED !")
+                    Exit Sub
+                End If
+                If txtEndDate.Text = "" Then
+                    MessageError(True, "END DATE IS REQUIRED !")
+                    Exit Sub
+                End If
+            End If
+            If ddlDataType.SelectedValue = "OrderDetails" Then
                 If txtStartDate.Text = "" Then
                     MessageError(True, "START DATE IS REQUIRED !")
                     Exit Sub
@@ -35,13 +52,69 @@ Partial Class Report_Generate
                 End If
             End If
 
-            If ddlDataType.SelectedValue = "Job Order" Then
+            If ddlDataType.SelectedValue = "OrderHeaders" Then
                 If ddlFileType.SelectedValue = "PDF" Then
                     Dim company As String = ddlCompany.SelectedValue
                     If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
 
                     Dim reportClass As New ReportClass
                     Dim pdfBytes As Byte() = reportClass.JobOrderPDF(company, txtStartDate.Text, txtEndDate.Text)
+
+                    Response.Clear()
+                    Response.ContentType = "application/pdf"
+                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_JOB_ORDER.pdf")
+                    Response.BinaryWrite(pdfBytes)
+                    Response.Flush()
+                    Response.End()
+                End If
+                If ddlFileType.SelectedValue = "EXCEL" Then
+                    Dim company As String = ddlCompany.SelectedValue
+                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
+
+                    Dim reportClass As New ReportClass
+                    Dim excelBytes As Byte() = reportClass.JobOrderExcel(company, txtStartDate.Text, txtEndDate.Text)
+
+                    Response.Clear()
+                    Response.ClearContent()
+                    Response.ClearHeaders()
+
+                    Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    Response.AddHeader("content-disposition", "attachment; filename=REPORT_JOB_ORDER.xlsx")
+                    Response.BinaryWrite(excelBytes)
+
+                    Response.Flush()
+                    Response.SuppressContent = True
+
+                    HttpContext.Current.ApplicationInstance.CompleteRequest()
+                End If
+                If ddlFileType.SelectedValue = "CSV" Then
+                    Dim company As String = ddlCompany.SelectedValue
+                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
+
+                    Dim reportClass As New ReportClass
+                    Dim csvBytes As Byte() = reportClass.JobOrderCSV(company, txtStartDate.Text, txtEndDate.Text)
+
+                    Response.Clear()
+                    Response.ContentType = "text/csv"
+                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_JOB_ORDER.csv")
+                    Response.BinaryWrite(csvBytes)
+                    Response.Flush()
+                    Response.End()
+                End If
+            End If
+
+            If ddlDataType.SelectedValue = "OrderDetails" Then
+                If ddlFileType.SelectedValue = "PDF" Then
+                    Dim company As String = ddlCompany.SelectedValue
+                    If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
+
+                    Dim designType As String = String.Empty
+                    If Not lbProduct.SelectedValue = "" Then
+                        designType = String.Join(",", lbProduct.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                    End If
+
+                    Dim reportClass As New ReportClass
+                    Dim pdfBytes As Byte() = reportClass.OrderDetailPDF(company, designType, txtStartDate.Text, txtEndDate.Text)
 
                     Response.Clear()
                     Response.ContentType = "application/pdf"
@@ -221,6 +294,35 @@ Partial Class Report_Generate
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
+        End Try
+    End Sub
+
+    Protected Sub BindProduct()
+        lbProduct.Items.Clear()
+        Try
+            lbProduct.DataSource = reportClass.GetDataTable("SELECT Id, Name FROM Designs")
+            lbProduct.DataTextField = "Name"
+            lbProduct.DataValueField = "Id"
+            lbProduct.DataBind()
+
+            If lbProduct.Items.Count > 0 Then
+                lbProduct.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            lbProduct.Items.Clear()
+        End Try
+    End Sub
+
+    Protected Sub BindForm(dataType As String)
+        Try
+            divProduct.Visible = False
+            If Not String.IsNullOrEmpty(dataType) Then
+                If dataType = "OrderDetails" Then
+                    divProduct.Visible = True
+                End If
+            End If
+        Catch ex As Exception
+
         End Try
     End Sub
 

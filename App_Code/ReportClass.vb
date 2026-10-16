@@ -317,6 +317,91 @@ Public Class ReportClass
 
     ' END JOB ORDER
 
+    ' START ORDER DETAILS
+    Public Function OrderDetailPDF(companyId As String, designType As String, startDate As Date, endDate As Date) As Byte()
+        Try
+            Using ms As New MemoryStream()
+                Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@CompanyId", If(String.IsNullOrWhiteSpace(companyId), CType(DBNull.Value, Object), companyId)),
+                New SqlParameter("@DesignId", If(String.IsNullOrWhiteSpace(designType), CType(DBNull.Value, Object), designType)),
+                New SqlParameter("@StartDate", startDate),
+                New SqlParameter("@EndDate", endDate)
+            }
+
+                Dim thisData As DataTable = GetDataTableSP("sp_ReportOrder_OrderDetails", params)
+
+                Dim doc As New Document(PageSize.A4.Rotate(), 20, 20, 80, 50)
+                Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
+
+                writer.PageEvent = New ReportDataOrderEvents("REPORT JOB ORDER")
+                doc.Open()
+
+                If thisData IsNot Nothing AndAlso thisData.Columns.Count > 0 Then
+                    Dim columnCount As Integer = thisData.Columns.Count
+                    Dim widths(columnCount - 1) As Single
+
+                    For i As Integer = 0 To columnCount - 1
+                        Dim columnName As String = thisData.Columns(i).ColumnName
+
+                        If String.Equals(columnName, "OrderId", StringComparison.OrdinalIgnoreCase) Then
+                            widths(i) = 1.4F
+                        ElseIf String.Equals(columnName, "CustomerName", StringComparison.OrdinalIgnoreCase) Then
+                            widths(i) = 2.5F
+                        ElseIf String.Equals(columnName, "ProductionDate", StringComparison.OrdinalIgnoreCase) Then
+                            widths(i) = 1.8F
+                        Else
+                            widths(i) = 1.0F
+                        End If
+                    Next
+
+                    Dim table As New PdfPTable(columnCount)
+                    table.WidthPercentage = 100
+                    table.SetWidths(widths)
+                    table.HeaderRows = 1
+                    table.SplitLate = False
+                    table.KeepTogether = False
+
+                    For Each column As DataColumn In thisData.Columns
+                        table.AddCell(CellData(column.ColumnName, isBold:=True))
+                    Next
+
+                    If thisData.Rows.Count > 0 Then
+                        For Each row As DataRow In thisData.Rows
+                            Dim isTotal As Boolean = String.Equals(Convert.ToString(row("OrderId")), "TOTAL", StringComparison.OrdinalIgnoreCase)
+
+                            For Each column As DataColumn In thisData.Columns
+                                Dim cellValue As String = If(row.IsNull(column), String.Empty, Convert.ToString(row(column)))
+
+                                If String.Equals(column.ColumnName, "ProductionDate", StringComparison.OrdinalIgnoreCase) AndAlso Not row.IsNull(column) Then
+                                    cellValue = Convert.ToDateTime(row(column)).ToString("dd MMM yyyy")
+                                End If
+
+                                table.AddCell(CellData(cellValue, isBold:=isTotal))
+                            Next
+                        Next
+                    Else
+                        Dim emptyCell As PdfPCell = New PdfPCell(New Phrase("No data available"))
+                        emptyCell.Colspan = columnCount
+                        emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
+                        emptyCell.Padding = 8
+                        table.AddCell(emptyCell)
+                    End If
+
+                    doc.Add(table)
+                Else
+                    doc.Add(New Paragraph("No data available"))
+                End If
+
+                doc.Close()
+                Return ms.ToArray()
+            End Using
+        Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine("OrderDetailPDF Error: " & ex.ToString())
+            Return New Byte() {}
+        End Try
+    End Function
+    ' END ORDER DETAILS
+
     ' START CUSTOMER (LIST)
 
     Public Function CustomerListPDF(companyId As String, roleName As String) As Byte()
