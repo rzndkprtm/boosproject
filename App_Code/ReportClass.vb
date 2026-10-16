@@ -322,18 +322,18 @@ Public Class ReportClass
         Try
             Using ms As New MemoryStream()
                 Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@CompanyId", If(String.IsNullOrWhiteSpace(companyId), CType(DBNull.Value, Object), companyId)),
-                New SqlParameter("@DesignId", If(String.IsNullOrWhiteSpace(designType), CType(DBNull.Value, Object), designType)),
-                New SqlParameter("@StartDate", startDate),
-                New SqlParameter("@EndDate", endDate)
-            }
+                    New SqlParameter("@CompanyId", If(String.IsNullOrWhiteSpace(companyId), CType(DBNull.Value, Object), companyId)),
+                    New SqlParameter("@DesignId", If(String.IsNullOrWhiteSpace(designType), CType(DBNull.Value, Object), designType)),
+                    New SqlParameter("@StartDate", startDate),
+                    New SqlParameter("@EndDate", endDate)
+                }
 
                 Dim thisData As DataTable = GetDataTableSP("sp_ReportOrder_OrderDetails", params)
 
                 Dim doc As New Document(PageSize.A4.Rotate(), 20, 20, 80, 50)
                 Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
-                writer.PageEvent = New ReportDataOrderEvents("REPORT JOB ORDER")
+                writer.PageEvent = New ReportDataOrderEvents("REPORT ORDERS (PRODUCT)")
                 doc.Open()
 
                 If thisData IsNot Nothing AndAlso thisData.Columns.Count > 0 Then
@@ -361,8 +361,20 @@ Public Class ReportClass
                     table.SplitLate = False
                     table.KeepTogether = False
 
+                    ' Custom Header Titles
                     For Each column As DataColumn In thisData.Columns
-                        table.AddCell(CellData(column.ColumnName, isBold:=True))
+                        Dim columnTitle As String = column.ColumnName
+
+                        Select Case column.ColumnName
+                            Case "OrderId"
+                                columnTitle = "Order ID"
+                            Case "CustomerName"
+                                columnTitle = "Customer Name"
+                            Case "ProductionDate"
+                                columnTitle = "Production Date"
+                        End Select
+
+                        table.AddCell(CellData(columnTitle, isBold:=True))
                     Next
 
                     If thisData.Rows.Count > 0 Then
@@ -380,7 +392,7 @@ Public Class ReportClass
                             Next
                         Next
                     Else
-                        Dim emptyCell As PdfPCell = New PdfPCell(New Phrase("No data available"))
+                        Dim emptyCell As New PdfPCell(New Phrase("No data available"))
                         emptyCell.Colspan = columnCount
                         emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
                         emptyCell.Padding = 8
@@ -400,6 +412,7 @@ Public Class ReportClass
             Return New Byte() {}
         End Try
     End Function
+
     ' END ORDER DETAILS
 
     ' START CUSTOMER (LIST)
@@ -713,36 +726,18 @@ Public Class ReportClass
             End Using
 
         Catch ex As Exception
-
             Throw New Exception("CustomerOrderExcel Error : " & ex.Message)
-
         End Try
-
     End Function
 
     Private Function CleanExcelText(text As String) As String
-
         Try
-
-            If String.IsNullOrEmpty(text) Then
-                Return ""
-            End If
-
-            ' Remove invalid XML / Excel characters
-            Return Regex.Replace(
-            text,
-            "[^\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD]",
-            ""
-        )
-
+            If String.IsNullOrEmpty(text) Then Return ""
+            Return Regex.Replace(text, "[^\u0009\u000A\u000D\u0020-\uD7FF\uE000-\uFFFD]", "")
         Catch ex As Exception
-
             Return ""
-
         End Try
-
     End Function
-
     ' END CUSTOMER (ORDER)
 End Class
 
