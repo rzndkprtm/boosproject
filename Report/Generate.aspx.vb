@@ -66,7 +66,7 @@ Partial Class Report_Generate
                         companyName = reportClass.GetItemData("SELECT ALIAS FROM Companys WHERE Id='" & ddlCompany.SelectedValue & "'")
                     End If
 
-                    Dim fileName As String = "REPORT_ORDER_" & companyName.Replace(" ", "_") & "_" & txtStartDate.ToString("yyyy-MM-dd") & "_TO_" & txtEndDate.ToString("yyyy-MM-dd") & ".pdf"
+                    Dim fileName As String = "REPORT_ORDER_" & companyName.Replace(" ", "_") & "_" & txtStartDate.Text & "_TO_" & txtEndDate.Text & ".pdf"
 
                     Response.Clear()
                     Response.ContentType = "application/pdf"
@@ -87,7 +87,7 @@ Partial Class Report_Generate
                         companyName = reportClass.GetItemData("SELECT ALIAS FROM Companys WHERE Id='" & ddlCompany.SelectedValue & "'")
                     End If
 
-                    Dim fileName As String = "REPORT_ORDER_" & companyName.Replace(" ", "_") & "_" & txtStartDate.ToString("yyyy-MM-dd") & "_TO_" & txtEndDate.ToString("yyyy-MM-dd") & ".pdf"
+                    Dim fileName As String = "REPORT_ORDER_" & companyName.Replace(" ", "_") & "_" & txtStartDate.Text & "_TO_" & txtEndDate.Text & ".pdf"
 
                     Response.Clear()
                     Response.ClearContent()
@@ -114,7 +114,7 @@ Partial Class Report_Generate
                         companyName = reportClass.GetItemData("SELECT ALIAS FROM Companys WHERE Id='" & ddlCompany.SelectedValue & "'")
                     End If
 
-                    Dim fileName As String = "REPORT_ORDER_" & companyName.Replace(" ", "_") & "_" & txtStartDate.ToString("yyyy-MM-dd") & "_TO_" & txtEndDate.ToString("yyyy-MM-dd") & ".pdf"
+                    Dim fileName As String = "REPORT_ORDER_" & companyName.Replace(" ", "_") & "_" & txtStartDate.Text & "_TO_" & txtEndDate.Text & ".pdf"
 
                     Response.Clear()
                     Response.ContentType = "text/csv"
@@ -144,7 +144,7 @@ Partial Class Report_Generate
                         companyName = reportClass.GetItemData("SELECT ALIAS FROM Companys WHERE Id='" & ddlCompany.SelectedValue & "'")
                     End If
 
-                    Dim fileName As String = "REPORT_ORDER_PRODUCT_" & companyName.Replace(" ", "_") & "_" & txtStartDate.ToString("yyyy-MM-dd") & "_TO_" & txtEndDate.ToString("yyyy-MM-dd") & ".pdf"
+                    Dim fileName As String = "REPORT_ORDER_PRODUCT_" & companyName.Replace(" ", "_") & "_" & txtStartDate.Text & "_TO_" & txtEndDate.Text & ".pdf"
 
                     Response.Clear()
                     Response.ContentType = "application/pdf"
