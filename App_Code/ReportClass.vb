@@ -412,7 +412,7 @@ Public Class ReportClass
 
                         Dim headerCell As New PdfPCell(New Phrase(columnTitle, headerFont))
                         headerCell.BackgroundColor = New BaseColor(36, 52, 71)
-                        headerCell.HorizontalAlignment = Element.ALIGN_LEFT
+                        headerCell.HorizontalAlignment = Element.ALIGN_CENTER
                         headerCell.VerticalAlignment = Element.ALIGN_MIDDLE
                         headerCell.PaddingTop = 8
                         headerCell.PaddingBottom = 8
@@ -459,7 +459,7 @@ Public Class ReportClass
                                 dataCell.BorderColor = New BaseColor(226, 232, 240)
                                 dataCell.BorderWidth = 0.5F
 
-                                If String.Equals(column.ColumnName, "OrderId", StringComparison.OrdinalIgnoreCase) OrElse String.Equals(column.ColumnName, "ProductionDate", StringComparison.OrdinalIgnoreCase) Then
+                                If String.Equals(column.ColumnName, "OrderId", StringComparison.OrdinalIgnoreCase) OrElse String.Equals(column.ColumnName, "ProductionDate", StringComparison.OrdinalIgnoreCase) OrElse (thisData.Columns.IndexOf(column) >= 3) Then
                                     dataCell.HorizontalAlignment = Element.ALIGN_CENTER
                                 Else
                                     dataCell.HorizontalAlignment = Element.ALIGN_LEFT
