@@ -166,10 +166,25 @@ Public Class ReportClass
                     New SqlParameter("@EndDate", endDate)
                 }
 
-                Dim doc As New Document(PageSize.A4.Rotate, 20, 20, 80, 50)
+                Dim companyName As String = "ALL COMPANIES"
+                If Not String.IsNullOrWhiteSpace(companyId) Then
+                    companyName = Convert.ToString(GetItemData("SELECT Alias FROM Companys WHERE Id='" & companyId.Replace("'", "''") & "'"))
+                    If String.IsNullOrWhiteSpace(companyName) Then companyName = "COMPANY " & companyId
+                End If
+
+                Dim pageTitle As String = "ORDER DETAIL REPORT"
+
+                Dim doc As New Document(PageSize.A4.Rotate(), 25, 25, 125, 55)
                 Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
-                writer.PageEvent = New ReportDataOrderEvents("REPORT JOB ORDER")
+                Dim pageEvent As New ReportDataOrderEvents() With {
+                    .PageTitle = pageTitle,
+                    .PageCompany = companyName,
+                    .PageStartDate = startDate,
+                    .PageEndDate = endDate
+                }
+
+                writer.PageEvent = pageEvent
                 doc.Open()
 
                 Dim table As New PdfPTable(6)
@@ -330,10 +345,25 @@ Public Class ReportClass
 
                 Dim thisData As DataTable = GetDataTableSP("sp_ReportOrder_OrderDetails", params)
 
-                Dim doc As New Document(PageSize.A4.Rotate(), 20, 20, 80, 50)
+                Dim companyName As String = "ALL COMPANIES"
+                If Not String.IsNullOrWhiteSpace(companyId) Then
+                    companyName = Convert.ToString(GetItemData("SELECT Alias FROM Companys WHERE Id='" & companyId.Replace("'", "''") & "'"))
+                    If String.IsNullOrWhiteSpace(companyName) Then companyName = "COMPANY " & companyId
+                End If
+
+                Dim pageTitle As String = "ORDER DETAIL REPORT"
+
+                Dim doc As New Document(PageSize.A4.Rotate(), 25, 25, 125, 55)
                 Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
-                writer.PageEvent = New ReportDataOrderEvents("REPORT ORDERS (PRODUCT)")
+                Dim pageEvent As New ReportDataOrderEvents() With {
+                    .PageTitle = pageTitle,
+                    .PageCompany = companyName,
+                    .PageStartDate = startDate,
+                    .PageEndDate = endDate
+                }
+
+                writer.PageEvent = pageEvent
                 doc.Open()
 
                 If thisData IsNot Nothing AndAlso thisData.Columns.Count > 0 Then
@@ -343,15 +373,16 @@ Public Class ReportClass
                     For i As Integer = 0 To columnCount - 1
                         Dim columnName As String = thisData.Columns(i).ColumnName
 
-                        If String.Equals(columnName, "OrderId", StringComparison.OrdinalIgnoreCase) Then
-                            widths(i) = 1.4F
-                        ElseIf String.Equals(columnName, "CustomerName", StringComparison.OrdinalIgnoreCase) Then
-                            widths(i) = 2.5F
-                        ElseIf String.Equals(columnName, "ProductionDate", StringComparison.OrdinalIgnoreCase) Then
-                            widths(i) = 1.8F
-                        Else
-                            widths(i) = 1.0F
-                        End If
+                        Select Case columnName.ToUpperInvariant()
+                            Case "ORDERID"
+                                widths(i) = 1.5F
+                            Case "CUSTOMERNAME"
+                                widths(i) = 2.5F
+                            Case "PRODUCTIONDATE"
+                                widths(i) = 1.8F
+                            Case Else
+                                widths(i) = 1.0F
+                        End Select
                     Next
 
                     Dim table As New PdfPTable(columnCount)
@@ -360,8 +391,13 @@ Public Class ReportClass
                     table.HeaderRows = 1
                     table.SplitLate = False
                     table.KeepTogether = False
+                    table.SpacingBefore = 5
+                    table.SpacingAfter = 5
 
-                    ' Custom Header Titles
+                    Dim headerFont As New Font(Font.FontFamily.HELVETICA, 8, Font.BOLD, BaseColor.WHITE)
+                    Dim dataFont As New Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL, New BaseColor(45, 55, 72))
+                    Dim totalFont As New Font(Font.FontFamily.HELVETICA, 8, Font.BOLD, New BaseColor(31, 41, 55))
+
                     For Each column As DataColumn In thisData.Columns
                         Dim columnTitle As String = column.ColumnName
 
@@ -374,34 +410,82 @@ Public Class ReportClass
                                 columnTitle = "Production Date"
                         End Select
 
-                        table.AddCell(CellData(columnTitle, isBold:=True))
+                        Dim headerCell As New PdfPCell(New Phrase(columnTitle, headerFont))
+                        headerCell.BackgroundColor = New BaseColor(36, 52, 71)
+                        headerCell.HorizontalAlignment = Element.ALIGN_LEFT
+                        headerCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                        headerCell.PaddingTop = 8
+                        headerCell.PaddingBottom = 8
+                        headerCell.PaddingLeft = 5
+                        headerCell.PaddingRight = 5
+                        headerCell.BorderColor = New BaseColor(220, 226, 232)
+                        headerCell.BorderWidth = 0.5F
+                        table.AddCell(headerCell)
                     Next
 
                     If thisData.Rows.Count > 0 Then
+                        Dim rowIndex As Integer = 0
+
                         For Each row As DataRow In thisData.Rows
-                            Dim isTotal As Boolean = String.Equals(Convert.ToString(row("OrderId")), "TOTAL", StringComparison.OrdinalIgnoreCase)
+                            Dim isTotal As Boolean = thisData.Columns.Contains("OrderId") AndAlso String.Equals(Convert.ToString(row("OrderId")), "TOTAL", StringComparison.OrdinalIgnoreCase)
+                            Dim rowBackground As BaseColor
+
+                            If isTotal Then
+                                rowBackground = New BaseColor(219, 234, 254)
+                            ElseIf rowIndex Mod 2 = 0 Then
+                                rowBackground = BaseColor.WHITE
+                            Else
+                                rowBackground = New BaseColor(245, 247, 250)
+                            End If
 
                             For Each column As DataColumn In thisData.Columns
                                 Dim cellValue As String = If(row.IsNull(column), String.Empty, Convert.ToString(row(column)))
 
                                 If String.Equals(column.ColumnName, "ProductionDate", StringComparison.OrdinalIgnoreCase) AndAlso Not row.IsNull(column) Then
-                                    cellValue = Convert.ToDateTime(row(column)).ToString("dd MMM yyyy")
+                                    Dim productionDate As DateTime
+                                    If DateTime.TryParse(Convert.ToString(row(column)), productionDate) Then
+                                        cellValue = productionDate.ToString("dd MMM yyyy")
+                                    End If
                                 End If
 
-                                table.AddCell(CellData(cellValue, isBold:=isTotal))
+                                Dim cellFont As Font = If(isTotal, totalFont, dataFont)
+                                Dim dataCell As New PdfPCell(New Phrase(cellValue, cellFont))
+                                dataCell.BackgroundColor = rowBackground
+                                dataCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                                dataCell.PaddingTop = 6
+                                dataCell.PaddingBottom = 6
+                                dataCell.PaddingLeft = 5
+                                dataCell.PaddingRight = 5
+                                dataCell.BorderColor = New BaseColor(226, 232, 240)
+                                dataCell.BorderWidth = 0.5F
+
+                                If String.Equals(column.ColumnName, "OrderId", StringComparison.OrdinalIgnoreCase) OrElse String.Equals(column.ColumnName, "ProductionDate", StringComparison.OrdinalIgnoreCase) Then
+                                    dataCell.HorizontalAlignment = Element.ALIGN_CENTER
+                                Else
+                                    dataCell.HorizontalAlignment = Element.ALIGN_LEFT
+                                End If
+
+                                table.AddCell(dataCell)
                             Next
+
+                            rowIndex += 1
                         Next
                     Else
-                        Dim emptyCell As New PdfPCell(New Phrase("No data available"))
+                        Dim emptyCell As New PdfPCell(New Phrase("No data available", New Font(Font.FontFamily.HELVETICA, 9, Font.ITALIC, New BaseColor(107, 114, 128))))
                         emptyCell.Colspan = columnCount
                         emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
-                        emptyCell.Padding = 8
+                        emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                        emptyCell.Padding = 15
+                        emptyCell.BorderColor = New BaseColor(226, 232, 240)
                         table.AddCell(emptyCell)
                     End If
 
                     doc.Add(table)
                 Else
-                    doc.Add(New Paragraph("No data available"))
+                    Dim emptyParagraph As New Paragraph("No data available", New Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC, New BaseColor(107, 114, 128)))
+                    emptyParagraph.Alignment = Element.ALIGN_CENTER
+                    emptyParagraph.SpacingBefore = 20
+                    doc.Add(emptyParagraph)
                 End If
 
                 doc.Close()
@@ -418,60 +502,68 @@ Public Class ReportClass
     ' START CUSTOMER (LIST)
 
     Public Function CustomerListPDF(companyId As String, roleName As String) As Byte()
-        Try
-            Using ms As New MemoryStream()
-                Dim params As New List(Of SqlParameter) From {
-                    New SqlParameter("@Active", 1),
-                    New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
-                    New SqlParameter("@RoleName", roleName)
-                }
+        'Try
+        '    Using ms As New MemoryStream()
+        '        Dim params As New List(Of SqlParameter) From {
+        '            New SqlParameter("@Active", 1),
+        '            New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
+        '            New SqlParameter("@RoleName", roleName)
+        '        }
 
-                Dim doc As New Document(PageSize.A4.Rotate, 20, 20, 80, 50)
-                Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
+        '        Dim companyName As String = "ALL"
+        '        If Not String.IsNullOrWhiteSpace(companyId) Then
+        '            companyName = GetItemData("SELECT Alias FROM Companys WHERE Id='" & companyName & "'")
+        '        End If
 
-                writer.PageEvent = New ReportDataOrderEvents("REPORT CUSTOMER LIST")
-                doc.Open()
+        '        Dim doc As New Document(PageSize.A4.Rotate(), 20, 20, 80, 50)
+        '        Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
-                Dim table As New PdfPTable(8)
+        '        Dim pageEvent As New ReportDataOrderEvents() With {
+        '            .PageTitle = "", .PageCompany = companyName, .PageStartDate = startDate, .PageEndDate = endDate
+        '        }
+        '        writer.PageEvent = pageEvent
+        '        doc.Open()
 
-                table.WidthPercentage = 100
-                table.SetWidths(New Single() {0.1F, 0.2F, 0.1F, 0.1F, 0.16F, 0.1F, 0.14F, 0.1F})
+        '        Dim table As New PdfPTable(8)
 
-                table.HeaderRows = 1
-                table.SplitLate = False
-                table.KeepTogether = False
+        '        table.WidthPercentage = 100
+        '        table.SetWidths(New Single() {0.1F, 0.2F, 0.1F, 0.1F, 0.16F, 0.1F, 0.14F, 0.1F})
 
-                table.AddCell(CellData("Debtor Code", isBold:=True))
-                table.AddCell(CellData("Account Name", isBold:=True))
-                table.AddCell(CellData("Company", isBold:=True))
-                table.AddCell(CellData("Area", isBold:=True))
-                table.AddCell(CellData("Sales Name", isBold:=True))
-                table.AddCell(CellData("Pricing", isBold:=True))
-                table.AddCell(CellData("Shutter Pricing", isBold:=True))
-                table.AddCell(CellData("Door Pricing", isBold:=True))
+        '        table.HeaderRows = 1
+        '        table.SplitLate = False
+        '        table.KeepTogether = False
 
-                Dim thisData As DataTable = GetDataTableSP("sp_Customers_List", params)
-                If thisData.Rows.Count > 0 Then
-                    For i As Integer = 0 To thisData.Rows.Count - 1
-                        table.AddCell(CellData(thisData.Rows(i)("DebtorCode").ToString()))
-                        table.AddCell(CellData(thisData.Rows(i)("Name").ToString()))
-                        table.AddCell(CellData(thisData.Rows(i)("CompanyDetailName").ToString()))
-                        table.AddCell(CellData(thisData.Rows(i)("Area").ToString()))
-                        table.AddCell(CellData(thisData.Rows(i)("OperatorName").ToString()))
-                        table.AddCell(CellData(thisData.Rows(i)("PriceBlind").ToString()))
-                        table.AddCell(CellData(thisData.Rows(i)("PriceShutter").ToString()))
-                        table.AddCell(CellData(thisData.Rows(i)("PriceDoor").ToString()))
-                    Next
-                End If
+        '        table.AddCell(CellData("Debtor Code", isBold:=True))
+        '        table.AddCell(CellData("Account Name", isBold:=True))
+        '        table.AddCell(CellData("Company", isBold:=True))
+        '        table.AddCell(CellData("Area", isBold:=True))
+        '        table.AddCell(CellData("Sales Name", isBold:=True))
+        '        table.AddCell(CellData("Pricing", isBold:=True))
+        '        table.AddCell(CellData("Shutter Pricing", isBold:=True))
+        '        table.AddCell(CellData("Door Pricing", isBold:=True))
 
-                doc.Add(table)
-                doc.Close()
+        '        Dim thisData As DataTable = GetDataTableSP("sp_Customers_List", params)
+        '        If thisData.Rows.Count > 0 Then
+        '            For i As Integer = 0 To thisData.Rows.Count - 1
+        '                table.AddCell(CellData(thisData.Rows(i)("DebtorCode").ToString()))
+        '                table.AddCell(CellData(thisData.Rows(i)("Name").ToString()))
+        '                table.AddCell(CellData(thisData.Rows(i)("CompanyDetailName").ToString()))
+        '                table.AddCell(CellData(thisData.Rows(i)("Area").ToString()))
+        '                table.AddCell(CellData(thisData.Rows(i)("OperatorName").ToString()))
+        '                table.AddCell(CellData(thisData.Rows(i)("PriceBlind").ToString()))
+        '                table.AddCell(CellData(thisData.Rows(i)("PriceShutter").ToString()))
+        '                table.AddCell(CellData(thisData.Rows(i)("PriceDoor").ToString()))
+        '            Next
+        '        End If
 
-                Return ms.ToArray()
-            End Using
-        Catch ex As Exception
-            Return New Byte() {}
-        End Try
+        '        doc.Add(table)
+        '        doc.Close()
+
+        '        Return ms.ToArray()
+        '    End Using
+        'Catch ex As Exception
+        '    Return New Byte() {}
+        'End Try
     End Function
 
     Public Function CustomerListExcel(companyId As String, roleName As String) As Byte()
@@ -554,79 +646,80 @@ Public Class ReportClass
 
     ' START CUSTOMER (ORDER)
     Public Function CustomerOrderPDF(dt As DataTable, title As String) As Byte()
-        Try
-            Using ms As New MemoryStream()
-                Dim visibleColumns As New List(Of DataColumn)
-                For Each col As DataColumn In dt.Columns
-                    Dim colName As String = col.ColumnName.Trim()
-                    If String.Equals(colName, "SortOrder", StringComparison.OrdinalIgnoreCase) Then Continue For
-                    If String.Equals(colName, "Total Order", StringComparison.OrdinalIgnoreCase) Then Continue For
-                    If String.Equals(colName, "No", StringComparison.OrdinalIgnoreCase) Then Continue For
-                    If String.IsNullOrWhiteSpace(colName) Then Continue For
+        'Try
+        '    Using ms As New MemoryStream()
+        '        Dim visibleColumns As New List(Of DataColumn)
+        '        For Each col As DataColumn In dt.Columns
+        '            Dim colName As String = col.ColumnName.Trim()
+        '            If String.Equals(colName, "SortOrder", StringComparison.OrdinalIgnoreCase) Then Continue For
+        '            If String.Equals(colName, "Total Order", StringComparison.OrdinalIgnoreCase) Then Continue For
+        '            If String.Equals(colName, "No", StringComparison.OrdinalIgnoreCase) Then Continue For
+        '            If String.IsNullOrWhiteSpace(colName) Then Continue For
 
-                    visibleColumns.Add(col)
-                Next
+        '            visibleColumns.Add(col)
+        '        Next
 
-                Dim doc As New Document(PageSize.A4.Rotate, 20, 20, 80, 50)
+        '        Dim companyName As String = "ALL"
+        '        'If Not String.IsNullOrWhiteSpace(companyId) Then
+        '        '    companyName = GetItemData("SELECT Alias FROM Companys WHERE Id='" & companyName & "'")
+        '        'End If
 
-                Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
-                writer.PageEvent = New ReportDataOrderEvents(title)
+        '        Dim doc As New Document(PageSize.A4.Rotate(), 20, 20, 80, 50)
+        '        Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
-                doc.Open()
+        '        Dim pageEvent As New ReportDataOrderEvents() With {
+        '            .PageTitle = "", .PageCompany = companyName, .PageStartDate = , .PageEndDate = DBNull.Value
+        '        }
+        '        writer.PageEvent = pageEvent
 
-                Dim table As New PdfPTable(visibleColumns.Count)
+        '        doc.Open()
 
-                table.WidthPercentage = 100
-                table.HeaderRows = 1
-                table.SplitLate = False
-                table.KeepTogether = False
+        '        Dim table As New PdfPTable(visibleColumns.Count)
 
-                Dim widths(visibleColumns.Count - 1) As Single
+        '        table.WidthPercentage = 100
+        '        table.HeaderRows = 1
+        '        table.SplitLate = False
+        '        table.KeepTogether = False
 
-                For i As Integer = 0 To visibleColumns.Count - 1
-                    widths(i) = 1.0F
-                Next
+        '        Dim widths(visibleColumns.Count - 1) As Single
 
-                table.SetWidths(widths)
+        '        For i As Integer = 0 To visibleColumns.Count - 1
+        '            widths(i) = 1.0F
+        '        Next
 
-                For Each col As DataColumn In visibleColumns
-                    table.AddCell(CellData(col.ColumnName.ToUpper(), isBold:=True))
-                Next
+        '        table.SetWidths(widths)
 
-                For Each dr As DataRow In dt.Rows
-                    For Each col As DataColumn In visibleColumns
-                        Dim value As String = ""
+        '        For Each col As DataColumn In visibleColumns
+        '            table.AddCell(CellData(col.ColumnName.ToUpper(), isBold:=True))
+        '        Next
 
-                        If Not IsDBNull(dr(col.ColumnName)) Then
-                            value = dr(col.ColumnName).ToString()
-                        End If
-                        table.AddCell(CellData(value))
-                    Next
-                Next
+        '        For Each dr As DataRow In dt.Rows
+        '            For Each col As DataColumn In visibleColumns
+        '                Dim value As String = ""
 
-                doc.Add(table)
-                doc.Close()
+        '                If Not IsDBNull(dr(col.ColumnName)) Then
+        '                    value = dr(col.ColumnName).ToString()
+        '                End If
+        '                table.AddCell(CellData(value))
+        '            Next
+        '        Next
 
-                Return ms.ToArray()
-            End Using
-        Catch ex As Exception
-            Return New Byte() {}
-        End Try
+        '        doc.Add(table)
+        '        doc.Close()
+
+        '        Return ms.ToArray()
+        '    End Using
+        'Catch ex As Exception
+        '    Return New Byte() {}
+        'End Try
     End Function
 
     Public Function CustomerOrderExcel(dt As DataTable, title As String) As Byte()
-
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial
-
         Try
-
-            '========================================
-            ' FILTER COLUMN
-            '========================================
             Dim visibleColumns As New List(Of DataColumn)
 
             For Each col As DataColumn In dt.Columns
-
                 Dim colName As String = col.ColumnName.Trim()
 
                 If String.Equals(colName, "SortOrder", StringComparison.OrdinalIgnoreCase) Then Continue For
@@ -639,15 +732,7 @@ Public Class ReportClass
             Next
 
             Using package As New ExcelPackage()
-
-                '========================================
-                ' CREATE WORKSHEET
-                '========================================
                 Dim ws As ExcelWorksheet = package.Workbook.Worksheets.Add("Report")
-
-                '========================================
-                ' TITLE
-                '========================================
                 ws.Cells(1, 1).Value = title
 
                 ws.Cells(1, 1).Style.Font.Bold = True
@@ -744,86 +829,130 @@ End Class
 Public Class ReportDataOrderEvents
     Inherits PdfPageEventHelper
 
-    Private pageTitle As String
-
-    Public Sub New(pageTitle As String)
-        Me.pageTitle = pageTitle
-    End Sub
+    Public PageTitle As String
+    Public PageCompany As String
+    Public PageStartDate As Date?
+    Public PageEndDate As Date?
 
     Public Overrides Sub OnEndPage(writer As PdfWriter, document As Document)
         Dim cb As PdfContentByte = writer.DirectContent
-        Dim headerTable As New PdfPTable(2)
 
-        headerTable.TotalWidth = document.PageSize.Width - 40
-        headerTable.LockedWidth = True
+        Dim titleFont As New Font(Font.FontFamily.HELVETICA, 16, Font.BOLD, New BaseColor(36, 52, 71))
+        Dim labelFont As New Font(Font.FontFamily.HELVETICA, 8, Font.BOLD, New BaseColor(107, 114, 128))
+        Dim valueFont As New Font(Font.FontFamily.HELVETICA, 9, Font.BOLD, New BaseColor(31, 41, 55))
+        Dim smallFont As New Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL, New BaseColor(107, 114, 128))
+        Dim footerFont As New Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL, New BaseColor(107, 114, 128))
 
-        headerTable.SetWidths(New Single() {0.5F, 0.5F})
+        Dim leftMargin As Single = document.LeftMargin
+        Dim rightMargin As Single = document.PageSize.Width - document.RightMargin
+        Dim contentWidth As Single = rightMargin - leftMargin
 
-        Dim phrase As New Phrase()
+        ' HEADER TITLE
+        Dim titleTable As New PdfPTable(2)
+        titleTable.TotalWidth = contentWidth
+        titleTable.LockedWidth = True
+        titleTable.SetWidths(New Single() {0.68F, 0.32F})
 
-        Dim chunk1 As New Chunk(
-            pageTitle.ToUpper(),
-            New Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD)
-        )
+        Dim titleCell As New PdfPCell(New Phrase(If(String.IsNullOrWhiteSpace(PageTitle), "REPORT", PageTitle), titleFont))
+        titleCell.Border = Rectangle.NO_BORDER
+        titleCell.HorizontalAlignment = Element.ALIGN_LEFT
+        titleCell.VerticalAlignment = Element.ALIGN_MIDDLE
+        titleCell.PaddingBottom = 5
+        titleTable.AddCell(titleCell)
 
-        phrase.Add(chunk1)
+        Dim generatedCell As New PdfPCell(New Phrase("GENERATED ON" & vbLf & DateTime.Now.ToString("dd MMM yyyy HH:mm"), smallFont))
+        generatedCell.Border = Rectangle.NO_BORDER
+        generatedCell.HorizontalAlignment = Element.ALIGN_RIGHT
+        generatedCell.VerticalAlignment = Element.ALIGN_MIDDLE
+        generatedCell.PaddingBottom = 5
+        titleTable.AddCell(generatedCell)
 
-        Dim leftHeaderCell As New PdfPCell(phrase)
+        titleTable.WriteSelectedRows(0, -1, leftMargin, document.PageSize.Height - 22, cb)
 
-        leftHeaderCell.Border = 0
-        leftHeaderCell.HorizontalAlignment = Element.ALIGN_LEFT
-        leftHeaderCell.VerticalAlignment = Element.ALIGN_TOP
+        ' HEADER DIVIDER
+        Dim lineY As Single = document.PageSize.Height - 57
 
-        headerTable.AddCell(leftHeaderCell)
+        cb.SaveState()
+        cb.SetColorStroke(New BaseColor(37, 99, 235))
+        cb.SetLineWidth(2.0F)
+        cb.MoveTo(leftMargin, lineY)
+        cb.LineTo(rightMargin, lineY)
+        cb.Stroke()
+        cb.RestoreState()
 
-        Dim rightHeaderCell As New PdfPCell(
-            New Phrase(
-                "Date : " & DateTime.Now.ToString("dd MMM yyyy HH:mm:ss"),
-                New Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD)
-            )
-        )
+        ' COMPANY AND REPORT PERIOD
+        Dim infoTable As New PdfPTable(2)
+        infoTable.TotalWidth = contentWidth
+        infoTable.LockedWidth = True
+        infoTable.SetWidths(New Single() {0.5F, 0.5F})
 
-        rightHeaderCell.Border = 0
-        rightHeaderCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        rightHeaderCell.VerticalAlignment = Element.ALIGN_BOTTOM
+        Dim companyCell As New PdfPCell()
+        companyCell.Border = Rectangle.NO_BORDER
+        companyCell.HorizontalAlignment = Element.ALIGN_LEFT
+        companyCell.VerticalAlignment = Element.ALIGN_TOP
+        companyCell.PaddingTop = 9
+        companyCell.PaddingBottom = 5
+        companyCell.PaddingLeft = 0
+        companyCell.PaddingRight = 10
+        companyCell.AddElement(New Paragraph("COMPANY", labelFont))
+        companyCell.AddElement(New Paragraph(If(String.IsNullOrWhiteSpace(PageCompany), "ALL COMPANIES", PageCompany), valueFont))
+        infoTable.AddCell(companyCell)
 
-        headerTable.AddCell(rightHeaderCell)
+        Dim periodText As String = "All Dates"
 
-        headerTable.WriteSelectedRows(0, -1, 20, document.PageSize.Height - 20, cb)
+        If PageStartDate.HasValue AndAlso PageEndDate.HasValue Then
+            periodText = PageStartDate.Value.ToString("dd MMM yyyy") & " - " & PageEndDate.Value.ToString("dd MMM yyyy")
+        ElseIf PageStartDate.HasValue Then
+            periodText = "From " & PageStartDate.Value.ToString("dd MMM yyyy")
+        ElseIf PageEndDate.HasValue Then
+            periodText = "Until " & PageEndDate.Value.ToString("dd MMM yyyy")
+        End If
 
+        Dim periodCell As New PdfPCell()
+        periodCell.Border = Rectangle.NO_BORDER
+        periodCell.HorizontalAlignment = Element.ALIGN_LEFT
+        periodCell.VerticalAlignment = Element.ALIGN_TOP
+        periodCell.PaddingTop = 9
+        periodCell.PaddingBottom = 5
+        periodCell.PaddingLeft = 0
+        periodCell.PaddingRight = 10
+        periodCell.AddElement(New Paragraph("REPORT PERIOD", labelFont))
+        periodCell.AddElement(New Paragraph(periodText, valueFont))
+        infoTable.AddCell(periodCell)
+
+        infoTable.WriteSelectedRows(0, -1, leftMargin, lineY - 3, cb)
+
+        ' FOOTER DIVIDER
+        Dim footerY As Single = document.BottomMargin - 5
+
+        cb.SaveState()
+        cb.SetColorStroke(New BaseColor(226, 232, 240))
+        cb.SetLineWidth(0.7F)
+        cb.MoveTo(leftMargin, footerY + 15)
+        cb.LineTo(rightMargin, footerY + 15)
+        cb.Stroke()
+        cb.RestoreState()
+
+        ' FOOTER
         Dim footerTable As New PdfPTable(2)
-
-        footerTable.TotalWidth = document.PageSize.Width - 40
+        footerTable.TotalWidth = contentWidth
         footerTable.LockedWidth = True
+        footerTable.SetWidths(New Single() {0.75F, 0.25F})
 
-        footerTable.SetWidths(New Single() {0.5F, 0.5F})
-
-        Dim leftFooterCell As New PdfPCell(
-            New Phrase(
-                "All information within this report is private and confidential.",
-                New Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD)
-            )
-        )
-
-        leftFooterCell.Border = 0
+        Dim leftFooterCell As New PdfPCell(New Phrase("CONFIDENTIAL  |  All information within this report is private and confidential.", footerFont))
+        leftFooterCell.Border = Rectangle.NO_BORDER
         leftFooterCell.HorizontalAlignment = Element.ALIGN_LEFT
-        leftFooterCell.VerticalAlignment = Element.ALIGN_BOTTOM
-
+        leftFooterCell.VerticalAlignment = Element.ALIGN_MIDDLE
+        leftFooterCell.PaddingTop = 5
         footerTable.AddCell(leftFooterCell)
 
-        Dim rightFooterCell As New PdfPCell(
-            New Phrase(
-                "Page " & writer.PageNumber,
-                New Font(Font.FontFamily.TIMES_ROMAN, 10)
-            )
-        )
-
-        rightFooterCell.Border = 0
+        Dim rightFooterCell As New PdfPCell(New Phrase("Page " & writer.PageNumber, New Font(Font.FontFamily.HELVETICA, 8, Font.BOLD, New BaseColor(36, 52, 71))))
+        rightFooterCell.Border = Rectangle.NO_BORDER
         rightFooterCell.HorizontalAlignment = Element.ALIGN_RIGHT
-        rightFooterCell.VerticalAlignment = Element.ALIGN_BOTTOM
-
+        rightFooterCell.VerticalAlignment = Element.ALIGN_MIDDLE
+        rightFooterCell.PaddingTop = 5
         footerTable.AddCell(rightFooterCell)
 
-        footerTable.WriteSelectedRows(0, -1, 20, document.PageSize.GetBottom(36), cb)
+        footerTable.WriteSelectedRows(0, -1, leftMargin, footerY + 10, cb)
     End Sub
 End Class
