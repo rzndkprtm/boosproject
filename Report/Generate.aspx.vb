@@ -82,12 +82,19 @@ Partial Class Report_Generate
                     Dim reportClass As New ReportClass
                     Dim excelBytes As Byte() = reportClass.JobOrderExcel(company, txtStartDate.Text, txtEndDate.Text)
 
+                    Dim companyName As String = "ALL"
+                    If Not String.IsNullOrEmpty(ddlCompany.SelectedValue) Then
+                        companyName = reportClass.GetItemData("SELECT ALIAS FROM Companys WHERE Id='" & ddlCompany.SelectedValue & "'")
+                    End If
+
+                    Dim fileName As String = "REPORT_ORDER_" & companyName.Replace(" ", "_") & "_" & txtStartDate.ToString("yyyy-MM-dd") & "_TO_" & txtEndDate.ToString("yyyy-MM-dd") & ".pdf"
+
                     Response.Clear()
                     Response.ClearContent()
                     Response.ClearHeaders()
 
                     Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    Response.AddHeader("content-disposition", "attachment; filename=REPORT_JOB_ORDER.xlsx")
+                    Response.AddHeader("content-disposition", "attachment; filename=" & fileName)
                     Response.BinaryWrite(excelBytes)
 
                     Response.Flush()
@@ -102,9 +109,17 @@ Partial Class Report_Generate
                     Dim reportClass As New ReportClass
                     Dim csvBytes As Byte() = reportClass.JobOrderCSV(company, txtStartDate.Text, txtEndDate.Text)
 
+                    Dim companyName As String = "ALL"
+                    If Not String.IsNullOrEmpty(ddlCompany.SelectedValue) Then
+                        companyName = reportClass.GetItemData("SELECT ALIAS FROM Companys WHERE Id='" & ddlCompany.SelectedValue & "'")
+                    End If
+
+                    Dim fileName As String = "REPORT_ORDER_" & companyName.Replace(" ", "_") & "_" & txtStartDate.ToString("yyyy-MM-dd") & "_TO_" & txtEndDate.ToString("yyyy-MM-dd") & ".pdf"
+
                     Response.Clear()
                     Response.ContentType = "text/csv"
-                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_JOB_ORDER.csv")
+
+                    Response.AddHeader("Content-Disposition", "attachment; filename=" & )
                     Response.BinaryWrite(csvBytes)
                     Response.Flush()
                     Response.End()
