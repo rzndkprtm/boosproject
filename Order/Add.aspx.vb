@@ -203,7 +203,7 @@ Partial Class Order_Add
                 If companyDetailName = "JPMD BP" Then divOrderType.Visible = True
             End If
 
-            If companyDetailName = "JPMD" OrElse companyDetailName = "SP" Then
+            If companyDetailName = "JPMD" OrElse companyDetailName = "CWS" OrElse companyDetailName = "SP" Then
                 divOrderDelivery.Visible = True
                 If orderDelivery = "Special" Then
                     divOrderDetailDelivery.Visible = True
