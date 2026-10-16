@@ -70,6 +70,7 @@ Partial Class Order_Upload
                         Dim orderName As String = worksheet.Cells(2, 2).Text
                         Dim orderNote As String = worksheet.Cells(1, 6).Text
 
+                        Dim orderDelivery As String = String.Empty
                         Dim orderAddress As String = worksheet.Cells(1, 8).Text
                         Dim orderContainer As String = worksheet.Cells(1, 7).Text
 
@@ -92,6 +93,7 @@ Partial Class Order_Upload
                         If ddlCustomer.SelectedValue = "127" Then
                             If orderContainer = "NZN" OrElse orderContainer = "NZS" Then
                                 aliasCustomerId = "1614"
+                                orderDelivery = "Special"
                             End If
                         End If
 
@@ -120,7 +122,7 @@ Partial Class Order_Upload
                                         thisCmd.Parameters.AddWithValue("@OrderNumber", orderNumber)
                                         thisCmd.Parameters.AddWithValue("@OrderName", orderName)
                                         thisCmd.Parameters.AddWithValue("@OrderNote", orderNote)
-                                        thisCmd.Parameters.AddWithValue("@OrderDelivery", "Default")
+                                        thisCmd.Parameters.AddWithValue("@OrderDelivery", orderDelivery)
                                         thisCmd.Parameters.AddWithValue("@OrderContact", String.Empty)
                                         thisCmd.Parameters.AddWithValue("@OrderAddress", orderAddress)
                                         thisCmd.Parameters.AddWithValue("@OrderContainer", orderContainer)

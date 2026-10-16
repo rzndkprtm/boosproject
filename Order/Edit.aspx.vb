@@ -240,6 +240,7 @@ Partial Class Order_Edit
             txtOrderId.Text = headerData("OrderId").ToString()
             ddlOrderType.SelectedValue = headerData("OrderType").ToString()
             ddlOrderDelivery.SelectedValue = headerData("OrderDelivery").ToString()
+            ddlOrderContainer.SelectedValue = headerData("OrderContainer").ToString()
             If Not headerData("OrderFactory").ToString() = "" Then
                 Dim factoryArray() As String = headerData("OrderFactory").ToString().Split(",")
                 For Each i In factoryArray
@@ -299,9 +300,12 @@ Partial Class Order_Edit
         Try
             divCustomer.Visible = False
             divOrderId.Visible = False
-            divOrderTypeFactory.Visible = False
+            divOrderType.Visible = False
+            divOrderFactory.Visible = False
             divOrderDelivery.Visible = False
-            divOrderDetailDelivery.Visible = False
+            divOrderContact.Visible = False
+            divOrderAddress.Visible = False
+            divOrderContainer.Visible = False
 
             Dim companyDetailName As String = String.Empty
             If Not String.IsNullOrEmpty(customerId) Then
@@ -310,17 +314,20 @@ Partial Class Order_Edit
 
             If Session("RoleName") = "Developer" Then
                 divOrderId.Visible = True
+                divOrderContainer.Visible = True
             End If
 
             If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Data Entry" Then
                 divCustomer.Visible = True
-                If companyDetailName = "JPMD BP" Then divOrderTypeFactory.Visible = True
+                divOrderFactory.Visible = True
+                If companyDetailName = "JPMD BP" Then divOrderType.Visible = True
             End If
 
             If companyDetailName = "JPMD" OrElse companyDetailName = "CWS" OrElse companyDetailName = "SP" Then
                 divOrderDelivery.Visible = True
                 If orderDelivery = "Special" Then
-                    divOrderDetailDelivery.Visible = True
+                    divOrderContact.Visible = True
+                    divOrderAddress.Visible = True
                 End If
             End If
         Catch ex As Exception
