@@ -66,7 +66,7 @@ Public Class ReportClass
         Return thisTable
     End Function
 
-    Protected Function GetItemData(thisString As String) As String
+    Public Function GetItemData(thisString As String) As String
         Dim result As String = String.Empty
         Try
             Using thisConn As New SqlConnection(myConn)
@@ -157,7 +157,7 @@ Public Class ReportClass
 
 
     ' START JOB ORDER
-    Public Function JobOrderPDF(companyId As String, startDate As Date, endDate As Date) As Byte()
+    Public Function OrderHeaderPDF(companyId As String, startDate As Date, endDate As Date) As Byte()
         Try
             Using ms As New MemoryStream()
                 Dim params As New List(Of SqlParameter) From {
@@ -172,8 +172,7 @@ Public Class ReportClass
                     If String.IsNullOrWhiteSpace(companyName) Then companyName = "COMPANY " & companyId
                 End If
 
-                Dim pageTitle As String = "ORDER DETAIL REPORT"
-
+                Dim pageTitle As String = "ORDER REPORT"
                 Dim doc As New Document(PageSize.A4.Rotate(), 25, 25, 125, 55)
                 Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
 
@@ -188,22 +187,42 @@ Public Class ReportClass
                 doc.Open()
 
                 Dim table As New PdfPTable(6)
-
                 table.WidthPercentage = 100
-                table.SetWidths(New Single() {0.1F, 0.3F, 0.2F, 0.2F, 0.1F, 0.1F})
-
+                table.SetWidths(New Single() {0.09F, 0.25F, 0.16F, 0.24F, 0.13F, 0.13F})
                 table.HeaderRows = 1
                 table.SplitLate = False
                 table.KeepTogether = False
+                table.SpacingBefore = 5
+                table.SpacingAfter = 5
 
-                table.AddCell(CellData("ORDER ID", isBold:=True))
-                table.AddCell(CellData("CUSTOMER NAME", isBold:=True))
-                table.AddCell(CellData("ORDER NUMBER", isBold:=True))
-                table.AddCell(CellData("ORDER NAME", isBold:=True))
-                table.AddCell(CellData("SUBMITTED", isBold:=True))
-                table.AddCell(CellData("PRODUCTION", isBold:=True))
+                Dim headerFont As New Font(Font.FontFamily.HELVETICA, 8, Font.BOLD, BaseColor.WHITE)
+                Dim headerBackground As New BaseColor(36, 52, 71)
+                Dim borderColor As New BaseColor(226, 232, 240)
+
+                Dim headers As String() = {"ORDER ID", "CUSTOMER NAME", "ORDER NUMBER", "ORDER NAME", "SUBMITTED", "PRODUCTION"}
+
+                For Each header As String In headers
+                    Dim cell As New PdfPCell(New Phrase(header, headerFont))
+                    cell.BackgroundColor = headerBackground
+                    cell.HorizontalAlignment = Element.ALIGN_CENTER
+                    cell.VerticalAlignment = Element.ALIGN_MIDDLE
+                    cell.PaddingTop = 9
+                    cell.PaddingBottom = 9
+                    cell.PaddingLeft = 5
+                    cell.PaddingRight = 5
+                    cell.BorderColor = borderColor
+                    cell.BorderWidth = 0.5F
+                    cell.Border = Rectangle.BOX
+                    table.AddCell(cell)
+                Next
 
                 Dim thisData As DataTable = GetDataTableSP("sp_ReportOrder_OrderHeaders", params)
+
+                Dim bodyFont As New Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL, New BaseColor(51, 65, 85))
+                Dim alternateFont As New Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL, New BaseColor(51, 65, 85))
+                Dim alternateBackground As New BaseColor(248, 250, 252)
+                Dim whiteBackground As BaseColor = BaseColor.WHITE
+
                 If thisData.Rows.Count > 0 Then
                     For i As Integer = 0 To thisData.Rows.Count - 1
                         Dim orderId As String = thisData.Rows(i)("OrderId").ToString()
@@ -221,13 +240,42 @@ Public Class ReportClass
                             prodDate = Convert.ToDateTime(thisData.Rows(i)("ProductionDate")).ToString("dd MMM yyyy")
                         End If
 
-                        table.AddCell(CellData(orderId))
-                        table.AddCell(CellData(customerName))
-                        table.AddCell(CellData(orderNumber))
-                        table.AddCell(CellData(orderName))
-                        table.AddCell(CellData(submitDate))
-                        table.AddCell(CellData(prodDate))
+                        Dim rowBackground As BaseColor = If(i Mod 2 = 0, whiteBackground, alternateBackground)
+
+                        Dim values As String() = {orderId, customerName, orderNumber, orderName, submitDate, prodDate}
+
+                        For col As Integer = 0 To values.Length - 1
+                            Dim cell As New PdfPCell(New Phrase(If(String.IsNullOrWhiteSpace(values(col)), "-", values(col)), bodyFont))
+                            cell.BackgroundColor = rowBackground
+                            cell.VerticalAlignment = Element.ALIGN_MIDDLE
+                            cell.PaddingTop = 7
+                            cell.PaddingBottom = 7
+                            cell.PaddingLeft = 6
+                            cell.PaddingRight = 6
+                            cell.BorderColor = borderColor
+                            cell.BorderWidth = 0.5F
+                            cell.Border = Rectangle.BOX
+
+                            If col = 0 OrElse col = 2 OrElse col = 4 OrElse col = 5 Then
+                                cell.HorizontalAlignment = Element.ALIGN_CENTER
+                            Else
+                                cell.HorizontalAlignment = Element.ALIGN_LEFT
+                            End If
+
+                            table.AddCell(cell)
+                        Next
                     Next
+                Else
+                    Dim emptyCell As New PdfPCell(New Phrase("No order records found for the selected period.", New Font(Font.FontFamily.HELVETICA, 9, Font.ITALIC, New BaseColor(107, 114, 128))))
+                    emptyCell.Colspan = 6
+                    emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
+                    emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                    emptyCell.PaddingTop = 18
+                    emptyCell.PaddingBottom = 18
+                    emptyCell.BackgroundColor = New BaseColor(248, 250, 252)
+                    emptyCell.BorderColor = borderColor
+                    emptyCell.BorderWidth = 0.5F
+                    table.AddCell(emptyCell)
                 End If
 
                 doc.Add(table)
@@ -351,7 +399,7 @@ Public Class ReportClass
                     If String.IsNullOrWhiteSpace(companyName) Then companyName = "COMPANY " & companyId
                 End If
 
-                Dim pageTitle As String = "ORDER DETAIL REPORT"
+                Dim pageTitle As String = "ORDER (PRODUCT) REPORT"
 
                 Dim doc As New Document(PageSize.A4.Rotate(), 25, 25, 125, 55)
                 Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)

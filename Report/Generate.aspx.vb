@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Runtime.InteropServices.ComTypes
 
 Partial Class Report_Generate
     Inherits Page
@@ -58,11 +59,18 @@ Partial Class Report_Generate
                     If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
 
                     Dim reportClass As New ReportClass
-                    Dim pdfBytes As Byte() = reportClass.JobOrderPDF(company, txtStartDate.Text, txtEndDate.Text)
+                    Dim pdfBytes As Byte() = reportClass.OrderHeaderPDF(company, txtStartDate.Text, txtEndDate.Text)
+
+                    Dim companyName As String = "ALL"
+                    If Not String.IsNullOrEmpty(ddlCompany.SelectedValue) Then
+                        companyName = reportClass.GetItemData("SELECT ALIAS FROM Companys WHERE Id='" & ddlCompany.SelectedValue & "'")
+                    End If
+
+                    Dim fileName As String = "REPORT_ORDER_" & companyName.Replace(" ", "_") & "_" & txtStartDate.ToString("yyyy-MM-dd") & "_TO_" & txtEndDate.ToString("yyyy-MM-dd") & ".pdf"
 
                     Response.Clear()
                     Response.ContentType = "application/pdf"
-                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_JOB_ORDER.pdf")
+                    Response.AddHeader("Content-Disposition", "attachment; filename=" & fileName)
                     Response.BinaryWrite(pdfBytes)
                     Response.Flush()
                     Response.End()
@@ -116,9 +124,16 @@ Partial Class Report_Generate
                     Dim reportClass As New ReportClass
                     Dim pdfBytes As Byte() = reportClass.OrderDetailPDF(company, designType, txtStartDate.Text, txtEndDate.Text)
 
+                    Dim companyName As String = "ALL"
+                    If Not String.IsNullOrEmpty(ddlCompany.SelectedValue) Then
+                        companyName = reportClass.GetItemData("SELECT ALIAS FROM Companys WHERE Id='" & ddlCompany.SelectedValue & "'")
+                    End If
+
+                    Dim fileName As String = "REPORT_ORDER_PRODUCT_" & companyName.Replace(" ", "_") & "_" & txtStartDate.ToString("yyyy-MM-dd") & "_TO_" & txtEndDate.ToString("yyyy-MM-dd") & ".pdf"
+
                     Response.Clear()
                     Response.ContentType = "application/pdf"
-                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_JOB_ORDER.pdf")
+                    Response.AddHeader("Content-Disposition", "attachment; filename=" & fileName)
                     Response.BinaryWrite(pdfBytes)
                     Response.Flush()
                     Response.End()
