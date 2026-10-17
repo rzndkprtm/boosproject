@@ -33,7 +33,7 @@
                                 <div class="row mb-2">
                                     <div class="col-8 form-group">
                                         <label class="form-label">Company</label>
-                                        <asp:DropDownList runat="server" ID="ddlCompany" CssClass="choices form-select"></asp:DropDownList>
+                                        <asp:DropDownList runat="server" ID="ddlCompany" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="row mb-2">
@@ -62,8 +62,14 @@
                                 </div>
                                 <div class="row mb-2" runat="server" id="divProduct">
                                     <div class="col-12 form-group">
-                                        <label class="form-label">Product</label>
+                                        <label class="form-label">Custom Product</label>
                                         <asp:ListBox runat="server" ID="lbProduct" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                    </div>
+                                </div>
+                                <div class="row mb-2" runat="server" id="divCustomer">
+                                    <div class="col-12 form-group">
+                                        <label class="form-label">Custom Customer</label>
+                                        <asp:ListBox runat="server" ID="lbCustomer" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                     </div>
                                 </div>
                                 <div class="row mb-2">

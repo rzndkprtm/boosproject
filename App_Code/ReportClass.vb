@@ -381,12 +381,13 @@ Public Class ReportClass
     ' END JOB ORDER
 
     ' START ORDER DETAILS
-    Public Function OrderDetailPDF(companyId As String, designType As String, startDate As Date, endDate As Date) As Byte()
+    Public Function OrderDetailPDF(companyId As String, customerId As String, designType As String, startDate As Date, endDate As Date) As Byte()
         Try
             Using ms As New MemoryStream()
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@CompanyId", If(String.IsNullOrWhiteSpace(companyId), CType(DBNull.Value, Object), companyId)),
                     New SqlParameter("@DesignId", If(String.IsNullOrWhiteSpace(designType), CType(DBNull.Value, Object), designType)),
+                    New SqlParameter("@CustomerId", If(String.IsNullOrWhiteSpace(customerId), CType(DBNull.Value, Object), customerId)),
                     New SqlParameter("@StartDate", startDate),
                     New SqlParameter("@EndDate", endDate)
                 }

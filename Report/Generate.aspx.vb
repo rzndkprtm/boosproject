@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports System.Runtime.InteropServices.ComTypes
 
 Partial Class Report_Generate
     Inherits Page
@@ -19,9 +18,16 @@ Partial Class Report_Generate
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindCompany()
-            BindProduct()
+            BindProduct(ddlCompany.SelectedValue)
+            BindCustomer(ddlCompany.SelectedValue)
             BindForm(ddlDataType.SelectedValue)
         End If
+    End Sub
+
+    Protected Sub ddlCompany_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindProduct(ddlCompany.SelectedValue)
+        BindCustomer(ddlCompany.SelectedValue)
     End Sub
 
     Protected Sub ddlDataType_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -136,8 +142,13 @@ Partial Class Report_Generate
                         designType = String.Join(",", lbProduct.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                     End If
 
+                    Dim customerId As String = String.Empty
+                    If Not lbCustomer.SelectedValue = "" Then
+                        customerId = String.Join(",", lbCustomer.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                    End If
+
                     Dim reportClass As New ReportClass
-                    Dim pdfBytes As Byte() = reportClass.OrderDetailPDF(company, designType, txtStartDate.Text, txtEndDate.Text)
+                    Dim pdfBytes As Byte() = reportClass.OrderDetailPDF(company, customerId, designType, txtStartDate.Text, txtEndDate.Text)
 
                     Dim companyName As String = "ALL"
                     If Not String.IsNullOrEmpty(ddlCompany.SelectedValue) Then
@@ -327,10 +338,14 @@ Partial Class Report_Generate
         End Try
     End Sub
 
-    Protected Sub BindProduct()
+    Protected Sub BindProduct(companyId As String)
         lbProduct.Items.Clear()
         Try
-            lbProduct.DataSource = reportClass.GetDataTable("SELECT Id, Name FROM Designs")
+            Dim thisSql As String = "SELECT Id, Name FROM Designs WHERE Type IN ('Blinds', 'Shutters', 'Doors', 'Samples') AND Active=1"
+            If Not String.IsNullOrEmpty(companyId) Then
+                thisSql = "SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS CompanyArray WHERE CompanyArray.VALUE='" & companyId & "' AND Type IN ('Blinds', 'Shutters', 'Doors', 'Samples') AND Active=1"
+            End If
+            lbProduct.DataSource = reportClass.GetDataTable(thisSql)
             lbProduct.DataTextField = "Name"
             lbProduct.DataValueField = "Id"
             lbProduct.DataBind()
@@ -343,12 +358,34 @@ Partial Class Report_Generate
         End Try
     End Sub
 
+    Protected Sub BindCustomer(companyId As String)
+        lbCustomer.Items.Clear()
+        Try
+            Dim thisSql As String = "SELECT Id, Name FROM Customers WHERE Status='Active'"
+            If Not String.IsNullOrEmpty(companyId) Then
+                thisSql = "SELECT Id, Name FROM Customers WHERE CompanyId='" & companyId & "' AND Status='Active'"
+            End If
+            lbCustomer.DataSource = reportClass.GetDataTable(thisSql)
+            lbCustomer.DataTextField = "Name"
+            lbCustomer.DataValueField = "Id"
+            lbCustomer.DataBind()
+
+            If lbCustomer.Items.Count > 0 Then
+                lbCustomer.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            lbCustomer.Items.Clear()
+        End Try
+    End Sub
+
     Protected Sub BindForm(dataType As String)
         Try
             divProduct.Visible = False
+            divCustomer.Visible = False
             If Not String.IsNullOrEmpty(dataType) Then
                 If dataType = "OrderDetails" Then
                     divProduct.Visible = True
+                    divCustomer.Visible = True
                 End If
             End If
         Catch ex As Exception
