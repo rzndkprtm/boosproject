@@ -67,6 +67,7 @@
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                             <asp:BoundField DataField="Name" HeaderText="Name" />
                                             <asp:BoundField DataField="Type" HeaderText="Type" />
+                                            <asp:BoundField DataField="Group" HeaderText="Group" />
                                             <asp:BoundField DataField="CompanyAlias" HeaderText="Company Name" />
                                             <asp:BoundField DataField="AppliesTo" HeaderText="Applied" />
                                             <asp:BoundField DataField="DataActive" HeaderText="Active" />

@@ -1,5 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports Org.BouncyCastle.Tls.Crypto
 
 Partial Class Setting_Specification_Design_Edit
     Inherits Page
@@ -53,12 +54,13 @@ Partial Class Setting_Specification_Design_Edit
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Designs SET Name=@Name, Alias=@Alias, CompanyId=@CompanyId, Type=@Type, Page=@Page, AppliesTo=@AppliesTo, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Designs SET Name=@Name, Alias=@Alias, CompanyId=@CompanyId, Type=@Type, Page=@Page, [Group]=@Group, AppliesTo=@AppliesTo, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Alias", txtAlias.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@CompanyId", company)
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Group", ddlGroup.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Page", txtPage.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
                         thisCmd.Parameters.AddWithValue("@Description", descText)
@@ -88,13 +90,16 @@ Partial Class Setting_Specification_Design_Edit
     Protected Sub BindData(designId As String)
         Try
             Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Designs WHERE Id='" & designId & "'")
-            If thisData Is Nothing Then Exit Sub
+            If thisData Is Nothing Then
+                Response.Redirect("~/setting/specification/design", False)
+            End If
 
             BindCompany()
 
             txtName.Text = thisData("Name").ToString()
             txtAlias.Text = thisData("Alias").ToString()
             ddlType.SelectedValue = thisData("Type").ToString()
+            ddlGroup.SelectedValue = thisData("Group").ToString()
             txtPage.Text = thisData("Page").ToString()
             txtDescription.Text = thisData("Description").ToString()
             ddlActive.SelectedValue = Convert.ToInt32(thisData("Active"))

@@ -43,7 +43,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-5 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
                                         <label class="form-label">Type</label>
                                         <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select">
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
@@ -56,7 +56,15 @@
                                             <asp:ListItem Value="Parts" Text="Parts"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
-                                    <div class="col-7 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Group</label>
+                                        <asp:DropDownList runat="server" ID="ddlGroup" CssClass="form-select">
+                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                         </asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 form-group">
                                         <label class="form-label">Page</label>
                                         <asp:TextBox runat="server" ID="txtPage" CssClass="form-control" placeholder="Page ..." autocomplete="off"></asp:TextBox>
                                     </div>

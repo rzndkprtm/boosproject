@@ -1996,11 +1996,11 @@ Partial Class Order_Detail
                 txtCompletedDate.Text = Convert.ToDateTime(headerData("CompletedDate")).ToString("yyyy-MM-dd")
             End If
 
-            BindProduct()
             BindPart()
             BindService()
             BindDataQuote(headerId)
             BindDataItem(lblOrderStatus.Text)
+            BindProduct(gvListItem.Rows.Count)
             BindDataCosting(gvListItem.Rows.Count)
 
             ' BIND INVOICE
@@ -3503,12 +3503,20 @@ Partial Class Order_Detail
         End Try
     End Sub
 
-    Protected Sub BindProduct()
+    Protected Sub BindProduct(itemAccount As Integer)
         ddlProduct.Items.Clear()
         Try
             Dim thisQuery As String = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type IN ('Blinds', 'Shutters', 'Doors', 'Samples') ORDER BY Designs.Name ASC"
+            'If lblCompanyId.Text = "3" AndAlso itemAccount > 0 Then
+            '    Dim designGroup As String = orderClass.GetItemData("SELECT TOP 1 Designs.[Group] FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+            '    thisQuery = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.[Group]='" & designGroup & "' ORDER BY Designs.Name ASC"
+            'End If
             If Session("RoleName") = "Customer" Then
                 thisQuery = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.Type IN ('Blinds', 'Shutters', 'Doors', 'Samples') AND Designs.Active=1 ORDER BY Designs.Name ASC"
+                'If lblCompanyId.Text = "3" AndAlso itemAccount > 0 Then
+                '    Dim designGroup As String = orderClass.GetItemData("SELECT TOP 1 Designs.[Group] FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+                '    thisQuery = "SELECT Designs.Id, Designs.Name AS NameText FROM CustomerProductAccess CROSS APPLY STRING_SPLIT(CustomerProductAccess.DesignId, ',') AS designArray INNER JOIN Designs ON designArray.VALUE=Designs.Id WHERE CustomerProductAccess.Id='" & lblCustomerId.Text & "' AND Designs.[Group]='" & designGroup & "' AND Designs.Active=1 ORDER BY Designs.Name ASC"
+                'End If
             End If
             ddlProduct.DataSource = orderClass.GetDataTable(thisQuery)
             ddlProduct.DataTextField = "NameText"

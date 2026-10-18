@@ -288,7 +288,7 @@ Public Class ReportClass
         End Try
     End Function
 
-    Public Function JobOrderExcel(companyId As String, startDate As Date, endDate As Date) As Byte()
+    Public Function OrderHeaderExcel(companyId As String, startDate As Date, endDate As Date) As Byte()
         Try
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial
 
@@ -342,7 +342,7 @@ Public Class ReportClass
         End Try
     End Function
 
-    Public Function JobOrderCSV(companyId As String, startDate As Date, endDate As Date) As Byte()
+    Public Function OrderHeaderCSV(companyId As String, startDate As Date, endDate As Date) As Byte()
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@CompanyId", If(String.IsNullOrEmpty(companyId), CType(DBNull.Value, Object), companyId)),
@@ -584,174 +584,213 @@ Public Class ReportClass
         End Try
     End Function
 
-    'Public Function OrderDetailPDF(companyId As String, customerId As String, designType As String, startDate As Date, endDate As Date) As Byte()
-    '    Try
-    '        Using ms As New MemoryStream()
-    '            Dim params As New List(Of SqlParameter) From {
-    '                New SqlParameter("@CompanyId", If(String.IsNullOrWhiteSpace(companyId), CType(DBNull.Value, Object), companyId)),
-    '                New SqlParameter("@DesignId", If(String.IsNullOrWhiteSpace(designType), CType(DBNull.Value, Object), designType)),
-    '                New SqlParameter("@CustomerId", If(String.IsNullOrWhiteSpace(customerId), CType(DBNull.Value, Object), customerId)),
-    '                New SqlParameter("@StartDate", startDate),
-    '                New SqlParameter("@EndDate", endDate)
-    '            }
+    Public Function OrderDetailExcel(companyId As String, customerId As String, designType As String, startDate As Date, endDate As Date) As Byte()
+        Try
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial
 
-    '            Dim thisData As DataTable = GetDataTableSP("sp_ReportOrder_OrderDetails", params)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@CompanyId", If(String.IsNullOrWhiteSpace(companyId), CType(DBNull.Value, Object), companyId)),
+                New SqlParameter("@DesignId", If(String.IsNullOrWhiteSpace(designType), CType(DBNull.Value, Object), designType)),
+                New SqlParameter("@CustomerId", If(String.IsNullOrWhiteSpace(customerId), CType(DBNull.Value, Object), customerId)),
+                New SqlParameter("@StartDate", startDate),
+                New SqlParameter("@EndDate", endDate)
+            }
 
-    '            Dim companyName As String = "ALL COMPANIES"
-    '            If Not String.IsNullOrWhiteSpace(companyId) Then
-    '                companyName = Convert.ToString(GetItemData("SELECT Alias FROM Companys WHERE Id='" & companyId.Replace("'", "''") & "'"))
-    '                If String.IsNullOrWhiteSpace(companyName) Then companyName = "COMPANY " & companyId
-    '            End If
+            Dim dt As DataTable = GetDataTableSP("sp_ReportOrder_OrderDetails", params)
 
-    '            Dim pageTitle As String = "ORDER (PRODUCT) REPORT"
+            Using package As New ExcelPackage()
+                Dim ws = package.Workbook.Worksheets.Add("ORDER PRODUCT")
 
-    '            Dim doc As New Document(PageSize.A4.Rotate(), 25, 25, 125, 55)
-    '            Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
+                If dt Is Nothing OrElse dt.Columns.Count = 0 Then
+                    ws.Cells(1, 1).Value = "No data available"
+                    Return package.GetAsByteArray()
+                End If
 
-    '            Dim pageEvent As New ReportDataOrderEvents() With {
-    '                .PageTitle = pageTitle,
-    '                .PageCompany = companyName,
-    '                .PageStartDate = startDate,
-    '                .PageEndDate = endDate
-    '            }
+                Dim identityColumns As New List(Of String) From {"OrderId", "CustomerName", "ProductionDate"}
+                Dim columnCount As Integer = dt.Columns.Count
 
-    '            writer.PageEvent = pageEvent
-    '            doc.Open()
+                ' HEADER
+                For col As Integer = 0 To columnCount - 1
+                    Dim columnName As String = dt.Columns(col).ColumnName
 
-    '            If thisData IsNot Nothing AndAlso thisData.Columns.Count > 0 Then
-    '                Dim columnCount As Integer = thisData.Columns.Count
-    '                Dim widths(columnCount - 1) As Single
+                    Select Case columnName
+                        Case "OrderId"
+                            ws.Cells(1, col + 1).Value = "ORDER ID"
+                        Case "CustomerName"
+                            ws.Cells(1, col + 1).Value = "CUSTOMER NAME"
+                        Case "ProductionDate"
+                            ws.Cells(1, col + 1).Value = "PRODUCTION DATE"
+                        Case Else
+                            ws.Cells(1, col + 1).Value = columnName.ToUpperInvariant()
+                    End Select
+                Next
 
-    '                For i As Integer = 0 To columnCount - 1
-    '                    Dim columnName As String = thisData.Columns(i).ColumnName
+                ' HEADER STYLE
+                Using rng = ws.Cells(1, 1, 1, columnCount)
+                    rng.Style.Font.Bold = True
+                    rng.Style.Font.Color.SetColor(System.Drawing.Color.White)
+                    rng.Style.Fill.PatternType = ExcelFillStyle.Solid
+                    rng.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(36, 52, 71))
+                    rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center
+                    rng.Style.VerticalAlignment = ExcelVerticalAlignment.Center
+                    rng.Style.Border.Bottom.Style = ExcelBorderStyle.Thin
+                    rng.Style.Border.Bottom.Color.SetColor(System.Drawing.Color.FromArgb(220, 226, 232))
+                End Using
 
-    '                    Select Case columnName.ToUpperInvariant()
-    '                        Case "ORDERID"
-    '                            widths(i) = 1.5F
-    '                        Case "CUSTOMERNAME"
-    '                            widths(i) = 2.5F
-    '                        Case "PRODUCTIONDATE"
-    '                            widths(i) = 1.8F
-    '                        Case Else
-    '                            widths(i) = 1.0F
-    '                    End Select
-    '                Next
+                ws.Row(1).Height = 25
 
-    '                Dim table As New PdfPTable(columnCount)
-    '                table.WidthPercentage = 100
-    '                table.SetWidths(widths)
-    '                table.HeaderRows = 1
-    '                table.SplitLate = False
-    '                table.KeepTogether = False
-    '                table.SpacingBefore = 5
-    '                table.SpacingAfter = 5
+                ' DATA
+                Dim rowIndex As Integer = 2
 
-    '                Dim headerFont As New Font(Font.FontFamily.HELVETICA, 8, Font.BOLD, BaseColor.WHITE)
-    '                Dim dataFont As New Font(Font.FontFamily.HELVETICA, 8, Font.NORMAL, New BaseColor(45, 55, 72))
-    '                Dim totalFont As New Font(Font.FontFamily.HELVETICA, 8, Font.BOLD, New BaseColor(31, 41, 55))
+                For Each dr As DataRow In dt.Rows
+                    Dim isTotal As Boolean = dt.Columns.Contains("OrderId") AndAlso String.Equals(Convert.ToString(dr("OrderId")), "TOTAL", StringComparison.OrdinalIgnoreCase)
+                    For col As Integer = 0 To columnCount - 1
+                        Dim column As DataColumn = dt.Columns(col)
+                        Dim cell = ws.Cells(rowIndex, col + 1)
 
-    '                For Each column As DataColumn In thisData.Columns
-    '                    Dim columnTitle As String = column.ColumnName
+                        If dr.IsNull(column) Then
+                            cell.Value = Nothing
+                        ElseIf String.Equals(column.ColumnName, "ProductionDate", StringComparison.OrdinalIgnoreCase) Then
+                            Dim productionDate As DateTime
+                            If DateTime.TryParse(Convert.ToString(dr(column)), productionDate) Then
+                                cell.Value = productionDate
+                                cell.Style.Numberformat.Format = "dd MMM yyyy"
+                            Else
+                                cell.Value = Convert.ToString(dr(column))
+                            End If
+                        Else
+                            cell.Value = dr(column)
+                        End If
 
-    '                    Select Case column.ColumnName
-    '                        Case "OrderId"
-    '                            columnTitle = "Order ID"
-    '                        Case "CustomerName"
-    '                            columnTitle = "Customer Name"
-    '                        Case "ProductionDate"
-    '                            columnTitle = "Production Date"
-    '                    End Select
+                        ' ALIGNMENT
+                        If String.Equals(column.ColumnName, "CustomerName", StringComparison.OrdinalIgnoreCase) Then
+                            cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left
+                        Else
+                            cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center
+                        End If
 
-    '                    Dim headerCell As New PdfPCell(New Phrase(columnTitle, headerFont))
-    '                    headerCell.BackgroundColor = New BaseColor(36, 52, 71)
-    '                    headerCell.HorizontalAlignment = Element.ALIGN_CENTER
-    '                    headerCell.VerticalAlignment = Element.ALIGN_MIDDLE
-    '                    headerCell.PaddingTop = 8
-    '                    headerCell.PaddingBottom = 8
-    '                    headerCell.PaddingLeft = 5
-    '                    headerCell.PaddingRight = 5
-    '                    headerCell.BorderColor = New BaseColor(220, 226, 232)
-    '                    headerCell.BorderWidth = 0.5F
-    '                    table.AddCell(headerCell)
-    '                Next
+                        cell.Style.VerticalAlignment = ExcelVerticalAlignment.Center
 
-    '                If thisData.Rows.Count > 0 Then
-    '                    Dim rowIndex As Integer = 0
+                        ' BORDER
+                        cell.Style.Border.Bottom.Style = ExcelBorderStyle.Thin
+                        cell.Style.Border.Bottom.Color.SetColor(System.Drawing.Color.FromArgb(226, 232, 240))
 
-    '                    For Each row As DataRow In thisData.Rows
-    '                        Dim isTotal As Boolean = thisData.Columns.Contains("OrderId") AndAlso String.Equals(Convert.ToString(row("OrderId")), "TOTAL", StringComparison.OrdinalIgnoreCase)
-    '                        Dim rowBackground As BaseColor
+                        ' ALTERNATING ROW COLORS
+                        If isTotal Then
+                            cell.Style.Font.Bold = True
+                            cell.Style.Font.Color.SetColor(System.Drawing.Color.FromArgb(31, 41, 55))
+                            cell.Style.Fill.PatternType = ExcelFillStyle.Solid
+                            cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(219, 234, 254))
+                        ElseIf rowIndex Mod 2 = 1 Then
+                            cell.Style.Fill.PatternType = ExcelFillStyle.Solid
+                            cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(245, 247, 250))
+                        End If
+                    Next
 
-    '                        If isTotal Then
-    '                            rowBackground = New BaseColor(219, 234, 254)
-    '                        ElseIf rowIndex Mod 2 = 0 Then
-    '                            rowBackground = BaseColor.WHITE
-    '                        Else
-    '                            rowBackground = New BaseColor(245, 247, 250)
-    '                        End If
+                    rowIndex += 1
+                Next
 
-    '                        For Each column As DataColumn In thisData.Columns
-    '                            Dim cellValue As String = If(row.IsNull(column), String.Empty, Convert.ToString(row(column)))
+                ' COLUMN WIDTHS
+                For col As Integer = 0 To columnCount - 1
+                    Select Case dt.Columns(col).ColumnName.ToUpperInvariant()
+                        Case "ORDERID"
+                            ws.Column(col + 1).Width = 15
+                        Case "CUSTOMERNAME"
+                            ws.Column(col + 1).Width = 30
+                        Case "PRODUCTIONDATE"
+                            ws.Column(col + 1).Width = 20
+                        Case Else
+                            ws.Column(col + 1).Width = Math.Max(12, Math.Min(25, dt.Columns(col).ColumnName.Length + 3))
+                    End Select
+                Next
 
-    '                            If String.Equals(column.ColumnName, "ProductionDate", StringComparison.OrdinalIgnoreCase) AndAlso Not row.IsNull(column) Then
-    '                                Dim productionDate As DateTime
-    '                                If DateTime.TryParse(Convert.ToString(row(column)), productionDate) Then
-    '                                    cellValue = productionDate.ToString("dd MMM yyyy")
-    '                                End If
-    '                            End If
+                ' FREEZE HEADER
+                ws.View.FreezePanes(2, 1)
 
-    '                            Dim cellFont As Font = If(isTotal, totalFont, dataFont)
-    '                            Dim dataCell As New PdfPCell(New Phrase(cellValue, cellFont))
-    '                            dataCell.BackgroundColor = rowBackground
-    '                            dataCell.VerticalAlignment = Element.ALIGN_MIDDLE
-    '                            dataCell.PaddingTop = 6
-    '                            dataCell.PaddingBottom = 6
-    '                            dataCell.PaddingLeft = 5
-    '                            dataCell.PaddingRight = 5
-    '                            dataCell.BorderColor = New BaseColor(226, 232, 240)
-    '                            dataCell.BorderWidth = 0.5F
+                ' FILTER
+                ws.Cells(1, 1, Math.Max(1, rowIndex - 1), columnCount).AutoFilter = True
 
-    '                            If String.Equals(column.ColumnName, "OrderId", StringComparison.OrdinalIgnoreCase) OrElse String.Equals(column.ColumnName, "ProductionDate", StringComparison.OrdinalIgnoreCase) OrElse (thisData.Columns.IndexOf(column) >= 3) Then
-    '                                dataCell.HorizontalAlignment = Element.ALIGN_CENTER
-    '                            Else
-    '                                dataCell.HorizontalAlignment = Element.ALIGN_LEFT
-    '                            End If
+                ' PRINT SETTINGS
+                ws.PrinterSettings.Orientation = eOrientation.Landscape
+                ws.PrinterSettings.FitToPage = True
+                ws.PrinterSettings.FitToWidth = 1
+                ws.PrinterSettings.FitToHeight = 0
 
-    '                            table.AddCell(dataCell)
-    '                        Next
+                Return package.GetAsByteArray()
+            End Using
+        Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine("OrderDetailExcel Error: " & ex.ToString())
+            Return New Byte() {}
+        End Try
+    End Function
 
-    '                        rowIndex += 1
-    '                    Next
-    '                Else
-    '                    Dim emptyCell As New PdfPCell(New Phrase("No data available", New Font(Font.FontFamily.HELVETICA, 9, Font.ITALIC, New BaseColor(107, 114, 128))))
-    '                    emptyCell.Colspan = columnCount
-    '                    emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
-    '                    emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
-    '                    emptyCell.Padding = 15
-    '                    emptyCell.BorderColor = New BaseColor(226, 232, 240)
-    '                    table.AddCell(emptyCell)
-    '                End If
+    Public Function OrderDetailCSV(companyId As String, customerId As String, designType As String, startDate As Date, endDate As Date) As Byte()
+        Try
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@CompanyId", If(String.IsNullOrWhiteSpace(companyId), CType(DBNull.Value, Object), companyId)),
+                New SqlParameter("@DesignId", If(String.IsNullOrWhiteSpace(designType), CType(DBNull.Value, Object), designType)),
+                New SqlParameter("@CustomerId", If(String.IsNullOrWhiteSpace(customerId), CType(DBNull.Value, Object), customerId)),
+                New SqlParameter("@StartDate", startDate),
+                New SqlParameter("@EndDate", endDate)
+            }
 
-    '                doc.Add(table)
-    '            Else
-    '                Dim emptyParagraph As New Paragraph("No data available", New Font(Font.FontFamily.HELVETICA, 10, Font.ITALIC, New BaseColor(107, 114, 128)))
-    '                emptyParagraph.Alignment = Element.ALIGN_CENTER
-    '                emptyParagraph.SpacingBefore = 20
-    '                doc.Add(emptyParagraph)
-    '            End If
+            Dim dt As DataTable = GetDataTableSP("sp_ReportOrder_OrderDetails", params)
+            Dim sb As New StringBuilder()
 
-    '            doc.Close()
-    '            Return ms.ToArray()
-    '        End Using
-    '    Catch ex As Exception
-    '        System.Diagnostics.Debug.WriteLine("OrderDetailPDF Error: " & ex.ToString())
-    '        Return New Byte() {}
-    '    End Try
-    'End Function
+            If dt Is Nothing OrElse dt.Columns.Count = 0 Then
+                Return Encoding.UTF8.GetBytes("")
+            End If
 
-    ' END ORDER DETAILS
+            ' HEADER
+            Dim headers As New List(Of String)
 
-    ' START CUSTOMER (LIST)
+            For Each column As DataColumn In dt.Columns
+                Select Case column.ColumnName
+                    Case "OrderId"
+                        headers.Add("ORDER ID")
+                    Case "CustomerName"
+                        headers.Add("CUSTOMER NAME")
+                    Case "ProductionDate"
+                        headers.Add("PRODUCTION DATE")
+                    Case Else
+                        headers.Add(column.ColumnName.ToUpperInvariant())
+                End Select
+            Next
+
+            sb.AppendLine(String.Join(",", headers.Select(Function(h) EscapeCsv(h))))
+
+            ' DATA
+            For Each dr As DataRow In dt.Rows
+                Dim values As New List(Of String)
+
+                For Each column As DataColumn In dt.Columns
+                    Dim cellValue As String = ""
+
+                    If Not dr.IsNull(column) Then
+                        If String.Equals(column.ColumnName, "ProductionDate", StringComparison.OrdinalIgnoreCase) Then
+                            Dim productionDate As DateTime
+                            If DateTime.TryParse(Convert.ToString(dr(column)), productionDate) Then
+                                cellValue = productionDate.ToString("dd MMM yyyy")
+                            Else
+                                cellValue = Convert.ToString(dr(column))
+                            End If
+                        Else
+                            cellValue = Convert.ToString(dr(column))
+                        End If
+                    End If
+
+                    values.Add(EscapeCsv(cellValue))
+                Next
+
+                sb.AppendLine(String.Join(",", values))
+            Next
+
+            Return Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(sb.ToString())).ToArray()
+        Catch ex As Exception
+            System.Diagnostics.Debug.WriteLine("OrderDetailCSV Error: " & ex.ToString())
+            Return New Byte() {}
+        End Try
+    End Function
 
     Public Function CustomerListPDF(companyId As String, roleName As String) As Byte()
         'Try

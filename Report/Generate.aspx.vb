@@ -86,7 +86,7 @@ Partial Class Report_Generate
                     If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
 
                     Dim reportClass As New ReportClass
-                    Dim excelBytes As Byte() = reportClass.JobOrderExcel(company, txtStartDate.Text, txtEndDate.Text)
+                    Dim excelBytes As Byte() = reportClass.OrderHeaderExcel(company, txtStartDate.Text, txtEndDate.Text)
 
                     Dim companyName As String = "ALL"
                     If Not String.IsNullOrEmpty(ddlCompany.SelectedValue) Then
@@ -113,7 +113,7 @@ Partial Class Report_Generate
                     If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
 
                     Dim reportClass As New ReportClass
-                    Dim csvBytes As Byte() = reportClass.JobOrderCSV(company, txtStartDate.Text, txtEndDate.Text)
+                    Dim csvBytes As Byte() = reportClass.OrderHeaderCSV(company, txtStartDate.Text, txtEndDate.Text)
 
                     Dim companyName As String = "ALL"
                     If Not String.IsNullOrEmpty(ddlCompany.SelectedValue) Then
@@ -168,15 +168,32 @@ Partial Class Report_Generate
                     Dim company As String = ddlCompany.SelectedValue
                     If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
 
+                    Dim designType As String = String.Empty
+                    If Not lbProduct.SelectedValue = "" Then
+                        designType = String.Join(",", lbProduct.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                    End If
+
+                    Dim customerId As String = String.Empty
+                    If Not lbCustomer.SelectedValue = "" Then
+                        customerId = String.Join(",", lbCustomer.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                    End If
+
                     Dim reportClass As New ReportClass
-                    Dim excelBytes As Byte() = reportClass.JobOrderExcel(company, txtStartDate.Text, txtEndDate.Text)
+                    Dim excelBytes As Byte() = reportClass.OrderDetailExcel(company, customerId, designType, txtStartDate.Text, txtEndDate.Text)
+
+                    Dim companyName As String = "ALL"
+                    If Not String.IsNullOrEmpty(ddlCompany.SelectedValue) Then
+                        companyName = reportClass.GetItemData("SELECT ALIAS FROM Companys WHERE Id='" & ddlCompany.SelectedValue & "'")
+                    End If
+
+                    Dim fileName As String = "REPORT_ORDER_PRODUCT_" & companyName.Replace(" ", "_") & "_" & txtStartDate.Text & "_TO_" & txtEndDate.Text & ".xlsx"
 
                     Response.Clear()
                     Response.ClearContent()
                     Response.ClearHeaders()
 
                     Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    Response.AddHeader("content-disposition", "attachment; filename=REPORT_JOB_ORDER.xlsx")
+                    Response.AddHeader("content-disposition", "attachment; filename=" & fileName)
                     Response.BinaryWrite(excelBytes)
 
                     Response.Flush()
@@ -188,12 +205,30 @@ Partial Class Report_Generate
                     Dim company As String = ddlCompany.SelectedValue
                     If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
 
+                    Dim designType As String = String.Empty
+                    If Not lbProduct.SelectedValue = "" Then
+                        designType = String.Join(",", lbProduct.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                    End If
+
+                    Dim customerId As String = String.Empty
+                    If Not lbCustomer.SelectedValue = "" Then
+                        customerId = String.Join(",", lbCustomer.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                    End If
+
                     Dim reportClass As New ReportClass
-                    Dim csvBytes As Byte() = reportClass.JobOrderCSV(company, txtStartDate.Text, txtEndDate.Text)
+                    Dim csvBytes As Byte() = reportClass.OrderDetailCSV(company, customerId, designType, txtStartDate.Text, txtEndDate.Text)
+
+                    Dim companyName As String = "ALL"
+                    If Not String.IsNullOrEmpty(ddlCompany.SelectedValue) Then
+                        companyName = reportClass.GetItemData("SELECT ALIAS FROM Companys WHERE Id='" & ddlCompany.SelectedValue & "'")
+                    End If
+
+                    Dim fileName As String = "REPORT_ORDER_PRODUCT_" & companyName.Replace(" ", "_") & "_" & txtStartDate.Text & "_TO_" & txtEndDate.Text & ".csv"
 
                     Response.Clear()
                     Response.ContentType = "text/csv"
-                    Response.AddHeader("Content-Disposition", "attachment; filename=REPORT_JOB_ORDER.csv")
+
+                    Response.AddHeader("Content-Disposition", "attachment; filename=" & fileName)
                     Response.BinaryWrite(csvBytes)
                     Response.Flush()
                     Response.End()
