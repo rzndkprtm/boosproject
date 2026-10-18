@@ -90,11 +90,12 @@ Partial Class Report_Generate
                         If ddlCompany.SelectedValue = "ALL" Then company = String.Empty
 
                         Dim reportClass As New ReportClass
-                        Dim excelBytes As Byte() = reportClass.OrderHeaderExcel(company, txtStartDate.Text, txtEndDate.Text)
+                        Dim excelBytes As Byte() = reportClass.OrderHeaderExcel(company, CDate(txtStartDate.Text), CDate(txtEndDate.Text))
 
                         Dim companyName As String = "ALL"
-                        If Not String.IsNullOrEmpty(ddlCompany.SelectedValue) Then
-                            companyName = reportClass.GetItemData("SELECT ALIAS FROM Companys WHERE Id='" & ddlCompany.SelectedValue & "'")
+                        If Not String.IsNullOrEmpty(company) Then
+                            companyName = reportClass.GetItemData("SELECT ALIAS FROM Companys WHERE Id='" & company.Replace("'", "''") & "'")
+                            If String.IsNullOrWhiteSpace(companyName) Then companyName = company
                         End If
 
                         Dim fileName As String = "REPORT_ORDER_" & companyName.Replace(" ", "_") & "_" & txtStartDate.Text & "_TO_" & txtEndDate.Text & ".xlsx"
@@ -104,7 +105,7 @@ Partial Class Report_Generate
                         Response.ClearHeaders()
 
                         Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                        Response.AddHeader("content-disposition", "attachment; filename=" & fileName)
+                        Response.AddHeader("Content-Disposition", "attachment; filename=" & fileName)
                         Response.BinaryWrite(excelBytes)
 
                         Response.Flush()
