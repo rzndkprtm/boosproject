@@ -32,6 +32,10 @@ Partial Class Setting_Specification_Design_Add
                 MessageError(True, "TYPE IS REQUIRED !")
                 Exit Sub
             End If
+            If ddlGroup.SelectedValue = "" Then
+                MessageError(True, "GROUP IS REQUIRED !")
+                Exit Sub
+            End If
             If msgError.InnerText = "" Then
                 Dim company As String = String.Empty
                 Dim applyTo As String = String.Empty
