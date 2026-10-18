@@ -60,6 +60,11 @@
                                         <label class="form-label">Group</label>
                                         <asp:DropDownList runat="server" ID="ddlGroup" CssClass="form-select">
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
+                                            <asp:ListItem Value="Group 1" Text="Group 1"></asp:ListItem>
+                                            <asp:ListItem Value="Group 2" Text="Group 2"></asp:ListItem>
+                                            <asp:ListItem Value="Group 3" Text="Group 3"></asp:ListItem>
+                                            <asp:ListItem Value="Group 4" Text="Group 4"></asp:ListItem>
+                                            <asp:ListItem Value="Group 5" Text="Group 5"></asp:ListItem>
                                          </asp:DropDownList>
                                     </div>
                                 </div>
