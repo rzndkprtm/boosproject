@@ -98,6 +98,29 @@ Public Class ReportClass
         End Try
     End Function
 
+    Public Sub Logs(data As Object())
+        Try
+            If data.Length = 4 Then
+                Dim type As String = Convert.ToString(data(0))
+                Dim dataId As String = Convert.ToString(data(1))
+                Dim loginId As String = Convert.ToString(data(2))
+                Dim description As String = Convert.ToString(data(3))
+
+                Using thisConn As SqlConnection = New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Logs VALUES (NEWID(), @Type, @DataId, @ActionBy, GETDATE(), @Description)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Type", type)
+                        thisCmd.Parameters.AddWithValue("@DataId", If(String.IsNullOrEmpty(dataId), CType(DBNull.Value, Object), dataId))
+                        thisCmd.Parameters.AddWithValue("@ActionBy", loginId)
+                        thisCmd.Parameters.AddWithValue("@Description", description)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
     Private Function CellData(text As String, Optional isBold As Boolean = False, Optional alignH As Integer = Element.ALIGN_LEFT) As PdfPCell
         Try
             If text Is Nothing Then text = String.Empty
