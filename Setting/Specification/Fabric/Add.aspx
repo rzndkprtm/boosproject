@@ -161,7 +161,6 @@
         }
         function initChoices() {
             document.querySelectorAll("select.choices").forEach(function (el) {
-
                 if (el.choices) {
                     el.choices.destroy();
                 }
@@ -172,7 +171,8 @@
                     searchEnabled: true,
                     itemSelectText: '',
                     shouldSort: false,
-                    removeItemButton: isMultiple
+                    removeItemButton: isMultiple,
+                    searchResultLimit: 50
                 });
             });
         }
