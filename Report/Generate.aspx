@@ -31,7 +31,7 @@
                         <div class="form form-vertical">
                             <div class="form-body">
                                 <div class="row mb-2">
-                                    <div class="col-8 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-8 form-group">
                                         <label class="form-label">Company</label>
                                         <asp:DropDownList runat="server" ID="ddlCompany" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
