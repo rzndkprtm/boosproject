@@ -191,7 +191,8 @@ Partial Class Order_Add
             divCustomer.Visible = False
             divOrderType.Visible = False
             divOrderDelivery.Visible = False
-            divOrderDetailDelivery.Visible = False
+            divOrderContact.Visible = False
+            divOrderAddress.Visible = False
 
             Dim companyDetailName As String = String.Empty
             If Not String.IsNullOrEmpty(customerId) Then
@@ -206,7 +207,8 @@ Partial Class Order_Add
             If companyDetailName = "JPMD" OrElse companyDetailName = "CWS" OrElse companyDetailName = "SP" Then
                 divOrderDelivery.Visible = True
                 If orderDelivery = "Special" Then
-                    divOrderDetailDelivery.Visible = True
+                    divOrderContact.Visible = True
+                    divOrderAddress.Visible = True
                 End If
             End If
         Catch ex As Exception

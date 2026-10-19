@@ -63,9 +63,9 @@
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
-                                        <div runat="server" id="divOrderDetailDelivery">
+                                        <div runat="server" id="divOrderContact">
                                             <div class="row mb-2">
-                                                <div class="col-6 form-group">
+                                                <div class="col-12 form-group">
                                                     <label class="form-label">Order Contact (Delivery)</label>
                                                     <div class="input-group">
                                                         <asp:TextBox runat="server" ID="txtOrderContact" CssClass="form-control" ReadOnly="true" ClientIDMode="Static" placeholder="Order Contact ..." autocomplete="off" onclick="openOrderContactModal();"></asp:TextBox>
@@ -74,7 +74,11 @@
                                                     <small class="text-muted">Format : {Contact Name} | {Phone} | {Email}</small>
                                                     <asp:HiddenField runat="server" ID="hfOrderContact" ClientIDMode="Static" />
                                                 </div>
-                                                <div class="col-6 form-group">
+                                            </div>
+                                        </div>
+                                        <div runat="server" id="divOrderAddress">
+                                            <div class="row mb-2">
+                                                <div class="col-12 form-group">
                                                     <label class="form-label">Order Address (Delivery)</label>
                                                     <div class="input-group">
                                                         <asp:TextBox runat="server" ID="txtOrderAddress" CssClass="form-control" ReadOnly="true" ClientIDMode="Static" placeholder="Order Address ..." autocomplete="off" onclick="openOrderAddressModal();"></asp:TextBox>
@@ -192,17 +196,7 @@
                     <div class="row mb-2">
                         <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">State</label>
-                            <asp:DropDownList runat="server" ID="ddlState" CssClass="form-select" ClientIDMode="Static">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
-                                <asp:ListItem Value="QLD" Text="QLD"></asp:ListItem>
-                                <asp:ListItem Value="SA" Text="SA"></asp:ListItem>
-                                <asp:ListItem Value="TAS" Text="TAS"></asp:ListItem>
-                                <asp:ListItem Value="NT" Text="NT"></asp:ListItem>
-                                <asp:ListItem Value="ACT" Text="ACT"></asp:ListItem>
-                                <asp:ListItem Value="VIC" Text="VIC"></asp:ListItem>
-                                <asp:ListItem Value="WA" Text="WA"></asp:ListItem>
-                            </asp:DropDownList>
+                            <asp:TextBox runat="server" ID="txtState" CssClass="form-control" ClientIDMode="Static" placeholder="Suburb ..." autocomplete="off"></asp:TextBox>
                             <span id="spanErrorState" style="color:red;"></span>
                         </div>
                         <div class="col-12 col-sm-12 col-lg-6 form-group">
@@ -347,7 +341,7 @@
 
             $("#<%= txtAddress.ClientID %>").val("");
             $("#<%= txtSuburb.ClientID %>").val("");
-            $("#<%= ddlState.ClientID %>").val("");
+            $("#<%= txtState.ClientID %>").val("");
             $("#<%= txtPostCode.ClientID %>").val("");
 
             if (orderAddress !== "") {
@@ -368,7 +362,7 @@
 
                         $("#<%= txtAddress.ClientID %>").val(address);
                         $("#<%= txtSuburb.ClientID %>").val(suburb);
-                        $("#<%= ddlState.ClientID %>").val(state);
+                        $("#<%= txtState.ClientID %>").val(state);
                         $("#<%= txtPostCode.ClientID %>").val(postCode);
                     } else {
                         $("#<%= txtAddress.ClientID %>").val(orderAddress);
@@ -394,7 +388,7 @@
 
             var address = $("#txtAddress").val().trim();
             var suburb = $("#txtSuburb").val().trim();
-            var state = $("#ddlState").val().trim();
+            var state = $("#txtState").val().trim();
             var postCode = $("#txtPostCode").val().trim();
 
             var hasError = false;
