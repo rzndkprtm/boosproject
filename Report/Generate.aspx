@@ -51,14 +51,9 @@
                                                 <label class="form-label">Data Type</label>
                                                 <asp:DropDownList runat="server" ID="ddlDataType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDataType_SelectedIndexChanged">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                    <%--<asp:ListItem Value="Fabric (List)" Text="Fabric (List)"></asp:ListItem>
-                                                    <asp:ListItem Value="Fabric (Order)" Text="Fabric (Order)"></asp:ListItem>
-                                                    <asp:ListItem Value="Fabric Colour (List)" Text="Fabric Colour (List)"></asp:ListItem>
-                                                    <asp:ListItem Value="Fabric Colour (Order)" Text="Fabric Colour (Order)"></asp:ListItem>
-                                                    <asp:ListItem Value="Customer (List)" Text="Customer (List)"></asp:ListItem>
-                                                    <asp:ListItem Value="Customer (Order)" Text="Customer (Order)"></asp:ListItem>--%>
                                                     <asp:ListItem Value="OrderHeaders" Text="Orders"></asp:ListItem>
                                                     <asp:ListItem Value="OrderDetails" Text="Orders (Product)"></asp:ListItem>
+                                                    <asp:ListItem Value="Customer (List)" Text="Customer (List)"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
