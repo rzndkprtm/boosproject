@@ -1348,6 +1348,9 @@ Partial Class Order_Method
 
         If data.subtype.Contains("2 on 1") Then priceProductGroupB = priceProductGroup
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -1486,9 +1489,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
 
             orderClass.UpdateOrderFactory(data.headerid)
 
@@ -1598,6 +1608,9 @@ Partial Class Order_Method
             End If
         End If
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -1684,9 +1697,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -1737,17 +1757,6 @@ Partial Class Order_Method
         Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
         Dim factory As String = orderClass.GetFabricFactory(data.fabriccolour)
         Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
-
-        'Dim context As New ValidationContext With {
-        '    .data = data,
-        '    .pricegroupid = priceGroupId,
-        '    .fabricfactory = factory
-        '}
-
-        'Dim engine As New ValidationEngine()
-        'Dim result As String = engine.Validate(context)
-
-        'If result <> "" Then Return result
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "CURTAIN TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID"
@@ -2087,6 +2096,9 @@ Partial Class Order_Method
             priceAdditionalB = orderClass.GetPriceProductGroupId(trackGroupNameB, data.designid, priceGroupId)
         End If
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -2251,9 +2263,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -2332,6 +2351,9 @@ Partial Class Order_Method
         End If
 
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(designName, data.designid, priceGroupId)
+
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -2413,9 +2435,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -2620,6 +2649,9 @@ Partial Class Order_Method
         Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", designName, typeDoor, mechanism, factory)
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, doorPriceGroupId)
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -2744,9 +2776,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -3532,6 +3571,9 @@ Partial Class Order_Method
         Dim priceProductGroupName As String = designName
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, priceGroupId)
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -3610,9 +3652,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -3963,6 +4012,9 @@ Partial Class Order_Method
 
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -4045,9 +4097,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -4196,6 +4255,9 @@ Partial Class Order_Method
             priceProductGroupC = priceProductGroup
         End If
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -4289,9 +4351,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -4384,6 +4453,9 @@ Partial Class Order_Method
         Dim priceProductGroupName As String = String.Format("{0} - {1}", designName, blindName)
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, priceGroupId)
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -4456,9 +4528,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -7385,6 +7464,9 @@ Partial Class Order_Method
             priceProductGroupF = orderClass.GetPriceProductGroupId(groupNameDB, data.designid, priceGroupId)
         End If
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -7687,9 +7769,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -8067,6 +8156,9 @@ Partial Class Order_Method
         Dim groupName As String = String.Format("{0} - {1} - {2}", designName, tubeName, groupFabric)
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.controllength = "Standard" Then
             If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then controllength = Math.Ceiling(drop * 2 / 3)
             If controlName = "Chain" Then
@@ -8179,9 +8271,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -8433,6 +8532,9 @@ Partial Class Order_Method
         Dim groupName As String = String.Format("{0} - {1}", designName, blindName)
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -8515,9 +8617,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -9203,6 +9312,9 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = width * drop / 1000000
         Dim linearMetre As Decimal = width / 1000
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -9357,9 +9469,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -9513,6 +9632,9 @@ Partial Class Order_Method
             data.printing = String.Empty
         End If
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -9603,9 +9725,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -10133,8 +10262,6 @@ Partial Class Order_Method
         linearMetre = width / 1000
         squareMetre = width * drop / 1000000
 
-
-
         If blindName = "Econo 50mm (Cordless)" Then
             widthb = 0 : dropb = 0
             data.controlposition = String.Empty
@@ -10313,6 +10440,9 @@ Partial Class Order_Method
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
         Dim priceProductGroupB As String = String.Empty
         Dim priceProductGroupC As String = String.Empty
+
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
 
         If data.subtype.Contains("2 on 1") Then priceProductGroupB = priceProductGroup
         If data.subtype.Contains("3 on 1") Then priceProductGroupB = priceProductGroup : priceProductGroupC = priceProductGroup
@@ -10519,9 +10649,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -10715,6 +10852,9 @@ Partial Class Order_Method
         Dim groupName As String = String.Format("Vertical - {0} - {1}", blindName, tubeName)
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -10807,9 +10947,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -10958,6 +11105,9 @@ Partial Class Order_Method
         End If
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, doorPriceGroupId)
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -11050,9 +11200,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
