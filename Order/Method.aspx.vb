@@ -13180,32 +13180,6 @@ Partial Class Order_Method
 
         Return list
     End Function
-
-    Private Shared Function BuildSql(cmd As SqlCommand) As String
-        Dim query As String = cmd.CommandText
-
-        Dim parameters = cmd.Parameters.Cast(Of SqlParameter)().OrderByDescending(Function(p) p.ParameterName.Length)
-
-        For Each p In parameters
-            Dim value As String
-
-            If p.Value Is Nothing OrElse p.Value Is DBNull.Value Then
-                value = "NULL"
-            ElseIf TypeOf p.Value Is String Then
-                value = "'" & p.Value.ToString().Replace("'", "''") & "'"
-            ElseIf TypeOf p.Value Is DateTime Then
-                value = "'" & CType(p.Value, DateTime).ToString("yyyy-MM-dd HH:mm:ss") & "'"
-            ElseIf TypeOf p.Value Is Decimal Then
-                value = CType(p.Value, Decimal).ToString(System.Globalization.CultureInfo.InvariantCulture)
-            Else
-                value = p.Value.ToString()
-            End If
-
-            query = query.Replace(p.ParameterName, value)
-        Next
-
-        Return query
-    End Function
 End Class
 
 Public Class ProccessData

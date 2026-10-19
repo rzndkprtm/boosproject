@@ -403,6 +403,23 @@ Partial Class Setting_Specification_Product_Default
             dataLog = {"Products", thisId, Session("LoginId").ToString(), "Products Deleted"}
             settingClass.Logs(dataLog)
 
+            Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM ProductAlias WHERE FirstId='" & thisId & "'")
+            If aliasData IsNot Nothing Then
+                Dim aliasId As String = aliasData(0).ToString()
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(aliasId)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                dataLog = {"Products", aliasId, Session("LoginId").ToString(), "Products Deleted"}
+                settingClass.Logs(dataLog)
+
+            End If
+
             Session("DesignProduct") = ddlDesignSort.SelectedValue
             Session("BlindProduct") = ddlBlindSort.SelectedValue
             Session("CompanyDetailProduct") = ddlCompanyDetailSort.SelectedValue

@@ -54,7 +54,7 @@ Partial Class Setting_Specification_Product_ChangeStatus
                 Dim colourString As String = String.Empty
                 If Not ddlColourType.SelectedValue = "" Then colourString = "AND ColourType='" & ddlColourType.SelectedValue & "'"
 
-                Dim thisString As String = String.Format("SELECT DISTINCT * FROM Products WHERE DesignId={0} AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued') {1} {2} {3} {4} ORDER BY Id ASC", ddlDesignType.SelectedValue, blindString, tubeString, controlString, colourString)
+                Dim thisString As String = String.Format("SELECT DISTINCT * FROM Products WHERE DesignId={0} AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock') {1} {2} {3} {4} ORDER BY Id ASC", ddlDesignType.SelectedValue, blindString, tubeString, controlString, colourString)
                 Dim thisData As DataTable = settingClass.GetDataTable(thisString)
 
                 If Not thisData.Rows.Count = 0 Then
@@ -94,7 +94,6 @@ Partial Class Setting_Specification_Product_ChangeStatus
                     Next
 
                     Response.Redirect("~/setting/specification/product", False)
-                    Exit Sub
                 End If
             End If
         Catch ex As Exception
@@ -121,10 +120,7 @@ Partial Class Setting_Specification_Product_ChangeStatus
                 ddlDesignType.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
+            ddlDesignType.Items.Clear()
         End Try
     End Sub
 
@@ -142,10 +138,7 @@ Partial Class Setting_Specification_Product_ChangeStatus
                 End If
             End If
         Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
+            ddlBlindType.Items.Clear()
         End Try
     End Sub
 
@@ -161,10 +154,7 @@ Partial Class Setting_Specification_Product_ChangeStatus
                 ddlTubeType.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
+            ddlTubeType.Items.Clear()
         End Try
     End Sub
 
@@ -180,10 +170,7 @@ Partial Class Setting_Specification_Product_ChangeStatus
                 ddlControlType.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
+            ddlControlType.Items.Clear()
         End Try
     End Sub
 
@@ -199,10 +186,7 @@ Partial Class Setting_Specification_Product_ChangeStatus
                 ddlColourType.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
+            ddlColourType.Items.Clear()
         End Try
     End Sub
 
