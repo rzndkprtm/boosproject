@@ -387,6 +387,9 @@ Partial Class Report_Generate
             Dim thisSql As String = "SELECT Id, Name FROM Designs WHERE Type IN ('Blinds', 'Shutters', 'Doors', 'Samples') AND Active=1"
             If Not String.IsNullOrEmpty(companyId) Then
                 thisSql = "SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS CompanyArray WHERE CompanyArray.VALUE='" & companyId & "' AND Type IN ('Blinds', 'Shutters', 'Doors', 'Samples') AND Active=1"
+                If companyId = "ALL" Then
+                    thisSql = "SELECT Id, Name FROM Designs WHERE Type IN ('Blinds', 'Shutters', 'Doors', 'Samples') AND Active=1"
+                End If
             End If
             lbProduct.DataSource = reportClass.GetDataTable(thisSql)
             lbProduct.DataTextField = "Name"
@@ -397,7 +400,7 @@ Partial Class Report_Generate
                 lbProduct.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            lbProduct.Items.Clear()
+            MessageError(True, ex.ToString())
         End Try
     End Sub
 
@@ -407,6 +410,9 @@ Partial Class Report_Generate
             Dim thisSql As String = "SELECT Id, Name FROM Customers WHERE Status='Active'"
             If Not String.IsNullOrEmpty(companyId) Then
                 thisSql = "SELECT Id, Name FROM Customers WHERE CompanyId='" & companyId & "' AND Status='Active'"
+                If companyId = "ALL" Then
+                    thisSql = "SELECT Id, Name FROM Customers WHERE Status='Active'"
+                End If
             End If
             lbCustomer.DataSource = reportClass.GetDataTable(thisSql)
             lbCustomer.DataTextField = "Name"
@@ -417,7 +423,7 @@ Partial Class Report_Generate
                 lbCustomer.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            lbCustomer.Items.Clear()
+            MessageError(True, ex.ToString())
         End Try
     End Sub
 
