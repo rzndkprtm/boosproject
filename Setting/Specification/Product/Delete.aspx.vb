@@ -56,55 +56,92 @@ Partial Class Setting_Specification_Product_Delete
 
             If msgError.InnerText = "" Then
                 Dim blindString As String = String.Empty
-                If Not ddlBlindType.SelectedValue = "" Then blindString = "AND BlindId='" & ddlBlindType.SelectedValue & "'"
                 Dim tubeString As String = String.Empty
-                If Not ddlTubeType.SelectedValue = "" Then tubeString = "AND TubeType='" & ddlTubeType.SelectedValue & "'"
                 Dim controlString As String = String.Empty
-                If Not ddlControlType.SelectedValue = "" Then controlString = "AND ControlType='" & ddlControlType.SelectedValue & "'"
                 Dim colourString As String = String.Empty
+
+                If Not ddlBlindType.SelectedValue = "" Then blindString = "AND BlindId='" & ddlBlindType.SelectedValue & "'"
+
+                If Not ddlTubeType.SelectedValue = "" Then tubeString = "AND TubeType='" & ddlTubeType.SelectedValue & "'"
+
+                If Not ddlControlType.SelectedValue = "" Then controlString = "AND ControlType='" & ddlControlType.SelectedValue & "'"
+
                 If Not ddlColourType.SelectedValue = "" Then colourString = "AND ColourType='" & ddlColourType.SelectedValue & "'"
 
-                Dim thisString As String = String.Format("SELECT DISTINCT * FROM Products WHERE DesignId={0} {1} {2} {3} {4} ORDER BY Id ASC", ddlDesignType.SelectedValue, blindString, tubeString, controlString, colourString)
+                Dim thisString As String = String.Format("SELECT Id FROM Products WHERE DesignId={0} {1} {2} {3} {4} ORDER BY Id ASC", ddlDesignType.SelectedValue, blindString, tubeString, controlString, colourString)
+
+                If ddlType.SelectedValue = "Delete Sub Company" Then
+                    thisString = String.Format("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS CompanyDetailArray WHERE DesignId={0} {1} {2} {3} {4} AND CompanyDetailArray.VALUE={5} ORDER BY Id ASC", ddlDesignType.SelectedValue, blindString, tubeString, controlString, colourString, ddlCompanyDetail.SelectedValue)
+                End If
+
                 Dim thisData As DataTable = settingClass.GetDataTable(thisString)
+                If Not thisData.Rows.Count = 0 Then
+                    For i As Integer = 0 To thisData.Rows.Count - 1
+                        Dim productId As String = thisData.Rows(i)("Id").ToString()
 
-                'If Not thisData.Rows.Count = 0 Then
-                '    For i As Integer = 0 To thisData.Rows.Count - 1
-                '        Dim productId As String = thisData.Rows(i)("Id").ToString()
+                        If ddlType.SelectedValue = "Delete Product" Then
+                            Using thisConn As New SqlConnection(myConn)
+                                Using thisCmd As New SqlCommand("UPDATE Products SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(productId)
+                                    thisConn.Open()
+                                    thisCmd.ExecuteNonQuery()
+                                End Using
+                            End Using
 
-                '        Using thisConn As New SqlConnection(myConn)
-                '            Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
-                '                thisCmd.Parameters.AddWithValue("@Id", productId)
-                '                thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
-                '                thisConn.Open()
-                '                thisCmd.ExecuteNonQuery()
-                '            End Using
-                '        End Using
+                            dataLog = {"Products", productId, Session("LoginId").ToString(), "Products Deleted"}
+                            settingClass.Logs(dataLog)
 
-                '        Dim changeDesc As String = String.Format("Change Status Product : {0}", ddlStatus.SelectedValue)
-                '        dataLog = {"Products", productId, Session("LoginId").ToString(), changeDesc}
-                '        settingClass.Logs(dataLog)
+                            Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM ProductAlias WHERE FirstId='" & productId & "'")
+                            If aliasData IsNot Nothing Then
+                                Dim aliasId As String = aliasData(0).ToString()
 
-                '        Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM ProductAlias WHERE FirstId='" & productId & "'")
-                '        If aliasData IsNot Nothing Then
-                '            Dim aliasId As String = aliasData(0).ToString()
+                                Using thisConn As New SqlConnection(myConn)
+                                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                                        thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(aliasId)
+                                        thisConn.Open()
+                                        thisCmd.ExecuteNonQuery()
+                                    End Using
+                                End Using
 
-                '            Using thisConn As New SqlConnection(myConn)
-                '                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
-                '                    thisCmd.Parameters.AddWithValue("@Id", aliasId)
-                '                    thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
-                '                    thisConn.Open()
-                '                    thisCmd.ExecuteNonQuery()
-                '                End Using
-                '            End Using
+                                dataLog = {"Products", aliasId, Session("LoginId").ToString(), "Products Deleted"}
+                                settingClass.Logs(dataLog)
+                            End If
+                        End If
 
-                '            changeDesc = String.Format("Change Status Product : {0}", ddlStatus.SelectedValue)
-                '            dataLog = {"Products", aliasId, Session("LoginId").ToString(), changeDesc}
-                '            settingClass.Logs(dataLog)
-                '        End If
-                '    Next
+                        If ddlType.SelectedValue = "Delete Sub Company" Then
+                            Using thisConn As New SqlConnection(myConn)
+                                Using thisCmd As New SqlCommand("UPDATE Products SET CompanyDetailId=(SELECT STRING_AGG(TRIM(value), ',') FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value)<>@CompanyDetailId) WHERE Id=@Id;", thisConn)
+                                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(productId)
+                                    thisCmd.Parameters.Add("@CompanyDetailId", SqlDbType.Int).Value = CInt(ddlCompanyDetail.SelectedValue)
+                                    thisConn.Open()
+                                    thisCmd.ExecuteNonQuery()
+                                End Using
+                            End Using
 
-                '    Response.Redirect("~/setting/specification/product", False)
-                'End If
+                            dataLog = {"Products", productId, Session("LoginId").ToString(), "Products Updated"}
+                            settingClass.Logs(dataLog)
+
+                            Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM ProductAlias WHERE FirstId='" & productId & "'")
+                            If aliasData IsNot Nothing Then
+                                Dim aliasId As String = aliasData(0).ToString()
+
+                                Using thisConn As New SqlConnection(myConn)
+                                    Using thisCmd As New SqlCommand("UPDATE Products SET CompanyDetailId=(SELECT STRING_AGG(TRIM(value), ',') FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value)<>@CompanyDetailId) WHERE Id=@Id;", thisConn)
+                                        thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(aliasId)
+                                        thisCmd.Parameters.Add("@CompanyDetailId", SqlDbType.Int).Value = CInt(ddlCompanyDetail.SelectedValue)
+                                        thisConn.Open()
+                                        thisCmd.ExecuteNonQuery()
+                                    End Using
+                                End Using
+
+                                dataLog = {"Products", aliasId, Session("LoginId").ToString(), "Products Updated"}
+                                settingClass.Logs(dataLog)
+                            End If
+                        End If
+                    Next
+                End If
+
+                Response.Redirect("~/setting/specification/product", False)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

@@ -417,7 +417,6 @@ Partial Class Setting_Specification_Product_Default
 
                 dataLog = {"Products", aliasId, Session("LoginId").ToString(), "Products Deleted"}
                 settingClass.Logs(dataLog)
-
             End If
 
             Session("DesignProduct") = ddlDesignSort.SelectedValue
