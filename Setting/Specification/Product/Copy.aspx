@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Copy.aspx.vb" Inherits="Setting_Specification_Product_Copy" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Product Copy" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Copy.aspx.vb" Inherits="Setting_Specification_Product_Copy" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Copy Product" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -32,7 +32,7 @@
                     <div class="card-body">
                         <div class="form form-vertical">
                             <div class="form-body">
-                                <div class="row">
+                                <div class="row mb-2">
                                     <div class="col-12 col-sm-12 col-lg-4 form-group">
                                         <label class="form-label">Design Type</label>
                                         <asp:DropDownList runat="server" ID="ddlDesignType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignType_SelectedIndexChanged"></asp:DropDownList>
@@ -42,20 +42,24 @@
                                         <asp:DropDownList runat="server" ID="ddlBlindType" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="row mb-2">
                                     <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Sub Company</label>
-                                        <asp:DropDownList runat="server" ID="ddlCompanyDetail" CssClass="choices form-select"></asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="row mt-5">
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
                                         <label class="form-label">Tube Type</label>
                                         <asp:DropDownList runat="server" ID="ddlTubeType" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
                                         <label class="form-label">Control Type</label>
                                         <asp:DropDownList runat="server" ID="ddlControlType" CssClass="choices form-select"></asp:DropDownList>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <label class="form-label">Colour Type</label>
+                                        <asp:DropDownList runat="server" ID="ddlColourType" CssClass="choices form-select"></asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <label class="form-label">Sub Company</label>
+                                        <asp:DropDownList runat="server" ID="ddlCompanyDetail" CssClass="choices form-select"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="row mt-3" runat="server" id="divError">
@@ -74,7 +78,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 col-lg-4"></div>
+            <div class="col-12 col-sm-12 col-lg-5"></div>
         </section>
     </div>
 </asp:Content>

@@ -22,6 +22,7 @@ Partial Class Setting_Specification_Product_Copy
             BindBlindType(ddlDesignType.SelectedValue)
             BindTubeType()
             BindControlType()
+            BindColourType()
             BindCompanyDetail()
         End If
     End Sub
@@ -38,29 +39,65 @@ Partial Class Setting_Specification_Product_Copy
                 MessageError(True, "DESIGN TYPE IS REQUIRED !")
                 Exit Sub
             End If
-            If ddlBlindType.SelectedValue = "" Then
-                MessageError(True, "BLIND TYPE IS REQUIRED !")
-                Exit Sub
-            End If
-            If ddlTubeType.SelectedValue = "" Then
-                MessageError(True, "TUBE TYPE IS REQUIRED !")
-                Exit Sub
-            End If
-            If ddlControlType.SelectedValue = "" Then
-                MessageError(True, "CONTROL TYPE IS REQUIRED !")
-                Exit Sub
-            End If
 
             If msgError.InnerText = "" Then
                 Dim blindString As String = String.Empty
-                If Not ddlBlindType.SelectedValue = "" Then blindString = "AND BlindId='" & ddlBlindType.SelectedValue & "'"
                 Dim tubeString As String = String.Empty
-                If Not ddlTubeType.SelectedValue = "" Then tubeString = "AND TubeType='" & ddlTubeType.SelectedValue & "'"
                 Dim controlString As String = String.Empty
+                Dim colourString As String = String.Empty
+
+                If Not ddlBlindType.SelectedValue = "" Then blindString = "AND BlindId='" & ddlBlindType.SelectedValue & "'"
+
+                If Not ddlTubeType.SelectedValue = "" Then tubeString = "AND TubeType='" & ddlTubeType.SelectedValue & "'"
+
                 If Not ddlControlType.SelectedValue = "" Then controlString = "AND ControlType='" & ddlControlType.SelectedValue & "'"
 
-                Dim thisString As String = String.Format("SELECT DISTINCT * FROM Products WHERE DesignId={0} {1} {2} {3} ORDER BY Id ASC", ddlDesignType.SelectedValue, blindString, tubeString, controlString)
+                If Not ddlColourType.SelectedValue = "" Then colourString = "AND ColourType='" & ddlColourType.SelectedValue & "'"
+
+                Dim stringSplit As String = String.Empty
+                Dim subCompany As String = String.Empty
+                If Not String.IsNullOrEmpty(ddlCompanyDetail.SelectedValue) Then
+                    stringSplit = "CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS CompanyDetailArray"
+                    subCompany = "CompanyDetailArray.VALUE='" & ddlCompanyDetail.SelectedValue & "'"
+                End If
+
+                Dim thisString As String = String.Format("SELECT Id FROM Products {0} WHERE DesignId={1} {2} {3} {4} {5} {6} ORDER BY Id ASC", stringSplit, ddlDesignType.SelectedValue, blindString, tubeString, controlString, colourString, subCompany)
+
                 Dim thisData As DataTable = settingClass.GetDataTable(thisString)
+                If Not thisData.Rows.Count = 0 Then
+                    For i As Integer = 0 To thisData.Rows.Count - 1
+                        Dim productId As String = thisData.Rows(i)("Id").ToString()
+
+                        Using thisConn As New SqlConnection(myConn)
+                            Using thisCmd As New SqlCommand("UPDATE Products SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                                thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(productId)
+                                thisConn.Open()
+                                thisCmd.ExecuteNonQuery()
+                            End Using
+                        End Using
+
+                        dataLog = {"Products", productId, Session("LoginId").ToString(), "Products Deleted"}
+                        settingClass.Logs(dataLog)
+
+                        Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM ProductAlias WHERE FirstId='" & productId & "'")
+                        If aliasData IsNot Nothing Then
+                            Dim aliasId As String = aliasData(0).ToString()
+
+                            Using thisConn As New SqlConnection(myConn)
+                                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(aliasId)
+                                    thisConn.Open()
+                                    thisCmd.ExecuteNonQuery()
+                                End Using
+                            End Using
+
+                            dataLog = {"Products", aliasId, Session("LoginId").ToString(), "Products Deleted"}
+                            settingClass.Logs(dataLog)
+                        End If
+                    Next
+                End If
+
+                Response.Redirect("~/setting/specification/product", False)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -86,10 +123,7 @@ Partial Class Setting_Specification_Product_Copy
                 ddlDesignType.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
+            ddlDesignType.Items.Clear()
         End Try
     End Sub
 
@@ -107,10 +141,7 @@ Partial Class Setting_Specification_Product_Copy
                 End If
             End If
         Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
+            ddlBlindType.Items.Clear()
         End Try
     End Sub
 
@@ -126,10 +157,7 @@ Partial Class Setting_Specification_Product_Copy
                 ddlTubeType.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
+            ddlTubeType.Items.Clear()
         End Try
     End Sub
 
@@ -145,10 +173,23 @@ Partial Class Setting_Specification_Product_Copy
                 ddlControlType.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            ddlControlType.Items.Clear()
+        End Try
+    End Sub
+
+    Protected Sub BindColourType()
+        ddlColourType.Items.Clear()
+        Try
+            ddlColourType.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM ProductColours ORDER BY Name ASC")
+            ddlColourType.DataTextField = "Name"
+            ddlColourType.DataValueField = "Id"
+            ddlColourType.DataBind()
+
+            If ddlColourType.Items.Count > 1 Then
+                ddlColourType.Items.Insert(0, New ListItem("", ""))
             End If
+        Catch ex As Exception
+            ddlColourType.Items.Clear()
         End Try
     End Sub
 
@@ -164,10 +205,7 @@ Partial Class Setting_Specification_Product_Copy
                 ddlCompanyDetail.Items.Insert(0, New ListItem("", ""))
             End If
         Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
+            ddlCompanyDetail.Items.Clear()
         End Try
     End Sub
 
