@@ -46,15 +46,17 @@ Partial Class Setting_Specification_Product_ChangeStatus
 
             If msgError.InnerText = "" Then
                 Dim blindString As String = String.Empty
-                If Not ddlBlindType.SelectedValue = "" Then blindString = "AND BlindId='" & ddlBlindType.SelectedValue & "'"
                 Dim tubeString As String = String.Empty
-                If Not ddlTubeType.SelectedValue = "" Then tubeString = "AND TubeType='" & ddlTubeType.SelectedValue & "'"
                 Dim controlString As String = String.Empty
-                If Not ddlControlType.SelectedValue = "" Then controlString = "AND ControlType='" & ddlControlType.SelectedValue & "'"
                 Dim colourString As String = String.Empty
+
+                If Not ddlBlindType.SelectedValue = "" Then blindString = "AND BlindId='" & ddlBlindType.SelectedValue & "'"
+                If Not ddlTubeType.SelectedValue = "" Then tubeString = "AND TubeType='" & ddlTubeType.SelectedValue & "'"
+                If Not ddlControlType.SelectedValue = "" Then controlString = "AND ControlType='" & ddlControlType.SelectedValue & "'"
+
                 If Not ddlColourType.SelectedValue = "" Then colourString = "AND ColourType='" & ddlColourType.SelectedValue & "'"
 
-                Dim thisString As String = String.Format("SELECT DISTINCT * FROM Products WHERE DesignId={0} AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock') {1} {2} {3} {4} ORDER BY Id ASC", ddlDesignType.SelectedValue, blindString, tubeString, controlString, colourString)
+                Dim thisString As String = String.Format("SELECT Id FROM Products WHERE DesignId={0} AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock') {1} {2} {3} {4} ORDER BY Id ASC", ddlDesignType.SelectedValue, blindString, tubeString, controlString, colourString)
                 Dim thisData As DataTable = settingClass.GetDataTable(thisString)
 
                 If Not thisData.Rows.Count = 0 Then

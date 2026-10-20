@@ -68,32 +68,18 @@ Partial Class Setting_Specification_Product_Copy
                     For i As Integer = 0 To thisData.Rows.Count - 1
                         Dim productId As String = thisData.Rows(i)("Id").ToString()
 
+                        Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Products ORDER BY Id DESC")
                         Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As New SqlCommand("UPDATE Products SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
-                                thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(productId)
+                            Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Products SELECT @NewId, DesignId, BlindId, CompanyDetailId, JobSheetId, Name + ' - Copy', InvoiceName, TubeType, ControlType, ColourType, Description, NULL FROM Products WHERE Id=@Id", thisConn)
+                                thisCmd.Parameters.AddWithValue("@NewId", newId)
+                                thisCmd.Parameters.AddWithValue("@Id", productId)
                                 thisConn.Open()
                                 thisCmd.ExecuteNonQuery()
                             End Using
                         End Using
 
-                        dataLog = {"Products", productId, Session("LoginId").ToString(), "Products Deleted"}
+                        dataLog = {"Products", productId, Session("LoginId").ToString(), "Product Created | Duplicated of " & productId}
                         settingClass.Logs(dataLog)
-
-                        Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM ProductAlias WHERE FirstId='" & productId & "'")
-                        If aliasData IsNot Nothing Then
-                            Dim aliasId As String = aliasData(0).ToString()
-
-                            Using thisConn As New SqlConnection(myConn)
-                                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
-                                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(aliasId)
-                                    thisConn.Open()
-                                    thisCmd.ExecuteNonQuery()
-                                End Using
-                            End Using
-
-                            dataLog = {"Products", aliasId, Session("LoginId").ToString(), "Products Deleted"}
-                            settingClass.Logs(dataLog)
-                        End If
                     Next
                 End If
 
