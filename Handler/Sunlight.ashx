@@ -438,6 +438,7 @@ Public Class OrderDetail
     Public Property ControlTilt As String
     Public Property BottomHoldDown As String
     Public Property ControlLength As Integer
+    Public Property WandLength As Integer
 
     Public Property CutOut_LeftTop As Integer
     Public Property CutOut_RightTop As Integer
