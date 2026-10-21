@@ -226,7 +226,6 @@
                 bindDatePicker();
             });
         }
-
         function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
@@ -245,36 +244,32 @@
                 };
             }
         }
-
         function bindDatePicker() {
             const dateInput = document.getElementById('<%= txtDate.ClientID %>');
-        if (!dateInput || dateInput.dataset.bound === "true") return;
+            if (!dateInput || dateInput.dataset.bound === "true") return;
 
-        dateInput.dataset.bound = "true";
+            dateInput.dataset.bound = "true";
 
-        dateInput.addEventListener("keydown", function (e) {
-            e.preventDefault();
-        });
+            dateInput.addEventListener("keydown", function (e) {
+                e.preventDefault();
+            });
 
-        dateInput.addEventListener("paste", function (e) {
-            e.preventDefault();
-        });
+            dateInput.addEventListener("paste", function (e) {
+                e.preventDefault();
+            });
 
-        dateInput.addEventListener("drop", function (e) {
-            e.preventDefault();
-        });
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        initUpdatePanelLoading();
-        bindGridRowClick();
-        bindDatePicker();
-    });
-
-    function dataDelete(id) {
-        document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
+            dateInput.addEventListener("drop", function (e) {
+                e.preventDefault();
+            });
         }
-
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            bindGridRowClick();
+            bindDatePicker();
+        });
+        function dataDelete(id) {
+            document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
+        }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -309,7 +304,6 @@
                 }
             });
         }
-
         function showWaiting(hideModal = null) {
             $("#modalWaiting").modal("show");
 
@@ -323,7 +317,6 @@
 
             return true;
         }
-
         ["modalSummary", "modalReport", "modalDelete", "modalLog"].forEach(function (id) {
             const modal = document.getElementById(id);
 
@@ -334,7 +327,6 @@
                 });
             }
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>
