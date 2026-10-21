@@ -1933,7 +1933,8 @@ Public Class MailingClass
             mailBody &= "<tr style='background-color:#00B0F0; color:black; font-weight:bold; text-align:center;'>"
             mailBody &= "<th style='border:1px solid #000; padding:6px;'>No</th>"
             mailBody &= "<th style='border:1px solid #000; padding:6px;'>Journal Date</th>"
-            mailBody &= "<th style='border:1px solid #000; padding:6px;'>Customer Name</th>"
+            mailBody &= "<th style='border:1px solid #000; padding:6px;'>Customer</th>"
+            mailBody &= "<th style='border:1px solid #000; padding:6px;'>Total Customer</th>"
             mailBody &= "</tr>"
 
             Dim no As Integer = 1
@@ -1942,6 +1943,7 @@ Public Class MailingClass
                 mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & no & "</td>"
                 mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & Convert.ToDateTime(journalData.Rows(i)("JournalDate")).ToString("dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture) & "</td>"
                 mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & journalData.Rows(i)("CustomerName").ToString() & "</td>"
+                mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & journalData.Rows(i)("Total").ToString() & "</td>"
                 mailBody &= "</tr>"
                 no += 1
             Next
@@ -2036,7 +2038,8 @@ Public Class MailingClass
             mailBody &= "<th style='border:1px solid #000; padding:6px;'>No</th>"
             mailBody &= "<th style='border:1px solid #000; padding:6px;'>Journal Date</th>"
             mailBody &= "<th style='border:1px solid #000; padding:6px;'>Sales Name</th>"
-            mailBody &= "<th style='border:1px solid #000; padding:6px;'>Customer Name</th>"
+            mailBody &= "<th style='border:1px solid #000; padding:6px;'>Customer</th>"
+            mailBody &= "<th style='border:1px solid #000; padding:6px;'>Total Customer</th>"
             mailBody &= "</tr>"
 
             Dim no As Integer = 1
@@ -2046,6 +2049,7 @@ Public Class MailingClass
                 mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & Convert.ToDateTime(journalData.Rows(i)("JournalDate")).ToString("dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture) & "</td>"
                 mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & journalData.Rows(i)("FullName").ToString() & "</td>"
                 mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & journalData.Rows(i)("CustomerName").ToString() & "</td>"
+                mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & journalData.Rows(i)("Total").ToString() & "</td>"
                 mailBody &= "</tr>"
                 no += 1
             Next
