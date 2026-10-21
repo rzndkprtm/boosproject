@@ -1879,8 +1879,8 @@ Public Class MailingClass
     End Sub
 
     Public Sub JournalSummary(salesId As String)
-        Try
-            If String.IsNullOrEmpty(salesId) Then Exit Sub
+        'Try
+        If String.IsNullOrEmpty(salesId) Then Exit Sub
 
             Dim loginData As DataRow = GetDataRow("SELECT * FROM Logins WHERE Id='" & salesId & "'")
             If loginData Is Nothing Then Exit Sub
@@ -1990,8 +1990,8 @@ Public Class MailingClass
             End If
 
             smtpClient.Send(myMail)
-        Catch ex As Exception
-        End Try
+        'Catch ex As Exception
+        'End Try
     End Sub
 
     Public Sub JournalReport()
