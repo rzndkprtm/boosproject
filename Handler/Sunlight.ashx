@@ -55,7 +55,7 @@ Public Class Sunlight : Implements IHttpHandler
 
             Dim headerId As String = orderClass.GetNewOrderHeaderId()
 
-            InsertOrderHeader(headerId, orderData)
+            'InsertOrderHeader(headerId, orderData)
             'For Each detail As OrderDetail In orderData.Details
             '    If detail Is Nothing Then
             '        Throw New Exception("Order detail cannot be empty.")
