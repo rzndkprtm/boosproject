@@ -74,7 +74,6 @@
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                             <asp:BoundField DataField="CreatedByFull" HeaderText="Created By" />
-                                            <asp:BoundField DataField="CreatedDate" HeaderText="Created Date" DataFormatString="{0:dd MMM yyyy MM:hh:ss}" />
                                             <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" />
                                             <asp:BoundField DataField="Product" HeaderText="Product" />
                                             <asp:BoundField DataField="Description" HeaderText="Description" />
