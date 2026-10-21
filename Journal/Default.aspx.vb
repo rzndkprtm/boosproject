@@ -151,6 +151,12 @@ Partial Class Journal_Default
             If ddlSales.Items.Count > 0 Then
                 ddlSales.Items.Insert(0, New ListItem("", ""))
             End If
+
+            ddlSales.Enabled = True
+            If Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Member" Then
+                ddlSales.SelectedValue = Session("LoginId").ToString()
+                ddlSales.Enabled = False
+            End If
         Catch ex As Exception
             ddlSales.Items.Clear()
         End Try
