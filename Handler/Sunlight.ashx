@@ -55,25 +55,25 @@ Public Class Sunlight : Implements IHttpHandler
 
             Dim headerId As String = orderClass.GetNewOrderHeaderId()
 
-            'InsertOrderHeader(headerId, orderData)
-            'For Each detail As OrderDetail In orderData.Details
-            '    If detail Is Nothing Then
-            '        Throw New Exception("Order detail cannot be empty.")
-            '    End If
+            InsertOrderHeader(headerId, orderData)
+            For Each detail As OrderDetail In orderData.Details
+                If detail Is Nothing Then
+                    Throw New Exception("Order detail cannot be empty.")
+                End If
 
-            '    If String.IsNullOrWhiteSpace(detail.DesignName) Then
-            '        Throw New Exception("DesignName is required.")
-            '    End If
+                If String.IsNullOrWhiteSpace(detail.DesignName) Then
+                    Throw New Exception("DesignName is required.")
+                End If
 
-            '    Select Case detail.DesignName.Trim()
-            '        Case "Aluminium Blinds"
-            '            InsertAluminium(headerId, detail)
-            '        Case "Venetian Blinds"
-            '            InsertVenetian(headerId, detail)
-            '        Case Else
-            '            Throw New Exception("DesignName tidak dikenali: " & detail.DesignName)
-            '    End Select
-            'Next
+                Select Case detail.DesignName.Trim()
+                    Case "Aluminium Blinds"
+                        InsertAluminium(headerId, detail)
+                    Case "Venetian Blinds"
+                        InsertVenetian(headerId, detail)
+                    Case Else
+                        Throw New Exception("DesignName tidak dikenali: " & detail.DesignName)
+                End Select
+            Next
 
             'mailingClass.NewOrder(headerId)
 
