@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="StockFactory.aspx.vb" Inherits="StockFactory" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="StockLocal.aspx.vb" Inherits="StockLocal" %>
 
 <html lang="en">
 <head runat="server">
