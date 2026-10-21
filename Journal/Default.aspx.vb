@@ -58,7 +58,7 @@ Partial Class Journal_Default
         BuildPager()
     End Sub
 
-    Protected Sub btnJournalReminder_Click(sender As Object, e As EventArgs)
+    Protected Sub btnJournalSummary_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
             Dim mailingClass As New MailingClass
@@ -66,7 +66,7 @@ Partial Class Journal_Default
             Dim salesData As DataTable = settingClass.GetDataTable("SELECT Id FROM Logins WHERE RoleId=4 AND LevelId=2")
             For i As Integer = 0 To salesData.Rows.Count - 1
                 Dim loginId As String = salesData.Rows(i)("Id").ToString()
-                mailingClass.JournalReminder(loginId)
+                mailingClass.JournalSummary(loginId)
             Next
         Catch ex As Exception
             MessageError(True, ex.ToString())
@@ -96,8 +96,8 @@ Partial Class Journal_Default
                 End Using
             End Using
 
-            Dim dataLog As Object() = {"Journals", journalId, Session("LoginId").ToString(), "Journal Deleted"}
-            settingClass.Logs(dataLog)
+            'Dim dataLog As Object() = {"Journals", journalId, Session("LoginId").ToString(), "Journal Deleted"}
+            'settingClass.Logs(dataLog)
 
             Response.Redirect("~/journal")
         Catch ex As Exception

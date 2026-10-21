@@ -32,12 +32,8 @@
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
                 <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnMail">Mailing</button>
                 <ul class="dropdown-menu">
-                    <li>
-                        <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalReminder">Reminder</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalReport">Report</a>
-                    </li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalSummary">Summary</a></li>
+                    <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalReport">Report</a></li>
                 </ul>
             </div>
         </section>
@@ -128,18 +124,18 @@
             </div>
         </div>
     </div>
-    <div class="modal fade text-center" id="modalReminder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade text-center" id="modalSummary" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-info">
-                    <h5 class="modal-title white">Mail Reminder</h5>
+                    <h5 class="modal-title white">Mailing Summary</h5>
                 </div>
                 <div class="modal-body text-center py-4">
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnJournalReminder" CssClass="btn btn-info" Text="Confirm" OnClick="btnJournalReminder_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
+                    <asp:Button runat="server" ID="btnJournalSummary" CssClass="btn btn-info" Text="Confirm" OnClick="btnJournalSummary_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
                 </div>
             </div>
         </div>
@@ -328,7 +324,7 @@
             return true;
         }
 
-        ["modalReminder", "modalReport", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalSummary", "modalReport", "modalDelete", "modalLog"].forEach(function (id) {
             const modal = document.getElementById(id);
 
             if (modal) {

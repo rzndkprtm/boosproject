@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports Org.BouncyCastle.Asn1.Cmp
 
 Partial Class Journal_Edit
     Inherits Page
@@ -60,8 +59,8 @@ Partial Class Journal_Edit
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"Journals", lblId.Text, Session("LoginId").ToString(), "Journal Updated"}
-                settingClass.Logs(dataLog)
+                'Dim dataLog As Object() = {"Journals", lblId.Text, Session("LoginId").ToString(), "Journal Updated"}
+                'settingClass.Logs(dataLog)
 
                 Response.Redirect("~/journal", False)
             End If

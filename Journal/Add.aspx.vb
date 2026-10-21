@@ -56,8 +56,8 @@ Partial Class Journal_Add
                     End Using
                 End Using
 
-                Dim dataLog As Object() = {"Journals", thisId, Session("LoginId").ToString(), "Journal Created"}
-                settingClass.Logs(dataLog)
+                'Dim dataLog As Object() = {"Journals", thisId, Session("LoginId").ToString(), "Journal Created"}
+                'settingClass.Logs(dataLog)
 
                 Response.Redirect("~/journal", False)
             End If

@@ -44,7 +44,7 @@
                                 <div class="row mb-2">
                                     <div class="col-12 form-group">
                                         <label class="form-label">Description</label>
-                                        <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                        <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="200px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                     </div>
                                 </div>
                                 <div class="row" runat="server" id="divError">

@@ -1878,14 +1878,14 @@ Public Class MailingClass
         End Try
     End Sub
 
-    Public Sub JournalReminder(salesId As String)
+    Public Sub JournalSummary(salesId As String)
         Try
             If String.IsNullOrEmpty(salesId) Then Exit Sub
 
             Dim loginData As DataRow = GetDataRow("SELECT * FROM Logins WHERE Id='" & salesId & "'")
             If loginData Is Nothing Then Exit Sub
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='2' AND Name='Journal Reminder' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='2' AND Name='Journal Summary' AND Active=1")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString()
@@ -1956,7 +1956,7 @@ Public Class MailingClass
             mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>Reza Andika Pratama</span>"
 
             Dim myMail As New MailMessage()
-            myMail.Subject = String.Format("JOURNAL REMINDER")
+            myMail.Subject = String.Format("JOURNAL SUMMARY")
             myMail.From = New MailAddress(mailServer, mailAlias)
 
             myMail.To.Add(salesMail)
