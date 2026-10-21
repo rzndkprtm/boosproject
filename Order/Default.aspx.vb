@@ -86,6 +86,17 @@ Partial Class Order_Default
         Response.Redirect("~/order/rework", False)
     End Sub
 
+    Protected Sub btnArchive_Click(sender As Object, e As EventArgs)
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderStatus") = ddlStatus.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderActive") = ddlActive.SelectedValue
+
+        Response.Redirect("~/order/archive", False)
+    End Sub
+
     Protected Sub btnFile_Click(sender As Object, e As EventArgs)
         Session("OrderCompany") = ddlCompany.SelectedValue
         Session("OrderState") = ddlState.SelectedValue
@@ -685,6 +696,7 @@ Partial Class Order_Default
             End If
 
             btnRework.Visible = LoginAccess("Rework")
+            btnArchive.Visible = LoginAccess("Archive")
             btnFile.Visible = LoginAccess("File")
 
             divActive.Visible = LoginAccess("Active")

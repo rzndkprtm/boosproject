@@ -47,18 +47,19 @@
                     <ContentTemplate>
                         <div class="card">
                             <div class="card-header">
-                                <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                <div class="row align-items-center">
+                                    <div class="col-12 col-sm-12 col-lg-8 mb-2 mb-lg-0">
                                         <h5 class="card-title">List Journal</h5>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
-                                        <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
-                                            <div class="input-group">
-                                                <span class="input-group-text">Search : </span>
-                                                <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
-                                                <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
+                                    <div class="col-12 col-sm-12 col-lg-4">
+                                        <div class="row g-2">
+                                            <div class="col-12 col-md-7">
+                                                <asp:DropDownList runat="server" ID="ddlSales" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlSales_SelectedIndexChanged"></asp:DropDownList>
                                             </div>
-                                        </asp:Panel>
+                                            <div class="col-12 col-md-5">
+                                                <asp:TextBox runat="server" ID="txtDate" CssClass="form-control" TextMode="Date" AutoPostBack="true" OnTextChanged="txtDate_TextChanged" onkeydown="return false;" onpaste="return false;" ondrop="return false;"></asp:TextBox>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -211,41 +212,74 @@
             var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
         });
+
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") return;
+
             var prm = Sys.WebForms.PageRequestManager.getInstance();
+
             prm.add_beginRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "block";
             });
+
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
+
                 bindGridRowClick();
+                bindDatePicker();
             });
         }
+
         function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
+
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
                 row.style.cursor = "pointer";
+
                 row.onclick = function (e) {
                     if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
+
                     const btn = this.querySelector("a[id*='aEdit']");
                     if (btn) btn.click();
                 };
             }
         }
-        document.addEventListener("DOMContentLoaded", function () {
-            initUpdatePanelLoading();
-            bindGridRowClick();
+
+        function bindDatePicker() {
+            const dateInput = document.getElementById('<%= txtDate.ClientID %>');
+        if (!dateInput || dateInput.dataset.bound === "true") return;
+
+        dateInput.dataset.bound = "true";
+
+        dateInput.addEventListener("keydown", function (e) {
+            e.preventDefault();
         });
-        function dataDelete(id) {
-            document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
+
+        dateInput.addEventListener("paste", function (e) {
+            e.preventDefault();
+        });
+
+        dateInput.addEventListener("drop", function (e) {
+            e.preventDefault();
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        initUpdatePanelLoading();
+        bindGridRowClick();
+        bindDatePicker();
+    });
+
+    function dataDelete(id) {
+        document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
         }
+
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -268,6 +302,7 @@
                     }
 
                     let html = "";
+
                     logs.forEach(r => {
                         html += `<tr><td>${r.TextLog}</td></tr>`;
                     });
@@ -279,23 +314,32 @@
                 }
             });
         }
+
         function showWaiting(hideModal = null) {
             $("#modalWaiting").modal("show");
 
             setTimeout(function () {
                 $("#modalWaiting").modal("hide");
+
                 if (hideModal) {
                     $(`#${hideModal}`).modal("hide");
                 }
             }, 5000);
+
             return true;
         }
+
         ["modalReminder", "modalReport", "modalDelete", "modalLog"].forEach(function (id) {
-            document.getElementById(id).addEventListener("hide.bs.modal", function () {
-                document.activeElement.blur();
-                document.body.focus();
-            });
+            const modal = document.getElementById(id);
+
+            if (modal) {
+                modal.addEventListener("hide.bs.modal", function () {
+                    document.activeElement.blur();
+                    document.body.focus();
+                });
+            }
         });
+
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

@@ -1,12 +1,12 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.Globalization
 
 Partial Class Journal_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -17,36 +17,40 @@ Partial Class Journal_Default
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            txtSearch.Text = Session("SearchJournal")
-            BindData(txtSearch.Text)
+
+            txtDate.Text = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
+
+            BindSales()
+            BindData()
         End If
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
-        gvList.PageIndex = 0
-
-        Session("SearchJournal") = txtSearch.Text
         Response.Redirect("~/journal/add", False)
     End Sub
 
-    Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+    Protected Sub ddlSales_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddlSales.SelectedIndexChanged
+        gvList.PageIndex = 0
         MessageError(False, String.Empty)
-        BindData(txtSearch.Text)
+        BindData()
+    End Sub
 
-        Session("SearchJournal") = txtSearch.Text
+    Protected Sub txtDate_TextChanged(sender As Object, e As EventArgs) Handles txtDate.TextChanged
+        gvList.PageIndex = 0
+        MessageError(False, String.Empty)
+        BindData()
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         gvList.PageIndex = e.NewPageIndex
-
         MessageError(False, String.Empty)
-        BindData(txtSearch.Text)
+        BindData()
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
         If e.CommandName = "Page" Then
             gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-            BindData(txtSearch.Text)
+            BindData()
         End If
     End Sub
 
@@ -67,7 +71,6 @@ Partial Class Journal_Default
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try
-
     End Sub
 
     Protected Sub btnJournalReport_Click(sender As Object, e As EventArgs)
@@ -105,14 +108,24 @@ Partial Class Journal_Default
         End Try
     End Sub
 
-    Protected Sub BindData(searchText As String)
+    Protected Sub BindData()
         Try
-            Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)),
-                New SqlParameter("@RoleName", Session("RoleName").ToString()),
-                New SqlParameter("@LevelName", Session("LevelName").ToString()),
-                New SqlParameter("@LoginId", Session("LoginId"))
-            }
+            Dim params As New List(Of SqlParameter)
+
+            Dim createdBy As Integer
+            If Integer.TryParse(ddlSales.SelectedValue, createdBy) Then
+                params.Add(New SqlParameter("@CreatedBy", SqlDbType.Int) With {.Value = createdBy})
+            Else
+                params.Add(New SqlParameter("@CreatedBy", SqlDbType.Int) With {.Value = DBNull.Value})
+            End If
+
+            Dim selectedDate As DateTime
+            If DateTime.TryParseExact(txtDate.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, selectedDate) Then
+                params.Add(New SqlParameter("@CreatedDate", SqlDbType.Date) With {.Value = selectedDate.Date})
+            Else
+                params.Add(New SqlParameter("@CreatedDate", SqlDbType.Date) With {.Value = DBNull.Value})
+            End If
+
             gvList.DataSource = settingClass.GetDataTableSP("sp_Journals_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
@@ -124,6 +137,22 @@ Partial Class Journal_Default
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
+        End Try
+    End Sub
+
+    Protected Sub BindSales()
+        ddlSales.Items.Clear()
+        Try
+            ddlSales.DataSource = settingClass.GetDataTable("SELECT Id, FullName FROM Logins WHERE RoleId=4 ORDER BY Id ASC")
+            ddlSales.DataTextField = "FullName"
+            ddlSales.DataValueField = "Id"
+            ddlSales.DataBind()
+
+            If ddlSales.Items.Count > 0 Then
+                ddlSales.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlSales.Items.Clear()
         End Try
     End Sub
 
@@ -164,7 +193,8 @@ Partial Class Journal_Default
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
-        divError.Visible = visible : msgError.InnerText = message
+        divError.Visible = visible
+        msgError.InnerText = message
     End Sub
 
     Protected Function LoginAccess(action As String) As Boolean
