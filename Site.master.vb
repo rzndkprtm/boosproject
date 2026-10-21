@@ -306,7 +306,7 @@ Partial Public Class SiteMaster
                     liSales.Visible = True
                     liReport.Visible = True
                 End If
-                'liJournal.Visible = True
+                liJournal.Visible = True
 
                 liSetting.Visible = True
                 liCustomer.Visible = True
