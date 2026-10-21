@@ -45,7 +45,7 @@
                             <div class="card-header">
                                 <div class="row align-items-center">
                                     <div class="col-12 col-sm-12 col-lg-8 mb-2 mb-lg-0">
-                                        <h5 class="card-title">List Journals</h5>
+                                        <h5 class="card-title">List Journal</h5>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-4">
                                         <div class="row g-2">
