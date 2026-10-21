@@ -202,6 +202,7 @@ Partial Public Class SiteMaster
             liTicket.Visible = False
             liExport.Visible = False
             liReport.Visible = False
+            liJournal.Visible = False
             liSales.Visible = False
             liStocks.Visible = False
             liQuotation.Visible = False
@@ -229,6 +230,7 @@ Partial Public Class SiteMaster
                 liTicket.Visible = True
                 liExport.Visible = True
                 liReport.Visible = True
+                liJournal.Visible = True
                 liSales.Visible = True
                 liStocks.Visible = True
 
@@ -253,6 +255,7 @@ Partial Public Class SiteMaster
                 liOldOrder.Visible = True
                 liExport.Visible = True
                 liReport.Visible = True
+                liJournal.Visible = True
                 liTicket.Visible = True
                 liGuide.Visible = True
                 liSales.Visible = True
@@ -274,6 +277,7 @@ Partial Public Class SiteMaster
                 liOldOrder.Visible = True
                 liGuide.Visible = True
                 liReport.Visible = True
+                liJournal.Visible = True
                 liTicket.Visible = True
                 liSales.Visible = True
                 liStocks.Visible = True
@@ -308,6 +312,7 @@ Partial Public Class SiteMaster
                     liSales.Visible = True
                     liReport.Visible = True
                 End If
+                'liJournal.Visible = True
 
                 liSetting.Visible = True
                 liCustomer.Visible = True

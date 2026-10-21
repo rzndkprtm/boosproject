@@ -44,6 +44,28 @@ Public Class MailingClass
         End Try
     End Function
 
+    Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
+        Dim thisTable As New DataTable()
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    If params IsNot Nothing Then
+                        If params.Count > 0 Then
+                            thisCmd.Parameters.AddRange(params.ToArray())
+                        End If
+                    End If
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        thisAdapter.Fill(thisTable)
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+            thisTable = New DataTable()
+        End Try
+        Return thisTable
+    End Function
+
     Public Function GetItemData(thisString As String) As String
         Dim result As String = String.Empty
         Try
@@ -1852,6 +1874,224 @@ Public Class MailingClass
                 Next
                 Dim arrTicketId() As String = dataTicketId.ToArray()
             End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Public Sub JournalReminder(salesId As String)
+        Try
+            If String.IsNullOrEmpty(salesId) Then Exit Sub
+
+            Dim loginData As DataRow = GetDataRow("SELECT * FROM Logins WHERE Id='" & salesId & "'")
+            If loginData Is Nothing Then Exit Sub
+
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='2' AND Name='Journal Reminder' AND Active=1")
+            If mailData Is Nothing Then Exit Sub
+
+            Dim mailServer As String = mailData("Server").ToString()
+            Dim mailHost As String = mailData("Host").ToString()
+            Dim mailPort As Integer = mailData("Port")
+
+            Dim mailAccount As String = mailData("Account").ToString()
+            Dim mailPassword As String = mailData("Password").ToString()
+            Dim mailAlias As String = mailData("Alias").ToString()
+            Dim mailSubject As String = mailData("Subject").ToString()
+
+            Dim mailTo As String = mailData("To").ToString()
+            Dim mailCc As String = mailData("Cc").ToString()
+            Dim mailBcc As String = mailData("Bcc").ToString()
+
+            Dim mailNetworkCredentials As Boolean = mailData("NetworkCredentials")
+            Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
+            Dim mailEnableSSL As Boolean = mailData("EnableSSL")
+
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@LoginId", salesId)
+            }
+            Dim journalData As DataTable = GetDataTableSP("sp_Journals_Reminder", params)
+            If journalData.Rows.Count = 0 Then Exit Sub
+
+            Dim salesName As String = GetItemData("SELECT FullName FROM Logins WHERE Id='" & salesId & "'")
+            Dim salesMail As String = GetItemData("SELECT Email FROM Logins WHERE Id='" & salesId & "'")
+            If String.IsNullOrEmpty(salesMail) Then Exit Sub
+
+            Dim mailBody As String = String.Empty
+
+            Dim today As Date = Date.Today
+            Dim startDate As Date = today.AddDays(-(CInt(today.DayOfWeek) + 6) Mod 7)
+            Dim endDate As Date = startDate.AddDays(4)
+
+            Dim period As String = startDate.ToString("dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture) & " - " & endDate.ToString("dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)
+
+            mailBody &= "<div style='font-family:Cambria; font-size:16px;'>"
+            mailBody &= "<p>Hi <b>" & salesName & "</b>,</p>"
+            mailBody &= "<p>Please find below a summary of the journals recorded this week for the period <b>" & period & "</b>.</p>"
+            mailBody &= "</div>"
+            mailBody &= "<br />"
+
+            mailBody &= "<table style='border-collapse:collapse; width:60%; font-family:Cambria; font-size:16px;'>"
+            mailBody &= "<tr style='background-color:#00B0F0; color:black; font-weight:bold; text-align:center;'>"
+            mailBody &= "<th style='border:1px solid #000; padding:6px;'>No</th>"
+            mailBody &= "<th style='border:1px solid #000; padding:6px;'>Journal Date</th>"
+            mailBody &= "<th style='border:1px solid #000; padding:6px;'>Customer Name</th>"
+            mailBody &= "</tr>"
+
+            Dim no As Integer = 1
+            For i As Integer = 0 To journalData.Rows.Count - 1
+                mailBody &= "<tr>"
+                mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & no & "</td>"
+                mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & Convert.ToDateTime(journalData.Rows(i)("JournalDate")).ToString("dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture) & "</td>"
+                mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & journalData.Rows(i)("CustomerName").ToString() & "</td>"
+                mailBody &= "</tr>"
+                no += 1
+            Next
+            mailBody &= "</table>"
+
+            mailBody &= "<br /><br /><br />"
+
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
+            mailBody &= "<br /><br /><br />"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>Reza Andika Pratama</span>"
+
+            Dim myMail As New MailMessage()
+            myMail.Subject = String.Format("JOURNAL REMINDER")
+            myMail.From = New MailAddress(mailServer, mailAlias)
+
+            myMail.To.Add(salesMail)
+
+            If Not String.IsNullOrEmpty(mailCc) Then
+                For Each thisMail In mailCc.Split(";"c)
+                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.CC.Add(thisMail.Trim())
+                Next
+            End If
+
+            If Not String.IsNullOrEmpty(mailBcc) Then
+                For Each thisMail In mailBcc.Split(";"c)
+                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.Bcc.Add(thisMail.Trim())
+                Next
+            End If
+
+            myMail.Body = mailBody
+            myMail.IsBodyHtml = True
+            Dim smtpClient As New SmtpClient()
+            smtpClient.Host = mailHost
+            smtpClient.Port = mailPort
+            smtpClient.EnableSsl = mailEnableSSL
+            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
+            smtpClient.Timeout = 120000
+
+            If mailNetworkCredentials Then
+                smtpClient.UseDefaultCredentials = False
+                smtpClient.Credentials = New NetworkCredential(mailAccount, mailPassword)
+            Else
+                smtpClient.UseDefaultCredentials = mailDefaultCredentials
+            End If
+
+            smtpClient.Send(myMail)
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Public Sub JournalReport()
+        Try
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='2' AND Name='Journal Report' AND Active=1")
+            If mailData Is Nothing Then Exit Sub
+
+            Dim mailServer As String = mailData("Server").ToString()
+            Dim mailHost As String = mailData("Host").ToString()
+            Dim mailPort As Integer = mailData("Port")
+
+            Dim mailAccount As String = mailData("Account").ToString()
+            Dim mailPassword As String = mailData("Password").ToString()
+            Dim mailAlias As String = mailData("Alias").ToString()
+            Dim mailSubject As String = mailData("Subject").ToString()
+
+            Dim mailTo As String = mailData("To").ToString()
+            Dim mailCc As String = mailData("Cc").ToString()
+            Dim mailBcc As String = mailData("Bcc").ToString()
+
+            Dim mailNetworkCredentials As Boolean = mailData("NetworkCredentials")
+            Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
+            Dim mailEnableSSL As Boolean = mailData("EnableSSL")
+
+            Dim journalData As DataTable = GetDataTableSP("sp_Journals_Report", Nothing)
+            If journalData.Rows.Count = 0 Then Exit Sub
+
+            Dim mailBody As String = String.Empty
+
+            Dim today As Date = Date.Today
+            Dim startDate As Date = today.AddDays(-(CInt(today.DayOfWeek) + 6) Mod 7)
+            Dim endDate As Date = startDate.AddDays(4)
+
+            Dim period As String = startDate.ToString("dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture) & " - " & endDate.ToString("dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture)
+
+            mailBody &= "<div style='font-family:Cambria; font-size:16px;'>"
+            mailBody &= "<p>Hi <b>Matt McCamey</b>,</p>"
+            mailBody &= "<p>Please find below a summary of the journals recorded this week for the period <b>" & period & "</b>.</p>"
+            mailBody &= "</div>"
+            mailBody &= "<br />"
+
+            mailBody &= "<table style='border-collapse:collapse; width:60%; font-family:Cambria; font-size:16px;'>"
+            mailBody &= "<tr style='background-color:#00B0F0; color:black; font-weight:bold; text-align:center;'>"
+            mailBody &= "<th style='border:1px solid #000; padding:6px;'>No</th>"
+            mailBody &= "<th style='border:1px solid #000; padding:6px;'>Journal Date</th>"
+            mailBody &= "<th style='border:1px solid #000; padding:6px;'>Sales Name</th>"
+            mailBody &= "<th style='border:1px solid #000; padding:6px;'>Customer Name</th>"
+            mailBody &= "</tr>"
+
+            Dim no As Integer = 1
+            For i As Integer = 0 To journalData.Rows.Count - 1
+                mailBody &= "<tr>"
+                mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & no & "</td>"
+                mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & Convert.ToDateTime(journalData.Rows(i)("JournalDate")).ToString("dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture) & "</td>"
+                mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & journalData.Rows(i)("FullName").ToString() & "</td>"
+                mailBody &= "<td style='border:1px solid #000; padding:6px; text-align:center;'>" & journalData.Rows(i)("CustomerName").ToString() & "</td>"
+                mailBody &= "</tr>"
+                no += 1
+            Next
+            mailBody &= "</table>"
+
+            mailBody &= "<br /><br /><br />"
+
+            mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
+            mailBody &= "<br /><br /><br />"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>Reza Andika Pratama</span>"
+
+            Dim myMail As New MailMessage()
+            myMail.Subject = String.Format("JOURNAL REPORT")
+            myMail.From = New MailAddress(mailServer, mailAlias)
+
+            myMail.To.Add(mailTo)
+
+            If Not String.IsNullOrEmpty(mailCc) Then
+                For Each thisMail In mailCc.Split(";"c)
+                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.CC.Add(thisMail.Trim())
+                Next
+            End If
+
+            If Not String.IsNullOrEmpty(mailBcc) Then
+                For Each thisMail In mailBcc.Split(";"c)
+                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.Bcc.Add(thisMail.Trim())
+                Next
+            End If
+
+            myMail.Body = mailBody
+            myMail.IsBodyHtml = True
+            Dim smtpClient As New SmtpClient()
+            smtpClient.Host = mailHost
+            smtpClient.Port = mailPort
+            smtpClient.EnableSsl = mailEnableSSL
+            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
+            smtpClient.Timeout = 120000
+
+            If mailNetworkCredentials Then
+                smtpClient.UseDefaultCredentials = False
+                smtpClient.Credentials = New NetworkCredential(mailAccount, mailPassword)
+            Else
+                smtpClient.UseDefaultCredentials = mailDefaultCredentials
+            End If
+
+            smtpClient.Send(myMail)
         Catch ex As Exception
         End Try
     End Sub

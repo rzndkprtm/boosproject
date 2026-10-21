@@ -119,6 +119,12 @@
                                         <span>Report</span>
                                     </a>
                                 </li>
+                                <li class="menu-item" runat="server" id="liJournal">
+                                    <a runat="server" href="~/journal" class='menu-link'>
+                                        <i class="bi bi-journal-album"></i>
+                                        <span>Journal</span>
+                                    </a>
+                                </li>
                                 <li class="menu-item" runat="server" id="liSales">
                                     <a runat="server" href="~/sales" class='menu-link'>
                                         <i class="bi bi-wallet-fill"></i>
