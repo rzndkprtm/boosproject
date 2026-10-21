@@ -197,7 +197,6 @@ Partial Public Class SiteMaster
 
     Protected Sub BindListNavigation()
         Try
-            liOldOrder.Visible = False
             liGuide.Visible = False
             liTicket.Visible = False
             liExport.Visible = False
@@ -225,7 +224,6 @@ Partial Public Class SiteMaster
             liLog.Visible = False
 
             If Session("RoleName") = "Developer" Then
-                liOldOrder.Visible = True
                 liGuide.Visible = True
                 liTicket.Visible = True
                 liExport.Visible = True
@@ -252,7 +250,6 @@ Partial Public Class SiteMaster
                 liLog.Visible = True
             End If
             If Session("RoleName") = "IT" Then
-                liOldOrder.Visible = True
                 liExport.Visible = True
                 liReport.Visible = True
                 liJournal.Visible = True
@@ -274,7 +271,6 @@ Partial Public Class SiteMaster
                 liLog.Visible = True
             End If
             If Session("RoleName") = "Factory Office" Then
-                liOldOrder.Visible = True
                 liGuide.Visible = True
                 liReport.Visible = True
                 liJournal.Visible = True
@@ -294,7 +290,6 @@ Partial Public Class SiteMaster
                 liLog.Visible = True
             End If
             If Session("RoleName") = "Account" Then
-                liOldOrder.Visible = True
                 liSales.Visible = True
                 liTicket.Visible = True
 
@@ -303,7 +298,6 @@ Partial Public Class SiteMaster
                 liPrice.Visible = True
             End If
             If Session("RoleName") = "Sales" Then
-                liOldOrder.Visible = True
                 liGuide.Visible = True
                 liStocks.Visible = True
                 liTicket.Visible = True
@@ -319,12 +313,10 @@ Partial Public Class SiteMaster
                 liPrice.Visible = True
             End If
             If Session("RoleName") = "Data Entry" Then
-                liOldOrder.Visible = True
                 liStocks.Visible = True
                 liReport.Visible = True
             End If
             If Session("RoleName") = "Customer" Then
-                liOldOrder.Visible = True
                 liGuide.Visible = True
                 liStocks.Visible = True
                 liTicket.Visible = True

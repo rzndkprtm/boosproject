@@ -83,12 +83,6 @@
                                         <span>Order</span>
                                     </a>
                                 </li>
-                                <li class="menu-item" runat="server" id="liOldOrder">
-                                    <a runat="server" href="~/order/archive" class='menu-link'>
-                                        <i class="bi bi-archive-fill"></i>
-                                        <span>Archive Order</span>
-                                    </a>
-                                </li>
                                 <li class="menu-item" runat="server" id="liGuide">
                                     <a runat="server" href="~/guide" class='menu-link'>
                                         <i class="bi bi-book-fill"></i>
