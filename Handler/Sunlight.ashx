@@ -75,7 +75,7 @@ Public Class Sunlight : Implements IHttpHandler
                 End Select
             Next
 
-            mailingClass.NewOrder(headerId)
+            'mailingClass.NewOrder(headerId)
 
             WriteJson(context, 200, New With {.status = "success", .message = "Data diterima dan disimpan dengan sukses", .headerId = headerId})
         Catch ex As Exception
@@ -235,6 +235,9 @@ Public Class Sunlight : Implements IHttpHandler
         If detail.BlindName = "50mm Mockwood" Then
             blindName = "Econo 50mm"
         End If
+        If detail.BlindName = "50mm Mockwood (Cordless)" Then
+            blindName = "Econo 50mm (Cordless)"
+        End If
         If detail.BlindName = "63mm Mockwood" Then
             blindName = "Econo 63mm"
         End If
@@ -247,26 +250,39 @@ Public Class Sunlight : Implements IHttpHandler
         Dim productGroupName As String = String.Format("{0} - {1}", designName, blindName)
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productGroupName, designId, priceGroupId)
 
+        Dim controlPosition As String = detail.ControlLift
+        Dim tilterPosition As String = detail.ControlTilt
+        If blindName = "Econo 50mm (Cordless)" Then
+            controlPosition = String.Empty
+            tilterPosition = detail.TilterPosition
+        End If
+
         Dim controlLength As String = "Custom"
         Dim controlLengthValue As Integer = detail.ControlLength
-
-        Dim clvalue As Integer = Math.Ceiling(detail.Drop * 2 / 3)
-        If clvalue < 550 Then clvalue = 550
-
-        Dim cutOut As String = String.Empty
-        If detail.CutOut_LeftTop = 1 OrElse detail.CutOut_RightTop = 1 OrElse detail.CutOut_LeftBottom = 1 OrElse detail.CutOut_RightBottom = 1 Then
-            cutOut = "Yes"
+        If detail.ControlLength = 0 Then
+            controlLength = "Standard"
+            controlLengthValue = Math.Ceiling(detail.Drop * 2 / 3)
+            If controlLengthValue < 550 Then controlLengthValue = 550
+        End If
+        If blindName = "Econo 50mm (Cordless)" Then
+            controlLength = "Custom"
+            controlLengthValue = detail.WandLength
         End If
 
         Dim valanceType As String = String.Empty
-        If blindName.Contains("Basswood") Then
+        If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" Then
             valanceType = "75mm Valance"
         End If
-        If blindName.Contains("Econo") Then
+        If blindName = "Econo 50mm" OrElse blindName = "Econo 63mm" Then
             valanceType = "76mm Valance"
         End If
+        If blindName = "Econo 50mm (Cordless)" Then
+            valanceType = "Standard"
+        End If
 
-        Dim valanceSize As Integer = detail.PelmetWidth
+        Dim valanceSize As String = "Custom"
+        Dim valanceSizeValue As Integer = detail.PelmetWidth
+
         Dim returnPosition As String = String.Empty
         Dim returnLength As String = String.Empty
         Dim returnLengthValue As Integer = 0
@@ -285,6 +301,11 @@ Public Class Sunlight : Implements IHttpHandler
             returnLength = "Custom"
             returnPosition = "Right"
             returnLengthValue = detail.PelmetReturnRight
+        End If
+
+        Dim cutOut As String = String.Empty
+        If detail.CutOut_LeftTop = 1 OrElse detail.CutOut_RightTop = 1 OrElse detail.CutOut_LeftBottom = 1 OrElse detail.CutOut_RightBottom = 1 Then
+            cutOut = "Yes"
         End If
 
         Dim supply As String = detail.BottomHoldDown
@@ -310,11 +331,11 @@ Public Class Sunlight : Implements IHttpHandler
                     thisCmd.Parameters.AddWithValue("@Mounting", detail.Mounting)
                     thisCmd.Parameters.AddWithValue("@SubType", "Single")
 
-                    thisCmd.Parameters.AddWithValue("@ControlPosition", detail.ControlLift)
+                    thisCmd.Parameters.AddWithValue("@ControlPosition", controlPosition)
                     thisCmd.Parameters.AddWithValue("@ControlPositionB", String.Empty)
                     thisCmd.Parameters.AddWithValue("@ControlPositionC", String.Empty)
 
-                    thisCmd.Parameters.AddWithValue("@TilterPosition", detail.ControlLift)
+                    thisCmd.Parameters.AddWithValue("@TilterPosition", tilterPosition)
                     thisCmd.Parameters.AddWithValue("@TilterPositionB", String.Empty)
                     thisCmd.Parameters.AddWithValue("@TilterPositionC", String.Empty)
 
@@ -325,20 +346,20 @@ Public Class Sunlight : Implements IHttpHandler
                     thisCmd.Parameters.AddWithValue("@DropB", 0)
                     thisCmd.Parameters.AddWithValue("@DropC", 0)
 
-                    thisCmd.Parameters.AddWithValue("@ControlLength", "Standard")
+                    thisCmd.Parameters.AddWithValue("@ControlLength", controlLength)
                     thisCmd.Parameters.AddWithValue("@ControlLengthB", String.Empty)
                     thisCmd.Parameters.AddWithValue("@ControlLengthC", String.Empty)
-                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", clvalue)
+                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", controlLengthValue)
                     thisCmd.Parameters.AddWithValue("@ControlLengthValueB", 0)
                     thisCmd.Parameters.AddWithValue("@ControlLengthValueC", 0)
                     thisCmd.Parameters.AddWithValue("@WandLengthValue", 0)
 
                     thisCmd.Parameters.AddWithValue("@ValanceType", valanceType)
-                    thisCmd.Parameters.AddWithValue("@ValanceSize", "Custom")
-                    thisCmd.Parameters.AddWithValue("@ValanceSizeValue", valanceSize)
+                    thisCmd.Parameters.AddWithValue("@ValanceSize", valanceSize)
+                    thisCmd.Parameters.AddWithValue("@ValanceSizeValue", valanceSizeValue)
 
                     thisCmd.Parameters.AddWithValue("@ReturnPosition", returnPosition)
-                    thisCmd.Parameters.AddWithValue("@ReturnLength", "Custom")
+                    thisCmd.Parameters.AddWithValue("@ReturnLength", returnLength)
                     thisCmd.Parameters.AddWithValue("@ReturnLengthValue", returnLengthValue)
 
                     thisCmd.Parameters.AddWithValue("@CutOut", cutOut)
@@ -434,6 +455,7 @@ Public Class OrderDetail
     Public Property Width As Integer
     Public Property Drop As Integer
     Public Property ControlPosition As String
+    Public Property TilterPosition As String
     Public Property ControlLift As String
     Public Property ControlTilt As String
     Public Property BottomHoldDown As String
