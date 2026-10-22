@@ -30,20 +30,31 @@ Partial Class Journal_Edit
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If ddlCustomer.SelectedValue = "" Then
-                MessageError(True, "PRODUCT / DESIGN TYPE IS REQUIRED !")
+            If ddlType.SelectedValue = "" Then
+                MessageError(True, "CUSTOMER TYPE IS REQUIRED !")
                 Exit Sub
             End If
-            If lbProduct.SelectedValue = "" Then
-                MessageError(True, "PRODUCT / DESIGN TYPE IS REQUIRED !")
+            If ddlType.SelectedValue = "Registered" AndAlso ddlCustomer.SelectedValue = "" Then
+                MessageError(True, "CUSTOMER NAME IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlType.SelectedValue = "Not Registered" AndAlso txtCustomer.Text = "" Then
+                MessageError(True, "CUSTOMER NAME IS REQUIRED !")
                 Exit Sub
             End If
             If txtDescription.Text = "" Then
                 MessageError(True, "PRODUCT / DESIGN TYPE IS REQUIRED !")
                 Exit Sub
             End If
-
             If msgError.InnerText = "" Then
+                Dim customerData As String = String.Empty
+                If ddlType.SelectedValue = "Registered" Then
+                    customerData = ddlCustomer.SelectedValue
+                End If
+                If ddlType.SelectedValue = "Not Registered" Then
+                    customerData = txtCustomer.Text
+                End If
+
                 Dim designId As String = String.Empty
                 If Not lbProduct.SelectedValue = "" Then
                     designId = String.Join(",", lbProduct.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
@@ -103,7 +114,13 @@ Partial Class Journal_Edit
             BindCustomer()
             BindProduct()
 
-            ddlCustomer.SelectedValue = myData("CustomerId").ToString()
+            ddlType.SelectedValue = myData("CustomerType").ToString()
+            If ddlType.SelectedValue = "Registered" Then
+                ddlCustomer.SelectedValue = myData("CustomerData").ToString()
+            End If
+            If ddlType.SelectedValue = "Not Registered" Then
+                txtCustomer.Text = myData("CustomerData").ToString()
+            End If
             txtDescription.Text = myData("Description").ToString()
 
             If Not myData("DesignId").ToString() = "" Then
@@ -118,7 +135,12 @@ Partial Class Journal_Edit
                 Next
             End If
 
-            ddlCustomer.Enabled = False
+            ddlCustomer.Visible = False : txtCustomer.Visible = False
+
+            If ddlType.SelectedValue = "Registered" Then ddlCustomer.Visible = True : ddlCustomer.Visible = True
+            If ddlType.SelectedValue = "Not Registered" Then txtCustomer.Visible = True : txtCustomer.Visible = True
+
+            ddlType.Enabled = False : ddlCustomer.Enabled = False : txtCustomer.Enabled = False
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

@@ -30,14 +30,22 @@
                         <div class="form form-vertical">
                             <div class="form-body">
                                 <div class="row mb-2">
-                                    <div class="col-12 form-group">
+                                    <div class="col-4 form-group">
+                                        <label class="form-label">Customer Type</label>
+                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select">
+                                            <asp:ListItem Value="Registered" Text="Registered"></asp:ListItem>
+                                            <asp:ListItem Value="Not Registered" Text="Not Registered"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                    <div class="col-8 form-group">
                                         <label class="form-label">Customer Name</label>
                                         <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
+                                        <asp:TextBox runat="server" ID="txtCustomer" CssClass="form-control" Height="45px" placeholder="Customer Name ..." autocomplete="off"></asp:TextBox>
                                     </div>
                                 </div>
                                 <div class="row mb-2">
                                     <div class="col-12 form-group">
-                                        <label class="form-label">Product</label>
+                                        <label class="form-label">Product Issue</label>
                                         <asp:ListBox runat="server" ID="lbProduct" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
                                     </div>
                                 </div>
