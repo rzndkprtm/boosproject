@@ -30,16 +30,7 @@ Partial Public Class SiteMaster
     End Sub
 
     Protected Sub linkLogout_Click(sender As Object, e As EventArgs)
-        Dim sessionId As String = String.Empty
-
-        If Request.Cookies("deviceId") IsNot Nothing Then
-            sessionId = Request.Cookies("deviceId").Value
-            settingClass.DeleteSession(sessionId)
-        End If
-
-        Session.Clear()
-        Response.Redirect("~/account/login", False)
-        Context.ApplicationInstance.CompleteRequest()
+        Response.Redirect("~/account/logout", False)
     End Sub
 
     Protected Sub MyLoad(sessionId As String)
