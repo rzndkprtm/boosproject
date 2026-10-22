@@ -47,6 +47,14 @@ Partial Class Setting_Login_Online
         BuildPager()
     End Sub
 
+    Protected Sub timerRefresh_Tick(sender As Object, e As EventArgs)
+        Try
+            BindData(txtSearch.Text, ddlMinute.SelectedValue)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
     Protected Sub btnDeleteSession_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try

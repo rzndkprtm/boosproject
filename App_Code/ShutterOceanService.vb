@@ -10,17 +10,6 @@ Public Class ShutterOceanService
         Return JsonConvert.SerializeObject(payload, Formatting.Indented)
     End Function
 
-    Public Async Function SendOrderAsync_Try(headerId As String) As Task
-        Dim payload = Await BuildPayloadAsync(headerId)
-        Dim jsonBody As String = JsonConvert.SerializeObject(payload)
-        Using client As New HttpClient()
-            client.Timeout = TimeSpan.FromSeconds(60)
-            client.DefaultRequestHeaders.Add("X-API-KEY", "hidupjokowi")
-            Dim content As New StringContent(jsonBody, Encoding.UTF8, "application/json")
-            Await client.PostAsync("https://onlineorder.au/handler/Json.ashx", content)
-        End Using
-    End Function
-
     Private Async Function BuildPayloadAsync(headerId As String) As Task(Of DataHeader)
         Dim payload As New DataHeader()
         payload.Details = New List(Of DataDetail)()

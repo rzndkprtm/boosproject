@@ -491,9 +491,9 @@ Partial Class Setting_Customer_Discount_Add
     Protected Function GetProductData(customerId As String, discType As String) As DataTable
         Try
             Dim params As New List(Of SqlParameter) From {
-                    New SqlParameter("@CustomerId", customerId),
-                    New SqlParameter("@DiscType", discType)
-                }
+                New SqlParameter("@CustomerId", customerId),
+                New SqlParameter("@DiscType", discType)
+            }
             Dim dt As DataTable = settingClass.GetDataTableSP("sp_BindDiscountData", params)
             Return dt
         Catch ex As Exception

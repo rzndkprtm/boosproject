@@ -33,6 +33,7 @@
             <div class="col-12">
                 <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                     <ContentTemplate>
+                        <asp:Timer ID="timerRefresh" runat="server" Interval="60000" OnTick="timerRefresh_Tick" />
                         <div class="card">
                             <div class="card-header">
                                 <div class="row">

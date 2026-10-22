@@ -526,13 +526,6 @@ Partial Class Order_Detail
 
             End If
 
-            'Dim folderPath As String = Server.MapPath("~/File/Order/" & lblOrderId.Text)
-            'If IO.Directory.Exists(folderPath) Then
-            '    If IO.Directory.GetFiles(folderPath).Length = 0 AndAlso IO.Directory.GetDirectories(folderPath).Length = 0 Then
-            '        IO.Directory.Delete(folderPath)
-            '    End If
-            'End If
-
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
