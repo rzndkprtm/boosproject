@@ -101,16 +101,16 @@
                                         <span>Stocks</span>
                                     </a>
                                 </li>
-                                <li class="menu-item" runat="server" id="liJournal">
-                                    <a runat="server" href="~/journal" class='menu-link'>
-                                        <i class="bi bi-journal-album"></i>
-                                        <span>Journal</span>
-                                    </a>
-                                </li>
                                 <li class="menu-item">
                                     <a runat="server" href="~/specs" class='menu-link'>
                                         <i class="bi bi-box-seam"></i>
                                         <span>Specs</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item" runat="server" id="liJournal">
+                                    <a runat="server" href="~/journal" class='menu-link'>
+                                        <i class="bi bi-journal-album"></i>
+                                        <span>Journal</span>
                                     </a>
                                 </li>
                                 <li class="menu-item" runat="server" id="liReport">
