@@ -30,11 +30,6 @@
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnMail">Mailing</button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalSummary">Summary</a></li>
-                    <li><a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalReport">Report</a></li>
-                </ul>
             </div>
         </section>
         <section class="row">
@@ -141,38 +136,6 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade text-center" id="modalSummary" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-info">
-                    <h5 class="modal-title white">Mailing Summary</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnJournalSummary" CssClass="btn btn-info" Text="Confirm" OnClick="btnJournalSummary_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade text-center" id="modalReport" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-info">
-                    <h5 class="modal-title white">Mailing Report</h5>
-                </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnJournalReport" CssClass="btn btn-info" Text="Confirm" OnClick="btnJournalReport_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
                 </div>
             </div>
         </div>
@@ -305,20 +268,7 @@
                 }
             });
         }
-        function showWaiting(hideModal = null) {
-            $("#modalWaiting").modal("show");
-
-            setTimeout(function () {
-                $("#modalWaiting").modal("hide");
-
-                if (hideModal) {
-                    $(`#${hideModal}`).modal("hide");
-                }
-            }, 5000);
-
-            return true;
-        }
-        ["modalDescription", "modalSummary", "modalReport", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalDescription", "modalDelete", "modalLog"].forEach(function (id) {
             const modal = document.getElementById(id);
 
             if (modal) {

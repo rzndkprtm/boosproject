@@ -58,31 +58,6 @@ Partial Class Journal_Default
         BuildPager()
     End Sub
 
-    Protected Sub btnJournalSummary_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim mailingClass As New MailingClass
-
-            Dim salesData As DataTable = settingClass.GetDataTable("SELECT Id FROM Logins WHERE RoleId=4 AND LevelId=2")
-            For i As Integer = 0 To salesData.Rows.Count - 1
-                Dim loginId As String = salesData.Rows(i)("Id").ToString()
-                mailingClass.JournalSummary(loginId)
-            Next
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-        End Try
-    End Sub
-
-    Protected Sub btnJournalReport_Click(sender As Object, e As EventArgs)
-        MessageError(False, String.Empty)
-        Try
-            Dim mailingClass As New MailingClass
-            mailingClass.JournalReport()
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-        End Try
-    End Sub
-
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
@@ -132,7 +107,6 @@ Partial Class Journal_Default
             gvList.Columns(2).Visible = LoginAccess("Visible Sales")
 
             btnAdd.Visible = LoginAccess("Add")
-            btnMail.Visible = LoginAccess("Mailing")
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
