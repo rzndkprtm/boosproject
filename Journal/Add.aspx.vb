@@ -18,18 +18,28 @@ Partial Class Journal_Add
             MessageError(False, String.Empty)
             BindCustomer()
             BindProduct()
+            BindForm(ddlType.SelectedValue)
         End If
+    End Sub
+
+    Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindForm(ddlType.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            If ddlCustomer.SelectedValue = "" Then
-                MessageError(True, "PRODUCT / DESIGN TYPE IS REQUIRED !")
+            If ddlType.SelectedValue = "" Then
+                MessageError(True, "CUSTOMER TYPE IS REQUIRED !")
                 Exit Sub
             End If
-            If lbProduct.SelectedValue = "" Then
-                MessageError(True, "PRODUCT / DESIGN TYPE IS REQUIRED !")
+            If ddlType.SelectedValue = "Registered" AndAlso ddlCustomer.SelectedValue = "" Then
+                MessageError(True, "CUSTOMER NAME IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlType.SelectedValue = "Not Registered" AndAlso txtCustomer.Text = "" Then
+                MessageError(True, "CUSTOMER NAME IS REQUIRED !")
                 Exit Sub
             End If
             If txtDescription.Text = "" Then
@@ -39,16 +49,25 @@ Partial Class Journal_Add
 
             If msgError.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Journals ORDER BY Id DESC")
+                Dim customerData As String = String.Empty
+                If ddlType.SelectedValue = "Registered" Then
+                    customerData = ddlCustomer.SelectedValue
+                End If
+                If ddlType.SelectedValue = "Not Registered" Then
+                    customerData = txtCustomer.Text
+                End If
+
                 Dim designId As String = String.Empty
                 If Not lbProduct.SelectedValue = "" Then
                     designId = String.Join(",", lbProduct.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Journals VALUES (@Id, @CreatedBy, GETDATE(), @CustomerId, @DesignId, @Description, NULL, 'Open')", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Journals VALUES (@Id, @CreatedBy, GETDATE(), @Type, @CustomerData, @DesignId, @Description, NULL, 'Open')", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
-                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@CustomerData", customerData)
                         thisCmd.Parameters.AddWithValue("@DesignId", designId)
                         thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
                         thisConn.Open()
@@ -71,6 +90,18 @@ Partial Class Journal_Add
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/journal", False)
+    End Sub
+
+    Protected Sub BindForm(type As String)
+        Try
+            ddlCustomer.Visible = False
+            txtCustomer.Visible = False
+            If type = "Registered" Then ddlCustomer.Visible = True
+            If type = "Not Registered" Then txtCustomer.Visible = True
+        Catch ex As Exception
+            ddlCustomer.Visible = False
+            txtCustomer.Visible = False
+        End Try
     End Sub
 
     Protected Sub BindCustomer()

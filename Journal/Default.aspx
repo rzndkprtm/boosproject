@@ -72,8 +72,13 @@
                                             <asp:BoundField DataField="CreatedByFull" HeaderText="Created By" />
                                             <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" />
                                             <asp:BoundField DataField="Product" HeaderText="Product" />
-                                            <asp:BoundField DataField="Description" HeaderText="Description" />
-                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
+                                            <asp:TemplateField HeaderText="Description" ItemStyle-Width="550px">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblDescription" runat="server" Text='<%# If(String.IsNullOrEmpty(If(Eval("Description"), "").ToString()), "-", If(If(Eval("Description"), "").ToString().Length > 100, Server.HtmlEncode(If(Eval("Description"), "").ToString().Substring(0, 100)) & " ", Server.HtmlEncode(If(Eval("Description"), "").ToString()))) %>'></asp:Label>
+                                                    <asp:LinkButton ID="btnMoreDescription" runat="server" Text="Full Description" CssClass="text-primary text-decoration-none" CausesValidation="false" Visible='<%# If(Eval("Description"), "").ToString().Length > 100 %>' OnClientClick='<%# "showDescription(" & System.Web.HttpUtility.JavaScriptStringEncode(If(Eval("Description"), "").ToString(), True) & "); return false;" %>'></asp:LinkButton>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="110px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
@@ -120,6 +125,22 @@
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalDescription" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDescriptionLabel">Full Description</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="fullDescription" style="white-space: pre-wrap; overflow-wrap: anywhere;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -207,7 +228,6 @@
             var loading = document.getElementById("loadingOverlay");
             if (loading) loading.style.display = "none";
         });
-
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") return;
 
@@ -221,28 +241,12 @@
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
-
-                bindGridRowClick();
                 bindDatePicker();
             });
         }
-        function bindGridRowClick() {
-            const gv = document.getElementById('<%= gvList.ClientID %>');
-            if (!gv) return;
-
-            for (let i = 1; i < gv.rows.length; i++) {
-                const row = gv.rows[i];
-                row.style.cursor = "pointer";
-
-                row.onclick = function (e) {
-                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
-                        return;
-                    }
-
-                    const btn = this.querySelector("a[id*='aEdit']");
-                    if (btn) btn.click();
-                };
-            }
+        function showDescription(description) {
+            document.getElementById("fullDescription").textContent = description || "-";
+            $("#modalDescription").modal("show");
         }
         function bindDatePicker() {
             const dateInput = document.getElementById('<%= txtDate.ClientID %>');
@@ -253,18 +257,15 @@
             dateInput.addEventListener("keydown", function (e) {
                 e.preventDefault();
             });
-
             dateInput.addEventListener("paste", function (e) {
                 e.preventDefault();
             });
-
             dateInput.addEventListener("drop", function (e) {
                 e.preventDefault();
             });
         }
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
-            bindGridRowClick();
             bindDatePicker();
         });
         function dataDelete(id) {
@@ -317,7 +318,7 @@
 
             return true;
         }
-        ["modalSummary", "modalReport", "modalDelete", "modalLog"].forEach(function (id) {
+        ["modalDescription", "modalSummary", "modalReport", "modalDelete", "modalLog"].forEach(function (id) {
             const modal = document.getElementById(id);
 
             if (modal) {
