@@ -301,16 +301,15 @@ Partial Public Class SiteMaster
                 liGuide.Visible = True
                 liStocks.Visible = True
                 liTicket.Visible = True
-
-                If Session("LevelName") = "Leader" Then
-                    liSales.Visible = True
-                    liReport.Visible = True
-                End If
+                liReport.Visible = True
                 liJournal.Visible = True
 
                 liSetting.Visible = True
                 liCustomer.Visible = True
                 liPrice.Visible = True
+                If Session("LevelName") = "Leader" Then
+                    liSales.Visible = True
+                End If
             End If
             If Session("RoleName") = "Data Entry" Then
                 liStocks.Visible = True
