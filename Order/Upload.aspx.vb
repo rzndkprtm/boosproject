@@ -70,7 +70,7 @@ Partial Class Order_Upload
                         Dim orderName As String = worksheet.Cells(2, 2).Text
                         Dim orderNote As String = worksheet.Cells(1, 6).Text
 
-                        Dim orderDelivery As String = String.Empty
+                        Dim orderDelivery As String = "Default"
                         Dim orderAddress As String = worksheet.Cells(1, 8).Text
                         Dim orderContainer As String = worksheet.Cells(1, 7).Text
 
