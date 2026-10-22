@@ -95,22 +95,10 @@
                                         <span>Ticket</span>
                                     </a>
                                 </li>
-                                <li class="menu-item" runat="server" id="liExport">
-                                    <a runat="server" href="~/export" class='menu-link'>
-                                        <i class="bi bi-cloud-download-fill"></i>
-                                        <span>Export</span>
-                                    </a>
-                                </li>
                                 <li class="menu-item" runat="server" id="liStocks">
                                     <a runat="server" href="~/stocks" class='menu-link'>
                                         <i class="bi bi-ui-checks"></i>
                                         <span>Stocks</span>
-                                    </a>
-                                </li>
-                                <li class="menu-item" runat="server" id="liReport">
-                                    <a runat="server" href="~/report" class='menu-link'>
-                                        <i class="bi bi-file-earmark-bar-graph-fill"></i>
-                                        <span>Report</span>
                                     </a>
                                 </li>
                                 <li class="menu-item" runat="server" id="liJournal">
@@ -119,10 +107,28 @@
                                         <span>Journal</span>
                                     </a>
                                 </li>
+                                <li class="menu-item">
+                                    <a runat="server" href="~/specs" class='menu-link'>
+                                        <i class="bi bi-box-seam"></i>
+                                        <span>Specs</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item" runat="server" id="liReport">
+                                    <a runat="server" href="~/report" class='menu-link'>
+                                        <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                                        <span>Report</span>
+                                    </a>
+                                </li>
                                 <li class="menu-item" runat="server" id="liSales">
                                     <a runat="server" href="~/sales" class='menu-link'>
                                         <i class="bi bi-wallet-fill"></i>
                                         <span>Sales</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item" runat="server" id="liExport">
+                                    <a runat="server" href="~/export" class='menu-link'>
+                                        <i class="bi bi-cloud-download-fill"></i>
+                                        <span>Export</span>
                                     </a>
                                 </li>
                                 <li class="menu-item" runat="server" id="liQuotation">
