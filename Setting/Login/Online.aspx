@@ -207,6 +207,10 @@
                 document.body.focus();
             });
         });
+        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+            var newTitle = '<%= String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %>';
+            document.title = newTitle;
+        });
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>
