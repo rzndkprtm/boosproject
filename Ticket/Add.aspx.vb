@@ -82,14 +82,8 @@ Partial Class Ticket_Add
                     Directory.CreateDirectory(directoryOrder)
                 End If
 
-                Dim url As String = String.Format("https://boe.ordersblindonline.com/setting.aspx?action=newticket&ticketid={0}", ticketId)
-                Try
-                    Using client As New Net.Http.HttpClient()
-                        client.Timeout = TimeSpan.FromSeconds(10)
-                        Dim response As Net.Http.HttpResponseMessage = client.GetAsync(url).GetAwaiter().GetResult()
-                    End Using
-                Catch ex As Exception
-                End Try
+                Dim mailingClass As New MailingClass
+                mailingClass.NewTicket(ticketId)
 
                 ClientScript.RegisterStartupScript(Me.GetType(), "ShowSuccessModal", "showSuccessModal('" & ticketNo.Replace("\", "\\").Replace("'", "\'") & "');", True)
             End If
