@@ -115,7 +115,7 @@
                                         <asp:TemplateField ItemStyle-Width="200px" ItemStyle-HorizontalAlign="Center">
                                             <ItemTemplate>
                                                 <a class="btn btn-sm btn-primary" href='<%# Eval("FileUrl") %>' target="_blank">Preview</a>
-                                                <a class="btn btn-sm btn-info" href='<%# ResolveUrl("~/Handler/Download.ashx?folder=" & Eval("FolderName") & "&file=" & Eval("FileName")) %>'>Download</a>
+                                                <a class="btn btn-sm btn-info" href='<%# ResolveUrl("~/Handler/DownloadOrderFile.ashx?folder=" & Eval("FolderName") & "&file=" & Eval("FileName")) %>'>Download</a>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                     </Columns>

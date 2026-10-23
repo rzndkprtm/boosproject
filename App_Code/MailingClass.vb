@@ -1803,9 +1803,7 @@ Public Class MailingClass
 
             mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
             mailBody &= "<br /><br /><br />"
-            mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>Reza Andika Pratama</span><span style='font-family: Cambria; font-size:16px;'> | Developer</span>"
-            mailBody &= "<br />"
-            mailBody &= "<span style='font-family: Cambria; font-size:16px;'>reza@bigblinds.co.id</span>"
+            mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>Reza Andika Pratama</span>"
             mailBody &= "<br /><br /><br />"
 
             Dim myMail As New MailMessage()

@@ -57,21 +57,37 @@ Partial Class Setting_General_Ticket_Detail
     Protected Sub btnDeleteDetail_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = lblId.Text
+            Dim messageId As String = txtMessageId.Text
+            Dim messageType As String = txtMessageType.Text
+            Dim filePath As String = txtMessageType.Text
 
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Tickets WHERE Id=@Id; DELETE FROM TicketMessages WHERE TicketId=@Id; DELETE FROM TicketFiles WHERE TicketId=@Id;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", thisId)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
+            If messageType = "Text" Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM TicketMessages WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", messageId)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
                 End Using
-            End Using
-
-            Dim folderPath As String = Server.MapPath("~/File/Ticket/" & lblTicketNo.Text)
-            If Directory.Exists(folderPath) Then
-                Directory.Delete(folderPath, True)
             End If
-            Response.Redirect("~/setting/general/ticket", False)
+
+            If messageType = "File" Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM TicketMessages WHERE Id=@Id; DELETE FROM TicketFiles WHERE MessageId=@Id;", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", messageId)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim physicalPath As String = Server.MapPath("~" & filePath)
+                If File.Exists(physicalPath) Then
+                    File.Delete(physicalPath)
+                End If
+            End If
+
+            Dim url As String = String.Format("~/setting/general/ticket/detail?ticketid={0}", lblId.Text)
+            Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -107,6 +123,20 @@ Partial Class Setting_General_Ticket_Detail
             End If
         End Try
     End Sub
+
+    Protected Function GetMessageContent(message As Object, messageType As Object, fileName As Object, messageId As Object) As String
+        Try
+            If messageType IsNot Nothing AndAlso messageType.ToString() = "File" Then
+                Dim name As String = If(fileName IsNot Nothing AndAlso fileName IsNot DBNull.Value, fileName.ToString(), "Download File")
+                Dim id As String = messageId.ToString()
+                Return "<a href=""" & ResolveUrl("~/Handler/DownloadTicketFile.ashx?id=" & Server.UrlEncode(id)) & """ class=""text-primary text-decoration-underline""><i class=""bi bi-paperclip me-1""></i>" & Server.HtmlEncode(name) & "</a>"
+            End If
+
+            Return Server.HtmlEncode(If(message IsNot Nothing AndAlso message IsNot DBNull.Value, message.ToString(), ""))
+        Catch
+            Return ""
+        End Try
+    End Function
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message

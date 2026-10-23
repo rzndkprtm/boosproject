@@ -67,6 +67,7 @@
                                             <asp:BoundField DataField="TicketNo" HeaderText="TicketNo" />
                                             <asp:BoundField DataField="Type" HeaderText="Type" />
                                             <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" />
+                                            <asp:BoundField DataField="CreatedFullName" HeaderText="Created By" />
                                             <asp:BoundField DataField="CreatedDate" HeaderText="Created" DataFormatString="{0:dd MMM yyyy}" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>

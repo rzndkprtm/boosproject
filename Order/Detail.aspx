@@ -1419,7 +1419,7 @@
                                                 <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                 <ul class="dropdown-menu">
                                                     <li>
-                                                        <a class="dropdown-item" href='<%# ResolveUrl("~/Handler/Download.ashx?folder=" & Eval("FolderName") & "&file=" & Eval("FileName")) %>'>Download</a>
+                                                        <a class="dropdown-item" href='<%# ResolveUrl("~/Handler/DownloadOrderFile.ashx?folder=" & Eval("FolderName") & "&file=" & Eval("FileName")) %>'>Download</a>
                                                     </li>
                                                     <li runat="server" visible='<%# VisibleFileDelete() %>'>
                                                         <asp:LinkButton ID="btnDelete" runat="server" CssClass="dropdown-item" CommandName="DeleteFile" CommandArgument='<%# Eval("FileName") %>' OnClientClick="return confirm('Are you sure want to delete this file?');">Delete</asp:LinkButton>

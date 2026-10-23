@@ -112,7 +112,7 @@
                         </div>
                     </div>
                     <div class="card-footer bg-light border-top px-4 py-3">
-                        <div class="d-flex justify-content-end align-items-center flex-wrap gap-2">
+                        <div class="d-flex justify-content-start align-items-center flex-wrap gap-2">
                             <a href="javascript:void(0);" runat="server" id="aDelete" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete</a>
                         </div>
                     </div>
@@ -135,14 +135,17 @@
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:BoundField DataField="Id" HeaderText="ID" />
-                                    <asp:BoundField DataField="MessageType" HeaderText="Message Type" />
-                                    <asp:BoundField DataField="SenderType" HeaderText="Sender Type" />
-                                    <asp:BoundField DataField="SenderName" HeaderText="Sender Name" />
-                                    <asp:BoundField DataField="Message" HeaderText="Message" />
-                                    <asp:BoundField DataField="CreatedDate" HeaderText="Created" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
+                                    <asp:BoundField DataField="CreatedDate" HeaderText="Send Date" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
+                                    <asp:BoundField DataField="SenderName" HeaderText="Sender By" />
+                                    <asp:BoundField DataField="MessageType" HeaderText="MessageType" />
+                                    <asp:TemplateField HeaderText="Message">
+                                        <ItemTemplate>
+                                            <asp:Literal runat="server" ID="litMessage" Text='<%# GetMessageContent(Eval("Message"), Eval("MessageType"), Eval("FileName"), Eval("Id")) %>'></asp:Literal>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
                                     <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                         <ItemTemplate>
-                                            <a href="javascript:void(0);" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteDetail" onclick='<%# String.Format("return dataDeleteDetail(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                            <a href="javascript:void(0);" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDeleteDetail" onclick='<%# String.Format("return dataDeleteDetail(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("MessageType").ToString(), Eval("FilePath").ToString()) %>'>Delete</a>
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                 </Columns>
@@ -177,7 +180,9 @@
                     <h5 class="modal-title white">Delete Detail Ticket</h5>
                 </div>
                 <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtDeleteDetailId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtMessageId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtMessageType" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtFilePath" style="display:none;"></asp:TextBox>
                     Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
@@ -189,8 +194,10 @@
     </div>
 
     <script type="text/javascript">
-        function dataDeleteDetail(ticketDetailId) {
-            document.getElementById("<%=txtDeleteDetailId.ClientID %>").value = ticketDetailId;
+        function dataDeleteDetail(messageId, messageType, filePath) {
+            document.getElementById("<%=txtMessageId.ClientID %>").value = messageId;
+            document.getElementById("<%=txtMessageType.ClientID %>").value = messageType;
+            document.getElementById("<%=txtFilePath.ClientID %>").value = filePath;
         }
         ["modalDelete", "modalDeleteDetail"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {

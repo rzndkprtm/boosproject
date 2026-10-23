@@ -1,10 +1,10 @@
-﻿<%@ WebHandler Language="VB" Class="Download" %>
+﻿<%@ WebHandler Language="VB" Class="DownloadOrderFile" %>
 
 Imports System
 Imports System.Web
 Imports System.IO
 
-Public Class Download : Implements IHttpHandler
+Public Class DownloadOrderFile : Implements IHttpHandler
 
     Public Sub ProcessRequest(context As HttpContext) Implements IHttpHandler.ProcessRequest
         Dim folder As String = context.Request("folder")
