@@ -2567,6 +2567,7 @@ Partial Class Order_Upload
                                             controlType = chainColour
                                             If controlType = "Battery Wand" Then controlType = "Battery Remote"
                                             If controlType = "240V (Hardwired) Matter Enabled / Remote" Then controlType = "240V (Hardwired) Remote"
+                                            If controlType = "Battery Matter Enabled / Remote" Then controlType = "Battery Remote"
                                             chainName = "No Remote"
                                         End If
 
