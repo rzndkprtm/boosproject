@@ -65,8 +65,9 @@
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                             <asp:BoundField DataField="CreatedByFull" HeaderText="Created By" />
+                                            <asp:BoundField DataField="Activity" HeaderText="Activity" />
                                             <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" />
-                                            <asp:BoundField DataField="Product" HeaderText="Product" />
+                                            
                                             <asp:TemplateField HeaderText="Description" ItemStyle-Width="550px">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblDescription" runat="server" Text='<%# If(String.IsNullOrEmpty(If(Eval("Description"), "").ToString()), "-", If(If(Eval("Description"), "").ToString().Length > 100, Server.HtmlEncode(If(Eval("Description"), "").ToString().Substring(0, 100)) & " ", Server.HtmlEncode(If(Eval("Description"), "").ToString()))) %>'></asp:Label>

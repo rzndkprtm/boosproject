@@ -30,15 +30,19 @@ Partial Class Journal_Edit
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            If ddlActivity.SelectedValue = "" Then
+                MessageError(True, "ACTIVITY IS REQUIRED !")
+                Exit Sub
+            End If
             If ddlType.SelectedValue = "" Then
                 MessageError(True, "CUSTOMER TYPE IS REQUIRED !")
                 Exit Sub
             End If
-            If ddlType.SelectedValue = "Registered" AndAlso ddlCustomer.SelectedValue = "" Then
+            If ddlType.SelectedValue = "Existing" AndAlso ddlCustomer.SelectedValue = "" Then
                 MessageError(True, "CUSTOMER NAME IS REQUIRED !")
                 Exit Sub
             End If
-            If ddlType.SelectedValue = "Not Registered" AndAlso txtCustomer.Text = "" Then
+            If ddlType.SelectedValue = "New" AndAlso txtCustomer.Text = "" Then
                 MessageError(True, "CUSTOMER NAME IS REQUIRED !")
                 Exit Sub
             End If
@@ -48,22 +52,17 @@ Partial Class Journal_Edit
             End If
             If msgError.InnerText = "" Then
                 Dim customerData As String = String.Empty
-                If ddlType.SelectedValue = "Registered" Then
+                If ddlType.SelectedValue = "Existing" Then
                     customerData = ddlCustomer.SelectedValue
                 End If
-                If ddlType.SelectedValue = "Not Registered" Then
+                If ddlType.SelectedValue = "New" Then
                     customerData = txtCustomer.Text
                 End If
 
-                Dim designId As String = String.Empty
-                If Not lbProduct.SelectedValue = "" Then
-                    designId = String.Join(",", lbProduct.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
-                End If
-
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Journals SET DesignId=@DesignId, Description=@Description WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Journals SET Activity=@Activity, Description=@Description WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                        thisCmd.Parameters.AddWithValue("@DesignId", designId)
+                        thisCmd.Parameters.AddWithValue("@Activity", ddlActivity.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
@@ -112,33 +111,21 @@ Partial Class Journal_Edit
             End If
 
             BindCustomer()
-            BindProduct()
 
+            ddlActivity.SelectedValue = myData("Activity").ToString()
             ddlType.SelectedValue = myData("CustomerType").ToString()
-            If ddlType.SelectedValue = "Registered" Then
+            If ddlType.SelectedValue = "Existing" Then
                 ddlCustomer.SelectedValue = myData("CustomerData").ToString()
             End If
-            If ddlType.SelectedValue = "Not Registered" Then
+            If ddlType.SelectedValue = "New" Then
                 txtCustomer.Text = myData("CustomerData").ToString()
             End If
             txtDescription.Text = myData("Description").ToString()
 
-            If Not myData("DesignId").ToString() = "" Then
-                Dim productArray() As String = myData("DesignId").ToString().Split(",")
-                For Each i In productArray
-                    If Not String.IsNullOrEmpty(i) Then
-                        Dim item = lbProduct.Items.FindByValue(i)
-                        If item IsNot Nothing Then
-                            item.Selected = True
-                        End If
-                    End If
-                Next
-            End If
-
             ddlCustomer.Visible = False : txtCustomer.Visible = False
 
-            If ddlType.SelectedValue = "Registered" Then ddlCustomer.Visible = True : ddlCustomer.Visible = True
-            If ddlType.SelectedValue = "Not Registered" Then txtCustomer.Visible = True : txtCustomer.Visible = True
+            If ddlType.SelectedValue = "Existing" Then ddlCustomer.Visible = True : ddlCustomer.Visible = True
+            If ddlType.SelectedValue = "New" Then txtCustomer.Visible = True : txtCustomer.Visible = True
 
             ddlType.Enabled = False : ddlCustomer.Enabled = False : txtCustomer.Enabled = False
         Catch ex As Exception
@@ -146,22 +133,6 @@ Partial Class Journal_Edit
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
-        End Try
-    End Sub
-
-    Protected Sub BindProduct()
-        lbProduct.Items.Clear()
-        Try
-            lbProduct.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS CompanyArray WHERE Active=1 AND Type IN ('Blinds', 'Shutters', 'Doors', 'Samples') AND CompanyArray.VALUE=2 ORDER BY Id ASC")
-            lbProduct.DataTextField = "Name"
-            lbProduct.DataValueField = "Id"
-            lbProduct.DataBind()
-
-            If lbProduct.Items.Count > 0 Then
-                lbProduct.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            lbProduct.Items.Clear()
         End Try
     End Sub
 

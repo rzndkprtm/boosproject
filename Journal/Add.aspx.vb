@@ -17,7 +17,6 @@ Partial Class Journal_Add
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindCustomer()
-            BindProduct()
             BindForm(ddlType.SelectedValue)
         End If
     End Sub
@@ -30,6 +29,10 @@ Partial Class Journal_Add
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            If ddlActivity.SelectedValue = "" Then
+                MessageError(True, "ACTIVITY IS REQUIRED !")
+                Exit Sub
+            End If
             If ddlType.SelectedValue = "" Then
                 MessageError(True, "CUSTOMER TYPE IS REQUIRED !")
                 Exit Sub
@@ -46,29 +49,23 @@ Partial Class Journal_Add
                 MessageError(True, "PRODUCT / DESIGN TYPE IS REQUIRED !")
                 Exit Sub
             End If
-
             If msgError.InnerText = "" Then
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Journals ORDER BY Id DESC")
                 Dim customerData As String = String.Empty
-                If ddlType.SelectedValue = "Registered" Then
+                If ddlType.SelectedValue = "Existing" Then
                     customerData = ddlCustomer.SelectedValue
                 End If
-                If ddlType.SelectedValue = "Not Registered" Then
+                If ddlType.SelectedValue = "New" Then
                     customerData = txtCustomer.Text
                 End If
 
-                Dim designId As String = String.Empty
-                If Not lbProduct.SelectedValue = "" Then
-                    designId = String.Join(",", lbProduct.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
-                End If
-
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Journals VALUES (@Id, @CreatedBy, GETDATE(), @Type, @CustomerData, @DesignId, @Description, NULL, 'Open')", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Journals VALUES (@Id, @CreatedBy, GETDATE(), @Activity, @Type, @CustomerData, @Description, NULL, 'Open')", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+                        thisCmd.Parameters.AddWithValue("@Activity", ddlActivity.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CustomerData", customerData)
-                        thisCmd.Parameters.AddWithValue("@DesignId", designId)
                         thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
@@ -96,8 +93,8 @@ Partial Class Journal_Add
         Try
             ddlCustomer.Visible = False
             txtCustomer.Visible = False
-            If type = "Registered" Then ddlCustomer.Visible = True
-            If type = "Not Registered" Then txtCustomer.Visible = True
+            If type = "Existing" Then ddlCustomer.Visible = True
+            If type = "New" Then txtCustomer.Visible = True
         Catch ex As Exception
             ddlCustomer.Visible = False
             txtCustomer.Visible = False
@@ -117,22 +114,6 @@ Partial Class Journal_Add
             End If
         Catch ex As Exception
             ddlCustomer.Items.Clear()
-        End Try
-    End Sub
-
-    Protected Sub BindProduct()
-        lbProduct.Items.Clear()
-        Try
-            lbProduct.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Designs CROSS APPLY STRING_SPLIT(CompanyId, ',') AS CompanyArray WHERE Active=1 AND Type IN ('Blinds', 'Shutters', 'Doors', 'Samples') AND CompanyArray.VALUE=2 ORDER BY Id ASC")
-            lbProduct.DataTextField = "Name"
-            lbProduct.DataValueField = "Id"
-            lbProduct.DataBind()
-
-            If lbProduct.Items.Count > 0 Then
-                lbProduct.Items.Insert(0, New ListItem("", ""))
-            End If
-        Catch ex As Exception
-            lbProduct.Items.Clear()
         End Try
     End Sub
 
