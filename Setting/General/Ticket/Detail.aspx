@@ -137,7 +137,6 @@
                                     <asp:BoundField DataField="Id" HeaderText="ID" />
                                     <asp:BoundField DataField="CreatedDate" HeaderText="Send Date" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
                                     <asp:BoundField DataField="SenderName" HeaderText="Sender By" />
-                                    <asp:BoundField DataField="MessageType" HeaderText="MessageType" />
                                     <asp:TemplateField HeaderText="Message">
                                         <ItemTemplate>
                                             <asp:Literal runat="server" ID="litMessage" Text='<%# GetMessageContent(Eval("Message"), Eval("MessageType"), Eval("FileName"), Eval("Id")) %>'></asp:Literal>

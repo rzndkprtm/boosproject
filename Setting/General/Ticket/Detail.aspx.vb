@@ -116,6 +116,7 @@ Partial Class Setting_General_Ticket_Detail
             gvList.DataSource = settingClass.GetDataTable("SELECT CM.Id, CM.TicketId, CM.SenderType, CM.SenderId, CM.Message, CM.CreatedDate, CM.ReadBy, CASE WHEN F.Id IS NOT NULL THEN 'File' ELSE 'Text' END AS MessageType, F.Id AS FileId, F.FileName, F.FilePath, F.FileSize, F.ContentType, L.FullName AS SenderName FROM TicketMessages CM LEFT JOIN TicketFiles F ON F.MessageId=CM.Id LEFT JOIN Logins L ON L.Id=CM.SenderId WHERE CM.TicketId='" & ticketId & "' ORDER BY CM.Id ASC")
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID Detail")
+            gvList.Columns(5).Visible = LoginAccess("Delete Detail")
         Catch ex As Exception
             MessageError(True, ex.ToString)
             If Not Session("RoleName") = "Developer" Then
