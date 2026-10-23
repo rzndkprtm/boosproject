@@ -14,6 +14,13 @@ Partial Class Journal_Add
             Exit Sub
         End If
 
+        If pageAccess = True Then
+            If Now.DayOfWeek = DayOfWeek.Saturday OrElse Now.DayOfWeek = DayOfWeek.Sunday Then
+                Response.Redirect("~/journal", False)
+                Exit Sub
+            End If
+        End If
+
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindCustomer()

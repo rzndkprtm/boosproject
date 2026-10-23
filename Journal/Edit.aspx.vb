@@ -20,6 +20,13 @@ Partial Class Journal_Edit
             Exit Sub
         End If
 
+        If pageAccess = True Then
+            If Now.DayOfWeek = DayOfWeek.Saturday OrElse Now.DayOfWeek = DayOfWeek.Sunday Then
+                Response.Redirect("~/journal", False)
+                Exit Sub
+            End If
+        End If
+
         lblId.Text = Request.QueryString("journalid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)

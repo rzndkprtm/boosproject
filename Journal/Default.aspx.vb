@@ -109,7 +109,11 @@ Partial Class Journal_Default
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
             gvList.Columns(2).Visible = LoginAccess("Visible Sales")
 
-            btnAdd.Visible = LoginAccess("Add")
+            Dim addAccess As Boolean = LoginAccess("Add")
+            btnAdd.Visible = addAccess
+            If addAccess = True Then
+                btnAdd.Visible = (Now.DayOfWeek <> DayOfWeek.Saturday AndAlso Now.DayOfWeek <> DayOfWeek.Sunday)
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

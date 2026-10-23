@@ -2377,7 +2377,7 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
                 }
             }
 
-            if (tubeName === "Acmeda 49mm" && controlName === "Chain") {
+            if (controlName === "Chain" && (tubeName === "Acmeda 43mm" || tubeName === "Acmeda 49mm")) {
                 divShow.push("divspringassist");
             }
 

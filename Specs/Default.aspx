@@ -32,6 +32,7 @@
                         <h4 class="mt-3">Under Development</h4>
                         <p class="text-muted mt-3 mb-4">
                             Our Product Information section is currently under development.
+                            <br />
                             In the meantime, you may access the shared folder using the button below.
                         </p>
                         <a href="https://onedrive.live.com/?id=%2Fpersonal%2Fae9316f9f664f948%2FDocuments%2FSPEED%20OneDrive%2Fno%20logo%20specs&listurl=%2Fpersonal%2Fae9316f9f664f948%2FDocuments&e=q6bhMl&migratedtospo=true&redeem=aHR0cHM6Ly8xZHJ2Lm1zL3UvcyFBa2o1WlBiNUZwT3VoemFHX2ZQQ0VrSWlqeW5kP2U9cTZiaE1s&ga=1" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
