@@ -101,7 +101,10 @@ Partial Class Journal_Default
                 params.Add(New SqlParameter("@CreatedDate", SqlDbType.Date) With {.Value = DBNull.Value})
             End If
 
+            params.Add(New SqlParameter("@RoleName", SqlDbType.NVarChar, 50) With {.Value = If(Session("RoleName") IsNot Nothing, Session("RoleName").ToString(), "")})
+
             gvList.DataSource = settingClass.GetDataTableSP("sp_Journals_List", params)
+            gvList.DataBind()
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
             gvList.Columns(2).Visible = LoginAccess("Visible Sales")
