@@ -200,11 +200,7 @@ Partial Public Class SiteMaster
             liSetting.Visible = False
             liDashboard.Visible = False
             liGeneral.Visible = False
-
             liLogin.Visible = False
-            liLoginRole.Visible = False
-            liLoginLevel.Visible = False
-            liLoginAccess.Visible = False
 
             liCustomer.Visible = False
             liSpecification.Visible = False
@@ -226,11 +222,7 @@ Partial Public Class SiteMaster
                 liSetting.Visible = True
                 liDashboard.Visible = True
                 liGeneral.Visible = True
-
                 liLogin.Visible = True
-                liLoginRole.Visible = True
-                liLoginLevel.Visible = True
-                liLoginAccess.Visible = True
 
                 liCustomer.Visible = True
                 liSpecification.Visible = True
