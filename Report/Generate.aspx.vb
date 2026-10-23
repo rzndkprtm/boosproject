@@ -239,8 +239,6 @@ Partial Class Report_Generate
                     End If
                 End If
             End If
-
-
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
