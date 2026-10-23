@@ -1897,7 +1897,7 @@ Partial Class Order_Upload
                                             Exit For
                                         End If
 
-                                        Dim validCP As String() = {"Left", "Right", "No Control"}
+                                        Dim validCP As String() = {"Left", "Right", "No Control", "N/A"}
                                         If Not validCP.Contains(controlPosition) Then
                                             Dim thisAlert As String = String.Format("PLEASE CHECK YOUR CONTROL POSITION VALUE FOR ITEM {0} !", itemNumber)
                                             MessageError(True, thisAlert)
