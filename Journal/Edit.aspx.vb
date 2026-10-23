@@ -60,9 +60,11 @@ Partial Class Journal_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Journals SET Activity=@Activity, Description=@Description WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Journals SET Activity=@Activity, CustomerType=@CustomerType, CustomerData=@CustomerData, Description=@Description WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@Activity", ddlActivity.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@CustomerType", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@CustomerData", customerData)
                         thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
@@ -123,11 +125,8 @@ Partial Class Journal_Edit
             txtDescription.Text = myData("Description").ToString()
 
             ddlCustomer.Visible = False : txtCustomer.Visible = False
-
             If ddlType.SelectedValue = "Existing" Then ddlCustomer.Visible = True : ddlCustomer.Visible = True
             If ddlType.SelectedValue = "New" Then txtCustomer.Visible = True : txtCustomer.Visible = True
-
-            ddlType.Enabled = False : ddlCustomer.Enabled = False : txtCustomer.Enabled = False
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

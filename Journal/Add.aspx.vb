@@ -37,11 +37,11 @@ Partial Class Journal_Add
                 MessageError(True, "CUSTOMER TYPE IS REQUIRED !")
                 Exit Sub
             End If
-            If ddlType.SelectedValue = "Registered" AndAlso ddlCustomer.SelectedValue = "" Then
+            If ddlType.SelectedValue = "Existing" AndAlso ddlCustomer.SelectedValue = "" Then
                 MessageError(True, "CUSTOMER NAME IS REQUIRED !")
                 Exit Sub
             End If
-            If ddlType.SelectedValue = "Not Registered" AndAlso txtCustomer.Text = "" Then
+            If ddlType.SelectedValue = "New" AndAlso txtCustomer.Text = "" Then
                 MessageError(True, "CUSTOMER NAME IS REQUIRED !")
                 Exit Sub
             End If
@@ -60,11 +60,11 @@ Partial Class Journal_Add
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Journals VALUES (@Id, @CreatedBy, GETDATE(), @Activity, @Type, @CustomerData, @Description, NULL, 'Open')", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Journals VALUES (@Id, @CreatedBy, GETDATE(), @Activity, @CustomerType, @CustomerData, @Description, NULL, 'Open')", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
                         thisCmd.Parameters.AddWithValue("@Activity", ddlActivity.SelectedValue)
-                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@CustomerType", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CustomerData", customerData)
                         thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
                         thisConn.Open()
