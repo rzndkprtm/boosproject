@@ -355,7 +355,8 @@
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',
-                    shouldSort: false
+                    shouldSort: false,
+                    searchResultLimit: 50
                 });
             });
         }

@@ -131,7 +131,8 @@
                     searchEnabled: true,
                     itemSelectText: '',
                     shouldSort: false,
-                    removeItemButton: isMultiple
+                    removeItemButton: isMultiple,
+                    searchResultLimit: 50
                 });
             });
         }
