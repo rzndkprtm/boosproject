@@ -5,7 +5,6 @@ Partial Class Journal_Add
 
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim url As String = String.Empty
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -79,8 +78,8 @@ Partial Class Journal_Add
                     End Using
                 End Using
 
-                'Dim dataLog As Object() = {"Journals", thisId, Session("LoginId").ToString(), "Journal Created"}
-                'settingClass.Logs(dataLog)
+                Dim dataLog As Object() = {"Journals", thisId, Session("LoginId").ToString(), "Journal Created"}
+                settingClass.Logs(dataLog)
 
                 Response.Redirect("~/journal", False)
             End If

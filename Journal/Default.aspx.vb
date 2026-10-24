@@ -71,8 +71,8 @@ Partial Class Journal_Default
                 End Using
             End Using
 
-            'Dim dataLog As Object() = {"Journals", journalId, Session("LoginId").ToString(), "Journal Deleted"}
-            'settingClass.Logs(dataLog)
+            Dim dataLog As Object() = {"Journals", journalId, Session("LoginId").ToString(), "Journal Deleted"}
+            settingClass.Logs(dataLog)
 
             Response.Redirect("~/journal")
         Catch ex As Exception
