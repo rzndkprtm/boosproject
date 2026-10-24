@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class StockSunlight
+Partial Class Stock_Global
     Inherits Page
 
     Dim stockClass As New StockClass

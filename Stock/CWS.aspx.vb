@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class StockCWS
+Partial Class Stock_CWS
     Inherits Page
 
     Dim stockClass As New StockClass

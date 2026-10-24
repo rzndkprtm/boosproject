@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="StockGlobal.aspx.vb" Inherits="StockSunlight" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Global.aspx.vb" Inherits="Stock_Global" %>
 
 <html lang="en">
 <head runat="server">
@@ -75,7 +75,7 @@
                                     </a>
                                 </li>
                                 <li class="menu-item">
-                                    <a runat="server" href="~/stockglobal" class='menu-link'>
+                                    <a runat="server" href="~/stock/global" class='menu-link'>
                                         <i class="bi bi-ui-checks"></i>
                                         <span>Stocks</span>
                                     </a>
