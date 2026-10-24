@@ -1,30 +1,74 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Stock_CWS
+Partial Class Stocks_Default
     Inherits Page
 
     Dim stockClass As New StockClass
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/", False)
+            Exit Sub
+        End If
+
         If Not IsPostBack Then
-            BindRoller(txtSearchRoller.Text)
-            BindDesignShades()
-            BindCurtain(txtSearchCurtain.Text)
-            BindVertical(txtSearchVertical.Text)
-            BindVenetian()
-            BindAluminium()
-            BindCellularShades()
-            BindFabricChart(txtSearchFabricChart.Text)
+            BindCompanyDetail()
+
+            BindRoller(txtSearchRoller.Text, ddlCompanyDetail.SelectedValue)
+            BindVertical(txtSearchVertical.Text, ddlCompanyDetail.SelectedValue)
+            BindCellularShades(ddlCompanyDetail.SelectedValue)
+            BindDesignShades(ddlCompanyDetail.SelectedValue)
+            BindCurtain(txtSearchCurtain.Text, ddlCompanyDetail.SelectedValue)
+            BindOutdoor(ddlCompanyDetail.SelectedValue)
+
+            BindVenetian(ddlCompanyDetail.SelectedValue)
+            BindAluminium(ddlCompanyDetail.SelectedValue)
+
+            BindFabricChart(txtSearchFabricChart.Text, ddlCompanyDetail.SelectedValue)
+
+            divCompanyDetail.Visible = LoginAccess("Visible Company Detail")
         End If
     End Sub
 
-    Protected Sub BindRoller(searchText As String)
+    Protected Sub ddlCompanyDetail_SelectedIndexChanged(sender As Object, e As EventArgs)
+        BindRoller(txtSearchRoller.Text, ddlCompanyDetail.SelectedValue)
+        BindDesignShades(ddlCompanyDetail.SelectedValue)
+        BindCurtain(txtSearchCurtain.Text, ddlCompanyDetail.SelectedValue)
+        BindOutdoor(ddlCompanyDetail.SelectedValue)
+        BindVertical(txtSearchVertical.Text, ddlCompanyDetail.SelectedValue)
+        BindVenetian(ddlCompanyDetail.SelectedValue)
+        BindAluminium(ddlCompanyDetail.SelectedValue)
+        BindCellularShades(ddlCompanyDetail.SelectedValue)
+        BindFabricChart(txtSearchFabricChart.Text, ddlCompanyDetail.SelectedValue)
+    End Sub
+
+    Protected Sub BindCompanyDetail()
+        ddlCompanyDetail.Items.Clear()
+        Try
+            ddlCompanyDetail.DataSource = stockClass.GetDataTable("SELECT * FROM CompanyDetails WHERE Status='Active' ORDER BY Name ASC")
+            ddlCompanyDetail.DataTextField = "Name"
+            ddlCompanyDetail.DataValueField = "Id"
+            ddlCompanyDetail.DataBind()
+
+            If ddlCompanyDetail.Items.Count > 0 Then
+                ddlCompanyDetail.Items.Insert(0, New ListItem("", ""))
+            End If
+
+            ddlCompanyDetail.SelectedValue = Session("CompanyDetailId").ToString()
+        Catch ex As Exception
+            ddlCompanyDetail.Items.Clear()
+            ddlCompanyDetail.Items.Add(New ListItem("All", ""))
+        End Try
+    End Sub
+
+    Protected Sub BindRoller(searchText As String, companyDetail As String)
         MessageError_Roller(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "12"),
-                New SqlParameter("@CompanyDetailId", 2),
+                New SqlParameter("@CompanyDetailId", companyDetail),
                 New SqlParameter("@SearchText", searchText),
                 New SqlParameter("@Type", "ROLLER")
             }
@@ -56,7 +100,7 @@ Partial Class Stock_CWS
 
             Dim rptRollerColour As Repeater = CType(e.Item.FindControl("rptRollerColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Colour")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Colour")
 
             rptRollerColour.DataSource = dt
             rptRollerColour.DataBind()
@@ -66,19 +110,20 @@ Partial Class Stock_CWS
     End Sub
 
     Protected Sub btnSearchRoller_Click(sender As Object, e As EventArgs)
-        BindRoller(txtSearchRoller.Text)
+        BindRoller(txtSearchRoller.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
     Protected Sub MessageError_Roller(visible As Boolean, message As String)
         divErrorRoller.Visible = visible : msgErrorRoller.InnerText = message
     End Sub
 
-    Protected Sub BindVertical(searchText As String)
+
+    Protected Sub BindVertical(searchText As String, companyDetail As String)
         MessageError_Vertical(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "11"),
-                New SqlParameter("@CompanyDetailId", 2),
+                New SqlParameter("@CompanyDetailId", companyDetail),
                 New SqlParameter("@SearchText", searchText),
                 New SqlParameter("@Type", "VERTICAL")
             }
@@ -110,7 +155,7 @@ Partial Class Stock_CWS
 
             Dim rptVerticalColour As Repeater = CType(e.Item.FindControl("rptVerticalColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Colour")
 
             rptVerticalColour.DataSource = dt
             rptVerticalColour.DataBind()
@@ -124,15 +169,15 @@ Partial Class Stock_CWS
     End Sub
 
     Protected Sub btnSearchVertical_Click(sender As Object, e As EventArgs)
-        BindVertical(txtSearchVertical.Text)
+        BindVertical(txtSearchVertical.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
-    Protected Sub BindCellularShades()
+    Protected Sub BindCellularShades(companyDetail As String)
         MessageError_Cellular(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "2"),
-                New SqlParameter("@CompanyDetailId", 2),
+                New SqlParameter("@CompanyDetailId", companyDetail),
                 New SqlParameter("@SearchText", String.Empty),
                 New SqlParameter("@Type", "CELLULAR SHADES")
             }
@@ -154,6 +199,10 @@ Partial Class Stock_CWS
         End Try
     End Sub
 
+    Protected Sub MessageError_Cellular(visible As Boolean, message As String)
+        divErrorCellular.Visible = visible : msgErrorCellular.InnerText = message
+    End Sub
+
     Protected Sub rptCellular_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
         Try
             If e.Item.ItemType <> ListItemType.Item AndAlso e.Item.ItemType <> ListItemType.AlternatingItem Then
@@ -164,7 +213,7 @@ Partial Class Stock_CWS
 
             Dim rptCellularColour As Repeater = CType(e.Item.FindControl("rptCellularColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Colour")
 
             rptCellularColour.DataSource = dt
             rptCellularColour.DataBind()
@@ -173,16 +222,12 @@ Partial Class Stock_CWS
         End Try
     End Sub
 
-    Protected Sub MessageError_Cellular(visible As Boolean, message As String)
-        divErrorCellular.Visible = visible : msgErrorCellular.InnerText = message
-    End Sub
-
-    Protected Sub BindDesignShades()
+    Protected Sub BindDesignShades(companyDetail As String)
         MessageError_DesignShades(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "4"),
-                New SqlParameter("@CompanyDetailId", 2),
+                New SqlParameter("@CompanyDetailId", companyDetail),
                 New SqlParameter("@SearchText", String.Empty),
                 New SqlParameter("@Type", "DESIGN SHADES")
             }
@@ -214,7 +259,7 @@ Partial Class Stock_CWS
 
             Dim rptDesignShadesColour As Repeater = CType(e.Item.FindControl("rptDesignShadesColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Colour")
 
             rptDesignShadesColour.DataSource = dt
             rptDesignShadesColour.DataBind()
@@ -227,12 +272,12 @@ Partial Class Stock_CWS
         divErrorDesignShades.Visible = visible : msgErrorDesignShades.InnerText = message
     End Sub
 
-    Protected Sub BindCurtain(searchText As String)
+    Protected Sub BindCurtain(searchText As String, companyDetail As String)
         MessageError_Curtain(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "3"),
-                New SqlParameter("@CompanyDetailId", 2),
+                New SqlParameter("@CompanyDetailId", companyDetail),
                 New SqlParameter("@SearchText", String.Empty),
                 New SqlParameter("@Type", "CURTAIN")
             }
@@ -259,7 +304,7 @@ Partial Class Stock_CWS
     End Sub
 
     Protected Sub btnSearchCurtain_Click(sender As Object, e As EventArgs)
-        BindCurtain(txtSearchCurtain.Text)
+        BindCurtain(txtSearchCurtain.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
     Protected Sub rptCurtain_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
@@ -272,7 +317,7 @@ Partial Class Stock_CWS
 
             Dim rptCurtainColour As Repeater = CType(e.Item.FindControl("rptCurtainColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " ORDER BY Colour")
 
             rptCurtainColour.DataSource = dt
             rptCurtainColour.DataBind()
@@ -281,12 +326,62 @@ Partial Class Stock_CWS
         End Try
     End Sub
 
-    Protected Sub BindVenetian()
+    Protected Sub BindOutdoor(companyDetail As String)
+        MessageError_Outdoor(False, String.Empty)
+        Try
+            Dim paramsItem As New List(Of SqlParameter) From {
+                New SqlParameter("@DesignId", "18"),
+                New SqlParameter("@CompanyDetailId", companyDetail),
+                New SqlParameter("@SearchText", String.Empty),
+                New SqlParameter("@Type", "OUTDOOR")
+            }
+            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
+
+            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
+                rptOutdoor.DataSource = Nothing
+                rptOutdoor.DataBind()
+                pnlNoDataOutdoor.Visible = True
+                Return
+            End If
+
+            pnlNoDataOutdoor.Visible = False
+
+            rptOutdoor.DataSource = dt
+            rptOutdoor.DataBind()
+        Catch ex As Exception
+            MessageError_Outdoor(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub MessageError_Outdoor(visible As Boolean, message As String)
+        divErrorOutdoor.Visible = visible : msgErrorOutdoor.InnerText = message
+    End Sub
+
+    Protected Sub rptOutdoor_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
+        Try
+            If e.Item.ItemType <> ListItemType.Item AndAlso e.Item.ItemType <> ListItemType.AlternatingItem Then
+                Return
+            End If
+
+            Dim fabricId As Integer = Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "Id"))
+
+            Dim rptOutdoorColour As Repeater = CType(e.Item.FindControl("rptOutdoorColour"), Repeater)
+
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Colour")
+
+            rptOutdoorColour.DataSource = dt
+            rptOutdoorColour.DataBind()
+        Catch ex As Exception
+            MessageError_Outdoor(True, ex.Message)
+        End Try
+    End Sub
+
+    Protected Sub BindVenetian(companyDetail As String)
         MessageError_Venetian(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "10"),
-                New SqlParameter("@CompanyDetailId", "2")
+                New SqlParameter("@CompanyDetailId", companyDetail)
             }
             gvListVenetian.DataSource = stockClass.GetDataTableSP("sp_Stock_Venetian", paramsItem)
             gvListVenetian.DataBind()
@@ -353,12 +448,12 @@ Partial Class Stock_CWS
         End If
     End Sub
 
-    Protected Sub BindAluminium()
+    Protected Sub BindAluminium(companyDetail As String)
         MessageError_Aluminium(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "1"),
-                New SqlParameter("@CompanyDetailId", "2")
+                New SqlParameter("@CompanyDetailId", companyDetail)
             }
             gvListAluminium.DataSource = stockClass.GetDataTableSP("sp_Stock_Venetian", paramsItem)
             gvListAluminium.DataBind()
@@ -426,7 +521,7 @@ Partial Class Stock_CWS
     End Sub
 
     Protected Sub btnFabricChart_Click(sender As Object, e As EventArgs)
-        BindFabricChart(txtSearchFabricChart.Text)
+        BindFabricChart(txtSearchFabricChart.Text, ddlCompanyDetail.SelectedValue)
     End Sub
 
     Protected Sub gvListFabricChart_RowDataBound(sender As Object, e As GridViewRowEventArgs)
@@ -454,12 +549,12 @@ Partial Class Stock_CWS
         End If
     End Sub
 
-    Protected Sub BindFabricChart(searchText As String)
+    Protected Sub BindFabricChart(searchText As String, companyDetail As String)
         MessageError_FabricChart(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", searchText),
-                New SqlParameter("@CompanyDetailId", "2")
+                New SqlParameter("@CompanyDetailId", companyDetail)
             }
             gvListFabricChart.DataSource = stockClass.GetDataTableSP("sp_Stock_Fabric_Chart", paramsItem)
             gvListFabricChart.DataBind()
@@ -471,6 +566,20 @@ Partial Class Stock_CWS
     Protected Sub MessageError_FabricChart(visible As Boolean, message As String)
         divErrorFabricChart.Visible = visible : msgErrorFabricChart.InnerText = message
     End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
 
     Protected Function GetStatusClass(status As Object) As String
         If status Is Nothing OrElse status Is DBNull.Value Then

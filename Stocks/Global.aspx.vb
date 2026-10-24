@@ -1,7 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class Stock_Local
+Partial Class Stocks_Global
     Inherits Page
 
     Dim stockClass As New StockClass
@@ -24,7 +24,7 @@ Partial Class Stock_Local
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "12"),
-                New SqlParameter("@CompanyDetailId", 5),
+                New SqlParameter("@CompanyDetailId", 7),
                 New SqlParameter("@SearchText", searchText),
                 New SqlParameter("@Type", "ROLLER")
             }
@@ -78,7 +78,7 @@ Partial Class Stock_Local
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "11"),
-                New SqlParameter("@CompanyDetailId", 5),
+                New SqlParameter("@CompanyDetailId", 7),
                 New SqlParameter("@SearchText", searchText),
                 New SqlParameter("@Type", "VERTICAL")
             }
@@ -132,7 +132,7 @@ Partial Class Stock_Local
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "2"),
-                New SqlParameter("@CompanyDetailId", 5),
+                New SqlParameter("@CompanyDetailId", 7),
                 New SqlParameter("@SearchText", String.Empty),
                 New SqlParameter("@Type", "CELLULAR SHADES")
             }
@@ -182,7 +182,7 @@ Partial Class Stock_Local
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "4"),
-                New SqlParameter("@CompanyDetailId", 5),
+                New SqlParameter("@CompanyDetailId", 7),
                 New SqlParameter("@SearchText", String.Empty),
                 New SqlParameter("@Type", "DESIGN SHADES")
             }
@@ -232,7 +232,7 @@ Partial Class Stock_Local
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "3"),
-                New SqlParameter("@CompanyDetailId", 5),
+                New SqlParameter("@CompanyDetailId", 7),
                 New SqlParameter("@SearchText", String.Empty),
                 New SqlParameter("@Type", "CURTAIN")
             }
@@ -286,7 +286,7 @@ Partial Class Stock_Local
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "10"),
-                New SqlParameter("@CompanyDetailId", "5")
+                New SqlParameter("@CompanyDetailId", "7")
             }
             gvListVenetian.DataSource = stockClass.GetDataTableSP("sp_Stock_Venetian", paramsItem)
             gvListVenetian.DataBind()
@@ -358,7 +358,7 @@ Partial Class Stock_Local
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "1"),
-                New SqlParameter("@CompanyDetailId", "5")
+                New SqlParameter("@CompanyDetailId", "2")
             }
             gvListAluminium.DataSource = stockClass.GetDataTableSP("sp_Stock_Venetian", paramsItem)
             gvListAluminium.DataBind()
@@ -459,7 +459,7 @@ Partial Class Stock_Local
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", searchText),
-                New SqlParameter("@CompanyDetailId", "5")
+                New SqlParameter("@CompanyDetailId", "7")
             }
             gvListFabricChart.DataSource = stockClass.GetDataTableSP("sp_Stock_Fabric_Chart", paramsItem)
             gvListFabricChart.DataBind()

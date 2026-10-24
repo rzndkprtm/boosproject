@@ -1,10 +1,10 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Accent.aspx.vb" Inherits="Stock_Accent" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="CWS.aspx.vb" Inherits="Stocks_CWS" %>
 
 <html lang="en">
 <head runat="server">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock</title>
+    <title>Stocks</title>
 
     <link rel="stylesheet" href="/Assets/vendors/choices.js/choices.min.css" />
     <link rel="stylesheet" href="/Assets/css/bootstrap.css" />
@@ -41,7 +41,7 @@
                         <div class="container">
                             <div class="logo">
                                 <a runat="server" href="~/">
-                                    <asp:Image runat="server" ID="imgLogo" ImageUrl="~/Assets/images/logo/accent.png?v=1.0.0" AlternateText="" />
+                                    <asp:Image runat="server" ID="imgLogo" ImageUrl="~/Assets/images/logo/jpmdirect.jpg?v=1.0.0" AlternateText="JPM Direct Pty Ltd" />
                                 </a>
                             </div>
                             <div class="header-top-right">
@@ -75,7 +75,7 @@
                                     </a>
                                 </li>
                                 <li class="menu-item">
-                                    <a runat="server" href="~/stock/accent" class='menu-link'>
+                                    <a runat="server" href="~/stock/cws" class='menu-link'>
                                         <i class="bi bi-ui-checks"></i>
                                         <span>Stocks</span>
                                     </a>

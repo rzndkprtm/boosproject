@@ -1,10 +1,10 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Local.aspx.vb" Inherits="Stock_Local" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Accent.aspx.vb" Inherits="Stocks_Accent" %>
 
 <html lang="en">
 <head runat="server">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock</title>
+    <title>Stocks</title>
 
     <link rel="stylesheet" href="/Assets/vendors/choices.js/choices.min.css" />
     <link rel="stylesheet" href="/Assets/css/bootstrap.css" />
@@ -41,7 +41,7 @@
                         <div class="container">
                             <div class="logo">
                                 <a runat="server" href="~/">
-                                    <asp:Image runat="server" ID="imgLogo" ImageUrl="~/Assets/images/logo/bigblinds.png?v=1.0.0" AlternateText="PT Bumi Indah Global" />
+                                    <asp:Image runat="server" ID="imgLogo" ImageUrl="~/Assets/images/logo/accent.png?v=1.0.0" AlternateText="" />
                                 </a>
                             </div>
                             <div class="header-top-right">
@@ -75,7 +75,7 @@
                                     </a>
                                 </li>
                                 <li class="menu-item">
-                                    <a runat="server" href="~/stock/local" class='menu-link'>
+                                    <a runat="server" href="~/stock/accent" class='menu-link'>
                                         <i class="bi bi-ui-checks"></i>
                                         <span>Stocks</span>
                                     </a>
