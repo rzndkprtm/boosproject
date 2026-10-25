@@ -468,7 +468,7 @@
         <script src="/Assets/js/bootstrap.bundle.min.js"></script>
         <script src="/Assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
         <script src="/Assets/vendors/choices.js/choices.min.js"></script>
-        <script src="/Assets/js/pages/form-element-select.js"></script>
+        <script src="/Assets/js/pages/form-element-select.js?v=1.0.2"></script>
         <script src="/Assets/js/pages/horizontal-layout.js?v=1.0.0"></script>
         <script src="/Assets/vendors/summernote/summernote-lite.min.js"></script>
     </form>

@@ -36,13 +36,13 @@
                                 <div class="row">
                                     <div class="col-12 form-group">
                                         <label class="form-label">First ID</label>
-                                        <asp:DropDownList runat="server" ID="ddlFirstId" CssClass="choices form-select"></asp:DropDownList>
+                                        <asp:DropDownList runat="server" ID="ddlFirstId" CssClass="choices form-select" data-search-limit="50"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-12 form-group">
                                         <label class="form-label">Second ID</label>
-                                        <asp:DropDownList runat="server" ID="ddlSecondId" CssClass="choices form-select"></asp:DropDownList>
+                                        <asp:DropDownList runat="server" ID="ddlSecondId" CssClass="choices form-select" data-search-limit="50"></asp:DropDownList>
                                     </div>
                                 </div>
                                 <div class="row" runat="server" id="divError">
@@ -73,8 +73,4 @@
             </div>
         </section>
     </div>
-
-    <script type="text/javascript">
-        window.history.replaceState(null, null, window.location.href);
-    </script>
 </asp:Content>

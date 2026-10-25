@@ -81,12 +81,13 @@ Partial Class Setting_Specification_Product_Alias_Edit
     Protected Sub BindProduct()
         ddlFirstId.Items.Clear() : ddlSecondId.Items.Clear()
         Try
-            ddlFirstId.DataSource = settingClass.GetDataTable("SELECT * FROM Products ORDER BY Name ASC")
+            Dim thisData As DataTable = settingClass.GetDataTable("SELECT Id, Name FROM Products WHERE Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' ORDER BY Name ASC")
+            ddlFirstId.DataSource = thisData
             ddlFirstId.DataTextField = "Name"
             ddlFirstId.DataValueField = "Id"
             ddlFirstId.DataBind()
 
-            ddlSecondId.DataSource = settingClass.GetDataTable("SELECT * FROM Products ORDER BY Name ASC")
+            ddlSecondId.DataSource = thisData
             ddlSecondId.DataTextField = "Name"
             ddlSecondId.DataValueField = "Id"
             ddlSecondId.DataBind()
