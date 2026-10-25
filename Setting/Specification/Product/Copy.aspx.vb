@@ -58,10 +58,10 @@ Partial Class Setting_Specification_Product_Copy
                 Dim subCompany As String = String.Empty
                 If Not String.IsNullOrEmpty(ddlCompanyDetail.SelectedValue) Then
                     stringSplit = "CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS CompanyDetailArray"
-                    subCompany = "CompanyDetailArray.VALUE='" & ddlCompanyDetail.SelectedValue & "'"
+                    subCompany = "AND CompanyDetailArray.VALUE='" & ddlCompanyDetail.SelectedValue & "'"
                 End If
 
-                Dim thisString As String = String.Format("SELECT Id FROM Products {0} WHERE DesignId={1} {2} {3} {4} {5} {6} ORDER BY Id ASC", stringSplit, ddlDesignType.SelectedValue, blindString, tubeString, controlString, colourString, subCompany)
+                Dim thisString As String = String.Format("SELECT Id FROM Products {0} WHERE DesignId={1} {2} {3} {4} {5} {6} AND (Status='In Stock' OR Status='Out of Stock' OR Status='Limited Stock') ORDER BY Id ASC", stringSplit, ddlDesignType.SelectedValue, blindString, tubeString, controlString, colourString, subCompany)
 
                 Dim thisData As DataTable = settingClass.GetDataTable(thisString)
                 If Not thisData.Rows.Count = 0 Then
