@@ -1,253 +1,60 @@
-﻿<%@ Page Title="Contact" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="false" CodeFile="Contact.aspx.vb" Inherits="Contact" MaintainScrollPositionOnPostback="true" Debug="true" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Contact.aspx.vb" Inherits="Contact" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Contact" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
-        <div class="page-title">
-            <div class="row">
-                <div class="col-12 col-md-6 order-md-1 order-last">
-                    <h3><%: Page.Title %></h3>
-                    <p class="text-subtitle text-muted"></p>
-                </div>
-                <div class="col-12 col-md-6 order-md-2 order-first">
-                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-        </div>
+        <h3>Contact</h3>
     </div>
     <div class="page-content">
-        <section class="row mb-3">
+        <section class="row">
             <div class="col-12">
-                <div class="row mb-2" runat="server" id="divError">
-                    <div class="col-12">
-                        <div class="alert alert-danger">
-                            <span runat="server" id="msgError"></span>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-center py-5">
+                            <i class="bi bi-envelope-paper display-1 text-primary"></i>
+                            <h3 class="mt-4 mb-3">Get in Touch</h3>
+                            <p class="text-muted mb-0">For enquiries or assistance, please contact the relevant department.</p>
+                        </div>
+                        <div class="row g-4 mt-2">
+                            <div class="col-md-6 col-lg-6">
+                                <div class="border rounded p-4 h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-laptop fs-3 text-primary me-3"></i>
+                                        <h5 class="mb-0">IT</h5>
+                                    </div>
+                                    <p class="text-muted mb-0">Technical support, system access, and application assistance.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6">
+                                <div class="border rounded p-4 h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-bar-chart fs-3 text-primary me-3"></i>
+                                        <h5 class="mb-0">Sales</h5>
+                                    </div>
+                                    <p class="text-muted mb-0">Sales enquiries, customer accounts, and sales-related assistance.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6">
+                                <div class="border rounded p-4 h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-headset fs-3 text-primary me-3"></i>
+                                        <h5 class="mb-0">Customer Service</h5>
+                                    </div>
+                                    <p class="text-muted mb-0">Customer enquiries, order updates, and general assistance.</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-6">
+                                <div class="border rounded p-4 h-100">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-calculator fs-3 text-primary me-3"></i>
+                                        <h5 class="mb-0">Account</h5>
+                                    </div>
+                                    <p class="text-muted mb-0">Invoicing, payments, and account-related enquiries.</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-        <div class="container mt-4">
-            <div class="mb-5">
-                <div class="row">
-                    <div class="col-12 col-md-4 col-lg-6"></div>
-                </div>
-                <h4 class="fw-semibold mb-3">IT & Factory Office</h4>
-                <div class="row g-4">
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0">
-                            <div class="card-body text-center">
-                                <div class="mb-3">
-                                    <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
-                                </div>
-                                <h6 class="mb-1">Reza Andika Pratama</h6>
-                                <p class="text-muted small mb-3">
-                                    IT Support
-                                </p>
-                                <div class="text-start small text-muted">
-                                    <p class="mb-2">
-                                        <strong>Email</strong><br />
-                                        reza@bigblinds.co.id
-                                    </p>
-                                    <p class="mb-2">
-                                        <strong>WhatsApp</strong><br />
-                                        -
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0">
-                            <div class="card-body text-center">
-                                <div class="mb-3">
-                                    <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
-                                </div>
-                                <h6 class="mb-1">Asep S</h6>
-                                <p class="text-muted small mb-3">
-                                    IT Support
-                                </p>
-                                <div class="text-start small text-muted">
-                                    <p class="mb-2">
-                                        <strong>Email</strong><br />
-                                        asep.r@bigblinds.co.id
-                                    </p>
-                                    <p class="mb-2">
-                                        <strong>WhatsApp</strong><br />
-                                        -
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0">
-                            <div class="card-body text-center">
-                                <div class="mb-3">
-                                    <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
-                                </div>
-                                <h6 class="mb-1">Tjan Yudianto</h6>
-                                <p class="text-muted small mb-3">
-                                    Factory Office
-                                </p>
-                                <div class="text-start small text-muted">
-                                    <p class="mb-2">
-                                        <strong>Email</strong><br />
-                                        yudi@rimbabr.com
-                                    </p>
-                                    <p class="mb-2">
-                                        <strong>WhatsApp</strong><br />
-                                        -
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- SALES TEAM -->
-            <div class="mb-5" runat="server" id="divSales">
-                <h4 class="fw-semibold mb-3">Sales</h4>
-                <div class="row g-4">
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0">
-                            <div class="card-body text-center">
-                                <div class="mb-3">
-                                    <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
-                                </div>
-                                
-                                <h6 class="mb-1">Matt McCamey</h6>
-                                <p class="text-muted small mb-3">
-                                    National Sales Manager
-                                </p>
-                                
-                                <div class="text-start small text-muted">
-                                    <p class="mb-2">
-                                        <strong>Email</strong><br />
-                                        matt@jpmdirect.com.au
-                                    </p>
-                                    <p class="mb-0">
-                                        <strong>Phone</strong><br />
-                                         0417 705 109
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CS & ACCOUNT TEAM -->
-            <div class="mb-5" runat="server" id="divCSJPMD">
-                <h4 class="fw-semibold mb-3">Customer Service & Account</h4>
-                <div class="row g-4">
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0">
-                            <div class="card-body text-center">
-                                <div class="mb-3">
-                                    <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
-                                </div>
-                                
-                                <h6 class="mb-1">Indra</h6>
-                                <p class="text-muted small mb-3">
-                                    Customer Service
-                                </p>
-                                
-                                <div class="text-start small text-muted">
-                                    <p class="mb-2">
-                                        <strong>Email</strong><br />
-                                        order@jpmdirect.com.au
-                                    </p>
-                                    <p class="mb-0">
-                                        <strong>Phone</strong><br />
-                                         -
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0">
-                            <div class="card-body text-center">
-                                <div class="mb-3">
-                                    <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
-                                </div>
-                                
-                                <h6 class="mb-1">Bella</h6>
-                                <p class="text-muted small mb-3">
-                                    Account
-                                </p>
-                                
-                                <div class="text-start small text-muted">
-                                    <p class="mb-2">
-                                        <strong>Email</strong><br />
-                                        invoice@jpmdirect.com.au
-                                    </p>
-                                    <p class="mb-0">
-                                        <strong>Phone</strong><br />
-                                         -
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0">
-                            <div class="card-body text-center">
-                                <div class="mb-3">
-                                    <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
-                                </div>
-                                
-                                <h6 class="mb-1">Rosye</h6>
-                                <p class="text-muted small mb-3">
-                                    Account
-                                </p>
-                                
-                                <div class="text-start small text-muted">
-                                    <p class="mb-2">
-                                        <strong>Email</strong><br />
-                                        accounts@jpmdirect.com.au
-                                    </p>
-                                    <p class="mb-0">
-                                        <strong>Phone</strong><br />
-                                         -
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card h-100 shadow-sm border-0">
-                            <div class="card-body text-center">
-                                <div class="mb-3">
-                                    <img runat="server" src="~/Assets/images/avatars.png" class="rounded-circle" style="width:96px;height:96px;object-fit:cover;" />
-                                </div>
-                                
-                                <h6 class="mb-1">Fariz</h6>
-                                <p class="text-muted small mb-3">
-                                    Account
-                                </p>
-                                
-                                <div class="text-start small text-muted">
-                                    <p class="mb-2">
-                                        <strong>Email</strong><br />
-                                        fariz@jpmdirect.com.au
-                                    </p>
-                                    <p class="mb-0">
-                                        <strong>Phone</strong><br />
-                                         -
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </asp:Content>

@@ -2,19 +2,31 @@
     Inherits Page
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        If Not IsPostBack Then
-            MessageError(False, String.Empty)
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/", False)
+            Exit Sub
+        End If
+        If Session("CompanyId") = "2" Then
+            Response.Redirect("~/", False)
+            Exit Sub
+        End If
 
-            divSales.Visible = False : divCSJPMD.Visible = False
-            If Session("RoleName") = "Customer" Then
-                If Session("CompanyId") = "2" Then
-                    divSales.Visible = True : divCSJPMD.Visible = True
-                End If
-            End If
+        If Not IsPostBack Then
         End If
     End Sub
 
-    Protected Sub MessageError(visible As Boolean, message As String)
-        divError.Visible = visible : msgError.InnerText = message
-    End Sub
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
 End Class

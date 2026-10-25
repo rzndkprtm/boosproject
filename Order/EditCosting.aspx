@@ -71,7 +71,7 @@
                                     </asp:TemplateField>
                                     <asp:TemplateField ItemStyle-Width="150px">
                                         <ItemTemplate>
-                                            <a class="btn btn-success btn-sm" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalUpdate" onclick='<%# String.Format("return showUpdate(`{0}`);", Eval("Id").ToString()) %>'>Update</a>
+                                            <button type="button" class="btn btn-success btn-sm btn-update-costing" disabled="disabled" data-id='<%# Eval("Id") %>' data-bs-toggle="modal" data-bs-target="#modalUpdate" onclick="showUpdate(this.getAttribute('data-id'));">Update</button>
                                             <a class="btn btn-danger btn-sm" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                         </ItemTemplate>
                                     </asp:TemplateField>
@@ -89,8 +89,9 @@
                             </ul>
                             <a class="btn btn-warning" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalReset">Reset Costing</a>
                         </div>
-                        <div>
-                            <asp:Button runat="server" ID="btnFinish" CssClass="btn btn-primary" Text="Finish" OnClick="btnFinish_Click" />
+                        <div class="d-flex gap-2">
+                            <asp:Button runat="server" ID="btnUpdateAll" CssClass="btn btn-success" Text="Update All" Enabled="false" OnClick="btnUpdateAll_Click" OnClientClick="return confirm('Are you sure you want to update all changed items?');" />
+                            <asp:Button runat="server" ID="btnFinish" CssClass="btn btn-primary" Text="Finish / Back" OnClick="btnFinish_Click" />
                         </div>
                     </div>
                 </div>
@@ -266,18 +267,94 @@
     </div>
 
     <script type="text/javascript">
-        ["modalAddDiscount", "modalAddSurcharge", "modalAddNote", "modalReset", "modalUpdate", "modalDelete"].forEach(function (id) {
-            document.getElementById(id).addEventListener("hide.bs.modal", function () {
-                document.activeElement.blur();
-                document.body.focus();
+        function initCostingChangeDetection() {
+            var btnUpdateAll = document.getElementById("<%= btnUpdateAll.ClientID %>");
+            var originalButtonText = "Update All";
+            var changedRows = new Set();
+
+            document.querySelectorAll("#<%= gvList.ClientID %> tr").forEach(function (row) {
+                var updateButton = row.querySelector(".btn-update-costing");
+
+                if (!updateButton) return;
+
+                var rowId = updateButton.getAttribute("data-id");
+
+                var inputs = row.querySelectorAll(
+                    'input[id*="txtNewSellPrice"], input[id*="txtNewBuyPrice"], input[id*="txtNewFactoryPrice"]'
+                );
+
+                if (inputs.length === 0) return;
+
+                inputs.forEach(function (input) {
+                    if (input.dataset.originalValue === undefined) {
+                        input.dataset.originalValue = input.value;
+                    }
+                });
+
+                function checkChanges() {
+                    var hasChanges = false;
+
+                    inputs.forEach(function (input) {
+                        if (input.value !== input.dataset.originalValue) {
+                            hasChanges = true;
+                        }
+                    });
+
+                    updateButton.disabled = !hasChanges;
+                    updateButton.dataset.hasChanges = hasChanges ? "true" : "false";
+
+                    if (hasChanges) {
+                        changedRows.add(rowId);
+                    } else {
+                        changedRows.delete(rowId);
+                    }
+
+                    btnUpdateAll.disabled = changedRows.size <= 1;
+                    btnUpdateAll.value = originalButtonText;
+                }
+
+                inputs.forEach(function (input) {
+                    if (input._costingChangeHandler) {
+                        input.removeEventListener("input", input._costingChangeHandler);
+                        input.removeEventListener("change", input._costingChangeHandler);
+                    }
+
+                    input._costingChangeHandler = checkChanges;
+
+                    input.addEventListener("input", checkChanges);
+                    input.addEventListener("change", checkChanges);
+                });
+
+                checkChanges();
             });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            initCostingChangeDetection();
         });
+
         function showUpdate(id) {
-            document.getElementById("<%=txtUpdateId.ClientID %>").value = id;
+            document.getElementById("<%= txtUpdateId.ClientID %>").value = id;
         }
+
         function showDelete(id) {
-            document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
+            document.getElementById("<%= txtDeleteId.ClientID %>").value = id;
         }
+
+        ["modalAddDiscount", "modalAddSurcharge", "modalAddNote", "modalReset", "modalUpdate", "modalDelete"].forEach(function (id) {
+            var modal = document.getElementById(id);
+
+            if (modal) {
+                modal.addEventListener("hide.bs.modal", function () {
+                    if (document.activeElement) {
+                        document.activeElement.blur();
+                    }
+
+                    document.body.focus();
+                });
+            }
+        });
+
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

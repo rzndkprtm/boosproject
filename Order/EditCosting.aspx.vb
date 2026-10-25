@@ -220,6 +220,127 @@ Partial Class Order_EditCosting
         End Try
     End Sub
 
+    Protected Sub btnUpdateAll_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim changedCount As Integer = 0
+            Dim customerPrice As Decimal = 0D
+            Dim sellPrice As Decimal = 0D
+            Dim buyPrice As Decimal = 0D
+            Dim factoryPrice As Decimal = 0D
+
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using tran As SqlTransaction = thisConn.BeginTransaction()
+                    Try
+                        For Each row As GridViewRow In gvList.Rows
+                            If row.RowType <> DataControlRowType.DataRow Then Continue For
+
+                            Dim txtSell As TextBox = TryCast(row.FindControl("txtNewSellPrice"), TextBox)
+                            Dim txtBuy As TextBox = TryCast(row.FindControl("txtNewBuyPrice"), TextBox)
+                            Dim txtFactory As TextBox = TryCast(row.FindControl("txtNewFactoryPrice"), TextBox)
+
+                            If txtSell Is Nothing OrElse txtBuy Is Nothing OrElse txtFactory Is Nothing Then Continue For
+
+                            If Not txtSell.Visible OrElse Not txtBuy.Visible OrElse Not txtFactory.Visible Then Continue For
+
+                            Dim itemId As String = gvList.DataKeys(row.RowIndex).Value.ToString()
+
+                            Dim newSell As Decimal
+                            Dim newBuy As Decimal
+                            Dim newFactory As Decimal
+
+                            If Not Decimal.TryParse(txtSell.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newSell) Then
+                                Throw New Exception("Invalid Sell Price for item ID " & itemId)
+                            End If
+
+                            If Not Decimal.TryParse(txtBuy.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newBuy) Then
+                                Throw New Exception("Invalid Buy Price for item ID " & itemId)
+                            End If
+
+                            If Not Decimal.TryParse(txtFactory.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newFactory) Then
+                                Throw New Exception("Invalid Factory Price for item ID " & itemId)
+                            End If
+
+                            Dim oldSell As Decimal
+                            Dim oldBuy As Decimal
+                            Dim oldFactory As Decimal
+
+                            Using cmdOld As New SqlCommand("SELECT SellPrice, BuyPrice, FactoryPrice FROM OrderCostings WHERE Id=@Id AND ItemId=@ItemId", thisConn, tran)
+                                cmdOld.Parameters.Add("@Id", SqlDbType.VarChar).Value = itemId
+                                cmdOld.Parameters.Add("@ItemId", SqlDbType.Int).Value = Convert.ToInt32(lblItemId.Text)
+
+                                Using rd As SqlDataReader = cmdOld.ExecuteReader()
+                                    If Not rd.Read() Then
+                                        Throw New Exception("Item not found: " & itemId)
+                                    End If
+
+                                    oldSell = If(IsDBNull(rd("SellPrice")), 0D, Convert.ToDecimal(rd("SellPrice")))
+                                    oldBuy = If(IsDBNull(rd("BuyPrice")), 0D, Convert.ToDecimal(rd("BuyPrice")))
+                                    oldFactory = If(IsDBNull(rd("FactoryPrice")), 0D, Convert.ToDecimal(rd("FactoryPrice")))
+                                End Using
+                            End Using
+
+                            If newSell = oldSell AndAlso newBuy = oldBuy AndAlso newFactory = oldFactory Then Continue For
+
+                            Using cmdUpdate As New SqlCommand("UPDATE OrderCostings SET SellPrice=@SellPrice, BuyPrice=@BuyPrice, FactoryPrice=@FactoryPrice WHERE Id=@Id AND ItemId=@ItemId", thisConn, tran)
+                                cmdUpdate.Parameters.Add("@Id", SqlDbType.VarChar).Value = itemId
+                                cmdUpdate.Parameters.Add("@ItemId", SqlDbType.Int).Value = Convert.ToInt32(lblItemId.Text)
+                                cmdUpdate.Parameters.Add("@SellPrice", SqlDbType.Decimal).Value = newSell
+                                cmdUpdate.Parameters.Add("@BuyPrice", SqlDbType.Decimal).Value = newBuy
+                                cmdUpdate.Parameters.Add("@FactoryPrice", SqlDbType.Decimal).Value = newFactory
+
+                                changedCount += cmdUpdate.ExecuteNonQuery()
+                            End Using
+                        Next
+
+                        If changedCount > 0 Then
+                            Using cmdDelete As New SqlCommand("DELETE FROM OrderCostings WHERE ItemId=@ItemId AND Type='Final'", thisConn, tran)
+                                cmdDelete.Parameters.Add("@ItemId", SqlDbType.Int).Value = Convert.ToInt32(lblItemId.Text)
+                                cmdDelete.ExecuteNonQuery()
+                            End Using
+
+                            Using cmdSum As New SqlCommand("SELECT ISNULL(SUM(CASE WHEN Type='Base' THEN CustomerPrice WHEN Type='Discount' THEN -CustomerPrice WHEN Type='Surcharge' THEN CustomerPrice ELSE 0 END),0) AS TotalCustomer, ISNULL(SUM(CASE WHEN Type='Base' THEN SellPrice WHEN Type='Discount' THEN -SellPrice WHEN Type='Surcharge' THEN SellPrice ELSE 0 END),0) AS TotalSell, ISNULL(SUM(CASE WHEN Type='Base' THEN BuyPrice WHEN Type='Discount' THEN -BuyPrice WHEN Type='Surcharge' THEN BuyPrice ELSE 0 END),0) AS TotalBuy, ISNULL(SUM(CASE WHEN Type='Base' THEN FactoryPrice WHEN Type='Discount' THEN -FactoryPrice WHEN Type='Surcharge' THEN FactoryPrice ELSE 0 END),0) AS TotalFactory FROM OrderCostings WHERE ItemId=@ItemId", thisConn, tran)
+                                cmdSum.Parameters.Add("@ItemId", SqlDbType.Int).Value = Convert.ToInt32(lblItemId.Text)
+
+                                Using rd As SqlDataReader = cmdSum.ExecuteReader()
+                                    If rd.Read() Then
+                                        customerPrice = Convert.ToDecimal(rd("TotalCustomer"))
+                                        sellPrice = Convert.ToDecimal(rd("TotalSell"))
+                                        buyPrice = Convert.ToDecimal(rd("TotalBuy"))
+                                        factoryPrice = Convert.ToDecimal(rd("TotalFactory"))
+                                    End If
+                                End Using
+                            End Using
+                        End If
+
+                        tran.Commit()
+
+                    Catch
+                        tran.Rollback()
+                        Throw
+                    End Try
+                End Using
+            End Using
+
+            If changedCount > 0 Then
+                Dim dataCosting As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Final", "Final Cost This Item", customerPrice, sellPrice, buyPrice, factoryPrice}
+                orderClass.OrderCostings(dataCosting)
+
+                dataLog = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Update Price | Update All"}
+                orderClass.Logs(dataLog)
+
+                orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
+            End If
+            Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
