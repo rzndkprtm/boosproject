@@ -750,17 +750,11 @@
 
             if (!fileUrl) {
                 showFileMessage("Download URL is not available.", true);
+                console.error("File data:", file);
                 return;
             }
 
-            var link = document.createElement("a");
-            link.href = fileUrl;
-            link.download = file.Name || "";
-            link.style.display = "none";
-
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            window.location.href = fileUrl;
         }
 
         function formatBytes(bytes) {
