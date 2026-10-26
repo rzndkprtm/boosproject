@@ -107,26 +107,26 @@
                         <div class="table-responsive">
                             <asp:GridView runat="server" ID="gvListDetail" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center">
                                 <Columns>
-                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="50px">
                                         <ItemTemplate>
                                             <%# Container.DataItemIndex + 1 %>
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:BoundField DataField="Name" HeaderText="Name" ItemStyle-Width="230px" />
-                                    <asp:BoundField DataField="Formula1" HeaderText="Formula 1" />
-                                    <asp:BoundField DataField="SortOrder" HeaderText="Sort Order" ItemStyle-Width="100px" />
-                                    <asp:BoundField DataField="Status" HeaderText="Status" ItemStyle-Width="100px" />
-                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="130px">
+                                    <asp:BoundField DataField="CompanyDetailName" HeaderText="Sub Company" />
+                                    <asp:BoundField DataField="Name" HeaderText="Name" />
+                                    <asp:BoundField DataField="SortOrder" HeaderText="Sort Order" />
+                                    <asp:BoundField DataField="Status" HeaderText="Status" />
+                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="80px">
                                         <ItemTemplate>
                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                             <ul class="dropdown-menu">
                                                 <li>
                                                     <a class="dropdown-item" runat="server" id="aFormulaDetail" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalFormula" onclick='<%# String.Format("return dataFormula(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`, `{5}`, `{6}`, `{7}`);", Eval("Formula1").ToString(), Eval("Formula2"), Eval("Formula3").ToString(), Eval("Formula4"), Eval("Formula5").ToString(), Eval("Formula6").ToString(), Eval("Formula7").ToString(), Eval("Formula8").ToString()) %>'>All Formula</a>
                                                 </li>
-                                                <li runat="server" visible='<%# LoginAccess("Edit Detail") %>'>
+                                                <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Edit Detail") %>'>
                                                     <a class="dropdown-item" href='<%# Page.ResolveUrl("~/setting/job/sheet/detail/edit?detailid=" & Eval("Id")) %>'>Edit</a>
                                                 </li>
-                                                <li runat="server" visible='<%# LoginAccess("Delete Detail") %>'>
+                                                <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Delete Detail") %>'>
                                                     <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDetail" onclick='<%# String.Format("return dataDeleteDetail(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                 </li>
                                                 <li>

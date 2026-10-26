@@ -54,7 +54,10 @@ Partial Class Setting_Job_Sheet_Default
         Try
             Dim thisId As String = txtCopyId.Text
         Catch ex As Exception
-
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -66,6 +69,7 @@ Partial Class Setting_Job_Sheet_Default
             }
             gvList.DataSource = jobClass.GetDataTableSP("sp_JobSheets_List", params)
             gvList.DataBind()
+            gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
 
             btnAdd.Visible = LoginAccess("Add")
         Catch ex As Exception
@@ -111,23 +115,6 @@ Partial Class Setting_Job_Sheet_Default
             navPager.Visible = False
         End Try
     End Sub
-
-    Protected Function BindCompanyDetail(jobSheetId As String) As String
-        If Not String.IsNullOrEmpty(jobSheetId) Then
-            Dim myData As DataTable = jobClass.GetDataTable("SELECT CompanyDetails.Name AS CompanyName FROM JobSheets CROSS APPLY STRING_SPLIT(JobSheets.CompanyDetailId, ',') AS splitArray LEFT JOIN CompanyDetails ON splitArray.VALUE=CompanyDetails.Id WHERE JobSheets.Id='" & jobSheetId & "' ORDER BY CompanyDetails.Id ASC")
-            Dim hasil As String = String.Empty
-            If myData.Rows.Count > 0 Then
-                For i As Integer = 0 To myData.Rows.Count - 1
-                    Dim companyDetailName As String = myData.Rows(i)("CompanyName").ToString()
-                    hasil += companyDetailName & ", "
-                Next
-                Return hasil.Remove(hasil.Length - 2).ToString()
-            Else
-                Return String.Empty
-            End If
-        End If
-        Return "Error"
-    End Function
 
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message

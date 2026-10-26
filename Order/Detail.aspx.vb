@@ -1404,7 +1404,8 @@ Partial Class Order_Detail
                             New SqlParameter("@ItemId", itemId),
                             New SqlParameter("@ItemNumber", orderClass.CreateItemNumberJob(orderJobId, jobSheetId)),
                             New SqlParameter("@JobSheetId", jobSheetId),
-                            New SqlParameter("@FormulaColumn", formulaColumn)
+                            New SqlParameter("@FormulaColumn", formulaColumn),
+                            New SqlParameter("@CompanyDetailId", lblCompanyDetailId.Text)
                         }
                         orderClass.ExecuteSP("sp_OrderJobDetails_Insert", params)
                     Next
@@ -1467,7 +1468,8 @@ Partial Class Order_Detail
                             New SqlParameter("@ItemId", itemId),
                             New SqlParameter("@ItemNumber", orderClass.CreateItemNumberJob(orderJobId, jobSheetId)),
                             New SqlParameter("@JobSheetId", jobSheetId),
-                            New SqlParameter("@FormulaColumn", formulaColumn)
+                            New SqlParameter("@FormulaColumn", formulaColumn),
+                             New SqlParameter("@CompanyDetailId", lblCompanyDetailId.Text)
                         }
                         orderClass.ExecuteSP("sp_OrderJobDetails_Insert", params)
                     Next

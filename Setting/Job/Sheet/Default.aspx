@@ -42,7 +42,7 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                        <h4 class="card-title">Job Sheet</h4>
+                                        <h4 class="card-title">List Job Sheet</h4>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                         <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
@@ -78,7 +78,7 @@
                                                         <li runat="server" visible='<%# LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/job/sheet/edit?sheetid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
-                                                        <li>
+                                                        <li runat="server" visible='<%# LoginAccess("Copy") %>'>
                                                             <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Name").ToString()) %>'>Copy</a>
                                                         </li>
                                                         <li>

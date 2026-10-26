@@ -73,9 +73,23 @@ Partial Class Setting_Job_Sheet_Detail_Default
     Protected Sub btnDeleteDetail_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            Dim thisId As String = txtDeleteDetailId.Text
 
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("UPDATE JobSheetDetails SET Status='Deleted', SortOrder=NULL, Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            url = String.Format("~/setting/job/sheet/detail/?sheetid={0}", lblId.Text)
+            Response.Redirect(url, False)
         Catch ex As Exception
-
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -103,11 +117,14 @@ Partial Class Setting_Job_Sheet_Detail_Default
 
     Protected Sub BindDataDetail(sheetId As String)
         Try
-            Dim thisString As String = "SELECT * FROM JobSheetDetails WHERE JobSheetId='" & sheetId & "' AND Status='Active' ORDER BY SortOrder ASC"
-            gvListDetail.DataSource = jobClass.GetDataTable(thisString)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@JobSheetId", sheetId),
+                New SqlParameter("@RoleName", Session("RoleName").ToString())
+            }
+            gvListDetail.DataSource = jobClass.GetDataTableSP("sp_JobSheetDetails_List", params)
             gvListDetail.DataBind()
 
-            gvListSortOrder.DataSource = jobClass.GetDataTable(thisString)
+            gvListSortOrder.DataSource = jobClass.GetDataTableSP("sp_JobSheetDetails_List", params)
             gvListSortOrder.DataBind()
 
             btnAddDetail.Visible = LoginAccess("Add Detail")

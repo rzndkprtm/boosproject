@@ -43,6 +43,12 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-12 form-group">
+                                                <label class="form-label">Sub Company</label>
+                                                <asp:ListBox runat="server" ID="lbCompanyDetail" CssClass="choices form-select multiple-remove" SelectionMode="Multiple"></asp:ListBox>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 form-group">
                                                 <label class="form-label">Name</label>
                                                 <asp:TextBox runat="server" ID="txtName" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
                                             </div>
@@ -214,10 +220,14 @@
                 if (el.choices) {
                     el.choices.destroy();
                 }
+
+                var isMultiple = el.multiple;
+
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',
-                    shouldSort: false
+                    shouldSort: false,
+                    removeItemButton: isMultiple
                 });
             });
         }

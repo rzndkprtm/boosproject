@@ -25,7 +25,6 @@ Partial Class Setting_Job_Sheet_Edit
         End If
 
         lblId.Text = Request.QueryString("sheetid").ToString()
-
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindData(lblId.Text)

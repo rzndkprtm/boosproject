@@ -24,6 +24,7 @@ Partial Class Setting_Job_Sheet_Detail_Add
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindJobSheet()
+            BindCompanyDetail()
             BindViewJob()
             VisibleFormula("1", ddlType.SelectedValue)
             VisibleFormula("2", ddlType2.SelectedValue)
@@ -68,6 +69,11 @@ Partial Class Setting_Job_Sheet_Detail_Add
         MessageError(False, String.Empty)
         Try
             If msgError.InnerText = "" Then
+                Dim companyDetailId As String = String.Empty
+                If Not lbCompanyDetail.SelectedValue = "" Then
+                    companyDetailId = String.Join(",", lbCompanyDetail.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
                 Dim formula As String = ddlFormula.SelectedValue
                 If ddlType.SelectedValue = "Custom" Then formula = txtFormula.Text
 
@@ -90,9 +96,10 @@ Partial Class Setting_Job_Sheet_Detail_Add
                 Dim sortOrder As String = jobClass.GetNewSortOrder(lblId.Text)
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO JobSheetDetails VALUES (@Id, @JobSheetId, @Name, @Type1, @Formula1, @Type2, @Formula2, @Type3, @Formula3, @Type4, @Formula4, @Type5, @Formula5, @Type6, @Formula6, NULL, NULL, NULL, NULL, @SortOrder, NULL, 1)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO JobSheetDetails VALUES (@Id, @JobSheetId, @CompanyDetailId, @Name, @Type1, @Formula1, @Type2, @Formula2, @Type3, @Formula3, @Type4, @Formula4, @Type5, @Formula5, @Type6, @Formula6, NULL, NULL, NULL, NULL, @SortOrder, NULL, 'Active')", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@JobSheetId", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
                         thisCmd.Parameters.AddWithValue("@Type1", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Type2", ddlType2.SelectedValue)
@@ -149,6 +156,25 @@ Partial Class Setting_Job_Sheet_Detail_Add
         End Try
     End Sub
 
+    Protected Sub BindCompanyDetail()
+        lbCompanyDetail.Items.Clear()
+        Try
+            lbCompanyDetail.DataSource = jobClass.GetDataTable("SELECT Id, Name FROM CompanyDetails")
+            lbCompanyDetail.DataTextField = "Name"
+            lbCompanyDetail.DataValueField = "Id"
+            lbCompanyDetail.DataBind()
+
+            If lbCompanyDetail.Items.Count > 0 Then
+                lbCompanyDetail.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindViewJob()
         ddlFormula.Items.Clear()
         ddlFormula2.Items.Clear()
@@ -156,19 +182,11 @@ Partial Class Setting_Job_Sheet_Detail_Add
         ddlFormula4.Items.Clear()
         ddlFormula5.Items.Clear()
         ddlFormula6.Items.Clear()
-
         Try
             Dim thisString As String = "SELECT c.name AS FieldName FROM sys.columns c INNER JOIN sys.objects o ON c.object_id = o.object_id WHERE o.name = 'viewJob' ORDER BY c.column_id"
             Dim dt As DataTable = jobClass.GetDataTable(thisString)
 
-            Dim ddlList() As DropDownList = {
-                ddlFormula,
-                ddlFormula2,
-                ddlFormula3,
-                ddlFormula4,
-                ddlFormula5,
-                ddlFormula6
-            }
+            Dim ddlList() As DropDownList = {ddlFormula, ddlFormula2, ddlFormula3, ddlFormula4, ddlFormula5, ddlFormula6}
 
             For Each ddl As DropDownList In ddlList
                 ddl.DataSource = dt
@@ -177,16 +195,7 @@ Partial Class Setting_Job_Sheet_Detail_Add
                 ddl.DataBind()
                 ddl.Items.Insert(0, New ListItem("", ""))
             Next
-
         Catch ex As Exception
-
-            ddlFormula.Items.Clear()
-            ddlFormula2.Items.Clear()
-            ddlFormula3.Items.Clear()
-            ddlFormula4.Items.Clear()
-            ddlFormula5.Items.Clear()
-            ddlFormula6.Items.Clear()
-
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If

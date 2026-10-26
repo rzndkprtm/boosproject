@@ -228,6 +228,9 @@
                                                             <a runat="server" href="~/setting/customer/service" class="subsubmenu-link">Service</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/custompricing" class="subsubmenu-link">Custom Pricing</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/promo" class="subsubmenu-link">Promo</a>
                                                         </li>
                                                         <li class="subsubmenu-item">
@@ -235,9 +238,6 @@
                                                         </li>
                                                         <li class="subsubmenu-item">
                                                             <a runat="server" href="~/setting/customer/quote" class="subsubmenu-link">Quote</a>
-                                                        </li>
-                                                        <li class="subsubmenu-item">
-                                                            <a runat="server" href="~/setting/customer/custompricing" class="subsubmenu-link">Custom Pricing</a>
                                                         </li>
                                                     </ul>
                                                 </li>

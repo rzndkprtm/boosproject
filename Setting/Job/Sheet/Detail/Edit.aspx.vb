@@ -61,6 +61,11 @@ Partial Class Setting_Job_Sheet_Detail_Edit
         MessageError(False, String.Empty)
         Try
             If msgError.InnerText = "" Then
+                Dim companyDetailId As String = String.Empty
+                If Not lbCompanyDetail.SelectedValue = "" Then
+                    companyDetailId = String.Join(",", lbCompanyDetail.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
                 Dim formula As String = ddlFormula.SelectedValue
                 If ddlType.SelectedValue = "Custom" Then formula = txtFormula.Text
 
@@ -80,9 +85,10 @@ Partial Class Setting_Job_Sheet_Detail_Edit
                 If ddlType6.SelectedValue = "Custom" Then formula6 = txtFormula6.Text
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE JobSheetDetails SET JobSheetId=@JobSheetId, Name=@Name, Type1=@Type1, Formula1=@Formula1, Type2=@Type2, Formula2=@Formula2, Type3=@Type3, Formula3=@Formula3, Type4=@Type4, Formula4=@Formula4, Type5=@Type5, Formula5=@Formula5, Type6=@Type6, Formula6=@Formula6 WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE JobSheetDetails SET JobSheetId=@JobSheetId, CompanyDetailId=@CompanyDetailId, Name=@Name, Type1=@Type1, Formula1=@Formula1, Type2=@Type2, Formula2=@Formula2, Type3=@Type3, Formula3=@Formula3, Type4=@Type4, Formula4=@Formula4, Type5=@Type5, Formula5=@Formula5, Type6=@Type6, Formula6=@Formula6 WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@JobSheetId", ddlJobSheet.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
                         thisCmd.Parameters.AddWithValue("@Type1", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Type2", ddlType2.SelectedValue)
@@ -129,6 +135,7 @@ Partial Class Setting_Job_Sheet_Detail_Edit
             End If
 
             BindJobSheet()
+            BindCompanyDetail()
             BindViewJob()
 
             Dim type As String = myData("Type1").ToString()
@@ -153,6 +160,18 @@ Partial Class Setting_Job_Sheet_Detail_Edit
             ddlType4.SelectedValue = type4
             ddlType5.SelectedValue = type5
             ddlType6.SelectedValue = type6
+
+            If Not myData("CompanyDetailId").ToString() = "" Then
+                Dim companyDetailArray() As String = myData("CompanyDetailId").ToString().Split(",")
+                For Each i In companyDetailArray
+                    If Not String.IsNullOrEmpty(i) Then
+                        Dim item = lbCompanyDetail.Items.FindByValue(i)
+                        If item IsNot Nothing Then
+                            item.Selected = True
+                        End If
+                    End If
+                Next
+            End If
 
             If type = "Field" Then
                 ddlFormula.SelectedValue = myData("Formula1").ToString()
@@ -225,7 +244,7 @@ Partial Class Setting_Job_Sheet_Detail_Edit
     Protected Sub BindJobSheet()
         ddlJobSheet.Items.Clear()
         Try
-            ddlJobSheet.DataSource = jobClass.GetDataTable("SELECT * FROM JobSheets ORDER BY Name ASC")
+            ddlJobSheet.DataSource = jobClass.GetDataTable("SELECT Id, Name FROM JobSheets ORDER BY Name ASC")
             ddlJobSheet.DataTextField = "Name"
             ddlJobSheet.DataValueField = "Id"
             ddlJobSheet.DataBind()
@@ -235,6 +254,25 @@ Partial Class Setting_Job_Sheet_Detail_Edit
             ddlJobSheet.Items.Clear()
             If Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindCompanyDetail()
+        lbCompanyDetail.Items.Clear()
+        Try
+            lbCompanyDetail.DataSource = jobClass.GetDataTable("SELECT Id, Name FROM CompanyDetails")
+            lbCompanyDetail.DataTextField = "Name"
+            lbCompanyDetail.DataValueField = "Id"
+            lbCompanyDetail.DataBind()
+
+            If lbCompanyDetail.Items.Count > 0 Then
+                lbCompanyDetail.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub

@@ -21,5 +21,3 @@ Password : 4Y_xv&nbC4Hw3fio
 
 Face Fit = Outside
 Reveal Fit = Inside
-
-SELECT OrderHeaders.Id, OrderHeaders.OrderId, OrderHeaders.CustomerId, OrderHeaders.OrderAddress, CASE WHEN CustomerAddress.CustomerId IS NOT NULL THEN ISNULL(CustomerAddress.Address, '') + ', ' + ISNULL(CustomerAddress.Suburb, '') + ', ' + ISNULL(CustomerAddress.State, '') + ', ' + ISNULL(CustomerAddress.PostCode, '') ELSE NULL END AS FullAddress FROM dbo.OrderHeaders INNER JOIN dbo.Customers ON OrderHeaders.CustomerId = Customers.Id LEFT JOIN dbo.CustomerAddress ON Customers.Id = CustomerAddress.CustomerId AND CustomerAddress.[Primary] = 1 WHERE OrderHeaders.Status = 'Unsubmitted' AND OrderHeaders.Active = 1 AND OrderHeaders.CreatedDate > '2026-09-01'
