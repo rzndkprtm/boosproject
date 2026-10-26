@@ -48,6 +48,10 @@ Partial Class Setting_FileManager
         Public Property Message As String
         Public Property CurrentPath As String
         Public Property Files As List(Of FileItem)
+        Public Property CurrentPage As Integer
+        Public Property PageSize As Integer
+        Public Property TotalItems As Integer
+        Public Property TotalPages As Integer
     End Class
 
     Private Shared Function GetRootPhysicalPath() As String
@@ -90,12 +94,14 @@ Partial Class Setting_FileManager
 
     <WebMethod()>
     <ScriptMethod(ResponseFormat:=ResponseFormat.Json)>
-    Public Shared Function GetFiles(path As String) As FileListResult
+    Public Shared Function GetFiles(path As String, page As Integer, pageSize As Integer, search As String) As FileListResult
         Dim result As New FileListResult With {
             .Success = False,
             .Message = String.Empty,
             .CurrentPath = String.Empty,
-            .Files = New List(Of FileItem)()
+            .Files = New List(Of FileItem)(),
+            .CurrentPage = Math.Max(1, page),
+            .PageSize = Math.Max(1, Math.Min(pageSize, 100))
         }
 
         Try
@@ -108,32 +114,49 @@ Partial Class Setting_FileManager
 
             result.CurrentPath = GetRelativePath(physicalPath)
 
-            For Each directoryPath As String In Directory.GetDirectories(physicalPath)
+            Dim allItems As New List(Of FileItem)
+            Dim keyword As String = If(search, String.Empty).Trim()
+
+            For Each directoryPath As String In Directory.EnumerateDirectories(physicalPath)
                 Dim directoryInfo As New DirectoryInfo(directoryPath)
 
-                result.Files.Add(New FileItem With {
-                    .Name = directoryInfo.Name,
-                    .RelativePath = GetRelativePath(directoryPath),
-                    .IsDirectory = True,
-                    .Extension = String.Empty,
-                    .Size = 0,
-                    .Modified = directoryInfo.LastWriteTime.ToString("dd MMM yyyy HH:mm", CultureInfo.InvariantCulture)
-                })
+                If keyword = String.Empty OrElse directoryInfo.Name.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0 Then
+                    allItems.Add(New FileItem With {
+                        .Name = directoryInfo.Name,
+                        .RelativePath = GetRelativePath(directoryPath),
+                        .IsDirectory = True,
+                        .Extension = String.Empty,
+                        .Size = 0,
+                        .Modified = directoryInfo.LastWriteTime.ToString("dd MMM yyyy HH:mm", CultureInfo.InvariantCulture)
+                    })
+                End If
             Next
 
-            For Each filePath As String In Directory.GetFiles(physicalPath)
+            For Each filePath As String In Directory.EnumerateFiles(physicalPath)
                 Dim fileInfo As New FileInfo(filePath)
 
-                result.Files.Add(New FileItem With {
-                    .Name = fileInfo.Name,
-                    .RelativePath = GetRelativePath(filePath),
-                    .IsDirectory = False,
-                    .Extension = fileInfo.Extension,
-                    .Size = fileInfo.Length,
-                    .Modified = fileInfo.LastWriteTime.ToString("dd MMM yyyy HH:mm", CultureInfo.InvariantCulture)
-                })
+                If keyword = String.Empty OrElse fileInfo.Name.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0 Then
+                    allItems.Add(New FileItem With {
+                        .Name = fileInfo.Name,
+                        .RelativePath = GetRelativePath(filePath),
+                        .IsDirectory = False,
+                        .Extension = fileInfo.Extension,
+                        .Size = fileInfo.Length,
+                        .Modified = fileInfo.LastWriteTime.ToString("dd MMM yyyy HH:mm", CultureInfo.InvariantCulture)
+                    })
+                End If
             Next
 
+            allItems = allItems.OrderByDescending(Function(x) x.IsDirectory).ThenBy(Function(x) x.Name).ToList()
+
+            result.TotalItems = allItems.Count
+            result.TotalPages = CInt(Math.Ceiling(result.TotalItems / CDbl(result.PageSize)))
+
+            If result.TotalPages > 0 AndAlso result.CurrentPage > result.TotalPages Then
+                result.CurrentPage = result.TotalPages
+            End If
+
+            result.Files = allItems.Skip((result.CurrentPage - 1) * result.PageSize).Take(result.PageSize).ToList()
             result.Success = True
 
         Catch ex As UnauthorizedAccessException
