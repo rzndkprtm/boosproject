@@ -278,7 +278,7 @@ Partial Class Stocks_Default
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "3"),
                 New SqlParameter("@CompanyDetailId", companyDetail),
-                New SqlParameter("@SearchText", String.Empty),
+                New SqlParameter("@SearchText", searchText),
                 New SqlParameter("@Type", "CURTAIN")
             }
             Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
