@@ -211,7 +211,11 @@
                 headers: {
                     "Content-Type": "application/json; charset=utf-8"
                 },
-                body: JSON.stringify({ path: currentPath })
+                body: JSON.stringify({
+                    path: currentPath,
+                    page: 1,
+                    pageSize: 100
+                })
             })
                 .then(function (response) {
                     if (!response.ok) {
