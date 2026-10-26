@@ -185,232 +185,152 @@
         var pageSize = 100;
         var totalItems = 0;
         var totalPages = 0;
+        var currentSearch = "";
+        var searchTimer = null;
+
         var fileRequestUrl = '<%= ResolveUrl("~/Order/File.aspx") %>';
-        var isLoadingFiles = false;
 
         document.addEventListener("DOMContentLoaded", function () {
-            initializePagination();
             loadFiles("", 1);
 
-            document.getElementById("txtSearchFile").addEventListener("input", function () {
-                renderFiles();
-            });
+            var searchInput = document.getElementById("txtSearchFile");
+
+            if (searchInput) {
+                searchInput.addEventListener("input", function () {
+                    clearTimeout(searchTimer);
+
+                    searchTimer = setTimeout(function () {
+                        currentSearch = searchInput.value.trim();
+                        loadFiles(currentPath, 1);
+                    }, 300);
+                });
+            }
 
             var previewModal = document.getElementById("filePreviewModal");
 
             if (previewModal) {
                 previewModal.addEventListener("hidden.bs.modal", function () {
-                    document.getElementById("previewFrame").src = "about:blank";
+                    var previewFrame = document.getElementById("previewFrame");
+
+                    if (previewFrame) {
+                        previewFrame.src = "about:blank";
+                    }
                 });
             }
         });
 
-        function initializePagination() {
-            var fileCount = document.getElementById("fileCount");
-            var footer = fileCount ? fileCount.parentElement : null;
-
-            if (!footer) {
-                return;
-            }
-
-            var paginationContainer = document.getElementById("filePagination");
-
-            if (!paginationContainer) {
-                paginationContainer = document.createElement("div");
-                paginationContainer.id = "filePagination";
-                paginationContainer.className = "d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3";
-
-                paginationContainer.innerHTML =
-                    '<small id="paginationInfo" class="text-muted">Loading...</small>' +
-                    '<div class="d-flex align-items-center gap-2">' +
-                    '<button type="button" id="btnPreviousPage" class="btn btn-sm btn-outline-primary" disabled>' +
-                    '<i class="bi bi-chevron-left me-1"></i>Previous' +
-                    '</button>' +
-                    '<span id="paginationPage" class="small text-muted">Page 1 of 1</span>' +
-                    '<button type="button" id="btnNextPage" class="btn btn-sm btn-outline-primary" disabled>' +
-                    'Next<i class="bi bi-chevron-right ms-1"></i>' +
-                    '</button>' +
-                    '</div>';
-
-                footer.parentNode.insertBefore(paginationContainer, footer.nextSibling);
-            }
-
-            document.getElementById("btnPreviousPage").addEventListener("click", function () {
-                if (!isLoadingFiles && currentPage > 1) {
-                    loadFiles(currentPath, currentPage - 1);
-                }
-            });
-
-            document.getElementById("btnNextPage").addEventListener("click", function () {
-                if (!isLoadingFiles && currentPage < totalPages) {
-                    loadFiles(currentPath, currentPage + 1);
-                }
-            });
-        }
-
         function loadFiles(path, page) {
-            if (isLoadingFiles) {
-                return;
-            }
-
             currentPath = path || "";
-            currentPage = Math.max(1, parseInt(page, 10) || 1);
-            isLoadingFiles = true;
+            currentPage = page || 1;
 
-            var tbody = document.getElementById("fileList");
+            showFileMessage("Loading files...", false);
 
-            tbody.innerHTML =
-                '<tr><td colspan="5" class="text-center py-4">' +
-                '<div class="spinner-border spinner-border-sm text-primary me-2"></div>' +
-                'Loading files...' +
-                '</td></tr>';
-
-            document.getElementById("fileEmpty").classList.add("d-none");
-            document.getElementById("fileCount").textContent = "Loading...";
-            document.getElementById("paginationInfo").textContent = "Loading...";
-            document.getElementById("paginationPage").textContent = "Loading...";
-            document.getElementById("btnPreviousPage").disabled = true;
-            document.getElementById("btnNextPage").disabled = true;
-
-            hideFileMessage();
+            var requestData = {
+                path: currentPath,
+                page: currentPage,
+                pageSize: pageSize,
+                search: currentSearch
+            };
 
             fetch(fileRequestUrl + "/GetFiles", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json; charset=utf-8"
                 },
-                body: JSON.stringify({
-                    path: currentPath,
-                    page: currentPage,
-                    pageSize: pageSize
-                })
+                body: JSON.stringify(requestData)
             })
                 .then(function (response) {
                     if (!response.ok) {
-                        throw new Error("Unable to load files. HTTP " + response.status);
+                        throw new Error("Failed to load files. HTTP " + response.status);
                     }
 
                     return response.json();
                 })
-                .then(function (result) {
-                    var data = result.d;
+                .then(function (response) {
+                    var result = response.d || response;
 
-                    if (!data || !data.Success) {
-                        allFiles = [];
-                        totalItems = 0;
-                        totalPages = 0;
-
-                        renderBreadcrumb();
-                        renderFiles();
-                        updatePagination();
-
-                        showFileMessage(
-                            data && data.Message ? data.Message : "Unable to load files.",
-                            "danger"
+                    if (!result || result.Success === false) {
+                        throw new Error(
+                            result && result.Message
+                                ? result.Message
+                                : "Failed to load files."
                         );
-
-                        return;
                     }
 
-                    currentPath = data.CurrentPath || "";
-                    currentPage = data.CurrentPage || 1;
-                    pageSize = data.PageSize || 100;
-                    totalItems = data.TotalItems || 0;
-                    totalPages = data.TotalPages || 0;
-                    allFiles = data.Files || [];
+                    currentPath = result.CurrentPath || "";
+                    currentPage = result.CurrentPage || 1;
+                    pageSize = result.PageSize || pageSize;
+                    totalItems = result.TotalItems || 0;
+                    totalPages = result.TotalPages || 0;
+                    allFiles = result.Files || [];
 
                     renderBreadcrumb();
                     renderFiles();
-                    updatePagination();
+                    renderPagination();
+
+                    hideFileMessage();
                 })
                 .catch(function (error) {
+                    console.error("Error loading files:", error);
                     allFiles = [];
                     totalItems = 0;
                     totalPages = 0;
 
-                    document.getElementById("fileList").innerHTML = "";
-                    document.getElementById("fileCount").textContent = "Unable to load files";
-
-                    document.getElementById("paginationInfo").textContent = "";
-                    document.getElementById("paginationPage").textContent = "";
-                    document.getElementById("btnPreviousPage").disabled = true;
-                    document.getElementById("btnNextPage").disabled = true;
-
-                    document.getElementById("fileEmpty").classList.add("d-none");
+                    renderFiles();
+                    renderPagination();
 
                     showFileMessage(
-                        "An error occurred while loading files. Please try again.",
-                        "danger"
+                        error.message || "An error occurred while loading files.",
+                        true
                     );
-
-                    console.error("GetFiles error:", error);
-                })
-                .finally(function () {
-                    isLoadingFiles = false;
-
-                    document.getElementById("btnPreviousPage").disabled =
-                        currentPage <= 1 || isLoadingFiles;
-
-                    document.getElementById("btnNextPage").disabled =
-                        currentPage >= totalPages || totalPages === 0 || isLoadingFiles;
                 });
         }
 
-        function updatePagination() {
-            var startItem = totalItems === 0 ? 0 : ((currentPage - 1) * pageSize) + 1;
-            var endItem = Math.min(currentPage * pageSize, totalItems);
-
-            document.getElementById("paginationInfo").textContent =
-                totalItems === 0
-                    ? "No files or folders"
-                    : "Showing " + startItem + "–" + endItem + " of " + totalItems + " items";
-
-            document.getElementById("paginationPage").textContent =
-                "Page " + currentPage + " of " + Math.max(1, totalPages);
-
-            document.getElementById("btnPreviousPage").disabled =
-                currentPage <= 1 || isLoadingFiles;
-
-            document.getElementById("btnNextPage").disabled =
-                currentPage >= totalPages || totalPages === 0 || isLoadingFiles;
-        }
-
         function renderBreadcrumb() {
-            var container = document.getElementById("fileBreadcrumb");
-            container.innerHTML = "";
+            var breadcrumb = document.getElementById("fileBreadcrumb");
 
-            var root = document.createElement("li");
-            root.className = "breadcrumb-item";
-
-            var rootLink = document.createElement("a");
-            rootLink.href = "javascript:void(0)";
-            rootLink.textContent = "File";
-
-            rootLink.onclick = function () {
-                document.getElementById("txtSearchFile").value = "";
-                loadFiles("", 1);
-            };
-
-            root.appendChild(rootLink);
-            container.appendChild(root);
-
-            if (!currentPath) {
-                root.classList.add("active");
-                root.removeChild(rootLink);
-                root.textContent = "File";
+            if (!breadcrumb) {
                 return;
             }
 
-            var parts = currentPath.split("/").filter(Boolean);
-            var accumulated = "";
+            breadcrumb.innerHTML = "";
 
-            parts.forEach(function (part, index) {
-                accumulated = accumulated ? accumulated + "/" + part : part;
+            var rootItem = document.createElement("li");
+            rootItem.className = "breadcrumb-item";
+
+            var rootLink = document.createElement("a");
+            rootLink.href = "javascript:void(0)";
+            rootLink.textContent = "Order Files";
+
+            rootLink.addEventListener("click", function () {
+                resetSearch();
+                loadFiles("", 1);
+            });
+
+            rootItem.appendChild(rootLink);
+            breadcrumb.appendChild(rootItem);
+
+            if (!currentPath) {
+                rootItem.classList.add("active");
+                rootLink.removeAttribute("href");
+                return;
+            }
+
+            var pathParts = currentPath.split(/[\\/]/).filter(function (part) {
+                return part !== "";
+            });
+
+            var accumulatedPath = "";
+
+            pathParts.forEach(function (part, index) {
+                accumulatedPath = accumulatedPath
+                    ? accumulatedPath + "/" + part
+                    : part;
 
                 var item = document.createElement("li");
                 item.className = "breadcrumb-item";
 
-                if (index === parts.length - 1) {
+                if (index === pathParts.length - 1) {
                     item.classList.add("active");
                     item.textContent = part;
                 } else {
@@ -418,269 +338,472 @@
                     link.href = "javascript:void(0)";
                     link.textContent = part;
 
-                    (function (targetPath) {
-                        link.onclick = function () {
-                            document.getElementById("txtSearchFile").value = "";
-                            loadFiles(targetPath, 1);
-                        };
-                    })(accumulated);
+                    (function (folderPath) {
+                        link.addEventListener("click", function () {
+                            resetSearch();
+                            loadFiles(folderPath, 1);
+                        });
+                    })(accumulatedPath);
 
                     item.appendChild(link);
                 }
 
-                container.appendChild(item);
+                breadcrumb.appendChild(item);
             });
         }
 
         function renderFiles() {
-            var tbody = document.getElementById("fileList");
-            var keyword = document.getElementById("txtSearchFile").value.trim().toLowerCase();
+            var fileList = document.getElementById("fileList");
+            var fileEmpty = document.getElementById("fileEmpty");
+            var fileCount = document.getElementById("fileCount");
 
-            tbody.innerHTML = "";
+            if (!fileList) {
+                return;
+            }
 
-            var filteredFiles = allFiles.filter(function (file) {
-                return !keyword || (file.Name || "").toLowerCase().includes(keyword);
-            });
+            fileList.innerHTML = "";
 
-            filteredFiles.sort(function (a, b) {
-                if (a.IsDirectory !== b.IsDirectory) {
-                    return a.IsDirectory ? -1 : 1;
+            /*
+             * Pencarian sudah dilakukan di server.
+             * Jangan melakukan filter lokal di sini karena allFiles
+             * hanya berisi item pada halaman aktif.
+             */
+            var files = allFiles || [];
+
+            if (files.length === 0) {
+                if (fileEmpty) {
+                    fileEmpty.style.display = "";
+                    fileEmpty.textContent = currentSearch
+                        ? "No files or folders match your search."
+                        : "This folder is empty.";
                 }
 
-                return (a.Name || "").localeCompare(b.Name || "");
-            });
-
-            if (filteredFiles.length === 0) {
-                document.getElementById("fileEmpty").classList.remove("d-none");
-
-                document.getElementById("fileCount").textContent =
-                    keyword ? "No matching files or folders on this page" : "0 items on this page";
-
-                document.getElementById("fileEmpty").querySelector("h6").textContent =
-                    keyword ? "No matching files found on this page" : "This folder is empty";
-
-                document.getElementById("fileEmpty").querySelector("p").textContent =
-                    keyword
-                        ? "Try another search term or navigate to another page."
-                        : "There are no files or folders to display.";
+                if (fileCount) {
+                    fileCount.textContent = "0 items";
+                }
 
                 return;
             }
 
-            document.getElementById("fileEmpty").classList.add("d-none");
+            if (fileEmpty) {
+                fileEmpty.style.display = "none";
+            }
 
-            filteredFiles.forEach(function (file) {
+            files.forEach(function (file) {
                 var row = document.createElement("tr");
 
-                // Name
                 var nameCell = document.createElement("td");
                 var nameContainer = document.createElement("div");
-                nameContainer.className = "file-name";
+                nameContainer.className = "d-flex align-items-center";
 
-                var icon = document.createElement("div");
-                icon.className = "file-icon" + (file.IsDirectory ? " folder" : "");
-                icon.innerHTML = file.IsDirectory
-                    ? '<i class="bi bi-folder-fill"></i>'
-                    : getFileIcon(file.Extension);
+                var icon = document.createElement("i");
+                icon.className = getFileIcon(file);
+                icon.style.marginRight = "10px";
+                icon.style.fontSize = "1.2rem";
 
-                var nameInfo = document.createElement("div");
                 var nameLink = document.createElement("a");
-
-                nameLink.className = "file-name-link";
                 nameLink.href = "javascript:void(0)";
-                nameLink.textContent = file.Name;
+                nameLink.textContent = file.Name || "";
+                nameLink.className = "text-decoration-none";
 
                 if (file.IsDirectory) {
-                    nameLink.onclick = function () {
-                        document.getElementById("txtSearchFile").value = "";
-                        loadFiles(file.RelativePath, 1);
-                    };
-                } else if (isPreviewable(file.Extension)) {
-                    nameLink.onclick = function () {
-                        previewFile(file);
-                    };
+                    nameLink.addEventListener("click", function () {
+                        resetSearch();
+
+                        var folderPath = file.RelativePath || file.Path || "";
+
+                        loadFiles(folderPath, 1);
+                    });
                 } else {
-                    nameLink.onclick = function () {
-                        downloadFile(file.RelativePath);
-                    };
+                    nameLink.addEventListener("click", function () {
+                        previewFile(file);
+                    });
                 }
 
-                var subtitle = document.createElement("div");
-                subtitle.className = "file-subtitle";
-                subtitle.textContent = file.IsDirectory ? "Folder" : formatBytes(file.Size);
-
-                nameInfo.appendChild(nameLink);
-                nameInfo.appendChild(subtitle);
                 nameContainer.appendChild(icon);
-                nameContainer.appendChild(nameInfo);
+                nameContainer.appendChild(nameLink);
                 nameCell.appendChild(nameContainer);
+                row.appendChild(nameCell);
 
-                // Type
                 var typeCell = document.createElement("td");
                 typeCell.textContent = file.IsDirectory
                     ? "Folder"
-                    : (file.Extension
-                        ? file.Extension.toUpperCase().replace(".", "") + " File"
-                        : "File");
+                    : (file.Extension || "File").replace(".", "").toUpperCase();
 
-                // Size
+                row.appendChild(typeCell);
+
                 var sizeCell = document.createElement("td");
-                sizeCell.textContent = file.IsDirectory ? "—" : formatBytes(file.Size);
+                sizeCell.textContent = file.IsDirectory
+                    ? "-"
+                    : formatBytes(file.Size || 0);
 
-                // Modified
+                row.appendChild(sizeCell);
+
                 var modifiedCell = document.createElement("td");
-                modifiedCell.textContent = file.Modified || "—";
+                modifiedCell.textContent = file.LastModified || "-";
+                row.appendChild(modifiedCell);
 
-                // Actions
                 var actionCell = document.createElement("td");
                 actionCell.className = "text-end";
-
-                var actions = document.createElement("div");
-                actions.className = "file-actions";
 
                 if (file.IsDirectory) {
                     var openButton = document.createElement("button");
                     openButton.type = "button";
-                    openButton.className = "btn btn-sm btn-light-primary";
-                    openButton.title = "Open folder";
-                    openButton.innerHTML = '<i class="bi bi-folder2-open"></i>';
+                    openButton.className = "btn btn-sm btn-outline-primary";
+                    openButton.innerHTML = '<i class="bi bi-folder2-open"></i> Open';
 
-                    openButton.onclick = function () {
-                        document.getElementById("txtSearchFile").value = "";
-                        loadFiles(file.RelativePath, 1);
-                    };
+                    openButton.addEventListener("click", function () {
+                        resetSearch();
 
-                    actions.appendChild(openButton);
+                        var folderPath = file.RelativePath || file.Path || "";
+
+                        loadFiles(folderPath, 1);
+                    });
+
+                    actionCell.appendChild(openButton);
                 } else {
-                    if (isPreviewable(file.Extension)) {
+                    if (isPreviewable(file)) {
                         var previewButton = document.createElement("button");
                         previewButton.type = "button";
-                        previewButton.className = "btn btn-sm btn-light-primary";
+                        previewButton.className = "btn btn-sm btn-outline-secondary me-1";
                         previewButton.title = "Preview";
                         previewButton.innerHTML = '<i class="bi bi-eye"></i>';
 
-                        previewButton.onclick = function () {
+                        previewButton.addEventListener("click", function () {
                             previewFile(file);
-                        };
+                        });
 
-                        actions.appendChild(previewButton);
+                        actionCell.appendChild(previewButton);
                     }
 
                     var downloadButton = document.createElement("button");
                     downloadButton.type = "button";
-                    downloadButton.className = "btn btn-sm btn-light-success";
+                    downloadButton.className = "btn btn-sm btn-outline-primary";
                     downloadButton.title = "Download";
                     downloadButton.innerHTML = '<i class="bi bi-download"></i>';
 
-                    downloadButton.onclick = function () {
-                        downloadFile(file.RelativePath);
-                    };
+                    downloadButton.addEventListener("click", function () {
+                        downloadFile(file);
+                    });
 
-                    actions.appendChild(downloadButton);
+                    actionCell.appendChild(downloadButton);
                 }
 
-                actionCell.appendChild(actions);
-
-                row.appendChild(nameCell);
-                row.appendChild(typeCell);
-                row.appendChild(sizeCell);
-                row.appendChild(modifiedCell);
                 row.appendChild(actionCell);
-
-                tbody.appendChild(row);
+                fileList.appendChild(row);
             });
 
-            document.getElementById("fileCount").textContent =
-                filteredFiles.length + (filteredFiles.length === 1 ? " item" : " items") +
-                " on this page";
+            if (fileCount) {
+                var startItem = totalItems === 0
+                    ? 0
+                    : ((currentPage - 1) * pageSize) + 1;
+
+                var endItem = Math.min(currentPage * pageSize, totalItems);
+
+                fileCount.textContent =
+                    "Showing " + startItem + "-" + endItem +
+                    " of " + totalItems + " items";
+            }
         }
 
-        function getFileIcon(extension) {
-            switch ((extension || "").toLowerCase()) {
+        function renderPagination() {
+            var pagination = document.getElementById("filePagination");
+
+            if (!pagination) {
+                return;
+            }
+
+            pagination.innerHTML = "";
+
+            if (totalPages <= 1) {
+                return;
+            }
+
+            var previousItem = document.createElement("li");
+            previousItem.className = "page-item";
+
+            if (currentPage <= 1) {
+                previousItem.classList.add("disabled");
+            }
+
+            var previousLink = document.createElement("a");
+            previousLink.className = "page-link";
+            previousLink.href = "javascript:void(0)";
+            previousLink.textContent = "Previous";
+
+            previousLink.addEventListener("click", function () {
+                if (currentPage > 1) {
+                    loadFiles(currentPath, currentPage - 1);
+                }
+            });
+
+            previousItem.appendChild(previousLink);
+            pagination.appendChild(previousItem);
+
+            var startPage = Math.max(1, currentPage - 2);
+            var endPage = Math.min(totalPages, currentPage + 2);
+
+            if (startPage > 1) {
+                addPageButton(pagination, 1);
+
+                if (startPage > 2) {
+                    addEllipsis(pagination);
+                }
+            }
+
+            for (var page = startPage; page <= endPage; page++) {
+                addPageButton(pagination, page);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    addEllipsis(pagination);
+                }
+
+                addPageButton(pagination, totalPages);
+            }
+
+            var nextItem = document.createElement("li");
+            nextItem.className = "page-item";
+
+            if (currentPage >= totalPages) {
+                nextItem.classList.add("disabled");
+            }
+
+            var nextLink = document.createElement("a");
+            nextLink.className = "page-link";
+            nextLink.href = "javascript:void(0)";
+            nextLink.textContent = "Next";
+
+            nextLink.addEventListener("click", function () {
+                if (currentPage < totalPages) {
+                    loadFiles(currentPath, currentPage + 1);
+                }
+            });
+
+            nextItem.appendChild(nextLink);
+            pagination.appendChild(nextItem);
+        }
+
+        function addPageButton(container, page) {
+            var item = document.createElement("li");
+            item.className = "page-item";
+
+            if (page === currentPage) {
+                item.classList.add("active");
+            }
+
+            var link = document.createElement("a");
+            link.className = "page-link";
+            link.href = "javascript:void(0)";
+            link.textContent = page;
+
+            link.addEventListener("click", function () {
+                if (page !== currentPage) {
+                    loadFiles(currentPath, page);
+                }
+            });
+
+            item.appendChild(link);
+            container.appendChild(item);
+        }
+
+        function addEllipsis(container) {
+            var item = document.createElement("li");
+            item.className = "page-item disabled";
+
+            var span = document.createElement("span");
+            span.className = "page-link";
+            span.textContent = "...";
+
+            item.appendChild(span);
+            container.appendChild(item);
+        }
+
+        function resetSearch() {
+            currentSearch = "";
+
+            clearTimeout(searchTimer);
+
+            var searchInput = document.getElementById("txtSearchFile");
+
+            if (searchInput) {
+                searchInput.value = "";
+            }
+        }
+
+        function getFileIcon(file) {
+            if (file.IsDirectory) {
+                return "bi bi-folder-fill text-warning";
+            }
+
+            var extension = (file.Extension || "").toLowerCase();
+
+            switch (extension) {
                 case ".pdf":
-                    return '<i class="bi bi-file-earmark-pdf-fill text-danger"></i>';
+                    return "bi bi-file-earmark-pdf text-danger";
+
                 case ".doc":
                 case ".docx":
-                    return '<i class="bi bi-file-earmark-word-fill text-primary"></i>';
+                    return "bi bi-file-earmark-word text-primary";
+
                 case ".xls":
                 case ".xlsx":
                 case ".csv":
-                    return '<i class="bi bi-file-earmark-excel-fill text-success"></i>';
+                    return "bi bi-file-earmark-excel text-success";
+
                 case ".ppt":
                 case ".pptx":
-                    return '<i class="bi bi-file-earmark-ppt-fill text-warning"></i>';
+                    return "bi bi-file-earmark-ppt text-danger";
+
                 case ".jpg":
                 case ".jpeg":
                 case ".png":
                 case ".gif":
-                case ".webp":
                 case ".bmp":
-                case ".svg":
-                    return '<i class="bi bi-file-earmark-image-fill text-info"></i>';
+                case ".webp":
+                    return "bi bi-file-earmark-image text-info";
+
+                case ".txt":
+                case ".log":
+                    return "bi bi-file-earmark-text";
+
                 case ".zip":
                 case ".rar":
                 case ".7z":
-                    return '<i class="bi bi-file-earmark-zip-fill text-secondary"></i>';
-                case ".txt":
-                case ".log":
-                    return '<i class="bi bi-file-earmark-text-fill text-secondary"></i>';
+                    return "bi bi-file-earmark-zip";
+
                 default:
-                    return '<i class="bi bi-file-earmark-fill"></i>';
+                    return "bi bi-file-earmark";
             }
         }
 
-        function isPreviewable(extension) {
-            return [
-                ".pdf", ".jpg", ".jpeg", ".png", ".gif",
-                ".webp", ".bmp", ".svg", ".txt"
-            ].includes((extension || "").toLowerCase());
+        function isPreviewable(file) {
+            if (!file || file.IsDirectory) {
+                return false;
+            }
+
+            var extension = (file.Extension || "").toLowerCase();
+
+            var previewableExtensions = [
+                ".pdf",
+                ".jpg",
+                ".jpeg",
+                ".png",
+                ".gif",
+                ".bmp",
+                ".webp",
+                ".txt"
+            ];
+
+            return previewableExtensions.indexOf(extension) !== -1;
         }
 
         function previewFile(file) {
-            document.getElementById("previewTitle").textContent = file.Name;
-
-            document.getElementById("previewFrame").src =
-                fileRequestUrl + "?action=view&path=" + encodeURIComponent(file.RelativePath);
-
-            var modalElement = document.getElementById("filePreviewModal");
-            var modalInstance = bootstrap.Modal.getInstance(modalElement);
-
-            if (!modalInstance) {
-                modalInstance = new bootstrap.Modal(modalElement);
+            if (!file || file.IsDirectory) {
+                return;
             }
 
-            modalInstance.show();
+            var previewFrame = document.getElementById("previewFrame");
+            var previewTitle = document.getElementById("previewTitle");
+
+            if (!previewFrame) {
+                return;
+            }
+
+            var fileUrl = file.Url || file.DownloadUrl || "";
+
+            if (!fileUrl) {
+                showFileMessage("Preview URL is not available.", true);
+                return;
+            }
+
+            if (previewTitle) {
+                previewTitle.textContent = file.Name || "File Preview";
+            }
+
+            previewFrame.src = fileUrl;
+
+            var modalElement = document.getElementById("filePreviewModal");
+
+            if (modalElement && window.bootstrap && bootstrap.Modal) {
+                var modal = bootstrap.Modal.getInstance(modalElement);
+
+                if (!modal) {
+                    modal = new bootstrap.Modal(modalElement);
+                }
+
+                modal.show();
+            } else if (modalElement && window.jQuery && jQuery.fn.modal) {
+                jQuery(modalElement).modal("show");
+            } else {
+                window.open(fileUrl, "_blank");
+            }
         }
 
-        function downloadFile(path) {
-            window.location.href =
-                fileRequestUrl + "?action=download&path=" + encodeURIComponent(path);
+        function downloadFile(file) {
+            if (!file || file.IsDirectory) {
+                return;
+            }
+
+            var fileUrl = file.DownloadUrl || file.Url || "";
+
+            if (!fileUrl) {
+                showFileMessage("Download URL is not available.", true);
+                return;
+            }
+
+            var link = document.createElement("a");
+            link.href = fileUrl;
+            link.download = file.Name || "";
+            link.style.display = "none";
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         function formatBytes(bytes) {
-            if (!bytes || bytes <= 0) {
-                return "—";
+            bytes = Number(bytes) || 0;
+
+            if (bytes === 0) {
+                return "0 Bytes";
             }
 
-            var units = ["B", "KB", "MB", "GB", "TB"];
+            var units = ["Bytes", "KB", "MB", "GB", "TB"];
             var index = Math.floor(Math.log(bytes) / Math.log(1024));
 
             index = Math.min(index, units.length - 1);
 
-            return (bytes / Math.pow(1024, index)).toFixed(index === 0 ? 0 : 2) +
-                " " + units[index];
+            var size = bytes / Math.pow(1024, index);
+
+            return size.toFixed(index === 0 ? 0 : 2) + " " + units[index];
         }
 
-        function showFileMessage(message, type) {
-            var element = document.getElementById("fileMessage");
-            element.className = "alert alert-" + type;
-            element.textContent = message;
+        function showFileMessage(message, isError) {
+            var fileEmpty = document.getElementById("fileEmpty");
+
+            if (!fileEmpty) {
+                return;
+            }
+
+            fileEmpty.style.display = "";
+            fileEmpty.textContent = message;
+
+            if (isError) {
+                fileEmpty.classList.add("text-danger");
+            } else {
+                fileEmpty.classList.remove("text-danger");
+            }
         }
 
         function hideFileMessage() {
-            var element = document.getElementById("fileMessage");
-            element.className = "alert d-none";
-            element.textContent = "";
+            var fileEmpty = document.getElementById("fileEmpty");
+
+            if (fileEmpty) {
+                fileEmpty.style.display = "none";
+                fileEmpty.classList.remove("text-danger");
+            }
         }
     </script>
 </asp:Content>
