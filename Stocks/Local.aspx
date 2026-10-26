@@ -75,7 +75,7 @@
                                     </a>
                                 </li>
                                 <li class="menu-item">
-                                    <a runat="server" href="~/stock/local" class='menu-link'>
+                                    <a runat="server" href="~/stocks/local" class='menu-link'>
                                         <i class="bi bi-ui-checks"></i>
                                         <span>Stocks</span>
                                     </a>
