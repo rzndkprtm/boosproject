@@ -226,19 +226,17 @@
 
             showFileMessage("Loading files...", false);
 
-            var requestData = {
-                path: currentPath,
-                page: currentPage,
-                pageSize: pageSize,
-                search: currentSearch
-            };
-
             fetch(fileRequestUrl + "/GetFiles", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json; charset=utf-8"
                 },
-                body: JSON.stringify(requestData)
+                body: JSON.stringify({
+                    path: currentPath,
+                    page: currentPage,
+                    pageSize: pageSize,
+                    search: currentSearch
+                })
             })
                 .then(function (response) {
                     if (!response.ok) {
@@ -268,22 +266,18 @@
                     renderBreadcrumb();
                     renderFiles();
                     renderPagination();
-
                     hideFileMessage();
                 })
                 .catch(function (error) {
                     console.error("Error loading files:", error);
+
                     allFiles = [];
                     totalItems = 0;
                     totalPages = 0;
 
                     renderFiles();
                     renderPagination();
-
-                    showFileMessage(
-                        error.message || "An error occurred while loading files.",
-                        true
-                    );
+                    showFileMessage(error.message || "Unable to load files.", true);
                 });
         }
 
@@ -313,7 +307,6 @@
 
             if (!currentPath) {
                 rootItem.classList.add("active");
-                rootLink.removeAttribute("href");
                 return;
             }
 
@@ -364,11 +357,6 @@
 
             fileList.innerHTML = "";
 
-            /*
-             * Pencarian sudah dilakukan di server.
-             * Jangan melakukan filter lokal di sini karena allFiles
-             * hanya berisi item pada halaman aktif.
-             */
             var files = allFiles || [];
 
             if (files.length === 0) {
@@ -410,10 +398,7 @@
                 if (file.IsDirectory) {
                     nameLink.addEventListener("click", function () {
                         resetSearch();
-
-                        var folderPath = file.RelativePath || file.Path || "";
-
-                        loadFiles(folderPath, 1);
+                        loadFiles(file.RelativePath, 1);
                     });
                 } else {
                     nameLink.addEventListener("click", function () {
@@ -441,7 +426,7 @@
                 row.appendChild(sizeCell);
 
                 var modifiedCell = document.createElement("td");
-                modifiedCell.textContent = file.LastModified || "-";
+                modifiedCell.textContent = file.Modified || "-";
                 row.appendChild(modifiedCell);
 
                 var actionCell = document.createElement("td");
@@ -455,10 +440,7 @@
 
                     openButton.addEventListener("click", function () {
                         resetSearch();
-
-                        var folderPath = file.RelativePath || file.Path || "";
-
-                        loadFiles(folderPath, 1);
+                        loadFiles(file.RelativePath, 1);
                     });
 
                     actionCell.appendChild(openButton);
@@ -495,10 +477,7 @@
             });
 
             if (fileCount) {
-                var startItem = totalItems === 0
-                    ? 0
-                    : ((currentPage - 1) * pageSize) + 1;
-
+                var startItem = ((currentPage - 1) * pageSize) + 1;
                 var endItem = Math.min(currentPage * pageSize, totalItems);
 
                 fileCount.textContent =
@@ -520,26 +499,14 @@
                 return;
             }
 
-            var previousItem = document.createElement("li");
-            previousItem.className = "page-item";
-
-            if (currentPage <= 1) {
-                previousItem.classList.add("disabled");
-            }
-
-            var previousLink = document.createElement("a");
-            previousLink.className = "page-link";
-            previousLink.href = "javascript:void(0)";
-            previousLink.textContent = "Previous";
-
-            previousLink.addEventListener("click", function () {
-                if (currentPage > 1) {
+            addPageControl(
+                pagination,
+                "Previous",
+                currentPage > 1,
+                function () {
                     loadFiles(currentPath, currentPage - 1);
                 }
-            });
-
-            previousItem.appendChild(previousLink);
-            pagination.appendChild(previousItem);
+            );
 
             var startPage = Math.max(1, currentPage - 2);
             var endPage = Math.min(totalPages, currentPage + 2);
@@ -564,26 +531,35 @@
                 addPageButton(pagination, totalPages);
             }
 
-            var nextItem = document.createElement("li");
-            nextItem.className = "page-item";
-
-            if (currentPage >= totalPages) {
-                nextItem.classList.add("disabled");
-            }
-
-            var nextLink = document.createElement("a");
-            nextLink.className = "page-link";
-            nextLink.href = "javascript:void(0)";
-            nextLink.textContent = "Next";
-
-            nextLink.addEventListener("click", function () {
-                if (currentPage < totalPages) {
+            addPageControl(
+                pagination,
+                "Next",
+                currentPage < totalPages,
+                function () {
                     loadFiles(currentPath, currentPage + 1);
                 }
-            });
+            );
+        }
 
-            nextItem.appendChild(nextLink);
-            pagination.appendChild(nextItem);
+        function addPageControl(container, label, enabled, callback) {
+            var item = document.createElement("li");
+            item.className = "page-item";
+
+            if (!enabled) {
+                item.classList.add("disabled");
+            }
+
+            var link = document.createElement("a");
+            link.className = "page-link";
+            link.href = "javascript:void(0)";
+            link.textContent = label;
+
+            if (enabled) {
+                link.addEventListener("click", callback);
+            }
+
+            item.appendChild(link);
+            container.appendChild(item);
         }
 
         function addPageButton(container, page) {
@@ -623,7 +599,6 @@
 
         function resetSearch() {
             currentSearch = "";
-
             clearTimeout(searchTimer);
 
             var searchInput = document.getElementById("txtSearchFile");
@@ -638,9 +613,7 @@
                 return "bi bi-folder-fill text-warning";
             }
 
-            var extension = (file.Extension || "").toLowerCase();
-
-            switch (extension) {
+            switch ((file.Extension || "").toLowerCase()) {
                 case ".pdf":
                     return "bi bi-file-earmark-pdf text-danger";
 
@@ -663,6 +636,7 @@
                 case ".gif":
                 case ".bmp":
                 case ".webp":
+                case ".svg":
                     return "bi bi-file-earmark-image text-info";
 
                 case ".txt":
@@ -684,9 +658,7 @@
                 return false;
             }
 
-            var extension = (file.Extension || "").toLowerCase();
-
-            var previewableExtensions = [
+            var extensions = [
                 ".pdf",
                 ".jpg",
                 ".jpeg",
@@ -694,28 +666,30 @@
                 ".gif",
                 ".bmp",
                 ".webp",
+                ".svg",
                 ".txt"
             ];
 
-            return previewableExtensions.indexOf(extension) !== -1;
+            return extensions.indexOf(
+                (file.Extension || "").toLowerCase()
+            ) !== -1;
         }
 
         function previewFile(file) {
-            if (!file || file.IsDirectory) {
+            if (!file || file.IsDirectory || !file.RelativePath) {
                 return;
             }
+
+            var previewUrl = fileRequestUrl +
+                "?action=view&path=" +
+                encodeURIComponent(file.RelativePath);
 
             var previewFrame = document.getElementById("previewFrame");
             var previewTitle = document.getElementById("previewTitle");
+            var modalElement = document.getElementById("filePreviewModal");
 
-            if (!previewFrame) {
-                return;
-            }
-
-            var fileUrl = file.Url || file.DownloadUrl || "";
-
-            if (!fileUrl) {
-                showFileMessage("Preview URL is not available.", true);
+            if (!previewFrame || !modalElement) {
+                window.open(previewUrl, "_blank");
                 return;
             }
 
@@ -723,11 +697,9 @@
                 previewTitle.textContent = file.Name || "File Preview";
             }
 
-            previewFrame.src = fileUrl;
+            previewFrame.src = previewUrl;
 
-            var modalElement = document.getElementById("filePreviewModal");
-
-            if (modalElement && window.bootstrap && bootstrap.Modal) {
+            if (window.bootstrap && bootstrap.Modal) {
                 var modal = bootstrap.Modal.getInstance(modalElement);
 
                 if (!modal) {
@@ -735,27 +707,24 @@
                 }
 
                 modal.show();
-            } else if (modalElement && window.jQuery && jQuery.fn.modal) {
+            } else if (window.jQuery && jQuery.fn.modal) {
                 jQuery(modalElement).modal("show");
             } else {
-                window.open(fileUrl, "_blank");
+                window.open(previewUrl, "_blank");
             }
         }
 
         function downloadFile(file) {
-            if (!file || file.IsDirectory) {
+            if (!file || file.IsDirectory || !file.RelativePath) {
+                showFileMessage("Invalid file path.", true);
                 return;
             }
 
-            var fileUrl = file.DownloadUrl || file.Url || "";
+            var downloadUrl = fileRequestUrl +
+                "?action=download&path=" +
+                encodeURIComponent(file.RelativePath);
 
-            if (!fileUrl) {
-                showFileMessage("Download URL is not available.", true);
-                console.error("File data:", file);
-                return;
-            }
-
-            window.location.href = fileUrl;
+            window.location.href = downloadUrl;
         }
 
         function formatBytes(bytes) {
