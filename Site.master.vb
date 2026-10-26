@@ -207,6 +207,7 @@ Partial Public Class SiteMaster
             liJob.Visible = False
             liPrice.Visible = False
             liDatabase.Visible = False
+            liManager.Visible = False
             liValidation.Visible = False
             liLog.Visible = False
 
@@ -229,6 +230,7 @@ Partial Public Class SiteMaster
                 liJob.Visible = True
                 liPrice.Visible = True
                 liDatabase.Visible = True
+                liManager.Visible = True
                 liValidation.Visible = True
                 liLog.Visible = True
             End If

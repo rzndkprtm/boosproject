@@ -1,154 +1,23 @@
-﻿Imports System.Data
-Imports System.IO
-Imports System.IO.Compression
+﻿Imports System.IO
+Imports System.Web.Services
+Imports System.Web.Script.Services
+Imports System.Globalization
 
 Partial Class Order_File
     Inherits Page
 
+    Private Shared ReadOnly RootFolder As String = "~/File/Order/"
+
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/order", False)
+            Response.Redirect("~/", False)
             Exit Sub
         End If
 
         If Not IsPostBack Then
-            MessageError(False, String.Empty)
-            BindFolder()
+            ' Initial page load.
         End If
-    End Sub
-
-    Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
-        BindFolder(txtSearch.Text)
-    End Sub
-
-    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
-        MessageError(False, String.Empty)
-        gvList.PageIndex = e.NewPageIndex
-        BindFolder(txtSearch.Text)
-    End Sub
-
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            If e.CommandName = "Detail" Then
-                MessageError(False, String.Empty)
-
-                Dim folderName As String = e.CommandArgument.ToString()
-                Dim thisScript As String = "window.onload = function() { showDetailFile(); };"
-                Try
-                    BindFiles(folderName)
-
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                Catch ex As Exception
-                    MessageError_DetailFile(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError_DetailFile(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                        If Session("RoleName") = "Customer" Then
-                            MessageError_DetailFile(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                        End If
-                    End If
-                    ClientScript.RegisterStartupScript(Me.GetType(), "showLog", thisScript, True)
-                End Try
-            ElseIf e.CommandName = "Zip" Then
-                Dim folderName As String = e.CommandArgument.ToString()
-                DownloadFolderAsZip(folderName)
-            End If
-        End If
-    End Sub
-
-    Protected Sub BindFolder(Optional search As String = "")
-        Try
-            Dim path As String = Server.MapPath("~/File/Order")
-            Dim dt As New DataTable
-            dt.Columns.Add("FolderName")
-            dt.Columns.Add("FileCount", GetType(Integer))
-
-            If Directory.Exists(path) Then
-                For Each dir As String In Directory.GetDirectories(path)
-                    Dim folderName As String = New DirectoryInfo(dir).Name
-                    Dim files = Directory.GetFiles(dir)
-
-                    If (String.IsNullOrEmpty(search) OrElse folderName.ToLower().Contains(search.ToLower())) AndAlso files.Length > 0 Then
-                        Dim row = dt.NewRow()
-                        row("FolderName") = folderName
-                        row("FileCount") = files.Length
-                        dt.Rows.Add(row)
-                    End If
-                Next
-            End If
-
-            gvList.DataSource = dt
-            gvList.DataBind()
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-        End Try
-    End Sub
-
-    Protected Sub BindFiles(folderName As String)
-        MessageError_DetailFile(False, String.Empty)
-        Try
-            Dim path As String = Server.MapPath("~/File/Order/" & folderName)
-
-            Dim dt As New DataTable
-            dt.Columns.Add("FolderName")
-            dt.Columns.Add("FileName")
-            dt.Columns.Add("FileUrl")
-
-            If Directory.Exists(path) Then
-                For Each file As String In Directory.GetFiles(path)
-                    Dim fileName = IO.Path.GetFileName(file)
-                    Dim row = dt.NewRow()
-
-                    row("FolderName") = folderName
-                    row("FileName") = fileName
-                    row("FileUrl") = ResolveUrl("~/File/Order/" & folderName & "/" & fileName)
-                    dt.Rows.Add(row)
-                Next
-            End If
-
-            gvListDetail.DataSource = dt
-            gvListDetail.DataBind()
-        Catch ex As Exception
-            MessageError_DetailFile(True, ex.ToString())
-        End Try
-    End Sub
-
-    Protected Sub DownloadFolderAsZip(folderName As String)
-        Dim folderPath As String = Server.MapPath("~/File/Order/" & folderName)
-
-        If Not Directory.Exists(folderPath) Then Exit Sub
-
-        Using ms As New MemoryStream()
-            Using zip As New ZipArchive(ms, ZipArchiveMode.Create, True)
-                For Each filePath In Directory.GetFiles(folderPath)
-                    Dim entryName As String = Path.GetFileName(filePath)
-
-                    Dim entry = zip.CreateEntry(entryName, CompressionLevel.Fastest)
-                    Using entryStream = entry.Open()
-                        Using fileStream As New FileStream(filePath, FileMode.Open, FileAccess.Read)
-                            fileStream.CopyTo(entryStream)
-                        End Using
-                    End Using
-                Next
-            End Using
-
-            Dim zipBytes As Byte() = ms.ToArray()
-
-            Response.Clear()
-            Response.ContentType = "application/zip"
-            Response.AddHeader("Content-Disposition", "attachment; filename=""" & folderName & ".zip""")
-            Response.BinaryWrite(zipBytes)
-            Response.Flush()
-            HttpContext.Current.ApplicationInstance.CompleteRequest()
-        End Using
-    End Sub
-
-    Protected Sub MessageError(visible As Boolean, message As String)
-        divError.Visible = visible : msgError.InnerText = message
-    End Sub
-
-    Protected Sub MessageError_DetailFile(visible As Boolean, message As String)
-        divErrorDetailFile.Visible = visible : msgErrorDetailFile.InnerText = message
     End Sub
 
     Protected Function LoginAccess(action As String) As Boolean
@@ -163,5 +32,206 @@ Partial Class Order_File
             HttpContext.Current.ApplicationInstance.CompleteRequest()
             Return False
         End Try
+    End Function
+
+    Public Class FileItem
+        Public Property Name As String
+        Public Property RelativePath As String
+        Public Property IsDirectory As Boolean
+        Public Property Extension As String
+        Public Property Size As Long
+        Public Property Modified As String
+    End Class
+
+    Public Class FileListResult
+        Public Property Success As Boolean
+        Public Property Message As String
+        Public Property CurrentPath As String
+        Public Property Files As List(Of FileItem)
+    End Class
+
+    Private Shared Function GetRootPhysicalPath() As String
+        Return Path.GetFullPath(HttpContext.Current.Server.MapPath(RootFolder))
+    End Function
+
+    Private Shared Function ResolveSafePath(relativePath As String) As String
+        Dim rootPath As String = GetRootPhysicalPath()
+        Dim normalizedRoot As String = Path.GetFullPath(rootPath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) & Path.DirectorySeparatorChar
+
+        If String.IsNullOrWhiteSpace(relativePath) Then
+            Return rootPath
+        End If
+
+        Dim normalizedRelative As String = relativePath.Replace("/"c, Path.DirectorySeparatorChar).Replace("\"c, Path.DirectorySeparatorChar)
+
+        If Path.IsPathRooted(normalizedRelative) Then
+            Throw New UnauthorizedAccessException("Invalid path.")
+        End If
+
+        Dim fullPath As String = Path.GetFullPath(Path.Combine(rootPath, normalizedRelative))
+
+        If Not fullPath.StartsWith(normalizedRoot, StringComparison.OrdinalIgnoreCase) AndAlso Not String.Equals(fullPath.TrimEnd(Path.DirectorySeparatorChar), rootPath.TrimEnd(Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase) Then
+            Throw New UnauthorizedAccessException("Access denied.")
+        End If
+
+        Return fullPath
+    End Function
+
+    Private Shared Function GetRelativePath(fullPath As String) As String
+        Dim rootPath As String = GetRootPhysicalPath().TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+        Dim normalizedFullPath As String = Path.GetFullPath(fullPath)
+
+        If String.Equals(normalizedFullPath, rootPath, StringComparison.OrdinalIgnoreCase) Then
+            Return String.Empty
+        End If
+
+        Return normalizedFullPath.Substring(rootPath.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).Replace("\"c, "/"c)
+    End Function
+
+    <WebMethod()>
+    <ScriptMethod(ResponseFormat:=ResponseFormat.Json)>
+    Public Shared Function GetFiles(path As String) As FileListResult
+        Dim result As New FileListResult With {
+            .Success = False,
+            .Message = String.Empty,
+            .CurrentPath = String.Empty,
+            .Files = New List(Of FileItem)()
+        }
+
+        Try
+            Dim physicalPath As String = ResolveSafePath(path)
+
+            If Not Directory.Exists(physicalPath) Then
+                result.Message = "The requested folder does not exist."
+                Return result
+            End If
+
+            result.CurrentPath = GetRelativePath(physicalPath)
+
+            For Each directoryPath As String In Directory.GetDirectories(physicalPath)
+                Dim directoryInfo As New DirectoryInfo(directoryPath)
+
+                result.Files.Add(New FileItem With {
+                    .Name = directoryInfo.Name,
+                    .RelativePath = GetRelativePath(directoryPath),
+                    .IsDirectory = True,
+                    .Extension = String.Empty,
+                    .Size = 0,
+                    .Modified = directoryInfo.LastWriteTime.ToString("dd MMM yyyy HH:mm", CultureInfo.InvariantCulture)
+                })
+            Next
+
+            For Each filePath As String In Directory.GetFiles(physicalPath)
+                Dim fileInfo As New FileInfo(filePath)
+
+                result.Files.Add(New FileItem With {
+                    .Name = fileInfo.Name,
+                    .RelativePath = GetRelativePath(filePath),
+                    .IsDirectory = False,
+                    .Extension = fileInfo.Extension,
+                    .Size = fileInfo.Length,
+                    .Modified = fileInfo.LastWriteTime.ToString("dd MMM yyyy HH:mm", CultureInfo.InvariantCulture)
+                })
+            Next
+
+            result.Success = True
+
+        Catch ex As UnauthorizedAccessException
+            result.Message = "You do not have permission to access this folder."
+        Catch ex As Exception
+            result.Message = "Unable to read the requested folder."
+        End Try
+
+        Return result
+    End Function
+
+    Protected Sub Page_PreRender(sender As Object, e As EventArgs) Handles Me.PreRender
+        ' No additional rendering required.
+    End Sub
+
+    Protected Overrides Sub Render(writer As HtmlTextWriter)
+        Dim action As String = Convert.ToString(Request.QueryString("action"))
+
+        If String.Equals(action, "download", StringComparison.OrdinalIgnoreCase) OrElse String.Equals(action, "view", StringComparison.OrdinalIgnoreCase) Then
+            ReturnFile(action)
+            Return
+        End If
+
+        MyBase.Render(writer)
+    End Sub
+
+    Private Sub ReturnFile(action As String)
+        Try
+            Dim relativePath As String = Convert.ToString(Request.QueryString("path"))
+            Dim physicalPath As String = ResolveSafePath(relativePath)
+
+            If Not File.Exists(physicalPath) Then
+                Response.StatusCode = 404
+                Response.TrySkipIisCustomErrors = True
+                Context.ApplicationInstance.CompleteRequest()
+                Return
+            End If
+
+            Dim fileInfo As New FileInfo(physicalPath)
+            Dim extension As String = fileInfo.Extension.ToLowerInvariant()
+
+            If action = "view" Then
+                Dim allowedExtensions As String() = {".pdf", ".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".svg", ".txt"}
+
+                If Not allowedExtensions.Contains(extension) Then
+                    Response.StatusCode = 403
+                    Response.TrySkipIisCustomErrors = True
+                    Context.ApplicationInstance.CompleteRequest()
+                    Return
+                End If
+
+                Response.Clear()
+                Response.ContentType = GetContentType(extension)
+                Response.AddHeader("Content-Disposition", "inline; filename=""" & fileInfo.Name.Replace("""", String.Empty) & """")
+                Response.AddHeader("X-Content-Type-Options", "nosniff")
+                Response.TransmitFile(physicalPath)
+                Context.ApplicationInstance.CompleteRequest()
+                Return
+            End If
+
+            Response.Clear()
+            Response.ContentType = "application/octet-stream"
+            Response.AddHeader("Content-Disposition", "attachment; filename=""" & fileInfo.Name.Replace("""", String.Empty) & """")
+            Response.AddHeader("Content-Length", fileInfo.Length.ToString(CultureInfo.InvariantCulture))
+            Response.TransmitFile(physicalPath)
+            Context.ApplicationInstance.CompleteRequest()
+
+        Catch ex As UnauthorizedAccessException
+            Response.StatusCode = 403
+            Response.TrySkipIisCustomErrors = True
+            Context.ApplicationInstance.CompleteRequest()
+        Catch ex As Exception
+            Response.StatusCode = 500
+            Response.TrySkipIisCustomErrors = True
+            Context.ApplicationInstance.CompleteRequest()
+        End Try
+    End Sub
+
+    Private Shared Function GetContentType(extension As String) As String
+        Select Case extension
+            Case ".pdf"
+                Return "application/pdf"
+            Case ".jpg", ".jpeg"
+                Return "image/jpeg"
+            Case ".png"
+                Return "image/png"
+            Case ".gif"
+                Return "image/gif"
+            Case ".webp"
+                Return "image/webp"
+            Case ".bmp"
+                Return "image/bmp"
+            Case ".svg"
+                Return "image/svg+xml"
+            Case ".txt"
+                Return "text/plain; charset=utf-8"
+            Case Else
+                Return "application/octet-stream"
+        End Select
     End Function
 End Class
