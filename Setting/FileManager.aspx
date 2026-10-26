@@ -1,6 +1,20 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="FileManager.aspx.vb" Inherits="Setting_FileManager" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="File Manager" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <style>
+        #tblFiles thead th { white-space: nowrap; font-size: 0.85rem; color: #607080; }
+        #tblFiles tbody td { font-size: 0.9rem; }
+        .file-name { display: flex; align-items: center; gap: 12px; min-width: 220px; }
+        .file-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; flex-shrink: 0; background: #f1f5f9; color: #607080; }
+        .file-icon.folder { background: #fff4d6; color: #d99b00; }
+        .file-name-link { color: #25396f; text-decoration: none; font-weight: 600; cursor: pointer; overflow-wrap: anywhere; }
+        .file-name-link:hover { color: #435ebe; text-decoration: underline; }
+        .file-subtitle { font-size: 0.75rem; color: #8994a3; margin-top: 2px; }
+        .file-actions { display: flex; justify-content: flex-end; gap: 5px; white-space: nowrap; }
+        #fileBreadcrumb .breadcrumb-item a { text-decoration: none; cursor: pointer; }
+        #fileBreadcrumb .breadcrumb-item a:hover { text-decoration: underline; }
+        #fileSearchEmpty { color: #8994a3; }
+    </style>
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -103,82 +117,6 @@
         </div>
     </div>
 
-    <style>
-        #tblFiles thead th {
-            white-space: nowrap;
-            font-size: 0.85rem;
-            color: #607080;
-        }
-
-        #tblFiles tbody td {
-            font-size: 0.9rem;
-        }
-
-        .file-name {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-width: 220px;
-        }
-
-        .file-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.35rem;
-            flex-shrink: 0;
-            background: #f1f5f9;
-            color: #607080;
-        }
-
-        .file-icon.folder {
-            background: #fff4d6;
-            color: #d99b00;
-        }
-
-        .file-name-link {
-            color: #25396f;
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
-            overflow-wrap: anywhere;
-        }
-
-        .file-name-link:hover {
-            color: #435ebe;
-            text-decoration: underline;
-        }
-
-        .file-subtitle {
-            font-size: 0.75rem;
-            color: #8994a3;
-            margin-top: 2px;
-        }
-
-        .file-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 5px;
-            white-space: nowrap;
-        }
-
-        #fileBreadcrumb .breadcrumb-item a {
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        #fileBreadcrumb .breadcrumb-item a:hover {
-            text-decoration: underline;
-        }
-
-        #fileSearchEmpty {
-            color: #8994a3;
-        }
-    </style>
-
     <script type="text/javascript">
         var currentPath = "";
         var allFiles = [];
@@ -228,57 +166,48 @@
 
             fetch(fileRequestUrl + "/GetFiles", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json; charset=utf-8"
-                },
+                headers: { "Content-Type": "application/json; charset=utf-8" },
                 body: JSON.stringify({
                     path: currentPath,
                     page: currentPage,
                     pageSize: pageSize,
                     search: currentSearch
                 })
-            })
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error("Failed to load files. HTTP " + response.status);
-                    }
+            }).then(function (response) {
+                if (!response.ok) {
+                    throw new Error("Failed to load files. HTTP " + response.status);
+                }
+                return response.json();
+            }).then(function (response) {
+                var result = response.d || response;
+                if (!result || result.Success === false) {
+                    throw new Error(
+                        result && result.Message ? result.Message : "Failed to load files."
+                    );
+                }
 
-                    return response.json();
-                })
-                .then(function (response) {
-                    var result = response.d || response;
+                currentPath = result.CurrentPath || "";
+                currentPage = result.CurrentPage || 1;
+                pageSize = result.PageSize || pageSize;
+                totalItems = result.TotalItems || 0;
+                totalPages = result.TotalPages || 0;
+                allFiles = result.Files || [];
 
-                    if (!result || result.Success === false) {
-                        throw new Error(
-                            result && result.Message
-                                ? result.Message
-                                : "Failed to load files."
-                        );
-                    }
+                renderBreadcrumb();
+                renderFiles();
+                renderPagination();
+                hideFileMessage();
+            }).catch(function (error) {
+                console.error("Error loading files:", error);
 
-                    currentPath = result.CurrentPath || "";
-                    currentPage = result.CurrentPage || 1;
-                    pageSize = result.PageSize || pageSize;
-                    totalItems = result.TotalItems || 0;
-                    totalPages = result.TotalPages || 0;
-                    allFiles = result.Files || [];
+                allFiles = [];
+                totalItems = 0;
+                totalPages = 0;
 
-                    renderBreadcrumb();
-                    renderFiles();
-                    renderPagination();
-                    hideFileMessage();
-                })
-                .catch(function (error) {
-                    console.error("Error loading files:", error);
-
-                    allFiles = [];
-                    totalItems = 0;
-                    totalPages = 0;
-
-                    renderFiles();
-                    renderPagination();
-                    showFileMessage(error.message || "Unable to load files.", true);
-                });
+                renderFiles();
+                renderPagination();
+                showFileMessage(error.message || "Unable to load files.", true);
+            });
         }
 
         function renderBreadcrumb() {

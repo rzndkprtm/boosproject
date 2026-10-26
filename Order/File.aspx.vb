@@ -16,7 +16,6 @@ Partial Class Order_File
         End If
 
         If Not IsPostBack Then
-            ' Initial page load.
         End If
     End Sub
 
