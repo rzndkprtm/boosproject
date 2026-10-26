@@ -129,14 +129,12 @@
                 if (el.choices) {
                     el.choices.destroy();
                 }
-                var isMultiple = el.multiple;
 
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',
                     shouldSort: false,
-                    searchResultLimit: 50,
-                    removeItemButton: isMultiple
+                    searchResultLimit: 50
                 });
             });
         }
