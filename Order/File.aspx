@@ -181,29 +181,97 @@
     <script type="text/javascript">
         var currentPath = "";
         var allFiles = [];
+        var currentPage = 1;
+        var pageSize = 100;
+        var totalItems = 0;
+        var totalPages = 0;
         var fileRequestUrl = '<%= ResolveUrl("~/Order/File.aspx") %>';
+        var isLoadingFiles = false;
 
         document.addEventListener("DOMContentLoaded", function () {
-            loadFiles("");
+            initializePagination();
+            loadFiles("", 1);
 
             document.getElementById("txtSearchFile").addEventListener("input", function () {
                 renderFiles();
             });
 
             var previewModal = document.getElementById("filePreviewModal");
-            previewModal.addEventListener("hidden.bs.modal", function () {
-                document.getElementById("previewFrame").src = "about:blank";
-            });
+
+            if (previewModal) {
+                previewModal.addEventListener("hidden.bs.modal", function () {
+                    document.getElementById("previewFrame").src = "about:blank";
+                });
+            }
         });
 
-        function loadFiles(path) {
+        function initializePagination() {
+            var fileCount = document.getElementById("fileCount");
+            var footer = fileCount ? fileCount.parentElement : null;
+
+            if (!footer) {
+                return;
+            }
+
+            var paginationContainer = document.getElementById("filePagination");
+
+            if (!paginationContainer) {
+                paginationContainer = document.createElement("div");
+                paginationContainer.id = "filePagination";
+                paginationContainer.className = "d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3";
+
+                paginationContainer.innerHTML =
+                    '<small id="paginationInfo" class="text-muted">Loading...</small>' +
+                    '<div class="d-flex align-items-center gap-2">' +
+                    '<button type="button" id="btnPreviousPage" class="btn btn-sm btn-outline-primary" disabled>' +
+                    '<i class="bi bi-chevron-left me-1"></i>Previous' +
+                    '</button>' +
+                    '<span id="paginationPage" class="small text-muted">Page 1 of 1</span>' +
+                    '<button type="button" id="btnNextPage" class="btn btn-sm btn-outline-primary" disabled>' +
+                    'Next<i class="bi bi-chevron-right ms-1"></i>' +
+                    '</button>' +
+                    '</div>';
+
+                footer.parentNode.insertBefore(paginationContainer, footer.nextSibling);
+            }
+
+            document.getElementById("btnPreviousPage").addEventListener("click", function () {
+                if (!isLoadingFiles && currentPage > 1) {
+                    loadFiles(currentPath, currentPage - 1);
+                }
+            });
+
+            document.getElementById("btnNextPage").addEventListener("click", function () {
+                if (!isLoadingFiles && currentPage < totalPages) {
+                    loadFiles(currentPath, currentPage + 1);
+                }
+            });
+        }
+
+        function loadFiles(path, page) {
+            if (isLoadingFiles) {
+                return;
+            }
+
             currentPath = path || "";
+            currentPage = Math.max(1, parseInt(page, 10) || 1);
+            isLoadingFiles = true;
 
             var tbody = document.getElementById("fileList");
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Loading files...</td></tr>';
+
+            tbody.innerHTML =
+                '<tr><td colspan="5" class="text-center py-4">' +
+                '<div class="spinner-border spinner-border-sm text-primary me-2"></div>' +
+                'Loading files...' +
+                '</td></tr>';
 
             document.getElementById("fileEmpty").classList.add("d-none");
             document.getElementById("fileCount").textContent = "Loading...";
+            document.getElementById("paginationInfo").textContent = "Loading...";
+            document.getElementById("paginationPage").textContent = "Loading...";
+            document.getElementById("btnPreviousPage").disabled = true;
+            document.getElementById("btnNextPage").disabled = true;
+
             hideFileMessage();
 
             fetch(fileRequestUrl + "/GetFiles", {
@@ -213,14 +281,15 @@
                 },
                 body: JSON.stringify({
                     path: currentPath,
-                    page: 1,
-                    pageSize: 100
+                    page: currentPage,
+                    pageSize: pageSize
                 })
             })
                 .then(function (response) {
                     if (!response.ok) {
-                        throw new Error("Unable to load files.");
+                        throw new Error("Unable to load files. HTTP " + response.status);
                     }
+
                     return response.json();
                 })
                 .then(function (result) {
@@ -228,25 +297,82 @@
 
                     if (!data || !data.Success) {
                         allFiles = [];
+                        totalItems = 0;
+                        totalPages = 0;
+
                         renderBreadcrumb();
                         renderFiles();
-                        showFileMessage(data ? data.Message : "Unable to load files.", "danger");
+                        updatePagination();
+
+                        showFileMessage(
+                            data && data.Message ? data.Message : "Unable to load files.",
+                            "danger"
+                        );
+
                         return;
                     }
 
                     currentPath = data.CurrentPath || "";
+                    currentPage = data.CurrentPage || 1;
+                    pageSize = data.PageSize || 100;
+                    totalItems = data.TotalItems || 0;
+                    totalPages = data.TotalPages || 0;
                     allFiles = data.Files || [];
 
                     renderBreadcrumb();
                     renderFiles();
+                    updatePagination();
                 })
                 .catch(function (error) {
                     allFiles = [];
+                    totalItems = 0;
+                    totalPages = 0;
+
                     document.getElementById("fileList").innerHTML = "";
                     document.getElementById("fileCount").textContent = "Unable to load files";
-                    showFileMessage("An error occurred while loading files. Please try again.", "danger");
-                    console.error(error);
+
+                    document.getElementById("paginationInfo").textContent = "";
+                    document.getElementById("paginationPage").textContent = "";
+                    document.getElementById("btnPreviousPage").disabled = true;
+                    document.getElementById("btnNextPage").disabled = true;
+
+                    document.getElementById("fileEmpty").classList.add("d-none");
+
+                    showFileMessage(
+                        "An error occurred while loading files. Please try again.",
+                        "danger"
+                    );
+
+                    console.error("GetFiles error:", error);
+                })
+                .finally(function () {
+                    isLoadingFiles = false;
+
+                    document.getElementById("btnPreviousPage").disabled =
+                        currentPage <= 1 || isLoadingFiles;
+
+                    document.getElementById("btnNextPage").disabled =
+                        currentPage >= totalPages || totalPages === 0 || isLoadingFiles;
                 });
+        }
+
+        function updatePagination() {
+            var startItem = totalItems === 0 ? 0 : ((currentPage - 1) * pageSize) + 1;
+            var endItem = Math.min(currentPage * pageSize, totalItems);
+
+            document.getElementById("paginationInfo").textContent =
+                totalItems === 0
+                    ? "No files or folders"
+                    : "Showing " + startItem + "–" + endItem + " of " + totalItems + " items";
+
+            document.getElementById("paginationPage").textContent =
+                "Page " + currentPage + " of " + Math.max(1, totalPages);
+
+            document.getElementById("btnPreviousPage").disabled =
+                currentPage <= 1 || isLoadingFiles;
+
+            document.getElementById("btnNextPage").disabled =
+                currentPage >= totalPages || totalPages === 0 || isLoadingFiles;
         }
 
         function renderBreadcrumb() {
@@ -259,9 +385,10 @@
             var rootLink = document.createElement("a");
             rootLink.href = "javascript:void(0)";
             rootLink.textContent = "File";
+
             rootLink.onclick = function () {
                 document.getElementById("txtSearchFile").value = "";
-                loadFiles("");
+                loadFiles("", 1);
             };
 
             root.appendChild(rootLink);
@@ -294,7 +421,7 @@
                     (function (targetPath) {
                         link.onclick = function () {
                             document.getElementById("txtSearchFile").value = "";
-                            loadFiles(targetPath);
+                            loadFiles(targetPath, 1);
                         };
                     })(accumulated);
 
@@ -312,26 +439,30 @@
             tbody.innerHTML = "";
 
             var filteredFiles = allFiles.filter(function (file) {
-                return !keyword || file.Name.toLowerCase().includes(keyword);
+                return !keyword || (file.Name || "").toLowerCase().includes(keyword);
             });
 
             filteredFiles.sort(function (a, b) {
                 if (a.IsDirectory !== b.IsDirectory) {
                     return a.IsDirectory ? -1 : 1;
                 }
-                return a.Name.localeCompare(b.Name);
+
+                return (a.Name || "").localeCompare(b.Name || "");
             });
 
             if (filteredFiles.length === 0) {
                 document.getElementById("fileEmpty").classList.remove("d-none");
+
                 document.getElementById("fileCount").textContent =
-                    keyword ? "No matching files or folders" : "0 items";
+                    keyword ? "No matching files or folders on this page" : "0 items on this page";
 
                 document.getElementById("fileEmpty").querySelector("h6").textContent =
-                    keyword ? "No matching files found" : "This folder is empty";
+                    keyword ? "No matching files found on this page" : "This folder is empty";
 
                 document.getElementById("fileEmpty").querySelector("p").textContent =
-                    keyword ? "Try a different search term." : "There are no files or folders to display.";
+                    keyword
+                        ? "Try another search term or navigate to another page."
+                        : "There are no files or folders to display.";
 
                 return;
             }
@@ -354,6 +485,7 @@
 
                 var nameInfo = document.createElement("div");
                 var nameLink = document.createElement("a");
+
                 nameLink.className = "file-name-link";
                 nameLink.href = "javascript:void(0)";
                 nameLink.textContent = file.Name;
@@ -361,7 +493,7 @@
                 if (file.IsDirectory) {
                     nameLink.onclick = function () {
                         document.getElementById("txtSearchFile").value = "";
-                        loadFiles(file.RelativePath);
+                        loadFiles(file.RelativePath, 1);
                     };
                 } else if (isPreviewable(file.Extension)) {
                     nameLink.onclick = function () {
@@ -385,7 +517,11 @@
 
                 // Type
                 var typeCell = document.createElement("td");
-                typeCell.textContent = file.IsDirectory ? "Folder" : (file.Extension ? file.Extension.toUpperCase().replace(".", "") + " File" : "File");
+                typeCell.textContent = file.IsDirectory
+                    ? "Folder"
+                    : (file.Extension
+                        ? file.Extension.toUpperCase().replace(".", "") + " File"
+                        : "File");
 
                 // Size
                 var sizeCell = document.createElement("td");
@@ -408,10 +544,12 @@
                     openButton.className = "btn btn-sm btn-light-primary";
                     openButton.title = "Open folder";
                     openButton.innerHTML = '<i class="bi bi-folder2-open"></i>';
+
                     openButton.onclick = function () {
                         document.getElementById("txtSearchFile").value = "";
-                        loadFiles(file.RelativePath);
+                        loadFiles(file.RelativePath, 1);
                     };
+
                     actions.appendChild(openButton);
                 } else {
                     if (isPreviewable(file.Extension)) {
@@ -420,9 +558,11 @@
                         previewButton.className = "btn btn-sm btn-light-primary";
                         previewButton.title = "Preview";
                         previewButton.innerHTML = '<i class="bi bi-eye"></i>';
+
                         previewButton.onclick = function () {
                             previewFile(file);
                         };
+
                         actions.appendChild(previewButton);
                     }
 
@@ -431,9 +571,11 @@
                     downloadButton.className = "btn btn-sm btn-light-success";
                     downloadButton.title = "Download";
                     downloadButton.innerHTML = '<i class="bi bi-download"></i>';
+
                     downloadButton.onclick = function () {
                         downloadFile(file.RelativePath);
                     };
+
                     actions.appendChild(downloadButton);
                 }
 
@@ -449,7 +591,8 @@
             });
 
             document.getElementById("fileCount").textContent =
-                filteredFiles.length + (filteredFiles.length === 1 ? " item" : " items");
+                filteredFiles.length + (filteredFiles.length === 1 ? " item" : " items") +
+                " on this page";
         }
 
         function getFileIcon(extension) {
@@ -487,11 +630,15 @@
         }
 
         function isPreviewable(extension) {
-            return [".pdf", ".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".svg", ".txt"].includes((extension || "").toLowerCase());
+            return [
+                ".pdf", ".jpg", ".jpeg", ".png", ".gif",
+                ".webp", ".bmp", ".svg", ".txt"
+            ].includes((extension || "").toLowerCase());
         }
 
         function previewFile(file) {
             document.getElementById("previewTitle").textContent = file.Name;
+
             document.getElementById("previewFrame").src =
                 fileRequestUrl + "?action=view&path=" + encodeURIComponent(file.RelativePath);
 
@@ -511,11 +658,17 @@
         }
 
         function formatBytes(bytes) {
-            if (!bytes || bytes <= 0) return "—";
+            if (!bytes || bytes <= 0) {
+                return "—";
+            }
+
             var units = ["B", "KB", "MB", "GB", "TB"];
             var index = Math.floor(Math.log(bytes) / Math.log(1024));
+
             index = Math.min(index, units.length - 1);
-            return (bytes / Math.pow(1024, index)).toFixed(index === 0 ? 0 : 2) + " " + units[index];
+
+            return (bytes / Math.pow(1024, index)).toFixed(index === 0 ? 0 : 2) +
+                " " + units[index];
         }
 
         function showFileMessage(message, type) {
