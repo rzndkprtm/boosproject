@@ -82,61 +82,61 @@ Partial Public Class SiteMaster
 
             Dim isPasswordPage As Boolean = path.StartsWith("/account/password")
             Dim isAccountPage As Boolean = path.StartsWith("/account/")
-            Dim isNonActivePage As Boolean = path.StartsWith("/boos/nonactive")
-            Dim isMaintenancePage As Boolean = path.StartsWith("/boos/maintenance")
+            Dim isNonActivePage As Boolean = path.StartsWith("/system/nonactive")
+            Dim isMaintenancePage As Boolean = path.StartsWith("/system/maintenance")
 
             If loginStatus = "Inactive" AndAlso Not isNonActivePage Then
-                Response.Redirect("~/boos/nonactive", False)
+                Response.Redirect("~/system/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
             If loginStatus = "Blocked" AndAlso Not isNonActivePage Then
-                Response.Redirect("~/boos/nonactive", False)
+                Response.Redirect("~/system/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
             If roleStatus = "Inactive" AndAlso Not isNonActivePage Then
-                Response.Redirect("~/boos/nonactive", False)
+                Response.Redirect("~/system/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
             If roleStatus = "Deleted" AndAlso Not isNonActivePage Then
-                Response.Redirect("~/boos/nonactive", False)
+                Response.Redirect("~/system/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
             If levelStatus = "Inactive" AndAlso Not isNonActivePage Then
-                Response.Redirect("~/boos/nonactive", False)
+                Response.Redirect("~/system/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
             If levelStatus = "Deleted" AndAlso Not isNonActivePage Then
-                Response.Redirect("~/boos/nonactive", False)
+                Response.Redirect("~/system/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
             If customerStatus = "Inactive" AndAlso Not isNonActivePage Then
-                Response.Redirect("~/boos/nonactive", False)
+                Response.Redirect("~/system/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
             If customerStatus = "Deleted" AndAlso Not isNonActivePage Then
-                Response.Redirect("~/boos/nonactive", False)
+                Response.Redirect("~/system/nonactive", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
 
             If companyStatus = "Inactive" AndAlso Not isMaintenancePage Then
-                Response.Redirect("~/boos/maintenance", False)
+                Response.Redirect("~/system/maintenance", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
             If companyStatus = "Deleted" AndAlso Not isMaintenancePage Then
-                Response.Redirect("~/boos/maintenance", False)
+                Response.Redirect("~/system/maintenance", False)
                 Context.ApplicationInstance.CompleteRequest()
                 Exit Sub
             End If
@@ -190,18 +190,19 @@ Partial Public Class SiteMaster
         Try
             liGuide.Visible = False
             liTicket.Visible = False
-            liExport.Visible = False
-            liReport.Visible = False
-            liJournal.Visible = False
-            liSales.Visible = False
             liStocks.Visible = False
+            liSpecs.Visible = False
+            liJournal.Visible = False
+            liReport.Visible = False
+            liSales.Visible = False
+            liExport.Visible = False
+
             liQuotation.Visible = False
 
             liSetting.Visible = False
             liDashboard.Visible = False
             liGeneral.Visible = False
             liLogin.Visible = False
-
             liCustomer.Visible = False
             liSpecification.Visible = False
             liJob.Visible = False
@@ -214,17 +215,17 @@ Partial Public Class SiteMaster
             If Session("RoleName") = "Developer" Then
                 liGuide.Visible = True
                 liTicket.Visible = True
-                liExport.Visible = True
-                liReport.Visible = True
-                liJournal.Visible = True
-                liSales.Visible = True
                 liStocks.Visible = True
+                liSpecs.Visible = True
+                liJournal.Visible = True
+                liReport.Visible = True
+                liSales.Visible = True
+                liExport.Visible = True
 
                 liSetting.Visible = True
                 liDashboard.Visible = True
                 liGeneral.Visible = True
                 liLogin.Visible = True
-
                 liCustomer.Visible = True
                 liSpecification.Visible = True
                 liJob.Visible = True
@@ -235,13 +236,14 @@ Partial Public Class SiteMaster
                 liLog.Visible = True
             End If
             If Session("RoleName") = "IT" Then
-                liExport.Visible = True
-                liReport.Visible = True
-                liJournal.Visible = True
-                liTicket.Visible = True
                 liGuide.Visible = True
-                liSales.Visible = True
+                liTicket.Visible = True
                 liStocks.Visible = True
+                liSpecs.Visible = True
+                liJournal.Visible = True
+                liReport.Visible = True
+                liSales.Visible = True
+                liExport.Visible = True
 
                 liSetting.Visible = True
                 liDashboard.Visible = True
@@ -252,16 +254,18 @@ Partial Public Class SiteMaster
                 liJob.Visible = True
                 liPrice.Visible = True
                 liDatabase.Visible = True
+                liManager.Visible = True
                 liValidation.Visible = True
                 liLog.Visible = True
             End If
             If Session("RoleName") = "Factory Office" Then
                 liGuide.Visible = True
-                liReport.Visible = True
-                liJournal.Visible = True
                 liTicket.Visible = True
-                liSales.Visible = True
                 liStocks.Visible = True
+                liSpecs.Visible = True
+                liJournal.Visible = True
+                liReport.Visible = True
+                liSales.Visible = True
 
                 liSetting.Visible = True
                 liDashboard.Visible = True
@@ -272,23 +276,17 @@ Partial Public Class SiteMaster
                 liJob.Visible = True
                 liPrice.Visible = True
                 liDatabase.Visible = True
+                liManager.Visible = True
+                liValidation.Visible = True
                 liLog.Visible = True
-            End If
-            If Session("RoleName") = "Account" Then
-                liSales.Visible = True
-                liTicket.Visible = True
-
-                liSetting.Visible = True
-                liCustomer.Visible = True
-                liPrice.Visible = True
             End If
             If Session("RoleName") = "Sales" Then
                 liGuide.Visible = True
-                liStocks.Visible = True
                 liTicket.Visible = True
-                liReport.Visible = True
+                liStocks.Visible = True
+                liSpecs.Visible = True
                 liJournal.Visible = True
-
+                liReport.Visible = True
                 liSetting.Visible = True
                 liCustomer.Visible = True
                 liPrice.Visible = True
@@ -296,14 +294,34 @@ Partial Public Class SiteMaster
                     liSales.Visible = True
                 End If
             End If
-            If Session("RoleName") = "Data Entry" Then
+            If Session("RoleName") = "Account" Then
+                liGuide.Visible = True
+                liTicket.Visible = True
+                liReport.Visible = True
+                liSales.Visible = True
+                liSetting.Visible = True
+                liCustomer.Visible = True
+                liPrice.Visible = True
+            End If
+            If Session("RoleName") = "Export" Then
+                liGuide.Visible = True
+                liTicket.Visible = True
                 liStocks.Visible = True
+                liReport.Visible = True
+            End If
+            If Session("RoleName") = "Data Entry" Then
+                liGuide.Visible = True
+                liTicket.Visible = True
+                liStocks.Visible = True
+                liStocks.Visible = True
+                liSpecs.Visible = True
                 liReport.Visible = True
             End If
             If Session("RoleName") = "Customer" Then
                 liGuide.Visible = True
-                liStocks.Visible = True
                 liTicket.Visible = True
+                liStocks.Visible = True
+                liSpecs.Visible = True
                 If Session("PriceAccess") = "Yes" Then
                     liQuotation.Visible = True
                 End If

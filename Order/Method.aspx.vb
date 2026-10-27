@@ -10040,8 +10040,13 @@ Partial Class Order_Method
         End If
         If data.subtype = "Single" AndAlso String.IsNullOrEmpty(data.tilterposition) Then Return "TILTER POSITION IS REQUIRED !"
 
-        If width > 250 And width < 310 AndAlso data.controlposition <> "No Control" Then
-
+        If width > 250 AndAlso width < 310 Then
+            If data.controlposition <> "N/A" Then
+                Return "THE CONTROL POSITION MUST BE SET TO N/A. PLEASE ALSO ENSURE THAT THE TILT POSITION IS SET TO CENTRE !"
+            End If
+            If data.tilterposition <> "Centre" Then
+                Return "THE TILTER POSITION MUST BE SET TO CENTRE. PLEASE ALSO ENSURE THAT THE CONTROL POSITION IS SET TO N/A !"
+            End If
         End If
 
         If width > 310 AndAlso width <= 410 AndAlso data.controlposition = data.tilterposition Then

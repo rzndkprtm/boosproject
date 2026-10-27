@@ -101,7 +101,7 @@
                                         <span>Stocks</span>
                                     </a>
                                 </li>
-                                <li class="menu-item">
+                                <li class="menu-item" runat="server" id="liSpecs">
                                     <a runat="server" href="~/specs" class='menu-link'>
                                         <i class="bi bi-box-seam"></i>
                                         <span>Specs</span>

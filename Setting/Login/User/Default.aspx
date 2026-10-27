@@ -98,6 +98,9 @@
                                                         <li runat="server" visible='<%# Eval("Status").ToString() = "Active" OrElse Eval("Status").ToString() = "Inactive" %>'>
                                                             <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPassword" onclick='<%# String.Format("return dataResetPassword(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Password</a>
                                                         </li>
+                                                        <li runat="server" visible='<%# Convert.ToInt32(Eval("ResetLogin") = 0) AndAlso (Eval("Status").ToString() = "Active" OrElse Eval("Status").ToString() = "Inactive") AndAlso LoginAccess("Reset Login") %>'>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPassword" onclick='<%# String.Format("return dataResetPassword(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Login</a>
+                                                        </li>
                                                         <li runat="server" visible='<%# Eval("Status").ToString() = "Active" OrElse Eval("Status").ToString() = "Inactive" %>'>
                                                             <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDencryptPassword" onclick='<%# String.Format("return dataDencryptPassword(`{0}`, `{1}`);", Eval("UserName").ToString(), DencryptPassword(Eval("Password").ToString())) %>'>Show Password</a>
                                                         </li>
@@ -350,6 +353,14 @@
             document.getElementById("<%=txtChangePasswordId.ClientID %>").value = id;
         }
         function dataResetPassword(id, username) {
+            let newPass = generateNewPassword(15);
+            let result = `Hi <b><%: Session("FullName") %></b>,<br />Are you sure you want to reset this account password?<br /><br /><b>USERNAME : ${username.toUpperCase()}</b><br /><b>USER ID : ${id.toUpperCase()}</b><br/><br />NEW PASSWORD : <br/><b>${newPass}</b>`;
+
+            document.getElementById("<%=txtResetPasswordId.ClientID %>").value = id;
+            document.getElementById("<%=txtResetPasswordNew.ClientID %>").value = newPass;
+            document.getElementById("spanResetPasswordDesc").innerHTML = result;
+        }
+        function dataResetLogin(id, username) {
             let newPass = generateNewPassword(15);
             let result = `Hi <b><%: Session("FullName") %></b>,<br />Are you sure you want to reset this account password?<br /><br /><b>USERNAME : ${username.toUpperCase()}</b><br /><b>USER ID : ${id.toUpperCase()}</b><br/><br />NEW PASSWORD : <br/><b>${newPass}</b>`;
 

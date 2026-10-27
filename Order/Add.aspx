@@ -35,7 +35,7 @@
                                         <div class="row mb-2" runat="server" id="divCustomer">
                                             <div class="col-12 form-group">
                                                 <label class="form-label">Customer Account</label>
-                                                <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
+                                                <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" data-search-limit="50" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
                                             </div>
                                         </div>
                                         <div class="row mb-2">
@@ -259,7 +259,8 @@
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',
-                    shouldSort: false
+                    shouldSort: false,
+                    searchResultLimit: 50
                 });
             });
         }

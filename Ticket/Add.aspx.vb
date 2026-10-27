@@ -10,7 +10,7 @@ Partial Class Ticket_Add
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
-            Response.Redirect("~/", False)
+            Response.Redirect("~/ticket", False)
             Exit Sub
         End If
 

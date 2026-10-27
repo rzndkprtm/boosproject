@@ -1,4 +1,4 @@
-﻿Partial Class Boos_500
+﻿Partial Class System_403
     Inherits Page
 
 End Class

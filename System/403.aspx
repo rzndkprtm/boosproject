@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="403.aspx.vb" Inherits="Boos_403" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="403" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="403.aspx.vb" Inherits="System_403" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="403" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-content">
