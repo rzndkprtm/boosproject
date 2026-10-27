@@ -41,6 +41,7 @@
                                                     <asp:ListItem Value="Approach" Text="Approach"></asp:ListItem>
                                                     <asp:ListItem Value="Site Inspection" Text="Site Inspection"></asp:ListItem>
                                                     <asp:ListItem Value="Check Measure" Text="Check Measure"></asp:ListItem>
+                                                    <asp:ListItem Value="Sample Drop Off" Text="Sample Drop Off"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
                                         </div>
