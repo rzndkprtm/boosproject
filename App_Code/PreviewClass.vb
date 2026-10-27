@@ -1202,7 +1202,7 @@ Public Class PreviewClass
 
                         Dim bottomType As String = GetItemData("SELECT Name FROM Bottoms WHERE Id='" & rollerData.Rows(i)("BottomType").ToString() & "'")
                         Dim bottomColour As String = GetItemData("SELECT Colour FROM BottomColours WHERE Id='" & rollerData.Rows(i)("BottomColour").ToString() & "'")
-                        If blindName = "Full Cassette" Then
+                        If blindName = "Single Side Channel" OrElse blindName = "Full Cassette" Then
                             bottomType = "Cassette" : bottomColour = "White"
                         End If
 

@@ -4693,7 +4693,7 @@ Partial Class Order_Method
         If String.IsNullOrEmpty(data.fabrictype) Then Return "FABRIC TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.fabriccolour) Then Return "FABRIC COLOUR IS REQUIRED !"
         If String.IsNullOrEmpty(data.roll) Then Return "ROLL DIRECTION IS REQUIRED !"
-        If blindName = "Single Blind" OrElse blindName = "Wire Guide" OrElse blindName = "Full Cassette" OrElse blindName = "Semi Cassette" OrElse blindName = "Dual Blinds" OrElse blindName = "Link 2 Blinds Dependent" OrElse blindName = "Link 3 Blinds Dependent" OrElse blindName = "Link 3 Blinds Independent with Dependent" OrElse blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" Then
+        If blindName = "Single Blind" OrElse blindName = "Single Side Channel" OrElse blindName = "Wire Guide" OrElse blindName = "Full Cassette" OrElse blindName = "Semi Cassette" OrElse blindName = "Dual Blinds" OrElse blindName = "Link 2 Blinds Dependent" OrElse blindName = "Link 3 Blinds Dependent" OrElse blindName = "Link 3 Blinds Independent with Dependent" OrElse blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" Then
             If String.IsNullOrEmpty(data.controlposition) Then
                 If blindName = "Link 3 Blinds Independent with Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" Then Return "INDEPENDENT POSITION IS REQUIRED !"
                 Return "CONTROL POSITION IS REQUIRED !"
@@ -4716,7 +4716,7 @@ Partial Class Order_Method
             End If
         End If
 
-        If Not blindName = "Full Cassette" AndAlso Not blindName = "Semi Cassette" Then
+        If Not blindName = "Single Side Channel" AndAlso Not blindName = "Full Cassette" AndAlso Not blindName = "Semi Cassette" Then
             If String.IsNullOrEmpty(data.bottomtype) Then Return "BOTTOM RAIL TYPE IS REQUIRED !"
             If blindName = "Wire Guide" Then
                 If bottomName <> "Flat" AndAlso bottomName <> "Flat Mohair" Then
@@ -5238,6 +5238,153 @@ Partial Class Order_Method
 
         ' REGULAR CRUD
         If blindName = "Single Blind" Then
+            data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
+            data.rollb = String.Empty : data.controlpositionb = String.Empty
+            data.bottomtypeb = String.Empty : data.bottomcolourb = String.Empty
+            data.bottomoptionb = String.Empty
+            widthb = 0 : dropb = 0
+
+            data.fabrictypec = String.Empty : data.fabriccolourc = String.Empty
+            data.rollc = String.Empty : data.controlpositionc = String.Empty
+            data.bottomtypec = String.Empty : data.bottomcolourc = String.Empty
+            data.bottomoptionc = String.Empty
+            widthc = 0 : dropc = 0
+
+            data.fabrictyped = String.Empty : data.fabriccolourd = String.Empty
+            data.rolld = String.Empty : data.controlpositiond = String.Empty
+            data.bottomtyped = String.Empty : data.bottomcolourd = String.Empty
+            data.bottomoptiond = String.Empty
+            widthd = 0 : dropd = 0
+
+            data.fabrictypee = String.Empty : data.fabriccoloure = String.Empty
+            data.rolle = String.Empty : data.controlpositione = String.Empty
+            data.bottomtypee = String.Empty : data.bottomcoloure = String.Empty
+            data.bottomoptione = String.Empty
+            widthe = 0 : drope = 0
+
+            data.fabrictypef = String.Empty : data.fabriccolourf = String.Empty
+            data.rollf = String.Empty : data.controlpositionf = String.Empty
+            data.bottomtypef = String.Empty : data.bottomcolourf = String.Empty
+            data.bottomoptionf = String.Empty
+            widthf = 0 : dropf = 0
+
+            data.printingb = String.Empty
+            data.printingc = String.Empty
+            data.printingd = String.Empty
+            data.printinge = String.Empty
+            data.printingf = String.Empty
+            data.printingg = String.Empty
+            data.printingh = String.Empty
+
+            If width > 1510 OrElse drop > 1510 Then
+                orderClass.DeleteFilePrinting(data.orderid, data.printing)
+                data.printing = String.Empty
+            End If
+
+            data.adjusting = String.Empty
+            If Not tubeName.Contains("Sunboss") Then
+                data.bracketsize = String.Empty
+            End If
+            If Not tubeName.Contains("Gear Reduction") Then
+                data.bracketextension = String.Empty
+            End If
+            If Not tubeName.Contains("Acmeda") Then
+                data.springassist = String.Empty
+            End If
+
+            If controlType = "Motorised" Then
+                data.chaincolour = data.remote
+                data.chainstopper = String.Empty
+                data.controllength = String.Empty
+                controllength = 0
+                data.springassist = String.Empty
+            End If
+
+            If controlName = "Chain" Then
+                If data.controllength = "Standard" Then
+                    Dim stdControlLength As Integer = Math.Ceiling(drop * 2 / 3)
+                    If chainLength = "Flexible" Then
+                        controllength = stdControlLength
+                        If tubeName.Contains("Gear Reduction") Then
+                            controllength = Math.Ceiling((drop * 3 / 4) + 80)
+
+                            If chainType = "Continuous" AndAlso data.chainstopper = "With Stopper" Then
+                                controllength = Math.Ceiling(drop * 0.9)
+                            End If
+                        End If
+                    End If
+
+                    If chainLength = "Static" Then
+                        controllength = 500
+                        If stdControlLength > 500 Then controllength = 750
+                        If stdControlLength > 750 Then controllength = 1000
+                        If stdControlLength > 1000 Then controllength = 1200
+                        If stdControlLength > 1200 Then controllength = 1500
+                    End If
+                End If
+            End If
+
+            If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" OrElse controlName = "Chain" Then
+                data.charger = String.Empty
+            End If
+
+            If Not controlName.Contains("Alpha") Then
+                data.extensioncable = String.Empty
+                data.supply = String.Empty
+            End If
+
+            If data.companyid = "2" Then data.drycontact = String.Empty
+            If controlName.Contains("Alpha") OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "Chain" Then
+                data.drycontact = String.Empty
+            End If
+
+            If Not (bottomName = "Flat" OrElse bottomName = "Flat Mohair") Then
+                data.bottomoption = String.Empty
+            End If
+            If bottomName = "Flat Mohair" Then data.bottomoption = "Fabric on Front"
+
+            linearMetre = width / 1000
+            squareMetre = width * drop / 1000000
+
+            Dim tubeIstilah As String = String.Empty
+            If data.companyid = "2" Then
+                tubeIstilah = String.Empty
+
+                If tubeName = "Standard" Then tubeIstilah = "Standard"
+                If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
+                If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+            End If
+
+            If data.companyid = "3" Then
+                If data.companydetailid = "5" OrElse data.companydetailid = "6" Then
+                    tubeIstilah = String.Empty
+                    If tubeName = "Gear Reduction 38mm" Then tubeIstilah = "Light"
+                    If tubeName = "Gear Reduction 45mm" Then tubeIstilah = "Standard"
+                    If tubeName = "Gear Reduction 49mm" Then tubeIstilah = "Heavy Duty"
+
+                    If data.customerid = "902" OrElse data.customerid = "953" Then tubeIstilah = "Light"
+                    groupFabric = orderClass.GetFabricGroupLocal("Roller", data.fabrictype)
+                End If
+                If data.companydetailid = "8" Then
+                    tubeIstilah = String.Empty
+
+                    If tubeName = "Standard" Then tubeIstilah = "Standard"
+                    If tubeName.Contains("Gear Reduction") Then tubeIstilah = "Gear Reduction"
+                    If tubeName.Contains("Sunboss") Then tubeIstilah = "Sunboss"
+                    If tubeName.Contains("Acmeda") Then tubeIstilah = "Acmeda"
+
+                    groupFabric = orderClass.GetFabricGroup(data.fabrictype)
+                End If
+            End If
+
+            Dim priceName As String = String.Format("{0} - {1} - {2}", designName, tubeIstilah, groupFabric)
+            priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
+        End If
+
+        If blindName = "Single Side Channel" Then
             data.fabrictypeb = String.Empty : data.fabriccolourb = String.Empty
             data.rollb = String.Empty : data.controlpositionb = String.Empty
             data.bottomtypeb = String.Empty : data.bottomcolourb = String.Empty

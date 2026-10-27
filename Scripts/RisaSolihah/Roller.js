@@ -2133,6 +2133,22 @@ function visibleDetail(blindType, tubeType, controlType, colourType) {
 
                 document.getElementById("roll").value = "Standard";
             }
+            else if (blindName === "Single Side Channel") {
+                divShow.push("divfabric", "divroll", "divcontrolposition", "divsize");
+
+                if (["Gear Reduction 38mm", "Gear Reduction 45mm", "Gear Reduction 49mm"].includes(tubeName)) {
+                    divShow.push("divbracketextension");
+
+                    if (companyName === "PT Bumi Indah Global") {
+                        divShow.push("divtoptrack");
+                    }
+                }
+
+                if (controlName === "Chain") {
+                    divShow.push("divchainstopper", "divcontrollength");
+                }
+                document.getElementById("roll").value = "Standard";
+            }
             else if (blindName === "Dual Blinds") {
                 divShow.push(
                     "divdbfront", "divdbback",

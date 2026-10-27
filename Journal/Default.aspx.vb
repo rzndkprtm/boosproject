@@ -1,6 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports System.Globalization
 
 Partial Class Journal_Default
     Inherits Page
@@ -17,11 +16,9 @@ Partial Class Journal_Default
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-
-            txtDate.Text = DateTime.Today.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
-
             BindSales()
-            BindData()
+            BindCustomer()
+            BindData(ddlSales.SelectedValue, ddlCustomer.SelectedValue, ddlDateFilter.SelectedValue)
         End If
     End Sub
 
@@ -32,25 +29,31 @@ Partial Class Journal_Default
     Protected Sub ddlSales_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ddlSales.SelectedIndexChanged
         gvList.PageIndex = 0
         MessageError(False, String.Empty)
-        BindData()
+        BindData(ddlSales.SelectedValue, ddlCustomer.SelectedValue, ddlDateFilter.SelectedValue)
     End Sub
 
-    Protected Sub txtDate_TextChanged(sender As Object, e As EventArgs) Handles txtDate.TextChanged
+    Protected Sub ddlCustomer_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
         MessageError(False, String.Empty)
-        BindData()
+        BindData(ddlSales.SelectedValue, ddlCustomer.SelectedValue, ddlDateFilter.SelectedValue)
+    End Sub
+
+    Protected Sub ddlDateFilter_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+        MessageError(False, String.Empty)
+        BindData(ddlSales.SelectedValue, ddlCustomer.SelectedValue, ddlDateFilter.SelectedValue)
     End Sub
 
     Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
         gvList.PageIndex = e.NewPageIndex
         MessageError(False, String.Empty)
-        BindData()
+        BindData(ddlSales.SelectedValue, ddlCustomer.SelectedValue, ddlDateFilter.SelectedValue)
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
         If e.CommandName = "Page" Then
             gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
-            BindData()
+            BindData(ddlSales.SelectedValue, ddlCustomer.SelectedValue, ddlDateFilter.SelectedValue)
         End If
     End Sub
 
@@ -83,25 +86,14 @@ Partial Class Journal_Default
         End Try
     End Sub
 
-    Protected Sub BindData()
+    Protected Sub BindData(salesId As String, customerId As String, dateFilter As String)
         Try
-            Dim params As New List(Of SqlParameter)
-
-            Dim createdBy As Integer
-            If Integer.TryParse(ddlSales.SelectedValue, createdBy) Then
-                params.Add(New SqlParameter("@CreatedBy", SqlDbType.Int) With {.Value = createdBy})
-            Else
-                params.Add(New SqlParameter("@CreatedBy", SqlDbType.Int) With {.Value = DBNull.Value})
-            End If
-
-            Dim selectedDate As DateTime
-            If DateTime.TryParseExact(txtDate.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, selectedDate) Then
-                params.Add(New SqlParameter("@CreatedDate", SqlDbType.Date) With {.Value = selectedDate.Date})
-            Else
-                params.Add(New SqlParameter("@CreatedDate", SqlDbType.Date) With {.Value = DBNull.Value})
-            End If
-
-            params.Add(New SqlParameter("@RoleName", SqlDbType.NVarChar, 50) With {.Value = If(Session("RoleName") IsNot Nothing, Session("RoleName").ToString(), "")})
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@CreatedBy", If(String.IsNullOrEmpty(salesId), CType(DBNull.Value, Object), salesId)),
+                New SqlParameter("@CustomerData", If(String.IsNullOrEmpty(customerId), CType(DBNull.Value, Object), customerId)),
+                New SqlParameter("@DateFilter", dateFilter),
+                New SqlParameter("@RoleName", Session("RoleName").ToString())
+            }
 
             gvList.DataSource = settingClass.GetDataTableSP("sp_Journals_List", params)
             gvList.DataBind()
@@ -141,6 +133,22 @@ Partial Class Journal_Default
             End If
         Catch ex As Exception
             ddlSales.Items.Clear()
+        End Try
+    End Sub
+
+    Protected Sub BindCustomer()
+        ddlCustomer.Items.Clear()
+        Try
+            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE CompanyId=2 ORDER BY Id ASC")
+            ddlCustomer.DataTextField = "Name"
+            ddlCustomer.DataValueField = "Id"
+            ddlCustomer.DataBind()
+
+            If ddlCustomer.Items.Count > 0 Then
+                ddlCustomer.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlCustomer.Items.Clear()
         End Try
     End Sub
 

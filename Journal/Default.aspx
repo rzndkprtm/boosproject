@@ -28,30 +28,58 @@
             </div>
         </section>
         <section class="row mb-3">
-            <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
+            <div class="col-12 d-flex justify-content-end">
+                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary px-4" Text="Add New" OnClick="btnAdd_Click" />
             </div>
         </section>
-        <section class="row">
-            <div class="col-12">
-                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
-                    <ContentTemplate>
-                        <div class="card">
-                            <div class="card-header">
-                                <div class="row align-items-center">
-                                    <div class="col-12 col-sm-12 col-lg-8 mb-2 mb-lg-0">
-                                        <h5 class="card-title">List Journal</h5>
+        <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+                <section class="row">
+                    <div class="col-12">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="rounded bg-light-primary p-2 me-3">
+                                        <i class="bi bi-funnel text-primary fs-5"></i>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-4">
-                                        <div class="row g-2">
-                                            <div class="col-12 col-md-7">
-                                                <asp:DropDownList runat="server" ID="ddlSales" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlSales_SelectedIndexChanged"></asp:DropDownList>
-                                            </div>
-                                            <div class="col-12 col-md-5">
-                                                <asp:TextBox runat="server" ID="txtDate" CssClass="form-control" TextMode="Date" AutoPostBack="true" OnTextChanged="txtDate_TextChanged" onkeydown="return false;" onpaste="return false;" ondrop="return false;"></asp:TextBox>
-                                            </div>
-                                        </div>
+                                    <div>
+                                        <h5 class="mb-1">Filter Journals</h5>
+                                        <small class="text-muted">Filter journal records by sales, customer, and date.</small>
                                     </div>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-12 col-md-4">
+                                        <label for="<%= ddlSales.ClientID %>" class="form-label fw-semibold">Sales</label>
+                                        <asp:DropDownList runat="server" ID="ddlSales" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlSales_SelectedIndexChanged"></asp:DropDownList>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label for="<%= ddlCustomer.ClientID %>" class="form-label fw-semibold">Customer</label>
+                                        <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" data-search-limit="50" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
+                                    </div>
+                                    <div class="col-12 col-md-2">
+                                        <label for="<%= ddlDateFilter.ClientID %>" class="form-label fw-semibold">Date Range</label>
+                                        <asp:DropDownList runat="server" ID="ddlDateFilter" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDateFilter_SelectedIndexChanged">
+                                            <asp:ListItem Text="Today" Value="Today"></asp:ListItem>
+                                            <asp:ListItem Text="All" Value="All"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="row">
+                    <div class="col-12">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-header bg-white py-3">
+                                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                                    <div>
+                                        <h5 class="card-title mb-1">List Journal</h5>
+                                        <small class="text-muted">View and manage journal records.</small>
+                                    </div>
+                                    <span class="badge bg-light-primary text-primary px-3 py-2">
+                                        Journal Records
+                                    </span>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -65,6 +93,7 @@
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                             <asp:BoundField DataField="CreatedByFull" HeaderText="Created By" />
+                                            <asp:BoundField DataField="CreatedDate" HeaderText="Created Date" DataFormatString="{0:dd MMM yyyy}" />
                                             <asp:BoundField DataField="Activity" HeaderText="Activity" />
                                             <asp:BoundField DataField="CustomerName" HeaderText="Customer Name" />
                                             <asp:TemplateField HeaderText="Description" ItemStyle-Width="550px">
@@ -93,8 +122,21 @@
                                     </asp:GridView>
                                 </div>
                                 <div class="d-flex justify-content-end mt-3">
-                                    <nav id="navPager" runat="server" visible="false">
+                                    <nav id="nav1" runat="server" visible="false">
                                         <ul class="pagination pagination mb-0">
+                                            <asp:Repeater ID="Repeater1" runat="server" OnItemCommand="rptPager_ItemCommand">
+                                                <ItemTemplate>
+                                                    <li class='page-item <%# Eval("CssClass") %>'>
+                                                        <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                                                    </li>
+                                                </ItemTemplate>
+                                            </asp:Repeater>
+                                        </ul>
+                                    </nav>
+                                </div>
+                                <div class="d-flex justify-content-end mt-3">
+                                    <nav id="navPager" runat="server" visible="false">
+                                        <ul class="pagination mb-0">
                                             <asp:Repeater ID="rptPager" runat="server" OnItemCommand="rptPager_ItemCommand">
                                                 <ItemTemplate>
                                                     <li class='page-item <%# Eval("CssClass") %>'>
@@ -107,10 +149,10 @@
                                 </div>
                             </div>
                         </div>
-                    </ContentTemplate>
-                </asp:UpdatePanel>
-            </div>
-        </section>
+                    </div>
+                </section>
+            </ContentTemplate>
+        </asp:UpdatePanel>
     </div>
 
     <div class="modal fade text-center" id="modalWaiting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -193,44 +235,39 @@
         });
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") return;
-
             var prm = Sys.WebForms.PageRequestManager.getInstance();
-
             prm.add_beginRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "block";
             });
-
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) loading.style.display = "none";
-                bindDatePicker();
+                initChoices();
             });
         }
-        function showDescription(description) {
-            document.getElementById("fullDescription").textContent = description || "-";
-            $("#modalDescription").modal("show");
-        }
-        function bindDatePicker() {
-            const dateInput = document.getElementById('<%= txtDate.ClientID %>');
-            if (!dateInput || dateInput.dataset.bound === "true") return;
+        function initChoices() {
+            document.querySelectorAll("select.choices").forEach(function (el) {
+                if (el.choices) {
+                    el.choices.destroy();
+                }
 
-            dateInput.dataset.bound = "true";
-
-            dateInput.addEventListener("keydown", function (e) {
-                e.preventDefault();
-            });
-            dateInput.addEventListener("paste", function (e) {
-                e.preventDefault();
-            });
-            dateInput.addEventListener("drop", function (e) {
-                e.preventDefault();
+                el.choices = new Choices(el, {
+                    searchEnabled: true,
+                    itemSelectText: '',
+                    shouldSort: false,
+                    searchResultLimit: 50
+                });
             });
         }
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
-            bindDatePicker();
+            initChoices();
         });
+        function showDescription(description) {
+            document.getElementById("fullDescription").textContent = description || "-";
+            $("#modalDescription").modal("show");
+        }
         function dataDelete(id) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
         }
