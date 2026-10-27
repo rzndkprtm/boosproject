@@ -1615,18 +1615,13 @@ Partial Class Order_Upload
                                         If panelStyle = "Classic" Then tubeName = "Plain (PG)"
                                         If panelStyle = "Aluminium" Then tubeName = "Sewless (PG)"
                                         If panelStyle = "Timber" Then tubeName = "Plantation (PG)"
+                                        If panelStyle = "Sewless" Then tubeName = "Sewless (PG)"
 
                                         Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Alias='" & tubeName & "'")
-
-                                        MessageError(True, "SELECT Id FROM ProductTubes WHERE Alias='" & tubeName & "'")
-                                        Exit For
-
                                         If String.IsNullOrEmpty(tubeId) Then
                                             MessageError(True, "PLEASE CHECK YOUR PANEL STYLE !")
                                             Exit For
                                         End If
-
-
 
                                         Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & trackColour & "'")
                                         If String.IsNullOrEmpty(colourId) Then
