@@ -1653,9 +1653,7 @@ Partial Class Order_Upload
                                             Exit For
                                         End If
 
-                                        Dim fabricId As String = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND (Status='In Stock' OR Status='Limited Stock')")
-                                        MessageError(True, "SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND (Status='In Stock' OR Status='Limited Stock')")
-                                        Exit For
+                                        Dim fabricId As String = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
                                         If String.IsNullOrEmpty(fabricId) Then
                                             MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID ! [FABRIC TYPE]")
                                             Exit For
@@ -1665,6 +1663,7 @@ Partial Class Order_Upload
                                             MessageError(True, "FABRIC COLOUR IS REQUIRED !")
                                             Exit For
                                         End If
+
                                         Dim fabricColourId As String = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "' AND (Status='In Stock' OR Status='Limited Stock')")
                                         If String.IsNullOrEmpty(fabricColourId) Then
                                             MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID ! [FABRIC COLOUR]")
