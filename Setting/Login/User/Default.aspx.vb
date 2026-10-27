@@ -226,6 +226,32 @@ Partial Class Setting_Login_User_Default
         End Try
     End Sub
 
+    Protected Sub btnResetLogin_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtResetLoginId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET ResetLogin=1, Status='Active' WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"Logins", thisId, Session("LoginId").ToString(), "Reset Login"}
+            settingClass.Logs(dataLog)
+
+            Session("SearchLoginUser") = txtSearch.Text
+            Response.Redirect("~/setting/login/user", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindData(searchText As String)
         Session("SearchLoginUser") = String.Empty
         Try

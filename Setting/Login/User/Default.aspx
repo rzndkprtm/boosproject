@@ -99,7 +99,7 @@
                                                             <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPassword" onclick='<%# String.Format("return dataResetPassword(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Password</a>
                                                         </li>
                                                         <li runat="server" visible='<%# Convert.ToInt32(Eval("ResetLogin") = 0) AndAlso (Eval("Status").ToString() = "Active" OrElse Eval("Status").ToString() = "Inactive") AndAlso LoginAccess("Reset Login") %>'>
-                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetPassword" onclick='<%# String.Format("return dataResetPassword(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Login</a>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalResetLogin" onclick='<%# String.Format("return dataResetLogin(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("UserName").ToString()) %>'>Reset Login</a>
                                                         </li>
                                                         <li runat="server" visible='<%# Eval("Status").ToString() = "Active" OrElse Eval("Status").ToString() = "Inactive" %>'>
                                                             <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDencryptPassword" onclick='<%# String.Format("return dataDencryptPassword(`{0}`, `{1}`);", Eval("UserName").ToString(), DencryptPassword(Eval("Password").ToString())) %>'>Show Password</a>
@@ -240,6 +240,23 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modalResetLogin" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Reset Login</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtResetLoginId" style="display:none;"></asp:TextBox>
+                    <span id="spanResetLoginDesc"></span>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnResetLogin" CssClass="btn btn-info" Text="Confirm" OnClick="btnResetLogin_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalDencryptPassword" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -361,12 +378,10 @@
             document.getElementById("spanResetPasswordDesc").innerHTML = result;
         }
         function dataResetLogin(id, username) {
-            let newPass = generateNewPassword(15);
-            let result = `Hi <b><%: Session("FullName") %></b>,<br />Are you sure you want to reset this account password?<br /><br /><b>USERNAME : ${username.toUpperCase()}</b><br /><b>USER ID : ${id.toUpperCase()}</b><br/><br />NEW PASSWORD : <br/><b>${newPass}</b>`;
+            let result = `Hi <b><%: Session("FullName") %></b>,<br />Are you sure you want to reset this account login?<br /><br /><b>USERNAME : ${username.toUpperCase()}</b><br /><b>USER ID : ${id.toUpperCase()}</b><br/>`;
 
-            document.getElementById("<%=txtResetPasswordId.ClientID %>").value = id;
-            document.getElementById("<%=txtResetPasswordNew.ClientID %>").value = newPass;
-            document.getElementById("spanResetPasswordDesc").innerHTML = result;
+            document.getElementById("<%=txtResetLoginId.ClientID %>").value = id;
+            document.getElementById("spanResetLoginDesc").innerHTML = result;
         }
         function generateNewPassword(length) {
             const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -421,7 +436,7 @@
                 }
             });
         }
-        ["modalStatus", "modalDelete", "modalSend", "modalChangePassword", "modalResetPassword", "modalDencryptPassword", "modalLog"].forEach(function (id) {
+        ["modalStatus", "modalDelete", "modalSend", "modalChangePassword", "modalResetPassword", "modalResetLogin", "modalDencryptPassword", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

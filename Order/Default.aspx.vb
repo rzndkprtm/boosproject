@@ -804,7 +804,6 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
                 ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
             End If
-
             If Session("RoleName") = "IT" Then
                 ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
                 ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
@@ -820,7 +819,6 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
                 ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
             End If
-
             If Session("RoleName") = "Factory Office" Then
                 ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
                 ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
@@ -836,7 +834,6 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
                 ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
             End If
-
             If Session("RoleName") = "Sales" Then
                 ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
                 ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
@@ -852,7 +849,6 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
                 ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
             End If
-
             If Session("RoleName") = "Account" Then
                 ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
                 ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
@@ -867,7 +863,6 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
                 ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
             End If
-
             If Session("RoleName") = "Data Entry" Then
                 ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
                 ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
@@ -880,7 +875,6 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
                 ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
             End If
-
             If Session("RoleName") = "Export" Then
                 ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
@@ -888,7 +882,6 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Completed", "Completed"))
                 ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
             End If
-
             If Session("RoleName") = "Customer" Then
                 ddlStatus.Items.Add(New ListItem("Unsubmitted", "Unsubmitted"))
                 ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
@@ -911,9 +904,12 @@ Partial Class Order_Default
                     ddlStatus.Items.Add(New ListItem("Canceled", "Canceled"))
                 End If
             End If
-
             If Session("RoleName") = "Installer" Then
                 ddlStatus.Items.Add(New ListItem("Quoted", "Quoted"))
+                ddlStatus.Items.Add(New ListItem("Waiting Proforma", "Waiting Proforma"))
+                ddlStatus.Items.Add(New ListItem("Proforma Sent", "Proforma Sent"))
+                ddlStatus.Items.Add(New ListItem("Payment Received", "Payment Received"))
+                ddlStatus.Items.Add(New ListItem("Pending Payment", "Pending Payment"))
                 ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
                 ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
