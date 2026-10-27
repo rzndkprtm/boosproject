@@ -53,7 +53,7 @@
                                         <asp:DropDownList runat="server" ID="ddlSales" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlSales_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
                                     <div class="col-12 col-md-6">
-                                        <label for="<%= ddlCustomer.ClientID %>" class="form-label fw-semibold">Customer</label>
+                                        <label for="<%= ddlCustomer.ClientID %>" class="form-label fw-semibold">Existing Customer</label>
                                         <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" data-search-limit="50" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
                                     <div class="col-12 col-md-2">
