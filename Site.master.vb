@@ -267,18 +267,20 @@ Partial Public Class SiteMaster
                 liReport.Visible = True
                 liSales.Visible = True
 
-                liSetting.Visible = True
-                liDashboard.Visible = True
-                liGeneral.Visible = True
-                liLogin.Visible = True
-                liCustomer.Visible = True
-                liSpecification.Visible = True
-                liJob.Visible = True
-                liPrice.Visible = True
-                liDatabase.Visible = True
-                liManager.Visible = True
-                liValidation.Visible = True
-                liLog.Visible = True
+                If Session("RoleName") = "Leader" OrElse Session("RoleName") = "Member" Then
+                    liSetting.Visible = True
+                    liDashboard.Visible = True
+                    liGeneral.Visible = True
+                    liLogin.Visible = True
+                    liCustomer.Visible = True
+                    liSpecification.Visible = True
+                    liJob.Visible = True
+                    liPrice.Visible = True
+                    liDatabase.Visible = True
+                    liManager.Visible = True
+                    liValidation.Visible = True
+                    liLog.Visible = True
+                End If
             End If
             If Session("RoleName") = "Sales" Then
                 liGuide.Visible = True
