@@ -2772,220 +2772,243 @@ Partial Class Order_Detail
                 aDuplicateOrder.Visible = True
                 aFile.Visible = True
                 aLog.Visible = True
-                If lblCompanyId.Text = "3" Then btnSuratJalan.Visible = True
-                If lblOrderType.Text = "Builder" Then aBuilderData.Visible = True
+
+                If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
+                    If lblCompanyId.Text = "3" Then btnSuratJalan.Visible = True
+                    If lblOrderType.Text = "Builder" Then aBuilderData.Visible = True
+                End If
+
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
-                    aSubmitOrder.Visible = True : chkSendEmail.Visible = True
-                    If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
+                    If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
+                        aSubmitOrder.Visible = True : chkSendEmail.Visible = True
+                        If lblOrderType.Text = "Builder" Then aQuoteOrder.Visible = True
 
-                    btnEditOrder.Visible = True
-                    aDeleteOrder.Visible = True
-                    aRePrice.Visible = True
+                        btnEditOrder.Visible = True
+                        aDeleteOrder.Visible = True
+                        aRePrice.Visible = True
 
-                    btnQuoteAction.Visible = True
-                    aSendQuote.Visible = True
-
+                        btnQuoteAction.Visible = True
+                        aSendQuote.Visible = True
+                    End If
                     aAddProduct.Visible = True
                     aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Quoted" Then
-                    btnEditOrder.Visible = True
-                    aSubmitOrder.Visible = True
-                    aRePrice.Visible = True
+                    If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
+                        btnEditOrder.Visible = True
+                        aSubmitOrder.Visible = True
+                        aRePrice.Visible = True
 
-                    btnQuoteAction.Visible = True
-                    aSendQuote.Visible = True
-
+                        btnQuoteAction.Visible = True
+                        aSendQuote.Visible = True
+                    End If
                     aAddProduct.Visible = True
                     aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Waiting Proforma" Then
-                    btnEditOrder.Visible = True
-                    aRePrice.Visible = True
+                    If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
+                        btnEditOrder.Visible = True
+                        aRePrice.Visible = True
 
-                    btnUpdateStatus.Visible = True
-                    aUnsubmitOrder.Visible = True
-                    aCancelOrder.Visible = True
-                    aNewOrder.Visible = True
+                        btnUpdateStatus.Visible = True
+                        aUnsubmitOrder.Visible = True
+                        aCancelOrder.Visible = True
+                        aNewOrder.Visible = True
 
-                    btnInvoice.Visible = True
-                    aSendInvoice.Visible = True
-
+                        btnInvoice.Visible = True
+                        aSendInvoice.Visible = True
+                    End If
                     aAddProduct.Visible = True
                     aAddPart.Visible = True
                     aAddService.Visible = True
                 End If
                 If lblOrderStatus.Text = "Proforma Sent" Then
-                    btnEditOrder.Visible = True
-                    aRePrice.Visible = True
+                    If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
+                        btnEditOrder.Visible = True
+                        aRePrice.Visible = True
 
-                    btnUpdateStatus.Visible = True
-                    aUnsubmitOrder.Visible = True
-                    aCancelOrder.Visible = True
-
+                        btnUpdateStatus.Visible = True
+                        aUnsubmitOrder.Visible = True
+                        aCancelOrder.Visible = True
+                    End If
                     btnInvoice.Visible = True
                     aSendInvoice.Visible = True
                     aReceivePayment.Visible = True
                 End If
                 If lblOrderStatus.Text = "Pending Payment" Then
-                    btnEditOrder.Visible = True
-                    aRePrice.Visible = True
+                    If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
+                        btnEditOrder.Visible = True
+                        aRePrice.Visible = True
 
-                    btnUpdateStatus.Visible = True
-                    aUnsubmitOrder.Visible = True
-                    aCancelOrder.Visible = True
+                        btnUpdateStatus.Visible = True
+                        aUnsubmitOrder.Visible = True
+                        aCancelOrder.Visible = True
 
-                    btnInvoice.Visible = True
-                    aSendInvoice.Visible = True
-                    aReceivePayment.Visible = True
+                        btnInvoice.Visible = True
+                        aSendInvoice.Visible = True
+                        aReceivePayment.Visible = True
+                    End If
                 End If
                 If lblOrderStatus.Text = "Payment Received" Then
-                    btnEditOrder.Visible = True
+                    If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
+                        btnEditOrder.Visible = True
 
-                    btnUpdateStatus.Visible = True
-                    aProductionOrder.Visible = True
+                        btnUpdateStatus.Visible = True
+                        aProductionOrder.Visible = True
 
-                    btnInvoice.Visible = True
-                    liDividerInvoice.Visible = True
-                    aUpdateInvoiceData.Visible = True
+                        btnInvoice.Visible = True
+                        liDividerInvoice.Visible = True
+                        aUpdateInvoiceData.Visible = True
+                    End If
+
                 End If
                 If lblOrderStatus.Text = "New Order" Then
-                    btnEditOrder.Visible = True
+                    If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
+                        btnEditOrder.Visible = True
 
-                    btnUpdateStatus.Visible = True
-                    aCancelOrder.Visible = True
-                    aHoldOrder.Visible = True
-                    aUnsubmitOrder.Visible = True
-                    aProductionOrder.Visible = True
+                        btnUpdateStatus.Visible = True
+                        aCancelOrder.Visible = True
+                        aHoldOrder.Visible = True
+                        aUnsubmitOrder.Visible = True
+                        aProductionOrder.Visible = True
 
-                    btnInvoice.Visible = True
-                    liDividerInvoice.Visible = True
-                    aUpdateInvoiceData.Visible = True
+                        btnInvoice.Visible = True
+                        liDividerInvoice.Visible = True
+                        aUpdateInvoiceData.Visible = True
 
-                    btnJob.Visible = True
-                    If convertedStatus = "Yes" Then
-                        aDataJob.Visible = True
-                        aReConvertJob.Visible = True
-                        aUpdateJob.Visible = True
-                        btnPreviewJob.Visible = True
-                        btnDownloadJob.Visible = True
-                    End If
-                    If convertedStatus = "No" Then
-                        aConvertOrder.Visible = True
-                    End If
+                        btnJob.Visible = True
+                        If convertedStatus = "Yes" Then
+                            aDataJob.Visible = True
+                            aReConvertJob.Visible = True
+                            aUpdateJob.Visible = True
+                            btnPreviewJob.Visible = True
+                            btnDownloadJob.Visible = True
+                        End If
+                        If convertedStatus = "No" Then
+                            aConvertOrder.Visible = True
+                        End If
 
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                        aRePrice.Visible = True
-                        aAddProduct.Visible = True
-                        aAddPart.Visible = True
-                        aAddService.Visible = True
+                        If lblOrderPaid.Text = "" Then
+                            aSendInvoice.Visible = True
+                            aRePrice.Visible = True
+                            aAddProduct.Visible = True
+                            aAddPart.Visible = True
+                            aAddService.Visible = True
+                        End If
                     End If
                 End If
                 If lblOrderStatus.Text = "In Production" Then
-                    btnEditOrder.Visible = True
-                    btnUpdateStatus.Visible = True
-                    aHoldOrder.Visible = True
-                    aCancelOrder.Visible = True
-                    aShippedOrder.Visible = True
+                    If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
+                        btnEditOrder.Visible = True
+                        btnUpdateStatus.Visible = True
+                        aHoldOrder.Visible = True
+                        aCancelOrder.Visible = True
+                        aShippedOrder.Visible = True
 
-                    btnInvoice.Visible = True
-                    liDividerInvoice.Visible = True
-                    aUpdateInvoiceData.Visible = True
-                    liDividerPL.Visible = True
-                    liDownloadPL.Visible = True
+                        btnInvoice.Visible = True
+                        liDividerInvoice.Visible = True
+                        aUpdateInvoiceData.Visible = True
+                        liDividerPL.Visible = True
+                        liDownloadPL.Visible = True
 
-                    btnJob.Visible = True
-                    If convertedStatus = "Yes" Then
-                        aDataJob.Visible = True
-                        aReConvertJob.Visible = True
-                        aUpdateJob.Visible = True
-                        btnPreviewJob.Visible = True
-                        btnDownloadJob.Visible = True
-                    End If
-                    If convertedStatus = "No" Then
-                        aConvertOrder.Visible = True
-                    End If
+                        btnJob.Visible = True
+                        If convertedStatus = "Yes" Then
+                            aDataJob.Visible = True
+                            aReConvertJob.Visible = True
+                            aUpdateJob.Visible = True
+                            btnPreviewJob.Visible = True
+                            btnDownloadJob.Visible = True
+                        End If
+                        If convertedStatus = "No" Then
+                            aConvertOrder.Visible = True
+                        End If
 
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                        aRePrice.Visible = True
-                        aAddProduct.Visible = True
-                        aAddPart.Visible = True
-                        aAddService.Visible = True
+                        If lblOrderPaid.Text = "" Then
+                            aSendInvoice.Visible = True
+                            aRePrice.Visible = True
+                            aAddProduct.Visible = True
+                            aAddPart.Visible = True
+                            aAddService.Visible = True
+                        End If
                     End If
                 End If
                 If lblOrderStatus.Text = "On Hold" Then
-                    btnUpdateStatus.Visible = True
-                    aProductionOrder.Visible = True
-                    aCancelOrder.Visible = True
+                    If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
+                        btnUpdateStatus.Visible = True
+                        aProductionOrder.Visible = True
+                        aCancelOrder.Visible = True
 
-                    btnInvoice.Visible = True
-                    liDividerInvoice.Visible = True
-                    aUpdateInvoiceData.Visible = True
-                    liDividerPL.Visible = True
-                    liDownloadPL.Visible = True
+                        btnInvoice.Visible = True
+                        liDividerInvoice.Visible = True
+                        aUpdateInvoiceData.Visible = True
+                        liDividerPL.Visible = True
+                        liDownloadPL.Visible = True
 
-                    btnJob.Visible = True
-                    If convertedStatus = "Yes" Then
-                        aDataJob.Visible = True
-                        aReConvertJob.Visible = True
-                        aUpdateJob.Visible = True
-                        btnPreviewJob.Visible = True
-                        btnDownloadJob.Visible = True
-                    End If
-                    If convertedStatus = "No" Then
-                        aConvertOrder.Visible = True
-                    End If
+                        btnJob.Visible = True
+                        If convertedStatus = "Yes" Then
+                            aDataJob.Visible = True
+                            aReConvertJob.Visible = True
+                            aUpdateJob.Visible = True
+                            btnPreviewJob.Visible = True
+                            btnDownloadJob.Visible = True
+                        End If
+                        If convertedStatus = "No" Then
+                            aConvertOrder.Visible = True
+                        End If
 
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                        aRePrice.Visible = True
-                        aAddProduct.Visible = True
-                        aAddPart.Visible = True
-                        aAddService.Visible = True
+                        If lblOrderPaid.Text = "" Then
+                            aSendInvoice.Visible = True
+                            aRePrice.Visible = True
+                            aAddProduct.Visible = True
+                            aAddPart.Visible = True
+                            aAddService.Visible = True
+                        End If
                     End If
                 End If
                 If lblOrderStatus.Text = "Shipped Out" Then
-                    btnUpdateStatus.Visible = True
-                    aCompleteOrder.Visible = True
+                    If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
+                        btnUpdateStatus.Visible = True
+                        aCompleteOrder.Visible = True
 
-                    btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then
-                        aSendInvoice.Visible = True
-                    End If
-                    liDividerInvoice.Visible = True
-                    aUpdateInvoiceData.Visible = True
-                    liDividerPL.Visible = True
-                    liDownloadPL.Visible = True
+                        btnInvoice.Visible = True
+                        If lblOrderPaid.Text = "" Then
+                            aSendInvoice.Visible = True
+                        End If
+                        liDividerInvoice.Visible = True
+                        aUpdateInvoiceData.Visible = True
+                        liDividerPL.Visible = True
+                        liDownloadPL.Visible = True
 
-                    btnJob.Visible = True
-                    If convertedStatus = "Yes" Then
-                        aDataJob.Visible = True
-                        btnPreviewJob.Visible = True
-                        btnDownloadJob.Visible = True
-                    End If
-                    If convertedStatus = "No" Then
-                        aConvertOrder.Visible = True
-                    End If
+                        btnJob.Visible = True
+                        If convertedStatus = "Yes" Then
+                            aDataJob.Visible = True
+                            btnPreviewJob.Visible = True
+                            btnDownloadJob.Visible = True
+                        End If
+                        If convertedStatus = "No" Then
+                            aConvertOrder.Visible = True
+                        End If
 
-                    If isReworkOrder = False AndAlso lblOrderType.Text = "Regular" Then aReworkOrder.Visible = True
+                        If isReworkOrder = False AndAlso lblOrderType.Text = "Regular" Then aReworkOrder.Visible = True
+                    End If
                 End If
                 If lblOrderStatus.Text = "Completed" Then
-                    btnJob.Visible = True
-                    If convertedStatus = "Yes" Then
-                        aDataJob.Visible = True
-                        btnPreviewJob.Visible = True
-                        btnDownloadJob.Visible = True
-                    End If
-                    If convertedStatus = "No" Then
-                        aConvertOrder.Visible = True
-                    End If
+                    If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
+                        btnJob.Visible = True
+                        If convertedStatus = "Yes" Then
+                            aDataJob.Visible = True
+                            btnPreviewJob.Visible = True
+                            btnDownloadJob.Visible = True
+                        End If
+                        If convertedStatus = "No" Then
+                            aConvertOrder.Visible = True
+                        End If
 
-                    If isReworkOrder = False Then aReworkOrder.Visible = True
+                        If isReworkOrder = False Then aReworkOrder.Visible = True
+                    End If
                 End If
 
                 divInternalNote.Visible = True
@@ -4055,7 +4078,7 @@ Partial Class Order_Detail
                 If designId = "16" Then Return True
             End If
 
-            If Session("RoleName") = "Factory Office" Then
+            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") Then
                 If lblOrderStatus.Text = "Unsubmitted" Then result = True
                 If lblOrderStatus.Text = "New Order" Then result = True
                 If lblOrderStatus.Text = "Waiting Proforma" Then result = True
@@ -4157,7 +4180,15 @@ Partial Class Order_Detail
 
         If Session("RoleName") = "Developer" Then result = True
 
-        If Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Account" Then
+        If Session("RoleName") = "IT" Then
+            If lblOrderPaid.Text = "" AndAlso Not lblOrderStatus.Text = "Canceled" Then result = True
+        End If
+
+        If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") Then
+            If lblOrderPaid.Text = "" AndAlso Not lblOrderStatus.Text = "Canceled" Then result = True
+        End If
+
+        If Session("RoleName") = "Account" Then
             If lblOrderPaid.Text = "" AndAlso Not lblOrderStatus.Text = "Canceled" Then result = True
         End If
 
@@ -4185,7 +4216,7 @@ Partial Class Order_Detail
     Protected Function VisibleFileDelete() As Boolean
         If Session("RoleName") = "Developer" Then Return True
         If Session("RoleName") = "IT" Then Return True
-        If Session("RoleName") = "Factory Office" Then Return True
+        If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") Then Return True
         If Session("RoleName") = "Data Entry" AndAlso lblOrderType.Text = "Builder" Then Return True
         Return False
     End Function

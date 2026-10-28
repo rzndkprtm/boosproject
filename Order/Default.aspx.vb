@@ -1021,7 +1021,7 @@ Partial Class Order_Default
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso (Not status = "Shipped Out" AndAlso Not status = "Completed" AndAlso Not status = "Canceled") Then Return True
             If Session("RoleName") = "IT" AndAlso (status = "Unsubmitted" OrElse status = "Quoted" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Waiting Proforma" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso (status = "Unsubmitted" OrElse status = "Quoted" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Waiting Proforma" OrElse status = "New Order" OrElse status = "In Production") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso (status = "Unsubmitted" OrElse status = "Quoted" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Waiting Proforma" OrElse status = "New Order" OrElse status = "In Production") Then Return True
             If Session("RoleName") = "Sales" AndAlso (status = "Unsubmitted" OrElse status = "Waiting Proforma") Then Return True
             If Session("RoleName") = "Account" AndAlso (status = "Unsubmitted" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Waiting Proforma" OrElse status = "New Order") Then Return True
             If Session("RoleName") = "Data Entry" AndAlso status = "Unsubmitted" AndAlso createdBy = Session("LoginId").ToString() Then Return True
@@ -1039,7 +1039,7 @@ Partial Class Order_Default
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso (Not status = "Shipped Out" AndAlso Not status = "Completed") Then Return True
             If Session("RoleName") = "IT" AndAlso status = "Unsubmitted" Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso status = "Unsubmitted" Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso status = "Unsubmitted" Then Return True
             If Session("RoleName") = "Sales" AndAlso status = "Unsubmitted" AndAlso createdBy = Session("LoginId").ToString() Then Return True
             If Session("RoleName") = "Data Entry" AndAlso status = "Unsubmitted" AndAlso (createdBy = Session("LoginId").ToString() OrElse createdRole = Session("RoleId")) Then Return True
             If Session("RoleName") = "Customer" AndAlso status = "Unsubmitted" Then Return True
@@ -1065,7 +1065,7 @@ Partial Class Order_Default
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
             If Session("RoleName") = "IT" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
             If Session("RoleName") = "Sales" AndAlso (status = "New Order" OrElse status = "Waiting Proforma") Then Return True
             If Session("RoleName") = "Account" AndAlso (status = "New Order" OrElse status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
             If Session("RoleName") = "Data Entry" AndAlso status = "New Order" Then Return True
@@ -1078,7 +1078,7 @@ Partial Class Order_Default
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso status = "Waiting Proforma" Then Return True
             If Session("RoleName") = "IT" AndAlso status = "Waiting Proforma" Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso status = "Waiting Proforma" Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso status = "Waiting Proforma" Then Return True
             If Session("RoleName") = "Account" AndAlso status = "Waiting Proforma" Then Return True
             If Session("RoleName") = "Data Entry" AndAlso status = "Waiting Proforma" Then Return True
             Return False
@@ -1090,7 +1090,7 @@ Partial Class Order_Default
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso (status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
             If Session("RoleName") = "IT" AndAlso (status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso (status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso (status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
             If Session("RoleName") = "Sales" AndAlso (status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
             If Session("RoleName") = "Account" AndAlso (status = "Proforma Sent" OrElse status = "Pending Payment") Then Return True
             Return False
@@ -1102,7 +1102,7 @@ Partial Class Order_Default
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso (status = "New Order" OrElse status = "Payment Received" Or status = "On Hold" OrElse status = "Shipped Out") Then Return True
             If Session("RoleName") = "IT" AndAlso (status = "New Order" OrElse status = "Payment Received" Or status = "On Hold") Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso (status = "New Order" OrElse status = "Payment Received" Or status = "On Hold") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso (status = "New Order" OrElse status = "Payment Received" Or status = "On Hold") Then Return True
             If Session("RoleName") = "Data Entry" AndAlso (status = "New Order" OrElse status = "Payment Received" Or status = "On Hold") Then Return True
             If Session("RoleName") = "Account" AndAlso (status = "New Order" OrElse status = "Payment Received") Then Return True
             If Session("RoleName") = "Export" AndAlso status = "Shipped Out" Then Return True
@@ -1115,7 +1115,7 @@ Partial Class Order_Default
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso (status = "Payment Received" OrElse status = "New Order" OrElse status = "In Production") Then Return True
             If Session("RoleName") = "IT" AndAlso (status = "Payment Received" OrElse status = "New Order" OrElse status = "In Production") Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso (status = "New Order" OrElse status = "In Production") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso (status = "New Order" OrElse status = "In Production") Then Return True
             If Session("RoleName") = "Data Entry" AndAlso (status = "New Order" OrElse status = "In Production") Then Return True
             If Session("RoleName") = "Sales" AndAlso status = "New Order" Then Return True
             If Session("RoleName") = "Account" AndAlso status = "New Order" Then Return True
@@ -1128,7 +1128,7 @@ Partial Class Order_Default
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "Payment Received" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
             If Session("RoleName") = "IT" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
             If Session("RoleName") = "Data Entry" AndAlso (status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
             If Session("RoleName") = "Account" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "New Order") Then Return True
             If Session("RoleName") = "Sales" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "New Order") Then Return True
@@ -1141,7 +1141,7 @@ Partial Class Order_Default
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso (status = "In Production" OrElse status = "On Hold") Then Return True
             If Session("RoleName") = "IT" AndAlso status = "In Production" Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso status = "In Production" Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso status = "In Production" Then Return True
             If Session("RoleName") = "Export" AndAlso status = "In Production" Then Return True
             If Session("RoleName") = "Data Entry" AndAlso status = "In Production" Then Return True
             Return False
@@ -1153,7 +1153,7 @@ Partial Class Order_Default
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso status = "Shipped Out" Then Return True
             If Session("RoleName") = "IT" AndAlso status = "Shipped Out" Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso status = "Shipped Out" Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso status = "Shipped Out" Then Return True
             If Session("RoleName") = "Export" AndAlso status = "Shipped Out" Then Return True
             Return False
         End If
@@ -1166,7 +1166,7 @@ Partial Class Order_Default
 
             If Session("RoleName") = "IT" AndAlso (status = "Unsubmitted" OrElse status = "Payment Received" OrElse status = "In Production" OrElse status = "On Hold") AndAlso (download = "No" OrElse download = "Done") Then Return True
 
-            If Session("RoleName") = "Factory Office" AndAlso (status = "Unsubmitted" OrElse status = "Payment Received" OrElse status = "In Production" OrElse status = "On Hold") AndAlso (download = "No" OrElse download = "Done") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso (status = "Unsubmitted" OrElse status = "Payment Received" OrElse status = "In Production" OrElse status = "On Hold") AndAlso (download = "No" OrElse download = "Done") Then Return True
 
             If Session("RoleName") = "Data Entry" AndAlso (status = "In Production" OrElse status = "On Hold") AndAlso (download = "No" OrElse download = "Done") Then Return True
             Return False
@@ -1178,7 +1178,7 @@ Partial Class Order_Default
         If active = True AndAlso companyId = "3" Then
             If Session("RoleName") = "Developer" Then Return True
             If Session("RoleName") = "IT" Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso (status = "In Production" OrElse status = "Shipped Out") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso (status = "In Production" OrElse status = "Shipped Out") Then Return True
             If Session("RoleName") = "Export" AndAlso (status = "In Production" OrElse status = "Shipped Out") Then Return True
             Return False
         End If
