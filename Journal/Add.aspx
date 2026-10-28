@@ -46,14 +46,14 @@
                                             </div>
                                         </div>
                                         <div class="row mb-2">
-                                            <div class="col-4 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Customer Type</label>
                                                 <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
                                                     <asp:ListItem Value="Existing" Text="Existing"></asp:ListItem>
                                                     <asp:ListItem Value="New" Text="New"></asp:ListItem>
                                                 </asp:DropDownList>
                                             </div>
-                                            <div class="col-8 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-8 form-group">
                                                 <label class="form-label">Customer Name</label>
                                                 <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select"></asp:DropDownList>
                                                 <asp:TextBox runat="server" ID="txtCustomer" CssClass="form-control" Height="45px" placeholder="Customer Name ..." autocomplete="off"></asp:TextBox>
