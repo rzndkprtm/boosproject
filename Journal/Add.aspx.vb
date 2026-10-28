@@ -52,7 +52,7 @@ Partial Class Journal_Add
                 Exit Sub
             End If
             If txtDescription.Text = "" Then
-                MessageError(True, "PRODUCT / DESIGN TYPE IS REQUIRED !")
+                MessageError(True, "DESCRIPTION IS REQUIRED !")
                 Exit Sub
             End If
             If msgError.InnerText = "" Then
