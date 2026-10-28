@@ -243,6 +243,27 @@ function getDesignName(designId) {
     });
 }
 
+function getProductName(colourType) {
+    if (!colourType) return;
+
+    const type = "ProductName";
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/StringData",
+            data: JSON.stringify({ type: type, dataId: colourType }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                resolve(response.d);
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
 function getFormAction(itemAction) {
     const pageAction = document.getElementById("pageaction");
     const submitButton = document.getElementById("submit");
@@ -396,9 +417,58 @@ function bindColourType(blindType) {
     });
 }
 
+function bindFabricType(designType) {
+    return new Promise((resolve, reject) => {
+        const fabrictype = document.getElementById("fabrictype");
+        fabrictype.innerHTML = "";
+
+        if (!designType) {
+            resolve();
+            return;
+        }
+
+        const listData = { type: "FabricTypeByDesign", designtype: designType, companydetailid: companyDetailId, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        fabrictype.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        fabrictype.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        fabrictype.selectedIndex = 0;
+                    }
+                }
+
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
 function bindComponentForm(colourType) {
     return new Promise((resolve) => {
         const detail = document.getElementById("divdetail");
+        const fabrictype = document.getElementById("divfabrictype");
         const markup = document.getElementById("divmarkup");
 
         function toggleDisplay(element, show) {
@@ -406,11 +476,22 @@ function bindComponentForm(colourType) {
         }
 
         toggleDisplay(detail, false);
+        toggleDisplay(fabrictype, false);
         toggleDisplay(markup, false);
 
         if (!colourType) return resolve();
 
         toggleDisplay(detail, true);
+
+        getProductName(colourType).then(productName => {
+            if (productName === "Roller Fabric") {
+                toggleDisplay(fabrictype, true);
+            }
+
+            resolve();
+        }).catch(error => {
+            resolve();
+        });
 
         if (typeof priceAccess !== "undefined" && priceAccess) {
             toggleDisplay(markup, true);
@@ -448,7 +529,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = ["blindtype", "colourtype", "qty", "notes", "markup"];
+    const inputs = ["blindtype", "colourtype", "qty", "fabrictype", "notes", "markup"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
@@ -469,6 +550,7 @@ function setFormValues(itemData) {
         blindtype: "BlindType",
         colourtype: "ProductId",
         qty: "Qty",
+        fabrictype: "FabricId",
         notes: "Notes",
         markup: "MarkUp"
     };
@@ -506,7 +588,7 @@ function fillSelect(selector, list, selected = null) {
 function process() {
     toggleButtonState(true, "Processing...");
 
-    const fields = ["blindtype", "colourtype", "qty", "notes", "markup"];
+    const fields = ["blindtype", "colourtype", "qty", "fabrictype", "notes", "markup"];
 
     const formData = {
         headerid: headerId,
@@ -591,6 +673,7 @@ async function initSample() {
         bindComponentForm("", "");
         controlForm(false);
         bindBlindType(designId);
+        bindFabricType(designId);
         loader(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {
         await bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, itemAction);
@@ -612,6 +695,7 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
 
         fillSelect("#blindtype", data.BlindTypes);
         fillSelect("#colourtype", data.ColourTypes);
+        fillSelect("#fabrictype", data.Fabrics);
 
         document.getElementById("divloader").style.display = "none";
         document.getElementById("divorder").style.display = "";

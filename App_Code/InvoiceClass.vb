@@ -106,6 +106,27 @@ Public Class InvoiceClass
         Return result
     End Function
 
+    Public Function GetFabricName(fabricId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(fabricId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Fabrics WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
     Public Function GetFabricColourName(fabricColourId As String) As String
         Dim result As String = String.Empty
         Try
@@ -416,9 +437,11 @@ Public Class InvoiceClass
                 Dim itemNumber As Integer = detailData.Rows(i)("Item").ToString()
                 Dim itemId As String = detailData.Rows(i)("Id").ToString()
                 Dim serviceId As String = detailData.Rows(i)("ServiceId").ToString()
+                Dim productName As String = detailData.Rows(i)("ProductName").ToString()
                 Dim designName As String = detailData.Rows(i)("DesignName").ToString()
                 Dim designType As String = detailData.Rows(i)("DesignType").ToString()
                 Dim blindName As String = detailData.Rows(i)("BlindName").ToString()
+                Dim fabricId As String = detailData.Rows(i)("FabricType").ToString()
                 Dim fabricColourId As String = detailData.Rows(i)("FabricColour").ToString()
                 Dim width As String = detailData.Rows(i)("Width").ToString()
                 Dim drop As String = detailData.Rows(i)("Height").ToString()
@@ -523,6 +546,10 @@ Public Class InvoiceClass
                 End If
                 If designName = "Sample" Then
                     itemDescription = String.Format("{0} - {1}", designName, invoiceName)
+                    If productName = "Roller Fabric" Then
+                        Dim fabricName As String = GetFabricName(fabricId)
+                        itemDescription = String.Format("{0} - {1} - {2}", designName, invoiceName, fabricName)
+                    End If
                 End If
                 If designName = "Saphora Drape" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)

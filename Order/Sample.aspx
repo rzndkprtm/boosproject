@@ -98,6 +98,14 @@
                                                     <input type="number" id="qty" class="form-control" autocomplete="off" placeholder="Quantity" value="1" />
                                                 </div>
                                             </div>
+                                            <div class="row" id="divfabrictype">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Fabric Type</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                    <select id="fabrictype" class="form-select"></select>
+                                                </div>
+                                            </div>
                                             <div class="row">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Special Information</label>
@@ -202,5 +210,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/RisaSolihah/Sample.js?v=1.2.2"></script>
+    <script src="/Scripts/RisaSolihah/Sample.js?v=1.2.4"></script>
 </asp:Content>

@@ -8475,6 +8475,10 @@ Partial Class Order_Method
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP ORDER !"
         End If
 
+        If Not productName = "Roller Fabric" Then
+            data.fabrictype = String.Empty
+        End If
+
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productName, data.designid, priceGroupId)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
@@ -8489,6 +8493,7 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                        thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
                         thisCmd.Parameters.AddWithValue("@Qty", 1)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
@@ -8520,6 +8525,7 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                    thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
                     thisCmd.Parameters.AddWithValue("@Qty", 1)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
@@ -12819,11 +12825,13 @@ Partial Class Order_Method
 
         Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim fabricReq As New JSONList With {.type = "FabricTypeByDesign", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
             .BlindTypes = ListData(blindReq),
-            .ColourTypes = ListData(colourReq)
+            .ColourTypes = ListData(colourReq),
+            .Fabrics = ListData(fabricReq)
         }
         Return result
     End Function

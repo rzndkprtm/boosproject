@@ -782,6 +782,8 @@ Public Class OrderClass
             Dim trackType As String = thisData("TrackType").ToString()
             Dim trackTypeB As String = thisData("TrackTypeB").ToString()
 
+            Dim fabricId As String = thisData("FabricId").ToString()
+
             Dim fabricColourId As String = thisData("FabricColourId").ToString()
             Dim fabricColourIdB As String = thisData("FabricColourIdB").ToString()
             Dim fabricColourIdC As String = thisData("FabricColourIdC").ToString()
@@ -819,6 +821,8 @@ Public Class OrderClass
             Dim sizeD As String = String.Format("({0}x{1})", widthD, dropD)
             Dim sizeE As String = String.Format("({0}x{1})", widthE, dropE)
             Dim sizeF As String = String.Format("({0}x{1})", widthF, dropF)
+
+            Dim fabricName As String = GetFabricName(fabricId)
 
             Dim fabricColourName As String = GetFabricColourName(fabricColourId)
             Dim fabricColourNameB As String = GetFabricColourName(fabricColourIdB)
@@ -1439,6 +1443,9 @@ Public Class OrderClass
             End If
             If designName = "Sample" Then
                 result = String.Format("{0} {1}", designName, productName)
+                If productName = "Roller Fabric" Then
+                    result = String.Format("{0} {1}", itemDescription, fabricName)
+                End If
             End If
             If designName = "Skyline Shutter Express" Then
                 result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
