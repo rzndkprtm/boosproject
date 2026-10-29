@@ -10,15 +10,19 @@ Partial Class Order_View
             Dim headerId As String = Request("boosid")
             If String.IsNullOrEmpty(headerId) OrElse String.IsNullOrEmpty(action) Then Exit Sub
 
-            Dim itemId As String = String.Empty
-            If Not String.IsNullOrEmpty(Request("itemid").ToString()) Then
-                itemId = Request("itemid").ToString()
-            End If
+
 
             If action = "jobsheet" Then JobSheet(headerId)
             If action = "joborder" Then JobOrder(headerId)
             If action = "invoice" Then Invoice(headerId)
-            If action = "custominvoice" Then CustomInvoice(headerId, itemId)
+            If action = "custominvoice" Then
+                Dim itemId As String = String.Empty
+                If Not String.IsNullOrEmpty(Request("itemid").ToString()) Then
+                    itemId = Request("itemid").ToString()
+                End If
+
+                CustomInvoice(headerId, itemId)
+            End If
             If action = "quote" Then Quote(headerId)
             If action = "quotebuilder" Then QuoteBuilder(headerId)
             If action = "quotes" Then QuoteCustomer(headerId)
