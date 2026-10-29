@@ -10,8 +10,6 @@ Partial Class Order_View
             Dim headerId As String = Request("boosid")
             If String.IsNullOrEmpty(headerId) OrElse String.IsNullOrEmpty(action) Then Exit Sub
 
-
-
             If action = "jobsheet" Then JobSheet(headerId)
             If action = "joborder" Then JobOrder(headerId)
             If action = "invoice" Then Invoice(headerId)
