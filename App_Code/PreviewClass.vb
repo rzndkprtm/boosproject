@@ -901,7 +901,7 @@ Public Class PreviewClass
                     Dim table As New PdfPTable(7)
                     table.WidthPercentage = 100
 
-                    Dim items(17, panelData.Rows.Count - 1) As String
+                    Dim items(18, panelData.Rows.Count - 1) As String
 
                     For i As Integer = 0 To panelData.Rows.Count - 1
                         Dim number As Integer = i + 1
@@ -924,13 +924,14 @@ Public Class PreviewClass
                         items(7, i) = panelData.Rows(i)("FabricColour").ToString()
                         items(8, i) = panelData.Rows(i)("Width").ToString()
                         items(9, i) = If(panelData.Rows(i)("Drop").ToString() <> "" AndAlso panelData.Rows(i)("Drop").ToString() <> "0", panelData.Rows(i)("Drop").ToString(), "")
-                        items(10, i) = panelData.Rows(i)("WandColour").ToString()
-                        items(11, i) = wandLengthText
-                        items(12, i) = panelData.Rows(i)("TrackType").ToString()
-                        items(13, i) = If(panelData.Rows(i)("PanelQty").ToString() <> "" AndAlso panelData.Rows(i)("PanelQty").ToString() <> "0", panelData.Rows(i)("PanelQty").ToString(), "")
-                        items(14, i) = panelData.Rows(i)("LayoutCode").ToString()
-                        items(15, i) = panelData.Rows(i)("Batten").ToString()
-                        items(16, i) = panelData.Rows(i)("Notes").ToString()
+                        items(10, i) = panelData.Rows(i)("WandPosition").ToString()
+                        items(11, i) = panelData.Rows(i)("WandColour").ToString()
+                        items(12, i) = wandLengthText
+                        items(13, i) = panelData.Rows(i)("TrackType").ToString()
+                        items(14, i) = If(panelData.Rows(i)("PanelQty").ToString() <> "" AndAlso panelData.Rows(i)("PanelQty").ToString() <> "0", panelData.Rows(i)("PanelQty").ToString(), "")
+                        items(15, i) = panelData.Rows(i)("LayoutCode").ToString()
+                        items(16, i) = panelData.Rows(i)("Batten").ToString()
+                        items(17, i) = panelData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 6
@@ -939,7 +940,7 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Mounting", "Panel System", "Panel Style", "Track Colour", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Wand Colour", "Wand Length", "Track", "Panel", "Layout Code", "Batten Colour", "Special Information"}
+                        Dim headers As String() = {"", "Location", "Mounting", "Panel System", "Panel Style", "Track Colour", "Fabric Type", "Fabric Colour", "Width (mm)", "Drop (mm)", "Wand Position", "Wand Colour", "Wand Length", "Track", "Panel", "Layout Code", "Batten Colour", "Special Information"}
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))

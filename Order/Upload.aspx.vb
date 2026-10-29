@@ -1739,6 +1739,7 @@ Partial Class Order_Upload
                                                 thisCmd.Parameters.AddWithValue("@Mounting", String.Format("{0} {1}", sizeType, mounting))
                                                 thisCmd.Parameters.AddWithValue("@Width", width)
                                                 thisCmd.Parameters.AddWithValue("@Drop", drop)
+                                                thisCmd.Parameters.AddWithValue("@WandPosition", "Front")
                                                 thisCmd.Parameters.AddWithValue("@WandColour", wandColour)
                                                 thisCmd.Parameters.AddWithValue("@WandLength", wandLength)
                                                 thisCmd.Parameters.AddWithValue("@WandLengthValue", wandLengthValue)

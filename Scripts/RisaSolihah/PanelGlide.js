@@ -798,6 +798,7 @@ function visibleDetail(blindType, tubeType, colourType) {
         const fabriccolour = document.getElementById("divfabriccolour");
         const drop = document.getElementById("divdrop");
         const track = document.getElementById("divtrack");
+        const wandposition = document.getElementById("divwandposition");
         const wandlength = document.getElementById("divwandlength");
         const wandlengthvalue = document.getElementById("divwandlengthvalue");
         const layoutcode = document.getElementById("divlayoutcode");
@@ -815,6 +816,7 @@ function visibleDetail(blindType, tubeType, colourType) {
         toggleDisplay(fabriccolour, false);
         toggleDisplay(drop, false);
         toggleDisplay(track, false);
+        toggleDisplay(wandposition, false);
         toggleDisplay(wandlength, false);
         toggleDisplay(wandlengthvalue, false);
         toggleDisplay(layoutcode, false);
@@ -839,6 +841,7 @@ function visibleDetail(blindType, tubeType, colourType) {
                 toggleDisplay(fabriccolour, true);
                 toggleDisplay(drop, true);
                 toggleDisplay(track, true);
+                toggleDisplay(wandposition, true);
                 toggleDisplay(wandlength, true);
                 toggleDisplay(layoutcode, true);
                 toggleDisplay(panelqty, true);
@@ -849,6 +852,7 @@ function visibleDetail(blindType, tubeType, colourType) {
             } else if (blindName === "Track Only") {
                 toggleDisplay(mounting, true);
                 toggleDisplay(track, true);
+                toggleDisplay(wandposition, true);
                 toggleDisplay(wandlength, true);
                 toggleDisplay(layoutcode, true);
                 toggleDisplay(panelqty, true);
@@ -891,7 +895,7 @@ function visibleWandLength(wandLength) {
 function process() {
     toggleButtonState(true, "Processing...");
 
-    const fields = ["blindtype", "tubetype", "colourtype", "qty", "room", "mounting", "fabrictype", "fabriccolour", "width", "drop", "tracktype", "wandlength", "wandlengthvalue", "layoutcode", "panelqty", "batten", "notes", "markup"];
+    const fields = ["blindtype", "tubetype", "colourtype", "qty", "room", "mounting", "fabrictype", "fabriccolour", "width", "drop", "tracktype", "wandposition", "wandlength", "wandlengthvalue", "layoutcode", "panelqty", "batten", "notes", "markup"];
 
     const formData = {
         headerid: headerId,
@@ -1000,6 +1004,7 @@ function setFormValues(itemData) {
         width: "Width",
         drop: "Drop",
         tracktype: "TrackType",
+        wandposition: "WandPosition",
         wandlength: "WandLength",
         wandlengthvalue: "WandLengthValue",
         layoutcode: "LayoutCode",
@@ -1049,7 +1054,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = ["blindtype", "tubetype", "colourtype", "qty", "room", "mounting", "fabrictype", "fabriccolour", "width", "drop", "tracktype", "wandlength", "wandlengthvalue", "layoutcode", "panelqty", "batten", "notes", "markup"];
+    const inputs = ["blindtype", "tubetype", "colourtype", "qty", "room", "mounting", "fabrictype", "fabriccolour", "width", "drop", "tracktype", "wandposition", "wandlength", "wandlengthvalue", "layoutcode", "panelqty", "batten", "notes", "markup"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);

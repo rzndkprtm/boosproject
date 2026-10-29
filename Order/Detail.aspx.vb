@@ -413,119 +413,124 @@ Partial Class Order_Detail
                 Exit Sub
             End If
 
-            Dim checkProduct As DataTable = orderClass.GetDataTable("SELECT ROW_NUMBER() OVER (ORDER BY OrderDetails.Id ASC) AS [Number], OrderDetails.Id, Products.Status, FC.Status AS FabricColourStatus FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN FabricColours FC ON OrderDetails.FabricColourId=FC.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
+            Dim orderStatus As String = orderClass.GetOrderStatus(lblHeaderId.Text)
+            If orderStatus = "Unsubmitted" Then
+                Dim checkProduct As DataTable = orderClass.GetDataTable("SELECT ROW_NUMBER() OVER (ORDER BY OrderDetails.Id ASC) AS [Number], OrderDetails.Id, Products.Status, FC.Status AS FabricColourStatus FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN FabricColours FC ON OrderDetails.FabricColourId=FC.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
-            If checkProduct.Rows.Count > 0 Then
-                Dim sb As New StringBuilder()
+                If checkProduct.Rows.Count > 0 Then
+                    Dim sb As New StringBuilder()
 
-                For i As Integer = 0 To checkProduct.Rows.Count - 1
-                    Dim number As String = checkProduct.Rows(i)("Number").ToString()
-                    Dim status As String = checkProduct.Rows(i)("Status").ToString()
-                    Dim fabricColourStatus As String = checkProduct.Rows(i)("FabricColourStatus").ToString()
+                    For i As Integer = 0 To checkProduct.Rows.Count - 1
+                        Dim number As String = checkProduct.Rows(i)("Number").ToString()
+                        Dim status As String = checkProduct.Rows(i)("Status").ToString()
+                        Dim fabricColourStatus As String = checkProduct.Rows(i)("FabricColourStatus").ToString()
 
-                    If status = "" Then
-                        Dim thisString As String = "- ITEM " & number & ". THIS PRODUCT IS CURRENTLY UNAVAILABLE. PLEASE CHECK AND CHANGE IT.<br />"
-                        sb.AppendLine(thisString)
+                        If status = "" Then
+                            Dim thisString As String = "- ITEM " & number & ". THIS PRODUCT IS CURRENTLY UNAVAILABLE. PLEASE CHECK AND CHANGE IT.<br />"
+                            sb.AppendLine(thisString)
 
-                    ElseIf status = "Out of Stock" Then
-                        Dim thisString As String = "- ITEM " & number & ". THIS PRODUCT IS CURRENTLY " & status.ToUpper() & ". PLEASE CHECK AND CHANGE IT.<br />"
-                        sb.AppendLine(thisString)
+                        ElseIf status = "Out of Stock" Then
+                            Dim thisString As String = "- ITEM " & number & ". THIS PRODUCT IS CURRENTLY " & status.ToUpper() & ". PLEASE CHECK AND CHANGE IT.<br />"
+                            sb.AppendLine(thisString)
 
-                    ElseIf status = "Discontinued" Then
-                        Dim thisString As String = "- ITEM " & number & ". THIS PRODUCT HAS BEEN " & status.ToUpper() & ". PLEASE CHECK AND CHANGE IT.<br />"
-                        sb.AppendLine(thisString)
+                        ElseIf status = "Discontinued" Then
+                            Dim thisString As String = "- ITEM " & number & ". THIS PRODUCT HAS BEEN " & status.ToUpper() & ". PLEASE CHECK AND CHANGE IT.<br />"
+                            sb.AppendLine(thisString)
 
-                    ElseIf fabricColourStatus = "Out of Stock" Then
-                        Dim thisString As String = "- ITEM " & number & ". THIS FABRIC IS CURRENTLY " & fabricColourStatus.ToUpper() & ". PLEASE CHECK AND CHANGE IT.<br />"
-                        sb.AppendLine(thisString)
+                        ElseIf fabricColourStatus = "Out of Stock" Then
+                            Dim thisString As String = "- ITEM " & number & ". THIS FABRIC IS CURRENTLY " & fabricColourStatus.ToUpper() & ". PLEASE CHECK AND CHANGE IT.<br />"
+                            sb.AppendLine(thisString)
+                        End If
+                    Next
+
+                    If sb.Length > 0 Then
+                        Dim thisMessage As String = sb.ToString()
+                        MessageError(True, thisMessage)
+                        Exit Sub
+                    Else
+                        MessageError(False, String.Empty)
                     End If
-                Next
-
-                If sb.Length > 0 Then
-                    Dim thisMessage As String = sb.ToString()
-                    MessageError(True, thisMessage)
-                    Exit Sub
-                Else
-                    MessageError(False, String.Empty)
                 End If
-            End If
 
-            Dim cashSale As Boolean = orderClass.GetCustomerCashSale(lblCustomerId.Text)
+                Dim cashSale As Boolean = orderClass.GetCustomerCashSale(lblCustomerId.Text)
 
-            Dim orderStatus As String = "New Order"
-            If cashSale = True Then orderStatus = "Waiting Proforma"
+                Dim newStatus As String = "New Order"
+                If cashSale = True Then newStatus = "Waiting Proforma"
 
-            Dim invoiceNumber As String = lblOrderId.Text
+                Dim invoiceNumber As String = lblOrderId.Text
 
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=GETDATE(), Status=@Status, InvoiceNumber=@InvoiceNumber, Payment=0, Amount=0 WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                    thisCmd.Parameters.AddWithValue("@Status", orderStatus)
-                    thisCmd.Parameters.AddWithValue("@InvoiceNumber", invoiceNumber)
-                    thisCmd.Parameters.AddWithValue("@Payment", False)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
-
-            ' SERVICE
-            Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text}}
-            Dim dtService As DataTable = orderClass.GetDataTableSP("sp_CustomerServices_Get", params)
-            For Each row As DataRow In dtService.Rows
-                Dim serviceId As Integer = Convert.ToInt32(row("ServiceId"))
-                Dim serviceName As String = row("Name").ToString()
-                Dim sellPrice As Decimal = Convert.ToDecimal(row("SellPrice"))
-                Dim buyPrice As Decimal = Convert.ToDecimal(row("BuyPrice"))
-                Dim factoryPrice As Decimal = Convert.ToDecimal(row("FactoryPrice"))
-
-                Dim itemId As String = orderClass.GetNewOrderItemId()
-
-                Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, ServiceId, Qty, Width, [Drop], LinearMetre, SquareMetre, TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 3716, @ServiceId, 1, 0, 0, 0, 0, 1, 0, 1)", thisConn)
-                        thisCmd.Parameters.AddWithValue("@Id", itemId)
-                        thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                        thisCmd.Parameters.AddWithValue("@ServiceId", serviceId)
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=GETDATE(), Status=@Status, InvoiceNumber=@InvoiceNumber, Payment=0, Amount=0 WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@Status", newStatus)
+                        thisCmd.Parameters.AddWithValue("@InvoiceNumber", invoiceNumber)
+                        thisCmd.Parameters.AddWithValue("@Payment", False)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
-                orderClass.ResetPriceDetail(lblHeaderId.Text, itemId)
+                ' SERVICE
+                Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text}}
+                Dim dtService As DataTable = orderClass.GetDataTableSP("sp_CustomerServices_Get", params)
+                For Each row As DataRow In dtService.Rows
+                    Dim serviceId As Integer = Convert.ToInt32(row("ServiceId"))
+                    Dim serviceName As String = row("Name").ToString()
+                    Dim sellPrice As Decimal = Convert.ToDecimal(row("SellPrice"))
+                    Dim buyPrice As Decimal = Convert.ToDecimal(row("BuyPrice"))
+                    Dim factoryPrice As Decimal = Convert.ToDecimal(row("FactoryPrice"))
 
-                Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, sellPrice, sellPrice, buyPrice, factoryPrice}
-                orderClass.OrderCostings(costingArray)
-                orderClass.FinalCostItem(lblHeaderId.Text, itemId)
+                    Dim itemId As String = orderClass.GetNewOrderItemId()
 
-                Dim dataLog As Object() = {"OrderDetails", itemId, Session("LoginId"), "Order Item Added"}
+                    Using thisConn As SqlConnection = New SqlConnection(myConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, ServiceId, Qty, Width, [Drop], LinearMetre, SquareMetre, TotalItems, MarkUp, Active) VALUES (@Id, @HeaderId, 3716, @ServiceId, 1, 0, 0, 0, 0, 1, 0, 1)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", itemId)
+                            thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                            thisCmd.Parameters.AddWithValue("@ServiceId", serviceId)
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    orderClass.ResetPriceDetail(lblHeaderId.Text, itemId)
+
+                    Dim costingArray As Object() = {lblHeaderId.Text, itemId, 1, "Base", serviceName, sellPrice, sellPrice, buyPrice, factoryPrice}
+                    orderClass.OrderCostings(costingArray)
+                    orderClass.FinalCostItem(lblHeaderId.Text, itemId)
+
+                    Dim dataLog As Object() = {"OrderDetails", itemId, Session("LoginId"), "Order Item Added"}
+                    orderClass.Logs(dataLog)
+                Next
+
+                dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Order Submitted"}
                 orderClass.Logs(dataLog)
-            Next
 
-            dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Order Submitted"}
-            orderClass.Logs(dataLog)
+                If chkSendEmail.Checked = True Then
+                    Dim mailingClass As New MailingClass
 
-            If chkSendEmail.Checked = True Then
-                Dim mailingClass As New MailingClass
+                    If cashSale = False Then mailingClass.NewOrder(lblHeaderId.Text)
+                    If cashSale = True Then mailingClass.NewOrder_Proforma(lblHeaderId.Text)
 
-                If cashSale = False Then mailingClass.NewOrder(lblHeaderId.Text)
-                If cashSale = True Then mailingClass.NewOrder_Proforma(lblHeaderId.Text)
-
-                Dim checkPrinting As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND (NULLIF(LTRIM(RTRIM(Printing)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingB)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingC)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingD)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingE)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingF)),'') IS NOT NULL)")
-                If checkPrinting > 0 Then
-                    mailingClass.NewOrder_PrintingFabric(lblHeaderId.Text)
+                    Dim checkPrinting As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderDetails WHERE HeaderId='" & lblHeaderId.Text & "' AND (NULLIF(LTRIM(RTRIM(Printing)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingB)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingC)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingD)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingE)),'') IS NOT NULL OR NULLIF(LTRIM(RTRIM(PrintingF)),'') IS NOT NULL)")
+                    If checkPrinting > 0 Then
+                        mailingClass.NewOrder_PrintingFabric(lblHeaderId.Text)
+                    End If
                 End If
+
+                Dim checkOcean As Integer = orderClass.GetItemData_Integer("SELECT COUNT(OrderDetails.Id) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 AND Products.DesignId='15'")
+                If cashSale = False AndAlso checkOcean > 0 Then
+                    Dim thisId As String = lblHeaderId.Text
+
+                    Task.Run(Async Function()
+                                 Dim svc As New ShutterOceanService()
+                                 Await svc.SendOrderAsync(thisId)
+                             End Function)
+
+                End If
+
+                url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                Response.Redirect(url, False)
             End If
-
-            Dim checkOcean As Integer = orderClass.GetItemData_Integer("SELECT COUNT(OrderDetails.Id) FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 AND Products.DesignId='15'")
-            If cashSale = False AndAlso checkOcean > 0 Then
-                Dim thisId As String = lblHeaderId.Text
-
-                Task.Run(Async Function()
-                             Dim svc As New ShutterOceanService()
-                             Await svc.SendOrderAsync(thisId)
-                         End Function)
-
-            End If
-
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
@@ -1150,7 +1155,7 @@ Partial Class Order_Detail
         MessageError(False, String.Empty)
         Try
             Dim invoiceClass As New InvoiceClass
-            Dim pdfBytes As Byte() = invoiceClass.BindContent(lblHeaderId.Text)
+            Dim pdfBytes As Byte() = invoiceClass.BindContent("All", lblHeaderId.Text, String.Empty)
             If lblCompanyId.Text = "3" Then
                 pdfBytes = invoiceClass.BindContent_Local(lblHeaderId.Text)
             End If
@@ -1281,6 +1286,11 @@ Partial Class Order_Detail
             End If
             ClientScript.RegisterStartupScript(Me.GetType(), "showInvoiceData", thisScript, True)
         End Try
+    End Sub
+
+    Protected Sub btnInvoiceCustom_Click(sender As Object, e As EventArgs)
+        url = String.Format("~/order/invoice?orderid={0}", lblHeaderId.Text)
+        Response.Redirect(url, False)
     End Sub
 
     Protected Sub btnDownloadPL_Click(sender As Object, e As EventArgs)
@@ -2126,7 +2136,9 @@ Partial Class Order_Detail
             liDividerInvoice.Visible = False
             aUpdateInvoiceNumber.Visible = False
             aUpdateInvoiceData.Visible = False
+            liInvoiceCustom.Visible = False
             liDividerPL.Visible = False
+            btnInvoiceCustom.Visible = False
             liDownloadPL.Visible = False
 
             btnJob.Visible = False
@@ -2237,6 +2249,8 @@ Partial Class Order_Detail
                     aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
+                    liInvoiceCustom.Visible = True
+                    btnInvoiceCustom.Visible = True
 
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
@@ -2267,6 +2281,8 @@ Partial Class Order_Detail
                     aReceivePayment.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
+                    liInvoiceCustom.Visible = True
+                    btnInvoiceCustom.Visible = True
 
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
@@ -2297,6 +2313,9 @@ Partial Class Order_Detail
                     aReceivePayment.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
+
+                    liInvoiceCustom.Visible = True
+                    btnInvoiceCustom.Visible = True
 
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
@@ -2361,6 +2380,8 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+                    liInvoiceCustom.Visible = True
+                    btnInvoiceCustom.Visible = True
 
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
@@ -2392,6 +2413,8 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+                    liInvoiceCustom.Visible = True
+                    btnInvoiceCustom.Visible = True
                     liDividerPL.Visible = True
                     liDownloadPL.Visible = True
 
@@ -2428,6 +2451,8 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+                    liInvoiceCustom.Visible = True
+                    btnInvoiceCustom.Visible = True
                     liDividerPL.Visible = True
                     liDownloadPL.Visible = True
 
@@ -2458,6 +2483,8 @@ Partial Class Order_Detail
                     End If
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
+                    liInvoiceCustom.Visible = True
+                    btnInvoiceCustom.Visible = True
                     liDividerPL.Visible = True
                     liDownloadPL.Visible = True
 
@@ -4154,10 +4181,17 @@ Partial Class Order_Detail
 
                     If width <= 1510 OrElse widthb <= 1510 OrElse widthc <= 1510 OrElse widthd <= 1510 Then Return True
                 End If
+
+                If lblCompanyId.Text = "3" Then
+                    Return True
+                End If
             End If
 
             If designname = "Roman Blind" Then
                 If width <= 1510 OrElse drop <= 1510 Then Return True
+                If lblCompanyId.Text = "3" Then
+                    Return True
+                End If
             End If
         Catch ex As Exception
             Return False

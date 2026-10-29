@@ -304,7 +304,7 @@ Public Class InvoiceClass
         End Try
     End Function
 
-    Public Function BindContent(headerId As String) As Byte()
+    Public Function BindContent(type As String, headerId As String, itemIds As String) As Byte()
         Using ms As New MemoryStream()
             Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
@@ -331,7 +331,7 @@ Public Class InvoiceClass
                 End If
             End If
 
-            Dim customerAddress As DataRow = GetDataRow("SELECT CONCAT(Customers.Name, CASE WHEN NULLIF(LTRIM(RTRIM(CustomerAddress.Address)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.Suburb)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.State)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.PostCode)), '') IS NOT NULL THEN CONCAT(CHAR(13), CHAR(10), CHAR(13), CHAR(10), CustomerAddress.Address, CHAR(13), CHAR(10), CustomerAddress.Suburb, ', ', CustomerAddress.State, ', ', CustomerAddress.PostCode, CHAR(13), CHAR(10), 'Australia') ELSE '' END) AS InvoiceTo FROM Customers LEFT JOIN CustomerAddress ON CustomerAddress.CustomerId = Customers.Id WHERE Customers.Id = '" & customerId & "' AND CustomerAddress.Type='Billing' AND CustomerAddress.[Primary] = 1")
+            Dim customerAddress As DataRow = GetDataRow("SELECT CONCAT(Customers.Name, CASE WHEN NULLIF(LTRIM(RTRIM(CustomerAddress.Address)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.Suburb)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.State)), '') IS NOT NULL OR NULLIF(LTRIM(RTRIM(CustomerAddress.PostCode)), '') IS NOT NULL THEN CONCAT(CHAR(13), CHAR(10), CHAR(13), CHAR(10), ISNULL(CustomerAddress.Address, ''), CHAR(13), CHAR(10), ISNULL(CustomerAddress.Suburb, ''), ', ', ISNULL(CustomerAddress.State, ''), ', ', ISNULL(CustomerAddress.PostCode, ''), CHAR(13), CHAR(10), 'Australia') ELSE '' END) AS InvoiceTo FROM Customers LEFT JOIN CustomerAddress ON CustomerAddress.CustomerId=Customers.Id AND CustomerAddress.Type='Billing' AND CustomerAddress.[Primary]=1 WHERE Customers.Id='" & customerId & "'")
             Dim invoiceTo As String = String.Empty
             If customerAddress IsNot Nothing Then
                 invoiceTo = customerAddress("InvoiceTo").ToString()
@@ -341,6 +341,9 @@ Public Class InvoiceClass
             Dim reference As String = String.Format("{0} - {1}", orderNumber, orderName)
 
             Dim sumPrice As Decimal = GetItemData_Decimal("SELECT SUM(SellPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND Type='Final'")
+            If type = "Custom" Then
+                sumPrice = GetItemData_Decimal("SELECT SUM(SellPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId IN (" & itemIds & ") AND Type='Final'")
+            End If
             Dim gst As Decimal = sumPrice * 10 / 100
             Dim finaltotal As Decimal = sumPrice + gst
 
@@ -430,7 +433,9 @@ Public Class InvoiceClass
             table.AddCell(CreateCellDetail("Unit Price", True, Element.ALIGN_RIGHT))
 
             Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@HeaderId", headerId)
+                New SqlParameter("@HeaderId", headerId),
+                New SqlParameter("@Type", type),
+                New SqlParameter("@ItemId", If(String.IsNullOrEmpty(itemIds), CType(DBNull.Value, Object), itemIds))
             }
             Dim detailData As DataTable = GetDataTableSP("sp_OrderDetails_List_Invoice", params)
             For i As Integer = 0 To detailData.Rows.Count - 1

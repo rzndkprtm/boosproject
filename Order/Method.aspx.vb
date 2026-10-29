@@ -3925,6 +3925,7 @@ Partial Class Order_Method
         End If
 
         If blindName = "Complete Set" OrElse blindName = "Track Only" Then
+            If String.IsNullOrEmpty(data.wandposition) Then Return "WAND POSITION IS REQUIRED !"
             If String.IsNullOrEmpty(data.wandlength) Then Return "WAND LENGTH IS REQUIRED !"
         End If
 
@@ -3993,6 +3994,7 @@ Partial Class Order_Method
             data.tracktype = String.Empty
             data.layoutcode = String.Empty
             data.panelqty = String.Empty
+            data.wandposition = String.Empty
 
             linearMetre = width / 1000
             squareMetre = width * drop / 1000000
@@ -4034,6 +4036,7 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                         thisCmd.Parameters.AddWithValue("@Width", width)
                         thisCmd.Parameters.AddWithValue("@Drop", drop)
+                        thisCmd.Parameters.AddWithValue("@WandPosition", data.wandposition)
                         thisCmd.Parameters.AddWithValue("@WandColour", wandcolour)
                         thisCmd.Parameters.AddWithValue("@WandLength", data.wandlength)
                         thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
@@ -4080,6 +4083,7 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                     thisCmd.Parameters.AddWithValue("@Width", width)
                     thisCmd.Parameters.AddWithValue("@Drop", drop)
+                    thisCmd.Parameters.AddWithValue("@WandPosition", data.wandposition)
                     thisCmd.Parameters.AddWithValue("@WandColour", wandcolour)
                     thisCmd.Parameters.AddWithValue("@WandLength", data.wandlength)
                     thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
@@ -13411,6 +13415,7 @@ Public Class ProccessData
     Public Property controllengthvaluef2 As String
     Public Property cordlengthvalue As String
     Public Property chainlengthvalue As String
+    Public Property wandposition As String
     Public Property wandcolour As String
     Public Property wandlength As String
     Public Property wandlengthvalue As String

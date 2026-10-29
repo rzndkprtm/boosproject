@@ -1329,7 +1329,7 @@ Public Class MailingClass
             Dim invoiceClass As New InvoiceClass
 
             Dim pdfOrder As Byte() = previewClass.BindContent(headerId)
-            Dim pdfInvoice As Byte() = invoiceClass.BindContent(headerId)
+            Dim pdfInvoice As Byte() = invoiceClass.BindContent("All", headerId, String.Empty)
 
             Dim orderData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.Operator AS Operator, OrderHeaders.InvoiceNumber AS InvoiceNumber FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
             If orderData Is Nothing Then Exit Sub

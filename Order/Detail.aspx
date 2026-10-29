@@ -91,6 +91,8 @@
                     <li runat="server" id="liDividerInvoice"><hr class="dropdown-divider"></li>
                     <li><a href="javascript:void(0);" runat="server" id="aUpdateInvoiceNumber" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceNumber">Update Invoice Number</a></li>
                     <li><a href="javascript:void(0);" runat="server" id="aUpdateInvoiceData" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalInvoiceData">Update Invoice Data</a></li>
+                    <li runat="server" id="liInvoiceCustom"><hr class="dropdown-divider"></li>
+                    <li><asp:Button runat="server" ID="btnInvoiceCustom" CssClass="dropdown-item" Text="Custom Invoice" OnClick="btnInvoiceCustom_Click" /></li>
                     <li runat="server" id="liDividerPL"><hr class="dropdown-divider"></li>
                     <li runat="server" id="liDownloadPL"><a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDownloadPL">Download PL (PDF)</a></li>
                 </ul>

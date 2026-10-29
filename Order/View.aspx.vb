@@ -55,7 +55,7 @@ Partial Class Order_View
             End If
             Dim fileName As String = String.Format("INVOICE {0} {1}.pdf", invoiceNumber, customerName)
 
-            Dim pdfBytes As Byte() = invoiceClass.BindContent(headerId)
+            Dim pdfBytes As Byte() = invoiceClass.BindContent("All", headerId, String.Empty)
             If companyId = "3" Then
                 pdfBytes = invoiceClass.BindContent_Local(headerId)
             End If
