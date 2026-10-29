@@ -10,9 +10,15 @@ Partial Class Order_View
             Dim headerId As String = Request("boosid")
             If String.IsNullOrEmpty(headerId) OrElse String.IsNullOrEmpty(action) Then Exit Sub
 
+            Dim itemId As String = String.Empty
+            If Not String.IsNullOrEmpty(Request("itemid").ToString()) Then
+                itemId = Request("itemid").ToString()
+            End If
+
             If action = "jobsheet" Then JobSheet(headerId)
             If action = "joborder" Then JobOrder(headerId)
             If action = "invoice" Then Invoice(headerId)
+            If action = "custominvoice" Then CustomInvoice(headerId, itemId)
             If action = "quote" Then Quote(headerId)
             If action = "quotebuilder" Then QuoteBuilder(headerId)
             If action = "quotes" Then QuoteCustomer(headerId)
@@ -56,6 +62,37 @@ Partial Class Order_View
             Dim fileName As String = String.Format("INVOICE {0} {1}.pdf", invoiceNumber, customerName)
 
             Dim pdfBytes As Byte() = invoiceClass.BindContent("All", headerId, String.Empty)
+            If companyId = "3" Then
+                pdfBytes = invoiceClass.BindContent_Local(headerId)
+            End If
+
+            Response.Clear()
+            Response.ContentType = "application/pdf"
+            Response.AddHeader("Content-Disposition", "inline; filename=" & fileName & "")
+            Response.BinaryWrite(pdfBytes)
+            Response.Flush()
+            Response.End()
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Protected Sub CustomInvoice(headerId As String, itemId As String)
+        Try
+            Dim invoiceClass As New InvoiceClass
+
+            Dim invoiceNumber As String = String.Empty
+            Dim customerName As String = String.Empty
+            Dim companyId As String = String.Empty
+
+            Dim orderData As DataRow = invoiceClass.GetDataRow("SELECT Customers.CompanyId AS CompanyId, OrderHeaders.InvoiceNumber AS InvoiceNumber, Customers.Name AS CustomerName FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            If Not orderData Is Nothing Then
+                invoiceNumber = orderData("InvoiceNumber").ToString().ToUpper()
+                customerName = orderData("CustomerName").ToString().ToUpper()
+                companyId = orderData("CompanyId").ToString()
+            End If
+            Dim fileName As String = String.Format("INVOICE {0} {1}.pdf", invoiceNumber, customerName)
+
+            Dim pdfBytes As Byte() = invoiceClass.BindContent("Custom", headerId, itemId)
             If companyId = "3" Then
                 pdfBytes = invoiceClass.BindContent_Local(headerId)
             End If

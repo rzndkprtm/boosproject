@@ -1321,7 +1321,7 @@ Public Class MailingClass
         End Try
     End Sub
 
-    Public Sub SendInvoice(headerId As String, actionBy As String, toCust As String, ccCust As String, ccStaff As String)
+    Public Sub SendInvoice(headerId As String, actionBy As String, toCust As String, ccCust As String, ccStaff As String, type As String, itemdId As String)
         Try
             If String.IsNullOrEmpty(headerId) Then Exit Sub
 
@@ -1329,7 +1329,7 @@ Public Class MailingClass
             Dim invoiceClass As New InvoiceClass
 
             Dim pdfOrder As Byte() = previewClass.BindContent(headerId)
-            Dim pdfInvoice As Byte() = invoiceClass.BindContent("All", headerId, String.Empty)
+            Dim pdfInvoice As Byte() = invoiceClass.BindContent(type, headerId, itemdId)
 
             Dim orderData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.Operator AS Operator, OrderHeaders.InvoiceNumber AS InvoiceNumber FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
             If orderData Is Nothing Then Exit Sub

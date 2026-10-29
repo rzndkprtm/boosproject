@@ -1771,8 +1771,7 @@
             "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData", "modalDownloadPL",
             "modalDetailQuote", "modalDownloadQuote", "modalSendQuote",
             "modalConvertOrder", "modalReConvertOrder", "modalDataJob", "modalUpdateJobData",
-            "modalAddProduct", "modalAddPart", "modalAddService", "modalDeleteItem", "modalCosting",
-            
+            "modalAddProduct", "modalAddPart", "modalAddService", "modalDeleteItem", "modalCosting"            
         ].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();

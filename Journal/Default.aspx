@@ -59,10 +59,10 @@
                                     <div class="col-12 col-md-2">
                                         <label for="<%= ddlDateFilter.ClientID %>" class="form-label fw-semibold">Date Range</label>
                                         <asp:DropDownList runat="server" ID="ddlDateFilter" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlDateFilter_SelectedIndexChanged">
-                                            <asp:ListItem Text="All" Value="All"></asp:ListItem>
                                             <asp:ListItem Text="Today" Value="Today"></asp:ListItem>
                                             <asp:ListItem Text="This Week" Value="Week"></asp:ListItem>
                                             <asp:ListItem Text="This Month" Value="Month"></asp:ListItem>
+                                            <asp:ListItem Text="All" Value="All"></asp:ListItem>
                                         </asp:DropDownList>
                                     </div>
                                 </div>

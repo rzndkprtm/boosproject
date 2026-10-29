@@ -106,6 +106,8 @@
                     <div class="card-footer">
                         <div class="invoice-actions">
                             <asp:Button runat="server" ID="btnDownloadInvoice" CssClass="btn btn-primary" Text="Download Invoice" OnClick="btnDownloadInvoice_Click" />
+                            <asp:Button runat="server" ID="btnPreviewInvoice" CssClass="btn btn-info" Text="Preview Invoice" OnClick="btnPreviewInvoice_Click" />
+                            <a href="javascript:void(0);" runat="server" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalSendInvoice">Send Invoice</a>
                         </div>
                     </div>
                 </div>
@@ -113,9 +115,57 @@
         </section>
     </div>
 
+    <div class="modal fade text-left" id="modalSendInvoice" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Send Invoice</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">To</label>
+                            <asp:TextBox runat="server" ID="txtSendInvoiceTo" CssClass="form-control" placeholder="Customer Email ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">CC Customer</label>
+                            <asp:TextBox runat="server" ID="txtSendInvoiceCCCustomer" TextMode="MultiLine" CssClass="form-control" Height="135px" placeholder="CC Customer ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                            <p><small class="text-muted">* Please enter the required email address in a new line.</small></p>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">CC Staff</label>
+                            <asp:TextBox runat="server" ID="txtSendInvoiceCCStaff" TextMode="MultiLine" CssClass="form-control"  Height="135px" placeholder="CC ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                            <p><small class="text-muted">* Please enter the required email address in a new line.</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnSendInvoice" CssClass="btn btn-primary" Text="Submit" OnClick="btnSendInvoice_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblHeaderId"></asp:Label>
+        <asp:Label runat="server" ID="lblCustomerId"></asp:Label>
         <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
         <asp:Label runat="server" ID="lblCustomerName"></asp:Label>
     </div>
+
+    <script type="text/javascript">
+        ["modalSendInvoice"].forEach(id => {
+            document.getElementById(id).addEventListener("hide.bs.modal", () => {
+                document.activeElement.blur();
+                document.body.focus();
+            });
+        });
+        window.history.replaceState(null, null, window.location.href);
+    </script>
 </asp:Content>

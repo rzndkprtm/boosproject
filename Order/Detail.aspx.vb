@@ -1078,7 +1078,7 @@ Partial Class Order_Detail
                 End Using
 
                 Dim mailingClass As New MailingClass
-                mailingClass.SendInvoice(lblHeaderId.Text, Session("LoginId").ToString(), txtSendInvoiceTo.Text, ccCustomer, ccStaff)
+                mailingClass.SendInvoice(lblHeaderId.Text, Session("LoginId").ToString(), txtSendInvoiceTo.Text, ccCustomer, ccStaff, "All", String.Empty)
 
                 dataLog = {"OrderHeaders", lblHeaderId.Text, Session("LoginId"), "Send Invoice"}
                 orderClass.Logs(dataLog)
