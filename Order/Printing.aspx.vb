@@ -423,6 +423,10 @@ Partial Class Order_Printing
                     End If
 
                     If lblCompanyId.Text = "3" Then
+                        aPrinting.Visible = True : divPrinting.Visible = True
+                        aPrinting.Attributes("class") = aPrinting.Attributes("class") & " active"
+                        divPrinting.Attributes("class") = divPrinting.Attributes("class") & " show active"
+
                         If lblStatus.Text = "Unsubmitted" Then aUpload.Visible = True
                         If Session("RoleName") = "Developer" Then aUpload.Visible = True
 
@@ -457,6 +461,12 @@ Partial Class Order_Printing
                     End If
 
                     If lblCompanyId.Text = "3" Then
+                        aPrinting.Visible = True : divPrinting.Visible = True
+                        aPrintingB.Visible = True : divPrintingB.Visible = True
+
+                        aPrinting.Attributes("class") = aPrinting.Attributes("class") & " active"
+                        divPrinting.Attributes("class") = divPrinting.Attributes("class") & " show active"
+
                         If lblStatus.Text = "Unsubmitted" Then
                             aUpload.Visible = True : aUploadB.Visible = True
                         End If
