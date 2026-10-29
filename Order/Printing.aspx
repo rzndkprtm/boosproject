@@ -309,6 +309,7 @@
         <asp:Label runat="server" ID="lblHeaderId"></asp:Label>
         <asp:Label runat="server" ID="lblItemId"></asp:Label>
         <asp:Label runat="server" ID="lblStatus"></asp:Label>
+        <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
 
         <asp:Label runat="server" ID="lblPrinting"></asp:Label>
         <asp:Label runat="server" ID="lblPrintingB"></asp:Label>

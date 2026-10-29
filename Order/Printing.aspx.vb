@@ -328,7 +328,7 @@ Partial Class Order_Printing
             lblHeaderId.Text = Convert.ToString(httpUtility("headerid"))
             lblItemId.Text = Convert.ToString(httpUtility("itemid"))
 
-            Dim headerData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderHeaders WHERE Id='" & lblHeaderId.Text & "'")
+            Dim headerData As DataRow = orderClass.GetDataRow("SELECT OrderHeaders.*, Customers.CompanyId AS CompanyId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & lblHeaderId.Text & "'")
             If headerData Is Nothing Then
                 Response.Redirect("~/order", False)
                 Exit Sub
@@ -338,6 +338,7 @@ Partial Class Order_Printing
             lblOrderNumber.Text = headerData("OrderNumber").ToString()
             lblOrderName.Text = headerData("OrderName").ToString()
             lblStatus.Text = headerData("Status").ToString()
+            lblCompanyId.Text = headerData("CompanyId").ToString()
 
             Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE OrderDetails.Id='" & lblItemId.Text & "' AND OrderDetails.Active=1")
             If detailData Is Nothing Then
@@ -420,6 +421,16 @@ Partial Class Order_Printing
                             If lblStatus.Text = "Unsubmitted" Then aDelete.Visible = True
                         End If
                     End If
+
+                    If lblCompanyId.Text = "3" Then
+                        If lblStatus.Text = "Unsubmitted" Then aUpload.Visible = True
+                        If Session("RoleName") = "Developer" Then aUpload.Visible = True
+
+                        If Not String.IsNullOrEmpty(printing) Then
+                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}?v={2}", lblOrderId.Text, printing, DateTime.Now.Ticks)
+                            If lblStatus.Text = "Unsubmitted" Then aDelete.Visible = True
+                        End If
+                    End If
                 End If
 
                 If blindName = "Dual Blinds" Then
@@ -430,6 +441,22 @@ Partial Class Order_Printing
                         aPrinting.Attributes("class") = aPrinting.Attributes("class") & " active"
                         divPrinting.Attributes("class") = divPrinting.Attributes("class") & " show active"
 
+                        If lblStatus.Text = "Unsubmitted" Then
+                            aUpload.Visible = True : aUploadB.Visible = True
+                        End If
+                        If Session("RoleName") = "Developer" Then aUpload.Visible = True : aUploadB.Visible = True
+
+                        If Not String.IsNullOrEmpty(printing) Then
+                            imgPrinting.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printing, DateTime.Now.Ticks)
+                            If lblStatus.Text = "Unsubmitted" Then aDelete.Visible = True
+                        End If
+                        If Not String.IsNullOrEmpty(printingb) Then
+                            imgPrintingB.ImageUrl = String.Format("~/File/Order/{0}/{1}", lblOrderId.Text, printingb, DateTime.Now.Ticks)
+                            If lblStatus.Text = "Unsubmitted" Then aDeleteB.Visible = True
+                        End If
+                    End If
+
+                    If lblCompanyId.Text = "3" Then
                         If lblStatus.Text = "Unsubmitted" Then
                             aUpload.Visible = True : aUploadB.Visible = True
                         End If
