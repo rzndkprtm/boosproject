@@ -487,7 +487,7 @@
             $("#modalWaiting").modal("show");
             setTimeout(function () {
                 $("#modalWaiting").modal("hide");
-            }, 2000);
+            }, 5000);
         }
         window.history.replaceState(null, null, window.location.href);
     </script>

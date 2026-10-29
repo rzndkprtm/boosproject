@@ -1,7 +1,5 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
-Imports System.Security.Policy
-
 Partial Class Order_Invoice
     Inherits Page
 
@@ -10,11 +8,11 @@ Partial Class Order_Invoice
     Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'Dim pageAccess As Boolean = LoginAccess("Load")
-        'If pageAccess = False Then
-        '    Response.Redirect("~/order", False)
-        '    Exit Sub
-        'End If
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/order", False)
+            Exit Sub
+        End If
 
         If String.IsNullOrEmpty(Request.QueryString("orderid")) Then
             Response.Redirect("~/order", False)
@@ -185,8 +183,14 @@ Partial Class Order_Invoice
 
     Protected Sub BindData(headerId As String)
         Try
-            Dim headerData As DataRow = orderClass.GetDataRow("SELECT OrderHeaders.CustomerId, OrderHeaders.InvoiceNumber, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            Dim headerData As DataRow = orderClass.GetDataRow("SELECT OrderHeaders.CustomerId, OrderHeaders.InvoiceNumber, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, CASE WHEN Payment = 1 THEN 'Paid' ELSE '' END AS OrderPaid, FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
             If headerData Is Nothing Then
+                Response.Redirect("~/order", False)
+                Exit Sub
+            End If
+
+            Dim orderPaid As String = headerData("OrderPaid").ToString()
+            If orderPaid = "Paid" Then
                 Response.Redirect("~/order", False)
                 Exit Sub
             End If
