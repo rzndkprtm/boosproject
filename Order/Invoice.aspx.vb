@@ -190,7 +190,7 @@ Partial Class Order_Invoice
 
     Protected Sub BindData(headerId As String)
         Try
-            Dim headerData As DataRow = orderClass.GetDataRow("SELECT OrderHeaders.CustomerId, OrderHeaders.InvoiceNumber, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, CASE WHEN OrderHeaders.Payment=1 THEN 'Paid' ELSE '' END AS OrderPaid FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            Dim headerData As DataRow = orderClass.GetDataRow("SELECT OrderHeaders.Status AS OrderStatus, OrderHeaders.CustomerId, OrderHeaders.InvoiceNumber, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, CASE WHEN OrderHeaders.Payment=1 THEN 'Paid' ELSE '' END AS OrderPaid FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
             If headerData Is Nothing Then
                 Response.Redirect("~/order", False)
                 Exit Sub
@@ -207,7 +207,7 @@ Partial Class Order_Invoice
             lblCustomerName.Text = headerData("CustomerName").ToString()
             txtInvoiceNumber.Text = headerData("InvoiceNumber").ToString()
             lblInvoiceNumber.Text = headerData("InvoiceNumber").ToString()
-            lblOrderStatus.Text = headerData("Status").ToString()
+            lblOrderStatus.Text = headerData("OrderStatus").ToString()
 
             Dim detailParams As New List(Of SqlParameter) From {
                 New SqlParameter("@HeaderId", Convert.ToInt32(headerId))

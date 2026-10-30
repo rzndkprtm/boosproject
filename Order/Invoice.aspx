@@ -67,7 +67,10 @@
                             <div class="row">
                                 <div class="col-12 col-md-6 col-lg-5">
                                     <label class="form-label" for="<%= txtInvoiceNumber.ClientID %>">Invoice Number</label>
-                                    <asp:TextBox runat="server" ID="txtInvoiceNumber" CssClass="form-control" placeholder="Enter invoice number..." autocomplete="off"></asp:TextBox>
+                                    <div class="input-group">
+                                        <asp:TextBox runat="server" ID="txtInvoiceNumber" CssClass="form-control" placeholder="Enter invoice number..." autocomplete="off"></asp:TextBox>
+                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo"> ? </a>
+                                    </div>
                                     <small class="text-muted d-block mt-1">
                                         Enter the invoice number to be used for this document.
                                     </small>
@@ -151,6 +154,22 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modalInfo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Information</h5>
+                </div>
+                <div class="modal-body">
+                    <b>PLEASE NOTE</b>:<br /><br />
+                    If you change the Invoice Number and then proceed with downloading or previewing the invoice, the Invoice Number will be automatically updated in the system database.
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblHeaderId"></asp:Label>
@@ -162,7 +181,7 @@
     </div>
 
     <script type="text/javascript">
-        ["modalSendInvoice"].forEach(id => {
+        ["modalSendInvoice", "modalInfo"].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();
                 document.body.focus();
