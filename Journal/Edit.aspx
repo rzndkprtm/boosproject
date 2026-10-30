@@ -33,11 +33,11 @@
                                 <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
                                         <div class="row mb-2">
-                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Date</label>
                                                 <asp:TextBox runat="server" ID="txtDate" TextMode="Date" CssClass="form-control" Height="45px"></asp:TextBox>
                                             </div>
-                                            <div class="col-12 col-sm-12 col-lg-7 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-8 form-group">
                                                 <label class="form-label">Activity</label>
                                                 <asp:DropDownList runat="server" ID="ddlActivity" CssClass="choices form-select">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
