@@ -2136,10 +2136,10 @@ Partial Class Order_Detail
             liDividerInvoice.Visible = False
             aUpdateInvoiceNumber.Visible = False
             aUpdateInvoiceData.Visible = False
-            liInvoiceCustom.Visible = False
-            liDividerPL.Visible = False
+            liDividerInvoiceCustom.Visible = False
             btnInvoiceCustom.Visible = False
-            liDownloadPL.Visible = False
+
+            btnPackingList.Visible = False
 
             btnJob.Visible = False
             aDataJob.Visible = False
@@ -2249,7 +2249,7 @@ Partial Class Order_Detail
                     aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
-                    liInvoiceCustom.Visible = True
+                    liDividerInvoiceCustom.Visible = True
                     btnInvoiceCustom.Visible = True
 
                     btnJob.Visible = True
@@ -2281,7 +2281,7 @@ Partial Class Order_Detail
                     aReceivePayment.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
-                    liInvoiceCustom.Visible = True
+                    liDividerInvoiceCustom.Visible = True
                     btnInvoiceCustom.Visible = True
 
                     btnJob.Visible = True
@@ -2314,7 +2314,7 @@ Partial Class Order_Detail
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
 
-                    liInvoiceCustom.Visible = True
+                    liDividerInvoiceCustom.Visible = True
                     btnInvoiceCustom.Visible = True
 
                     btnJob.Visible = True
@@ -2377,11 +2377,13 @@ Partial Class Order_Detail
                     aProductionOrder.Visible = True
 
                     btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
+                    End If
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
-                    liInvoiceCustom.Visible = True
-                    btnInvoiceCustom.Visible = True
 
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
@@ -2410,14 +2412,15 @@ Partial Class Order_Detail
                     aShippedOrder.Visible = True
 
                     btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
+                    End If
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
-                    liInvoiceCustom.Visible = True
-                    btnInvoiceCustom.Visible = True
-                    liDividerPL.Visible = True
-                    liDownloadPL.Visible = True
 
+                    btnPackingList.Visible = True
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
                         aDataJob.Visible = True
@@ -2448,14 +2451,15 @@ Partial Class Order_Detail
                     aCancelOrder.Visible = True
 
                     btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
+                    End If
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
-                    liInvoiceCustom.Visible = True
-                    btnInvoiceCustom.Visible = True
-                    liDividerPL.Visible = True
-                    liDownloadPL.Visible = True
 
+                    btnPackingList.Visible = True
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
                         aDataJob.Visible = True
@@ -2480,18 +2484,17 @@ Partial Class Order_Detail
                     btnInvoice.Visible = True
                     If lblOrderPaid.Text = "" Then
                         aSendInvoice.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
                     End If
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
-                    liInvoiceCustom.Visible = True
-                    btnInvoiceCustom.Visible = True
-                    liDividerPL.Visible = True
-                    liDownloadPL.Visible = True
 
                     btnUpdateStatus.Visible = True
                     aProductionOrder.Visible = True
                     aCompleteOrder.Visible = True
 
+                    btnPackingList.Visible = True
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
                         aDataJob.Visible = True
@@ -2508,7 +2511,9 @@ Partial Class Order_Detail
                 End If
                 If lblOrderStatus.Text = "Completed" Then
                     btnInvoice.Visible = True
-                    If lblOrderPaid.Text = "" Then aSendInvoice.Visible = True
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                    End If
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
 
@@ -2582,6 +2587,8 @@ Partial Class Order_Detail
                     aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
+                    liDividerInvoiceCustom.Visible = True
+                    btnInvoiceCustom.Visible = True
 
                     aAddProduct.Visible = True
                     aAddPart.Visible = True
@@ -2599,6 +2606,8 @@ Partial Class Order_Detail
                     aSendInvoice.Visible = True
                     aReceivePayment.Visible = True
                     liDividerInvoice.Visible = True
+                    liDividerInvoiceCustom.Visible = True
+                    btnInvoiceCustom.Visible = True
                     aUpdateInvoiceNumber.Visible = True
                 End If
                 If lblOrderStatus.Text = "Payment Received" Then
@@ -2674,6 +2683,8 @@ Partial Class Order_Detail
                         aAddProduct.Visible = True
                         aAddPart.Visible = True
                         aAddService.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "In Production" Then
@@ -2687,9 +2698,8 @@ Partial Class Order_Detail
                     btnInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
-                    liDividerPL.Visible = True
-                    liDownloadPL.Visible = True
 
+                    btnPackingList.Visible = True
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
                         aDataJob.Visible = True
@@ -2708,6 +2718,8 @@ Partial Class Order_Detail
                         aAddProduct.Visible = True
                         aAddPart.Visible = True
                         aAddService.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "On Hold" Then
@@ -2720,9 +2732,8 @@ Partial Class Order_Detail
                     btnInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
-                    liDividerPL.Visible = True
-                    liDownloadPL.Visible = True
 
+                    btnPackingList.Visible = True
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
                         aDataJob.Visible = True
@@ -2741,6 +2752,8 @@ Partial Class Order_Detail
                         aAddProduct.Visible = True
                         aAddPart.Visible = True
                         aAddService.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "Shipped Out" Then
@@ -2750,9 +2763,8 @@ Partial Class Order_Detail
                     btnInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceData.Visible = True
-                    liDividerPL.Visible = True
-                    liDownloadPL.Visible = True
 
+                    btnPackingList.Visible = True
                     btnJob.Visible = True
                     If convertedStatus = "Yes" Then
                         aDataJob.Visible = True
@@ -2766,6 +2778,8 @@ Partial Class Order_Detail
                     If lblOrderPaid.Text = "" Then
                         aRePrice.Visible = True
                         aSendInvoice.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
                     End If
 
                     If isReworkOrder = False AndAlso lblOrderType.Text = "Regular" Then
@@ -2804,7 +2818,6 @@ Partial Class Order_Detail
                     If lblCompanyId.Text = "3" Then btnSuratJalan.Visible = True
                     If lblOrderType.Text = "Builder" Then aBuilderData.Visible = True
                 End If
-
 
                 If lblOrderStatus.Text = "Unsubmitted" Then
                     If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
@@ -2847,6 +2860,8 @@ Partial Class Order_Detail
 
                         btnInvoice.Visible = True
                         aSendInvoice.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
                     End If
                     aAddProduct.Visible = True
                     aAddPart.Visible = True
@@ -2860,6 +2875,8 @@ Partial Class Order_Detail
                         btnUpdateStatus.Visible = True
                         aUnsubmitOrder.Visible = True
                         aCancelOrder.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
                     End If
                     btnInvoice.Visible = True
                     aSendInvoice.Visible = True
@@ -2877,6 +2894,8 @@ Partial Class Order_Detail
                         btnInvoice.Visible = True
                         aSendInvoice.Visible = True
                         aReceivePayment.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "Payment Received" Then
@@ -2924,6 +2943,8 @@ Partial Class Order_Detail
                             aAddProduct.Visible = True
                             aAddPart.Visible = True
                             aAddService.Visible = True
+                            liDividerInvoiceCustom.Visible = True
+                            btnInvoiceCustom.Visible = True
                         End If
                     End If
                 End If
@@ -2938,9 +2959,8 @@ Partial Class Order_Detail
                         btnInvoice.Visible = True
                         liDividerInvoice.Visible = True
                         aUpdateInvoiceData.Visible = True
-                        liDividerPL.Visible = True
-                        liDownloadPL.Visible = True
 
+                        btnPackingList.Visible = True
                         btnJob.Visible = True
                         If convertedStatus = "Yes" Then
                             aDataJob.Visible = True
@@ -2959,6 +2979,8 @@ Partial Class Order_Detail
                             aAddProduct.Visible = True
                             aAddPart.Visible = True
                             aAddService.Visible = True
+                            liDividerInvoiceCustom.Visible = True
+                            btnInvoiceCustom.Visible = True
                         End If
                     End If
                 End If
@@ -2971,9 +2993,8 @@ Partial Class Order_Detail
                         btnInvoice.Visible = True
                         liDividerInvoice.Visible = True
                         aUpdateInvoiceData.Visible = True
-                        liDividerPL.Visible = True
-                        liDownloadPL.Visible = True
 
+                        btnPackingList.Visible = True
                         btnJob.Visible = True
                         If convertedStatus = "Yes" Then
                             aDataJob.Visible = True
@@ -2992,6 +3013,8 @@ Partial Class Order_Detail
                             aAddProduct.Visible = True
                             aAddPart.Visible = True
                             aAddService.Visible = True
+                            liDividerInvoiceCustom.Visible = True
+                            btnInvoiceCustom.Visible = True
                         End If
                     End If
                 End If
@@ -3003,12 +3026,13 @@ Partial Class Order_Detail
                         btnInvoice.Visible = True
                         If lblOrderPaid.Text = "" Then
                             aSendInvoice.Visible = True
+                            liDividerInvoiceCustom.Visible = True
+                            btnInvoiceCustom.Visible = True
                         End If
                         liDividerInvoice.Visible = True
                         aUpdateInvoiceData.Visible = True
-                        liDividerPL.Visible = True
-                        liDownloadPL.Visible = True
 
+                        btnPackingList.Visible = True
                         btnJob.Visible = True
                         If convertedStatus = "Yes" Then
                             aDataJob.Visible = True
@@ -3024,6 +3048,7 @@ Partial Class Order_Detail
                 End If
                 If lblOrderStatus.Text = "Completed" Then
                     If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
+                        btnPackingList.Visible = True
                         btnJob.Visible = True
                         If convertedStatus = "Yes" Then
                             aDataJob.Visible = True
@@ -3195,6 +3220,8 @@ Partial Class Order_Detail
                     aSendInvoice.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
+                    liDividerInvoiceCustom.Visible = True
+                    btnInvoiceCustom.Visible = True
 
                     aAddProduct.Visible = True
                     aAddPart.Visible = True
@@ -3213,6 +3240,8 @@ Partial Class Order_Detail
                     aReceivePayment.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
+                    liDividerInvoiceCustom.Visible = True
+                    btnInvoiceCustom.Visible = True
                 End If
                 If lblOrderStatus.Text = "Pending Payment" Then
                     btnEditOrder.Visible = True
@@ -3227,6 +3256,8 @@ Partial Class Order_Detail
                     aReceivePayment.Visible = True
                     liDividerInvoice.Visible = True
                     aUpdateInvoiceNumber.Visible = True
+                    liDividerInvoiceCustom.Visible = True
+                    btnInvoiceCustom.Visible = True
                 End If
                 If lblOrderStatus.Text = "Payment Received" Then
                     btnInvoice.Visible = True
@@ -3252,6 +3283,8 @@ Partial Class Order_Detail
                         aAddProduct.Visible = True
                         aAddPart.Visible = True
                         aAddService.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "In Production" Then
@@ -3265,6 +3298,8 @@ Partial Class Order_Detail
                         aAddProduct.Visible = True
                         aAddPart.Visible = True
                         aAddService.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "On Hold" Then
@@ -3278,6 +3313,8 @@ Partial Class Order_Detail
                         aAddProduct.Visible = True
                         aAddPart.Visible = True
                         aAddService.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "Shipped Out" Then
@@ -3292,6 +3329,8 @@ Partial Class Order_Detail
                         aSendInvoice.Visible = True
                         aRePrice.Visible = True
                         aAddService.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
                     End If
                 End If
                 If lblOrderStatus.Text = "Completed" Then
@@ -3436,9 +3475,23 @@ Partial Class Order_Detail
 
                 If lblCompanyId.Text = "3" Then btnSuratJalan.Visible = True
 
-                If lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Proforma Sent" OrElse lblOrderStatus.Text = "Payment Received" OrElse lblOrderStatus.Text = "New Order" OrElse lblOrderStatus.Text = "Canceled" Then
+                If lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Proforma Sent" OrElse lblOrderStatus.Text = "Payment Received" OrElse lblOrderStatus.Text = "Canceled" Then
                     Response.Redirect("~/order", False)
                     Exit Sub
+                End If
+
+                If lblOrderStatus.Text = "New Order" Then
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    aUpdateInvoiceData.Visible = True
+
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        aRePrice.Visible = True
+                        aAddService.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
+                    End If
                 End If
 
                 If lblOrderStatus.Text = "In Production" Then
@@ -3446,10 +3499,54 @@ Partial Class Order_Detail
                     aShippedOrder.Visible = True
 
                     btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    aUpdateInvoiceData.Visible = True
+
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        aRePrice.Visible = True
+                        aAddService.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
+                    End If
+
+                    btnPackingList.Visible = True
+                End If
+                If lblOrderStatus.Text = "On Hold" Then
+                    btnUpdateStatus.Visible = True
+                    aShippedOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    aUpdateInvoiceData.Visible = True
+
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        aRePrice.Visible = True
+                        aAddService.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
+                    End If
+
+                    btnPackingList.Visible = True
                 End If
                 If lblOrderStatus.Text = "Shipped Out" Then
                     btnUpdateStatus.Visible = True
                     aCompleteOrder.Visible = True
+
+                    btnInvoice.Visible = True
+                    liDividerInvoice.Visible = True
+                    aUpdateInvoiceData.Visible = True
+
+                    If lblOrderPaid.Text = "" Then
+                        aSendInvoice.Visible = True
+                        aRePrice.Visible = True
+                        aAddService.Visible = True
+                        liDividerInvoiceCustom.Visible = True
+                        btnInvoiceCustom.Visible = True
+                    End If
+
+                    btnPackingList.Visible = True
 
                     divShipmentOrder.Attributes.Add("onclick", "showShippedOrder()")
                     divShipmentOrder.Style.Add("cursor", "pointer")

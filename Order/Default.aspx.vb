@@ -876,6 +876,7 @@ Partial Class Order_Default
                 ddlStatus.Items.Add(New ListItem("Unshipment", "Unshipment"))
             End If
             If Session("RoleName") = "Export" Then
+                ddlStatus.Items.Add(New ListItem("New Order", "New Order"))
                 ddlStatus.Items.Add(New ListItem("In Production", "In Production"))
                 ddlStatus.Items.Add(New ListItem("On Hold", "On Hold"))
                 ddlStatus.Items.Add(New ListItem("Shipped Out", "Shipped Out"))

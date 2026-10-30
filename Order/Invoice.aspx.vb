@@ -37,14 +37,16 @@ Partial Class Order_Invoice
                 Exit Sub
             End If
 
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                    thisCmd.Parameters.AddWithValue("@InvoiceNumber", txtInvoiceNumber.Text.Trim())
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
+            If Not txtInvoiceNumber.Text = lblInvoiceNumber.Text Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@InvoiceNumber", txtInvoiceNumber.Text.Trim())
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
                 End Using
-            End Using
+            End If
 
             Dim itemIds As String = String.Join(",", selectedIds)
 
@@ -80,14 +82,16 @@ Partial Class Order_Invoice
                 Exit Sub
             End If
 
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("UPDATE OrderHeaders SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                    thisCmd.Parameters.AddWithValue("@InvoiceNumber", txtInvoiceNumber.Text.Trim())
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
+            If Not txtInvoiceNumber.Text = lblInvoiceNumber.Text Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("UPDATE OrderHeaders SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@InvoiceNumber", txtInvoiceNumber.Text.Trim())
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
                 End Using
-            End Using
+            End If
 
             Dim itemIds As String = String.Join(",", selectedIds)
 
@@ -113,14 +117,16 @@ Partial Class Order_Invoice
                 Exit Sub
             End If
 
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("UPDATE OrderHeaders SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                    thisCmd.Parameters.AddWithValue("@InvoiceNumber", txtInvoiceNumber.Text.Trim())
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
+            If Not txtInvoiceNumber.Text = lblInvoiceNumber.Text Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("UPDATE OrderHeaders SET InvoiceNumber=@InvoiceNumber WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@InvoiceNumber", txtInvoiceNumber.Text.Trim())
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
                 End Using
-            End Using
+            End If
 
             Dim itemIds As String = String.Join(",", selectedIds)
 
@@ -156,16 +162,16 @@ Partial Class Order_Invoice
                 ccStaff = String.Join(";", cleanedEmails)
             End If
 
-            'Using thisConn As New SqlConnection(myConn)
-            '    If lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Pending Payment" Then
-            '        Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Proforma Sent', Collector=@Collector, InvoiceDate=GETDATE(), DueDate=DATEADD(DAY, 14, GETDATE()) WHERE Id=@Id;", thisConn)
-            '            thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-            '            thisCmd.Parameters.AddWithValue("@Collector", Session("LoginId").ToString())
-            '            thisConn.Open()
-            '            thisCmd.ExecuteNonQuery()
-            '        End Using
-            '    End If
-            'End Using
+            Using thisConn As New SqlConnection(myConn)
+                If lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Pending Payment" Then
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Proforma Sent', Collector=@Collector, InvoiceDate=GETDATE(), DueDate=DATEADD(DAY, 14, GETDATE()) WHERE Id=@Id;", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@Collector", Session("LoginId").ToString())
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End If
+            End Using
 
             Dim mailingClass As New MailingClass
             mailingClass.SendInvoice(lblHeaderId.Text, Session("LoginId").ToString(), txtSendInvoiceTo.Text, ccCustomer, ccStaff, "Custom", itemIds)
@@ -200,6 +206,8 @@ Partial Class Order_Invoice
             lblCompanyId.Text = headerData("CompanyId").ToString()
             lblCustomerName.Text = headerData("CustomerName").ToString()
             txtInvoiceNumber.Text = headerData("InvoiceNumber").ToString()
+            lblInvoiceNumber.Text = headerData("InvoiceNumber").ToString()
+            lblOrderStatus.Text = headerData("Status").ToString()
 
             Dim detailParams As New List(Of SqlParameter) From {
                 New SqlParameter("@HeaderId", Convert.ToInt32(headerId))

@@ -83,18 +83,18 @@
                         <div class="table-responsive">
                             <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover invoice-table" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center" EmptyDataRowStyle-CssClass="invoice-empty" DataKeyNames="Id">
                                 <Columns>
-                                    <asp:TemplateField HeaderText="Select" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="75px" ItemStyle-Width="75px">
+                                    <asp:TemplateField HeaderText="SELECT" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="75px" ItemStyle-Width="75px">
                                         <ItemTemplate>
                                             <asp:CheckBox ID="chkSelect" runat="server" Checked="true" />
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="No" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="65px" ItemStyle-Width="65px">
+                                    <asp:TemplateField HeaderText="NO" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="65px" ItemStyle-Width="65px">
                                         <ItemTemplate>
                                             <%# Container.DataItemIndex + 1 %>
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:BoundField DataField="Id" HeaderText="ID" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="100px" />
-                                    <asp:TemplateField HeaderText="Description">
+                                    <asp:TemplateField HeaderText="DESCRIPTION">
                                         <ItemTemplate>
                                             <%# BindProductDescription(Eval("Id")) %>
                                         </ItemTemplate>
@@ -157,6 +157,8 @@
         <asp:Label runat="server" ID="lblCustomerId"></asp:Label>
         <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
         <asp:Label runat="server" ID="lblCustomerName"></asp:Label>
+        <asp:Label runat="server" ID="lblInvoiceNumber"></asp:Label>
+        <asp:Label runat="server" ID="lblOrderStatus"></asp:Label>
     </div>
 
     <script type="text/javascript">
