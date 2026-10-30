@@ -517,7 +517,7 @@ function bindPartColour(blindType, colourType) {
             return;
         }
 
-        const listData = { type: "PartColour_Shuuter", designtype: designId, blindtype: blindType, colourtype: colourType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "PartColour_Shutter", designtype: designId, blindtype: blindType, colourtype: colourType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",

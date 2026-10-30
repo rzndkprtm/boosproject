@@ -686,7 +686,7 @@ Partial Class Order_Method
             End If
         End If
 
-        If type = "PartColour_Shuuter" Then
+        If type = "PartColour_Shutter" Then
             Dim designName As String = orderClass.GetDesignName(designtype)
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             Dim productName As String = orderClass.GetProductName(colourtype)
@@ -1166,6 +1166,247 @@ Partial Class Order_Method
         End If
 
         If type = "BottomTrackShutter" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Track Bi-fold" OrElse blindName = "Track Sliding" OrElse blindName = "Track Sliding Single Track" Then
+                If Not String.IsNullOrEmpty(customtype) Then
+                    result.Add(New With {.Value = "M Track", .Text = "M Track"})
+                    result.Add(New With {.Value = "U Track", .Text = "U Track"})
+                    If customtype = "Yes" Then
+                        result.Clear()
+                        result.Add(New With {.Value = "U Track", .Text = "U Track"})
+                    End If
+                End If
+            End If
+        End If
+
+        If type = "LayoutCodeEvolve" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Hinged" Then
+                result.Add(New With {.Value = "L", .Text = "L"})
+                result.Add(New With {.Value = "R", .Text = "R"})
+                result.Add(New With {.Value = "LR", .Text = "LR"})
+                result.Add(New With {.Value = "LD-R", .Text = "LD-R"})
+                result.Add(New With {.Value = "L-DR", .Text = "L-DR"})
+                result.Add(New With {.Value = "LTLR", .Text = "LTLR"})
+                result.Add(New With {.Value = "LRTR", .Text = "LRTR"})
+                result.Add(New With {.Value = "LRTLR", .Text = "LRTLR"})
+                result.Add(New With {.Value = "LTLRTR", .Text = "LTLRTR"})
+                result.Add(New With {.Value = "LD-RTLD-R", .Text = "LD-RTLD-R"})
+                result.Add(New With {.Value = "L-DRTL-DR", .Text = "L-DRTL-DR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Hinged Bi-fold" Then
+                result.Add(New With {.Value = "LL", .Text = "LL"})
+                result.Add(New With {.Value = "RR", .Text = "RR"})
+                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Track Bi-fold" Then
+                result.Add(New With {.Value = "LL", .Text = "LL"})
+                result.Add(New With {.Value = "RR", .Text = "RR"})
+                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
+                result.Add(New With {.Value = "LLLL", .Text = "LLLL"})
+                result.Add(New With {.Value = "RRRR", .Text = "RRRR"})
+                result.Add(New With {.Value = "LLRRRR", .Text = "LLRRRR"})
+                result.Add(New With {.Value = "LLLLRR", .Text = "LLLLRR"})
+                result.Add(New With {.Value = "LLLLLL", .Text = "LLLLLL"})
+                result.Add(New With {.Value = "RRRRRR", .Text = "RRRRRR"})
+                result.Add(New With {.Value = "LLRRRRRR", .Text = "LLRRRRRR"})
+                result.Add(New With {.Value = "LLLLRRRR", .Text = "LLLLRRRR"})
+                result.Add(New With {.Value = "LLLLLLRR", .Text = "LLLLLLRR"})
+                result.Add(New With {.Value = "LLLLLLLL", .Text = "LLLLLLLL"})
+                result.Add(New With {.Value = "RRRRRRRR", .Text = "RRRRRRRR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Track Sliding" Then
+                result.Add(New With {.Value = "BF", .Text = "BF"})
+                result.Add(New With {.Value = "FB", .Text = "FB"})
+                result.Add(New With {.Value = "BFB", .Text = "BFB"})
+                result.Add(New With {.Value = "FBF", .Text = "FBF"})
+                result.Add(New With {.Value = "BFFB", .Text = "BFFB"})
+                result.Add(New With {.Value = "FBBF", .Text = "FBBF"})
+                result.Add(New With {.Value = "BBFF", .Text = "BBFF"})
+                result.Add(New With {.Value = "FFBB", .Text = "FFBB"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Track Sliding Single Track" Then
+                result.Add(New With {.Value = "F", .Text = "F"})
+                result.Add(New With {.Value = "FF", .Text = "FF"})
+                result.Add(New With {.Value = "FFF", .Text = "FFF"})
+                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Fixed" Then
+                result.Add(New With {.Value = "", .Text = ""})
+                result.Add(New With {.Value = "F", .Text = "F"})
+                result.Add(New With {.Value = "FF", .Text = "FF"})
+                result.Add(New With {.Value = "FFF", .Text = "FFF"})
+                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
+                result.Add(New With {.Value = "FFFFFF", .Text = "FFFFFF"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+        End If
+
+        If type = "FrameTypeEvolve" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
+                result.Add(New With {.Value = "Beaded L 49mm", .Text = "Beaded L 49mm"})
+                result.Add(New With {.Value = "Insert L 49mm", .Text = "Insert L 49mm"})
+                If customtype = "Inside" Then
+                    result.Add(New With {.Value = "Small Bullnose Z Frame", .Text = "Small Bullnose Z Frame"})
+                    result.Add(New With {.Value = "Large Bullnose Z Frame", .Text = "Large Bullnose Z Frame"})
+                End If
+                result.Add(New With {.Value = "No Frame", .Text = "No Frame"})
+            End If
+
+            If blindName = "Track Bi-fold" Then
+                result.Add(New With {.Value = "92mm", .Text = "92mm"})
+                result.Add(New With {.Value = "152mm", .Text = "152mm"})
+                result.Add(New With {.Value = "185mm", .Text = "185mm"})
+            End If
+
+            If blindName = "Track Sliding" Then
+                result.Add(New With {.Value = "152mm", .Text = "152mm"})
+                result.Add(New With {.Value = "185mm", .Text = "185mm"})
+            End If
+
+            If blindName = "Track Sliding Single Track" Then
+                result.Add(New With {.Value = "92mm", .Text = "92mm"})
+                result.Add(New With {.Value = "152mm", .Text = "152mm"})
+                result.Add(New With {.Value = "185mm", .Text = "185mm"})
+            End If
+
+            If blindName = "Fixed" Then
+                result.Add(New With {.Value = "U Channel", .Text = "U Channel"})
+                result.Add(New With {.Value = "19x19 Light Block", .Text = "19x19 Light Block"})
+            End If
+        End If
+
+        If type = "LeftFrameEvolve" Then
+            If customtype = "Beaded L 49mm" OrElse customtype = "Insert L 49mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+            End If
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+                result.Add(New With {.Value = "Sill Plate (Bullnose Z)", .Text = "Sill Plate (Bullnose Z)"})
+            End If
+            If customtype = "No Frame" Then
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+            End If
+            If customtype = "92mm" OrElse customtype = "152mm" OrElse customtype = "185mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+
+            If customtype = "U Channel" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+            If customtype = "19x19 Light Block" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+        End If
+
+        If type = "RightFrameEvolve" Then
+            If customtype = "Beaded L 49mm" OrElse customtype = "Insert L 49mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+            End If
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+                result.Add(New With {.Value = "Sill Plate (Bullnose Z)", .Text = "Sill Plate (Bullnose Z)"})
+            End If
+            If customtype = "No Frame" Then
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+            End If
+            If customtype = "92mm" OrElse customtype = "152mm" OrElse customtype = "185mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+
+            If customtype = "U Channel" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+            If customtype = "19x19 Light Block" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+        End If
+
+        If type = "TopFrameEvolve" Then
+            If customtype = "Beaded L 49mm" OrElse customtype = "Insert L 49mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+            End If
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (Bullnose Z)", .Text = "Sill Plate (Bullnose Z)"})
+                result.Add(New With {.Value = "Roller Catch Ramp", .Text = "Roller Catch Ramp"})
+            End If
+            If customtype = "No Frame" Then
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+            End If
+            If customtype = "92mm" OrElse customtype = "152mm" OrElse customtype = "185mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+
+            If customtype = "U Channel" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+            If customtype = "19x19 Light Block" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+        End If
+
+        If type = "BottomFrameEvolve" Then
+            If customtype = "Beaded L 49mm" OrElse customtype = "Insert L 49mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+            End If
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Z Frame" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (Bullnose Z)", .Text = "Sill Plate (Bullnose Z)"})
+                result.Add(New With {.Value = "Roller Catch Ramp", .Text = "Roller Catch Ramp"})
+            End If
+            If customtype = "No Frame" Then
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
+            End If
+            If customtype = "92mm" OrElse customtype = "152mm" OrElse customtype = "185mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+
+            If customtype = "U Channel" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+            If customtype = "19x19 Light Block" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+        End If
+
+        If type = "BottomTrackEvolve" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Track Bi-fold" OrElse blindName = "Track Sliding" OrElse blindName = "Track Sliding Single Track" Then
                 If Not String.IsNullOrEmpty(customtype) Then
@@ -12388,7 +12629,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function EvolveDetail(itemId As Integer, companyDetailId As String) As Object
+    Public Shared Function EvolveDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -12398,21 +12639,38 @@ Partial Class Order_Method
         Dim blindId As String = detailData("BlindType").ToString()
         Dim tubeId As String = detailData("TubeType").ToString()
         Dim controlId As String = detailData("ControlType").ToString()
+        Dim mounting As String = detailData("Mounting").ToString()
+        Dim frameType As String = detailData("FrameType").ToString()
+        Dim frameBottom As String = detailData("FrameBottom").ToString()
 
         Dim itemDetail As New Dictionary(Of String, Object)
         For Each col As DataColumn In detailData.Table.Columns
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindTypeCS", .designtype = designId, .companydetailid = companyDetailId}
-        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId}
-        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId}
+        Dim blindReq As New JSONList With {.type = "BlindTypeEvolve", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodeEvolve", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim frameTypeReq As New JSONList With {.type = "FrameTypeEvolve", .blindtype = blindId, .customtype = mounting, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim leftFrameReq As New JSONList With {.type = "LeftFrameEvolve", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim rightFrameReq As New JSONList With {.type = "RightFrameEvolve", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim topFrameReq As New JSONList With {.type = "TopFrameEvolve", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim bottomFrameReq As New JSONList With {.type = "BottomFrameEvolve", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim bottomTrackReq As New JSONList With {.type = "BottomTrackEvolve", .blindtype = blindId, .customtype = frameBottom, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
             .BlindTypes = ListData(blindReq),
             .ColourTypes = ListData(colourReq),
-            .Mountings = ListData(mountingReq)
+            .Mountings = ListData(mountingReq),
+            .LayoutCodes = ListData(layoutCodeReq),
+            .FrameTypes = ListData(frameTypeReq),
+            .LeftFrames = ListData(leftFrameReq),
+            .RightFrames = ListData(rightFrameReq),
+            .TopFrames = ListData(topFrameReq),
+            .BottomFrames = ListData(bottomFrameReq),
+            .BottomTracks = ListData(bottomTrackReq)
         }
         Return result
     End Function
@@ -13192,7 +13450,7 @@ Partial Class Order_Method
 
         Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim partColour As New JSONList With {.type = "PartColour_Shuuter", .designtype = designId, .blindtype = blindId, .colourtype = productId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim partColour As New JSONList With {.type = "PartColour_Shutter", .designtype = designId, .blindtype = blindId, .colourtype = productId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,

@@ -1,10 +1,13 @@
 ﻿let designIdOri = "22";
 let itemAction;
 let headerId;
+let orderId;
+let orderStatus;
 let itemId;
 let designId;
-let company;
-let companyDetail;
+let customerId;
+let companyId;
+let companyDetailId;
 let loginId;
 let roleAccess;
 let priceAccess;
@@ -40,6 +43,7 @@ $("#midrailheight1").on("input", function () {
 
     bindMidrailCritical(midrailheight1, midrailheight2);
     bindTiltrodSplit(midrailheight1);
+
     visibleMidrail(midrailheight1);
 });
 
@@ -68,6 +72,7 @@ $("#hingecolour").on("change", function () {
 $("#layoutcode").on("change", function () {
     $("#layoutcodecustom").val("");
     $("#samesizepanel").val("");
+
     const blindtype = document.getElementById("blindtype").value;
     let layoutcode = $(this).val();
 
@@ -102,36 +107,34 @@ $("#samesizepanel").on("change", function () {
 
 $("#frametype").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
+    const frametype = $(this).val();
     const mounting = document.getElementById("mounting").value;
+    const buildout = document.getElementById("buildout").value;
 
-    bindLeftFrame($(this).val());
-    bindRightFrame($(this).val());
-    bindTopFrame($(this).val(), mounting);
-    bindBottomFrame($(this).val(), mounting);
-    visibleFrameDetail($(this).val());
-    visibleBuildout(blindtype, $(this).val());
+    bindLeftFrame(frametype, mounting);
+    bindRightFrame(frametype, mounting);
+    bindTopFrame(frametype, mounting);
+    bindBottomFrame(frametype, mounting);
+    visibleFrameDetail(frametype);
+    visibleBuildout(blindtype, frametype);
+    visibleBuildoutPosition(blindtype, frametype, buildout);
 });
 
 $("#framebottom").on("change", function () {
     const blindtype = document.getElementById("blindtype").value;
-    const framebottom = $(this).val();
 
-    bindBottomTrack(blindtype, framebottom);
-    visibleBottomTrack(blindtype, framebottom);
+    bindBottomTrack(blindtype, $(this).val());
 });
 
 $("#horizontaltpostheight").on("input", function () {
     const value = parseFloat($(this).val()) || 0;
-    const horizontalrequired = document.getElementById("divHorizontalTPostRequired");
-
-    horizontalrequired.style.display = "none";
-    if (value === 0) return;
-    if (value > 0) horizontalrequired.style.display = "";
+    visibleHorizontalRequired(value);
 });
 
 $("#tiltrodsplit").on("change", function () {
     visibleSplitHeight($(this).val());
 });
+
 function loader(itemAction) {
     return new Promise((resolve) => {
         if (itemAction === "create") {
@@ -147,9 +150,33 @@ function isError(msg) {
     document.getElementById("errorMsg").innerHTML = msg;
 }
 
+function getOrderHeader(headerId) {
+    return new Promise((resolve, reject) => {
+        if (!headerId) return resolve();
+
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/GetOrderHeader",
+            data: JSON.stringify({ headerId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: ({ d }) => {
+                orderId = d.OrderId || "-";
+                customerId = d.CustomerId || "-";
+                orderStatus = d.OrderStatus || "-";
+                document.getElementById("orderid").innerText = d.OrderId || "-";
+                document.getElementById("ordernumber").innerText = d.OrderNumber || "-";
+                document.getElementById("ordername").innerText = d.OrderName || "-";
+                resolve(d);
+            },
+            error: reject
+        });
+    });
+}
+
 function getCompanyOrder(headerId) {
     return new Promise((resolve, reject) => {
-        company = "";
+        companyId = "";
 
         if (!headerId) {
             resolve();
@@ -164,7 +191,7 @@ function getCompanyOrder(headerId) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
-                company = response.d.trim();
+                companyId = response.d.trim();
                 resolve();
             },
             error: function (error) {
@@ -176,7 +203,7 @@ function getCompanyOrder(headerId) {
 
 function getCompanyDetailOrder(headerId) {
     return new Promise((resolve, reject) => {
-        companyDetail = "";
+        companyDetailId = "";
 
         if (!headerId) {
             resolve();
@@ -191,7 +218,7 @@ function getCompanyDetailOrder(headerId) {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
-                companyDetail = response.d.trim();
+                companyDetailId = response.d.trim();
                 resolve();
             },
             error: function (error) {
@@ -393,7 +420,7 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindTypeShutter", companydetail: companyDetail, designtype: designType };
+        const listData = { type: "BlindTypeEvolve", companydetailid: companyDetailId, designtype: designType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -458,7 +485,7 @@ function bindColourType(blindType) {
             return;
         }
 
-        const listData = { type: "ColourType", blindtype: blindType, companydetail: companyDetail, tubetype: "0", controltype: "0" };
+        const listData = { type: "ColourType", blindtype: blindType, companydetailid: companyDetailId, tubetype: "9", controltype: "17", orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -483,7 +510,6 @@ function bindColourType(blindType) {
                         option.text = item.Text;
                         colourtype.add(option);
                     });
-
 
                     if (response.d.length === 1) {
                         colourtype.selectedIndex = 0;
@@ -516,7 +542,7 @@ function bindMounting(blindType) {
             return;
         }
 
-        const listData = { type: "Mounting", blindtype: blindType };
+        const listData = { type: "Mounting", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -528,7 +554,7 @@ function bindMounting(blindType) {
                 if (Array.isArray(response.d)) {
                     mounting.innerHTML = "";
 
-                    if (response.d.length > 1) {
+                    if (response.d.length >= 1) {
                         const defaultOption = document.createElement("option");
                         defaultOption.text = "";
                         defaultOption.value = "";
@@ -541,10 +567,6 @@ function bindMounting(blindType) {
                         option.text = item.Text;
                         mounting.add(option);
                     });
-
-                    if (response.d.length === 1) {
-                        mounting.selectedIndex = 0;
-                    }
                 }
                 resolve();
             },
@@ -560,27 +582,20 @@ function bindMidrailCritical(height1, height2) {
         const midrailcritical = document.getElementById("midrailcritical");
         midrailcritical.innerHTML = "";
 
-        visibleMidrail(height1);
-
         let options = [{ value: "", text: "" }];
 
-        if (height1 > 0 && height2 > 0) {
+        if (height1 > 0) {
+            options = [
+                { value: "", text: "" }, { value: "Yes", text: "Yes" },
+            ];
+        } else if (height1 > 0 && height2 > 0) {
             options = [
                 { value: "", text: "" },
                 { value: "Yes - Top Only", text: "Yes - Top Only" },
                 { value: "Yes - Bottom Only", text: "Yes - Bottom Only" },
             ];
-        } else if (height1 > 0) {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-            ];
-        } else if (height2 > 0) {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes - Top Only", text: "Yes - Top Only" },
-                { value: "Yes - Bottom Only", text: "Yes - Bottom Only" },
-            ];
+        } else {
+            options = [{ value: "", text: "" }];
         }
 
         options.forEach((opt) => {
@@ -604,106 +619,41 @@ function bindLayoutCode(blindType) {
             return;
         }
 
-        getBlindName(blindType).then((blindName) => {
-            let options = [{ value: "", text: "" }];
+        const listData = { type: "LayoutCodeEvolve", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
-            switch (blindName) {
-                case "Hinged":
-                    options = [
-                        { value: "", text: "" },
-                        { value: "L", text: "L" },
-                        { value: "R", text: "R" },
-                        { value: "LR", text: "LR" },
-                        { value: "LD-R", text: "LD-R" },
-                        { value: "L-DR", text: "L-DR" },
-                        { value: "LTLR", text: "LTLR" },
-                        { value: "LRTR", text: "LRTR" },
-                        { value: "LRTLR", text: "LRTLR" },
-                        { value: "LTLRTR", text: "LTLRTR" },
-                        { value: "LD-RTLD-R", text: "LD-RTLD-R" },
-                        { value: "L-DRTL-DR", text: "L-DRTL-DR" },
-                        { value: "Other", text: "Other" },
-                    ];
-                    break;
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    layoutcode.innerHTML = "";
 
-                case "Hinged Bi-fold":
-                    options = [
-                        { value: "", text: "" },
-                        { value: "LL", text: "LL" },
-                        { value: "RR", text: "RR" },
-                        { value: "LLRR", text: "LLRR" },
-                        { value: "Other", text: "Other" },
-                    ];
-                    break;
+                    if (response.d.length > 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        layoutcode.add(defaultOption);
+                    }
 
-                case "Track Bi-fold":
-                    options = [
-                        { value: "", text: "" },
-                        { value: "LL", text: "LL" },
-                        { value: "RR", text: "RR" },
-                        { value: "LLRR", text: "LLRR" },
-                        { value: "LLLL", text: "LLLL" },
-                        { value: "RRRR", text: "RRRR" },
-                        { value: "LLRRRR", text: "LLRRRR" },
-                        { value: "LLLLRR", text: "LLLLRR" },
-                        { value: "LLLLLL", text: "LLLLLL" },
-                        { value: "RRRRRR", text: "RRRRRR" },
-                        { value: "LLRRRRRR", text: "LLRRRRRR" },
-                        { value: "LLLLRRRR", text: "LLLLRRRR" },
-                        { value: "LLLLLLRR", text: "LLLLLLRR" },
-                        { value: "LLLLLLLL", text: "LLLLLLLL" },
-                        { value: "RRRRRRRR", text: "RRRRRRRR" },
-                        { value: "Other", text: "Other" },
-                    ];
-                    break;
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        layoutcode.add(option);
+                    });
 
-                case "Track Sliding":
-                    options = [
-                        { value: "", text: "" },
-                        { value: "BF", text: "BF" },
-                        { value: "FB", text: "FB" },
-                        { value: "BFB", text: "BFB" },
-                        { value: "FBF", text: "FBF" },
-                        { value: "BFFB", text: "BFFB" },
-                        { value: "FBBF", text: "FBBF" },
-                        { value: "BBFF", text: "BBFF" },
-                        { value: "FFBB", text: "FFBB" },
-                        { value: "Other", text: "Other" },
-                    ];
-                    break;
-
-                case "Track Sliding Single Track":
-                    options = [
-                        { value: "", text: "" },
-                        { value: "F", text: "F" },
-                        { value: "FF", text: "FF" },
-                        { value: "FFF", text: "FFF" },
-                        { value: "FFFF", text: "FFFF" },
-                        { value: "Other", text: "Other" },
-                    ];
-                    break;
-
-                case "Fixed":
-                    options = [
-                        { value: "", text: "" },
-                        { value: "F", text: "F" },
-                        { value: "FF", text: "FF" },
-                        { value: "FFF", text: "FFF" },
-                        { value: "FFFF", text: "FFFF" },
-                        { value: "FFFFFF", text: "FFFFFF" },
-                        { value: "Other", text: "Other" },
-                    ];
-                    break;
+                    if (response.d.length === 1) {
+                        layoutcode.selectedIndex = 0;
+                    }
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
             }
-            options.forEach((opt) => {
-                let optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                layoutcode.appendChild(optionElement);
-            });
-            resolve();
-        }).catch((error) => {
-            reject(error);
         });
     });
 }
@@ -713,88 +663,48 @@ function bindFrameType(blindType, mounting) {
         const frametype = document.getElementById("frametype");
         frametype.innerHTML = "";
 
-        visibleFrameDetail(frametype.value);
-        visibleBuildout(blindType, frametype.value);
-
-        if (!blindType) {
+        if (!blindType || !mounting) {
             resolve();
             return;
         }
 
-        getBlindName(blindType).then((blindName) => {
-            let options = [{ value: "", text: "" }];
+        const listData = { type: "FrameTypeEvolve", blindtype: blindType, customtype: mounting, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
-            if (blindName === "Hinged" || blindName === "Hinged Bi-fold") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "Beaded L 49mm", text: "Beaded L 49mm" },
-                    { value: "Insert L 49mm", text: "Insert L 49mm" },
-                    { value: "No Frame", text: "No Frame" }
-                ];
-                if (mounting === "Inside") {
-                    options = [
-                        { value: "", text: "" },
-                        { value: "Beaded L 49mm", text: "Beaded L 49mm" },
-                        { value: "Insert L 49mm", text: "Insert L 49mm" },
-                        { value: "Small Bullnose Z Frame", text: "Small Bullnose Z Frame" },
-                        { value: "Large Bullnose Z Frame", text: "Large Bullnose Z Frame" },
-                        { value: "No Frame", text: "No Frame" }
-                    ];
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    frametype.innerHTML = "";
+
+                    if (response.d.length >= 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        frametype.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        frametype.add(option);
+                    });
                 }
-            } else if (blindName === "Track Bi-fold") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "92mm", text: "92mm" },
-                    { value: "152mm", text: "152mm" },
-                    { value: "185mm", text: "185mm" }
-                ];
-            } else if (blindName === "Track Sliding") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "152mm", text: "152mm" },
-                    { value: "185mm", text: "185mm" }
-                ];                
-            } else if (blindName === "Track Sliding Single Track") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "92mm", text: "92mm" },
-                    { value: "152mm", text: "152mm" },
-                    { value: "185mm", text: "185mm" }
-                ];
-            } else if (blindName === "Fixed") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "U Channel", text: "U Channel" },
-                    { value: "19x19 Light Block", text: "19x19 Light Block" }
-                ];
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
             }
-
-            options.forEach((opt) => {
-                let optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                frametype.appendChild(optionElement);
-            });
-
-            if (frametype.options.length === 1) {
-                bindLeftFrame(frametype.value, mounting);
-                bindRightFrame(frametype.value, mounting);
-                bindTopFrame(frametype.value, mounting);
-                bindBottomFrame(frametype.value, mounting);
-
-                visibleFrameDetail(frametype.value);
-                visibleBuildout(blindType, frametype.value);
-            }
-
-            resolve();
-        }).catch((error) => {
-            reject(error);
         });
     });
 }
 
 function bindLeftFrame(frameType) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const frameleft = document.getElementById("frameleft");
         frameleft.innerHTML = "";
 
@@ -803,56 +713,43 @@ function bindLeftFrame(frameType) {
             return;
         }
 
-        let options = [{ value: "", text: "" }];
+        const listData = { type: "LeftFrameEvolve", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
-        if (frameType === "Beaded L 49mm" || frameType === "Insert L 49mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" }
-            ];
-        } else if (frameType === "Small Bullnose Z Frame" || frameType === "Large Bullnose Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "YES" },
-                { value: "No", text: "NO" },
-                { value: "Light Block", text: "LIGHT BLOCK" },
-                { value: "Sill Plate (Bullnose Z)", text: "SILL PLATE (BULLNOSE Z)" },
-            ];
-        } else if (frameType === "No Frame") {
-            options = [
-                { value: "Light Block", text: "Light Block" }
-            ];
-        } else if (frameType === "92mm" || frameType === "152mm" || frameType === "185mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-            ];
-        } else if (frameType === "U Channel") {
-            options = [
-                { value: "No", text: "No" }
-            ];
-        } else if (frameType === "19x19 Light Block") {
-            options = [
-                { value: "No", text: "No" }
-            ];
-        }
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    frameleft.innerHTML = "";
 
-        options.forEach((opt) => {
-            let optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            frameleft.appendChild(optionElement);
+                    if (response.d.length >= 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        frameleft.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        frameleft.add(option);
+                    });
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
         });
-
-        resolve();
     });
 }
 
 function bindRightFrame(frameType) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         const frameright = document.getElementById("frameright");
         frameright.innerHTML = "";
 
@@ -861,55 +758,42 @@ function bindRightFrame(frameType) {
             return;
         }
 
-        let options = [{ value: "", text: "" }];
+        const listData = { type: "RightFrameEvolve", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
-        if (frameType === "Beaded L 49mm" || frameType === "Insert L 49mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" }
-            ];
-        } else if (frameType === "Small Bullnose Z Frame" || frameType === "Large Bullnose Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
-            ];
-        } else if (frameType === "No Frame") {
-            options = [
-                { value: "Light Block", text: "Light Block" }
-            ];
-        } else if (frameType === "92mm" || frameType === "152mm" || frameType === "185mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" }
-            ];
-        } else if (frameType === "U Channel") {
-            options = [
-                { value: "No", text: "No" }
-            ];
-        } else if (frameType === "19x19 Light Block") {
-            options = [
-                { value: "No", text: "No" }
-            ];
-        }
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    frameright.innerHTML = "";
 
-        options.forEach((opt) => {
-            let optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            frameright.appendChild(optionElement);
+                    if (response.d.length >= 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        frameright.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        frameright.add(option);
+                    });
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
         });
-
-        resolve();
     });
 }
 
-function bindTopFrame(frameType, mounting) {
+function bindTopFrame(frameType) {
     return new Promise((resolve, reject) => {
         const frametop = document.getElementById("frametop");
         frametop.innerHTML = "";
@@ -919,58 +803,38 @@ function bindTopFrame(frameType, mounting) {
             return;
         }
 
-        let options = [{ value: "", text: "" }];
+        const listData = { type: "TopFrameEvolve", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
-        if (frameType === "Beaded L 49mm" || frameType === "Insert L 49mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" }
-            ];
-        } else if (frameType === "Small Bullnose Z Frame" || frameType === "Large Bullnose Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
-                { value: "Roller Catch Ramp", text: "Roller Catch Ramp" }
-            ];
-        } else if (frameType === "No Frame") {
-            options = [
-                { value: "Light Block", text: "Light Block" }
-            ];
-        } else if (frameType === "92mm" || frameType === "152mm" || frameType === "185mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" }
-            ];
-            if (mounting === "Inside") {
-                options = [
-                    { value: "Yes", text: "Yes" }
-                ];
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    frametop.innerHTML = "";
+
+                    if (response.d.length >= 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        frametop.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        frametop.add(option);
+                    });
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
             }
-        } else if (frameType === "U Channel") {
-            options = [
-                { value: "", text: "" },
-                { value: "No", text: "No" },
-                { value: "U Channel", text: "U Channel" }
-            ];
-        } else if (frameType === "19x19 Light Block") {
-            options = [
-                { value: "No", text: "No" }
-            ];
-        }
-
-        options.forEach((opt) => {
-            let optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            frametop.appendChild(optionElement);
         });
-        resolve();
     });
 }
 
@@ -984,53 +848,38 @@ function bindBottomFrame(frameType) {
             return;
         }
 
-        let options = [{ value: "", text: "" }];
+        const listData = { type: "BottomFrameEvolve", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
-        if (frameType === "Beaded L 49mm" || frameType === "Insert L 49mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" }
-            ];
-        } else if (frameType === "Small Bullnose Z Frame" || frameType === "Large Bullnose Z Frame") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" },
-                { value: "Light Block", text: "Light Block" },
-                { value: "Sill Plate (Bullnose Z)", text: "Sill Plate (Bullnose Z)" },
-                { value: "Roller Catch Ramp", text: "Roller Catch Ramp" }
-            ];
-        } else if (frameType === "No Frame") {
-            options = [
-                { value: "Light Block", text: "Light Block" }
-            ];
-        } else if (frameType === "92mm" || frameType === "152mm" || frameType === "185mm") {
-            options = [
-                { value: "", text: "" },
-                { value: "Yes", text: "Yes" },
-                { value: "No", text: "No" }
-            ];
-        } else if (frameType === "U Channel") {
-            options = [
-                { value: "", text: "" },
-                { value: "No", text: "No" },
-                { value: "U Channel", text: "U Channel" }
-            ];
-        } else if (frameType === "19x19 Light Block") {
-            options = [
-                { value: "No", text: "No" }
-            ];
-        }
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    framebottom.innerHTML = "";
 
-        options.forEach((opt) => {
-            let optionElement = document.createElement("option");
-            optionElement.value = opt.value;
-            optionElement.textContent = opt.text;
-            framebottom.appendChild(optionElement);
+                    if (response.d.length >= 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        framebottom.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        framebottom.add(option);
+                    });
+                }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
+            }
         });
-        resolve();
     });
 }
 
@@ -1039,39 +888,46 @@ function bindBottomTrack(blindType, bottomFrame) {
         const bottomtracktype = document.getElementById("bottomtracktype");
         bottomtracktype.innerHTML = "";
 
-        if (!blindType) {
+        if (!blindType || !bottomFrame) {
             resolve();
             return;
         }
 
-        getBlindName(blindType).then((blindName) => {
-            let options = [{ value: "", text: "" }];
+        const listData = { type: "BottomTrackEvolve", blindtype: blindType, customtype: bottomFrame, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
-            if (blindName === "Track Bi-fold" || blindName === "Track Sliding" || blindName === "Track Sliding Single Track") {
-                options = [
-                    { value: "", text: "" },
-                    { value: "M Track", text: "M Track" },
-                    { value: "U Track", text: "U Track" },
-                ];
-                if (bottomFrame === "Yes") {
-                    options = [{ value: "U Track", text: "U Track" }];
+        $.ajax({
+            type: "POST",
+            url: "Method.aspx/ListData",
+            data: JSON.stringify({ data: listData }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                if (Array.isArray(response.d)) {
+                    bottomtracktype.innerHTML = "";
+
+                    if (response.d.length >= 1) {
+                        const defaultOption = document.createElement("option");
+                        defaultOption.text = "";
+                        defaultOption.value = "";
+                        bottomtracktype.add(defaultOption);
+                    }
+
+                    response.d.forEach(function (item) {
+                        const option = document.createElement("option");
+                        option.value = item.Value;
+                        option.text = item.Text;
+                        bottomtracktype.add(option);
+                    });
+
+                    if (response.d.length === 1) {
+                        bottomtracktype.selectedIndex = 0;
+                    }
                 }
+                resolve();
+            },
+            error: function (error) {
+                reject(error);
             }
-
-            options.forEach((opt) => {
-                let optionElement = document.createElement("option");
-                optionElement.value = opt.value;
-                optionElement.textContent = opt.text;
-                bottomtracktype.appendChild(optionElement);
-            });
-
-            if (bottomtracktype.options.length === 0) {
-                bottomtracktype.selectedIndex = 0;
-            }
-
-            resolve();
-        }).catch((error) => {
-            reject(error);
         });
     });
 }
@@ -1081,24 +937,22 @@ function bindTiltrodSplit(height1) {
         const tiltrodsplit = document.getElementById("tiltrodsplit");
         tiltrodsplit.innerHTML = "";
 
-        visibleSplitHeight(tiltrodsplit.value);
-
         let options = [{ value: "", text: "" }];
 
-        if (height1 === 0) {
-            options = [
-                { value: "", text: "" },
-                { value: "None", text: "None" },
-                { value: "Split Halfway", text: "Split Halfway" },
-                { value: "Other", text: "Other" },
-            ];
-        } else if (height1 > 0) {
+        if (height1 > 0) {
             options = [
                 { value: "", text: "" },
                 { value: "None", text: "None" },
                 { value: "Split Halfway Above Midrail", text: "Split Halfway Above Midrail" },
                 { value: "Split Halfway Below Midrail", text: "Split Halfway Below Midrail" },
                 { value: "Split Halfway Above and Below Midrail", text: "Split Halfway Above & Below Midrail" },
+                { value: "Other", text: "Other" },
+            ];
+        } else {
+            options = [
+                { value: "", text: "" },
+                { value: "None", text: "None" },
+                { value: "Split Halfway", text: "Split Halfway" },
                 { value: "Other", text: "Other" },
             ];
         }
@@ -1112,7 +966,6 @@ function bindTiltrodSplit(height1) {
 
         if (tiltrodsplit.options.length === 0) {
             tiltrodsplit.selectedIndex = 0;
-            visibleSplitHeight(tiltrodsplit.value);
         }
 
         resolve();
@@ -1155,7 +1008,6 @@ function bindComponentForm(blindType, colourType) {
             "divhingesloose"
         ].map(id => document.getElementById(id));
 
-
         const toggleDisplay = (el, show) => {
             if (el) el.style.display = show ? "" : "none";
         };
@@ -1195,7 +1047,6 @@ function bindComponentForm(blindType, colourType) {
             }
 
             resolve();
-
         }).catch((error) => {
             reject(error);
         });
@@ -1262,34 +1113,13 @@ function visibleFrameDetail(frameType) {
             document.getElementById("divframebottom"),
         ];
 
-        const shouldHide = frameType === "" || frameType === "19x19 Light Block";
-        const displayValue = shouldHide ? "none" : "";
+        const displayValue = frameType !== "" ? "" : "none";
 
         frameElements.forEach((element) => {
             element.style.display = displayValue;
         });
 
         resolve();
-    });
-}
-
-function visibleBottomTrack(blindType, frameBottom) {
-    return new Promise((resolve, reject) => {
-        const divBottomTrackType = document.getElementById("divBottomTrackType");
-        divBottomTrackType.style.display = "none";
-
-        if (!blindType) return resolve();
-
-        getBlindName(blindType).then((blindName) => {
-            if (blindName === "Track Bi-fold" || blindName === "Track Sliding" || blindName === "Track Sliding Single Track") {
-                if (frameBottom === "No") {
-                    divBottomTrackType.style.display = "";
-                }
-            }
-            resolve();
-        }).catch((error) => {
-            reject(error);
-        });
     });
 }
 
@@ -1301,8 +1131,10 @@ function visibleBuildout(blindType, frameType) {
         if (!blindType || !frameType) return resolve();
 
         getBlindName(blindType).then((blindName) => {
-            if ((blindName === "Hinged" || blindName === "Hinged Bi-fold") && frameType === "Insert L 49mm") {
-                divBuildout.style.display = "";
+            if (blindName === "Hinged" || blindName === "Hinged Bi-fold") {
+                if (frameType !== "No Frame") {
+                    divBuildout.style.display = "";
+                }
             }
             resolve();
         }).catch((error) => {
@@ -1448,12 +1280,19 @@ function visibleSplitHeight(tiltrodSplit) {
     });
 }
 
-function toggleButtonState(disabled, text) {
-    $("#submit")
-        .prop("disabled", disabled)
-        .css("pointer-events", disabled ? "none" : "auto")
-        .text(text);
+function visibleHorizontalRequired(horizontalHeigth) {
+    return new Promise((resolve) => {
+        const thisDiv = document.getElementById("divhorizontaltpostrequired");
+        thisDiv.style.display = "none";
 
+        if (horizontalHeigth > 0) thisDiv.style.display = "";
+
+        resolve();
+    })
+}
+
+function toggleButtonState(disabled, text) {
+    $("#submit").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto").text(text);
     $("#cancel").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto");
 }
 
@@ -1474,17 +1313,9 @@ function startCountdown(seconds) {
     updateButton();
 }
 
-function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 function controlForm(status, isEditItem, isCopyItem) {
-    if (isEditItem === undefined) {
-        isEditItem = false;
-    }
-    if (isCopyItem === undefined) {
-        isCopyItem = false;
-    }
+    if (isEditItem === undefined) isEditItem = false;
+    if (isCopyItem === undefined) isCopyItem = false;
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
@@ -1540,7 +1371,7 @@ function controlForm(status, isEditItem, isCopyItem) {
         if (inputElement) {
             if (isCopyItem) {
                 inputElement.disabled = (id === "blindtype");
-            } else if (isEditItem && (id === "qty" || id === "blindtype")) {
+            } else if (isEditItem && (id === "qty")) {
                 inputElement.disabled = true;
             } else {
                 inputElement.disabled = status;
@@ -1552,7 +1383,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 function setFormValues(itemData) {
     const mapping = {
         blindtype: "BlindType",
-        colourtype: "ColourType",
+        colourtype: "ProductId",
         qty: "Qty",
         room: "Room",
         mounting: "Mounting",
@@ -1620,6 +1451,18 @@ function setFormValues(itemData) {
 
         $("#notescount").text(`0/${maxLength}`);
     }
+}
+
+function fillSelect(selector, list, selected = null) {
+    const el = document.querySelector(selector);
+    el.innerHTML = "<option value=''></option>";
+    list.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.Value;
+        opt.textContent = item.Text;
+        if (selected != null && selected == item.Value) opt.selected = true;
+        el.appendChild(opt);
+    });
 }
 
 function cekSameSizePanels(layoutCode) {
@@ -1736,15 +1579,18 @@ function process() {
 
     const formData = {
         headerid: headerId,
+        orderid: orderId,
         itemaction: itemAction,
         itemid: itemId,
         designid: designId,
         loginid: loginId,
+        rolename: roleAccess,
+        customerid: customerId,
+        companyid: companyId,
+        companydetailid: companyDetailId
     };
 
-    fields.forEach((id) => {
-        formData[id] = document.getElementById(id).value;
-    });
+    fields.forEach((id) => { formData[id] = document.getElementById(id).value; });
 
     $.ajax({
         type: "POST",
@@ -1794,11 +1640,14 @@ async function initEvolveOcean() {
 
     if (!headerId) return redirectOrder();
 
+    updateLinkDetail(headerId);
+
     if (!itemAction || !designId || !loginId || designId !== designIdOri) {
         return window.location.href = `/order/detail?orderid=${headerId}`;
     }
 
     await Promise.all([
+        getOrderHeader(headerId),
         getDesignName(designId),
         getFormAction(itemAction),
         getCompanyOrder(headerId),
@@ -1813,92 +1662,78 @@ async function initEvolveOcean() {
         bindBlindType(designId);
         loader(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {
-        await bindItemOrder(itemId);
-        controlForm(
-            itemAction === "view",
-            itemAction === "edit",
-            itemAction === "copy"
-        );
+        await bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, itemAction);
+        controlForm(itemAction === "view", itemAction === "edit", itemAction === "copy");
     }
 }
 
-async function bindItemOrder(itemId) {
+async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, action) {
     try {
         const response = await $.ajax({
             type: "POST",
-            url: "Method.aspx/Detail",
-            data: JSON.stringify({ itemId }),
+            url: "Method.aspx/EvolveDetail",
+            data: JSON.stringify({ itemId, companyDetailId, orderStatus, roleAccess, action }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
         });
 
         const data = response.d;
-        if (!data.length) return;
 
-        const itemData = data[0];
-        const {
-            BlindType: blindtype,
-            ColourType: colourtype,
-            Mounting: mounting,
-            MidrailHeight1: height1,
-            MidrailHeight2: height2,
-            FrameType: frameType,
-            FrameBottom: bottomFrame,
-            JoinedPanels: joinedPanels,
-            LayoutCode: layoutCode,
-            LayoutCodeCustom: layoutCodeCustom,
-            SamePanelSize: sameSize,
-            HingeColour: hingeColour,
-            TiltrodSplit: tiltrodSplit
-        } = itemData;
+        fillSelect("#blindtype", data.BlindTypes);
+        fillSelect("#colourtype", data.ColourTypes);
+        fillSelect("#mounting", data.Mountings);
+        fillSelect("#layoutcode", data.LayoutCodes);
+        fillSelect("#frametype", data.FrameTypes);
+        fillSelect("#frameleft", data.LeftFrames);
+        fillSelect("#frameright", data.RightFrames);
+        fillSelect("#frametop", data.TopFrames);
+        fillSelect("#framebottom", data.BottomFrames);
+        fillSelect("#bottomtracktype", data.BottomTracks);
 
-        let layoutCodeFinal = layoutCode;
-        if (layoutCode === "Other") {
-            layoutCodeFinal = layoutCodeCustom
-        }
+        let manual = [
+            bindMidrailCritical(data.ItemData.MidrailHeight1, data.ItemData.MidrailHeight2),
+            bindTiltrodSplit(data.ItemData.MidrailHeight1)
+        ];
+        await Promise.all(manual);
 
-        await bindBlindType(designId);
-        await delay(100);
-
-        await bindColourType(blindtype);
-        await bindMounting(blindtype);
-        await bindLayoutCode(blindtype);
-        await bindMidrailCritical(height1, height2);
-        await bindTiltrodSplit(height1);
-
-        await bindFrameType(blindtype, mounting);
-        await bindLeftFrame(frameType);
-        await bindRightFrame(frameType);
-        await bindTopFrame(frameType, mounting);
-        await bindBottomFrame(frameType);
-
-        await bindBottomTrack(blindtype, bottomFrame);
-
-        setFormValues(itemData);
-
-        await Promise.all([
-            bindComponentForm(blindtype, colourtype),
-            visibleMidrail(height1),
-            visibleHingeColour(blindtype, joinedPanels),
-            visibleFrameDetail(frameType),
-            visibleBuildout(blindtype, frameType),
-            visibleSameSize(blindtype, layoutCodeFinal),
-            visibleGap(blindtype, sameSize, layoutCodeFinal),
-            visibleLayoutCustom(layoutCode),
-            visibleHingesLoose(blindtype, hingeColour, joinedPanels),
-            visibleSemiInside(blindtype, mounting),
-            visibleSplitHeight(tiltrodSplit)
-        ]);
+        setFormValues(data.ItemData);
 
         document.getElementById("divloader").style.display = "none";
         document.getElementById("divorder").style.display = "";
+
+        let layoutCodeFinal = data.ItemData.LayoutCode;
+        if (data.ItemData.LayoutCode === "Other") {
+            layoutCodeFinal = data.ItemData.LayoutCodeCustom
+        }
+
+        await Promise.all([
+            bindComponentForm(data.ItemData.BlindType, data.ItemData.ProductId),
+            visibleMidrail(data.ItemData.MidrailHeight1),
+            visibleHingeColour(data.ItemData.BlindType, data.ItemData.JoinedPanels),
+            visibleFrameDetail(data.ItemData.FrameType),
+            visibleBuildout(data.ItemData.BlindType, data.ItemData.FrameType),
+            visibleSameSize(data.ItemData.BlindType, layoutCodeFinal),
+            visibleGap(data.ItemData.BlindType, data.ItemData.SameSizePanel, layoutCodeFinal),
+            visibleLayoutCustom(data.ItemData.LayoutCode),
+            visibleHingesLoose(data.ItemData.BlindType, data.ItemData.HingeColour, data.ItemData.JoinedPanels),
+            visibleSemiInside(data.ItemData.BlindType, data.ItemData.Mounting),
+            visibleSplitHeight(data.ItemData.TiltrodSplit),
+            visibleHorizontalRequired(data.ItemData.HorizontalTPostHeight)
+        ]);
     } catch (error) {
-        reject(error);
+        document.getElementById("divloader").style.display = "none";
     }
 }
 
 function redirectOrder() {
     window.location.replace("/order");
+}
+
+function updateLinkDetail(myId) {
+    const link = document.getElementById("orderDetail");
+    if (!link || !headerId) return;
+
+    link.href = `/order/detail?orderid=${myId}`;
 }
 
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
@@ -1914,4 +1749,11 @@ document.getElementById("modalError").addEventListener("hide.bs.modal", function
 document.getElementById("modalInfo").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
     document.body.focus();
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "F10") {
+        e.preventDefault();
+        document.getElementById("submit").click();
+    }
 });

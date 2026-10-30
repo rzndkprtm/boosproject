@@ -1,5 +1,3 @@
-﻿
-Partial Class Order_EvolveOcean
-    Inherits System.Web.UI.Page
-
+﻿Partial Class Order_EvolveOcean
+    Inherits Page
 End Class
