@@ -53,7 +53,7 @@ Partial Class Order_Invoice
             Dim invoiceClass As New InvoiceClass
             Dim pdfBytes As Byte() = invoiceClass.BindContent("Custom", lblHeaderId.Text, itemIds)
             If lblCompanyId.Text = "3" Then
-                pdfBytes = invoiceClass.BindContent_Local(lblHeaderId.Text)
+                pdfBytes = invoiceClass.BindContent_Local("Custom", lblHeaderId.Text, itemIds)
             End If
 
             Dim fileName As String = String.Format("INVOICE {0} {1}.pdf", txtInvoiceNumber.Text.ToUpper(), lblCustomerName.Text.ToUpper())

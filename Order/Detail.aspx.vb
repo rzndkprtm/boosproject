@@ -458,6 +458,7 @@ Partial Class Order_Detail
                 If cashSale = True Then newStatus = "Waiting Proforma"
 
                 Dim invoiceNumber As String = lblOrderId.Text
+                Dim packingNumber As String = lblOrderId.Text
 
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=GETDATE(), Status=@Status, InvoiceNumber=@InvoiceNumber, Payment=0, Amount=0 WHERE Id=@Id", thisConn)
@@ -469,6 +470,18 @@ Partial Class Order_Detail
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
+
+                'Using thisConn As New SqlConnection(myConn)
+                '    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=GETDATE(), Status=@Status, InvoiceNumber=@InvoiceNumber, Payment=0, Amount=0, PackingNumber=@PackingNumber WHERE Id=@Id", thisConn)
+                '        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                '        thisCmd.Parameters.AddWithValue("@Status", newStatus)
+                '        thisCmd.Parameters.AddWithValue("@InvoiceNumber", invoiceNumber)
+                '        thisCmd.Parameters.AddWithValue("@Payment", False)
+                '        thisCmd.Parameters.AddWithValue("@PackingNumber", packingNumber)
+                '        thisConn.Open()
+                '        thisCmd.ExecuteNonQuery()
+                '    End Using
+                'End Using
 
                 ' SERVICE
                 Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text}}
@@ -1157,7 +1170,7 @@ Partial Class Order_Detail
             Dim invoiceClass As New InvoiceClass
             Dim pdfBytes As Byte() = invoiceClass.BindContent("All", lblHeaderId.Text, String.Empty)
             If lblCompanyId.Text = "3" Then
-                pdfBytes = invoiceClass.BindContent_Local(lblHeaderId.Text)
+                pdfBytes = invoiceClass.BindContent_Local("All", lblHeaderId.Text, String.Empty)
             End If
 
             Dim fileName As String = String.Format("INVOICE {0} {1}.pdf", lblInvoiceNumber.Text.ToUpper(), lblCustomerName.Text.ToUpper())

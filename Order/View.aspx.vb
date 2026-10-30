@@ -65,7 +65,7 @@ Partial Class Order_View
 
             Dim pdfBytes As Byte() = invoiceClass.BindContent("All", headerId, String.Empty)
             If companyId = "3" Then
-                pdfBytes = invoiceClass.BindContent_Local(headerId)
+                pdfBytes = invoiceClass.BindContent_Local("All", headerId, String.Empty)
             End If
 
             Response.Clear()
@@ -96,7 +96,7 @@ Partial Class Order_View
 
             Dim pdfBytes As Byte() = invoiceClass.BindContent("Custom", headerId, itemId)
             If companyId = "3" Then
-                pdfBytes = invoiceClass.BindContent_Local(headerId)
+                pdfBytes = invoiceClass.BindContent_Local("Custom", headerId, itemId)
             End If
 
             Response.Clear()

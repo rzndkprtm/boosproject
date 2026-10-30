@@ -660,7 +660,7 @@ Public Class InvoiceClass
         End Using
     End Function
 
-    Public Function BindContent_Local(headerId As String) As Byte()
+    Public Function BindContent_Local(type As String, headerId As String, itemIds As String) As Byte()
         Using ms As New MemoryStream()
             Dim headerData As DataRow = GetDataRow("SELECT OrderHeaders.*, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Customers.CompanyDetailId AS CompanyDetailId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
 
@@ -697,6 +697,9 @@ Public Class InvoiceClass
             Dim customerAbn As String = GetItemData("SELECT ABNNumber FROM CustomerBusiness WHERE CustomerId='" & customerId & "' AND [Primary]=1")
 
             Dim subTotal As Decimal = GetItemData_Decimal("SELECT SUM(SellPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND Type='Final'")
+            If type = "Custom" Then
+                subTotal = GetItemData_Decimal("SELECT SUM(SellPrice) AS SumPrice FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId IN (" & itemIds & ") AND Type='Final'")
+            End If
             Dim dpp As Decimal = subTotal * 11 / 12
             Dim ppn As Decimal = dpp * 12 / 100
             Dim finaltotal As Decimal = subTotal + ppn
@@ -733,7 +736,9 @@ Public Class InvoiceClass
             Dim commodityList As New List(Of String)
 
             Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@HeaderId", headerId)
+                New SqlParameter("@HeaderId", headerId),
+                New SqlParameter("@Type", type),
+                New SqlParameter("@ItemId", If(String.IsNullOrEmpty(itemIds), CType(DBNull.Value, Object), itemIds))
             }
             Dim detailData As DataTable = GetDataTableSP("sp_OrderDetails_List_Invoice", params)
             For i As Integer = 0 To detailData.Rows.Count - 1
