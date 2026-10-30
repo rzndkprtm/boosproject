@@ -4,7 +4,7 @@ Imports System.Data.SqlClient
 Partial Class Journal_Default
     Inherits Page
 
-    Dim settingClass As New SettingClass
+    Dim journalClass As New JournalClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -17,12 +17,19 @@ Partial Class Journal_Default
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindSales()
+            ddlSales.SelectedValue = Session("JournalSales")
             BindCustomer()
+            ddlCustomer.SelectedValue = Session("JournalCustomer")
+            ddlDateFilter.SelectedValue = Session("JournalDate")
             BindData(ddlSales.SelectedValue, ddlCustomer.SelectedValue, ddlDateFilter.SelectedValue)
         End If
     End Sub
 
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Session("JournalSales") = ddlSales.SelectedValue
+        Session("JournalCustomer") = ddlCustomer.SelectedValue
+        Session("JournalDate") = ddlDateFilter.SelectedValue
+
         Response.Redirect("~/journal/add", False)
     End Sub
 
@@ -30,12 +37,20 @@ Partial Class Journal_Default
         gvList.PageIndex = 0
         MessageError(False, String.Empty)
         BindData(ddlSales.SelectedValue, ddlCustomer.SelectedValue, ddlDateFilter.SelectedValue)
+
+        Session("JournalSales") = ddlSales.SelectedValue
+        Session("JournalCustomer") = ddlCustomer.SelectedValue
+        Session("JournalDate") = ddlDateFilter.SelectedValue
     End Sub
 
     Protected Sub ddlCustomer_SelectedIndexChanged(sender As Object, e As EventArgs)
         gvList.PageIndex = 0
         MessageError(False, String.Empty)
         BindData(ddlSales.SelectedValue, ddlCustomer.SelectedValue, ddlDateFilter.SelectedValue)
+
+        Session("JournalSales") = ddlSales.SelectedValue
+        Session("JournalCustomer") = ddlCustomer.SelectedValue
+        Session("JournalDate") = ddlDateFilter.SelectedValue
     End Sub
 
     Protected Sub ddlDateFilter_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -48,6 +63,10 @@ Partial Class Journal_Default
         gvList.PageIndex = e.NewPageIndex
         MessageError(False, String.Empty)
         BindData(ddlSales.SelectedValue, ddlCustomer.SelectedValue, ddlDateFilter.SelectedValue)
+
+        Session("JournalSales") = ddlSales.SelectedValue
+        Session("JournalCustomer") = ddlCustomer.SelectedValue
+        Session("JournalDate") = ddlDateFilter.SelectedValue
     End Sub
 
     Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
@@ -75,7 +94,7 @@ Partial Class Journal_Default
             End Using
 
             Dim dataLog As Object() = {"Journals", journalId, Session("LoginId").ToString(), "Journal Deleted"}
-            settingClass.Logs(dataLog)
+            journalClass.Logs(dataLog)
 
             Response.Redirect("~/journal")
         Catch ex As Exception
@@ -95,7 +114,7 @@ Partial Class Journal_Default
                 New SqlParameter("@RoleName", Session("RoleName").ToString())
             }
 
-            gvList.DataSource = settingClass.GetDataTableSP("sp_Journals_List", params)
+            gvList.DataSource = journalClass.GetDataTableSP("sp_Journals_List", params)
             gvList.DataBind()
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
@@ -117,7 +136,7 @@ Partial Class Journal_Default
     Protected Sub BindSales()
         ddlSales.Items.Clear()
         Try
-            ddlSales.DataSource = settingClass.GetDataTable("SELECT Id, FullName FROM Logins WHERE RoleId=4 ORDER BY Id ASC")
+            ddlSales.DataSource = journalClass.GetDataTable("SELECT Id, FullName FROM Logins WHERE RoleId=4 ORDER BY Id ASC")
             ddlSales.DataTextField = "FullName"
             ddlSales.DataValueField = "Id"
             ddlSales.DataBind()
@@ -139,7 +158,7 @@ Partial Class Journal_Default
     Protected Sub BindCustomer()
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE CompanyId=2 ORDER BY Id ASC")
+            ddlCustomer.DataSource = journalClass.GetDataTable("SELECT Id, Name FROM Customers WHERE CompanyId=2 ORDER BY Id ASC")
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()

@@ -33,7 +33,11 @@
                                 <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                                     <ContentTemplate>
                                         <div class="row mb-2">
-                                            <div class="col-12 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                <label class="form-label">Date</label>
+                                                <asp:TextBox runat="server" ID="txtDate" TextMode="Date" CssClass="form-control" Height="45px"></asp:TextBox>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-7 form-group">
                                                 <label class="form-label">Activity</label>
                                                 <asp:DropDownList runat="server" ID="ddlActivity" CssClass="choices form-select">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
@@ -144,6 +148,18 @@
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
             initChoices();
+
+            var txtDate = document.getElementById("<%= txtDate.ClientID %>");
+
+            if (txtDate) {
+                txtDate.addEventListener("keydown", function (e) {
+                    e.preventDefault();
+                });
+
+                txtDate.addEventListener("paste", function (e) {
+                    e.preventDefault();
+                });
+            }
         });
         window.history.replaceState(null, null, window.location.href);
     </script>

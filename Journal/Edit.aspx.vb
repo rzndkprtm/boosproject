@@ -4,7 +4,7 @@ Imports System.Data.SqlClient
 Partial Class Journal_Edit
     Inherits Page
 
-    Dim settingClass As New SettingClass
+    Dim journalClass As New JournalClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -36,6 +36,24 @@ Partial Class Journal_Edit
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            Dim selectedDate As DateTime
+            Dim today As DateTime = DateTime.Today
+            Dim startOfWeek As DateTime = today.AddDays(-((CInt(today.DayOfWeek) + 6) Mod 7))
+
+            If Not DateTime.TryParseExact(txtDate.Text, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, selectedDate) Then
+                MessageError(True, "PLEASE SELECT A VALID DATE.")
+                Exit Sub
+            End If
+
+            If selectedDate.Date > today Then
+                MessageError(True, "FUTURE DATES ARE NOT ALLOWED.")
+                Exit Sub
+            End If
+
+            If selectedDate.Date < startOfWeek OrElse selectedDate.DayOfWeek = DayOfWeek.Saturday OrElse selectedDate.DayOfWeek = DayOfWeek.Sunday Then
+                MessageError(True, "PLEASE SELECT A WORKING DAY WITHIN THE CURRENT WEEK (MONDAY - FRIDAY).")
+                Exit Sub
+            End If
             If ddlActivity.SelectedValue = "" Then
                 MessageError(True, "ACTIVITY IS REQUIRED !")
                 Exit Sub
@@ -66,8 +84,9 @@ Partial Class Journal_Edit
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Journals SET Activity=@Activity, CustomerType=@CustomerType, CustomerData=@CustomerData, Description=@Description WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Journals SET CreatedDate=@CreatedDate, Activity=@Activity, CustomerType=@CustomerType, CustomerData=@CustomerData, Description=@Description WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@CreatedDate", selectedDate)
                         thisCmd.Parameters.AddWithValue("@Activity", ddlActivity.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CustomerType", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CustomerData", customerData)
@@ -78,7 +97,7 @@ Partial Class Journal_Edit
                 End Using
 
                 Dim dataLog As Object() = {"Journals", lblId.Text, Session("LoginId").ToString(), "Journal Updated"}
-                settingClass.Logs(dataLog)
+                journalClass.Logs(dataLog)
 
                 Response.Redirect("~/journal", False)
             End If
@@ -97,7 +116,7 @@ Partial Class Journal_Edit
     Protected Sub BindCustomer()
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE Status='Active' ORDER BY Id ASC")
+            ddlCustomer.DataSource = journalClass.GetDataTable("SELECT Id, Name FROM Customers WHERE Status='Active' ORDER BY Id ASC")
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
@@ -112,7 +131,7 @@ Partial Class Journal_Edit
 
     Protected Sub BindData(journalId As String)
         Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Journals WHERE Id='" & journalId & "' AND (Status='Open' OR Status='Closed')")
+            Dim myData As DataRow = journalClass.GetDataRow("SELECT * FROM Journals WHERE Id='" & journalId & "' AND (Status='Open' OR Status='Closed')")
             If myData Is Nothing Then
                 Response.Redirect("~/journal", False)
                 Exit Sub
@@ -120,6 +139,7 @@ Partial Class Journal_Edit
 
             BindCustomer()
 
+            txtDate.Text = If(IsDBNull(myData("CreatedDate")), String.Empty, Convert.ToDateTime(myData("CreatedDate")).ToString("yyyy-MM-dd"))
             ddlActivity.SelectedValue = myData("Activity").ToString()
             ddlType.SelectedValue = myData("CustomerType").ToString()
             If ddlType.SelectedValue = "Existing" Then

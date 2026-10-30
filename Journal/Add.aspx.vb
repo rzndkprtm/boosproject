@@ -3,7 +3,7 @@
 Partial Class Journal_Add
     Inherits Page
 
-    Dim settingClass As New SettingClass
+    Dim journalClass As New JournalClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -23,6 +23,7 @@ Partial Class Journal_Add
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindCustomer()
+            SetDateValidation()
             BindForm(ddlType.SelectedValue)
         End If
     End Sub
@@ -35,6 +36,24 @@ Partial Class Journal_Add
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
+            Dim selectedDate As DateTime
+            Dim today As DateTime = DateTime.Today
+            Dim startOfWeek As DateTime = today.AddDays(-((CInt(today.DayOfWeek) + 6) Mod 7))
+
+            If Not DateTime.TryParseExact(txtDate.Text, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, selectedDate) Then
+                MessageError(True, "PLEASE SELECT A VALID DATE.")
+                Exit Sub
+            End If
+
+            If selectedDate.Date > today Then
+                MessageError(True, "FUTURE DATES ARE NOT ALLOWED.")
+                Exit Sub
+            End If
+
+            If selectedDate.Date < startOfWeek OrElse selectedDate.DayOfWeek = DayOfWeek.Saturday OrElse selectedDate.DayOfWeek = DayOfWeek.Sunday Then
+                MessageError(True, "PLEASE SELECT A WORKING DAY WITHIN THE CURRENT WEEK (MONDAY - FRIDAY).")
+                Exit Sub
+            End If
             If ddlActivity.SelectedValue = "" Then
                 MessageError(True, "ACTIVITY IS REQUIRED !")
                 Exit Sub
@@ -56,7 +75,7 @@ Partial Class Journal_Add
                 Exit Sub
             End If
             If msgError.InnerText = "" Then
-                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Journals ORDER BY Id DESC")
+                Dim thisId As String = journalClass.CreateId()
                 Dim customerData As String = String.Empty
                 If ddlType.SelectedValue = "Existing" Then
                     customerData = ddlCustomer.SelectedValue
@@ -66,9 +85,10 @@ Partial Class Journal_Add
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Journals VALUES (@Id, @CreatedBy, GETDATE(), @Activity, @CustomerType, @CustomerData, @Description, NULL, 'Open')", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Journals VALUES (@Id, @CreatedBy, @CreatedDate, @Activity, @CustomerType, @CustomerData, @Description, NULL, 'Open')", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+                        thisCmd.Parameters.AddWithValue("@CreatedDate", selectedDate)
                         thisCmd.Parameters.AddWithValue("@Activity", ddlActivity.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CustomerType", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@CustomerData", customerData)
@@ -79,7 +99,7 @@ Partial Class Journal_Add
                 End Using
 
                 Dim dataLog As Object() = {"Journals", thisId, Session("LoginId").ToString(), "Journal Created"}
-                settingClass.Logs(dataLog)
+                journalClass.Logs(dataLog)
 
                 Response.Redirect("~/journal", False)
             End If
@@ -93,6 +113,15 @@ Partial Class Journal_Add
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/journal", False)
+    End Sub
+
+    Private Sub SetDateValidation()
+        Dim today As DateTime = DateTime.Today
+        Dim startOfWeek As DateTime = today.AddDays(-((CInt(today.DayOfWeek) + 6) Mod 7))
+
+        txtDate.Text = today.ToString("yyyy-MM-dd")
+        txtDate.Attributes("min") = startOfWeek.ToString("yyyy-MM-dd")
+        txtDate.Attributes("max") = today.ToString("yyyy-MM-dd")
     End Sub
 
     Protected Sub BindForm(type As String)
@@ -110,7 +139,7 @@ Partial Class Journal_Add
     Protected Sub BindCustomer()
         ddlCustomer.Items.Clear()
         Try
-            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers WHERE Status='Active' ORDER BY Id ASC")
+            ddlCustomer.DataSource = journalClass.GetDataTable("SELECT Id, Name FROM Customers WHERE Status='Active' ORDER BY Id ASC")
             ddlCustomer.DataTextField = "Name"
             ddlCustomer.DataValueField = "Id"
             ddlCustomer.DataBind()
