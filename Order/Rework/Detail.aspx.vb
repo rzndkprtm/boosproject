@@ -169,6 +169,18 @@ Partial Class Order_Rework_Detail
                             thisCmd.ExecuteNonQuery()
                         End Using
                     End Using
+                    'Using thisConn As New SqlConnection(myConn)
+                    '    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, NULL, CONVERT(VARCHAR(200), OrderNumber) + ' - ' + 'RW', CONVERT(VARCHAR(200), OrderName) + ' - ' + 'RW', NULL, 'Rework', OrderFactory, OrderDelivery, OrderContact, OrderAddress, OrderContainer, @Status, NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, @InvoiceNumber, NULL, 0, NULL, 0, @OrderId, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId;", thisConn)
+                    '        thisCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
+                    '        thisCmd.Parameters.AddWithValue("@NewID", newHeaderId)
+                    '        thisCmd.Parameters.AddWithValue("@OrderId", orderId)
+                    '        thisCmd.Parameters.AddWithValue("@Status", status)
+                    '        thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+                    '        thisCmd.Parameters.AddWithValue("@InvoiceNumber", orderId)
+                    '        thisConn.Open()
+                    '        thisCmd.ExecuteNonQuery()
+                    '    End Using
+                    'End Using
 
                     success = True
                 Catch exSql As SqlException

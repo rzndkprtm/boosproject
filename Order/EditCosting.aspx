@@ -109,6 +109,17 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-12 form-group">
+                            <label class="form-label">Type</label>
+                            <asp:DropDownList ID="ddlDiscountType" runat="server" CssClass="form-select">
+                            <asp:ListItem Text="All Prices" Value="All"></asp:ListItem>
+                            <asp:ListItem Text="Sell Price" Value="SellPrice"></asp:ListItem>
+                            <asp:ListItem Text="Buy Price" Value="BuyPrice"></asp:ListItem>
+                            <asp:ListItem Text="Factory Price" Value="FactoryPrice"></asp:ListItem>
+                        </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
                             <label class="form-label">Discount</label>
                             <div class="input-group">
                                 <asp:TextBox runat="server" ID="txtDiscount" CssClass="form-control" TextMode="Number" placeholder="Discount ..." autocomplete="off"></asp:TextBox>

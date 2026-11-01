@@ -598,6 +598,11 @@ Partial Class Order_Detail
                     thisCmd.ExecuteNonQuery()
                 End Using
 
+                'Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=NULL, ProductionDate=NULL, OnHoldDate=NULL, Status='Unsubmitted', Download='No', DownloadDate=NULL, ShipmentDate=NULL, ShipmentNumber=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0, PackingNumber=NULL WHERE Id=@Id", thisConn)
+                '    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                '    thisCmd.ExecuteNonQuery()
+                'End Using
+
                 Dim serviceData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND Products.DesignId='16'")
                 If serviceData.Rows.Count > 0 Then
                     For i As Integer = 0 To serviceData.Rows.Count - 1
@@ -773,6 +778,15 @@ Partial Class Order_Detail
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
+
+                'Using thisConn As New SqlConnection(myConn)
+                '    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', CanceledDate=GETDATE(), ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0, PackingNumber=NULL Download='No' WHERE Id=@Id", thisConn)
+                '        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                '        thisCmd.Parameters.AddWithValue("@StatusDescription", txtCancelDescription.Text.Trim())
+                '        thisConn.Open()
+                '        thisCmd.ExecuteNonQuery()
+                '    End Using
+                'End Using
 
                 Dim descLog As String = String.Format("Order Canceled | {0}", txtCancelDescription.Text.Trim())
 

@@ -3208,12 +3208,22 @@ Public Class OrderClass
                         If method = "Percent" Then discount = Math.Round(CDec(defaultDiscountRow("Discount")) / 100, 2)
 
                         If (type = "Designs" AndAlso dataId = designId) OrElse (type = "Blinds" AndAlso dataId = blindId) Then
-                            Dim discountValue As Decimal = discount
-                            If method = "Percent" Then discountValue = Math.Round(costSell * discount, 4)
+                            Dim discountValue_Sell As Decimal = discount
+                            Dim discountValue_Buy As Decimal = discount
+                            Dim discountValue_Factory As Decimal = discount
+                            If method = "Percent" Then
+                                discountValue_Sell = Math.Round(costSell * discount, 4)
+                            End If
+                            If method = "Percent" Then
+                                discountValue_Buy = Math.Round(costBuy * discount, 4)
+                            End If
+                            If method = "Percent" Then
+                                discountValue_Factory = Math.Round(costFactory * discount, 4)
+                            End If
 
-                            thisSell = Math.Round(costSell - discountValue, 4)
-                            thisBuy = Math.Round(costBuy - discountValue, 4)
-                            thisFactory = Math.Round(costFactory - discountValue, 4)
+                            thisSell = Math.Round(costSell - discountValue_Sell, 4)
+                            thisBuy = Math.Round(costBuy - discountValue_Buy, 4)
+                            thisFactory = Math.Round(costFactory - discountValue_Factory, 4)
                         End If
 
                         costSell = thisSell
