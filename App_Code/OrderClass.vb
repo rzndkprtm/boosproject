@@ -3213,10 +3213,12 @@ Public Class OrderClass
 
                             thisSell = Math.Round(costSell - discountValue, 4)
                             thisBuy = Math.Round(costBuy - discountValue, 4)
+                            thisFactory = Math.Round(costFactory - discountValue, 4)
                         End If
 
                         costSell = thisSell
                         costBuy = thisBuy
+                        costFactory = thisFactory
                     Next
 
                     Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
