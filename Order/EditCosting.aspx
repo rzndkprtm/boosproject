@@ -111,20 +111,24 @@
                         <div class="col-12 form-group">
                             <label class="form-label">Type</label>
                             <asp:DropDownList ID="ddlDiscountType" runat="server" CssClass="form-select">
-                            <asp:ListItem Text="All Prices" Value="All"></asp:ListItem>
-                            <asp:ListItem Text="Sell Price" Value="SellPrice"></asp:ListItem>
-                            <asp:ListItem Text="Buy Price" Value="BuyPrice"></asp:ListItem>
-                            <asp:ListItem Text="Factory Price" Value="FactoryPrice"></asp:ListItem>
-                        </asp:DropDownList>
+                                <asp:ListItem Text="All Prices" Value="All"></asp:ListItem>
+                                <asp:ListItem Text="Sell Price" Value="SellPrice"></asp:ListItem>
+                                <asp:ListItem Text="Buy Price" Value="BuyPrice"></asp:ListItem>
+                                <asp:ListItem Text="Factory Price" Value="FactoryPrice"></asp:ListItem>
+                            </asp:DropDownList>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 form-group">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
                             <label class="form-label">Discount</label>
-                            <div class="input-group">
-                                <asp:TextBox runat="server" ID="txtDiscount" CssClass="form-control" TextMode="Number" placeholder="Discount ..." autocomplete="off"></asp:TextBox>
-                                <span class="input-group-text">%</span>
-                            </div>
+                            <asp:DropDownList ID="ddlDiscountMethod" runat="server" CssClass="form-select">
+                                <asp:ListItem Text="Percent (%)" Value="Percent"></asp:ListItem>
+                                <asp:ListItem Text="Value (Amount)" Value="Value"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Discount</label>
+                            <asp:TextBox runat="server" ID="txtDiscount" CssClass="form-control" TextMode="Number" placeholder="Discount ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row">

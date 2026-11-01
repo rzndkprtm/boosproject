@@ -51,14 +51,23 @@ Partial Class Order_EditCosting
                 MessageError(True, "PLEASE ENTER A VALID DISCOUNT VALUE!")
                 Exit Sub
             End If
-            If discount < 0D OrElse discount > 100D Then
-                MessageError(True, "DISCOUNT MUST BE BETWEEN 0 AND 100!")
-                Exit Sub
-            End If
 
             Dim discountType As String = ddlDiscountType.SelectedValue
-            If String.IsNullOrEmpty(discountType) Then
+            Dim discountMethod As String = ddlDiscountMethod.SelectedValue
+            If discount < 0D Then
+                MessageError(True, "DISCOUNT CANNOT BE NEGATIVE!")
+                Exit Sub
+            End If
+            If discountMethod = "Percent" AndAlso discount > 100D Then
+                MessageError(True, "DISCOUNT PERCENTAGE MUST BE BETWEEN 0 AND 100!")
+                Exit Sub
+            End If
+            If discountType <> "All" AndAlso discountType <> "SellPrice" AndAlso discountType <> "BuyPrice" AndAlso discountType <> "FactoryPrice" Then
                 MessageError(True, "PLEASE SELECT A VALID DISCOUNT TYPE!")
+                Exit Sub
+            End If
+            If discountMethod <> "Percent" AndAlso discountMethod <> "Value" Then
+                MessageError(True, "PLEASE SELECT A VALID DISCOUNT METHOD!")
                 Exit Sub
             End If
 
@@ -67,6 +76,7 @@ Partial Class Order_EditCosting
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
+
                 Dim updateColumns As New List(Of String)
                 If discountType = "All" OrElse discountType = "SellPrice" Then
                     updateColumns.Add("SellPrice=@SellPrice")
@@ -78,22 +88,18 @@ Partial Class Order_EditCosting
                     updateColumns.Add("FactoryPrice=@FactoryPrice")
                 End If
 
-                Dim sql As String = "UPDATE OrderCostings SET " & String.Join(", ", updateColumns) & " WHERE Id = @Id"
-
+                Dim sql As String = "UPDATE OrderCostings SET " & String.Join(", ", updateColumns) & " WHERE Id=@Id"
                 Using thisCmd As New SqlCommand(sql, thisConn)
                     If discountType = "All" OrElse discountType = "SellPrice" Then
-                        thisCmd.Parameters.Add("@SellPrice", SqlDbType.Decimal)
-                        thisCmd.Parameters("@SellPrice").Precision = 18
+                        thisCmd.Parameters.Add("@SellPrice", SqlDbType.Decimal).Precision = 18
                         thisCmd.Parameters("@SellPrice").Scale = 2
                     End If
                     If discountType = "All" OrElse discountType = "BuyPrice" Then
-                        thisCmd.Parameters.Add("@BuyPrice", SqlDbType.Decimal)
-                        thisCmd.Parameters("@BuyPrice").Precision = 18
+                        thisCmd.Parameters.Add("@BuyPrice", SqlDbType.Decimal).Precision = 18
                         thisCmd.Parameters("@BuyPrice").Scale = 2
                     End If
                     If discountType = "All" OrElse discountType = "FactoryPrice" Then
-                        thisCmd.Parameters.Add("@FactoryPrice", SqlDbType.Decimal)
-                        thisCmd.Parameters("@FactoryPrice").Precision = 18
+                        thisCmd.Parameters.Add("@FactoryPrice", SqlDbType.Decimal).Precision = 18
                         thisCmd.Parameters("@FactoryPrice").Scale = 2
                     End If
                     thisCmd.Parameters.Add("@Id", SqlDbType.NVarChar, -1)
@@ -101,18 +107,22 @@ Partial Class Order_EditCosting
                     For Each row As DataRow In dt.Rows
                         If discountType = "All" OrElse discountType = "SellPrice" Then
                             Dim basePrice As Decimal = If(IsDBNull(row("SellPrice")), 0D, Convert.ToDecimal(row("SellPrice")))
-                            thisCmd.Parameters("@SellPrice").Value = basePrice - (basePrice * discount / 100D)
+                            Dim finalPrice As Decimal = If(discountMethod = "Percent", basePrice - (basePrice * discount / 100D), basePrice - discount)
+                            thisCmd.Parameters("@SellPrice").Value = Math.Max(0D, finalPrice)
                         End If
                         If discountType = "All" OrElse discountType = "BuyPrice" Then
                             Dim basePrice As Decimal = If(IsDBNull(row("BuyPrice")), 0D, Convert.ToDecimal(row("BuyPrice")))
-                            thisCmd.Parameters("@BuyPrice").Value = basePrice - (basePrice * discount / 100D)
+                            Dim finalPrice As Decimal = If(discountMethod = "Percent", basePrice - (basePrice * discount / 100D), basePrice - discount)
+                            thisCmd.Parameters("@BuyPrice").Value = Math.Max(0D, finalPrice)
                         End If
                         If discountType = "All" OrElse discountType = "FactoryPrice" Then
                             Dim basePrice As Decimal = If(IsDBNull(row("FactoryPrice")), 0D, Convert.ToDecimal(row("FactoryPrice")))
-                            thisCmd.Parameters("@FactoryPrice").Value = basePrice - (basePrice * discount / 100D)
+                            Dim finalPrice As Decimal = If(discountMethod = "Percent", basePrice - (basePrice * discount / 100D), basePrice - discount)
+                            thisCmd.Parameters("@FactoryPrice").Value = Math.Max(0D, finalPrice)
                         End If
 
                         thisCmd.Parameters("@Id").Value = row("Id").ToString()
+
                         thisCmd.ExecuteNonQuery()
                     Next
                 End Using
@@ -133,6 +143,97 @@ Partial Class Order_EditCosting
             End If
         End Try
     End Sub
+
+    'Protected Sub btnAddDiscount_Click(sender As Object, e As EventArgs)
+    '    MessageError(False, String.Empty)
+    '    Try
+    '        Dim discount As Decimal = 0D
+    '        If Not Decimal.TryParse(txtDiscount.Text, discount) Then
+    '            MessageError(True, "PLEASE ENTER A VALID DISCOUNT VALUE!")
+    '            Exit Sub
+    '        End If
+    '        If discount < 0D OrElse discount > 100D Then
+    '            MessageError(True, "DISCOUNT MUST BE BETWEEN 0 AND 100!")
+    '            Exit Sub
+    '        End If
+
+    '        Dim discountType As String = ddlDiscountType.SelectedValue
+    '        If String.IsNullOrEmpty(discountType) Then
+    '            MessageError(True, "PLEASE SELECT A VALID DISCOUNT TYPE!")
+    '            Exit Sub
+    '        End If
+
+    '        Dim dt As DataTable = orderClass.GetDataTable("SELECT Id, SellPrice, BuyPrice, FactoryPrice FROM OrderCostings WHERE ItemId='" & lblItemId.Text & "' AND Type='Base'")
+    '        If dt Is Nothing OrElse dt.Rows.Count = 0 Then Exit Sub
+
+    '        Using thisConn As New SqlConnection(myConn)
+    '            thisConn.Open()
+    '            Dim updateColumns As New List(Of String)
+    '            If discountType = "All" OrElse discountType = "SellPrice" Then
+    '                updateColumns.Add("SellPrice=@SellPrice")
+    '            End If
+    '            If discountType = "All" OrElse discountType = "BuyPrice" Then
+    '                updateColumns.Add("BuyPrice=@BuyPrice")
+    '            End If
+    '            If discountType = "All" OrElse discountType = "FactoryPrice" Then
+    '                updateColumns.Add("FactoryPrice=@FactoryPrice")
+    '            End If
+
+    '            Dim sql As String = "UPDATE OrderCostings SET " & String.Join(", ", updateColumns) & " WHERE Id = @Id"
+
+    '            Using thisCmd As New SqlCommand(sql, thisConn)
+    '                If discountType = "All" OrElse discountType = "SellPrice" Then
+    '                    thisCmd.Parameters.Add("@SellPrice", SqlDbType.Decimal)
+    '                    thisCmd.Parameters("@SellPrice").Precision = 18
+    '                    thisCmd.Parameters("@SellPrice").Scale = 2
+    '                End If
+    '                If discountType = "All" OrElse discountType = "BuyPrice" Then
+    '                    thisCmd.Parameters.Add("@BuyPrice", SqlDbType.Decimal)
+    '                    thisCmd.Parameters("@BuyPrice").Precision = 18
+    '                    thisCmd.Parameters("@BuyPrice").Scale = 2
+    '                End If
+    '                If discountType = "All" OrElse discountType = "FactoryPrice" Then
+    '                    thisCmd.Parameters.Add("@FactoryPrice", SqlDbType.Decimal)
+    '                    thisCmd.Parameters("@FactoryPrice").Precision = 18
+    '                    thisCmd.Parameters("@FactoryPrice").Scale = 2
+    '                End If
+    '                thisCmd.Parameters.Add("@Id", SqlDbType.NVarChar, -1)
+
+    '                For Each row As DataRow In dt.Rows
+    '                    If discountType = "All" OrElse discountType = "SellPrice" Then
+    '                        Dim basePrice As Decimal = If(IsDBNull(row("SellPrice")), 0D, Convert.ToDecimal(row("SellPrice")))
+    '                        thisCmd.Parameters("@SellPrice").Value = basePrice - (basePrice * discount / 100D)
+    '                    End If
+    '                    If discountType = "All" OrElse discountType = "BuyPrice" Then
+    '                        Dim basePrice As Decimal = If(IsDBNull(row("BuyPrice")), 0D, Convert.ToDecimal(row("BuyPrice")))
+    '                        thisCmd.Parameters("@BuyPrice").Value = basePrice - (basePrice * discount / 100D)
+    '                    End If
+    '                    If discountType = "All" OrElse discountType = "FactoryPrice" Then
+    '                        Dim basePrice As Decimal = If(IsDBNull(row("FactoryPrice")), 0D, Convert.ToDecimal(row("FactoryPrice")))
+    '                        thisCmd.Parameters("@FactoryPrice").Value = basePrice - (basePrice * discount / 100D)
+    '                    End If
+
+    '                    thisCmd.Parameters("@Id").Value = row("Id").ToString()
+    '                    thisCmd.ExecuteNonQuery()
+    '                Next
+    '            End Using
+    '        End Using
+
+    '        If Not String.IsNullOrEmpty(txtDiscountNote.Text) Then
+    '            Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtDiscountNote.Text.Trim(), 0, 0, 0, 0}
+    '            orderClass.OrderCostings(costingArray)
+    '        End If
+
+    '        orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
+
+    '        Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
+    '    Catch ex As Exception
+    '        MessageError(True, ex.ToString())
+    '        If Not Session("RoleName") = "Developer" Then
+    '            MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+    '        End If
+    '    End Try
+    'End Sub
 
     'Protected Sub btnAddDiscount_Click(sender As Object, e As EventArgs)
     '    MessageError(False, String.Empty)
