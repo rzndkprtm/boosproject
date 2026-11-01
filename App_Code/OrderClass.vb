@@ -3425,13 +3425,13 @@ Public Class OrderClass
                     If designName = "Skyline Shutter Express" Then
                         surchargeArray = {headerId, itemId, designId, itemNumber, shutterPriceGroup}
                     End If
-                    If designName = "Shutter Express Part" Then
+                    If designName = "Skyline Part Express" Then
                         surchargeArray = {headerId, itemId, designId, itemNumber, shutterPriceGroup}
                     End If
                     If designName = "Skyline Shutter Ocean" Then
                         surchargeArray = {headerId, itemId, designId, itemNumber, shutterPriceGroup}
                     End If
-                    If designName = "Shutter Ocean Part" Then
+                    If designName = "Skyline Part Ocean" Then
                         surchargeArray = {headerId, itemId, designId, itemNumber, shutterPriceGroup}
                     End If
                     If designName = "Door" Then

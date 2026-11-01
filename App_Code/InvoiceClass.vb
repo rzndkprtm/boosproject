@@ -777,10 +777,7 @@ Public Class InvoiceClass
                     itemDescription = String.Format("{0} {1}", invoiceName, size)
                     namaBarang = "Aluminium Venetian Blind"
                 End If
-                If designName = "Aluminium Part" Then
-                    itemDescription = invoiceName
-                    namaBarang = designName
-                End If
+
                 If designName = "Cellular Shades" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1}", invoiceName, size)
@@ -824,6 +821,10 @@ Public Class InvoiceClass
                     itemDescription = String.Format("{0} {1}", invoiceName, size)
                     namaBarang = "Evolve Shutter"
                 End If
+                If designName = "Evolve Shutter Ocean" Then
+                    itemDescription = String.Format("{0} {1}", invoiceName, size)
+                    namaBarang = "Evolve Shutter"
+                End If
                 If designName = "Linea Valance" Then
                     itemDescription = String.Format("{0} ({1}mm)", invoiceName, width)
                     namaBarang = designName
@@ -853,10 +854,6 @@ Public Class InvoiceClass
                 If designName = "Roller Blind" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
-                    namaBarang = designName
-                End If
-                If designName = "Roller Part" Then
-                    itemDescription = invoiceName
                     namaBarang = designName
                 End If
                 If designName = "Roman Blind" Then
@@ -890,10 +887,6 @@ Public Class InvoiceClass
                     itemDescription = String.Format("{0} {1}", invoiceName, size)
                     namaBarang = "PVC Shutter"
                 End If
-                If designName = "Shutter Express Part" Then
-                    itemDescription = invoiceName
-                    namaBarang = "PVC Shutter"
-                End If
                 If designName = "Soft Roman" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, fabricColourName, size)
@@ -908,10 +901,6 @@ Public Class InvoiceClass
                         namaBarang = "Basswood Blind"
                     End If
                 End If
-                If designName = "Venetian Part" Then
-                    itemDescription = invoiceName
-                    namaBarang = designName
-                End If
                 If designName = "Vertical" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     fabricColourName = fabricColourName.Replace("127mm ", "").Replace("89mm ", "").Trim()
@@ -924,6 +913,31 @@ Public Class InvoiceClass
                     namaBarang = designName
                 End If
                 If designName = "Window" Then
+                    itemDescription = invoiceName
+                    namaBarang = designName
+                End If
+
+                If designName = "Aluminium Part" Then
+                    itemDescription = invoiceName
+                    namaBarang = designName
+                End If
+                If designName = "Roller Part" Then
+                    itemDescription = invoiceName
+                    namaBarang = designName
+                End If
+                If designName = "Saphora Drape Part" Then
+                    itemDescription = invoiceName
+                    namaBarang = designName
+                End If
+                If designName = "Skyline Part Express" Then
+                    itemDescription = invoiceName
+                    namaBarang = "PVC Shutter"
+                End If
+                If designName = "Venetian Part" Then
+                    itemDescription = invoiceName
+                    namaBarang = designName
+                End If
+                If designName = "Vertical Part" Then
                     itemDescription = invoiceName
                     namaBarang = designName
                 End If
@@ -1285,13 +1299,13 @@ Public Class InvoiceClass
                 If designName = "Skyline Shutter Express" Then
                     itemDescription = String.Format("{0} {1}", invoiceName, size)
                 End If
-                If designName = "Shutter Express Part" Then
+                If designName = "Skyline Part Express" Then
                     itemDescription = invoiceName
                 End If
                 If designName = "Skyline Shutter Ocean" Then
                     itemDescription = String.Format("{0} {1}", invoiceName, size)
                 End If
-                If designName = "Shutter Ocean Part" Then
+                If designName = "Skyline Part Ocean" Then
                     itemDescription = invoiceName
                 End If
                 If designName = "Venetian Blind" Then
