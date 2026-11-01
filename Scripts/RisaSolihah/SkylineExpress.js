@@ -432,7 +432,7 @@ function bindBlindType(designType) {
             return;
         }
 
-        const listData = { type: "BlindTypeShutter", companydetailid: companyDetailId, designtype: designType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "BlindTypeSkyline", companydetailid: companyDetailId, designtype: designType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -633,7 +633,7 @@ function bindLayoutCode(blindType) {
             return;
         }
 
-        const listData = { type: "LayoutCodeShutter", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "LayoutCodeSkyline", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -682,7 +682,7 @@ function bindFrameType(blindType, mounting) {
             return;
         }
 
-        const listData = { type: "FrameTypeShutter", blindtype: blindType, customtype: mounting, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "FrameTypeSkyline", blindtype: blindType, customtype: mounting, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -727,7 +727,7 @@ function bindLeftFrame(frameType) {
             return;
         }
 
-        const listData = { type: "LeftFrameShutter", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "LeftFrameSkyline", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -772,7 +772,7 @@ function bindRightFrame(frameType) {
             return;
         }
 
-        const listData = { type: "RightFrameShutter", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "RightFrameSkyline", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -817,7 +817,7 @@ function bindTopFrame(frameType) {
             return;
         }
 
-        const listData = { type: "TopFrameShutter", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "TopFrameSkyline", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -862,7 +862,7 @@ function bindBottomFrame(frameType) {
             return;
         }
 
-        const listData = { type: "BottomFrameShutter", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "BottomFrameSkyline", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -907,7 +907,7 @@ function bindBottomTrack(blindType, bottomFrame) {
             return;
         }
 
-        const listData = { type: "BottomTrackShutter", blindtype: blindType, customtype: bottomFrame, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "BottomTrackSkyline", blindtype: blindType, customtype: bottomFrame, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",

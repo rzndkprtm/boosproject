@@ -87,7 +87,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
             Next
         End If
-
         If type = "BlindTypeCS" Then
             Dim param As New List(Of SqlParameter) From {
                 New SqlParameter("@Type", type),
@@ -101,7 +100,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
             Next
         End If
-
         If type = "BlindTypeRoller" Then
             Dim param As New List(Of SqlParameter) From {
                 New SqlParameter("@Type", type),
@@ -115,8 +113,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
             Next
         End If
-
-        If type = "BlindTypeShutter" Then
+        If type = "BlindTypeSkyline" Then
             Dim param As New List(Of SqlParameter) From {
                 New SqlParameter("@Type", type),
                 New SqlParameter("@DesignType", designtype),
@@ -129,7 +126,19 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
             Next
         End If
+        If type = "BlindTypeEvolve" Then
+            Dim param As New List(Of SqlParameter) From {
+                New SqlParameter("@Type", type),
+                New SqlParameter("@DesignType", designtype),
+                New SqlParameter("@CompanyDetail", companydetailid),
+                New SqlParameter("@Action", action)
+            }
+            Dim dt As DataTable = orderClass.GetDataTableSP("sp_Blinds_List_Order", param)
 
+            For Each row As DataRow In dt.Rows
+                result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
+            Next
+        End If
         If type = "TubeType" Then
             Dim thisQuery As String = "SELECT Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') GROUP BY Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Name ASC"
             If blindtype = "73" OrElse blindtype = "74" OrElse blindtype = "75" OrElse blindtype = "76" Then
@@ -148,7 +157,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("TextValue").ToString(), .Text = row("TextName").ToString()})
             Next
         End If
-
         If type = "ControlTypeRoller" Then
             Dim thisQuery As String = "SELECT Products.ControlType AS TextValue, ProductControls.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductControls ON Products.ControlType=ProductControls.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') GROUP BY Products.ControlType, ProductControls.Name ORDER BY ProductControls.Name ASC"
             If action = "view" Then
@@ -160,7 +168,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("TextValue").ToString(), .Text = row("TextName").ToString()})
             Next
         End If
-
         If type = "TubeTypeRoller" Then
             Dim thisQuery As String = "SELECT ProductTubes.Id, Products.TubeType AS TextValue, ProductTubes.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductTubes ON Products.TubeType=ProductTubes.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.ControlType='" & controltype & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') GROUP BY ProductTubes.Id, Products.TubeType, ProductTubes.Name ORDER BY ProductTubes.Id ASC"
             If action = "view" Then
@@ -172,7 +179,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("TextValue").ToString(), .Text = row("TextName").ToString()})
             Next
         End If
-
         If type = "ControlType" Then
             Dim thisQuery As String = "SELECT Products.ControlType AS TextValue, ProductControls.Name AS TextName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductControls ON Products.ControlType=ProductControls.Id WHERE Products.BlindId='" & blindtype & "' AND Products.TubeType='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') GROUP BY Products.ControlType, ProductControls.Name ORDER BY ProductControls.Name ASC"
             If action = "view" Then
@@ -184,7 +190,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("TextValue").ToString(), .Text = row("TextName").ToString()})
             Next
         End If
-
         If type = "ColourType" Then
             Dim thisQuery As String = "SELECT Products.Id, ProductColours.Name AS ColourName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') ORDER BY ProductColours.Name ASC"
             If action = "view" Then
@@ -196,7 +201,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("ColourName").ToString()})
             Next
         End If
-
         If type = "ProductName" Then
             Dim thisQuery As String = "SELECT Products.Id, Products.Name FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS companyArray INNER JOIN ProductColours ON Products.ColourType=ProductColours.Id WHERE Products.BlindId='" & blindtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Products.TubeType='" & tubetype & "' AND Products.ControlType='" & controltype & "' AND (Products.Status='In Stock' OR Products.Status='Limited Stock') ORDER BY Products.Name ASC"
             If action = "view" Then
@@ -208,7 +212,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
             Next
         End If
-
         If type = "Mounting" Then
             Dim thisQuery As String = "SELECT Name FROM Mountings CROSS APPLY STRING_SPLIT(BlindId, ',') AS blindArray WHERE blindArray.VALUE='" & blindtype & "' AND Active=1 ORDER BY Name ASC"
             If action = "view" Then
@@ -220,7 +223,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("Name").ToString(), .Text = row("Name").ToString()})
             Next
         End If
-
         If type = "FabricType" Then
             Dim thisQuery As String = "SELECT Id, Name FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND tubeArray.VALUE='" & tubetype & "' AND companyArray.VALUE='" & companydetailid & "' AND Status='Active' ORDER BY Name ASC"
             If action = "edit" AndAlso (orderstatus = "In Production" OrElse orderstatus = "On Hold" OrElse orderstatus = "Canceled") Then
@@ -235,7 +237,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
             Next
         End If
-
         If type = "FabricTypeByDesign" Then
             Dim thisQuery As String = "SELECT Fabrics.Id, Name AS FinalName FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Status='Active' ORDER BY Name ASC"
             If action = "edit" AndAlso (orderstatus = "In Production" OrElse orderstatus = "On Hold" OrElse orderstatus = "Canceled") Then
@@ -269,7 +270,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("FinalName").ToString()})
             Next
         End If
-
         If type = "FabricColour" Then
             Dim thisQuery As String = "SELECT FabricColours.Id, Colour AS FinalColour FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE FabricId='" & fabrictype & "' AND companyDetailArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY CASE WHEN Factory='Express' THEN 1 ELSE 2 END, Colour ASC"
             If action = "edit" AndAlso (orderstatus = "In Production" OrElse orderstatus = "On Hold" OrElse orderstatus = "Canceled") Then
@@ -295,7 +295,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("FinalColour").ToString()})
             Next
         End If
-
         If type = "ControlColour" Then
             Dim thisQuery As String = "SELECT Id, Name FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND controlArray.VALUE='" & controltype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
             If action = "view" Then
@@ -320,7 +319,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
             Next
         End If
-
         If type = "BottomType" Then
             Dim thisQuery As String = "SELECT Id, Name FROM Bottoms CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
             If action = "view" Then
@@ -332,7 +330,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Name").ToString()})
             Next
         End If
-
         If type = "BottomColour" Then
             Dim thisQuery As String = "SELECT Id, Colour FROM BottomColours WHERE BottomId='" & bottomtype & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Colour ASC"
             If action = "view" Then
@@ -344,7 +341,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = row("Id").ToString(), .Text = row("Colour").ToString()})
             Next
         End If
-
         If type = "ChainStopper" Then
             Dim chainType As String = orderClass.GetItemData("SELECT ChainType FROM Chains WHERE Id='" & chaincolour & "'")
             If chainType = "Continuous" Then
@@ -355,7 +351,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "With Stopper", .Text = "With Stopper"})
             End If
         End If
-
         If type = "CurtainTrackType" Then
             result.Clear()
             If companydetailid = "2" OrElse companydetailid = "3" OrElse companydetailid = "4" Then
@@ -376,7 +371,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
             End If
         End If
-
         If type = "CurtainTrackColour" Then
             If Not String.IsNullOrEmpty(customtype) Then
                 result.Add(New With {.Value = "Black", .Text = "Black"})
@@ -391,7 +385,6 @@ Partial Class Order_Method
                 End If
             End If
         End If
-
         If type = "CurtainTrackDraw" Then
             If Not String.IsNullOrEmpty(customtype) Then
                 result.Add(New With {.Value = "Flick Stick", .Text = "Flick Stick"})
@@ -403,7 +396,6 @@ Partial Class Order_Method
                 End If
             End If
         End If
-
         If type = "PanelPG" Then
             If Not String.IsNullOrEmpty(customtype) Then
                 If customtype = "2" Then
@@ -428,7 +420,6 @@ Partial Class Order_Method
                 End If
             End If
         End If
-
         If type = "LayoutCodePG" Then
             If Not String.IsNullOrEmpty(customtype) Then
                 If customtype = "2 - 2" Then
@@ -480,7 +471,6 @@ Partial Class Order_Method
                 End If
             End If
         End If
-
         If type = "LayoutCodeDoor" Then
             Dim tubeName As String = orderClass.GetTubeName(tubetype)
             If tubeName = "Hinged Single" Then
@@ -518,7 +508,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "FRR-ALLF", .Text = "FRR-ALLF"})
             End If
         End If
-
         If type = "MeshDoor" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Safety" Then
@@ -538,7 +527,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
             End If
         End If
-
         If type = "MeshWindow" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Safety" Then
@@ -558,7 +546,6 @@ Partial Class Order_Method
                 'result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
             End If
         End If
-
         If type = "FrameColourDoor" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Safety" Then
@@ -612,7 +599,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Woodland Grey (Regular)", .Text = "Woodland Grey (Regular)"})
             End If
         End If
-
         If type = "FrameColourWindow" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Safety" Then
@@ -666,7 +652,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Woodland Grey (Regular)", .Text = "Woodland Grey (Regular)"})
             End If
         End If
-
         If type = "InterlockDoor" Then
             Dim tubeName As String = orderClass.GetTubeName(tubetype)
             result.Add(New With {.Value = "", .Text = ""})
@@ -685,13 +670,12 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "HD10 Large Offset with HD9 F Interlock", .Text = "HD10 Large Offset with HD9 F Interlock"})
             End If
         End If
-
-        If type = "PartColour_Shutter" Then
+        If type = "PartColour_Skyline" Then
             Dim designName As String = orderClass.GetDesignName(designtype)
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             Dim productName As String = orderClass.GetProductName(colourtype)
 
-            If designName = "Shutter Express Part" Then
+            If designName = "Skyline Express Part" Then
                 If blindName = "Extrusion" Then
                     result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
                 End If
@@ -725,8 +709,7 @@ Partial Class Order_Method
                     result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
                 End If
             End If
-
-            If designName = "Shutter Ocean Part" Then
+            If designName = "Skyline Ocean Part" Then
                 If blindName = "Extrusion" Then
                     result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
                     result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
@@ -783,7 +766,101 @@ Partial Class Order_Method
                 End If
             End If
         End If
-
+        If type = "PartColour_Evolve" Then
+            Dim designName As String = orderClass.GetDesignName(designtype)
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            Dim productName As String = orderClass.GetProductName(colourtype)
+            If designName = "Evolve Express Part" Then
+                If blindName = "Extrusion" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Fixed Frame" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinged Frame" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Sliding Frame" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinges" Then
+                    result.Add(New With {.Value = "Stainless Steel", .Text = "Stainless Steel"})
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                End If
+                If blindName = "Louvres" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                    If productName = "Standard Louvre Pin" OrElse productName = "Repair Louvre Pin" Then
+                        result.Clear()
+                        result.Add(New With {.Value = "White", .Text = "White"})
+                    End If
+                End If
+                If blindName = "Magnets & Strikers" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Misc" Then
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                End If
+                If blindName = "Posts" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+            End If
+            If designName = "Evolve Ocean Part" Then
+                If blindName = "Extrusion" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Fixed Frame" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinged Frame" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Sliding Frame" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinges" Then
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                    result.Add(New With {.Value = "Stainless Steel", .Text = "Stainless Steel"})
+                End If
+                If blindName = "Louvres" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                    If productName = "Standard Louvre Pin" OrElse productName = "Repair Louvre Pin" Then
+                        result.Clear()
+                        result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                        result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                        result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                        result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                    End If
+                End If
+                If blindName = "Magnets & Strikers" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Misc" Then
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                End If
+                If blindName = "Posts" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+            End If
+        End If
         If type = "ValanceRoman" Then
             Dim controlName As String = orderClass.GetControlName(controltype)
             If Not String.IsNullOrEmpty(controlName) Then
@@ -929,7 +1006,7 @@ Partial Class Order_Method
             End If
         End If
 
-        If type = "LayoutCodeShutter" Then
+        If type = "LayoutCodeSkyline" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Hinged" Then
                 result.Add(New With {.Value = "L", .Text = "L"})
@@ -1002,7 +1079,7 @@ Partial Class Order_Method
             End If
         End If
 
-        If type = "FrameTypeShutter" Then
+        If type = "FrameTypeSkyline" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
                 result.Add(New With {.Value = "Beaded L 48mm", .Text = "Beaded L 48mm"})
@@ -1037,7 +1114,7 @@ Partial Class Order_Method
             End If
         End If
 
-        If type = "LeftFrameShutter" Then
+        If type = "LeftFrameSkyline" Then
             If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
                 result.Add(New With {.Value = "No", .Text = "No"})
@@ -1068,7 +1145,7 @@ Partial Class Order_Method
             End If
         End If
 
-        If type = "RightFrameShutter" Then
+        If type = "RightFrameSkyline" Then
             If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
                 result.Add(New With {.Value = "No", .Text = "No"})
@@ -1099,7 +1176,7 @@ Partial Class Order_Method
             End If
         End If
 
-        If type = "TopFrameShutter" Then
+        If type = "TopFrameSkyline" Then
             If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
                 result.Add(New With {.Value = "No", .Text = "No"})
@@ -1132,7 +1209,7 @@ Partial Class Order_Method
             End If
         End If
 
-        If type = "BottomFrameShutter" Then
+        If type = "BottomFrameSkyline" Then
             If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
                 result.Add(New With {.Value = "No", .Text = "No"})
@@ -1165,7 +1242,7 @@ Partial Class Order_Method
             End If
         End If
 
-        If type = "BottomTrackShutter" Then
+        If type = "BottomTrackSkyline" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Track Bi-fold" OrElse blindName = "Track Sliding" OrElse blindName = "Track Sliding Single Track" Then
                 If Not String.IsNullOrEmpty(customtype) Then
@@ -3602,15 +3679,20 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = width * drop / 1000000
         Dim linearMetre As Decimal = width / 1000
 
+        Dim orderType As String = orderClass.GetOrderType(data.headerid)
+        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], SemiInsideMount, LouvreSize, LouvrePosition, HingeColour, MidrailHeight1, MidrailHeight2, MidrailCritical, LayoutCode, LayoutCodeCustom, CustomHeaderLength, FrameType, FrameLeft, FrameRight, FrameTop, FrameBottom, BottomTrackType, Buildout, PanelQty, TrackQty, TrackLength, SameSizePanel, HingeQtyPerPanel, PanelQtyWithHinge, Gap1, Gap2, Gap3, Gap4, Gap5, HorizontalTPost, HorizontalTPostHeight, JoinedPanels, ReverseHinged, PelmetFlat, ExtraFascia, HingesLoose, TiltrodType, TiltrodSplit, SplitHeight1, SplitHeight2, SquareMetre, LinearMetre, TotalItems, Notes, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @SemiInsideMount, @LouvreSize, @LouvrePosition, @HingeColour, @MidrailHeight1, @MidrailHeight2, @MidrailCritical, @LayoutCode, @LayoutCodeCustom, @CustomHeaderLength, @FrameType, @FrameLeft, @FrameRight, @FrameTop, @FrameBottom, @BottomTrackType, @Buildout, @PanelQty, @TrackQty, @TrackLength, @SameSizePanel, @HingeQtyPerPanel, @PanelQtyWithHinge, @Gap1, @Gap2, @Gap3, @Gap4, @Gap5, @HorizontalTPost, @HorizontalTPostHeight, @JoinedPanels, @ReverseHinged, @PelmetFlat, @ExtraFascia, @HingesLoose, @TiltrodType, @TiltrodSplit, @SplitHeight1, @SplitHeight2, @SquareMetre, @LinearMetre, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                    Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Evolve", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
-                        thisCmd.Parameters.AddWithValue("@ProductId", UCase(data.colourtype).ToString())
+                        thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                         thisCmd.Parameters.AddWithValue("@Qty", 1)
                         thisCmd.Parameters.AddWithValue("@Room", data.room)
@@ -3658,7 +3740,7 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@SplitHeight2", splitHeight2)
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                         thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
-                        thisCmd.Parameters.AddWithValue("@TotalItems", panelQty)
+                        thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
 
@@ -3683,10 +3765,11 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, PriceProductGroupId=@PriceProductGroupId, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, [Drop]=@Drop, SemiInsideMount=@SemiInsideMount, LouvreSize=@LouvreSize, LouvrePosition=@LouvrePosition, HingeColour=@HingeColour, MidrailHeight1=@MidrailHeight1, MidrailHeight2=@MidrailHeight2, MidrailCritical=@MidrailCritical, LayoutCode=@LayoutCode, LayoutCodeCustom=@LayoutCodeCustom, CustomHeaderLength=@CustomHeaderLength, FrameType=@FrameType, FrameLeft=@FrameLeft, FrameRight=@FrameRight, FrameTop=@FrameTop, FrameBottom=@FrameBottom, BottomTrackType=@BottomTrackType, Buildout=@Buildout, PanelQty=@PanelQty, TrackQty=@TrackQty, TrackLength=@TrackLength, SameSizePanel=@SameSizePanel, HingeQtyPerPanel=@HingeQtyPerPanel, PanelQtyWithHinge=@PanelQtyWithHinge, Gap1=@Gap1, Gap2=@Gap2, Gap3=@Gap3, Gap4=@Gap4, Gap5=@Gap5, HorizontalTPost=@HorizontalTPost, HorizontalTPostHeight=@HorizontalTPostHeight, JoinedPanels=@JoinedPanels, ReverseHinged=@ReverseHinged, PelmetFlat=@PelmetFlat, ExtraFascia=@ExtraFascia, HingesLoose=@HingesLoose, TiltrodType=@TiltrodType, TiltrodSplit=@TiltrodSplit, SplitHeight1=@SplitHeight1, SplitHeight2=@SplitHeight2, SquareMetre=@SquareMetre, LinearMetre=@LinearMetre, Notes=@Notes, MarkUp=@MarkUp, TotalItems=@TotalItems, Active=1 WHERE Id=@Id", thisConn)
+                Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Evolve", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
-                    thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
-                    thisCmd.Parameters.AddWithValue("@ProductId", UCase(data.colourtype).ToString())
+                    thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                     thisCmd.Parameters.AddWithValue("@Qty", 1)
                     thisCmd.Parameters.AddWithValue("@Room", data.room)
@@ -3734,7 +3817,7 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@SplitHeight2", splitHeight2)
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                     thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
-                    thisCmd.Parameters.AddWithValue("@TotalItems", panelQty)
+                    thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
 
@@ -3743,9 +3826,16 @@ Partial Class Order_Method
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If orderType = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If orderType = "Builder" AndAlso orderStatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -9718,7 +9808,7 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Shutter", thisConn)
+                    Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Skyline", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
 
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
@@ -9801,7 +9891,7 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Shutter", thisConn)
+                Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Skyline", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
 
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
@@ -12057,7 +12147,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function ShutterPartProcess(data As ProccessData) As String
+    Public Shared Function SkylinePartProcess(data As ProccessData) As String
         Dim orderClass As New OrderClass
 
         Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
@@ -12111,7 +12201,7 @@ Partial Class Order_Method
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_ShutterPart", thisConn)
+                    Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_SkylinePart", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
 
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
@@ -12148,7 +12238,7 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("sp_OrderDetails_Update_ShutterPart", thisConn)
+                Using thisCmd As New SqlCommand("sp_OrderDetails_Update_SkylinePart", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
 
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
@@ -13155,16 +13245,16 @@ Partial Class Order_Method
             itemDetail(col.ColumnName) = detailData(col.ColumnName)
         Next
 
-        Dim blindReq As New JSONList With {.type = "BlindTypeShutter", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim blindReq As New JSONList With {.type = "BlindTypeSkyline", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodeShutter", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim frameTypeReq As New JSONList With {.type = "FrameTypeShutter", .blindtype = blindId, .customtype = mounting, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim leftFrameReq As New JSONList With {.type = "LeftFrameShutter", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim rightFrameReq As New JSONList With {.type = "RightFrameShutter", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim topFrameReq As New JSONList With {.type = "TopFrameShutter", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim bottomFrameReq As New JSONList With {.type = "BottomFrameShutter", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim bottomTrackReq As New JSONList With {.type = "BottomTrackShutter", .blindtype = blindId, .customtype = frameBottom, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodeSkyline", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim frameTypeReq As New JSONList With {.type = "FrameTypeSkyline", .blindtype = blindId, .customtype = mounting, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim leftFrameReq As New JSONList With {.type = "LeftFrameSkyline", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim rightFrameReq As New JSONList With {.type = "RightFrameSkyline", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim topFrameReq As New JSONList With {.type = "TopFrameSkyline", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim bottomFrameReq As New JSONList With {.type = "BottomFrameSkyline", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim bottomTrackReq As New JSONList With {.type = "BottomTrackSkyline", .blindtype = blindId, .customtype = frameBottom, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,
@@ -13431,7 +13521,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function ShutterPartDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
+    Public Shared Function SkylinePartDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignId, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")

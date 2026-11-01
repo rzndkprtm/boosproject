@@ -214,7 +214,6 @@ Partial Class Order_Invoice
             }
             gvList.DataSource = orderClass.GetDataTableSP("sp_OrderDetails_List_ByHeaderId", detailParams)
             gvList.DataBind()
-
             gvList.Columns(2).Visible = LoginAccess("Visible ID")
 
             txtSendInvoiceTo.Text = orderClass.GetCustomerPrimaryEmail(lblCustomerId.Text)

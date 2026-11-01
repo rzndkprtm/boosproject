@@ -1022,6 +1022,15 @@ Public Class OrderClass
                 End If
 
             End If
+            If designName = "Door" Then
+                result = String.Format("{0} - {1} {2} {3}", itemDescription, frameColour, size, squareMetreText)
+            End If
+            If designName = "Evolve Shutter Express" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+            End If
+            If designName = "Evolve Shutter Ocean" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+            End If
             If designName = "Linea Valance" Then
                 result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
                 If showStock = True Then
@@ -1038,6 +1047,24 @@ Public Class OrderClass
                         result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
                     End If
 
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+            End If
+            If designName = "Outdoor" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+
+                If showStock = True Then
                     If fabricColourStatus = "Limited Stock" Then
                         result &= "<br />"
                         result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
@@ -1397,29 +1424,10 @@ Public Class OrderClass
                     End If
                 End If
             End If
-            If designName = "Roman Blind" Then
+            If designName = "Roller Horizon" Then
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-                If Not String.IsNullOrEmpty(printing) Then
-                    result &= "<br />"
-                    result &= "<b>[Printed Fabric]</b>"
-                End If
-
-                If showStock = True Then
-                    If fabricColourStatus = "Limited Stock" Then
-                        result &= "<br />"
-                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
-                    End If
-                    If fabricColourStatus = "Out of Stock" Then
-                        result &= "<br />"
-                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
-                    End If
-                    If fabricColourStatus = "Discontinued" Then
-                        result &= "<br />"
-                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
-                    End If
-                End If
             End If
-            If designName = "Soft Roman" Then
+            If designName = "Roman Blind" Then
                 result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
                 If Not String.IsNullOrEmpty(printing) Then
                     result &= "<br />"
@@ -1447,14 +1455,71 @@ Public Class OrderClass
                     result = String.Format("{0} {1}", itemDescription, fabricName)
                 End If
             End If
+            If designName = "Saphora Drape" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+
+                If blindName = "Track Only" Then
+                    result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
+                End If
+
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+            End If
+            If designName = "Service" Then
+                result = GetItemData("SELECT Name FROM PriceServices WHERE Id='" & serviceId & "'")
+            End If
             If designName = "Skyline Shutter Express" Then
                 result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
             End If
             If designName = "Skyline Shutter Ocean" Then
                 result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
             End If
-            If designName = "Evolve Shutter Ocean" Then
-                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+            If designName = "Soft Roman" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If Not String.IsNullOrEmpty(printing) Then
+                    result &= "<br />"
+                    result &= "<b>[Printed Fabric]</b>"
+                End If
+
+                If showStock = True Then
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
             End If
             If designName = "Venetian Blind" Then
                 result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
@@ -1525,70 +1590,8 @@ Public Class OrderClass
                     End If
                 End If
             End If
-            If designName = "Saphora Drape" Then
-                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-
-                If blindName = "Track Only" Then
-                    result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
-                End If
-
-                If showStock = True Then
-                    If productStatus = "Limited Stock" Then
-                        result &= "<br />"
-                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
-                    End If
-                    If productStatus = "Out of Stock" Then
-                        result &= "<br />"
-                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
-                    End If
-                    If productStatus = "Discontinued" Then
-                        result &= "<br />"
-                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
-                    End If
-
-                    If fabricColourStatus = "Limited Stock" Then
-                        result &= "<br />"
-                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
-                    End If
-                    If fabricColourStatus = "Out of Stock" Then
-                        result &= "<br />"
-                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
-                    End If
-                    If fabricColourStatus = "Discontinued" Then
-                        result &= "<br />"
-                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
-                    End If
-                End If
-            End If
             If designName = "Window" Then
                 result = String.Format("{0} - {1} {2} {3}", itemDescription, frameColour, size, squareMetreText)
-            End If
-            If designName = "Door" Then
-                result = String.Format("{0} - {1} {2} {3}", itemDescription, frameColour, size, squareMetreText)
-            End If
-            If designName = "Outdoor" Then
-                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-
-                If showStock = True Then
-                    If fabricColourStatus = "Limited Stock" Then
-                        result &= "<br />"
-                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
-                    End If
-                    If fabricColourStatus = "Out of Stock" Then
-                        result &= "<br />"
-                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
-                    End If
-                    If fabricColourStatus = "Discontinued" Then
-                        result &= "<br />"
-                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
-                    End If
-                End If
-            End If
-            If designName = "Roller Horizon" Then
-                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
-            End If
-            If designName = "Service" Then
-                result = GetItemData("SELECT Name FROM PriceServices WHERE Id='" & serviceId & "'")
             End If
 
             If designName = "Aluminium Part" Then
@@ -1600,10 +1603,16 @@ Public Class OrderClass
             If designName = "Roller Part" Then
                 result = String.Format("{0} - {1}", designName, productName)
             End If
-            If designName = "Shutter Express Part" Then
+            If designName = "Skyline Part Express" Then
                 result = String.Format("{0} - {1}", designName, productName)
             End If
-            If designName = "Shutter Ocean Part" Then
+            If designName = "Skyline Part Ocean" Then
+                result = String.Format("{0} - {1}", designName, productName)
+            End If
+            If designName = "Evolve Part Express" Then
+                result = String.Format("{0} - {1}", designName, productName)
+            End If
+            If designName = "Evolve Part Ocean" Then
                 result = String.Format("{0} - {1}", designName, productName)
             End If
             If designName = "Vertical Part" Then
@@ -2238,10 +2247,9 @@ Public Class OrderClass
                     Dim isTaiwan As Boolean = False
                     Dim isChina As Boolean = False
 
-                    If designName = "Aluminium Blind" OrElse designName = "Design Shades" OrElse designName = "Linea Valance" OrElse designName = "Panel Glide" OrElse designName = "Pelmet" OrElse designName = "Roman Blind" OrElse designName = "Soft Roman" OrElse designName = "Privacy Venetian" OrElse designName = "Venetian Blind" OrElse designName = "Vertical" OrElse designName = "Roller Blind" OrElse designName = "Sample" OrElse designName = "Skyline Shutter Express" OrElse designName = "Outdoor" OrElse designName = "Saphora Drape" OrElse designName = "Roller Horizon" OrElse designName = "Venetian Part" OrElse designName = "Aluminium Part" OrElse designName = "Roller Part" OrElse designName = "Shutter Express Part" Then
+                    If designName = "Aluminium Blind" Then
                         isBig = True
                     End If
-
                     If designName = "Cellular Shades" Then
                         Dim fabricColourId As String = detailData.Rows(iDetail)("FabricColourId").ToString()
                         Dim fabricFactory As String = GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourId & "'")
@@ -2249,7 +2257,6 @@ Public Class OrderClass
                         If fabricFactory = "Express" Then isBig = True
                         If fabricFactory = "Regular" Then isTaiwan = True
                     End If
-
                     If designName = "Curtain" Then
                         Dim fabricColourId As String = detailData.Rows(iDetail)("FabricColourId").ToString()
                         Dim fabricColourIdB As String = detailData.Rows(iDetail)("FabricColourIdB").ToString()
@@ -2292,30 +2299,110 @@ Public Class OrderClass
                             isBig = True
                         End If
                     End If
+                    If designName = "Design Shades" Then
+                        isBig = True
+                    End If
+                    If designName = "Door" Then
+                        Dim frameColour As String = detailData.Rows(iDetail)("FrameColour").ToString()
 
-                    If designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Ocean" OrElse designName = "Shutter Ocean Part" Then
+                        If frameColour.Contains("Regular") Then isAustralia = True
+                        If frameColour.Contains("Express") Then isBig = True
+                    End If
+                    If designName = "Evolve Shutter Express" Then
+                        isBig = True
+                    End If
+                    If designName = "Evolve Shutter Ocean" Then
                         isChina = True
                     End If
-
-                    If designName = "Door" OrElse designName = "Window" Then
+                    If designName = "Linea Valance" Then
+                        isBig = True
+                    End If
+                    If designName = "Outdoor" Then
+                        isBig = True
+                    End If
+                    If designName = "Panel Glide" Then
+                        isBig = True
+                    End If
+                    If designName = "Pelmet" Then
+                        isBig = True
+                    End If
+                    If designName = "Privacy Venetian" Then
+                        isBig = True
+                    End If
+                    If designName = "Roller Blind" Then
+                        isBig = True
+                    End If
+                    If designName = "Roller Horizon" Then
+                        isBig = True
+                    End If
+                    If designName = "Roman Blind" Then
+                        isBig = True
+                    End If
+                    If designName = "Sample" Then
+                        isBig = True
+                    End If
+                    If designName = "Saphora Drape" Then
+                        isBig = True
+                    End If
+                    If designName = "Skyline Shutter Express" Then
+                        isBig = True
+                    End If
+                    If designName = "Skyline Shutter Ocean" Then
+                        isChina = True
+                    End If
+                    If designName = "Soft Roman" Then
+                        isBig = True
+                    End If
+                    If designName = "Venetian Blind" Then
+                        isBig = True
+                    End If
+                    If designName = "Vertical" Then
+                        isBig = True
+                    End If
+                    If designName = "Window" Then
                         Dim frameColour As String = detailData.Rows(iDetail)("FrameColour").ToString()
 
                         If frameColour.Contains("Regular") Then isAustralia = True
                         If frameColour.Contains("Express") Then isBig = True
                     End If
 
+                    If designName = "Aluminium Part" Then
+                        isBig = True
+                    End If
+                    If designName = "Venetian Part" Then
+                        isBig = True
+                    End If
+                    If designName = "Roller Part" Then
+                        isBig = True
+                    End If
+                    If designName = "Skyline Part Express" Then
+                        isBig = True
+                    End If
+                    If designName = "Skyline Part Ocean" Then
+                        isChina = True
+                    End If
+                    If designName = "Evolve Part Express" Then
+                        isBig = True
+                    End If
+                    If designName = "Evolve Part Ocean" Then
+                        isChina = True
+                    End If
+                    If designName = "Vertical Part" Then
+                        isBig = True
+                    End If
+                    If designName = "Saphora Drape Part" Then
+                        isBig = True
+                    End If
+
                     If isBig AndAlso Not factoryList.Contains("BIG") Then
                         factoryList.Add("BIG")
                     End If
-
                     If isTaiwan AndAlso Not factoryList.Contains("TAIWAN") Then
                         factoryList.Add("TAIWAN")
                     End If
-
                     If isAustralia AndAlso Not factoryList.Contains("AUS") Then
                         factoryList.Add("AUS")
                     End If
-
                     If isChina AndAlso Not factoryList.Contains("CHINA") Then
                         factoryList.Add("CHINA")
                     End If

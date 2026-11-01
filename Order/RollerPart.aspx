@@ -195,5 +195,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/RollerPart.js?v=1.0.1"></script>
+    <script src="/Scripts/RisaSolihah/RollerPart.js?v=1.2.0"></script>
 </asp:Content>

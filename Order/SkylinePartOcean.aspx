@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="ShutterExpressPart.aspx.vb" Inherits="Order_ShutterPart" MasterPageFile="~/Site.Master" Title="Shutter Part Order" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="SkylinePartOcean.aspx.vb" Inherits="Order_SkylinePartOcean" MasterPageFile="~/Site.Master" Title="Skyline Part Order" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -206,5 +206,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/ShutterExpressPart.js?v=1.0.5"></script>
+    <script src="/Scripts/RisaSolihah/SkylinePartOcean.js?v=1.2.0"></script>
 </asp:Content>

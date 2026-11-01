@@ -723,6 +723,368 @@ Public Class PreviewClass
             End Try
             ' END DOOR
 
+            ' START EVOLVE SHUTTER EXPRESS
+            Try
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@HeaderId", headerId)
+                }
+                Dim shutterData As DataTable = GetDataTableSP("sp_OrderDetails_Get_EvolveExpress", params)
+
+                If shutterData.Rows.Count > 0 Then
+                    pageEvent.PageTitle = "EXPRESS"
+                    pageEvent.PageTitle2 = "Evolve Shutter"
+
+                    Dim table As New PdfPTable(5)
+                    table.WidthPercentage = 100
+
+                    Dim items(37, shutterData.Rows.Count - 1) As String
+
+                    For i As Integer = 0 To shutterData.Rows.Count - 1
+                        Dim layoutCode As String = If(shutterData.Rows(i)("LayoutCode").ToString() = "Other", shutterData.Rows(i)("LayoutCodeCustom").ToString(), shutterData.Rows(i)("LayoutCode").ToString())
+
+                        Dim gapList As New List(Of String)
+
+                        Dim midrailList As New List(Of String)
+
+                        Dim midrailHeight1 As Integer = 0
+                        Dim midrailHeight2 As Integer = 0
+
+                        If Not IsDBNull(shutterData.Rows(i)("MidrailHeight1")) Then
+                            midrailHeight1 = shutterData.Rows(i)("MidrailHeight1")
+                        End If
+                        If Not IsDBNull(shutterData.Rows(i)("MidrailHeight2")) Then
+                            midrailHeight2 = shutterData.Rows(i)("MidrailHeight2")
+                        End If
+
+                        If midrailHeight1 > 0 Then midrailList.Add(String.Format("1 : {0}", midrailHeight1))
+                        If midrailHeight2 > 0 Then midrailList.Add(String.Format("2 : {0}", midrailHeight2))
+
+                        Dim midrailHeight As String = String.Join(", ", midrailList)
+
+                        Dim headerLengthValue As Integer = 0
+                        Dim headerLengthText As String = String.Empty
+                        If Not IsDBNull(shutterData.Rows(i)("CustomHeaderLength")) Then
+                            headerLengthValue = shutterData.Rows(i)("CustomHeaderLength")
+                        End If
+                        If headerLengthValue > 0 Then
+                            headerLengthText = headerLengthValue.ToString()
+                        End If
+
+                        Dim gap1 As Integer = 0
+                        Dim gap2 As Integer = 0
+                        Dim gap3 As Integer = 0
+                        Dim gap4 As Integer = 0
+                        Dim gap5 As Integer = 0
+
+                        If Not IsDBNull(shutterData.Rows(i)("Gap1")) Then
+                            gap1 = shutterData.Rows(i)("Gap1")
+                        End If
+                        If Not IsDBNull(shutterData.Rows(i)("Gap2")) Then
+                            gap2 = shutterData.Rows(i)("Gap2")
+                        End If
+                        If Not IsDBNull(shutterData.Rows(i)("Gap3")) Then
+                            gap3 = shutterData.Rows(i)("Gap3")
+                        End If
+                        If Not IsDBNull(shutterData.Rows(i)("Gap4")) Then
+                            gap4 = shutterData.Rows(i)("Gap4")
+                        End If
+                        If Not IsDBNull(shutterData.Rows(i)("Gap5")) Then
+                            gap5 = shutterData.Rows(i)("Gap5")
+                        End If
+
+                        If gap1 > 0 Then gapList.Add("Gap 1 : " & gap1)
+                        If gap2 > 0 Then gapList.Add("Gap 2 : " & gap2)
+                        If gap3 > 0 Then gapList.Add("Gap 3 : " & gap3)
+                        If gap4 > 0 Then gapList.Add("Gap 4 : " & gap4)
+                        If gap5 > 0 Then gapList.Add("Gap 5 : " & gap5)
+
+                        Dim gapPosition As String = String.Join(", ", gapList)
+
+                        Dim split1 As Integer = 0
+                        Dim split2 As Integer = 0
+
+                        If Not IsDBNull(shutterData.Rows(i)("SplitHeight1")) Then
+                            split1 = shutterData.Rows(i)("SplitHeight1")
+                        End If
+                        If Not IsDBNull(shutterData.Rows(i)("SplitHeight2")) Then
+                            split2 = shutterData.Rows(i)("SplitHeight2")
+                        End If
+
+                        Dim splitHeigth As String = String.Format("1st : {0}, 2nd : {1}", split1, split2)
+
+                        Dim horizontalHeight As String = String.Empty
+                        Dim horizontalTPostHeight As Integer = 0
+                        If Not IsDBNull(shutterData.Rows(i)("HorizontalTPostHeight")) Then
+                            horizontalTPostHeight = shutterData.Rows(i)("HorizontalTPostHeight")
+                        End If
+
+                        If horizontalTPostHeight > 0 Then
+                            horizontalHeight = shutterData.Rows(i)("HorizontalTPostHeight").ToString()
+                        End If
+
+                        Dim number As Integer = i + 1
+
+                        items(0, i) = "Item : " & number
+                        items(1, i) = shutterData.Rows(i)("Room").ToString()
+                        items(2, i) = shutterData.Rows(i)("Width").ToString()
+                        items(3, i) = shutterData.Rows(i)("Drop").ToString()
+                        items(4, i) = shutterData.Rows(i)("Mounting").ToString()
+                        items(5, i) = shutterData.Rows(i)("ColourType").ToString()
+                        items(6, i) = shutterData.Rows(i)("LouvreSize").ToString()
+                        items(7, i) = shutterData.Rows(i)("LouvrePosition").ToString()
+                        items(8, i) = midrailHeight
+                        items(9, i) = shutterData.Rows(i)("MidrailCritical").ToString()
+                        items(10, i) = shutterData.Rows(i)("HingeColour").ToString()
+                        items(11, i) = shutterData.Rows(i)("BlindName").ToString()
+                        items(12, i) = shutterData.Rows(i)("SemiInsideMount").ToString()
+                        items(13, i) = shutterData.Rows(i)("PanelQty").ToString()
+                        items(14, i) = headerLengthText
+                        items(15, i) = shutterData.Rows(i)("JoinedPanels").ToString()
+                        items(16, i) = layoutCode
+                        items(17, i) = shutterData.Rows(i)("FrameType").ToString()
+                        items(18, i) = shutterData.Rows(i)("FrameLeft").ToString()
+                        items(19, i) = shutterData.Rows(i)("FrameRight").ToString()
+                        items(20, i) = shutterData.Rows(i)("FrameTop").ToString()
+                        items(21, i) = shutterData.Rows(i)("FrameBottom").ToString()
+                        items(22, i) = shutterData.Rows(i)("BottomTrackType").ToString()
+                        items(23, i) = shutterData.Rows(i)("Buildout").ToString()
+                        items(24, i) = shutterData.Rows(i)("SameSizePanel").ToString()
+                        items(25, i) = gapPosition
+                        items(26, i) = horizontalHeight
+                        items(27, i) = shutterData.Rows(i)("HorizontalTPost").ToString()
+                        items(28, i) = shutterData.Rows(i)("TiltrodType").ToString()
+                        items(29, i) = shutterData.Rows(i)("TiltrodSplit").ToString()
+                        items(30, i) = splitHeigth
+                        items(31, i) = shutterData.Rows(i)("ReverseHinged").ToString()
+                        items(32, i) = shutterData.Rows(i)("PelmetFlat").ToString()
+                        items(33, i) = shutterData.Rows(i)("ExtraFascia").ToString()
+                        items(34, i) = shutterData.Rows(i)("HingesLoose").ToString()
+                        items(35, i) = FormatNumber(shutterData.Rows(i)("SquareMetre"), 2)
+                        items(36, i) = shutterData.Rows(i)("Notes").ToString()
+                    Next
+
+                    For i As Integer = 0 To items.GetLength(1) - 1 Step 4
+                        If i > 0 Then doc.NewPage()
+
+                        Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
+                        Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
+
+                        Dim headers As String() = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "M2", "Special Information"}
+
+                        For row As Integer = 0 To headers.Length - 1
+                            Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
+                            cellHeader.HorizontalAlignment = Element.ALIGN_RIGHT
+                            cellHeader.VerticalAlignment = Element.ALIGN_MIDDLE
+                            cellHeader.BackgroundColor = New BaseColor(200, 200, 200)
+                            cellHeader.MinimumHeight = 14
+                            table.AddCell(cellHeader)
+
+                            For col As Integer = i To Math.Min(i + 3, items.GetLength(1) - 1)
+                                Dim cellContent As New PdfPCell(New Phrase(items(row, col), fontContent))
+                                cellContent.HorizontalAlignment = Element.ALIGN_CENTER
+                                cellContent.VerticalAlignment = Element.ALIGN_MIDDLE
+                                cellContent.MinimumHeight = 14
+                                table.AddCell(cellContent)
+                            Next
+
+                            For col As Integer = items.GetLength(1) To i + 3
+                                Dim emptyCell As New PdfPCell(New Phrase("", fontContent))
+                                emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
+                                emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                                emptyCell.MinimumHeight = 14
+                                table.AddCell(emptyCell)
+                            Next
+                        Next
+                        doc.Add(table)
+                        table.DeleteBodyRows()
+                        doc.NewPage()
+                    Next
+                End If
+            Catch ex As Exception
+            End Try
+            ' END EVOLVE SHUTTER EXPRESS
+
+            ' START EVOLVE SHUTTER OCEAN
+            Try
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@HeaderId", headerId)
+                }
+                Dim shutterData As DataTable = GetDataTableSP("sp_OrderDetails_Get_EvolveOcean", params)
+
+                If shutterData.Rows.Count > 0 Then
+                    pageEvent.PageTitle = "OCEAN"
+                    pageEvent.PageTitle2 = "Evolve Shutter"
+
+                    Dim table As New PdfPTable(5)
+                    table.WidthPercentage = 100
+
+                    Dim items(37, shutterData.Rows.Count - 1) As String
+
+                    For i As Integer = 0 To shutterData.Rows.Count - 1
+                        Dim layoutCode As String = If(shutterData.Rows(i)("LayoutCode").ToString() = "Other", shutterData.Rows(i)("LayoutCodeCustom").ToString(), shutterData.Rows(i)("LayoutCode").ToString())
+
+                        Dim gapList As New List(Of String)
+
+                        Dim midrailList As New List(Of String)
+
+                        Dim midrailHeight1 As Integer = 0
+                        Dim midrailHeight2 As Integer = 0
+
+                        If Not IsDBNull(shutterData.Rows(i)("MidrailHeight1")) Then
+                            midrailHeight1 = shutterData.Rows(i)("MidrailHeight1")
+                        End If
+                        If Not IsDBNull(shutterData.Rows(i)("MidrailHeight2")) Then
+                            midrailHeight2 = shutterData.Rows(i)("MidrailHeight2")
+                        End If
+
+                        If midrailHeight1 > 0 Then midrailList.Add(String.Format("1 : {0}", midrailHeight1))
+                        If midrailHeight2 > 0 Then midrailList.Add(String.Format("2 : {0}", midrailHeight2))
+
+                        Dim midrailHeight As String = String.Join(", ", midrailList)
+
+                        Dim headerLengthValue As Integer = 0
+                        Dim headerLengthText As String = String.Empty
+                        If Not IsDBNull(shutterData.Rows(i)("CustomHeaderLength")) Then
+                            headerLengthValue = shutterData.Rows(i)("CustomHeaderLength")
+                        End If
+                        If headerLengthValue > 0 Then
+                            headerLengthText = headerLengthValue.ToString()
+                        End If
+
+                        Dim gap1 As Integer = 0
+                        Dim gap2 As Integer = 0
+                        Dim gap3 As Integer = 0
+                        Dim gap4 As Integer = 0
+                        Dim gap5 As Integer = 0
+
+                        If Not IsDBNull(shutterData.Rows(i)("Gap1")) Then
+                            gap1 = shutterData.Rows(i)("Gap1")
+                        End If
+                        If Not IsDBNull(shutterData.Rows(i)("Gap2")) Then
+                            gap2 = shutterData.Rows(i)("Gap2")
+                        End If
+                        If Not IsDBNull(shutterData.Rows(i)("Gap3")) Then
+                            gap3 = shutterData.Rows(i)("Gap3")
+                        End If
+                        If Not IsDBNull(shutterData.Rows(i)("Gap4")) Then
+                            gap4 = shutterData.Rows(i)("Gap4")
+                        End If
+                        If Not IsDBNull(shutterData.Rows(i)("Gap5")) Then
+                            gap5 = shutterData.Rows(i)("Gap5")
+                        End If
+
+                        If gap1 > 0 Then gapList.Add("Gap 1 : " & gap1)
+                        If gap2 > 0 Then gapList.Add("Gap 2 : " & gap2)
+                        If gap3 > 0 Then gapList.Add("Gap 3 : " & gap3)
+                        If gap4 > 0 Then gapList.Add("Gap 4 : " & gap4)
+                        If gap5 > 0 Then gapList.Add("Gap 5 : " & gap5)
+
+                        Dim gapPosition As String = String.Join(", ", gapList)
+
+                        Dim split1 As Integer = 0
+                        Dim split2 As Integer = 0
+
+                        If Not IsDBNull(shutterData.Rows(i)("SplitHeight1")) Then
+                            split1 = shutterData.Rows(i)("SplitHeight1")
+                        End If
+                        If Not IsDBNull(shutterData.Rows(i)("SplitHeight2")) Then
+                            split2 = shutterData.Rows(i)("SplitHeight2")
+                        End If
+
+                        Dim splitHeigth As String = String.Format("1st : {0}, 2nd : {1}", split1, split2)
+
+                        Dim horizontalHeight As String = String.Empty
+                        Dim horizontalTPostHeight As Integer = 0
+                        If Not IsDBNull(shutterData.Rows(i)("HorizontalTPostHeight")) Then
+                            horizontalTPostHeight = shutterData.Rows(i)("HorizontalTPostHeight")
+                        End If
+
+                        If horizontalTPostHeight > 0 Then
+                            horizontalHeight = shutterData.Rows(i)("HorizontalTPostHeight").ToString()
+                        End If
+
+                        Dim number As Integer = i + 1
+
+                        items(0, i) = "Item : " & number
+                        items(1, i) = shutterData.Rows(i)("Room").ToString()
+                        items(2, i) = shutterData.Rows(i)("Width").ToString()
+                        items(3, i) = shutterData.Rows(i)("Drop").ToString()
+                        items(4, i) = shutterData.Rows(i)("Mounting").ToString()
+                        items(5, i) = shutterData.Rows(i)("ColourType").ToString()
+                        items(6, i) = shutterData.Rows(i)("LouvreSize").ToString()
+                        items(7, i) = shutterData.Rows(i)("LouvrePosition").ToString()
+                        items(8, i) = midrailHeight
+                        items(9, i) = shutterData.Rows(i)("MidrailCritical").ToString()
+                        items(10, i) = shutterData.Rows(i)("HingeColour").ToString()
+                        items(11, i) = shutterData.Rows(i)("BlindName").ToString()
+                        items(12, i) = shutterData.Rows(i)("SemiInsideMount").ToString()
+                        items(13, i) = shutterData.Rows(i)("PanelQty").ToString()
+                        items(14, i) = headerLengthText
+                        items(15, i) = shutterData.Rows(i)("JoinedPanels").ToString()
+                        items(16, i) = layoutCode
+                        items(17, i) = shutterData.Rows(i)("FrameType").ToString()
+                        items(18, i) = shutterData.Rows(i)("FrameLeft").ToString()
+                        items(19, i) = shutterData.Rows(i)("FrameRight").ToString()
+                        items(20, i) = shutterData.Rows(i)("FrameTop").ToString()
+                        items(21, i) = shutterData.Rows(i)("FrameBottom").ToString()
+                        items(22, i) = shutterData.Rows(i)("BottomTrackType").ToString()
+                        items(23, i) = shutterData.Rows(i)("Buildout").ToString()
+                        items(24, i) = shutterData.Rows(i)("SameSizePanel").ToString()
+                        items(25, i) = gapPosition
+                        items(26, i) = horizontalHeight
+                        items(27, i) = shutterData.Rows(i)("HorizontalTPost").ToString()
+                        items(28, i) = shutterData.Rows(i)("TiltrodType").ToString()
+                        items(29, i) = shutterData.Rows(i)("TiltrodSplit").ToString()
+                        items(30, i) = splitHeigth
+                        items(31, i) = shutterData.Rows(i)("ReverseHinged").ToString()
+                        items(32, i) = shutterData.Rows(i)("PelmetFlat").ToString()
+                        items(33, i) = shutterData.Rows(i)("ExtraFascia").ToString()
+                        items(34, i) = shutterData.Rows(i)("HingesLoose").ToString()
+                        items(35, i) = FormatNumber(shutterData.Rows(i)("SquareMetre"), 2)
+                        items(36, i) = shutterData.Rows(i)("Notes").ToString()
+                    Next
+
+                    For i As Integer = 0 To items.GetLength(1) - 1 Step 4
+                        If i > 0 Then doc.NewPage()
+
+                        Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
+                        Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
+
+                        Dim headers As String() = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "M2", "Special Information"}
+
+                        For row As Integer = 0 To headers.Length - 1
+                            Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
+                            cellHeader.HorizontalAlignment = Element.ALIGN_RIGHT
+                            cellHeader.VerticalAlignment = Element.ALIGN_MIDDLE
+                            cellHeader.BackgroundColor = New BaseColor(200, 200, 200)
+                            cellHeader.MinimumHeight = 14
+                            table.AddCell(cellHeader)
+
+                            For col As Integer = i To Math.Min(i + 3, items.GetLength(1) - 1)
+                                Dim cellContent As New PdfPCell(New Phrase(items(row, col), fontContent))
+                                cellContent.HorizontalAlignment = Element.ALIGN_CENTER
+                                cellContent.VerticalAlignment = Element.ALIGN_MIDDLE
+                                cellContent.MinimumHeight = 14
+                                table.AddCell(cellContent)
+                            Next
+
+                            For col As Integer = items.GetLength(1) To i + 3
+                                Dim emptyCell As New PdfPCell(New Phrase("", fontContent))
+                                emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
+                                emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                                emptyCell.MinimumHeight = 14
+                                table.AddCell(emptyCell)
+                            Next
+                        Next
+                        doc.Add(table)
+                        table.DeleteBodyRows()
+                        doc.NewPage()
+                    Next
+                End If
+            Catch ex As Exception
+            End Try
+            ' END EVOLVE SHUTTER OCEAN
+
             ' START LINEA VALANCE
             Try
                 Dim params As New List(Of SqlParameter) From {
@@ -1686,7 +2048,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim shutterData As DataTable = GetDataTableSP("sp_OrderDetails_Get_ShutterExpress", params)
+                Dim shutterData As DataTable = GetDataTableSP("sp_OrderDetails_Get_SkylineExpress", params)
 
                 If shutterData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "EXPRESS"
@@ -1872,7 +2234,7 @@ Public Class PreviewClass
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim shutterData As DataTable = GetDataTableSP("sp_OrderDetails_Get_ShutterOcean", params)
+                Dim shutterData As DataTable = GetDataTableSP("sp_OrderDetails_Get_SkylineOcean", params)
 
                 If shutterData.Rows.Count > 0 Then
                     pageEvent.PageTitle = "OCEAN"
@@ -2726,16 +3088,16 @@ Public Class PreviewClass
             End Try
             ' END ROLLER PART
 
-            ' START SHUTTER EXPRESS PART
+            ' START SKYLINE PART EXPRESS
             Try
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim shutterPartData As DataTable = GetDataTableSP("sp_OrderDetails_Get_ShutterExpressPart", params)
+                Dim shutterPartData As DataTable = GetDataTableSP("sp_OrderDetails_Get_SkylinePartExpress", params)
 
                 If shutterPartData.Rows.Count > 0 Then
-                    pageEvent.PageTitle = "Shutter Express"
-                    pageEvent.PageTitle2 = "Part"
+                    pageEvent.PageTitle = "Express"
+                    pageEvent.PageTitle2 = "Skyline Part"
                     Dim table As New PdfPTable(5)
                     table.WidthPercentage = 100
 
@@ -2791,18 +3153,18 @@ Public Class PreviewClass
                 End If
             Catch ex As Exception
             End Try
-            ' END SHUTTER EXPRESS PART
+            ' END SKYLINE PART EXPRESS
 
-            ' START SHUTTER OCEAN PART
+            ' START SKYLINE PART OCEAN
             Try
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@HeaderId", headerId)
                 }
-                Dim shutterPartData As DataTable = GetDataTableSP("sp_OrderDetails_Get_ShutterOceanPart", params)
+                Dim shutterPartData As DataTable = GetDataTableSP("sp_OrderDetails_Get_SkylinePartOcean", params)
 
                 If shutterPartData.Rows.Count > 0 Then
-                    pageEvent.PageTitle = "Shutter Ocean"
-                    pageEvent.PageTitle2 = "Part"
+                    pageEvent.PageTitle = "Ocean"
+                    pageEvent.PageTitle2 = "Skyline Part"
                     Dim table As New PdfPTable(5)
                     table.WidthPercentage = 100
 
@@ -2858,7 +3220,141 @@ Public Class PreviewClass
                 End If
             Catch ex As Exception
             End Try
-            ' END SHUTTER OCEAN PART
+            ' END SKYLINE PART OCEAN
+
+            ' START EVOLVE PART EXPRESS
+            Try
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@HeaderId", headerId)
+                }
+                Dim shutterPartData As DataTable = GetDataTableSP("sp_OrderDetails_Get_EvolveExpressPart", params)
+
+                If shutterPartData.Rows.Count > 0 Then
+                    pageEvent.PageTitle = "Express"
+                    pageEvent.PageTitle2 = "Evolve Part"
+                    Dim table As New PdfPTable(5)
+                    table.WidthPercentage = 100
+
+                    Dim items(6, shutterPartData.Rows.Count - 1) As String
+
+                    For i As Integer = 0 To shutterPartData.Rows.Count - 1
+                        Dim number As Integer = i + 1
+
+                        items(0, i) = "Item : " & number
+                        items(1, i) = shutterPartData.Rows(i)("BlindName").ToString()
+                        items(2, i) = shutterPartData.Rows(i)("ProductName").ToString()
+                        items(3, i) = shutterPartData.Rows(i)("PartColour").ToString()
+                        items(4, i) = shutterPartData.Rows(i)("Width").ToString()
+                        items(5, i) = shutterPartData.Rows(i)("Notes").ToString()
+                    Next
+
+                    For i As Integer = 0 To items.GetLength(1) - 1 Step 4
+                        If i > 0 Then doc.NewPage()
+
+                        Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
+                        Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
+
+                        Dim headers As String() = {"", "Type", "Product", "Colour", "Length", "Special Information"}
+
+                        For row As Integer = 0 To headers.Length - 1
+                            Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
+                            cellHeader.HorizontalAlignment = Element.ALIGN_RIGHT
+                            cellHeader.VerticalAlignment = Element.ALIGN_MIDDLE
+                            cellHeader.BackgroundColor = New BaseColor(200, 200, 200)
+                            cellHeader.MinimumHeight = 22
+                            table.AddCell(cellHeader)
+
+                            For col As Integer = i To Math.Min(i + 3, items.GetLength(1) - 1)
+                                Dim cellContent As New PdfPCell(New Phrase(items(row, col), fontContent))
+                                cellContent.HorizontalAlignment = Element.ALIGN_CENTER
+                                cellContent.VerticalAlignment = Element.ALIGN_MIDDLE
+                                cellContent.MinimumHeight = 22
+                                table.AddCell(cellContent)
+                            Next
+
+                            For col As Integer = items.GetLength(1) To i + 3
+                                Dim emptyCell As New PdfPCell(New Phrase("", fontContent))
+                                emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
+                                emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                                emptyCell.MinimumHeight = 22
+                                table.AddCell(emptyCell)
+                            Next
+                        Next
+                        doc.Add(table)
+                        table.DeleteBodyRows()
+                        doc.NewPage()
+                    Next
+                End If
+            Catch ex As Exception
+            End Try
+            ' END EVOLVE PART EXPRESS
+
+            ' START EVOLVE PART OCEAN
+            Try
+                Dim params As New List(Of SqlParameter) From {
+                    New SqlParameter("@HeaderId", headerId)
+                }
+                Dim shutterPartData As DataTable = GetDataTableSP("sp_OrderDetails_Get_EvolvePartOcean", params)
+
+                If shutterPartData.Rows.Count > 0 Then
+                    pageEvent.PageTitle = "Ocean"
+                    pageEvent.PageTitle2 = "Evolve Part"
+                    Dim table As New PdfPTable(5)
+                    table.WidthPercentage = 100
+
+                    Dim items(6, shutterPartData.Rows.Count - 1) As String
+
+                    For i As Integer = 0 To shutterPartData.Rows.Count - 1
+                        Dim number As Integer = i + 1
+
+                        items(0, i) = "Item : " & number
+                        items(1, i) = shutterPartData.Rows(i)("BlindName").ToString()
+                        items(2, i) = shutterPartData.Rows(i)("ProductName").ToString()
+                        items(3, i) = shutterPartData.Rows(i)("PartColour").ToString()
+                        items(4, i) = shutterPartData.Rows(i)("Width").ToString()
+                        items(5, i) = shutterPartData.Rows(i)("Notes").ToString()
+                    Next
+
+                    For i As Integer = 0 To items.GetLength(1) - 1 Step 4
+                        If i > 0 Then doc.NewPage()
+
+                        Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
+                        Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
+
+                        Dim headers As String() = {"", "Type", "Product", "Colour", "Length", "Special Information"}
+
+                        For row As Integer = 0 To headers.Length - 1
+                            Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
+                            cellHeader.HorizontalAlignment = Element.ALIGN_RIGHT
+                            cellHeader.VerticalAlignment = Element.ALIGN_MIDDLE
+                            cellHeader.BackgroundColor = New BaseColor(200, 200, 200)
+                            cellHeader.MinimumHeight = 22
+                            table.AddCell(cellHeader)
+
+                            For col As Integer = i To Math.Min(i + 3, items.GetLength(1) - 1)
+                                Dim cellContent As New PdfPCell(New Phrase(items(row, col), fontContent))
+                                cellContent.HorizontalAlignment = Element.ALIGN_CENTER
+                                cellContent.VerticalAlignment = Element.ALIGN_MIDDLE
+                                cellContent.MinimumHeight = 22
+                                table.AddCell(cellContent)
+                            Next
+
+                            For col As Integer = items.GetLength(1) To i + 3
+                                Dim emptyCell As New PdfPCell(New Phrase("", fontContent))
+                                emptyCell.HorizontalAlignment = Element.ALIGN_CENTER
+                                emptyCell.VerticalAlignment = Element.ALIGN_MIDDLE
+                                emptyCell.MinimumHeight = 22
+                                table.AddCell(emptyCell)
+                            Next
+                        Next
+                        doc.Add(table)
+                        table.DeleteBodyRows()
+                        doc.NewPage()
+                    Next
+                End If
+            Catch ex As Exception
+            End Try
+            ' END EVOLVE PART OCEAN
 
             ' START VERTICAL PART
             Try

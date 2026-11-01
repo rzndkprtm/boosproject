@@ -210,5 +210,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/RisaSolihah/Sample.js?v=1.2.4"></script>
+    <script src="/Scripts/RisaSolihah/Sample.js?v=1.3.0"></script>
 </asp:Content>

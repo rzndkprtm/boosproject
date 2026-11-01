@@ -12,7 +12,7 @@ let loginId;
 let roleAccess;
 let priceAccess;
 
-initMain();
+initSkylineExpressPart();
 
 $("#submit").on("click", process);
 $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
@@ -26,7 +26,7 @@ $("#colourtype").on("change", function () {
     bindPartColour(blindtype, $(this).val());
 });
 
-async function initMain() {
+async function initSkylineExpressPart() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
     if (!sessionId) return redirectOrder();
@@ -81,7 +81,7 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
     try {
         const response = await $.ajax({
             type: "POST",
-            url: "Method.aspx/ShutterPartDetail",
+            url: "Method.aspx/SkylinePartDetail",
             data: JSON.stringify({ itemId, companyDetailId, orderStatus, roleAccess, action }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
@@ -517,7 +517,7 @@ function bindPartColour(blindType, colourType) {
             return;
         }
 
-        const listData = { type: "PartColour_Shutter", designtype: designId, blindtype: blindType, colourtype: colourType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "PartColour_Skyline", designtype: designId, blindtype: blindType, colourtype: colourType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -743,7 +743,7 @@ function process() {
 
     $.ajax({
         type: "POST",
-        url: "Method.aspx/ShutterPartProcess",
+        url: "Method.aspx/SkylinePartProcess",
         data: JSON.stringify({ data: formData }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",

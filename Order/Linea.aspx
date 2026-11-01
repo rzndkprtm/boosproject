@@ -324,5 +324,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/Linea.js?v=1.2.1"></script>
+    <script src="/Scripts/RisaSolihah/Linea.js?v=1.3.0"></script>
 </asp:Content>

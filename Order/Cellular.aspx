@@ -422,5 +422,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/Cellular.js?v=1.2.5"></script>
+    <script src="/Scripts/RisaSolihah/Cellular.js?v=1.3.0"></script>
 </asp:Content>

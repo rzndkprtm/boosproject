@@ -187,5 +187,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/VerticalPart.js?v=1.0.0"></script>
+    <script src="/Scripts/RisaSolihah/VerticalPart.js?v=1.2.0"></script>
 </asp:Content>

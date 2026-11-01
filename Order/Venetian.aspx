@@ -937,5 +937,5 @@
         </div>
     </div>
     
-    <script src="/Scripts/RisaSolihah/Venetian.js?v=1.2.2"></script>
+    <script src="/Scripts/RisaSolihah/Venetian.js?v=1.3.0"></script>
 </asp:Content>
