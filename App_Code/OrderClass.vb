@@ -2889,10 +2889,22 @@ Public Class OrderClass
                     If designName = "Skyline Shutter Ocean" Then
                         sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
                     End If
-                    If designName = "Shutter Express Part" Then
+                    If designName = "Evolve Shutter Express" Then
                         sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
                     End If
-                    If designName = "Shutter Ocean Part" Then
+                    If designName = "Evolve Shutter Ocean" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Skyline Part Express" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Skyline Part Ocean" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Evolve Part Express" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Evolve Part Ocean" Then
                         sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
                     End If
                     If designName = "Door" Then
@@ -2909,13 +2921,25 @@ Public Class OrderClass
                     If designName = "Skyline Shutter Express" Then
                         buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
                     End If
-                    If designName = "Shutter Express Part" Then
+                    If designName = "Skyline Part Express" Then
                         buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
                     End If
                     If designName = "Skyline Shutter Ocean" Then
                         buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
                     End If
-                    If designName = "Shutter Ocean Part" Then
+                    If designName = "Skyline Part Ocean" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Evolve Shutter Express" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Evolve Part Express" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Evolve Shutter Ocean" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Evolve Part Ocean" Then
                         buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
                     End If
                     If designName = "Door" Then
@@ -2929,13 +2953,25 @@ Public Class OrderClass
                     If designName = "Skyline Shutter Express" Then
                         factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
                     End If
-                    If designName = "Shutter Express Part" Then
+                    If designName = "Skyline Part Express" Then
                         factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
                     End If
                     If designName = "Skyline Shutter Ocean" Then
                         factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
                     End If
-                    If designName = "Shutter Ocean Part" Then
+                    If designName = "Skyline Part Ocean" Then
+                        factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
+                    End If
+                    If designName = "Evolve Shutter Express" Then
+                        factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
+                    End If
+                    If designName = "Evolve Part Express" Then
+                        factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
+                    End If
+                    If designName = "Evolve Shutter Ocean" Then
+                        factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
+                    End If
+                    If designName = "Evolve Part Ocean" Then
                         factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
                     End If
                     If designName = "Door" Then
@@ -2946,13 +2982,34 @@ Public Class OrderClass
                     End If
 
                     Dim priceGroupCalculation As String = priceGroupId
-                    If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" Then
+                    If designName = "Skyline Shutter Express" Then
                         priceGroupCalculation = shutterPriceGroup
                     End If
-                    If designName = "Shutter Express Part" OrElse designName = "Shutter Ocean Part" Then
+                    If designName = "Skyline Shutter Ocean" Then
                         priceGroupCalculation = shutterPriceGroup
                     End If
-                    If designName = "Door" OrElse designName = "Window" Then
+                    If designName = "Skyline Part Express" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Skyline Part Ocean" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Evolve Shutter Express" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Evolve Shutter Ocean" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Evolve Part Express" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Evolve Part Ocean" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Door" Then
+                        priceGroupCalculation = doorPriceGroup
+                    End If
+                    If designName = "Window" Then
                         priceGroupCalculation = doorPriceGroup
                     End If
 

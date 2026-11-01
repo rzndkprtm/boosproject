@@ -4340,7 +4340,7 @@ Partial Class Order_Method
         If data.companydetailid = "5" OrElse data.companydetailid = "6" Then
             groupFabric = orderClass.GetFabricGroupLocal("Panel", data.fabrictype)
         End If
-        Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", designName, blindName, tubeName, groupFabric)
+        Dim groupName As String = String.Format("{0} - {1} - {2}", designName, tubeName, groupFabric)
         If blindName = "Track Only" Then groupName = String.Format("{0} - {1}", designName, blindName)
 
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
