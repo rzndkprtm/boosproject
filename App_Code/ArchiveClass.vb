@@ -25,6 +25,26 @@ Public Class ArchiveClass
         End Try
     End Function
 
+    Public Function GetDataRowSP(spName As String, params As List(Of SqlParameter)) As DataRow
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    thisCmd.Parameters.AddRange(params.ToArray())
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        If thisTable.Rows.Count > 0 Then
+                            Return thisTable.Rows(0)
+                        End If
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+        End Try
+        Return Nothing
+    End Function
+
     Public Function GetDataTable(thisString As String) As DataTable
         Try
             Using thisConn As New SqlConnection(myConn)
@@ -39,6 +59,28 @@ Public Class ArchiveClass
         Catch ex As Exception
             Return Nothing
         End Try
+    End Function
+
+    Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
+        Dim thisTable As New DataTable()
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    If params IsNot Nothing Then
+                        If params.Count > 0 Then
+                            thisCmd.Parameters.AddRange(params.ToArray())
+                        End If
+                    End If
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        thisAdapter.Fill(thisTable)
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+            thisTable = New DataTable()
+        End Try
+        Return thisTable
     End Function
 
     Public Function GetListData(thisString As String) As DataSet

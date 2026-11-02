@@ -29,7 +29,7 @@
         </section>
         <section class="row mb-3">
             <div class="col-12 d-flex justify-content-end">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary px-4" Text="Add New" OnClick="btnAdd_Click" />
+                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary px-4" Text="Add New" OnClick="btnAdd_Click" />
             </div>
         </section>
         <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
