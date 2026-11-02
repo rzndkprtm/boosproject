@@ -17,7 +17,12 @@ Partial Class Journal_Default
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindSales()
-            ddlSales.SelectedValue = Session("JournalSales")
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
+                ddlSales.SelectedValue = Session("JournalSales")
+            End If
+            If Session("RoleName") = "Sales" AndAlso Session("LevelName") = "Leader" Then
+                ddlSales.SelectedValue = Session("JournalSales")
+            End If
             BindCustomer()
             ddlCustomer.SelectedValue = Session("JournalCustomer")
             ddlDateFilter.SelectedValue = Session("JournalDate")

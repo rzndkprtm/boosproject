@@ -22,7 +22,7 @@ Password : 4Y_xv&nbC4Hw3fio
 Face Fit = Outside
 Reveal Fit = Inside
 
-INSER INTO OrderHeaders_New SELECT Id, OrderId, CustomerId, OrderJobId, OrderNumber, OrderName, OrderNote, OrderType, OrderFactory, OrderDelivery, OrderContact, OrderAddress, OrderContainer, Status, StatusDescription, CreatedBy, CreatedDate, QuotedDate, MeasureDate, MeasureDueDate, SubmittedDate, ProductionDate, OnHoldDate, CanceledDate, ShipmentDate, InstallDate, InstalledDate, CompletedDate, Estimator, Supervisor, InvoiceDate, DueDate, ShipmentNumber, ContainerNumber, ContainerETA, Courier, InvoiceNumber, Collector, Payment, PaymentDate, Amount, OrderId, Download, DownloadDate, Active FROM OrderHeaders
+INSER INTO OrderHeaders_New SELECT Id, OrderId, CustomerId, OrderJobId, OrderNumber, OrderName, OrderNote, OrderType, OrderFactory, OrderDelivery, OrderContact, OrderAddress, OrderContainer, Status, StatusDescription, CreatedBy, CreatedDate, QuotedDate, MeasureDate, MeasureDueDate, SubmittedDate, ProductionDate, OnHoldDate, CanceledDate, ShipmentDate, InstallDate, InstalledDate, CompletedDate, Estimator, Supervisor, InvoiceDate, DueDate, ShipmentNumber, ContainerNumber, ContainerETA, Courier, InvoiceNumber, Collector, Payment, PaymentDate, Amount, NULL, Download, DownloadDate, Active FROM OrderHeaders
 
 ALTER PROCEDURE [dbo].[sp_OrderHeaders_Copy]
 (

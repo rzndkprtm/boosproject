@@ -461,27 +461,16 @@ Partial Class Order_Detail
                 Dim packingNumber As String = lblOrderId.Text
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=GETDATE(), Status=@Status, InvoiceNumber=@InvoiceNumber, Payment=0, Amount=0 WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=GETDATE(), Status=@Status, InvoiceNumber=@InvoiceNumber, Payment=0, Amount=0, PackingNumber=@PackingNumber WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         thisCmd.Parameters.AddWithValue("@Status", newStatus)
                         thisCmd.Parameters.AddWithValue("@InvoiceNumber", invoiceNumber)
                         thisCmd.Parameters.AddWithValue("@Payment", False)
+                        thisCmd.Parameters.AddWithValue("@PackingNumber", packingNumber)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
-
-                'Using thisConn As New SqlConnection(myConn)
-                '    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=GETDATE(), Status=@Status, InvoiceNumber=@InvoiceNumber, Payment=0, Amount=0, PackingNumber=@PackingNumber WHERE Id=@Id", thisConn)
-                '        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                '        thisCmd.Parameters.AddWithValue("@Status", newStatus)
-                '        thisCmd.Parameters.AddWithValue("@InvoiceNumber", invoiceNumber)
-                '        thisCmd.Parameters.AddWithValue("@Payment", False)
-                '        thisCmd.Parameters.AddWithValue("@PackingNumber", packingNumber)
-                '        thisConn.Open()
-                '        thisCmd.ExecuteNonQuery()
-                '    End Using
-                'End Using
 
                 ' SERVICE
                 Dim params As New List(Of SqlParameter) From {New SqlParameter("@HeaderId", SqlDbType.Int) With {.Value = lblHeaderId.Text}}
@@ -593,15 +582,10 @@ Partial Class Order_Detail
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
 
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=NULL, ProductionDate=NULL, OnHoldDate=NULL, Status='Unsubmitted', Download='No', DownloadDate=NULL, ShipmentDate=NULL, ShipmentNumber=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0 WHERE Id=@Id", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=NULL, ProductionDate=NULL, OnHoldDate=NULL, Status='Unsubmitted', Download='No', DownloadDate=NULL, ShipmentDate=NULL, ShipmentNumber=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0, PackingNumber=NULL WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                     thisCmd.ExecuteNonQuery()
                 End Using
-
-                'Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET SubmittedDate=NULL, ProductionDate=NULL, OnHoldDate=NULL, Status='Unsubmitted', Download='No', DownloadDate=NULL, ShipmentDate=NULL, ShipmentNumber=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0, PackingNumber=NULL WHERE Id=@Id", thisConn)
-                '    thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                '    thisCmd.ExecuteNonQuery()
-                'End Using
 
                 Dim serviceData As DataTable = orderClass.GetDataTable("SELECT OrderDetails.* FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND Products.DesignId='16'")
                 If serviceData.Rows.Count > 0 Then
@@ -771,22 +755,13 @@ Partial Class Order_Detail
 
             If msgErrorCancelOrder.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', CanceledDate=GETDATE(), ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0, Download='No' WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', CanceledDate=GETDATE(), ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0, PackingNumber=NULL Download='No' WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
                         thisCmd.Parameters.AddWithValue("@StatusDescription", txtCancelDescription.Text.Trim())
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
-
-                'Using thisConn As New SqlConnection(myConn)
-                '    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET Status='Canceled', CanceledDate=GETDATE(), ShipmentNumber=NULL, ShipmentDate=NULL, ContainerNumber=NULL, ContainerETA=NULL, Courier=NULL, InvoiceNumber=NULL, Collector=NULL, InvoiceDate=NULL, DueDate=NULL, Payment=0, PaymentDate=NULL, Amount=0, PackingNumber=NULL Download='No' WHERE Id=@Id", thisConn)
-                '        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
-                '        thisCmd.Parameters.AddWithValue("@StatusDescription", txtCancelDescription.Text.Trim())
-                '        thisConn.Open()
-                '        thisCmd.ExecuteNonQuery()
-                '    End Using
-                'End Using
 
                 Dim descLog As String = String.Format("Order Canceled | {0}", txtCancelDescription.Text.Trim())
 

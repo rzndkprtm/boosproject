@@ -1310,7 +1310,7 @@
     <div class="modal fade text-center" id="modalDownloadPL" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
-                <div class="modal-header bg-primary">
+                <div class="modal-header bg-secondary">
                     <h5 class="modal-title white">Download Packing List</h5>
                 </div>
                 <div class="modal-body text-center py-4">
@@ -1318,7 +1318,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnDownloadPL" CssClass="btn btn-primary" Text="Confirm" OnClick="btnDownloadPL_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
+                    <asp:Button runat="server" ID="btnDownloadPL" CssClass="btn btn-secondary" Text="Confirm" OnClick="btnDownloadPL_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
                 </div>
             </div>
         </div>

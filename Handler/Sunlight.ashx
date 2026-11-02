@@ -76,6 +76,8 @@ Public Class Sunlight : Implements IHttpHandler
                 Dim blindName As String = itemData.Rows(iItem)("BlindName").ToString()
                 Dim fabricType As String = itemData.Rows(iItem)("FabricType").ToString()
                 Dim fabricColour As String = itemData.Rows(iItem)("FabricColour").ToString()
+                Dim bottomType As String = itemData.Rows(iItem)("BottomType").ToString()
+                Dim bottomColour As String = itemData.Rows(iItem)("BottomColour").ToString()
                 Dim uniqueId As String = itemData.Rows(iItem)("UniqueId").ToString()
                 Dim blindNo As String = itemData.Rows(iItem)("BlindNo").ToString()
                 Dim qty As Integer = If(IsDBNull(itemData.Rows(iItem)("Qty")), 0, Convert.ToInt32(itemData.Rows(iItem)("Qty")))
@@ -481,239 +483,274 @@ Public Class Sunlight : Implements IHttpHandler
                 End If
 
                 If designName = "Global Roller Blinds" Then
-                    If Not blindNo = "Blind 1" Then
-                        Dim designName_Fix As String = "Roller Blind"
-                        Dim blindName_Fix As String = bracketType
-                        Dim tubeName_Fix As String = "Gear Reduction " & tubeType & "mm"
-                        Dim controlName_Fix As String = controlType
-                        Dim colourName_Fix As String = colourType
+                    Dim designName_Fix As String = "Roller Blind"
+                    Dim blindName_Fix As String = bracketType
+                    Dim tubeName_Fix As String = "Gear Reduction " & tubeType & "mm"
+                    Dim controlName_Fix As String = controlType
+                    Dim colourName_Fix As String = colourType
 
-                        Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designName_Fix & "'")
-                        Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds WHERE Name='" & blindName_Fix & "' AND DesignId='" & designId & "'")
-                        Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Name='" & tubeName_Fix & "'")
-                        Dim controlid As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='" & controlName_Fix & "'")
-                        Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & colourName_Fix & "'")
-                        Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS subCompanyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlid & "' AND ColourType='" & colourId & "' AND subCompanyArray.VALUE='7'")
+                    Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designName_Fix & "'")
+                    Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds WHERE Name='" & blindName_Fix & "' AND DesignId='" & designId & "'")
+                    Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Name='" & tubeName_Fix & "'")
+                    Dim controlid As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='" & controlName_Fix & "'")
+                    Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & colourName_Fix & "'")
+                    Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS subCompanyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlid & "' AND ColourType='" & colourId & "' AND subCompanyArray.VALUE='7'")
 
-                        Dim fabricId As String = orderClass.GetItemData("SELECT Id FROM Fabrics WHERE Name='" & fabricType & "'")
-                        Dim fabricColourId As String = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricId & "' AND Name='" & fabricId & "'")
+                    Dim fabricId As String = orderClass.GetItemData("SELECT Id FROM Fabrics WHERE Name='" & fabricType & "'")
+                    Dim fabricColourId As String = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricId & "' AND Name='" & fabricId & "'")
+                    Dim fabricGroup As String = orderClass.GetFabricGroup(fabricId)
 
-                        Dim fabricIdB As String = String.Empty
-                        Dim fabricColourIdB As String = String.Empty
+                    Dim fabricIdB As String = String.Empty
+                    Dim fabricColourIdB As String = String.Empty
 
-                        Dim fabricIdC As String = String.Empty
-                        Dim fabricColourIdC As String = String.Empty
+                    Dim fabricIdC As String = String.Empty
+                    Dim fabricColourIdC As String = String.Empty
 
-                        Dim fabricIdD As String = String.Empty
-                        Dim fabricColourIdD As String = String.Empty
+                    Dim fabricIdD As String = String.Empty
+                    Dim fabricColourIdD As String = String.Empty
 
-                        Dim fabricIdE As String = String.Empty
-                        Dim fabricColourIdE As String = String.Empty
+                    Dim fabricIdE As String = String.Empty
+                    Dim fabricColourIdE As String = String.Empty
 
-                        Dim fabricIdF As String = String.Empty
-                        Dim fabricColourIdF As String = String.Empty
+                    Dim fabricIdF As String = String.Empty
+                    Dim fabricColourIdF As String = String.Empty
 
-                        If chainColour.Contains("Birch White") Then chainColour = "Ivory"
-                        Dim chainName As String = "Cont Plastic " & chainColour.Replace("(", "").Replace(")", "")
-                        If chainColour.Contains("Stainless Steel") OrElse chainColour.Contains("Chrome") Then
-                            chainName = "Cont " & chainColour.Replace("(", "").Replace(")", "")
-                        End If
-
-                        Dim chainId As String = orderClass.GetItemData("SELECT Id FROM Chains WHERE Name='" & chainName & "'")
-                        Dim chainIdB As String = String.Empty
-                        Dim chainIdC As String = String.Empty
-                        Dim chainIdD As String = String.Empty
-                        Dim chainIdE As String = String.Empty
-                        Dim chainIdF As String = String.Empty
-
-                        Dim bottomId As String = String.Empty
-                        Dim bottomIdB As String = String.Empty
-                        Dim bottomIdC As String = String.Empty
-                        Dim bottomIdD As String = String.Empty
-                        Dim bottomIdE As String = String.Empty
-                        Dim bottomIdF As String = String.Empty
-
-                        Dim bottomColourId As String = String.Empty
-                        Dim bottomColourIdB As String = String.Empty
-                        Dim bottomColourIdC As String = String.Empty
-                        Dim bottomColourIdD As String = String.Empty
-                        Dim bottomColourIdE As String = String.Empty
-                        Dim bottomColourIdF As String = String.Empty
-
-                        Dim priceProductGroup As String = String.Empty
-                        Dim priceProductGroupB As String = String.Empty
-                        Dim priceProductGroupC As String = String.Empty
-                        Dim priceProductGroupD As String = String.Empty
-                        Dim priceProductGroupE As String = String.Empty
-                        Dim priceProductGroupF As String = String.Empty
-
-                        Dim linearMetre As Decimal = width / 1000
-                        Dim squareMetre As Decimal = width * drop / 1000000
-
-                        For i As Integer = 1 To qty
-                            Dim itemId As String = orderClass.GetNewOrderItemId()
-
-                            Using thisConn As New SqlConnection(myConn)
-                                Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Roller", thisConn)
-                                    thisCmd.CommandType = CommandType.StoredProcedure
-
-                                    thisCmd.Parameters.AddWithValue("@Id", itemId)
-                                    thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
-                                    thisCmd.Parameters.AddWithValue("@ProductId", productId)
-
-                                    thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(fabricId), CType(DBNull.Value, Object), fabricId))
-                                    thisCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(fabricIdB), CType(DBNull.Value, Object), fabricIdB))
-                                    thisCmd.Parameters.AddWithValue("@FabricIdC", If(String.IsNullOrEmpty(fabricIdC), CType(DBNull.Value, Object), fabricIdC))
-                                    thisCmd.Parameters.AddWithValue("@FabricIdD", If(String.IsNullOrEmpty(fabricIdD), CType(DBNull.Value, Object), fabricIdD))
-                                    thisCmd.Parameters.AddWithValue("@FabricIdE", If(String.IsNullOrEmpty(fabricIdE), CType(DBNull.Value, Object), fabricIdE))
-                                    thisCmd.Parameters.AddWithValue("@FabricIdF", If(String.IsNullOrEmpty(fabricIdF), CType(DBNull.Value, Object), fabricIdF))
-
-                                    thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(fabricColourId), CType(DBNull.Value, Object), fabricColourId))
-                                    thisCmd.Parameters.AddWithValue("@FabricColourIdB", If(String.IsNullOrEmpty(fabricColourIdB), CType(DBNull.Value, Object), fabricColourIdB))
-                                    thisCmd.Parameters.AddWithValue("@FabricColourIdC", If(String.IsNullOrEmpty(fabricColourIdC), CType(DBNull.Value, Object), fabricColourIdC))
-                                    thisCmd.Parameters.AddWithValue("@FabricColourIdD", If(String.IsNullOrEmpty(fabricColourIdD), CType(DBNull.Value, Object), fabricColourIdD))
-                                    thisCmd.Parameters.AddWithValue("@FabricColourIdE", If(String.IsNullOrEmpty(fabricColourIdE), CType(DBNull.Value, Object), fabricColourIdE))
-                                    thisCmd.Parameters.AddWithValue("@FabricColourIdF", If(String.IsNullOrEmpty(fabricColourIdF), CType(DBNull.Value, Object), fabricColourIdF))
-
-                                    thisCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(chainId), CType(DBNull.Value, Object), chainId))
-                                    thisCmd.Parameters.AddWithValue("@ChainIdB", If(String.IsNullOrEmpty(chainIdB), CType(DBNull.Value, Object), chainIdB))
-                                    thisCmd.Parameters.AddWithValue("@ChainIdC", If(String.IsNullOrEmpty(chainIdC), CType(DBNull.Value, Object), chainIdC))
-                                    thisCmd.Parameters.AddWithValue("@ChainIdD", If(String.IsNullOrEmpty(chainIdD), CType(DBNull.Value, Object), chainIdD))
-                                    thisCmd.Parameters.AddWithValue("@ChainIdE", If(String.IsNullOrEmpty(chainIdE), CType(DBNull.Value, Object), chainIdE))
-                                    thisCmd.Parameters.AddWithValue("@ChainIdF", If(String.IsNullOrEmpty(chainIdF), CType(DBNull.Value, Object), chainIdF))
-
-                                    thisCmd.Parameters.AddWithValue("@BottomId", If(String.IsNullOrEmpty(bottomId), CType(DBNull.Value, Object), bottomId))
-                                    thisCmd.Parameters.AddWithValue("@BottomIdB", If(String.IsNullOrEmpty(bottomIdB), CType(DBNull.Value, Object), bottomIdB))
-                                    thisCmd.Parameters.AddWithValue("@BottomIdC", If(String.IsNullOrEmpty(bottomIdC), CType(DBNull.Value, Object), bottomIdC))
-                                    thisCmd.Parameters.AddWithValue("@BottomIdD", If(String.IsNullOrEmpty(bottomIdD), CType(DBNull.Value, Object), bottomIdD))
-                                    thisCmd.Parameters.AddWithValue("@BottomIdE", If(String.IsNullOrEmpty(bottomIdE), CType(DBNull.Value, Object), bottomIdE))
-                                    thisCmd.Parameters.AddWithValue("@BottomIdF", If(String.IsNullOrEmpty(bottomIdF), CType(DBNull.Value, Object), bottomIdF))
-
-                                    thisCmd.Parameters.AddWithValue("@BottomColourId", If(String.IsNullOrEmpty(bottomColourId), CType(DBNull.Value, Object), bottomColourId))
-                                    thisCmd.Parameters.AddWithValue("@BottomColourIdB", If(String.IsNullOrEmpty(bottomColourIdB), CType(DBNull.Value, Object), bottomColourIdB))
-                                    thisCmd.Parameters.AddWithValue("@BottomColourIdC", If(String.IsNullOrEmpty(bottomColourIdC), CType(DBNull.Value, Object), bottomColourIdC))
-                                    thisCmd.Parameters.AddWithValue("@BottomColourIdD", If(String.IsNullOrEmpty(bottomColourIdD), CType(DBNull.Value, Object), bottomColourIdD))
-                                    thisCmd.Parameters.AddWithValue("@BottomColourIdE", If(String.IsNullOrEmpty(bottomColourIdE), CType(DBNull.Value, Object), bottomColourIdE))
-                                    thisCmd.Parameters.AddWithValue("@BottomColourIdF", If(String.IsNullOrEmpty(bottomColourIdF), CType(DBNull.Value, Object), bottomColourIdF))
-
-                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
-                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupIdC", If(String.IsNullOrEmpty(priceProductGroupC), CType(DBNull.Value, Object), priceProductGroupC))
-                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupIdD", If(String.IsNullOrEmpty(priceProductGroupD), CType(DBNull.Value, Object), priceProductGroupD))
-                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupIdE", If(String.IsNullOrEmpty(priceProductGroupE), CType(DBNull.Value, Object), priceProductGroupE))
-                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupIdF", If(String.IsNullOrEmpty(priceProductGroupF), CType(DBNull.Value, Object), priceProductGroupF))
-
-                                    thisCmd.Parameters.AddWithValue("@Qty", 1)
-                                    thisCmd.Parameters.AddWithValue("@Room", room)
-                                    thisCmd.Parameters.AddWithValue("@Mounting", mounting)
-
-                                    thisCmd.Parameters.AddWithValue("@Width", width)
-                                    thisCmd.Parameters.AddWithValue("@WidthB", 0)
-                                    thisCmd.Parameters.AddWithValue("@WidthC", 0)
-                                    thisCmd.Parameters.AddWithValue("@WidthD", 0)
-                                    thisCmd.Parameters.AddWithValue("@WidthE", 0)
-                                    thisCmd.Parameters.AddWithValue("@WidthF", 0)
-
-                                    thisCmd.Parameters.AddWithValue("@Drop", drop)
-                                    thisCmd.Parameters.AddWithValue("@DropB", 0)
-                                    thisCmd.Parameters.AddWithValue("@DropC", 0)
-                                    thisCmd.Parameters.AddWithValue("@DropD", 0)
-                                    thisCmd.Parameters.AddWithValue("@DropE", 0)
-                                    thisCmd.Parameters.AddWithValue("@DropF", 0)
-
-                                    thisCmd.Parameters.AddWithValue("@Roll", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@RollB", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@RollC", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@RollD", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@RollE", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@RollF", String.Empty)
-
-                                    thisCmd.Parameters.AddWithValue("@ControlPosition", controlPosition)
-                                    thisCmd.Parameters.AddWithValue("@ControlPositionB", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@ControlPositionC", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@ControlPositionD", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@ControlPositionE", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@ControlPositionF", String.Empty)
-
-                                    thisCmd.Parameters.AddWithValue("@ControlLength", "Standard")
-                                    thisCmd.Parameters.AddWithValue("@ControlLengthB", "Standard")
-                                    thisCmd.Parameters.AddWithValue("@ControlLengthC", "Standard")
-                                    thisCmd.Parameters.AddWithValue("@ControlLengthD", "Standard")
-                                    thisCmd.Parameters.AddWithValue("@ControlLengthE", "Standard")
-                                    thisCmd.Parameters.AddWithValue("@ControlLengthF", "Standard")
-
-                                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", controlLength)
-                                    thisCmd.Parameters.AddWithValue("@ControlLengthValueB", 0)
-                                    thisCmd.Parameters.AddWithValue("@ControlLengthValueC", 0)
-                                    thisCmd.Parameters.AddWithValue("@ControlLengthValueD", 0)
-                                    thisCmd.Parameters.AddWithValue("@ControlLengthValueE", 0)
-                                    thisCmd.Parameters.AddWithValue("@ControlLengthValueF", 0)
-
-                                    thisCmd.Parameters.AddWithValue("@ChainStopper", "No Stopper")
-                                    thisCmd.Parameters.AddWithValue("@ChainStopperB", "No Stopper")
-                                    thisCmd.Parameters.AddWithValue("@ChainStopperC", "No Stopper")
-                                    thisCmd.Parameters.AddWithValue("@ChainStopperD", "No Stopper")
-                                    thisCmd.Parameters.AddWithValue("@ChainStopperE", "No Stopper")
-                                    thisCmd.Parameters.AddWithValue("@ChainStopperF", "No Stopper")
-
-                                    thisCmd.Parameters.AddWithValue("@FlatOption", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@FlatOptionB", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@FlatOptionC", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@FlatOptionD", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@FlatOptionE", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@FlatOptionF", String.Empty)
-
-                                    thisCmd.Parameters.AddWithValue("@TopTrack", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@BracketSize", CType(DBNull.Value, Object))
-                                    thisCmd.Parameters.AddWithValue("@BracketExtension", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@SpringAssist", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@Adjusting", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@DryContact", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@Charger", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@ExtensionCable", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@Supply", String.Empty)
-
-                                    thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
-                                    thisCmd.Parameters.AddWithValue("@LinearMetreB", 0)
-                                    thisCmd.Parameters.AddWithValue("@LinearMetreC", 0)
-                                    thisCmd.Parameters.AddWithValue("@LinearMetreD", 0)
-                                    thisCmd.Parameters.AddWithValue("@LinearMetreE", 0)
-                                    thisCmd.Parameters.AddWithValue("@LinearMetreF", 0)
-
-                                    thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
-                                    thisCmd.Parameters.AddWithValue("@SquareMetreB", 0)
-                                    thisCmd.Parameters.AddWithValue("@SquareMetreC", 0)
-                                    thisCmd.Parameters.AddWithValue("@SquareMetreD", 0)
-                                    thisCmd.Parameters.AddWithValue("@SquareMetreE", 0)
-                                    thisCmd.Parameters.AddWithValue("@SquareMetreF", 0)
-
-                                    thisCmd.Parameters.AddWithValue("@Printing", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@PrintingB", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@PrintingC", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@PrintingD", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@PrintingE", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@PrintingF", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@PrintingG", String.Empty)
-                                    thisCmd.Parameters.AddWithValue("@PrintingH", String.Empty)
-
-                                    thisCmd.Parameters.AddWithValue("@TotalItems", 1)
-                                    thisCmd.Parameters.AddWithValue("@Notes", notes)
-                                    thisCmd.Parameters.AddWithValue("@MarkUp", 0)
-
-                                    thisConn.Open()
-                                    thisCmd.ExecuteNonQuery()
-                                End Using
-                            End Using
-
-                            orderClass.ResetPriceDetail(headerId, itemId)
-                            orderClass.CalculatePrice(headerId, itemId)
-                            orderClass.FinalCostItem(headerId, itemId)
-
-                            Dim dataLog As Object() = {"OrderDetails", itemId, "2", "Order Item Added"}
-                            orderClass.Logs(dataLog)
-                        Next
-                        orderClass.UpdateOrderFactory(headerId)
+                    If chainColour.Contains("Birch White") Then chainColour = "Ivory"
+                    Dim chainName As String = "Cont Plastic " & chainColour.Replace("(", "").Replace(")", "")
+                    If chainColour.Contains("Stainless Steel") OrElse chainColour.Contains("Chrome") Then
+                        chainName = "Cont " & chainColour.Replace("(", "").Replace(")", "")
                     End If
+
+                    Dim chainId As String = orderClass.GetItemData("SELECT Id FROM Chains WHERE Name='" & chainName & "'")
+                    Dim chainIdB As String = String.Empty
+                    Dim chainIdC As String = String.Empty
+                    Dim chainIdD As String = String.Empty
+                    Dim chainIdE As String = String.Empty
+                    Dim chainIdF As String = String.Empty
+
+                    Dim chainStopper As String = String.Empty
+                    Dim chainStopperB As String = String.Empty
+                    Dim chainStopperC As String = String.Empty
+                    Dim chainStopperD As String = String.Empty
+                    Dim chainStopperE As String = String.Empty
+                    Dim chainStopperF As String = String.Empty
+
+                    If controlType = "Chain" Then chainStopper = "No Stopper"
+
+                    Dim bottomName As String = bottomType
+                    If bottomType = "Round 20mm" Then
+                        bottomName = "Round"
+                    End If
+                    If bottomType = "Flat Back Covered" OrElse bottomType = "Flat Front Covered" Then
+                        bottomName = "Flat"
+                    End If
+                    If bottomType = "Flat Front Covered With Mohair" Then
+                        bottomName = "Flat Mohair"
+                    End If
+                    Dim bottomId As String = orderClass.GetItemData("SELECT Id FROM Bottoms WHERE Name='" & bottomName & "'")
+                    Dim bottomIdB As String = String.Empty
+                    Dim bottomIdC As String = String.Empty
+                    Dim bottomIdD As String = String.Empty
+                    Dim bottomIdE As String = String.Empty
+                    Dim bottomIdF As String = String.Empty
+
+                    Dim bottomColourId As String = orderClass.GetItemData("SELECT Id FROM BottomColours WHERE BottomId='" & bottomId & "' AND Colour='" & bottomColour & "'")
+                    Dim bottomColourIdB As String = String.Empty
+                    Dim bottomColourIdC As String = String.Empty
+                    Dim bottomColourIdD As String = String.Empty
+                    Dim bottomColourIdE As String = String.Empty
+                    Dim bottomColourIdF As String = String.Empty
+
+                    Dim bottomFlat As String = String.Empty
+                    Dim bottomFlatB As String = String.Empty
+                    Dim bottomFlatC As String = String.Empty
+                    Dim bottomFlatD As String = String.Empty
+                    Dim bottomFlatE As String = String.Empty
+                    Dim bottomFlatF As String = String.Empty
+
+                    If bottomType = "Flat Back Covered" Then
+                        bottomFlat = "Fabric on Back"
+                    End If
+                    If bottomType = "Flat Front Covered" Then
+                        bottomFlat = "Fabric on Front"
+                    End If
+
+                    Dim priceProductGroup As String = String.Empty
+                    Dim priceProductGroupB As String = String.Empty
+                    Dim priceProductGroupC As String = String.Empty
+                    Dim priceProductGroupD As String = String.Empty
+                    Dim priceProductGroupE As String = String.Empty
+                    Dim priceProductGroupF As String = String.Empty
+
+                    Dim priceName As String = String.Format("{0} - {1} - {2}", designName, "Gear Reduction", fabricGroup)
+                    priceProductGroup = orderClass.GetPriceProductGroupId(priceName, designId, "14")
+
+                    Dim linearMetre As Decimal = width / 1000
+                    Dim squareMetre As Decimal = width * drop / 1000000
+
+                    For i As Integer = 1 To qty
+                        Dim itemId As String = orderClass.GetNewOrderItemId()
+
+                        Using thisConn As New SqlConnection(myConn)
+                            Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Roller", thisConn)
+                                thisCmd.CommandType = CommandType.StoredProcedure
+
+                                thisCmd.Parameters.AddWithValue("@Id", itemId)
+                                thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                                thisCmd.Parameters.AddWithValue("@ProductId", productId)
+
+                                thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(fabricId), CType(DBNull.Value, Object), fabricId))
+                                thisCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(fabricIdB), CType(DBNull.Value, Object), fabricIdB))
+                                thisCmd.Parameters.AddWithValue("@FabricIdC", If(String.IsNullOrEmpty(fabricIdC), CType(DBNull.Value, Object), fabricIdC))
+                                thisCmd.Parameters.AddWithValue("@FabricIdD", If(String.IsNullOrEmpty(fabricIdD), CType(DBNull.Value, Object), fabricIdD))
+                                thisCmd.Parameters.AddWithValue("@FabricIdE", If(String.IsNullOrEmpty(fabricIdE), CType(DBNull.Value, Object), fabricIdE))
+                                thisCmd.Parameters.AddWithValue("@FabricIdF", If(String.IsNullOrEmpty(fabricIdF), CType(DBNull.Value, Object), fabricIdF))
+
+                                thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(fabricColourId), CType(DBNull.Value, Object), fabricColourId))
+                                thisCmd.Parameters.AddWithValue("@FabricColourIdB", If(String.IsNullOrEmpty(fabricColourIdB), CType(DBNull.Value, Object), fabricColourIdB))
+                                thisCmd.Parameters.AddWithValue("@FabricColourIdC", If(String.IsNullOrEmpty(fabricColourIdC), CType(DBNull.Value, Object), fabricColourIdC))
+                                thisCmd.Parameters.AddWithValue("@FabricColourIdD", If(String.IsNullOrEmpty(fabricColourIdD), CType(DBNull.Value, Object), fabricColourIdD))
+                                thisCmd.Parameters.AddWithValue("@FabricColourIdE", If(String.IsNullOrEmpty(fabricColourIdE), CType(DBNull.Value, Object), fabricColourIdE))
+                                thisCmd.Parameters.AddWithValue("@FabricColourIdF", If(String.IsNullOrEmpty(fabricColourIdF), CType(DBNull.Value, Object), fabricColourIdF))
+
+                                thisCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(chainId), CType(DBNull.Value, Object), chainId))
+                                thisCmd.Parameters.AddWithValue("@ChainIdB", If(String.IsNullOrEmpty(chainIdB), CType(DBNull.Value, Object), chainIdB))
+                                thisCmd.Parameters.AddWithValue("@ChainIdC", If(String.IsNullOrEmpty(chainIdC), CType(DBNull.Value, Object), chainIdC))
+                                thisCmd.Parameters.AddWithValue("@ChainIdD", If(String.IsNullOrEmpty(chainIdD), CType(DBNull.Value, Object), chainIdD))
+                                thisCmd.Parameters.AddWithValue("@ChainIdE", If(String.IsNullOrEmpty(chainIdE), CType(DBNull.Value, Object), chainIdE))
+                                thisCmd.Parameters.AddWithValue("@ChainIdF", If(String.IsNullOrEmpty(chainIdF), CType(DBNull.Value, Object), chainIdF))
+
+                                thisCmd.Parameters.AddWithValue("@BottomId", If(String.IsNullOrEmpty(bottomId), CType(DBNull.Value, Object), bottomId))
+                                thisCmd.Parameters.AddWithValue("@BottomIdB", If(String.IsNullOrEmpty(bottomIdB), CType(DBNull.Value, Object), bottomIdB))
+                                thisCmd.Parameters.AddWithValue("@BottomIdC", If(String.IsNullOrEmpty(bottomIdC), CType(DBNull.Value, Object), bottomIdC))
+                                thisCmd.Parameters.AddWithValue("@BottomIdD", If(String.IsNullOrEmpty(bottomIdD), CType(DBNull.Value, Object), bottomIdD))
+                                thisCmd.Parameters.AddWithValue("@BottomIdE", If(String.IsNullOrEmpty(bottomIdE), CType(DBNull.Value, Object), bottomIdE))
+                                thisCmd.Parameters.AddWithValue("@BottomIdF", If(String.IsNullOrEmpty(bottomIdF), CType(DBNull.Value, Object), bottomIdF))
+
+                                thisCmd.Parameters.AddWithValue("@BottomColourId", If(String.IsNullOrEmpty(bottomColourId), CType(DBNull.Value, Object), bottomColourId))
+                                thisCmd.Parameters.AddWithValue("@BottomColourIdB", If(String.IsNullOrEmpty(bottomColourIdB), CType(DBNull.Value, Object), bottomColourIdB))
+                                thisCmd.Parameters.AddWithValue("@BottomColourIdC", If(String.IsNullOrEmpty(bottomColourIdC), CType(DBNull.Value, Object), bottomColourIdC))
+                                thisCmd.Parameters.AddWithValue("@BottomColourIdD", If(String.IsNullOrEmpty(bottomColourIdD), CType(DBNull.Value, Object), bottomColourIdD))
+                                thisCmd.Parameters.AddWithValue("@BottomColourIdE", If(String.IsNullOrEmpty(bottomColourIdE), CType(DBNull.Value, Object), bottomColourIdE))
+                                thisCmd.Parameters.AddWithValue("@BottomColourIdF", If(String.IsNullOrEmpty(bottomColourIdF), CType(DBNull.Value, Object), bottomColourIdF))
+
+                                thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                                thisCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
+                                thisCmd.Parameters.AddWithValue("@PriceProductGroupIdC", If(String.IsNullOrEmpty(priceProductGroupC), CType(DBNull.Value, Object), priceProductGroupC))
+                                thisCmd.Parameters.AddWithValue("@PriceProductGroupIdD", If(String.IsNullOrEmpty(priceProductGroupD), CType(DBNull.Value, Object), priceProductGroupD))
+                                thisCmd.Parameters.AddWithValue("@PriceProductGroupIdE", If(String.IsNullOrEmpty(priceProductGroupE), CType(DBNull.Value, Object), priceProductGroupE))
+                                thisCmd.Parameters.AddWithValue("@PriceProductGroupIdF", If(String.IsNullOrEmpty(priceProductGroupF), CType(DBNull.Value, Object), priceProductGroupF))
+
+                                thisCmd.Parameters.AddWithValue("@Qty", 1)
+                                thisCmd.Parameters.AddWithValue("@Room", room)
+                                thisCmd.Parameters.AddWithValue("@Mounting", mounting)
+
+                                thisCmd.Parameters.AddWithValue("@Width", width)
+                                thisCmd.Parameters.AddWithValue("@WidthB", 0)
+                                thisCmd.Parameters.AddWithValue("@WidthC", 0)
+                                thisCmd.Parameters.AddWithValue("@WidthD", 0)
+                                thisCmd.Parameters.AddWithValue("@WidthE", 0)
+                                thisCmd.Parameters.AddWithValue("@WidthF", 0)
+
+                                thisCmd.Parameters.AddWithValue("@Drop", drop)
+                                thisCmd.Parameters.AddWithValue("@DropB", 0)
+                                thisCmd.Parameters.AddWithValue("@DropC", 0)
+                                thisCmd.Parameters.AddWithValue("@DropD", 0)
+                                thisCmd.Parameters.AddWithValue("@DropE", 0)
+                                thisCmd.Parameters.AddWithValue("@DropF", 0)
+
+                                thisCmd.Parameters.AddWithValue("@Roll", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@RollB", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@RollC", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@RollD", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@RollE", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@RollF", String.Empty)
+
+                                thisCmd.Parameters.AddWithValue("@ControlPosition", controlPosition)
+                                thisCmd.Parameters.AddWithValue("@ControlPositionB", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@ControlPositionC", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@ControlPositionD", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@ControlPositionE", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@ControlPositionF", String.Empty)
+
+                                thisCmd.Parameters.AddWithValue("@ControlLength", "Custom")
+                                thisCmd.Parameters.AddWithValue("@ControlLengthB", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@ControlLengthC", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@ControlLengthD", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@ControlLengthE", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@ControlLengthF", String.Empty)
+
+                                thisCmd.Parameters.AddWithValue("@ControlLengthValue", chainLength)
+                                thisCmd.Parameters.AddWithValue("@ControlLengthValueB", 0)
+                                thisCmd.Parameters.AddWithValue("@ControlLengthValueC", 0)
+                                thisCmd.Parameters.AddWithValue("@ControlLengthValueD", 0)
+                                thisCmd.Parameters.AddWithValue("@ControlLengthValueE", 0)
+                                thisCmd.Parameters.AddWithValue("@ControlLengthValueF", 0)
+
+                                thisCmd.Parameters.AddWithValue("@ChainStopper", chainStopper)
+                                thisCmd.Parameters.AddWithValue("@ChainStopperB", chainStopperB)
+                                thisCmd.Parameters.AddWithValue("@ChainStopperC", chainStopperC)
+                                thisCmd.Parameters.AddWithValue("@ChainStopperD", chainStopperD)
+                                thisCmd.Parameters.AddWithValue("@ChainStopperE", chainStopperE)
+                                thisCmd.Parameters.AddWithValue("@ChainStopperF", chainStopperF)
+
+                                thisCmd.Parameters.AddWithValue("@FlatOption", bottomFlat)
+                                thisCmd.Parameters.AddWithValue("@FlatOptionB", bottomFlatB)
+                                thisCmd.Parameters.AddWithValue("@FlatOptionC", bottomFlatC)
+                                thisCmd.Parameters.AddWithValue("@FlatOptionD", bottomFlatD)
+                                thisCmd.Parameters.AddWithValue("@FlatOptionE", bottomFlatE)
+                                thisCmd.Parameters.AddWithValue("@FlatOptionF", bottomFlatF)
+
+                                thisCmd.Parameters.AddWithValue("@TopTrack", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@BracketSize", CType(DBNull.Value, Object))
+                                thisCmd.Parameters.AddWithValue("@BracketExtension", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@SpringAssist", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@Adjusting", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@DryContact", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@Charger", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@ExtensionCable", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@Supply", String.Empty)
+
+                                thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
+                                thisCmd.Parameters.AddWithValue("@LinearMetreB", 0)
+                                thisCmd.Parameters.AddWithValue("@LinearMetreC", 0)
+                                thisCmd.Parameters.AddWithValue("@LinearMetreD", 0)
+                                thisCmd.Parameters.AddWithValue("@LinearMetreE", 0)
+                                thisCmd.Parameters.AddWithValue("@LinearMetreF", 0)
+
+                                thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
+                                thisCmd.Parameters.AddWithValue("@SquareMetreB", 0)
+                                thisCmd.Parameters.AddWithValue("@SquareMetreC", 0)
+                                thisCmd.Parameters.AddWithValue("@SquareMetreD", 0)
+                                thisCmd.Parameters.AddWithValue("@SquareMetreE", 0)
+                                thisCmd.Parameters.AddWithValue("@SquareMetreF", 0)
+
+                                thisCmd.Parameters.AddWithValue("@Printing", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@PrintingB", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@PrintingC", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@PrintingD", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@PrintingE", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@PrintingF", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@PrintingG", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@PrintingH", String.Empty)
+
+                                thisCmd.Parameters.AddWithValue("@TotalItems", 1)
+                                thisCmd.Parameters.AddWithValue("@Notes", notes)
+                                thisCmd.Parameters.AddWithValue("@MarkUp", 0)
+
+                                thisConn.Open()
+                                thisCmd.ExecuteNonQuery()
+                            End Using
+                        End Using
+
+                        orderClass.ResetPriceDetail(headerId, itemId)
+                        orderClass.CalculatePrice(headerId, itemId)
+                        orderClass.FinalCostItem(headerId, itemId)
+
+                        Dim dataLog As Object() = {"OrderDetails", itemId, "2", "Order Item Added"}
+                        orderClass.Logs(dataLog)
+                    Next
+                    orderClass.UpdateOrderFactory(headerId)
                 End If
 
                 If designName = "Global Roman Blinds" Then
@@ -758,7 +795,7 @@ Public Class Sunlight : Implements IHttpHandler
     Private Sub InsertOrderDetail(headerId As String, detail As Dictionary(Of String, Object))
         Dim allowedColumns As String() = {
             "KitName", "BracketType", "TubeType", "ControlType", "ColourType",
-            "DesignName", "BlindName", "FabricType", "FabricColour", "UniqueId",
+            "DesignName", "BlindName", "FabricType", "FabricColour", "BottomType", "BottomColour", "UniqueId",
             "BlindNo", "Qty", "Room", "Mounting", "Width", "Drop", "Layout",
             "NumOfPanel", "TwoOnOneHeadreal", "ControlPosition", "RollDirection", "ControlLength",
             "ControlLift", "ControlTilt", "TilterPosition", "ChainLength", "MaterialChain",
