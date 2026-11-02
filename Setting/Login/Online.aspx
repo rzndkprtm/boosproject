@@ -71,12 +71,8 @@
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
-                                                            <li>
-                                                                <a href="javascript:void(0);" class="dropdown-item" data-loginid='<%# Eval("LoginId") %>' onclick="checkUserPage(this.getAttribute('data-loginid')); return false;">Check Page</a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteSession" onclick='<%# String.Format("return dataDeleteSession(`{0}`);", Eval("Id").ToString()) %>'>Delete Session</a>
-                                                            </li>
+                                                            <li><a href="javascript:void(0);" class="dropdown-item" data-loginid='<%# Eval("LoginId") %>' onclick="checkUserPage(this.getAttribute('data-loginid')); return false;">Check Page</a></li>
+                                                            <li><a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteSession" onclick='<%# String.Format("return dataDeleteSession(`{0}`);", Eval("Id").ToString()) %>'>Delete Session</a></li>
                                                         </ul>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
@@ -144,7 +140,6 @@
             </div>
         </div>
     </div>
-    
     <div class="modal fade" id="modalUserStatus" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -162,40 +157,26 @@
 
     <script type="text/javascript">
         function checkUserPage(loginId) {
-
             fetch('/Setting/UpdateSession.aspx/GetCurrentPage', {
                 method: 'POST',
                 credentials: 'same-origin',
                 cache: 'no-store',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    loginId: loginId
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ loginId: loginId })
+            }).then(response => response.json()).then(data => {
+                document.getElementById('userPageResult').innerHTML = data.d;
 
-                    document.getElementById('userPageResult').innerHTML = data.d;
+                var modalElement = document.getElementById('modalUserStatus');
+                var modal = bootstrap.Modal.getInstance(modalElement);
 
-                    var modalElement = document.getElementById('modalUserStatus');
+                if (!modal) {
+                    modal = new bootstrap.Modal(modalElement, { backdrop: 'static', keyboard: false });
+                }
 
-                    var modal = bootstrap.Modal.getInstance(modalElement);
-
-                    if (!modal) {
-                        modal = new bootstrap.Modal(modalElement, {
-                            backdrop: 'static',
-                            keyboard: false
-                        });
-                    }
-
-                    modal.show();
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-
+                modal.show();
+            }).catch(error => {
+                console.error(error);
+            });
             return false;
         }
         function dataDeleteSession(id) {
