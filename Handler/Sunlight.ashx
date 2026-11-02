@@ -87,6 +87,7 @@ Public Class Sunlight : Implements IHttpHandler
                 Dim numOfPanel As Integer = If(IsDBNull(itemData.Rows(iItem)("NumOfPanel")), 0, Convert.ToInt32(itemData.Rows(iItem)("NumOfPanel")))
                 Dim twoOnOneHeadreal As String = itemData.Rows(iItem)("TwoOnOneHeadreal").ToString()
                 Dim controlPosition As String = itemData.Rows(iItem)("ControlPosition").ToString()
+                Dim rollDirection As String = itemData.Rows(iItem)("RollDirection").ToString()
                 Dim controlLength As Integer = If(IsDBNull(itemData.Rows(iItem)("ControlLength")), 0, Convert.ToInt32(itemData.Rows(iItem)("ControlLength")))
                 Dim controlLift As String = itemData.Rows(iItem)("ControlLift").ToString()
                 Dim controlTilt As String = itemData.Rows(iItem)("ControlTilt").ToString()
@@ -512,7 +513,13 @@ Public Class Sunlight : Implements IHttpHandler
                         Dim fabricIdF As String = String.Empty
                         Dim fabricColourIdF As String = String.Empty
 
-                        Dim chainId As String = String.Empty
+                        If chainColour.Contains("Birch White") Then chainColour = "Ivory"
+                        Dim chainName As String = "Cont Plastic " & chainColour.Replace("(", "").Replace(")", "")
+                        If chainColour.Contains("Stainless Steel") OrElse chainColour.Contains("Chrome") Then
+                            chainName = "Cont " & chainColour.Replace("(", "").Replace(")", "")
+                        End If
+
+                        Dim chainId As String = orderClass.GetItemData("SELECT Id FROM Chains WHERE Name='" & chainName & "'")
                         Dim chainIdB As String = String.Empty
                         Dim chainIdC As String = String.Empty
                         Dim chainIdD As String = String.Empty
@@ -753,7 +760,7 @@ Public Class Sunlight : Implements IHttpHandler
             "KitName", "BracketType", "TubeType", "ControlType", "ColourType",
             "DesignName", "BlindName", "FabricType", "FabricColour", "UniqueId",
             "BlindNo", "Qty", "Room", "Mounting", "Width", "Drop", "Layout",
-            "NumOfPanel", "TwoOnOneHeadreal", "ControlPosition", "ControlLength",
+            "NumOfPanel", "TwoOnOneHeadreal", "ControlPosition", "RollDirection", "ControlLength",
             "ControlLift", "ControlTilt", "TilterPosition", "ChainLength", "MaterialChain",
             "ChainColour", "TrackType", "TrackColour", "NumOfWand", "WandPosition",
             "WandColour", "WandLength", "CordColour", "CordLength",
