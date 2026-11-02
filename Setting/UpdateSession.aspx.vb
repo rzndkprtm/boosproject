@@ -32,9 +32,11 @@ Partial Class Setting_UpdateSession
         End If
 
         Dim loginId As String = context.Session("LoginId").ToString()
-        Dim currentPage As String = context.Request.RawUrl
 
-        context.Application("UserPage_" & loginId) = currentPage
+        If Not String.IsNullOrWhiteSpace(page) Then
+            context.Application("UserPage_" & loginId) = page
+        End If
+
         context.Application("UserPageTime_" & loginId) = DateTime.Now
 
         Return "OK"

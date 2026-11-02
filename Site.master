@@ -449,15 +449,30 @@
                 }).catch(() => { });
             }, 240000);
 
+            //function updateCurrentPage() {
+            //    fetch('/Setting/UpdateSession.aspx/UpdateCurrentPage', {
+            //        method: 'POST',
+            //        credentials: 'same-origin',
+            //        cache: 'no-store',
+            //        headers: {'Content-Type': 'application/json'},
+            //        body: JSON.stringify({page: window.location.pathname})
+            //    }).catch(() => { });
+            //}
+            //updateCurrentPage();
+            //setInterval(updateCurrentPage, 5000);
+
             function updateCurrentPage() {
                 fetch('/Setting/UpdateSession.aspx/UpdateCurrentPage', {
                     method: 'POST',
                     credentials: 'same-origin',
                     cache: 'no-store',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({page: window.location.pathname})
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        page: window.location.pathname + window.location.search
+                    })
                 }).catch(() => { });
             }
+
             updateCurrentPage();
             setInterval(updateCurrentPage, 5000);
 
