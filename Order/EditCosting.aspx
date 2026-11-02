@@ -175,19 +175,15 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-12 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label">Sell Price</label>
                             <asp:TextBox runat="server" ID="txtAddSellPrice" CssClass="form-control" placeholder="Sell Price ..." autocomplete="off"></asp:TextBox>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label">Buy Price</label>
                             <asp:TextBox runat="server" ID="txtAddBuyPrice" CssClass="form-control" placeholder="Buy Price ..." autocomplete="off"></asp:TextBox>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
                             <label class="form-label">Factory Price</label>
                             <asp:TextBox runat="server" ID="txtAddFactoryPrice" CssClass="form-control" placeholder="Factory Price ..." autocomplete="off"></asp:TextBox>
                         </div>

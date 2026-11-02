@@ -675,7 +675,7 @@ Partial Class Order_Method
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             Dim productName As String = orderClass.GetProductName(colourtype)
 
-            If designName = "Skyline Express Part" Then
+            If designName = "Skyline Part Express" Then
                 If blindName = "Extrusion" Then
                     result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
                 End If
@@ -709,7 +709,7 @@ Partial Class Order_Method
                     result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
                 End If
             End If
-            If designName = "Skyline Ocean Part" Then
+            If designName = "Skyline Part Ocean" Then
                 If blindName = "Extrusion" Then
                     result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
                     result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
@@ -770,7 +770,7 @@ Partial Class Order_Method
             Dim designName As String = orderClass.GetDesignName(designtype)
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             Dim productName As String = orderClass.GetProductName(colourtype)
-            If designName = "Evolve Express Part" Then
+            If designName = "Evolve Part Express" Then
                 If blindName = "Extrusion" Then
                     result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
                 End If
@@ -804,7 +804,7 @@ Partial Class Order_Method
                     result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
                 End If
             End If
-            If designName = "Evolve Ocean Part" Then
+            If designName = "Evolve Part Ocean" Then
                 If blindName = "Extrusion" Then
                     result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
                     result.Add(New With {.Value = "Classic White", .Text = "Classic White"})

@@ -567,9 +567,6 @@ Public Class InvoiceClass
                 If designName = "Skyline Shutter Ocean" Then
                     itemDescription = String.Format("{0} {1} {2}", invoiceName, size, squareMetreText)
                 End If
-                If designName = "Skyline Ocean Part" Then
-                    itemDescription = invoiceName
-                End If
                 If designName = "Soft Roman" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
