@@ -64,6 +64,8 @@ Public Class Sunlight : Implements IHttpHandler
                 InsertOrderDetail(headerId, detail)
             Next
 
+            Dim lookupResults As New List(Of Object)
+
             'PINDAHKAN DARI ORDERDETAILS_SUNLIGHT KE ORDERDETAILS
             Dim itemData As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails_Sunlight WHERE HeaderId='" & headerId & "' ORDER BY Id ASC")
             For iItem As Integer = 0 To itemData.Rows.Count - 1
@@ -484,7 +486,8 @@ Public Class Sunlight : Implements IHttpHandler
 
                 If designName = "Global Roller Blinds" Then
                     Dim designName_Fix As String = "Roller Blind"
-                    Dim blindName_Fix As String = bracketType
+                    Dim blindName_Fix As String = String.Empty
+                    If bracketType = "Single" Then blindName_Fix = "Single Blind"
                     Dim tubeName_Fix As String = "Gear Reduction " & tubeType & "mm"
                     Dim controlName_Fix As String = controlType
                     Dim colourName_Fix As String = colourType
@@ -497,7 +500,7 @@ Public Class Sunlight : Implements IHttpHandler
                     Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS subCompanyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlid & "' AND ColourType='" & colourId & "' AND subCompanyArray.VALUE='7'")
 
                     Dim fabricId As String = orderClass.GetItemData("SELECT Id FROM Fabrics WHERE Name='" & fabricType & "'")
-                    Dim fabricColourId As String = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricId & "' AND Name='" & fabricId & "'")
+                    Dim fabricColourId As String = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "'")
                     Dim fabricGroup As String = orderClass.GetFabricGroup(fabricId)
 
                     Dim fabricIdB As String = String.Empty
@@ -575,6 +578,10 @@ Public Class Sunlight : Implements IHttpHandler
                         bottomFlat = "Fabric on Front"
                     End If
 
+                    Dim mounting_Fix As String = "Opening Size " & mounting
+                    Dim roll_Fix As String = rollDirection
+                    If rollDirection = "Resever Roll" Then roll_Fix = "Reverse"
+
                     Dim priceProductGroup As String = String.Empty
                     Dim priceProductGroupB As String = String.Empty
                     Dim priceProductGroupC As String = String.Empty
@@ -643,7 +650,7 @@ Public Class Sunlight : Implements IHttpHandler
 
                                 thisCmd.Parameters.AddWithValue("@Qty", 1)
                                 thisCmd.Parameters.AddWithValue("@Room", room)
-                                thisCmd.Parameters.AddWithValue("@Mounting", mounting)
+                                thisCmd.Parameters.AddWithValue("@Mounting", mounting_Fix)
 
                                 thisCmd.Parameters.AddWithValue("@Width", width)
                                 thisCmd.Parameters.AddWithValue("@WidthB", 0)
@@ -659,7 +666,7 @@ Public Class Sunlight : Implements IHttpHandler
                                 thisCmd.Parameters.AddWithValue("@DropE", 0)
                                 thisCmd.Parameters.AddWithValue("@DropF", 0)
 
-                                thisCmd.Parameters.AddWithValue("@Roll", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@Roll", roll_Fix)
                                 thisCmd.Parameters.AddWithValue("@RollB", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@RollC", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@RollD", String.Empty)
@@ -754,9 +761,22 @@ Public Class Sunlight : Implements IHttpHandler
                 End If
 
                 If designName = "Global Roman Blinds" Then
-                    If Not blindNo = "Blind 1" Then
-                        Continue For
-                    End If
+                    Dim designName_Fix As String = "Roman Blind"
+                    Dim blindName_Fix As String = "Roman Blind"
+                    Dim tubeName_Fix As String = blindName
+                    Dim controlName_Fix As String = controlType
+                    If controlType = "Cord" Then controlName_Fix = "Reg Cord Lock"
+
+                    Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designName_Fix & "'")
+                    Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds WHERE Name='" & blindName_Fix & "' AND DesignId='" & designId & "'")
+                    Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Name='" & tubeName_Fix & "'")
+                    Dim controlid As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='" & controlName_Fix & "'")
+                    Dim colourId As String = "56"
+                    Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS subCompanyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlid & "' AND ColourType='" & colourId & "' AND subCompanyArray.VALUE='7'")
+
+                    Dim fabricId As String = orderClass.GetItemData("SELECT Id FROM Fabrics WHERE Name='" & fabricType & "'")
+                    Dim fabricColourId As String = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "'")
+                    Dim fabricGroup As String = orderClass.GetFabricGroup(fabricId)
                 End If
             Next
 
@@ -790,7 +810,6 @@ Public Class Sunlight : Implements IHttpHandler
             End Using
         End Using
     End Sub
-
 
     Private Sub InsertOrderDetail(headerId As String, detail As Dictionary(Of String, Object))
         Dim allowedColumns As String() = {
