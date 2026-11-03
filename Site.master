@@ -366,14 +366,14 @@
         <div class="modal fade text-left" id="modalNotification" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
                 <div class="modal-content">
-                    <div class="modal-header bg-info">
+                    <div class="modal-header bg-secondary">
                         <h4 class="modal-title white" id="titleNotification"></h4>
                     </div>
                     <div class="modal-body">
                         <p id="messageNotification"></p>
                     </div>
                     <div class="modal-footer">
-                        <a href="javascript:void(0);" class="btn btn-info" data-bs-dismiss="modal">I have read the information.</a>
+                        <a href="javascript:void(0);" class="btn btn-secondary" data-bs-dismiss="modal">I have read the information.</a>
                     </div>
                 </div>
             </div>
