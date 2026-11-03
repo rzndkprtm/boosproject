@@ -80,18 +80,6 @@
                         List, Create, Update, Delete
                     </div>
                 </a>
-                <a href="/setting/xero" class="dashboard-card">
-                    <div class="dashboard-title">Xero</div>
-                    <div class="dashboard-desc">
-                        List, Create, Update, Delete
-                    </div>
-                </a>
-                <a href="/setting/akzero" class="dashboard-card">
-                    <div class="dashboard-title">AK Zero</div>
-                    <div class="dashboard-desc">
-                        List, Create, Update, Delete
-                    </div>
-                </a>
                 <a href="/setting/log" class="dashboard-card">
                     <div class="dashboard-title">Log</div>
                     <div class="dashboard-desc">

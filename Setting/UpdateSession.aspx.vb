@@ -7,22 +7,6 @@ Partial Class Setting_UpdateSession
         Session("KeepAlive") = 1
     End Sub
 
-    '<WebMethod()>
-    'Public Shared Function UpdateCurrentPage(page As String) As String
-    '    Dim context As HttpContext = HttpContext.Current
-
-    '    If context.Session("LoginId") Is Nothing Then
-    '        Return "NO_LOGIN"
-    '    End If
-
-    '    Dim loginId As String = context.Session("LoginId").ToString()
-
-    '    context.Application("UserPage_" & loginId) = page
-    '    context.Application("UserPageTime_" & loginId) = DateTime.Now
-
-    '    Return "OK"
-    'End Function
-
     <WebMethod()>
     Public Shared Function UpdateCurrentPage(page As String) As String
         Dim context As HttpContext = HttpContext.Current

@@ -72,6 +72,7 @@
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                         <ul class="dropdown-menu">
                                                             <li><a href="javascript:void(0);" class="dropdown-item" data-loginid='<%# Eval("LoginId") %>' onclick="checkUserPage(this.getAttribute('data-loginid')); return false;">Check Page</a></li>
+                                                            <li><a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalSendNotification" onclick='<%# String.Format("return dataSendNotification(`{0}`);", Eval("LoginId").ToString()) %>'>Send Notification</a></li>
                                                             <li><a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteSession" onclick='<%# String.Format("return dataDeleteSession(`{0}`);", Eval("Id").ToString()) %>'>Delete Session</a></li>
                                                         </ul>
                                                 </ItemTemplate>
@@ -123,6 +124,34 @@
         </section>
     </div>
 
+    <div class="modal fade text-left" id="modalSendNotification" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-success">
+                    <h5 class="modal-title white">Send Notification</h5>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtLoginIdNotification" style="display:none;"></asp:TextBox>
+                    <div class="row mb-3">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Title</label>
+                            <asp:TextBox runat="server" ID="txtTitle" CssClass="form-control" placeholder="Title ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Message</label>
+                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtMessage" Height="150px" CssClass="form-control" placeholder="Message ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnSendNotification" CssClass="btn btn-success" Text="Submit" OnClick="btnSendNotification_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalDeleteSession" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -182,7 +211,10 @@
         function dataDeleteSession(id) {
             document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
         }
-        ["modalDeleteSession", "modalUserStatus"].forEach(function (id) {
+        function dataSendNotification(id) {
+            document.getElementById("<%=txtLoginIdNotification.ClientID %>").value = id;
+        }
+        ["modalDeleteSession", "modalUserStatus", "modalSendNotification"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

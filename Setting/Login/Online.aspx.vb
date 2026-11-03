@@ -74,6 +74,33 @@ Partial Class Setting_Login_Online
         End Try
     End Sub
 
+    Protected Sub btnSendNotification_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim loginId As String = txtLoginIdNotification.Text
+
+            Dim roleId As String = settingClass.GetItemData("SELECT RoleId FROM Logins WHERE Id='" & loginId & "'")
+
+            Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Notifications ORDER BY Id DESC")
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Notifications VALUES (@Id, @RoleId, NULL, @LoginId, @Title, @Message, GETDATE(), DATEADD(DAY, 1, GETDATE()), 1)", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@RoleId", roleId)
+                    thisCmd.Parameters.AddWithValue("@LoginId", loginId)
+                    thisCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
+                    thisCmd.Parameters.AddWithValue("@Message", txtMessage.Text)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Response.Redirect("~/setting/login/online", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
     Protected Sub BindData(searchText As String, minuteText As String)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
