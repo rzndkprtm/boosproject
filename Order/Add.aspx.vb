@@ -129,7 +129,7 @@ Partial Class Order_Add
                         Throw New Exception("FAILED TO GENERATE UNIQUE ORDER ID")
                     End If
 
-                    Dim randomCode As String = orderClass.GenerateRandomCode()
+                    Dim randomCode As String = orderClass.GetNewOrderId()
                     orderId = companyAlias & randomCode
                     Try
                         Using thisConn As New SqlConnection(myConn)

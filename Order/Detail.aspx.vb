@@ -286,7 +286,7 @@ Partial Class Order_Detail
                         Throw New Exception("FAILED TO GENERATE UNIQUE ORDER ID")
                     End If
 
-                    Dim randomCode As String = orderClass.GenerateRandomCode()
+                    Dim randomCode As String = orderClass.GetNewOrderId()
                     orderId = companyAlias & randomCode
                     Try
                         Using thisConn As New SqlConnection(myConn)
@@ -783,28 +783,40 @@ Partial Class Order_Detail
     Protected Sub btnReworkOrder_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim reworkId As String = orderClass.GetNewOrderReworkId()
+            Dim reworkId As String = String.Empty
 
-            Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderReworks VALUES (@Id, @HeaderId, NULL, 'Unsubmitted', '', @CreatedBy, GETDATE(), NULL, 1)", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", reworkId)
-                    thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
-                    thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
-                    thisConn.Open()
-                    thisCmd.ExecuteNonQuery()
-                End Using
-            End Using
+            Dim isReworkOrderUnsubmit As Boolean = orderClass.IsReworkOrderUnsubmitted(lblHeaderId.Text)
+            If isReworkOrderUnsubmit = True Then
+                reworkId = orderClass.GetItemData("SELECT Id FROM OrderReworks WHERE HeaderId='" & lblHeaderId.Text & "' AND Status='Unsubmitted' AND Active=1")
 
-            Dim directory As String = Server.MapPath(String.Format("~/File/Rework/{0}/", reworkId))
-            If Not IO.Directory.Exists(directory) Then
-                IO.Directory.CreateDirectory(directory)
+                url = String.Format("~/order/rework/detail?reworkid={0}", reworkId)
+                Response.Redirect(url, False)
+                Exit Sub
             End If
+            If isReworkOrderUnsubmit = False Then
+                reworkId = orderClass.GetNewOrderReworkId()
 
-            dataLog = {"OrderReworks", reworkId, Session("LoginId").ToString(), "Order Rework Created"}
-            orderClass.Logs(dataLog)
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderReworks VALUES (@Id, @HeaderId, NULL, 'Unsubmitted', '', @CreatedBy, GETDATE(), NULL, 1)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", reworkId)
+                        thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+                        thisCmd.Parameters.AddWithValue("@HeaderId", lblHeaderId.Text)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
 
-            url = String.Format("~/order/rework/detail?reworkid={0}", reworkId)
-            Response.Redirect(url, False)
+                Dim directory As String = Server.MapPath(String.Format("~/File/Rework/{0}/", reworkId))
+                If Not IO.Directory.Exists(directory) Then
+                    IO.Directory.CreateDirectory(directory)
+                End If
+
+                dataLog = {"OrderReworks", reworkId, Session("LoginId").ToString(), "Order Rework Created"}
+                orderClass.Logs(dataLog)
+
+                url = String.Format("~/order/rework/detail?reworkid={0}", reworkId)
+                Response.Redirect(url, False)
+            End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -2159,7 +2171,7 @@ Partial Class Order_Detail
 
             aLog.Visible = False : aLog.Attributes("data-id") = headerId
 
-            divOrderType.Visible = False
+            divOrderType.Visible = False : spanShowOriginalOrder.Visible = False
             divOrderFactory.Visible = False
             divInternalNote.Visible = False
 
@@ -2168,10 +2180,18 @@ Partial Class Order_Detail
             aAddService.Visible = False
 
             Dim isReworkOrder As Boolean = orderClass.IsReworkOrder(headerId)
+            Dim isReworkOrderUnsubmit As Boolean = orderClass.IsReworkOrderUnsubmitted(headerId)
+            divReworkOrderUnsubmit.Visible = False
+            If isReworkOrderUnsubmit = True Then
+                divReworkOrderUnsubmit.Visible = True
+            End If
 
             If Session("RoleName") = "Developer" Then
                 divInternalNote.Visible = True
                 divOrderType.Visible = True
+                If lblOrderType.Text = "Rework" Then
+                    spanShowOriginalOrder.Visible = True
+                End If
                 divOrderFactory.Visible = True
 
                 aDuplicateOrder.Visible = True
@@ -2806,6 +2826,9 @@ Partial Class Order_Detail
 
                 divInternalNote.Visible = True
                 divOrderType.Visible = True
+                If lblOrderType.Text = "Rework" Then
+                    spanShowOriginalOrder.Visible = True
+                End If
                 divOrderFactory.Visible = True
 
                 divDateAction.Attributes.Add("onclick", "showDateOrder()")
@@ -3067,6 +3090,9 @@ Partial Class Order_Detail
 
                 divInternalNote.Visible = True
                 divOrderType.Visible = True
+                If lblOrderType.Text = "Rework" Then
+                    spanShowOriginalOrder.Visible = True
+                End If
                 divOrderFactory.Visible = True
             End If
             If Session("RoleName") = "Sales" Then
@@ -3186,6 +3212,9 @@ Partial Class Order_Detail
 
                 divInternalNote.Visible = True
                 divOrderType.Visible = True
+                If lblOrderType.Text = "Rework" Then
+                    spanShowOriginalOrder.Visible = True
+                End If
                 divOrderFactory.Visible = True
             End If
             If Session("RoleName") = "Account" Then
@@ -3341,6 +3370,9 @@ Partial Class Order_Detail
 
                 divInternalNote.Visible = True
                 divOrderType.Visible = True
+                If lblOrderType.Text = "Rework" Then
+                    spanShowOriginalOrder.Visible = True
+                End If
                 divOrderFactory.Visible = True
             End If
             If Session("RoleName") = "Data Entry" Then
@@ -3470,6 +3502,9 @@ Partial Class Order_Detail
 
                 divInternalNote.Visible = True
                 divOrderType.Visible = True
+                If lblOrderType.Text = "Rework" Then
+                    spanShowOriginalOrder.Visible = True
+                End If
                 divOrderFactory.Visible = True
             End If
             If Session("RoleName") = "Export" Then
@@ -3556,10 +3591,16 @@ Partial Class Order_Detail
 
                 divInternalNote.Visible = True
                 divOrderType.Visible = True
+                If lblOrderType.Text = "Rework" Then
+                    spanShowOriginalOrder.Visible = True
+                End If
                 divOrderFactory.Visible = True
             End If
             If Session("RoleName") = "Customer" Then
                 aDuplicateOrder.Visible = True
+                If lblOrderType.Text = "Rework" Then
+                    divOrderType.Visible = True : spanShowOriginalOrder.Visible = True
+                End If
 
                 If Session("PriceAccess") = "Yes" Then
                     btnQuoteAction.Visible = True

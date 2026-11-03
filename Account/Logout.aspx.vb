@@ -1,5 +1,4 @@
-﻿
-Partial Class Account_Logout
+﻿Partial Class Account_Logout
     Inherits Page
 
     Dim settingClass As New SettingClass

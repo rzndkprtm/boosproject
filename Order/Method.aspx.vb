@@ -13606,7 +13606,33 @@ Partial Class Order_Method
         }
         Return result
     End Function
+
     ' OTHER
+
+    <WebMethod()>
+    Public Shared Function GetOriginalOrder(id As String) As List(Of OriginalOrderDto)
+        Try
+            Dim result As New List(Of OriginalOrderDto)
+            Dim orderClass As New OrderClass
+
+            Dim originalId As String = orderClass.GetItemData("SELECT HeaderId FROM OrderReworks WHERE HeaderIdNew='" & id & "'")
+
+            Dim dt As DataTable = orderClass.GetDataTable("SELECT OrderId, OrderNumber, OrderName FROM OrderHeaders WHERE Id='" & originalId & "'")
+
+            For Each r As DataRow In dt.Rows
+                result.Add(New OriginalOrderDto With {
+                    .OrderId = If(IsDBNull(r("OrderId")), "", r("OrderId").ToString()),
+                    .OrderNumber = If(IsDBNull(r("OrderNumber")), "", r("OrderNumber").ToString()),
+                    .OrderName = If(IsDBNull(r("OrderName")), "", r("OrderName").ToString())
+                })
+            Next
+
+            Return result
+
+        Catch ex As Exception
+            Return New List(Of OriginalOrderDto)
+        End Try
+    End Function
 
     <WebMethod()>
     Public Shared Function GetLogs(type As String, dataId As String) As List(Of LogDto)
@@ -13995,6 +14021,12 @@ Public Class JSONList
     Public Property orderstatus As String
     Public Property rolename As String
     Public Property action As String
+End Class
+
+Public Class OriginalOrderDto
+    Public Property OrderId As String
+    Public Property OrderNumber As String
+    Public Property OrderName As String
 End Class
 
 Public Class LogDto

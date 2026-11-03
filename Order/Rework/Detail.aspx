@@ -307,7 +307,7 @@
                     <div class="table-responsive">
                         <asp:GridView runat="server" ID="gvListAddItem" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" DataKeyNames="Id">
                             <Columns>
-                                <asp:TemplateField>
+                                <asp:TemplateField ItemStyle-Width="30px">
                                     <HeaderTemplate>
                                        <asp:CheckBox ID="chkSelectAll" runat="server" CssClass="form-check" onclick="toggleSelectAll(this)" />
                                     </HeaderTemplate>
@@ -315,13 +315,13 @@
                                         <asp:CheckBox ID="chkSelect" runat="server" CssClass="form-check chkSelectItem" />
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:BoundField DataField="Id" HeaderText="ID" />
-                                <asp:TemplateField HeaderText="Description">
+                                <asp:BoundField DataField="Id" HeaderText="ID" ItemStyle-Width="50px" />
+                                <asp:TemplateField HeaderText="Description" ItemStyle-Width="340px">
                                     <ItemTemplate>
                                         <%# BindProductDescription(Eval("Id").ToString()) %>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Category">
+                                <asp:TemplateField HeaderText="Category" ItemStyle-Width="280px">
                                     <ItemTemplate>
                                         <asp:DropDownList ID="ddlAddCategory" runat="server" CssClass="form-select">
                                             <asp:ListItem Value="" Text=""></asp:ListItem>
@@ -332,14 +332,14 @@
                                         </asp:DropDownList>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Install Date">
+                                <asp:TemplateField HeaderText="Install Date" ItemStyle-Width="150px">
                                     <ItemTemplate>
                                         <asp:TextBox ID="txtAddInstallDate" runat="server" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="Description">
                                     <ItemTemplate>
-                                        <asp:TextBox ID="txtAddDescription" runat="server" CssClass="form-control"></asp:TextBox>
+                                        <asp:TextBox ID="txtAddDescription" runat="server" CssClass="form-control" autocomplete="off" placeholder="Description ....."></asp:TextBox>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>

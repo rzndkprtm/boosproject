@@ -169,6 +169,9 @@
                                 <div class="detail-label">Order Type</div>
                                 <div class="detail-value">
                                     <asp:Label runat="server" ID="lblOrderType"></asp:Label>
+                                    <span runat="server" id="spanShowOriginalOrder">
+                                        <a href="javascript:void(0);" class="btn btn-sm btn-primary ms-3" onclick="showOriginalOrder(<%= lblHeaderId.Text %>)">Show Original Order</a>
+                                    </span>
                                 </div>
                             </div>
                             <div class="detail-row" runat="server" id="divOrderFactory">
@@ -541,6 +544,31 @@
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalOriginalOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Original Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger d-none" id="originalOrderError"></div>
+                    <div class="table-responsive">
+                        <table class="table table-vcenter card-table" id="tblOriginalOrder">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Order Number</th>
+                                    <th>Order Name</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -969,18 +997,30 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modalReworkOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal fade text-center" id="modalReworkOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title white">Rework Order</h5>
                 </div>
                 <div class="modal-body">
-                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                    Hi <b><%: Session("FullName") %></b>,
                     <br /><br />
-                    After confirmation, you will be redirected to the <b>Rework Detail</b> page.
+                    Once you click the Confirm button, you will be redirected to the Rework Details page.
                     <br /><br />
-                    Please add the item(s) that need to be reworked.
+                    Please add the items you wish to rework and complete the required details.
+                    <div class="alert alert-secondary text-start mt-3 mb-0 rounded-3 shadow-sm" role="alert" runat="server" id="divReworkOrderUnsubmit">
+                        <div class="d-flex align-items-start gap-2">
+                            <div>
+                                <strong>Rework Information</strong>
+                                <div class="mt-1">
+                                    A rework draft / unsubmitted has already been created for this order.
+                                    <br />
+                                    You can add or remove items if any changes are required.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
@@ -1773,7 +1813,8 @@
             "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData", "modalDownloadPL",
             "modalDetailQuote", "modalDownloadQuote", "modalSendQuote",
             "modalConvertOrder", "modalReConvertOrder", "modalDataJob", "modalUpdateJobData",
-            "modalAddProduct", "modalAddPart", "modalAddService", "modalDeleteItem", "modalCosting"            
+            "modalAddProduct", "modalAddPart", "modalAddService", "modalDeleteItem", "modalCosting",
+            "modalOriginalOrder", "modalOrderDelivery"
         ].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
                 document.activeElement.blur();
@@ -1783,6 +1824,48 @@
         function showLogFromElement(el) {
             var id = el.getAttribute("data-id");
             showLog('OrderHeaders', id);
+        }
+        function showOriginalOrder(id) {
+            $("#originalOrderError").addClass("d-none").html("");
+            $("#tblOriginalOrder tbody").html("");
+            $("#modalOriginalOrder").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "Method.aspx/GetOriginalOrder",
+                data: JSON.stringify({ id: id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function (res) {
+                    const orders = res.d;
+
+                    if (!orders || orders.length === 0) {
+                        $("#tblOriginalOrder tbody").html(
+                            `<tr><td colspan="3" class="text-center text-muted">ORIGINAL ORDER NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+
+                    orders.forEach(r => {
+                        html += `
+                            <tr>
+                                <td>${r.OrderId ?? ""}</td>
+                                <td>${r.OrderNumber ?? ""}</td>
+                                <td>${r.OrderName ?? ""}</td>
+                            </tr>
+                        `;
+                    });
+
+                    $("#tblOriginalOrder tbody").html(html);
+                },
+
+                error: function () {
+                    $("#originalOrderError").removeClass("d-none").html("FAILED TO LOAD ORIGINAL ORDER");
+                }
+            });
         }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");

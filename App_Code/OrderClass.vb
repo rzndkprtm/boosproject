@@ -1932,7 +1932,7 @@ Public Class OrderClass
         Return result
     End Function
 
-    Public Function GenerateRandomCode() As String
+    Public Function GetNewOrderId(Optional type As String = "") As String
         Try
             Dim chars As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
             Dim rnd As New Random()
@@ -1941,6 +1941,9 @@ Public Class OrderClass
                 Dim idx As Integer = rnd.Next(0, chars.Length)
                 result.Append(chars(idx))
             Next
+            If type = "Rework" Then
+                Return result.ToString & " - RW"
+            End If
             Return result.ToString()
         Catch ex As Exception
             Return String.Empty
@@ -5289,7 +5292,27 @@ Public Class OrderClass
         Try
             If Not String.IsNullOrEmpty(orderId) Then
                 Using thisConn As New SqlConnection(myConn)
-                    Dim query As String = "SELECT COUNT(*) FROM OrderReworks WHERE HeaderId=@HeaderId AND (Status='Unsubmitted' OR Status='Pending Approval' OR Status='Approved') AND Active=1"
+                    Dim query As String = "SELECT COUNT(*) FROM OrderReworks WHERE HeaderId=@HeaderId AND Status='Pending Approval' AND Active=1"
+                    Using thisCmd As New SqlCommand(query, thisConn)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", orderId)
+                        thisConn.Open()
+                        Dim count As Integer = Convert.ToInt32(thisCmd.ExecuteScalar())
+                        result = (count > 0)
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = False
+        End Try
+        Return result
+    End Function
+
+    Public Function IsReworkOrderUnsubmitted(orderId As String) As Boolean
+        Dim result As Boolean = False
+        Try
+            If Not String.IsNullOrEmpty(orderId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Dim query As String = "SELECT COUNT(*) FROM OrderReworks WHERE HeaderId=@HeaderId AND Status='Unsubmitted' AND Active=1"
                     Using thisCmd As New SqlCommand(query, thisConn)
                         thisCmd.Parameters.AddWithValue("@HeaderId", orderId)
                         thisConn.Open()

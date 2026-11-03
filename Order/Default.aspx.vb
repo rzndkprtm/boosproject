@@ -470,7 +470,7 @@ Partial Class Order_Default
                         Throw New Exception("FAILED TO GENERATE UNIQUE ORDER ID")
                     End If
 
-                    Dim randomCode As String = orderClass.GenerateRandomCode()
+                    Dim randomCode As String = orderClass.GetNewOrderId()
                     orderId = companyAlias & randomCode
                     Try
                         Using thisConn As New SqlConnection(myConn)
@@ -1125,19 +1125,6 @@ Partial Class Order_Default
         Return False
     End Function
 
-    Protected Function VisibleCancelOrder(status As String, active As Boolean) As Boolean
-        If active = True Then
-            If Session("RoleName") = "Developer" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "Payment Received" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
-            If Session("RoleName") = "IT" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
-            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
-            If Session("RoleName") = "Data Entry" AndAlso (status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
-            If Session("RoleName") = "Account" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "New Order") Then Return True
-            If Session("RoleName") = "Sales" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "New Order") Then Return True
-            Return False
-        End If
-        Return False
-    End Function
-
     Protected Function VisibleShipmentOrder(status As String, active As Boolean) As Boolean
         If active = True Then
             If Session("RoleName") = "Developer" AndAlso (status = "In Production" OrElse status = "On Hold") Then Return True
@@ -1157,6 +1144,29 @@ Partial Class Order_Default
             If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso status = "Shipped Out" Then Return True
             If Session("RoleName") = "Export" AndAlso status = "Shipped Out" Then Return True
             Return False
+        End If
+        Return False
+    End Function
+
+    Protected Function VisibleCancelOrder(status As String, active As Boolean) As Boolean
+        If active = True Then
+            If Session("RoleName") = "Developer" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "Payment Received" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
+            If Session("RoleName") = "IT" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
+            If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
+            If Session("RoleName") = "Data Entry" AndAlso (status = "New Order" OrElse status = "In Production" OrElse status = "On Hold") Then Return True
+            If Session("RoleName") = "Account" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "New Order") Then Return True
+            If Session("RoleName") = "Sales" AndAlso (status = "Waiting Proforma" OrElse status = "Proforma Sent" OrElse status = "Pending Payment" OrElse status = "New Order") Then Return True
+            Return False
+        End If
+        Return False
+    End Function
+
+    Protected Function VisibleOrignalOrder(data As Object) As Boolean
+        Dim active As Boolean = Convert.ToBoolean(data(0))
+        Dim type As String = Convert.ToString(data(1))
+
+        If active = True AndAlso type = "Rework" Then
+            Return True
         End If
         Return False
     End Function

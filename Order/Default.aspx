@@ -283,6 +283,9 @@
                                                                 <li runat="server" visible='<%# VisibleCancelOrder(Eval("Status").ToString(), Eval("Active")) %>'>
                                                                     <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalCancelOrder" onclick='<%# String.Format("return dataCancelOrder(`{0}`);", Eval("Id").ToString()) %>'>Cancel Order</a>
                                                                 </li>
+                                                                <li runat="server" visible='<%# VisibleOrignalOrder(New Object() {Eval("Active"), Eval("OrderType")}) %>'>
+                                                                    <a href="javascript:void(0);" class="dropdown-item" onclick="showOriginalOrder('<%# Eval("Id") %>')">Original Order</a>
+                                                                </li>
                                                                 <li runat="server" visible='<%# VisibleSurat(Eval("Status").ToString(), Eval("CompanyId").ToString(), Eval("Active")) %>'>
                                                                     <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Surat Jalan", Eval("Status").ToString()) %>'>Surat Jalan</a>
                                                                 </li>
@@ -555,6 +558,31 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modalOriginalOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Original Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger d-none" id="originalOrderError"></div>
+                    <div class="table-responsive">
+                        <table class="table table-vcenter card-table" id="tblOriginalOrder">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Order Number</th>
+                                    <th>Order Name</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal modal-blur fade" id="modalLog" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -602,7 +630,6 @@
                 loading.style.display = "none";
             }
         });
-
         function initUpdatePanelLoading() {
             if (typeof Sys === "undefined") {
                 return;
@@ -614,7 +641,6 @@
                     loading.style.display = "block";
                 }
             });
-
             prm.add_endRequest(function () {
                 var loading = document.getElementById("loadingOverlay");
                 if (loading) {
@@ -623,40 +649,29 @@
                 bindGridRowClick();
             });
         }
-
         function bindGridRowClick() {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) {
                 return;
             }
-
             for (let i = 1; i < gv.rows.length; i++) {
                 const row = gv.rows[i];
                 row.style.cursor = "pointer";
                 row.onclick = function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]") ||
-                        e.target.closest(".dropdown-menu")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]") || e.target.closest(".dropdown-menu")) {
                         return;
                     }
-
                     const btn = this.querySelector("a[id*='aDetail']");
-
                     if (btn) {
                         btn.click();
                     }
                 };
             }
         }
-
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-
         function dataShipment(number, date, container, coneta, courier) {
             document.getElementById("spanShipmentNumber").innerText = number;
             document.getElementById("spanShipmentDate").innerText = date;
@@ -696,6 +711,48 @@
         function dataOcean(id) {
             document.getElementById("<%=txtOceanId.ClientID %>").value = id;
         }
+        function showOriginalOrder(id) {
+            $("#originalOrderError").addClass("d-none").html("");
+            $("#tblOriginalOrder tbody").html("");
+            $("#modalOriginalOrder").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "Method.aspx/GetOriginalOrder",
+                data: JSON.stringify({ id: id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function (res) {
+                    const orders = res.d;
+
+                    if (!orders || orders.length === 0) {
+                        $("#tblOriginalOrder tbody").html(
+                            `<tr><td colspan="3" class="text-center text-muted">ORIGINAL ORDER NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+
+                    orders.forEach(r => {
+                        html += `
+                            <tr>
+                                <td>${r.OrderId ?? ""}</td>
+                                <td>${r.OrderNumber ?? ""}</td>
+                                <td>${r.OrderName ?? ""}</td>
+                            </tr>
+                        `;
+                    });
+
+                    $("#tblOriginalOrder tbody").html(html);
+                },
+
+                error: function () {
+                    $("#originalOrderError").removeClass("d-none").html("FAILED TO LOAD ORIGINAL ORDER");
+                }
+            });
+        }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -725,13 +782,11 @@
                     $("#tblLogs tbody").html(html);
                 },
                 error: function (err) {
-                    $("#logError")
-                        .removeClass("d-none")
-                        .html("FAILED TO LOAD LOG DATA");
+                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
                 }
             });
         }
-
+        
         function showWaiting(hideModal = null) {
             $("#modalWaiting").modal("show");
 
@@ -752,6 +807,7 @@
             "modalCancelOrder",
             "modalShipmentOrder",
             "modalOcean",
+            "modalOriginalOrder",
             "modalLog"
         ].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {

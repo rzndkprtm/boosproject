@@ -109,7 +109,7 @@ Partial Class Order_Upload
                                 Throw New Exception("FAILED TO GENERATE UNIQUE ORDER ID")
                             End If
 
-                            Dim randomCode As String = orderClass.GenerateRandomCode()
+                            Dim randomCode As String = orderClass.GetNewOrderId()
                             orderId = companyAlias & randomCode
 
                             Try
@@ -3386,7 +3386,7 @@ Partial Class Order_Upload
                         retry += 1
                         If retry > maxRetry Then Throw New Exception("FAILED TO GENERATE UNIQUE ORDER ID")
 
-                        Dim randomCode As String = orderClass.GenerateRandomCode()
+                        Dim randomCode As String = orderClass.GetNewOrderId()
                         orderId = companyAlias & randomCode
                         Try
                             Using thisConn As New SqlConnection(myConn)

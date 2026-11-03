@@ -27,7 +27,6 @@ Partial Class Account_Forgot
             End If
 
             Dim checkEmail As String = IsValidEmailAddress(txtEmail.Text.Trim())
-
             If checkEmail = False Then
                 MessageError(True, "INVALID EMAIL ADDRESS !")
                 Exit Sub
