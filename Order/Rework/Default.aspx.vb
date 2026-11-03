@@ -99,11 +99,9 @@ Partial Class Order_Rework_Default
                 New SqlParameter("@LevelName", If(Session("LevelName"), DBNull.Value)),
                 New SqlParameter("@CustomerId", If(Session("CustomerId"), DBNull.Value)),
                 New SqlParameter("@LoginId", Session("LoginId").ToString()),
-                New SqlParameter("@Active", active)
+                New SqlParameter("@Active", 1)
             }
-
-            Dim thisData As DataTable = orderClass.GetDataTableSP("sp_OrderReworks_List", params)
-            gvList.DataSource = thisData
+            gvList.DataSource = orderClass.GetDataTableSP("sp_OrderReworks_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
