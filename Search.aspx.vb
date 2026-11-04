@@ -147,11 +147,7 @@ Partial Class Search
                             End If
                         End If
 
-                        items.Add(New SearchItem With {
-                            .Title = pageTitle,
-                            .Description = "Page : " & relativePath,
-                            .Url = ResolveUrl("~/" & pageUrl)
-                        })
+                        items.Add(New SearchItem With {.Title = pageTitle, .Description = "Page : " & relativePath, .Url = ResolveUrl("~/" & pageUrl)})
                     End If
                 Catch ex As Exception
                     Continue For
@@ -160,20 +156,9 @@ Partial Class Search
 
             items = items.OrderBy(Function(x) x.Title).Take(20).ToList()
 
-            Return New SearchGroup With {
-                .Category = "Pages",
-                .Icon = "bi bi-file-earmark-text-fill",
-                .Count = items.Count,
-                .Items = items
-            }
-
+            Return New SearchGroup With {.Category = "Pages", .Icon = "bi bi-file-earmark-text-fill", .Count = items.Count, .Items = items}
         Catch ex As Exception
-            Return New SearchGroup With {
-                .Category = "Pages",
-                .Icon = "bi bi-file-earmark-text-fill",
-                .Count = 0,
-                .Items = New List(Of SearchItem)
-            }
+            Return New SearchGroup With {.Category = "Pages", .Icon = "bi bi-file-earmark-text-fill", .Count = 0, .Items = New List(Of SearchItem)}
         End Try
     End Function
 
