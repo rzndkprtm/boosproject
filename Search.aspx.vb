@@ -55,6 +55,7 @@ Partial Class Search
             groups.Add(SearchBlindType(keyword))
             groups.Add(SearchProduct(keyword))
             groups.Add(SearchFabric(keyword))
+            groups.Add(SearchFabricColour(keyword))
             groups.Add(SearchOrders(keyword))
 
             Dim resultGroups = groups.Where(Function(x) x.Count > 0).ToList()
@@ -140,9 +141,19 @@ Partial Class Search
         Try
             Dim sql As String = "SELECT TOP 20 CAST(Id AS NVARCHAR(50)) AS ResultId, ISNULL(Name,'') AS Title, 'Type : ' + ISNULL(Type,'') + CHAR(10) + 'Status : ' + ISNULL(Status,'') AS Description FROM Fabrics WHERE Name LIKE @Keyword ORDER BY Name ASC"
 
-            Return ExecuteSearch("Fabric Type", "bi bi-gear-fill", sql, keyword, "~/setting/specification/fabric/detail?fabricid=")
+            Return ExecuteSearch("Fabric Type", "bi bi-gear-fill", sql, keyword, "~/setting/specification/fabric/colour/edit?fabriccolourid=")
         Catch ex As Exception
             Return New SearchGroup With {.Category = "Fabric Type", .Icon = "bi bi-gear-fill", .Count = 0, .Items = New List(Of SearchItem)}
+        End Try
+    End Function
+
+    Private Function SearchFabricColour(keyword As String) As SearchGroup
+        Try
+            Dim sql As String = "SELECT TOP 20 CAST(Id AS NVARCHAR(50)) AS ResultId, ISNULL(Name,'') AS Title, 'BOE ID : ' + ISNULL(CAST(BoeId AS NVARCHAR(50)),'') + CHAR(10) + 'Status : ' + ISNULL(CAST(Status AS NVARCHAR(50)),'') AS Description FROM FabricColours WHERE Colour LIKE @Keyword ORDER BY Name ASC"
+
+            Return ExecuteSearch("Fabric Colour", "bi bi-gear-fill", sql, keyword, "~/setting/specification/fabric/detail?fabricid=")
+        Catch ex As Exception
+            Return New SearchGroup With {.Category = "Fabric Colour", .Icon = "bi bi-gear-fill", .Count = 0, .Items = New List(Of SearchItem)}
         End Try
     End Function
 
