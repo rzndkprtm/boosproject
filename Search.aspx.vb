@@ -58,7 +58,11 @@ Partial Class Search
             groups.Add(SearchProduct(keyword))
             groups.Add(SearchFabric(keyword))
             groups.Add(SearchFabricColour(keyword))
+            groups.Add(SearchBottomType(keyword))
+            groups.Add(SearchBottomColour(keyword))
             groups.Add(SearchOrders(keyword))
+            groups.Add(SearchLogin(keyword))
+            groups.Add(SearchMailing(keyword))
 
             Dim resultGroups = groups.Where(Function(x) x.Count > 0).ToList()
 
@@ -221,6 +225,26 @@ Partial Class Search
         End Try
     End Function
 
+    Private Function SearchBottomType(keyword As String) As SearchGroup
+        Try
+            Dim sql As String = "SELECT TOP 20 CAST(B.Id AS NVARCHAR(50)) AS ResultId, ISNULL(B.Name,'') AS Title, ISNULL(CD.CompanyDetailName, '') AS Description FROM Bottoms B OUTER APPLY (SELECT STRING_AGG(CD.Name, ', ') AS CompanyDetailName FROM STRING_SPLIT(B.CompanyDetailId, ',') S INNER JOIN CompanyDetails CD ON CD.Id = TRY_CAST(LTRIM(RTRIM(S.value)) AS INT)) CD WHERE B.Name LIKE @Keyword ORDER BY B.Name ASC"
+
+            Return ExecuteSearch("Bottom Type", "bi bi-gear-fill", sql, keyword, "~/setting/specification/bottom/detail?bottomid=")
+        Catch ex As Exception
+            Return New SearchGroup With {.Category = "Design Type", .Icon = "bi bi-gear-fill", .Count = 0, .Items = New List(Of SearchItem)}
+        End Try
+    End Function
+
+    Private Function SearchBottomColour(keyword As String) As SearchGroup
+        Try
+            Dim sql As String = "SELECT TOP 20 CAST(Id AS NVARCHAR(50)) AS ResultId, ISNULL(Name,'') AS Title, 'BOE ID : ' + ISNULL(CAST(BoeId AS NVARCHAR(50)),'') + CHAR(10) + 'Status : ' + ISNULL(CAST(Status AS NVARCHAR(50)),'') AS Description FROM BottomColours WHERE Colour LIKE @Keyword ORDER BY Name ASC"
+
+            Return ExecuteSearch("Fabric Colour", "bi bi-gear-fill", sql, keyword, "~/setting/specification/bottom/detail?bottomid=")
+        Catch ex As Exception
+            Return New SearchGroup With {.Category = "Fabric Colour", .Icon = "bi bi-gear-fill", .Count = 0, .Items = New List(Of SearchItem)}
+        End Try
+    End Function
+
     Private Function SearchOrders(keyword As String) As SearchGroup
         Try
             Dim sql As String = "SELECT TOP 20 CAST(OrderHeaders.Id AS NVARCHAR(50)) AS ResultId, ISNULL(OrderHeaders.OrderId,'') AS Title, 'Customer Name : ' + ISNULL(Customers.Name,'') + CHAR(10) + 'Order Number : ' + ISNULL(OrderHeaders.OrderNumber,'') + CHAR(10) + 'Order Name : ' + ISNULL(OrderHeaders.OrderName,'') AS Description FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.OrderNumber LIKE @Keyword OR Customers.Name LIKE @Keyword ORDER BY OrderHeaders.Id DESC"
@@ -228,6 +252,26 @@ Partial Class Search
             Return ExecuteSearch("Orders", "bi bi-basket-fill", sql, keyword, "~/order/detail?orderid=")
         Catch ex As Exception
             Return New SearchGroup With {.Category = "Orders", .Icon = "bi bi-basket-fill", .Count = 0, .Items = New List(Of SearchItem)}
+        End Try
+    End Function
+
+    Private Function SearchLogin(keyword As String) As SearchGroup
+        Try
+            Dim sql As String = "SELECT TOP 20 CAST(Logins.Id AS NVARCHAR(50)) AS ResultId, ISNULL(Logins.FullName,'') AS Title, 'Customer Name : ' + ISNULL(Customers.Name,'') + CHAR(10) + 'User : ' + ISNULL(Logins.UserName,'') + CHAR(10) + 'Role : ' + ISNULL(LoginRoles.Name,'') AS Description FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id WHERE Logins.UserName LIKE @Keyword OR Logins.FullName LIKE @Keyword ORDER BY Logins.FullName ASC"
+
+            Return ExecuteSearch("User Login", "bi bi-basket-fill", sql, keyword, "~/setting/login/user/edit?loginid=")
+        Catch ex As Exception
+            Return New SearchGroup With {.Category = "User Login", .Icon = "bi bi-basket-fill", .Count = 0, .Items = New List(Of SearchItem)}
+        End Try
+    End Function
+
+    Private Function SearchMailing(keyword As String) As SearchGroup
+        Try
+            Dim sql As String = "SELECT TOP 20 CAST(Mailings.Id AS NVARCHAR(50)) AS ResultId, ISNULL(Mailings.Name,'') AS Title, 'Company : ' + ISNULL(Companys.Name,'') AS Description FROM Mailings LEFT JOIN Companys ON Mailings.CompanyId=Companys.Id WHERE Mailings.Name LIKE @Keyword ORDER BY Mailings.Name ASC"
+
+            Return ExecuteSearch("Mailing", "bi bi-basket-fill", sql, keyword, "~/setting/general/mailing/edit?mailid=")
+        Catch ex As Exception
+            Return New SearchGroup With {.Category = "Mailing", .Icon = "bi bi-basket-fill", .Count = 0, .Items = New List(Of SearchItem)}
         End Try
     End Function
 End Class

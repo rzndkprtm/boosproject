@@ -240,6 +240,8 @@ Partial Public Class SiteMaster
                 liLog.Visible = True
             End If
             If Session("RoleName") = "IT" Then
+                divSearch.Visible = False
+
                 liGuide.Visible = True
                 liTicket.Visible = True
                 liStocks.Visible = True
@@ -263,6 +265,8 @@ Partial Public Class SiteMaster
                 liLog.Visible = True
             End If
             If Session("RoleName") = "Factory Office" Then
+                divSearch.Visible = False
+
                 liGuide.Visible = True
                 liTicket.Visible = True
                 liStocks.Visible = True

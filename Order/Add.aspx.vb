@@ -59,8 +59,8 @@ Partial Class Order_Add
                 MessageError(True, "PLEASE DON'T USE [ , ], [ ' ] AND [ ; ] !")
                 Exit Sub
             End If
-            If Trim(txtOrderNumber.Text).Length > 20 Then
-                MessageError(True, "MAXIMUM 20 CHARACTERS FOR RETAILER ORDER NUMBER !")
+            If Trim(txtOrderNumber.Text).Length > 30 Then
+                MessageError(True, "MAXIMUM 30 CHARACTERS FOR RETAILER ORDER NUMBER !")
                 Exit Sub
             End If
             If txtOrderName.Text = "" Then
