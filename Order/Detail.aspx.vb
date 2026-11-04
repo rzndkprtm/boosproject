@@ -414,7 +414,7 @@ Partial Class Order_Detail
             End If
 
             Dim orderStatus As String = orderClass.GetOrderStatus(lblHeaderId.Text)
-            If orderStatus = "Unsubmitted" Then
+            If orderStatus = "Unsubmitted" OrElse orderStatus = "Quoted" Then
                 Dim checkProduct As DataTable = orderClass.GetDataTable("SELECT ROW_NUMBER() OVER (ORDER BY OrderDetails.Id ASC) AS [Number], OrderDetails.Id, Products.Status, FC.Status AS FabricColourStatus FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN FabricColours FC ON OrderDetails.FabricColourId=FC.Id WHERE OrderDetails.HeaderId='" & lblHeaderId.Text & "' AND OrderDetails.Active=1 ORDER BY OrderDetails.Id ASC")
 
                 If checkProduct.Rows.Count > 0 Then
@@ -533,6 +533,7 @@ Partial Class Order_Detail
                 url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
                 Response.Redirect(url, False)
             End If
+
             url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
