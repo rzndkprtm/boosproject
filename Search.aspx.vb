@@ -1,5 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
+Imports System.IO
+Imports System.Text.RegularExpressions
 
 Partial Class Search
     Inherits Page
@@ -50,6 +52,7 @@ Partial Class Search
 
             lblError.Text = String.Empty
 
+            groups.Add(SearchPages(keyword))
             groups.Add(SearchCustomer(keyword))
             groups.Add(SearchDesignType(keyword))
             groups.Add(SearchBlindType(keyword))
@@ -95,6 +98,83 @@ Partial Class Search
         End Using
 
         Return New SearchGroup With {.Category = category, .Icon = icon, .Count = items.Count, .Items = items}
+    End Function
+
+    Private Function SearchPages(keyword As String) As SearchGroup
+        Try
+            Dim items As New List(Of SearchItem)
+            Dim rootPath As String = Server.MapPath("~/")
+
+            Dim files As String() = Directory.GetFiles(rootPath, "*.aspx", SearchOption.AllDirectories)
+
+            For Each file As String In files
+                Try
+                    Dim relativePath As String = file.Substring(rootPath.Length).Replace("\", "/")
+
+                    If relativePath.StartsWith("bin/", StringComparison.OrdinalIgnoreCase) OrElse relativePath.StartsWith("obj/", StringComparison.OrdinalIgnoreCase) OrElse relativePath.StartsWith("packages/", StringComparison.OrdinalIgnoreCase) Then
+                        Continue For
+                    End If
+
+                    If relativePath.Equals("Search.aspx", StringComparison.OrdinalIgnoreCase) Then
+                        Continue For
+                    End If
+
+                    Dim pageName As String = Path.GetFileNameWithoutExtension(file)
+                    Dim pageTitle As String = pageName
+
+                    If pageName.Equals("Default", StringComparison.OrdinalIgnoreCase) Then
+                        pageTitle = New DirectoryInfo(Path.GetDirectoryName(file)).Name
+                    End If
+
+                    Dim content As String = System.IO.File.ReadAllText(file)
+                    Dim match As Match = Regex.Match(content, "Title\s*=\s*""([^""]*)""", RegexOptions.IgnoreCase)
+
+                    If match.Success AndAlso Not String.IsNullOrWhiteSpace(match.Groups(1).Value) Then
+                        pageTitle = match.Groups(1).Value
+
+                        If pageName.Equals("Default", StringComparison.OrdinalIgnoreCase) Then
+                            pageTitle = New DirectoryInfo(Path.GetDirectoryName(file)).Name
+                        End If
+                    End If
+
+                    If pageName.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0 OrElse pageTitle.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0 OrElse relativePath.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0 Then
+                        Dim pageUrl As String = relativePath.Substring(0, relativePath.Length - 5).ToLowerInvariant()
+                        If pageName.Equals("Default", StringComparison.OrdinalIgnoreCase) Then
+                            Dim lastSlash As Integer = pageUrl.LastIndexOf("/")
+
+                            If lastSlash >= 0 Then
+                                pageUrl = pageUrl.Substring(0, lastSlash)
+                            End If
+                        End If
+
+                        items.Add(New SearchItem With {
+                            .Title = pageTitle,
+                            .Description = "Page : " & relativePath,
+                            .Url = ResolveUrl("~/" & pageUrl)
+                        })
+                    End If
+                Catch ex As Exception
+                    Continue For
+                End Try
+            Next
+
+            items = items.OrderBy(Function(x) x.Title).Take(20).ToList()
+
+            Return New SearchGroup With {
+                .Category = "Pages",
+                .Icon = "bi bi-file-earmark-text-fill",
+                .Count = items.Count,
+                .Items = items
+            }
+
+        Catch ex As Exception
+            Return New SearchGroup With {
+                .Category = "Pages",
+                .Icon = "bi bi-file-earmark-text-fill",
+                .Count = 0,
+                .Items = New List(Of SearchItem)
+            }
+        End Try
     End Function
 
     Private Function SearchCustomer(keyword As String) As SearchGroup
