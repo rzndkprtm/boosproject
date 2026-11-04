@@ -23,6 +23,19 @@
 
     <style>
         .header-top > .container { max-width: 100%; padding-inline: clamp(.75rem, 3vw, 3rem); }
+        .global-search { position: relative; width: clamp(300px, 30vw, 420px); margin-left: auto; margin-right: 20px; flex-shrink: 0; }
+        .global-search input { width: 100%; height: 38px; padding-left: 38px; border: 1px solid #dee2e6; border-radius: 8px; font-size: 13px; background: #f8f9fa; }
+        .global-search input:focus { background: #fff; border-color: #435ebe; box-shadow: 0 0 0 2px rgba(67, 94, 190, .1); }
+        .global-search i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #7c8db5; font-size: 16px; pointer-events: none; }
+        .header-top-right { flex-shrink: 0; }
+        @media (max-width: 576px) {
+            .header-top > .container { display: grid !important; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "logo profile" "search search"; align-items: center; gap: 12px; padding: 10px 12px; }
+            .logo { grid-area: logo; min-width: 0; }
+            .logo img { max-width: 165px; height: auto; }
+            .global-search { grid-area: search; width: 100%; margin: 0; min-width: 0; }
+            .global-search input { width: 100%; height: 40px; }
+            .header-top-right { grid-area: profile; display: flex; align-items: center; gap: 10px; margin: 0; }
+        }
     </style>
 </head>
 <body>
@@ -37,6 +50,10 @@
                                 <a runat="server" href="~/">
                                     <asp:Image runat="server" ID="imgLogo" ImageUrl="~/Assets/images/logo/general.jpg" AlternateText="BOOS" />
                                 </a>
+                            </div>
+                            <div class="global-search" runat="server" id="divSearch">
+                                <i class="bi bi-search"></i>
+                                <input type="text" id="txtGlobalSearch" class="form-control" placeholder="Search anything..." autocomplete="off" />
                             </div>
                             <div class="header-top-right">
                                 <div class="dropdown">
@@ -62,10 +79,11 @@
                                         <li><asp:LinkButton runat="server" ID="linkLogout" CssClass="dropdown-item" Text="Logout" OnClick="linkLogout_Click"></asp:LinkButton></li>
                                     </ul>
                                 </div>
+
                                 <a href="javascript:void(0);" class="burger-btn d-block d-xl-none">
                                     <i class="bi bi-justify fs-3"></i>
                                 </a>
-                            </div>                            
+                            </div>
                         </div>
                     </div>
                     <nav class="main-navbar">
@@ -408,14 +426,12 @@
                     }
                 });
             }
-
             document.getElementById('modalNotification').addEventListener('hidden.bs.modal', function () {
                 if (!currentPopup) return;
                 savePopupLog(currentPopup.popupId);
                 currentPopup = null;
                 showNextPopup();
             });
-
             function showNextPopup() {
                 if (popupQueue.length === 0) return;
                 currentPopup = popupQueue.shift();
@@ -433,7 +449,6 @@
                 }
                 modal.show();
             }
-
             function savePopupLog(popupId) {
                 fetch('/Setting/General/Notification/Default.aspx/SavePopupLog', {
                     method: 'POST',
@@ -441,7 +456,6 @@
                     body: JSON.stringify({ popupId: popupId })
                 });
             }
-
             setInterval(() => {
                 fetch('/Setting/UpdateSession.aspx', {
                     credentials: 'same-origin',
@@ -466,6 +480,18 @@
             Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
                 var newTitle = '<%= String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %>';
                 document.title = newTitle;
+            });
+
+            document.getElementById("txtGlobalSearch").addEventListener("keydown", function (e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+
+                    var keyword = this.value.trim();
+
+                    if (keyword === "") return;
+
+                    window.location.href = '<%= ResolveUrl("~/search") %>?q=' + encodeURIComponent(keyword);
+                }
             });
         </script>
         

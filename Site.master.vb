@@ -188,6 +188,8 @@ Partial Public Class SiteMaster
 
     Protected Sub BindListNavigation()
         Try
+            divSearch.Visible = False
+
             liGuide.Visible = False
             liTicket.Visible = False
             liStocks.Visible = False
@@ -213,6 +215,8 @@ Partial Public Class SiteMaster
             liLog.Visible = False
 
             If Session("RoleName") = "Developer" Then
+                divSearch.Visible = True
+
                 liGuide.Visible = True
                 liTicket.Visible = True
                 liStocks.Visible = True
