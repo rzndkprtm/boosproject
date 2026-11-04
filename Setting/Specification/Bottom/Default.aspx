@@ -66,29 +66,21 @@
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                             <asp:BoundField DataField="Name" HeaderText="Name" />
-                                            <asp:TemplateField HeaderText="Design Type">
-                                                <ItemTemplate>
-                                                    <%# BindDesign(Eval("Id").ToString()) %>
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="Company Detail">
-                                                <ItemTemplate>
-                                                    <%# BindCompany(Eval("Id").ToString()) %>
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
+                                            <asp:BoundField DataField="DesignsName" HeaderText="Design Type" />
+                                            <asp:BoundField DataField="CompanyDetailsName" HeaderText="Company Detail" />
                                             <asp:BoundField DataField="Status" HeaderText="Status" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
-                                                        <li runat="server" visible='<%# LoginAccess("Detail") %>'>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Detail") %>'>
                                                             <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/setting/specification/bottom/detail?bottomid=" & Eval("Id")) %>'>Detail</a>
                                                         </li>
-                                                        <li runat="server" visible='<%# LoginAccess("Edit") %>'>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" href='<%# Page.ResolveUrl("~/setting/specification/bottom/edit?bottomid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
-                                                        <li runat="server" visible='<%# LoginAccess("Change Status") %>'>
-                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatus" onclick='<%# String.Format("return dataChangeStatus(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Delete") %>'>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                         </li>
                                                         <li>
                                                             <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Bottoms', '<%# Eval("Id") %>')">Log</a>
@@ -120,49 +112,19 @@
         </section>
     </div>
 
-    <div class="modal fade text-left" id="modalChangeStatus" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal modal-blur fade" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Change Status</h4>
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Bottom Type</h5>
                 </div>
-                <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtIdStatus" style="display:none;"></asp:TextBox>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Name</label>
-                            <asp:TextBox runat="server" ID="txtName" CssClass="form-control" ReadOnly="true"></asp:TextBox>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">Old Status</label>
-                            <asp:TextBox runat="server" ID="txtOldStatus" style="display:none;"></asp:TextBox>
-                            <asp:DropDownList runat="server" ID="ddlOldStatus" ClientIDMode="Static" CssClass="form-select" Enabled="false">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
-                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
-                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
-                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">New Status</label>
-                            <asp:DropDownList runat="server" ID="ddlNewStatus" CssClass="form-select">
-                                <asp:ListItem Value="" Text=""></asp:ListItem>
-                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
-                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
-                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
-                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
-                            </asp:DropDownList>
-                        </div>
-                    </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtDeleteId" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnChangeStatus" CssClass="btn btn-primary" Text="Submit" OnClick="btnChangeStatus_Click" />
+                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
                 </div>
             </div>
         </div>
@@ -238,19 +200,8 @@
             initUpdatePanelLoading();
             bindGridRowClick();
         });
-        function dataChangeStatus(id, name, status) {
-            document.getElementById("<%=txtIdStatus.ClientID %>").value = id;
-            document.getElementById("<%=txtName.ClientID %>").value = name;
-            document.getElementById("<%=txtOldStatus.ClientID %>").value = status;
-            document.getElementById("<%=ddlOldStatus.ClientID %>").value = status;
-
-            let title = "";
-            if (active === "1") {
-                title = "Deactivate Fabric";
-            } else {
-                title = "Activate Fabric";
-            }
-            document.getElementById("titleActive").innerHTML = title;
+        function dataDelete(id) {
+            document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
         }
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
@@ -285,7 +236,7 @@
                 }
             });
         }
-        ["modalChangeStatus", "modalLog"].forEach(function (id) {
+        ["modalDelete", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();

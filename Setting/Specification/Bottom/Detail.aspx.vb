@@ -32,47 +32,21 @@ Partial Class Setting_Specification_Bottom_Detail
         Response.Redirect(url, False)
     End Sub
 
-    Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim newStatus As String = ddlNewStatus.SelectedValue
-
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Status=@Status WHERE Id=@Id", thisConn)
+                Using thisCmd As New SqlCommand("UPDATE Bottoms SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
-                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim changeDesc As String = String.Format("Change Status Bottom Type : {0}", newStatus)
-            dataLog = {"Bottoms", lblId.Text, Session("LoginId").ToString(), changeDesc}
+            dataLog = {"Bottoms", lblId.Text, Session("LoginId").ToString(), "Bottom Type Deleted"}
             settingClass.Logs(dataLog)
 
-            Dim detailData As DataTable = settingClass.GetDataTable("SELECT * FROM BottomColours WHERE BottomId='" & lblId.Text & "' AND Status='" & lblStatus.Text & "'")
-            If Not detailData.Rows.Count = 0 Then
-                For i As Integer = 0 To detailData.Rows.Count - 1
-                    Dim detailId As String = detailData.Rows(i)("Id").ToString()
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Status=@Status WHERE Id=@Id", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", detailId)
-                            thisCmd.Parameters.AddWithValue("@Status", newStatus)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    changeDesc = String.Format("Change Status Bottom Colour : {0}", newStatus)
-
-                    dataLog = {"BottomColours", detailId, Session("LoginId").ToString(), changeDesc}
-                    settingClass.Logs(dataLog)
-                Next
-            End If
-
-            url = String.Format("~/setting/specification/bottom/detail?bottomid={0}", lblId.Text)
-            Response.Redirect(url, False)
+            Response.Redirect("~/setting/specification/bottom", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -255,7 +229,7 @@ Partial Class Setting_Specification_Bottom_Detail
 
     Protected Sub BindData(bottomId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Bottoms WHERE Id='" & bottomId & "'")
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Bottoms WHERE Id='" & bottomId & "' AND (Status='Active' OR Status='Inactive')")
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/specification/bottom", False)
                 Exit Sub
@@ -293,7 +267,7 @@ Partial Class Setting_Specification_Bottom_Detail
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID Detail")
 
-            aChangeStatus.Visible = LoginAccess("Change Status")
+            aDeleteBottom.Visible = LoginAccess("Change Status")
 
             btnAddColour.Visible = LoginAccess("Add Colour")
             btnEdit.Visible = LoginAccess("Edit")

@@ -72,12 +72,13 @@ Partial Class Setting_Specification_Bottom_Edit
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Name=@Name, DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, Description=@Description WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Name=@Name, DesignId=@DesignId, CompanyDetailId=@CompanyDetailId, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@DesignId", designType)
                         thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetail)
                         thisCmd.Parameters.AddWithValue("@Description", descText)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -110,7 +111,7 @@ Partial Class Setting_Specification_Bottom_Edit
 
     Protected Sub BindData(bottomId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Bottoms WHERE Id='" & bottomId & "'")
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Bottoms WHERE Id='" & bottomId & "' AND (Status='Active' OR Status='Inactive')")
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/specification/bottom", False)
                 Exit Sub

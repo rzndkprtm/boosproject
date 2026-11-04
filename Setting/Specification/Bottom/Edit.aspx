@@ -63,6 +63,17 @@
                                         <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
                                     </div>
                                 </div>
+                                <div class="row mb-3">
+                                    <div class="col-12 col-sm-12 col-lg-3">
+                                        <label>Status</label>
+                                    </div>
+                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                        <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
+                                            <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
+                                            <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
                                 <div class="row" runat="server" id="divError">
                                     <div class="col-12">
                                         <div class="alert alert-danger">

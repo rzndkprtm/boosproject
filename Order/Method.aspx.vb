@@ -320,9 +320,9 @@ Partial Class Order_Method
             Next
         End If
         If type = "BottomType" Then
-            Dim thisQuery As String = "SELECT Id, Name FROM Bottoms CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='In Stock' OR Status='Limited Stock') ORDER BY Name ASC"
+            Dim thisQuery As String = "SELECT Id, Name FROM Bottoms CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND Status='Active' ORDER BY Name ASC"
             If action = "view" Then
-                thisQuery = "SELECT Id, Name FROM Bottoms CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' ORDER BY Name ASC"
+                thisQuery = "SELECT Id, Name FROM Bottoms CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE designArray.VALUE='" & designtype & "' AND companyArray.VALUE='" & companydetailid & "' AND (Status='Active' OR Status='Inactive') ORDER BY Name ASC"
             End If
 
             Dim dt As DataTable = orderClass.GetDataTable(thisQuery)

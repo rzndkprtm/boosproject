@@ -1,5 +1,4 @@
-﻿Imports System.Data
-Imports System.Data.SqlClient
+﻿Imports System.Data.SqlClient
 
 Partial Class Setting_Specification_Bottom_Default
     Inherits Page
@@ -53,47 +52,21 @@ Partial Class Setting_Specification_Bottom_Default
         BindData(txtSearch.Text)
     End Sub
 
-    Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdStatus.Text
-            Dim newStatus As String = ddlNewStatus.SelectedValue
-            Dim oldStatus As String = txtOldStatus.Text
+            Dim thisId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Bottoms SET Status=@Status WHERE Id=@Id", thisConn)
+                Using thisCmd As New SqlCommand("UPDATE Bottoms SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
-                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim changeDesc As String = String.Format("Change Status Bottom Type : {0}", newStatus)
-
-            dataLog = {"Bottoms", thisId, Session("LoginId").ToString(), changeDesc}
+            dataLog = {"Bottoms", thisId, Session("LoginId").ToString(), "Bottom Type Deleted"}
             settingClass.Logs(dataLog)
-
-            Dim detailData As DataTable = settingClass.GetDataTable("SELECT * FROM BottomColours WHERE BottomId='" & thisId & "' AND Status='" & oldStatus & "'")
-            If Not detailData.Rows.Count = 0 Then
-                For i As Integer = 0 To detailData.Rows.Count - 1
-                    Dim detailId As String = detailData.Rows(i)("Id").ToString()
-
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE BottomColours SET Status=@Status WHERE Id=@Id", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", detailId)
-                            thisCmd.Parameters.AddWithValue("@Status", newStatus)
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    changeDesc = String.Format("Change Status Bottom Colour : {0}", newStatus)
-
-                    dataLog = {"BottomColours", detailId, Session("LoginId").ToString(), changeDesc}
-                    settingClass.Logs(dataLog)
-                Next
-            End If
 
             Session("SearchBottom") = txtSearch.Text
             Response.Redirect("~/setting/specification/bottom", False)
@@ -107,17 +80,17 @@ Partial Class Setting_Specification_Bottom_Default
 
     Protected Sub BindData(searchText As String)
         Try
-            Dim stringSearch As String = String.Empty
-            If Not searchText = "" Then
-                stringSearch = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%' OR Status LIKE '%" & searchText & "%'"
-            End If
-            Dim thisString As String = String.Format("SELECT * FROM Bottoms {0} ORDER BY Name ASC", stringSearch)
+            Dim parameters As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), "", searchText.Trim())),
+                New SqlParameter("@RoleName", If(Session("RoleName"), "").ToString())
+            }
 
-            gvList.DataSource = settingClass.GetDataTable(thisString)
+            gvList.DataSource = settingClass.GetDataTableSP("sp_Bottoms_List", parameters)
             gvList.DataBind()
-            gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
+            gvList.Columns(1).Visible = LoginAccess("Visible ID")
             btnAdd.Visible = LoginAccess("Add")
+
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -165,47 +138,6 @@ Partial Class Setting_Specification_Bottom_Default
     Protected Sub MessageError(visible As Boolean, message As String)
         divError.Visible = visible : msgError.InnerText = message
     End Sub
-
-    Protected Function BindDesign(bottomId As String) As String
-        Try
-            If Not String.IsNullOrEmpty(bottomId) Then
-                Dim myData As DataTable = settingClass.GetDataTable("SELECT Designs.Name AS DesignName FROM Bottoms CROSS APPLY STRING_SPLIT(Bottoms.DesignId, ',') AS splitArray LEFT JOIN Designs ON splitArray.VALUE=Designs.Id WHERE Bottoms.Id='" & bottomId & "' ORDER BY Designs.Id ASC")
-                Dim hasil As String = String.Empty
-                If Not myData.Rows.Count = 0 Then
-                    For i As Integer = 0 To myData.Rows.Count - 1
-                        Dim designName As String = myData.Rows(i)("DesignName").ToString()
-                        hasil += designName & ", "
-                    Next
-                End If
-
-                Return hasil.Remove(hasil.Length - 2).ToString()
-            End If
-            Return String.Empty
-        Catch ex As Exception
-            Return "Error"
-        End Try
-    End Function
-
-    Protected Function BindCompany(bottomId As String) As String
-        Try
-            If Not String.IsNullOrEmpty(bottomId) Then
-                Dim myData As DataTable = settingClass.GetDataTable("SELECT CompanyDetails.Name AS CompanyName FROM Bottoms CROSS APPLY STRING_SPLIT(Bottoms.CompanyDetailId, ',') AS splitArray LEFT JOIN CompanyDetails ON splitArray.VALUE=CompanyDetails.Id WHERE Bottoms.Id='" & bottomId & "' ORDER BY CompanyDetails.Id ASC")
-                Dim hasil As String = String.Empty
-                If myData.Rows.Count > 0 Then
-                    For i As Integer = 0 To myData.Rows.Count - 1
-                        Dim designName As String = myData.Rows(i)("CompanyName").ToString()
-                        hasil += designName & ","
-                    Next
-                    Return hasil.Remove(hasil.Length - 1).ToString()
-                Else
-                    Return String.Empty
-                End If
-            End If
-            Return String.Empty
-        Catch ex As Exception
-            Return "Error"
-        End Try
-    End Function
 
     Protected Function LoginAccess(action As String) As Boolean
         Try

@@ -1,7 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.IO
-Imports System.Text.RegularExpressions
 
 Partial Class Search
     Inherits Page
