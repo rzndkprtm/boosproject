@@ -46,7 +46,7 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-12 col-sm-12 col-lg-6 mb-2">
-                                        <h5 class="card-title">List Mailing</h5>
+                                        <h5 class="card-title">List Tutorial</h5>
                                     </div>
                                     <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
                                         <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
