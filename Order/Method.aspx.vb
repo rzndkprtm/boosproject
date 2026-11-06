@@ -403,7 +403,6 @@ Partial Class Order_Method
                 End If
                 If customtype = "3" Then
                     result.Add(New With {.Value = "3", .Text = "3"})
-                    result.Add(New With {.Value = "4", .Text = "4"})
                     result.Add(New With {.Value = "5", .Text = "5"})
                 End If
                 If customtype = "4" Then
@@ -429,9 +428,6 @@ Partial Class Order_Method
                 If customtype = "3 - 3" Then
                     result.Add(New With {.Value = "3L", .Text = "3L"})
                     result.Add(New With {.Value = "3R", .Text = "3R"})
-                End If
-                If customtype = "3 - 4" Then
-                    result.Add(New With {.Value = "2L-2R", .Text = "2L-2R"})
                 End If
                 If customtype = "3 - 5" Then
                     result.Add(New With {.Value = "3L-2R", .Text = "3L-2R"})
@@ -4256,7 +4252,7 @@ Partial Class Order_Method
         End If
 
         If blindName = "Complete Set" OrElse blindName = "Track Only" Then
-            If String.IsNullOrEmpty(data.wandposition) Then Return "WAND POSITION IS REQUIRED !"
+            If String.IsNullOrEmpty(data.stackposition) Then Return "STACK POSITION IS REQUIRED !"
             If String.IsNullOrEmpty(data.wandlength) Then Return "WAND LENGTH IS REQUIRED !"
         End If
 
@@ -4325,7 +4321,7 @@ Partial Class Order_Method
             data.tracktype = String.Empty
             data.layoutcode = String.Empty
             data.panelqty = String.Empty
-            data.wandposition = String.Empty
+            data.stackposition = String.Empty
 
             linearMetre = width / 1000
             squareMetre = width * drop / 1000000
@@ -4367,7 +4363,7 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                         thisCmd.Parameters.AddWithValue("@Width", width)
                         thisCmd.Parameters.AddWithValue("@Drop", drop)
-                        thisCmd.Parameters.AddWithValue("@WandPosition", data.wandposition)
+                        thisCmd.Parameters.AddWithValue("@StackPosition", data.stackposition)
                         thisCmd.Parameters.AddWithValue("@WandColour", wandcolour)
                         thisCmd.Parameters.AddWithValue("@WandLength", data.wandlength)
                         thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)
@@ -4414,7 +4410,7 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                     thisCmd.Parameters.AddWithValue("@Width", width)
                     thisCmd.Parameters.AddWithValue("@Drop", drop)
-                    thisCmd.Parameters.AddWithValue("@WandPosition", data.wandposition)
+                    thisCmd.Parameters.AddWithValue("@StackPosition", data.stackposition)
                     thisCmd.Parameters.AddWithValue("@WandColour", wandcolour)
                     thisCmd.Parameters.AddWithValue("@WandLength", data.wandlength)
                     thisCmd.Parameters.AddWithValue("@WandLengthValue", wandlength)

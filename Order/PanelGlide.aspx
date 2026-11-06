@@ -195,19 +195,19 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row mt-3" id="divwandposition">
+                                            <div class="row" id="divwandposition">
                                                 <div class="col-12 col-sm-12 col-lg-3">
-                                                    <label>Wand Position</label>
+                                                    <label>Stack Position</label>
                                                 </div>
                                                 <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                                    <select id="wandposition" class="form-select">
+                                                    <select id="stackposition" class="form-select">
                                                         <option value=""></option>
                                                         <option value="Front">Front</option>
                                                         <option value="Back">Back</option>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="row" id="divwandlength">
+                                            <div class="row mt-3" id="divwandlength">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Wand Length</label>
                                                 </div>
@@ -357,5 +357,5 @@
         </div>
     </div>
 
-    <script src="/Scripts/RisaSolihah/PanelGlide.js?v=1.2.4"></script>
+    <script src="/Scripts/RisaSolihah/PanelGlide.js?v=1.2.5"></script>
 </asp:Content>

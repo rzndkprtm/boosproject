@@ -19,7 +19,58 @@ Partial Class Order_Rework_Default
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlActive.SelectedValue)
+            If Session("RoleName") = "Customer" Then
+                BindDataOrder(Session("CustomerId").ToString())
+            End If
         End If
+    End Sub
+
+    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim reworkId As String = String.Empty
+
+            Dim isReworkOrderUnsubmit As Boolean = orderClass.IsReworkOrderUnsubmitted(ddlOrderId.SelectedValue)
+            If isReworkOrderUnsubmit = True Then
+                reworkId = orderClass.GetItemData("SELECT Id FROM OrderReworks WHERE HeaderId='" & ddlOrderId.SelectedValue & "' AND Status='Unsubmitted' AND Active=1")
+
+                url = String.Format("~/order/rework/detail?reworkid={0}", reworkId)
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+            If isReworkOrderUnsubmit = False Then
+                reworkId = orderClass.GetNewOrderReworkId()
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderReworks VALUES (@Id, @HeaderId, NULL, 'Unsubmitted', '', @CreatedBy, GETDATE(), NULL, 1)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", reworkId)
+                        thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
+                        thisCmd.Parameters.AddWithValue("@HeaderId", ddlOrderId.SelectedValue)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim directory As String = Server.MapPath(String.Format("~/File/Rework/{0}/", reworkId))
+                If Not IO.Directory.Exists(directory) Then
+                    IO.Directory.CreateDirectory(directory)
+                End If
+
+                dataLog = {"OrderReworks", reworkId, Session("LoginId").ToString(), "Order Rework Created"}
+                orderClass.Logs(dataLog)
+
+                url = String.Format("~/order/rework/detail?reworkid={0}", reworkId)
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
     End Sub
 
     Protected Sub ddlStatus_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -116,6 +167,25 @@ Partial Class Order_Rework_Default
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
             End If
+        End Try
+    End Sub
+
+    Protected Sub BindDataOrder(customerId As String)
+        ddlOrderId.Items.Clear()
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                ddlOrderId.DataSource = orderClass.GetDataTable("SELECT Id, OrderId + ' (' + OrderNumber + ')' AS DataOrder FROM OrderHeaders WHERE CustomerId='" & customerId & "' AND (Status = 'Shipped Out' OR Status = 'Completed') AND Active=1")
+                ddlOrderId.DataTextField = "DataOrder"
+                ddlOrderId.DataValueField = "Id"
+                ddlOrderId.DataBind()
+
+                If ddlOrderId.Items.Count > 1 Then
+                    ddlOrderId.Items.Insert(0, New ListItem("", ""))
+                End If
+            End If
+        Catch ex As Exception
+            ddlOrderId.Items.Clear()
+            MessageError(True, ex.ToString())
         End Try
     End Sub
 
