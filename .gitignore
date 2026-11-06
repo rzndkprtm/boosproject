@@ -362,6 +362,9 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-#File/
+File/Archive/
+File/Order/
+File/Rework/
+File/Ticket/
 
 Assets/images/logo/customers
