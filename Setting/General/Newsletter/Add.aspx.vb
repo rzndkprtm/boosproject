@@ -57,7 +57,7 @@ Partial Class Setting_General_Newsletter_Add
                 If ddlType.SelectedValue = "Upload" Then
                     Dim ext As String = IO.Path.GetExtension(fuFile.FileName)
                     Dim newFileName As String = Now.ToString("yyyyMMddHHmmss") & ext
-                    link = String.Format("~/Assets/newsletter/{0}", newFileName)
+                    link = String.Format("~/File/Newsletter/{0}", newFileName)
 
                     Dim savePath As String = Server.MapPath(link)
                     fuFile.SaveAs(savePath)
