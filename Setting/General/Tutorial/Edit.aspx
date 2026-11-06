@@ -50,10 +50,21 @@
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <label class="form-label">Update File / Video</label>
+                                        <asp:DropDownList runat="server" ID="ddlUpdateFileVideo" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlUpdateFileVideo_SelectedIndexChanged">
+                                            <asp:ListItem Value="" Text=""></asp:ListItem>
+                                            <asp:ListItem Value="File" Text="File Only"></asp:ListItem>
+                                            <asp:ListItem Value="Video" Text="Video Only"></asp:ListItem>
+                                            <asp:ListItem Value="Both" Text="File & Video"></asp:ListItem>
+                                        </asp:DropDownList>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divFile">
                                         <label class="form-label">File</label>
                                         <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divVideo">
                                         <label class="form-label">File</label>
                                         <asp:TextBox runat="server" ID="txtVideo" CssClass="form-control" placeholder="Video ..." autocomplete="off"></asp:TextBox>
                                     </div>

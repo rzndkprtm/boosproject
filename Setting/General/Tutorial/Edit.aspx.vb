@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 Imports System.IO
 
 Partial Class Setting_General_Tutorial_Edit
@@ -22,8 +23,12 @@ Partial Class Setting_General_Tutorial_Edit
         lblId.Text = Request.QueryString("tutorialid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-            BindCompany()
+            BindData(lblId.Text)
         End If
+    End Sub
+
+    Protected Sub ddlUpdateFileVideo_SelectedIndexChanged(sender As Object, e As EventArgs)
+
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -116,6 +121,28 @@ Partial Class Setting_General_Tutorial_Edit
 
     Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
         Response.Redirect("~/setting/general/tutorial", False)
+    End Sub
+
+    Protected Sub BindData(tutorialId As String)
+        Try
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Tutorials WHERE Id='" & tutorialId & "'")
+            If myData Is Nothing Then
+                Response.Redirect("~/setting/general/tutorial", False)
+                Exit Sub
+            End If
+
+            BindCompany()
+
+            ddlCompanyId.SelectedValue = myData("CompanyId").ToString()
+            txtTitle.Text = myData("Title").ToString()
+            txtDescription.Text = myData("Description").ToString()
+            ddlStatus.SelectedValue = myData("Status").ToString()
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
     End Sub
 
     Protected Sub BindCompany()
