@@ -33,7 +33,8 @@ Partial Class Guide
 
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)),
-                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing OrElse String.IsNullOrWhiteSpace(Session("CompanyId").ToString()), CType(DBNull.Value, Object), Convert.ToInt32(Session("CompanyId"))))
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing OrElse String.IsNullOrWhiteSpace(Session("CompanyId").ToString()), CType(DBNull.Value, Object), Convert.ToInt32(Session("CompanyId")))),
+                New SqlParameter("@RoleName", Session("RoleName").ToString())
             }
 
             Dim dt As DataTable = settingClass.GetDataTableSP("sp_Tutorials_List", params)

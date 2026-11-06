@@ -64,12 +64,15 @@ Partial Class Setting_General_Tutorial_Default
             Dim thisId As String = txtIdDelete.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Tutorials WHERE Id=@Id;DELETE FROM Logs WHERE Type='Tutorials' AND DataId=@Id;", thisConn)
+                Using thisCmd As New SqlCommand("UPDATE Tutorials SET Status='Deleted', Title=CASE WHEN Title LIKE '%(DELETED)%' THEN Title ELSE Title + ' (DELETED)' END WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
+
+            Dim dataLog As Object() = {"Tutorials", thisId, Session("LoginId").ToString(), "Tutorial Created"}
+            settingClass.Logs(dataLog)
 
             Session("SearchTutorial") = txtSearch.Text
             Response.Redirect("~/setting/general/tutorial", False)
@@ -86,7 +89,8 @@ Partial Class Setting_General_Tutorial_Default
         Try
             Dim params As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)),
-                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing OrElse String.IsNullOrWhiteSpace(Session("CompanyId").ToString()), CType(DBNull.Value, Object), Convert.ToInt32(Session("CompanyId"))))
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing OrElse String.IsNullOrWhiteSpace(Session("CompanyId").ToString()), CType(DBNull.Value, Object), Convert.ToInt32(Session("CompanyId")))),
+                New SqlParameter("@RoleName", Session("RoleName").ToString())
             }
 
             gvList.DataSource = settingClass.GetDataTableSP("sp_Tutorials_List", params)
@@ -141,6 +145,49 @@ Partial Class Setting_General_Tutorial_Default
             navPager.Visible = False
         End Try
     End Sub
+
+    Protected Function GetFileName(fileUrl As Object) As String
+        Try
+            If fileUrl Is Nothing OrElse IsDBNull(fileUrl) Then Return String.Empty
+
+            Dim filePath As String = Convert.ToString(fileUrl).Trim()
+
+            If String.IsNullOrWhiteSpace(filePath) Then Return String.Empty
+
+            filePath = filePath.Split("?"c)(0)
+            filePath = filePath.Split("#"c)(0)
+            filePath = filePath.Replace("\", "/")
+
+            Return Uri.UnescapeDataString(filePath.Substring(filePath.LastIndexOf("/") + 1))
+        Catch
+            Return String.Empty
+        End Try
+    End Function
+
+    Protected Function HasFile(fileUrl As Object) As Boolean
+        Try
+            If fileUrl Is Nothing OrElse IsDBNull(fileUrl) Then Return False
+            Return Not String.IsNullOrWhiteSpace(Convert.ToString(fileUrl).Trim())
+        Catch
+            Return False
+        End Try
+    End Function
+
+    Protected Function GetFileUrl(fileUrl As Object) As String
+        Try
+            If Not HasFile(fileUrl) Then Return String.Empty
+
+            Dim filePath As String = Convert.ToString(fileUrl).Trim()
+
+            If filePath.StartsWith("~/") Then
+                Return ResolveUrl(filePath)
+            End If
+
+            Return filePath
+        Catch
+            Return String.Empty
+        End Try
+    End Function
 
     Protected Function LoginAccess(action As String) As Boolean
         Try

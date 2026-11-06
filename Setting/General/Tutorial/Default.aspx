@@ -71,18 +71,31 @@
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                             <asp:BoundField DataField="CompanyAlias" HeaderText="Company Name" />
                                             <asp:BoundField DataField="Title" HeaderText="Title" />
-                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
+                                            <asp:TemplateField HeaderText="File">
+                                                <ItemTemplate>
+                                                    <%# GetFileName(Eval("File")) %>
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:BoundField DataField="Video" HeaderText="Video" />
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="70px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
-                                                        <li runat="server" visible='<%# LoginAccess("Edit") %>'>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/general/tutorial/edit?tutorialid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
-                                                        <li runat="server" visible='<%# LoginAccess("Delete") %>'>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Delete") %>'>
                                                             <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                         </li>
+                                                        <li runat="server" visible='<%# HasFile(Eval("File")) %>'>
+                                                            <a class="dropdown-item" href='<%# GetFileUrl(Eval("File")) %>' target="_blank" rel="noopener noreferrer">View File</a>
+                                                        </li>
+
+                                                        <li runat="server" visible='<%# HasFile(Eval("Video")) %>'>
+                                                            <a class="dropdown-item" href='<%# GetFileUrl(Eval("Video")) %>' target="_blank" rel="noopener noreferrer">ViewPDF</a>
+                                                        </li>
                                                         <li>
-                                                            <asp:LinkButton runat="server" ID="linkLog" CssClass="dropdown-item" Text="Log" CommandName="Log" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                            <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Tutorials', '<%# Eval("Id") %>')">Log</a>
                                                         </li>
                                                     </ul>
                                                 </ItemTemplate>

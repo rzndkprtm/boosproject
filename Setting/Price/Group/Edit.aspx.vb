@@ -20,7 +20,7 @@ Partial Class Setting_Price_Group_Edit
             Exit Sub
         End If
 
-        lblId.Text = (Request.QueryString("pricegroupid").ToString())
+        lblId.Text = Request.QueryString("pricegroupid").ToString()
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             BindData(lblId.Text)
