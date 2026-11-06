@@ -2570,7 +2570,7 @@ Partial Class Order_Upload
                                             If controlType = "Battery Wand" Then controlType = "Battery Remote"
                                             If controlType = "240V (Hardwired) Matter Enabled / Remote" Then controlType = "240V (Hardwired) Remote"
                                             If controlType = "240V (Hardwired) Wired Control (4 Core)" Then controlType = "240V (Hardwired) Remote"
-                                            If controlType = "Battery Matter Enabled / Remote" Then controlType = "Battery Remote"
+                                            If controlType = "Battery Matter Enabled / Remote" OrElse controlType = "Battery Wand (USB)" Then controlType = "Battery Remote"
                                             chainName = "No Remote"
                                         End If
 
