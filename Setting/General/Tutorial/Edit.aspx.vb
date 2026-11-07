@@ -93,7 +93,7 @@ Partial Class Setting_General_Tutorial_Edit
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompanyId.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
                         thisCmd.Parameters.AddWithValue("@File", urlFile)
                         thisCmd.Parameters.AddWithValue("@Video", txtVideo.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)

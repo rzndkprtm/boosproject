@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Edit.aspx.vb" Inherits="Setting_General_Tutorial_Edit" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Edit Tutorial" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Edit.aspx.vb" Inherits="Setting_General_Tutorial_Edit" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" ValidateRequest="false" Title="Edit Tutorial" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -47,7 +47,7 @@
                                         <div class="row mb-3">
                                             <div class="col-12 form-group">
                                                 <label class="form-label">Description</label>
-                                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="300px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;" ValidateRequestMode="Disabled"></asp:TextBox>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
