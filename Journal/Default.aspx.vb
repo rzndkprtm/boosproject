@@ -213,8 +213,7 @@ Partial Class Journal_Default
     End Sub
 
     Protected Sub MessageError(visible As Boolean, message As String)
-        divError.Visible = visible
-        msgError.InnerText = message
+        divError.Visible = visible : msgError.InnerText = message
     End Sub
 
     Protected Function LoginAccess(action As String) As Boolean
