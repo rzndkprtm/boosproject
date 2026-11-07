@@ -31,61 +31,65 @@
                     </div>
                     <div class="card-body">
                         <div class="form form-vertical">
-                            <div class="form-body">
-                                <div class="row mb-3">
-                                    <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                        <label class="form-label">Company</label>
-                                        <asp:DropDownList runat="server" ID="ddlCompanyId" CssClass="form-select"></asp:DropDownList>
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-8 form-group">
-                                        <label class="form-label">Title</label>
-                                        <asp:TextBox runat="server" ID="txtTitle" CssClass="form-control" placeholder="Title ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-12 form-group">
-                                        <label class="form-label">Description</label>
-                                        <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
-                                        <label class="form-label">Update File / Video</label>
-                                        <asp:DropDownList runat="server" ID="ddlUpdateFileVideo" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlUpdateFileVideo_SelectedIndexChanged">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="File" Text="File Only"></asp:ListItem>
-                                            <asp:ListItem Value="Video" Text="Video Only"></asp:ListItem>
-                                            <asp:ListItem Value="Both" Text="File & Video"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divFile">
-                                        <label class="form-label">File</label>
-                                        <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divVideo">
-                                        <label class="form-label">File</label>
-                                        <asp:TextBox runat="server" ID="txtVideo" CssClass="form-control" placeholder="Video ..." autocomplete="off"></asp:TextBox>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-12 col-sm-12 col-lg-3 form-group">
-                                        <label class="form-label">Status</label>
-                                        <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
-                                            <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
-                                            <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="row" runat="server" id="divError">
-                                    <div class="col-12">
-                                        <div class="alert alert-danger">
-                                            <span runat="server" id="msgError"></span>
+                            <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                                <ContentTemplate>
+                                    <div class="form-body">
+                                        <div class="row mb-3">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Company</label>
+                                                <asp:DropDownList runat="server" ID="ddlCompanyId" CssClass="form-select"></asp:DropDownList>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                                <label class="form-label">Title</label>
+                                                <asp:TextBox runat="server" ID="txtTitle" CssClass="form-control" placeholder="Title ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12 form-group">
+                                                <label class="form-label">Description</label>
+                                                <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                <label class="form-label">Update File / Video</label>
+                                                <asp:DropDownList runat="server" ID="ddlUpdateFileVideo" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlUpdateFileVideo_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="File" Text="File Only"></asp:ListItem>
+                                                    <asp:ListItem Value="Video" Text="Video Only"></asp:ListItem>
+                                                    <asp:ListItem Value="Both" Text="File & Video"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divFile">
+                                                <label class="form-label">File</label>
+                                                <asp:FileUpload runat="server" ID="fuFile" CssClass="form-control" />
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-6 form-group" runat="server" id="divVideo">
+                                                <label class="form-label">Video</label>
+                                                <asp:TextBox runat="server" ID="txtVideo" CssClass="form-control" placeholder="Video ..." autocomplete="off"></asp:TextBox>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12 col-sm-12 col-lg-3 form-group">
+                                                <label class="form-label">Status</label>
+                                                <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
+                                                    <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
+                                                    <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
+                                        <div class="row" runat="server" id="divError">
+                                            <div class="col-12">
+                                                <div class="alert alert-danger">
+                                                    <span runat="server" id="msgError"></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+                                </ContentTemplate>
+                            </asp:UpdatePanel>
                         </div>
                     </div>
                     <div class="card-footer text-center">
@@ -101,4 +105,38 @@
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
     </div>
+
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) loading.style.display = "none";
+        });
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") return;
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "block";
+            });
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) loading.style.display = "none";
+            });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+        });
+        window.history.replaceState(null, null, window.location.href);
+    </script>
 </asp:Content>

@@ -60,6 +60,22 @@ Partial Class Setting_Specification_Fabric_Detail
             dataLog = {"Fabrics", lblId.Text, Session("LoginId").ToString(), "Fabric Type Deleted"}
             settingClass.Logs(dataLog)
 
+            Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM FabricAlias WHERE Type='Fabrics' AND FirstId='" & lblId.Text & "'")
+            If aliasData IsNot Nothing Then
+                Dim aliasId As String = aliasData(0).ToString()
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("UPDATE Fabrics SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", aliasId)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                dataLog = {"Fabrics", aliasId, Session("LoginId").ToString(), "Fabric Type Deleted"}
+                settingClass.Logs(dataLog)
+            End If
+
             url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
             Response.Redirect(url, False)
         Catch ex As Exception
@@ -116,9 +132,11 @@ Partial Class Setting_Specification_Fabric_Detail
                 Dim aliasId As String = aliasData(0).ToString()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status, RollQty=@RollQty, EtaFactory=@EtaFactory WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", aliasId)
                         thisCmd.Parameters.AddWithValue("@Status", newStatus)
+                        thisCmd.Parameters.AddWithValue("@RollQty", rollQty)
+                        thisCmd.Parameters.AddWithValue("@EtaFactory", If(String.IsNullOrEmpty(etaFactory), CType(DBNull.Value, Object), etaFactory))
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using

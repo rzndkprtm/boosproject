@@ -28,7 +28,8 @@ Partial Class Setting_General_Tutorial_Edit
     End Sub
 
     Protected Sub ddlUpdateFileVideo_SelectedIndexChanged(sender As Object, e As EventArgs)
-
+        MessageError(False, String.Empty)
+        BindComponent(ddlUpdateFileVideo.SelectedValue)
     End Sub
 
     Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
@@ -137,6 +138,8 @@ Partial Class Setting_General_Tutorial_Edit
             txtTitle.Text = myData("Title").ToString()
             txtDescription.Text = myData("Description").ToString()
             ddlStatus.SelectedValue = myData("Status").ToString()
+
+            BindComponent(String.Empty)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -156,6 +159,20 @@ Partial Class Setting_General_Tutorial_Edit
             If ddlCompanyId.Items.Count > 1 Then
                 ddlCompanyId.Items.Insert(0, New ListItem("", ""))
             End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindComponent(type As String)
+        divFile.Visible = False : divVideo.Visible = False
+        Try
+            If type = "File" Then divFile.Visible = True
+            If type = "Video" Then divVideo.Visible = True
+            If type = "Both" Then divFile.Visible = True : divVideo.Visible = True
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

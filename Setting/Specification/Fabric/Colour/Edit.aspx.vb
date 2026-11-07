@@ -83,6 +83,29 @@ Partial Class Setting_Specification_Fabric_Colour_Edit
                 Dim dataLog As Object() = {"FabricColours", lblId.Text, Session("LoginId").ToString(), "Fabric Colour Updated"}
                 settingClass.Logs(dataLog)
 
+                Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM FabricAlias WHERE Type='FabricColours' AND FirstId='" & lblId.Text & "'")
+                If aliasData IsNot Nothing Then
+                    Dim aliasId As String = aliasData(0).ToString()
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET BoeId=@BoeId, InventoryId=@InventoryId, Factory=@Factory, Width=@Width, RollQty=@RollQty, EtaFactory=@EtaFactory, Description=@Description WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", aliasId)
+                            thisCmd.Parameters.AddWithValue("@BoeId", If(String.IsNullOrEmpty(txtBoeId.Text), CType(DBNull.Value, Object), txtBoeId.Text))
+                            thisCmd.Parameters.AddWithValue("@InventoryId", If(String.IsNullOrEmpty(txtInventoryId.Text), CType(DBNull.Value, Object), txtInventoryId.Text))
+                            thisCmd.Parameters.AddWithValue("@Factory", ddlFactory.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@Width", txtWidth.Text)
+                            thisCmd.Parameters.AddWithValue("@RollQty", If(String.IsNullOrEmpty(txtRollQty.Text), CType(DBNull.Value, Object), txtRollQty.Text))
+                            thisCmd.Parameters.AddWithValue("@EtaFactory", If(String.IsNullOrEmpty(txtETAFactory.Text), CType(DBNull.Value, Object), txtETAFactory.Text))
+                            thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    dataLog = {"FabricColours", aliasId, Session("LoginId").ToString(), "Fabric Colour Updated"}
+                    settingClass.Logs(dataLog)
+                End If
+
                 url = "~/setting/specification/fabric/colour"
                 If lblReturnPage.Text = "detail" Then
                     url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", ddlFabricType.SelectedValue)

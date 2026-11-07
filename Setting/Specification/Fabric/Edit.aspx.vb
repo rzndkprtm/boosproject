@@ -108,12 +108,34 @@ Partial Class Setting_Specification_Fabric_Edit
                 Dim dataLog As Object() = {"Fabrics", lblId.Text, Session("LoginId").ToString(), "Fabric Type Updated"}
                 settingClass.Logs(dataLog)
 
+                Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM FabricAlias WHERE Type='Fabrics' AND FirstId='" & lblId.Text & "'")
+                If aliasData IsNot Nothing Then
+                    Dim aliasId As String = aliasData(0).ToString()
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE Fabrics SET DesignId=@DesignId, TubeId=@TubeId, Type=@Type, [Group]=@Group, NoRailRoad=@NoRailRoad, Status=@Status WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", aliasId)
+                            thisCmd.Parameters.AddWithValue("@DesignId", designType)
+                            thisCmd.Parameters.AddWithValue("@TubeId", tubeType)
+                            thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@Group", ddlGroup.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@NoRailRoad", ddlNoRailRoad.SelectedValue)
+                            thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    dataLog = {"Fabrics", aliasId, Session("LoginId").ToString(), "Fabric Type Updated"}
+                    settingClass.Logs(dataLog)
+                End If
+
                 url = "~/setting/specification/fabric"
                 If returnPage = "detail" Then
                     url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
                 End If
                 Response.Redirect(url, False)
-            End If
+                End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

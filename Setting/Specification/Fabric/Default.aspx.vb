@@ -98,6 +98,22 @@ Partial Class Setting_Specification_Fabric_Default
             dataLog = {"Fabrics", thisId, Session("LoginId").ToString(), "Fabric Type Deleted"}
             settingClass.Logs(dataLog)
 
+            Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM FabricAlias WHERE Type='Fabrics' AND FirstId='" & thisId & "'")
+            If aliasData IsNot Nothing Then
+                Dim aliasId As String = aliasData(0).ToString()
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("UPDATE Fabrics SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", aliasId)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                dataLog = {"Fabrics", aliasId, Session("LoginId").ToString(), "Fabric Type Deleted"}
+                settingClass.Logs(dataLog)
+            End If
+
             Session("SearchFabric") = txtSearch.Text
             Session("CompanyFabric") = ddlCompanyDetail.SelectedValue
             Response.Redirect("~/setting/specification/fabric", False)
