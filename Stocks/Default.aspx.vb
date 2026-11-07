@@ -33,21 +33,12 @@ Partial Class Stocks_Default
         End If
     End Sub
 
-    Protected Sub btnGenerateNewsletter_Click(sender As Object, e As EventArgs)
+    Protected Sub btnGenerate_Click(sender As Object, e As EventArgs)
         Try
-            Dim fileBytes As Byte() = stockClass.GenerateStockExcel()
-
-            Response.Clear()
-            Response.Buffer = True
-            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-            Response.AddHeader("Content-Disposition", "attachment; filename=Stocks_" & DateTime.Now.ToString("yyyyMMdd_HHmmss") & ".xlsx")
-            Response.BinaryWrite(fileBytes)
-            Response.Flush()
-
-            HttpContext.Current.ApplicationInstance.CompleteRequest()
-
+            Dim mailingClass As New MailingClass
+            mailingClass.NewsletterStock(ddlSubCompany.SelectedValue)
         Catch ex As Exception
-            Dim errorMessage As String = ex.Message.Replace("\", "\\").Replace("'", "\'").Replace(vbCr, " ").Replace(vbLf, " ")
+            Dim errorMessage As String = ex.ToString().Replace("\", "\\").Replace("'", "\'").Replace(vbCr, " ").Replace(vbLf, " ")
             ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ExportError", "alert('Export failed: " & errorMessage & "');", True)
         End Try
     End Sub
@@ -67,13 +58,24 @@ Partial Class Stocks_Default
     Protected Sub BindCompanyDetail()
         ddlCompanyDetail.Items.Clear()
         Try
-            ddlCompanyDetail.DataSource = stockClass.GetDataTable("SELECT * FROM CompanyDetails WHERE Status='Active' ORDER BY Name ASC")
+            Dim thisResult As DataTable = stockClass.GetDataTable("SELECT Id, Name FROM CompanyDetails WHERE Status='Active' ORDER BY Name ASC")
+
+            ddlCompanyDetail.DataSource = thisResult
             ddlCompanyDetail.DataTextField = "Name"
             ddlCompanyDetail.DataValueField = "Id"
             ddlCompanyDetail.DataBind()
 
             If ddlCompanyDetail.Items.Count > 0 Then
                 ddlCompanyDetail.Items.Insert(0, New ListItem("", ""))
+            End If
+
+            ddlSubCompany.DataSource = thisResult
+            ddlSubCompany.DataTextField = "Name"
+            ddlSubCompany.DataValueField = "Id"
+            ddlSubCompany.DataBind()
+
+            If ddlSubCompany.Items.Count > 0 Then
+                ddlSubCompany.Items.Insert(0, New ListItem("", ""))
             End If
 
             ddlCompanyDetail.SelectedValue = Session("CompanyDetailId").ToString()

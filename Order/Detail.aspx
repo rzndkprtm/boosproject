@@ -2070,13 +2070,6 @@
 
             return true;
         }
-        function hideWaitingModal() {
-            var modalEl = document.getElementById('modalWaiting');
-            if (modalEl) {
-                var modalObj = bootstrap.Modal.getInstance(modalEl);
-                if (modalObj) modalObj.hide();
-            }
-        }
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

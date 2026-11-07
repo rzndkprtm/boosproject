@@ -1840,4 +1840,94 @@ Public Class MailingClass
         Catch ex As Exception
         End Try
     End Sub
+
+    Public Sub NewsletterStock(companyDetailId As String)
+        Try
+            Dim stockClass As New StockClass
+            Dim excelBytes As Byte() = stockClass.GenerateStockExcel(companyDetailId)
+
+            If excelBytes Is Nothing OrElse excelBytes.Length = 0 Then Exit Sub
+
+            Dim companyId As String = GetItemData("SELECT CompanyId FROM CompanyDetails WHERE Id='" & companyDetailId & "'")
+            Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
+
+            If companyId = "3" OrElse companyId = "4" Then companyName = "PT Bumi Indah Global"
+
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Newsletter Stock' AND Active=1")
+            If mailData Is Nothing Then Exit Sub
+
+            Dim mailServer As String = mailData("Server").ToString()
+            Dim mailHost As String = mailData("Host").ToString()
+            Dim mailPort As Integer = mailData("Port")
+
+            Dim mailAccount As String = mailData("Account").ToString()
+            Dim mailPassword As String = mailData("Password").ToString()
+            Dim mailAlias As String = mailData("Alias").ToString()
+            Dim mailSubject As String = mailData("Subject").ToString()
+
+            Dim mailNetworkCredentials As Boolean = Convert.ToBoolean(mailData("NetworkCredentials"))
+            Dim mailDefaultCredentials As Boolean = Convert.ToBoolean(mailData("DefaultCredentials"))
+            Dim mailEnableSSL As Boolean = Convert.ToBoolean(mailData("EnableSSL"))
+
+            Dim mailBody As String = String.Empty
+
+            mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
+            mailBody &= "<i>- THIS IS AN AUTOMATED EMAIL -</i>"
+            mailBody &= "<br /><br /><br />"
+            mailBody &= "Please find attached our latest stock report as of " & DateTime.Now.ToString("dd MMMM yyyy") & "."
+            mailBody &= "<br /><br />"
+            mailBody &= "You can also view the latest stock information online through the <b>Stocks</b> menu in our Web Order system, or access the link below to view real-time stock availability:"
+            mailBody &= "<br /><br />"
+            mailBody &= "<a href='YOUR_LINK_HERE' target='_blank' style='color: #0d6efd; font-weight: bold;'>View Real-Time Stock Availability</a>"
+            mailBody &= "<br /><br />"
+            mailBody &= "Please note that stock availability is subject to change without prior notice."
+            mailBody &= "<br /><br /><br />"
+            mailBody &= "</span>"
+            mailBody &= "<span style='font-family: Cambria; font-size: 16px;'>Kind Regards,</span>"
+            mailBody &= "<br /><br />"
+            mailBody &= "<span style='font-family: Cambria; font-size: 16px; font-weight: bold;'>" & companyName.ToUpper() & "</span>"
+
+            Dim customerMail As DataTable = GetDataTable("SELECT DISTINCT CustomerContacts.Email FROM dbo.CustomerContacts INNER JOIN dbo.Customers ON CustomerContacts.CustomerId = Customers.Id WHERE Customers.CompanyDetailId = '" & companyDetailId & "' AND EXISTS (SELECT 1 FROM STRING_SPLIT(CustomerContacts.Tags, ',') WHERE LTRIM(RTRIM(value)) = 'Newsletter') AND CustomerContacts.Email IS NOT NULL AND LTRIM(RTRIM(CustomerContacts.Email)) <> ''")
+            If customerMail Is Nothing OrElse customerMail.Rows.Count = 0 Then Exit Sub
+
+            Using smtpClient As New SmtpClient()
+                smtpClient.Host = mailHost
+                smtpClient.Port = mailPort
+                smtpClient.EnableSsl = mailEnableSSL
+                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
+                smtpClient.Timeout = 120000
+
+                If mailNetworkCredentials Then
+                    smtpClient.UseDefaultCredentials = False
+                    smtpClient.Credentials = New NetworkCredential(mailAccount, mailPassword)
+                Else
+                    smtpClient.UseDefaultCredentials = mailDefaultCredentials
+                End If
+
+                For Each row As DataRow In customerMail.Rows
+                    Dim customerEmail As String = row("Email").ToString().Trim()
+                    If String.IsNullOrEmpty(customerEmail) Then Continue For
+                    Try
+                        Using myMail As New MailMessage()
+                            myMail.Subject = mailSubject
+                            myMail.From = New MailAddress(mailServer, mailAlias)
+                            myMail.To.Add(New MailAddress(customerEmail))
+
+                            myMail.Body = mailBody
+                            myMail.IsBodyHtml = True
+
+                            Dim ms As New MemoryStream(excelBytes)
+
+                            Dim attach As New Attachment(ms, "NEWSLETTER_STOCK.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                            myMail.Attachments.Add(attach)
+
+                            smtpClient.Send(myMail)
+                        End Using
+                    Catch emailEx As Exception
+                    End Try
+                Next
+            End Using
+        Catch ex As Exception
+        End Try
+    End Sub
 End Class

@@ -87,22 +87,18 @@ Public Class StockClass
         Return result
     End Function
 
-    Public Function GenerateStockExcel() As Byte()
+    Public Function GenerateStockExcel(companyDetailId As String) As Byte()
         ExcelPackage.LicenseContext = LicenseContext.Commercial
 
         Using package As New ExcelPackage()
-            Dim dtRoller As DataTable = GetStockFabric(12, "ROLLER", String.Empty)
-            Dim dtVertical As DataTable = GetStockFabric(11, "VERTICAL", String.Empty)
-            Dim dtCellular As DataTable = GetStockFabric(2, "CELLULAR SHADES", "")
-            Dim dtDesignShades As DataTable = GetStockFabric(4, "DESIGN SHADES", "")
-            Dim dtCurtain As DataTable = GetStockFabric(3, "CURTAIN", String.Empty)
-            Dim dtVenetian As DataTable = GetStockVenetian(10)
-            Dim dtAluminium As DataTable = GetStockVenetian(1)
-            Dim dtFabricChart As DataTable = GetFabricChart(String.Empty)
-
-            ' ==========================================
-            ' CREATE WORKSHEETS
-            ' ==========================================
+            Dim dtRoller As DataTable = GetStockFabric(12, "ROLLER", companyDetailId)
+            Dim dtVertical As DataTable = GetStockFabric(11, "VERTICAL", companyDetailId)
+            Dim dtCellular As DataTable = GetStockFabric(2, "CELLULAR SHADES", companyDetailId)
+            Dim dtDesignShades As DataTable = GetStockFabric(4, "DESIGN SHADES", companyDetailId)
+            Dim dtCurtain As DataTable = GetStockFabric(3, "CURTAIN", companyDetailId)
+            Dim dtVenetian As DataTable = GetStockVenetian(10, companyDetailId)
+            Dim dtAluminium As DataTable = GetStockVenetian(1, companyDetailId)
+            Dim dtFabricChart As DataTable = GetFabricChart(companyDetailId)
 
             AddFabricWorksheet(package, "Roller", dtRoller, True)
             AddFabricWorksheet(package, "Vertical", dtVertical, True)
@@ -117,74 +113,55 @@ Public Class StockClass
         End Using
     End Function
 
-    Private Function GetStockFabric(designId As Integer, stockType As String, searchText As String) As DataTable
-        Dim dt As New DataTable()
+    Private Function GetStockFabric(designId As Integer, stockType As String, companyDetailId As String) As DataTable
+        Dim thisTable As New DataTable()
+        Using thisConn As New SqlConnection(ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString)
+            Using thisCmd As New SqlCommand("sp_Stock_Fabric", thisConn)
+                thisCmd.CommandType = CommandType.StoredProcedure
+                thisCmd.Parameters.Add("@DesignId", SqlDbType.Int).Value = designId
+                thisCmd.Parameters.Add("@CompanyDetailId", SqlDbType.NVarChar, 255).Value = companyDetailId
+                thisCmd.Parameters.Add("@Type", SqlDbType.NVarChar, 100).Value = stockType
+                thisCmd.Parameters.Add("@SearchText", SqlDbType.NVarChar, 255).Value = CType(DBNull.Value, Object)
 
-        Using conn As New SqlConnection(ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString)
-
-            Using cmd As New SqlCommand("sp_Stock_Fabric", conn)
-
-                cmd.CommandType = CommandType.StoredProcedure
-                cmd.Parameters.Add("@DesignId", SqlDbType.Int).Value = designId
-                cmd.Parameters.Add("@Type", SqlDbType.NVarChar, 100).Value = stockType
-                cmd.Parameters.Add("@SearchText", SqlDbType.NVarChar, 255).Value = If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)
-
-                Using da As New SqlDataAdapter(cmd)
-                    da.Fill(dt)
+                Using da As New SqlDataAdapter(thisCmd)
+                    da.Fill(thisTable)
                 End Using
             End Using
         End Using
-        Return dt
+        Return thisTable
     End Function
 
-
-    Private Function GetStockVenetian(designId As Integer) As DataTable
-        Dim dt As New DataTable()
-
-        Using conn As New SqlConnection(ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString)
-
-            Using cmd As New SqlCommand("sp_Stock_Venetian", conn)
-
-                cmd.CommandType = CommandType.StoredProcedure
-                cmd.Parameters.Add("@DesignId", SqlDbType.Int).Value = designId
-
-                Using da As New SqlDataAdapter(cmd)
-                    da.Fill(dt)
+    Private Function GetStockVenetian(designId As Integer, companyDetailId As String) As DataTable
+        Dim thisTable As New DataTable()
+        Using thisConn As New SqlConnection(ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString)
+            Using thisCmd As New SqlCommand("sp_Stock_Venetian", thisConn)
+                thisCmd.CommandType = CommandType.StoredProcedure
+                thisCmd.Parameters.Add("@DesignId", SqlDbType.Int).Value = designId
+                thisCmd.Parameters.Add("@CompanyDetailId", SqlDbType.NVarChar, 255).Value = companyDetailId
+                Using da As New SqlDataAdapter(thisCmd)
+                    da.Fill(thisTable)
                 End Using
-
             End Using
-
         End Using
-
-        Return dt
-
+        Return thisTable
     End Function
 
-    Private Function GetFabricChart(searchText As String) As DataTable
-        Dim dt As New DataTable()
-
-        Using conn As New SqlConnection(ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString)
-
-            Using cmd As New SqlCommand("sp_Stock_Fabric_Chart", conn)
-
-                cmd.CommandType = CommandType.StoredProcedure
-                cmd.Parameters.Add("@SearchText", SqlDbType.NVarChar, 255).Value = If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText)
-                cmd.Parameters.Add("@CompanyDetailId", SqlDbType.Int).Value = 2
-
-                Using da As New SqlDataAdapter(cmd)
-                    da.Fill(dt)
+    Private Function GetFabricChart(companyDetailId As String) As DataTable
+        Dim thisTable As New DataTable()
+        Using thisConn As New SqlConnection(ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString)
+            Using thisCmd As New SqlCommand("sp_Stock_Fabric_Chart", thisConn)
+                thisCmd.CommandType = CommandType.StoredProcedure
+                thisCmd.Parameters.Add("@SearchText", SqlDbType.NVarChar, 255).Value = CType(DBNull.Value, Object)
+                thisCmd.Parameters.Add("@CompanyDetailId", SqlDbType.NVarChar, 255).Value = companyDetailId
+                Using da As New SqlDataAdapter(thisCmd)
+                    da.Fill(thisTable)
                 End Using
-
             End Using
-
         End Using
-
-        Return dt
-
+        Return thisTable
     End Function
 
     Private Sub AddFabricWorksheet(package As ExcelPackage, sheetName As String, dt As DataTable, expressOnly As Boolean)
-
         Dim ws As ExcelWorksheet = package.Workbook.Worksheets.Add(sheetName)
 
         Dim row As Integer = 1
@@ -197,29 +174,18 @@ Public Class StockClass
         row += 2
 
         ' HEADER
-        Dim headers As String() = {
-            "FABRIC TYPE",
-            "COLOUR",
-            "STATUS",
-            "MAXIMUM WIDTH",
-            "ROLL QTY",
-            "ETA FACTORY"
-        }
-
+        Dim headers As String() = {"FABRIC TYPE", "COLOUR", "STATUS", "MAXIMUM WIDTH", "ROLL QTY", "ETA FACTORY"}
         For i As Integer = 0 To headers.Length - 1
             ws.Cells(row, i + 1).Value = headers(i)
         Next
-
         StyleHeader(ws.Cells(row, 1, row, 6))
 
         row += 1
 
-        Using conn As New SqlConnection(ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString)
-
-            conn.Open()
+        Using thisConn As New SqlConnection(ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString)
+            thisConn.Open()
 
             For Each fabric As DataRow In dt.Rows
-
                 Dim fabricId As Integer = Convert.ToInt32(fabric("Id"))
                 Dim firstRow As Integer = row
 
@@ -231,14 +197,10 @@ Public Class StockClass
 
                 sql &= " ORDER BY Colour"
 
-                Using cmd As New SqlCommand(sql, conn)
-
-                    cmd.Parameters.Add("@FabricId", SqlDbType.Int).Value = fabricId
-
-                    Using dr As SqlDataReader = cmd.ExecuteReader()
-
+                Using thisCmd As New SqlCommand(sql, thisConn)
+                    thisCmd.Parameters.Add("@FabricId", SqlDbType.Int).Value = fabricId
+                    Using dr As SqlDataReader = thisCmd.ExecuteReader()
                         While dr.Read()
-
                             ws.Cells(row, 1).Value = If(row = firstRow, fabric("Name").ToString(), "")
                             ws.Cells(row, 2).Value = If(IsDBNull(dr("Colour")), "", dr("Colour").ToString().ToUpper())
                             ws.Cells(row, 3).Value = If(IsDBNull(dr("Status")), "", dr("Status").ToString())
@@ -254,16 +216,12 @@ Public Class StockClass
                             StyleStatus(ws.Cells(row, 3))
 
                             row += 1
-
                         End While
-
                     End Using
-
                 End Using
 
                 ' FABRIC GROUP BORDER
                 If row > firstRow Then
-
                     With ws.Cells(firstRow, 1, row - 1, 6).Style.Border
                         .Bottom.Style = ExcelBorderStyle.Thin
                         .Bottom.Color.SetColor(Color.LightGray)
@@ -290,7 +248,6 @@ Public Class StockClass
         ws.Column(6).Width = 20
 
         ws.View.FreezePanes(4, 2)
-
     End Sub
 
     Private Sub AddMatrixWorksheet(package As ExcelPackage, sheetName As String, dt As DataTable)
@@ -313,15 +270,7 @@ Public Class StockClass
         StyleStatus(ws.Cells(3, 4))
 
         ' HEADER
-        Dim headers As String() = {
-            "BLIND NAME",
-            "COLOUR",
-            "COLOUR",
-            "COLOUR",
-            "COLOUR",
-            "COLOUR",
-            "COLOUR"
-        }
+        Dim headers As String() = {"BLIND NAME", "COLOUR", "COLOUR", "COLOUR", "COLOUR", "COLOUR", "COLOUR"}
 
         For i As Integer = 0 To headers.Length - 1
             ws.Cells(5, i + 1).Value = headers(i)
@@ -331,9 +280,7 @@ Public Class StockClass
 
         ' DATA
         For r As Integer = 0 To dt.Rows.Count - 1
-
             For c As Integer = 0 To 6
-
                 Dim cell As ExcelRange = ws.Cells(r + 6, c + 1)
 
                 cell.Value = dt.Rows(r)(c).ToString()
@@ -341,9 +288,7 @@ Public Class StockClass
                 If c > 0 Then
                     StyleMatrixStatus(cell)
                 End If
-
             Next
-
         Next
 
         StyleData(ws, dt.Rows.Count + 5, 7)
@@ -355,11 +300,9 @@ Public Class StockClass
         Next
 
         ws.View.FreezePanes(6, 2)
-
     End Sub
 
     Private Sub AddFabricChartWorksheet(package As ExcelPackage, dt As DataTable)
-
         Dim ws As ExcelWorksheet = package.Workbook.Worksheets.Add("Fabric Chart")
 
         Dim columnCount As Integer = dt.Columns.Count
@@ -378,24 +321,18 @@ Public Class StockClass
 
         ' DATA
         For r As Integer = 0 To dt.Rows.Count - 1
-
             For c As Integer = 0 To columnCount - 1
-
                 Dim cell As ExcelRange = ws.Cells(r + 4, c + 1)
 
                 cell.Value = dt.Rows(r)(c).ToString()
 
                 If c > 0 AndAlso cell.Value.ToString().Trim().ToUpper() = "NO" Then
-
                     cell.Style.Fill.PatternType = ExcelFillStyle.Solid
                     cell.Style.Fill.BackgroundColor.SetColor(Color.DarkRed)
                     cell.Style.Font.Color.SetColor(Color.White)
                     cell.Style.Font.Bold = True
-
                 End If
-
             Next
-
         Next
 
         StyleData(ws, dt.Rows.Count + 3, columnCount)
@@ -407,13 +344,10 @@ Public Class StockClass
         Next
 
         ws.View.FreezePanes(4, 2)
-
     End Sub
 
     Private Sub StyleTitle(rng As ExcelRange)
-
         With rng.Style
-
             .Font.Bold = True
             .Font.Size = 16
             .Font.Color.SetColor(Color.White)
@@ -423,18 +357,12 @@ Public Class StockClass
 
             .VerticalAlignment = ExcelVerticalAlignment.Center
             .HorizontalAlignment = ExcelHorizontalAlignment.Left
-
         End With
-
         rng.Worksheet.Row(rng.Start.Row).Height = 32
-
     End Sub
 
-
     Private Sub StyleHeader(rng As ExcelRange)
-
         With rng.Style
-
             .Font.Bold = True
             .Font.Color.SetColor(Color.White)
 
@@ -445,22 +373,17 @@ Public Class StockClass
             .VerticalAlignment = ExcelVerticalAlignment.Center
 
             .Border.Bottom.Style = ExcelBorderStyle.Thin
-
         End With
 
         rng.Worksheet.Row(rng.Start.Row).Height = 28
-
     End Sub
 
-
     Private Sub StyleData(ws As ExcelWorksheet, lastRow As Integer, lastCol As Integer)
-
         If lastRow < 3 Then Return
 
         Dim rng As ExcelRange = ws.Cells(3, 1, lastRow, lastCol)
 
         With rng.Style
-
             .VerticalAlignment = ExcelVerticalAlignment.Center
 
             .Border.Top.Style = ExcelBorderStyle.Thin
@@ -472,14 +395,10 @@ Public Class StockClass
             .Border.Bottom.Color.SetColor(Color.LightGray)
             .Border.Left.Color.SetColor(Color.LightGray)
             .Border.Right.Color.SetColor(Color.LightGray)
-
         End With
-
     End Sub
 
-
     Private Sub StyleStatus(cell As ExcelRange)
-
         If cell.Value Is Nothing Then Return
 
         Dim status As String = cell.Value.ToString().Trim().ToUpper()
@@ -490,34 +409,22 @@ Public Class StockClass
         cell.Style.Fill.PatternType = ExcelFillStyle.Solid
 
         Select Case status
-
             Case "IN STOCK"
-
                 cell.Style.Fill.BackgroundColor.SetColor(Color.DarkGreen)
                 cell.Style.Font.Color.SetColor(Color.White)
-
             Case "OUT OF STOCK"
-
                 cell.Style.Fill.BackgroundColor.SetColor(Color.DarkRed)
                 cell.Style.Font.Color.SetColor(Color.White)
-
             Case "LIMITED STOCK"
-
                 cell.Style.Fill.BackgroundColor.SetColor(Color.Yellow)
                 cell.Style.Font.Color.SetColor(Color.Black)
-
             Case "DISCONTINUED"
-
                 cell.Style.Fill.BackgroundColor.SetColor(Color.Gray)
                 cell.Style.Font.Color.SetColor(Color.White)
-
         End Select
-
     End Sub
 
-
     Private Sub StyleMatrixStatus(cell As ExcelRange)
-
         If cell.Value Is Nothing Then Return
 
         Dim value As String = cell.Value.ToString().Trim().ToUpper()
@@ -526,30 +433,21 @@ Public Class StockClass
         cell.Style.VerticalAlignment = ExcelVerticalAlignment.Center
 
         If value.Contains("IN STOCK") Then
-
             cell.Style.Fill.PatternType = ExcelFillStyle.Solid
             cell.Style.Fill.BackgroundColor.SetColor(Color.DarkGreen)
             cell.Style.Font.Color.SetColor(Color.White)
-
         ElseIf value.Contains("LIMITED STOCK") Then
-
             cell.Style.Fill.PatternType = ExcelFillStyle.Solid
             cell.Style.Fill.BackgroundColor.SetColor(Color.Yellow)
             cell.Style.Font.Color.SetColor(Color.Black)
-
         ElseIf value.Contains("OUT OF STOCK") Then
-
             cell.Style.Fill.PatternType = ExcelFillStyle.Solid
             cell.Style.Fill.BackgroundColor.SetColor(Color.DarkRed)
             cell.Style.Font.Color.SetColor(Color.White)
-
         ElseIf value.Contains("DISCONTINUED") Then
-
             cell.Style.Fill.PatternType = ExcelFillStyle.Solid
             cell.Style.Fill.BackgroundColor.SetColor(Color.Gray)
             cell.Style.Font.Color.SetColor(Color.White)
-
         End If
-
     End Sub
 End Class

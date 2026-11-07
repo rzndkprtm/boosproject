@@ -48,19 +48,17 @@
                                 <small class="text-muted">Manage and generate stock information</small>
                             </div>
                             <div class="d-flex gap-2 flex-wrap">
-                                <asp:Button runat="server" ID="btnGenerateNewsletter" Text="✉ Generate Newsletter" CssClass="btn btn-generate" OnClick="btnGenerateNewsletter_Click" />
+                                <a class="btn btn-generate" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalGenerate">✉ Generate Newsletter</a>
                                 <div class="dropdown">
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class="bi bi-grid"></i> Stock Category
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li><h6 class="dropdown-header">Stock Categories</h6></li>
-                                        <li><a runat="server" class="dropdown-item" href="~/stocks/jpmd"><i class="bi bi-building me-2"></i>JPMD</a></li>
-                                        <li><a runat="server" class="dropdown-item" href="~/stocks/accent"><i class="bi bi-house me-2"></i>Accent at Home</a></li>
-                                        <li><a runat="server" class="dropdown-item" href="~/stocks/global"><i class="bi bi-house me-2"></i>Sunlight Global</a></li>
-                                        <li><a runat="server" class="dropdown-item" href="~/stocks/cws"><i class="bi bi-house me-2"></i>CWS</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" href="#"><i class="bi bi-box-seam me-2"></i>Other Stock</a></li>
+                                        <li><a runat="server" class="dropdown-item" href="~/stocks/jpmd" target="_blank"><i class="bi bi-building me-2"></i>JPMD</a></li>
+                                        <li><a runat="server" class="dropdown-item" href="~/stocks/cws" target="_blank"><i class="bi bi-building me-2"></i>CWS</a></li>
+                                        <li><a runat="server" class="dropdown-item" href="~/stocks/accent" target="_blank"><i class="bi bi-building me-2"></i>Accent</a></li>
+                                        <li><a runat="server" class="dropdown-item" href="~/stocks/global" target="_blank"><i class="bi bi-building me-2"></i>Sunlight Global</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -511,12 +509,50 @@
         </section>
     </div>
 
+    <div class="modal fade text-left" id="modalGenerate" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title white">Generate Newsletter</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Sub Company</label>
+                            <asp:DropDownList runat="server" ID="ddlSubCompany" CssClass="form-select"></asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="alert alert-info d-flex align-items-start mb-0" role="alert">
+                        <i class="bi bi-info-circle-fill me-2 mt-1"></i>
+                        <div>
+                            The newsletter file will be sent individually to all email addresses registered for the <strong>Newsletter</strong> mailing list under the selected Sub Company.
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnGenerate" CssClass="btn btn-primary" Text="Submit" OnClick="btnGenerate_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
         <div class="position-absolute top-50 start-50 translate-middle">
             <div class="card shadow">
                 <div class="card-body text-center">
                     <div class="spinner-border"></div>
                     <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalWaiting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -560,6 +596,23 @@
             prm.add_endRequest(function () {
                 hideLoading();
                 pageInit();
+            });
+        });
+        function showWaiting(hideModal = null) {
+            $("#modalWaiting").modal("show");
+            setTimeout(function () {
+                $("#modalWaiting").modal("hide");
+                if (hideModal) {
+                    $(`#${hideModal}`).modal("hide");
+                }
+            }, 1000);
+
+            return true;
+        }
+        ["modalGenerate", "modalWaiting"].forEach(function (id) {
+            document.getElementById(id).addEventListener("hide.bs.modal", function () {
+                document.activeElement.blur();
+                document.body.focus();
             });
         });
         window.history.replaceState(null, null, window.location.href);
