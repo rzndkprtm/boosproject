@@ -10,6 +10,13 @@
         .grid-container th:first-child { z-index: 5; background: #f5f5f5; }
         .grid-container tr:last-child td { position: sticky; bottom: 0; background: #f5f5f5; z-index: 3; }
         .grid-container tr:last-child td:first-child { left: 0; z-index: 6; background: #f5f5f5; }
+        .stock-toolbar { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; padding:15px; margin-bottom:20px; background:#f8f9fa; border:1px solid #e9ecef; border-radius:10px; }
+        .stock-toolbar .btn { border-radius:7px; padding:9px 16px; font-weight:500; font-size:13px; }
+        .stock-toolbar .btn-generate { background:#435ebe; color:#fff; border:1px solid #435ebe; }
+        .stock-toolbar .btn-generate:hover { background:#364b98; border-color:#364b98; color:#fff; }
+        .stock-toolbar .dropdown-menu { border:1px solid #e9ecef; border-radius:8px; padding:6px; box-shadow:0 5px 20px rgba(0,0,0,.08); }
+        .stock-toolbar .dropdown-item { padding:9px 12px; border-radius:5px; font-size:13px; }
+        .stock-toolbar .dropdown-item:hover { background:#f0f2f5; }
     </style>
 
     <div class="page-heading">
@@ -34,6 +41,31 @@
         <section class="row">
             <div class="col-12">
                 <div class="card">
+                    <div class="card-body pb-0">
+                        <div class="stock-toolbar" runat="server" id="divAction">
+                            <div>
+                                <div class="fw-bold">Stock Management</div>
+                                <small class="text-muted">Manage and generate stock information</small>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <asp:Button runat="server" ID="btnGenerateNewsletter" Text="✉ Generate Newsletter" CssClass="btn btn-generate" OnClick="btnGenerateNewsletter_Click" />
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-grid"></i> Stock Category
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><h6 class="dropdown-header">Stock Categories</h6></li>
+                                        <li><a runat="server" class="dropdown-item" href="~/stocks/jpmd"><i class="bi bi-building me-2"></i>JPMD</a></li>
+                                        <li><a runat="server" class="dropdown-item" href="~/stocks/accent"><i class="bi bi-house me-2"></i>Accent at Home</a></li>
+                                        <li><a runat="server" class="dropdown-item" href="~/stocks/global"><i class="bi bi-house me-2"></i>Sunlight Global</a></li>
+                                        <li><a runat="server" class="dropdown-item" href="~/stocks/cws"><i class="bi bi-house me-2"></i>CWS</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-box-seam me-2"></i>Other Stock</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                         <ContentTemplate>
                             <div class="card-body">

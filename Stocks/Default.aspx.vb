@@ -29,7 +29,27 @@ Partial Class Stocks_Default
             BindFabricChart(txtSearchFabricChart.Text, ddlCompanyDetail.SelectedValue)
 
             divCompanyDetail.Visible = LoginAccess("Visible Company Detail")
+            divAction.Visible = LoginAccess("Visible Action")
         End If
+    End Sub
+
+    Protected Sub btnGenerateNewsletter_Click(sender As Object, e As EventArgs)
+        Try
+            Dim fileBytes As Byte() = stockClass.GenerateStockExcel()
+
+            Response.Clear()
+            Response.Buffer = True
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            Response.AddHeader("Content-Disposition", "attachment; filename=Stocks_" & DateTime.Now.ToString("yyyyMMdd_HHmmss") & ".xlsx")
+            Response.BinaryWrite(fileBytes)
+            Response.Flush()
+
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+
+        Catch ex As Exception
+            Dim errorMessage As String = ex.Message.Replace("\", "\\").Replace("'", "\'").Replace(vbCr, " ").Replace(vbLf, " ")
+            ScriptManager.RegisterStartupScript(Me, Me.GetType(), "ExportError", "alert('Export failed: " & errorMessage & "');", True)
+        End Try
     End Sub
 
     Protected Sub ddlCompanyDetail_SelectedIndexChanged(sender As Object, e As EventArgs)
