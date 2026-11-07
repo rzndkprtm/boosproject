@@ -26,7 +26,6 @@
         .table th:nth-child(4){ width:30%; }
         .empty-contact{ text-align:center; padding:30px; color:#94a3b8; }
     </style>
-
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -136,7 +135,6 @@
                                 </Columns>
                             </asp:GridView>
                         </div>
-
                         <div class="section-title mt-5">Address List</div>
                         <div class="table-responsive">
                             <asp:GridView runat="server" ID="gvAddress" CssClass="table table-hover mb-0" AutoGenerateColumns="false" ShowHeaderWhenEmpty="true" EmptyDataText="No address information available." EmptyDataRowStyle-HorizontalAlign="Center">
@@ -164,7 +162,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade" id="modalInfo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -242,11 +239,9 @@
             </div>
         </div>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblLoginId"></asp:Label>
     </div>
-
     <script type="text/javascript">
         function showInfo() {
             $("#modalInfo").modal("show");

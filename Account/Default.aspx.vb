@@ -105,6 +105,10 @@ Partial Class Account_Default
     Protected Sub BindData(loginId As String)
         Try
             Dim loginData As DataRow = settingClass.GetDataRow("SELECT Logins.*, Customers.Name AS CustomerName, O.OperatorName FROM Logins LEFT JOIN Customers ON Logins.CustomerId = Customers.Id OUTER APPLY (SELECT STRING_AGG(L2.FullName, ', ') AS OperatorName FROM STRING_SPLIT(Customers.Operator, ',') S INNER JOIN Logins L2 ON TRY_CAST(S.value AS INT) = L2.Id) O WHERE Logins.Id = '" & loginId & "'")
+            If loginData Is Nothing Then
+                Response.Redirect("~/", False)
+                Exit Sub
+            End If
 
             Dim customerId As String = loginData("CustomerId").ToString()
             lblUserName.Text = loginData("UserName").ToString()
@@ -143,7 +147,6 @@ Partial Class Account_Default
 
     Protected Function BindDetailAddress(addressId As String) As String
         Dim result As String = String.Empty
-
         If Not String.IsNullOrEmpty(addressId) Then
             Dim thisData As DataRow = settingClass.GetDataRow("SELECT ISNULL(Address,'') + ', ' + ISNULL(Suburb,'') + ', ' + ISNULL(State,'') + ' ' + ISNULL(PostCode,'') AS FullAddress FROM CustomerAddress WHERE Id='" & addressId & "'")
 
