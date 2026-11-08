@@ -45,6 +45,11 @@ Partial Class Setting_General_Tutorial_Edit
                 MessageError(True, "TITLE IS REQUIRED !")
                 Exit Sub
             End If
+            Dim htmlContent As String = fieldMessage.Value
+            If htmlContent = "" Then
+                MessageError(True, "MESSAGE IS REQUIRED !")
+                Exit Sub
+            End If
             If fuFile.HasFile Then
                 Dim allowedExtensions As String() = {".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".jpg", ".jpeg", ".png", ".mp4", ".webm"}
                 fileExtension = Path.GetExtension(fuFile.FileName).ToLower()
@@ -93,7 +98,7 @@ Partial Class Setting_General_Tutorial_Edit
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompanyId.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
-                        thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
+                        thisCmd.Parameters.AddWithValue("@Description", htmlContent)
                         thisCmd.Parameters.AddWithValue("@File", urlFile)
                         thisCmd.Parameters.AddWithValue("@Video", txtVideo.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
@@ -136,7 +141,7 @@ Partial Class Setting_General_Tutorial_Edit
 
             ddlCompanyId.SelectedValue = myData("CompanyId").ToString()
             txtTitle.Text = myData("Title").ToString()
-            txtDescription.Text = myData("Description").ToString()
+            hfMessage.Value = myData("Description").ToString()
             ddlStatus.SelectedValue = myData("Status").ToString()
 
             BindComponent(String.Empty)
