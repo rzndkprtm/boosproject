@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_PanelGlide
+﻿Partial Class Order_PanelGlide
     Inherits Page
 
 End Class

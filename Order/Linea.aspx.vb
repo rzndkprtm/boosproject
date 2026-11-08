@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_Linea
+﻿Partial Class Order_Linea
     Inherits Page
 
 End Class

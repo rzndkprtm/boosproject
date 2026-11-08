@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_SaphoraPart
-    Inherits System.Web.UI.Page
+﻿Partial Class Order_SaphoraPart
+    Inherits Page
 
 End Class

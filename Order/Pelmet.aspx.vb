@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_Pelmet
+﻿Partial Class Order_Pelmet
     Inherits Page
 
 End Class

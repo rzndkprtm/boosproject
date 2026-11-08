@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_EvolvePartOcean
+﻿Partial Class Order_EvolvePartOcean
     Inherits Page
 
 End Class

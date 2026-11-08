@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_RollerPart
-    Inherits System.Web.UI.Page
+﻿Partial Class Order_RollerPart
+    Inherits Page
 
 End Class

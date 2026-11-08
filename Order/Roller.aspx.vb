@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_Roller
+﻿Partial Class Order_Roller
     Inherits Page
 
 End Class

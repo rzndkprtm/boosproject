@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_Outdoor
+﻿Partial Class Order_Outdoor
     Inherits Page
 
 End Class

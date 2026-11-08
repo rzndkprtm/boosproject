@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_VerticalPart
+﻿Partial Class Order_VerticalPart
     Inherits Page
 
 End Class

@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_EvolveExpress
-    Inherits System.Web.UI.Page
+﻿Partial Class Order_EvolveExpress
+    Inherits Page
 
 End Class

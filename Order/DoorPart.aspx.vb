@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_DoorPart
-    Inherits System.Web.UI.Page
+﻿Partial Class Order_DoorPart
+    Inherits Page
 
 End Class

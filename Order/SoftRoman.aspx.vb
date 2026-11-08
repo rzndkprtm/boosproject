@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_SoftRoman
-    Inherits System.Web.UI.Page
+﻿Partial Class Order_SoftRoman
+    Inherits Page
 
 End Class
