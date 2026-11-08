@@ -281,7 +281,7 @@ Partial Class Setting_Log
                     thisQuery = "SELECT OrderId FROM OrderHeaders WHERE Id='" & dataId & "'"
                 End If
                 If type = "OrderDetails" Then
-                    thisQuery = "SELECT ISNULL(CAST(OrderDetails.Room AS NVARCHAR(100)), '') + ' ' + ISNULL(Designs.Name, '') FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.Id='" & dataId & "'"
+                    thisQuery = "SELECT 'Room : ' + ISNULL(CAST(OrderDetails.Room AS NVARCHAR(100)), '') + ' Design Type : ' + ISNULL(Designs.Name, '') FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.Id='" & dataId & "'"
                 End If
 
                 If String.IsNullOrEmpty(thisQuery) Then
