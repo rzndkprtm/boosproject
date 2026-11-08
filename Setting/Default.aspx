@@ -35,7 +35,7 @@
                 <a href="/setting/general" class="dashboard-card">
                     <div class="dashboard-title">General</div>
                     <div class="dashboard-desc">
-                        Company, Mailing, Newsletter, Tutorial, Notification
+                        Company, Mailing, Newsletter, Tutorial, Notification, Ticket, Zero, AK Zero
                     </div>
                 </a>
                 <a href="/setting/login" class="dashboard-card">
@@ -47,7 +47,7 @@
                 <a href="/setting/customer" class="dashboard-card">
                     <div class="dashboard-title">Customer</div>
                     <div class="dashboard-desc">
-                        List, Contact, Address, Login, Discount, Promo, Product Access, Quote
+                        List, Contact, Address, Login, Markup, Discount, Service, Custom Pricing, Promo, Product Access, Quote
                     </div>
                 </a>
                 <a href="/setting/specification" class="dashboard-card">
@@ -59,19 +59,25 @@
                 <a href="/setting/job" class="dashboard-card">
                     <div class="dashboard-title">Job</div>
                     <div class="dashboard-desc">
-                        Under Construction
+                        Job Sheet, Job Order
                     </div>
                 </a>
                 <a href="/setting/price" class="dashboard-card">
                     <div class="dashboard-title">Price</div>
                     <div class="dashboard-desc">
-                        Price Group, Price Product Group, Price Base, Price Surcharge, Price Promo
+                        Price Group, Price Product Group, Price Product Discount, Price Base, Price Surcharge, Price Promo, Price Service, Price Calculation
                     </div>
                 </a>
                 <a href="/setting/database" class="dashboard-card">
                     <div class="dashboard-title">Database</div>
                     <div class="dashboard-desc">
                         Table, View, Function, Query
+                    </div>
+                </a>
+                <a href="/setting/filemanager" class="dashboard-card">
+                    <div class="dashboard-title">File Manager</div>
+                    <div class="dashboard-desc">
+                        File Manager
                     </div>
                 </a>
                 <a href="/setting/validation" class="dashboard-card">
