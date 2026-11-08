@@ -1,5 +1,4 @@
-﻿
-Partial Class Specs_Default
+﻿Partial Class Specs_Default
     Inherits Page
 
     Dim settingClass As New SettingClass
