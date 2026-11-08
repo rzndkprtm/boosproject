@@ -23,15 +23,15 @@
     <div class="page-content">
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Report Form</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="form form-vertical">
-                            <div class="form-body">
-                                <asp:UpdatePanel runat="server" ID="upDesignTube" UpdateMode="Conditional">
-                                    <ContentTemplate>
+                <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Report Form</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="form form-vertical">
+                                    <div class="form-body">
                                         <div class="row mb-2">
                                             <div class="col-12 col-sm-12 col-lg-8 form-group">
                                                 <label class="form-label">Company</label>
@@ -79,27 +79,26 @@
                                                 <asp:TextBox runat="server" ID="txtEndDate" CssClass="form-control" TextMode="Date"></asp:TextBox>
                                             </div>
                                         </div>
-                                    </ContentTemplate>
-                                </asp:UpdatePanel>
-                                <div class="row mt-3" runat="server" id="divError">
-                                    <div class="col-12">
-                                        <div class="alert alert-danger">
-                                            <span runat="server" id="msgError"></span>
+                                        <div class="row mt-3" runat="server" id="divError">
+                                            <div class="col-12">
+                                                <div class="alert alert-danger">
+                                                    <span runat="server" id="msgError"></span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="card-footer text-start">
+                                <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
+                                <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
+                            </div>
                         </div>
-                    </div>
-                    <div class="card-footer text-start">
-                        <asp:Button runat="server" ID="btnSubmit" CssClass="btn btn-primary" Text="Submit" OnClick="btnSubmit_Click" />
-                        <asp:Button runat="server" ID="btnCancel" CssClass="btn btn-danger" Text="Cancel" OnClick="btnCancel_Click" />
-                    </div>
-                </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
             </div>
         </section>
     </div>
-
     <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
         <div class="position-absolute top-50 start-50 translate-middle">
             <div class="card shadow">
@@ -110,7 +109,6 @@
             </div>
         </div>
     </div>
-
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");
@@ -151,5 +149,5 @@
             initChoices();
         });
         window.history.replaceState(null, null, window.location.href);
-        </script>
+    </script>
 </asp:Content>
