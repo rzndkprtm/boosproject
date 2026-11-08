@@ -246,10 +246,33 @@ Partial Class Setting_Log
                 ' JOB
 
                 ' PRICE
-
-                ' DATABASE
-
-                ' FILE MANAGER
+                If type = "PriceGroups" Then
+                    thisQuery = "SELECT Name FROM PriceGroups WHERE Id='" & dataId & "'"
+                End If
+                If type = "PriceProductGroups" Then
+                    thisQuery = "SELECT Name FROM PriceProductGroups WHERE Id='" & dataId & "'"
+                End If
+                If type = "PriceProductDiscounts" Then
+                    thisQuery = "SELECT Id FROM PriceProductDiscounts WHERE Id='" & dataId & "'"
+                End If
+                If type = "PriceBases" Then
+                    thisQuery = "SELECT Id FROM PriceBases WHERE Id='" & dataId & "'"
+                End If
+                If type = "PriceSurcharges" Then
+                    thisQuery = "SELECT Name FROM PriceSurcharges WHERE Id='" & dataId & "'"
+                End If
+                If type = "Promos" Then
+                    thisQuery = "SELECT Name FROM Promos WHERE Id='" & dataId & "'"
+                End If
+                If type = "PromoDetails" Then
+                    thisQuery = "SELECT Id FROM PromoDetails WHERE Id='" & dataId & "'"
+                End If
+                If type = "PriceServices" Then
+                    thisQuery = "SELECT Name FROM PriceServices WHERE Id='" & dataId & "'"
+                End If
+                If type = "PriceCalculations" Then
+                    thisQuery = "SELECT Name FROM PriceCalculations WHERE Id='" & dataId & "'"
+                End If
 
                 ' VALIDATION
 
