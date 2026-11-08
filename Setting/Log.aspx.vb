@@ -60,6 +60,9 @@ Partial Class Setting_Log
             Response.Redirect("~/setting/log", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
         End Try
     End Sub
 
@@ -120,23 +123,53 @@ Partial Class Setting_Log
         Try
             If Not String.IsNullOrEmpty(type) AndAlso Not String.IsNullOrEmpty(dataId) Then
                 Dim thisQuery As String = String.Format("SELECT Name FROM {0} WHERE Id={1}", type, dataId)
-                If type = "Blinds" Then
-                    thisQuery = "SELECT Designs.Name + ' | ' + Blinds.Name FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id WHERE Blinds.Id='" & dataId & "'"
-                End If
-                If type = "BottomColours" Then
-                    thisQuery = "SELECT Name FROM BottomColours WHERE Id='" & dataId & "'"
-                End If
-                If type = "Bottoms" Then
-                    thisQuery = "SELECT Name FROM Bottoms WHERE Id='" & dataId & "'"
-                End If
-                If type = "Chains" Then
-                    thisQuery = "SELECT Name FROM Chains WHERE Id='" & dataId & "'"
+
+                ' GENERAL
+                If type = "Companys" Then
+                    thisQuery = "SELECT Name FROM Companys WHERE Id='" & dataId & "'"
                 End If
                 If type = "CompanyDetails" Then
                     thisQuery = "SELECT Companys.Name + ' | ' + CompanyDetails.Name FROM CompanyDetails LEFT JOIN Companys ON CompanyDetails.CompanyId=Companys.Id WHERE CompanyDetails.Id='" & dataId & "'"
                 End If
-                If type = "Companys" Then
-                    thisQuery = "SELECT Name FROM Companys WHERE Id='" & dataId & "'"
+                If type = "Mailings" Then
+                    thisQuery = "SELECT Name FROM Mailings WHERE Id='" & dataId & "'"
+                End If
+                If type = "Newsletters" Then
+                    thisQuery = "SELECT Name FROM Newsletters WHERE Id='" & dataId & "'"
+                End If
+                If type = "Tutorials" Then
+                    thisQuery = "SELECT Title FROM Tutorials WHERE Id='" & dataId & "'"
+                End If
+                If type = "Notifications" Then
+                    thisQuery = "SELECT Title FROM Notifications WHERE Id='" & dataId & "'"
+                End If
+                If type = "AKZeros" Then
+                    thisQuery = "SELECT Name FROM AKZeros WHERE Id='" & dataId & "'"
+                End If
+                If type = "Xeros" Then
+                    thisQuery = "SELECT Name FROM Xeros WHERE Id='" & dataId & "'"
+                End If
+
+                ' LOGIN
+                If type = "Logins" Then
+                    thisQuery = "SELECT UserName FROM Logins WHERE Id='" & dataId & "'"
+                End If
+                If type = "LoginRoles" Then
+                    thisQuery = "SELECT Name FROM LoginRoles WHERE Id='" & dataId & "'"
+                End If
+                If type = "LoginLevels" Then
+                    thisQuery = "SELECT Name FROM LoginLevels WHERE Id='" & dataId & "'"
+                End If
+                If type = "LoginInstallers" Then
+                    thisQuery = "SELECT UserName FROM Logins WHERE Id='" & dataId & "'"
+                End If
+
+                ' CUSTOMER
+                If type = "Customers" Then
+                    thisQuery = "SELECT Name FROM Customers WHERE Id='" & dataId & "'"
+                End If
+                If type = "CustomerContacts" Then
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerContacts.Name FROM CustomerContacts LEFT JOIN Customers ON CustomerContacts.CustomerId=Customers.Id WHERE CustomerContacts.Id='" & dataId & "'"
                 End If
                 If type = "CustomerAddress" Then
                     thisQuery = "SELECT Customers.Name + ' | ' + CustomerAddress.Type FROM CustomerAddress LEFT JOIN Customers ON CustomerAddress.CustomerId=Customers.Id WHERE CustomerAddress.Id='" & dataId & "'"
@@ -144,29 +177,49 @@ Partial Class Setting_Log
                 If type = "CustomerBusiness" Then
                     thisQuery = "SELECT Customers.Name + ' | ' + CustomerBusiness.ABNNumber FROM CustomerBusiness LEFT JOIN Customers ON CustomerBusiness.CustomerId=Customers.Id WHERE CustomerBusiness.Id='" & dataId & "'"
                 End If
-                If type = "CustomerContacts" Then
-                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerContacts.Name FROM CustomerContacts LEFT JOIN Customers ON CustomerContacts.CustomerId=Customers.Id WHERE CustomerContacts.Id='" & dataId & "'"
+                If type = "CustomerMarkups" Then
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerMarkups.Type FROM CustomerMarkups LEFT JOIN Customers ON CustomerMarkups.CustomerId=Customers.Id WHERE CustomerMarkups.Id='" & dataId & "'"
                 End If
                 If type = "CustomerDiscounts" Then
                     thisQuery = "SELECT Customers.Name + ' | ' + CustomerDiscounts.Type FROM CustomerDiscounts LEFT JOIN Customers ON CustomerDiscounts.CustomerId=Customers.Id WHERE CustomerDiscounts.Id='" & dataId & "'"
                 End If
-                If type = "CustomerProductAccess" Then
-                    thisQuery = "SELECT Customers.Name FROM CustomerProductAccess LEFT JOIN Customers ON CustomerProductAccess.Id=Customers.Id WHERE CustomerProductAccess.Id='" & dataId & "'"
+                If type = "CustomerServices" Then
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerServices.Type FROM CustomerServices LEFT JOIN Customers ON CustomerServices.CustomerId=Customers.Id WHERE CustomerServices.Id='" & dataId & "'"
+                End If
+                If type = "CustomerCustomPricings" Then
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerCustomPricings.Description FROM CustomerCustomPricings LEFT JOIN Customers ON CustomerCustomPricings.Id=Customers.Id WHERE CustomerCustomPricings.Id='" & dataId & "'"
                 End If
                 If type = "CustomerPromos" Then
                     thisQuery = "SELECT Customers.Name FROM CustomerPromos LEFT JOIN Customers ON CustomerPromos.CustomerId=Customers.Id WHERE CustomerPromos.Id='" & dataId & "'"
                 End If
+                If type = "CustomerProductAccess" Then
+                    thisQuery = "SELECT Customers.Name FROM CustomerProductAccess LEFT JOIN Customers ON CustomerProductAccess.Id=Customers.Id WHERE CustomerProductAccess.Id='" & dataId & "'"
+                End If
                 If type = "CustomerQuotes" Then
                     thisQuery = "SELECT Customers.Name FROM CustomerQuotes LEFT JOIN Customers ON CustomerQuotes.Id=Customers.Id WHERE CustomerQuotes.Id='" & dataId & "'"
                 End If
-                If type = "Customers" Then
-                    thisQuery = "SELECT Name FROM Customers WHERE Id='" & dataId & "'"
-                End If
+
+                ' SPECIFICATION
                 If type = "Designs" Then
                     thisQuery = "SELECT Name FROM Designs WHERE Id='" & dataId & "'"
                 End If
-                If type = "FabricAlias" Then
-                    thisQuery = "SELECT '[' + FA.Type + '] ' + COALESCE(FF.Name, FC1.Name) + ' = ' + COALESCE(SF.Name, FC2.Name) FROM FabricAlias FA LEFT JOIN Fabrics FF ON FA.FirstId=FF.Id AND FA.Type='Fabrics' LEFT JOIN Fabrics SF ON FA.SecondId=SF.Id AND FA.Type='Fabrics' LEFT JOIN FabricColours FC1 ON FA.FirstId=FC1.Id AND FA.Type='FabricColours' LEFT JOIN FabricColours FC2 ON FA.SecondId = FC2.Id AND FA.Type = 'FabricColours' WHERE FA.Id='1' ORDER BY FA.Id ASC"
+                If type = "Blinds" Then
+                    thisQuery = "SELECT Designs.Name + ' | ' + Blinds.Name FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id WHERE Blinds.Id='" & dataId & "'"
+                End If
+                If type = "Products" Then
+                    thisQuery = "SELECT Name FROM Products WHERE Id='" & dataId & "'"
+                End If
+                If type = "ProductTubes" Then
+                    thisQuery = "SELECT Name FROM ProductTubes WHERE Id='" & dataId & "'"
+                End If
+                If type = "ProductControls" Then
+                    thisQuery = "SELECT Name FROM ProductControls WHERE Id='" & dataId & "'"
+                End If
+                If type = "ProductColours" Then
+                    thisQuery = "SELECT Name FROM ProductColours WHERE Id='" & dataId & "'"
+                End If
+                If type = "Fabrics" Then
+                    thisQuery = "SELECT Name FROM Fabrics WHERE Id='" & dataId & "'"
                 End If
                 If type = "FabricColours" Then
                     thisQuery = "SELECT Name FROM FabricColours WHERE Id='" & dataId & "'"
@@ -174,42 +227,38 @@ Partial Class Setting_Log
                 If type = "FabricGroupLocals" Then
                     thisQuery = "SELECT Name FROM Fabrics WHERE Id='" & dataId & "'"
                 End If
-                If type = "Fabrics" Then
-                    thisQuery = "SELECT Name FROM Fabrics WHERE Id='" & dataId & "'"
+                If type = "FabricAlias" Then
+                    thisQuery = "SELECT '[' + FA.Type + '] ' + COALESCE(FF.Name, FC1.Name) + ' = ' + COALESCE(SF.Name, FC2.Name) FROM FabricAlias FA LEFT JOIN Fabrics FF ON FA.FirstId=FF.Id AND FA.Type='Fabrics' LEFT JOIN Fabrics SF ON FA.SecondId=SF.Id AND FA.Type='Fabrics' LEFT JOIN FabricColours FC1 ON FA.FirstId=FC1.Id AND FA.Type='FabricColours' LEFT JOIN FabricColours FC2 ON FA.SecondId = FC2.Id AND FA.Type = 'FabricColours' WHERE FA.Id='1' ORDER BY FA.Id ASC"
                 End If
-                If type = "LoginInstallers" Then
-                    thisQuery = "SELECT UserName FROM Logins WHERE Id='" & dataId & "'"
+                If type = "Chains" Then
+                    thisQuery = "SELECT Name FROM Chains WHERE Id='" & dataId & "'"
                 End If
-                If type = "LoginLevels" Then
-                    thisQuery = "SELECT Name FROM LoginLevels WHERE Id='" & dataId & "'"
+                If type = "Bottoms" Then
+                    thisQuery = "SELECT Name FROM Bottoms WHERE Id='" & dataId & "'"
                 End If
-                If type = "LoginRoles" Then
-                    thisQuery = "SELECT Name FROM LoginRoles WHERE Id='" & dataId & "'"
-                End If
-                If type = "Logins" Then
-                    thisQuery = "SELECT UserName FROM Logins WHERE Id='" & dataId & "'"
-                End If
-                If type = "Mailings" Then
-                    thisQuery = "SELECT Name FROM Mailings WHERE Id='" & dataId & "'"
+                If type = "BottomColours" Then
+                    thisQuery = "SELECT Name FROM BottomColours WHERE Id='" & dataId & "'"
                 End If
                 If type = "Mountings" Then
                     thisQuery = "SELECT Name FROM Mountings WHERE Id='" & dataId & "'"
                 End If
-                If type = "Newsletters" Then
-                    thisQuery = "SELECT Name FROM Newsletters WHERE Id='" & dataId & "'"
-                End If
-                If type = "Notifications" Then
-                    thisQuery = "SELECT Title FROM Notifications WHERE Id='" & dataId & "'"
-                End If
 
+                ' JOB
 
+                ' PRICE
 
+                ' DATABASE
 
+                ' FILE MANAGER
+
+                ' VALIDATION
+
+                ' ORDER
                 If type = "OrderHeaders" Then
-                    thisQuery = String.Format("SELECT OrderId FROM {0} WHERE Id={1}", type, dataId)
+                    thisQuery = "SELECT OrderId FROM OrderHeaders WHERE Id='" & dataId & "'"
                 End If
                 If type = "OrderDetails" Then
-                    thisQuery = String.Format("SELECT Id FROM {0} WHERE Id={1}", type, dataId)
+                    thisQuery = "SELECT ISNULL(CAST(OrderDetails.Room AS NVARCHAR(100)), '') + ' ' + ISNULL(Designs.Name, '') FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.Id='" & dataId & "'"
                 End If
 
                 If String.IsNullOrEmpty(thisQuery) Then

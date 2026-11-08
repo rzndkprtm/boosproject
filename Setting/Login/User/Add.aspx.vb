@@ -15,7 +15,6 @@ Partial Class Setting_Login_User_Add
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
-
             BindRole()
             BindLevel()
             BindCustomer()
@@ -144,13 +143,11 @@ Partial Class Setting_Login_User_Add
             Select Case roleName
                 Case "IT"
                     excludeIds.Add("1")
-
                     If levelName = "Member" Then
                         excludeIds.Add("2")
                     End If
                 Case "Factory Office"
                     excludeIds.AddRange({"1", "2"})
-
                     If levelName = "Member" Then
                         excludeIds.Add("3")
                     End If

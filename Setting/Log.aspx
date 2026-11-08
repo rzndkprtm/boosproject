@@ -60,13 +60,14 @@
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="ActionName" HeaderText="Action By" />
                                             <asp:BoundField DataField="ActionDate" HeaderText="Action Date" DataFormatString="{0:dd MMM yyyy HH:mm:ss}" />
+                                            <asp:BoundField DataField="Type" HeaderText="Type" />
                                             <asp:TemplateField HeaderText="Data">
                                                 <ItemTemplate>
                                                     <%# GetDataName(Eval("Type"), Eval("DataId")) %>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:BoundField DataField="Description" HeaderText="Description" />
-                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="100px">
                                                 <ItemTemplate>
                                                     <a href="javascript:void(0);" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                 </ItemTemplate>
@@ -94,7 +95,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -122,7 +122,6 @@
             </div>
         </div>
     </div>
-
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");

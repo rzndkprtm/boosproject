@@ -34,7 +34,6 @@ Partial Class Ticket_Add
                 MessageError(True, "MESSAGE IS REQUIRED !")
                 Exit Sub
             End If
-
             If msgError.InnerText = "" Then
                 Dim ticketId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM Tickets ORDER BY Id DESC")
                 Dim messageId As String = ticketClass.CreateId("SELECT TOP 1 Id FROM TicketMessages ORDER BY Id DESC")

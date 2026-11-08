@@ -111,7 +111,7 @@ Partial Class Setting_General_Newsletter_Default
             Dim activeDesc As String = "Newsletter Has Been Activated"
             If active = 0 Then activeDesc = "Newsletter Has Been Deactivated"
 
-            dataLog = {"Newsletter", thisId, Session("LoginId").ToString(), activeDesc}
+            dataLog = {"Newsletters", thisId, Session("LoginId").ToString(), activeDesc}
             settingClass.Logs(dataLog)
 
             Session("SearchNewsletter") = txtSearch.Text
