@@ -42,11 +42,9 @@
             .about-commitment { padding: 28px 24px; }
         }
     </style>
-
     <div class="page-heading">
         <h3>About</h3>
     </div>
-
     <div class="page-content about-page">
         <section class="about-hero">
             <div class="about-hero-content">

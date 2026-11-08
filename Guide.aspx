@@ -31,7 +31,6 @@
             </div>
         </div>
     </div>
-
     <section class="section">
         <asp:Panel ID="pnlError" runat="server" Visible="false">
             <div class="alert alert-danger">

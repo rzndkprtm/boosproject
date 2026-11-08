@@ -1,7 +1,6 @@
 ﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Faq.aspx.vb" Inherits="Faq" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="FAQ" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-
     <style>
         .faq-page { color: #344054; padding-bottom: 30px; }
         .faq-hero { position: relative; overflow: hidden; padding: 45px 35px; margin-bottom: 28px; border-radius: 16px; background: linear-gradient(135deg, #172b4d 0%, #244d75 100%); color: #ffffff; }
@@ -53,11 +52,9 @@
         @media (max-width: 991.98px) { .faq-layout { grid-template-columns: 1fr; gap: 20px; } .faq-sidebar { padding: 18px; } .faq-category-list { flex-direction: row; flex-wrap: wrap; } .faq-category { width: auto; padding: 10px 12px; } }
         @media (max-width: 575.98px) { .faq-hero { padding: 32px 22px; } .faq-category-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); } .faq-category { justify-content: flex-start; padding: 10px; font-size: 12px; } .faq-question { padding: 16px; font-size: 13px; } .faq-answer { padding: 0 16px 17px; } .faq-support { align-items: flex-start; flex-direction: column; padding: 22px; } .faq-support-badge { white-space: normal; } }
     </style>
-
     <div class="page-heading">
         <h3>FAQ</h3>
     </div>
-
     <div class="page-content faq-page">
         <section class="faq-hero">
             <div class="faq-hero-content">
@@ -81,37 +78,27 @@
                     <button type="button" class="faq-category active" data-category="all">
                         <i class="bi bi-grid"></i> All Questions
                     </button>
-
                     <button type="button" class="faq-category" data-category="company">
                         <i class="bi bi-building"></i> Company
                     </button>
-
                     <button type="button" class="faq-category" data-category="products">
                         <i class="bi bi-window"></i> Products
                     </button>
-
                     <button type="button" class="faq-category" data-category="ordering">
                         <i class="bi bi-cart3"></i> Ordering
                     </button>
-
                     <button type="button" class="faq-category" data-category="measurement">
                         <i class="bi bi-rulers"></i> Measurement
                     </button>
-
                     <button type="button" class="faq-category" data-category="delivery">
                         <i class="bi bi-truck"></i> Production & Delivery
                     </button>
-
                     <button type="button" class="faq-category" data-category="support">
                         <i class="bi bi-headset"></i> Support
                     </button>
                 </div>
             </aside>
-
-            <!-- FAQ CONTENT -->
             <div class="faq-content">
-
-                <!-- COMPANY -->
                 <section class="faq-section" data-section="company">
                     <div class="faq-section-heading">
                         <div class="faq-section-icon"><i class="bi bi-building"></i></div>
@@ -120,9 +107,7 @@
                             <p>Learn more about our company and services.</p>
                         </div>
                     </div>
-
                     <div class="faq-accordion">
-
                         <div class="faq-item" data-category="company">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-company-1">
                                 What is JPM Direct?
@@ -138,7 +123,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="company">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-company-2">
                                 Who can purchase products from JPM Direct?
@@ -154,7 +138,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="company">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-company-3">
                                 Why choose JPM Direct as a supplier?
@@ -170,11 +153,8 @@
                                 </p>
                             </div>
                         </div>
-
                     </div>
                 </section>
-
-                <!-- PRODUCTS -->
                 <section class="faq-section" data-section="products">
                     <div class="faq-section-heading">
                         <div class="faq-section-icon"><i class="bi bi-window"></i></div>
@@ -183,9 +163,7 @@
                             <p>Explore our product range and custom-made options.</p>
                         </div>
                     </div>
-
                     <div class="faq-accordion">
-
                         <div class="faq-item" data-category="products">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-products-1">
                                 What types of window furnishings do you offer?
@@ -208,7 +186,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="products">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-products-2">
                                 Are your products custom-made?
@@ -224,7 +201,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="products">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-products-3">
                                 What materials are used in your products?
@@ -240,7 +216,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="products">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-products-4">
                                 Where can I find product specifications?
@@ -256,11 +231,8 @@
                                 </p>
                             </div>
                         </div>
-
                     </div>
                 </section>
-
-                <!-- ORDERING -->
                 <section class="faq-section" data-section="ordering">
                     <div class="faq-section-heading">
                         <div class="faq-section-icon"><i class="bi bi-cart3"></i></div>
@@ -269,9 +241,7 @@
                             <p>Information about placing orders and pricing.</p>
                         </div>
                     </div>
-
                     <div class="faq-accordion">
-
                         <div class="faq-item" data-category="ordering">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-ordering-1">
                                 How do I place an order?
@@ -288,7 +258,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="ordering">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-ordering-2">
                                 How is my order price calculated?
@@ -303,7 +272,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="ordering">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-ordering-3">
                                 Can I change my order after submitting it?
@@ -320,7 +288,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="ordering">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-ordering-4">
                                 How can I check my order details?
@@ -335,11 +302,8 @@
                                 </p>
                             </div>
                         </div>
-
                     </div>
                 </section>
-
-                <!-- MEASUREMENT -->
                 <section class="faq-section" data-section="measurement">
                     <div class="faq-section-heading">
                         <div class="faq-section-icon"><i class="bi bi-rulers"></i></div>
@@ -348,9 +312,7 @@
                             <p>Get the measurements right before placing an order.</p>
                         </div>
                     </div>
-
                     <div class="faq-accordion">
-
                         <div class="faq-item" data-category="measurement">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-measurement-1">
                                 How do I measure my windows correctly?
@@ -366,7 +328,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="measurement">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-measurement-2">
                                 Where can I find installation instructions?
@@ -381,7 +342,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="measurement">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-measurement-3">
                                 What happens if I submit incorrect measurements?
@@ -398,11 +358,8 @@
                                 </p>
                             </div>
                         </div>
-
                     </div>
                 </section>
-
-                <!-- PRODUCTION & DELIVERY -->
                 <section class="faq-section" data-section="delivery">
                     <div class="faq-section-heading">
                         <div class="faq-section-icon"><i class="bi bi-truck"></i></div>
@@ -411,9 +368,7 @@
                             <p>Learn about manufacturing and delivery arrangements.</p>
                         </div>
                     </div>
-
                     <div class="faq-accordion">
-
                         <div class="faq-item" data-category="delivery">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-delivery-1">
                                 How long does manufacturing and air freight take?
@@ -430,7 +385,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="delivery">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-delivery-2">
                                 Does the 7-day timeframe mean delivery to my customer?
@@ -447,7 +401,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="delivery">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-delivery-3">
                                 How can I get an update on a delayed order?
@@ -462,7 +415,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="delivery">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-delivery-4">
                                 How are products checked before dispatch?
@@ -478,11 +430,8 @@
                                 </p>
                             </div>
                         </div>
-
                     </div>
                 </section>
-
-                <!-- SUPPORT -->
                 <section class="faq-section" data-section="support">
                     <div class="faq-section-heading">
                         <div class="faq-section-icon"><i class="bi bi-headset"></i></div>
@@ -491,9 +440,7 @@
                             <p>Find assistance for product and order enquiries.</p>
                         </div>
                     </div>
-
                     <div class="faq-accordion">
-
                         <div class="faq-item" data-category="support">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-support-1">
                                 How can I get help with a product?
@@ -508,7 +455,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="support">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-support-2">
                                 Where can I find product training resources?
@@ -524,7 +470,6 @@
                                 </p>
                             </div>
                         </div>
-
                         <div class="faq-item" data-category="support">
                             <button type="button" class="faq-question" aria-expanded="false" aria-controls="faq-support-3">
                                 What information should I provide when requesting assistance?
@@ -540,21 +485,15 @@
                                 </p>
                             </div>
                         </div>
-
                     </div>
                 </section>
-
-                <!-- NO RESULTS -->
                 <div class="faq-empty" id="faqEmpty">
                     <i class="bi bi-search"></i>
                     <h5>No matching questions found</h5>
                     <p>Try another keyword or select a different category.</p>
                 </div>
-
             </div>
         </div>
-
-        <!-- SUPPORT FOOTER -->
         <section class="faq-support">
             <div class="faq-support-info">
                 <div class="faq-support-icon">
@@ -567,15 +506,12 @@
                     </p>
                 </div>
             </div>
-
             <div class="faq-support-badge">
                 <i class="bi bi-check-circle-fill"></i>
                 We're here to help
             </div>
         </section>
-
     </div>
-
     <script>
         (function () {
             var faqSearch = document.getElementById('faqSearch');
@@ -617,7 +553,6 @@
 
                 faqEmpty.style.display = visibleItems === 0 ? 'block' : 'none';
             }
-
             categoryButtons.forEach(function (button) {
                 button.addEventListener('click', function () {
                     activeCategory = button.getAttribute('data-category');
@@ -629,9 +564,7 @@
                     filterFaq();
                 });
             });
-
             faqSearch.addEventListener('input', filterFaq);
-
             document.querySelectorAll('.faq-question').forEach(function (button) {
                 button.addEventListener('click', function () {
                     var answer = document.getElementById(button.getAttribute('aria-controls'));
@@ -641,7 +574,6 @@
                     answer.classList.toggle('faq-hidden', isExpanded);
                 });
             });
-
             filterFaq();
         })();
     </script>
