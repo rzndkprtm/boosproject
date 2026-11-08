@@ -69,6 +69,7 @@ Partial Class Search
             groups.Add(SearchOrder(keyword))
             groups.Add(SearchLogin(keyword))
             groups.Add(SearchMailing(keyword))
+            groups.Add(SearchTicket(keyword))
 
             Dim resultGroups = groups.Where(Function(x) x.Count > 0).ToList()
 
@@ -278,6 +279,16 @@ Partial Class Search
             Return ExecuteSearch("Mailing", "bi bi-search", sql, keyword, "~/setting/general/mailing/edit?mailid=")
         Catch ex As Exception
             Return New SearchGroup With {.Category = "Mailing", .Icon = "bi bi-search", .Count = 0, .Items = New List(Of SearchItem)}
+        End Try
+    End Function
+
+    Private Function SearchTicket(keyword As String) As SearchGroup
+        Try
+            Dim sql As String = "SELECT TOP 20 CAST(Id AS NVARCHAR(50)) AS ResultId, ISNULL(TicketNo,'') AS Title, ISNULL(Subject,'') AS Description FROM Tickets WHERE Id LIKE @Keyword OR TicketNo LIKE @Keyword OR Subject LIKE @Keyword ORDER BY Id ASC"
+
+            Return ExecuteSearch("Ticket", "bi bi-search", sql, keyword, "~/ticket/?id=")
+        Catch ex As Exception
+            Return New SearchGroup With {.Category = "Ticket", .Icon = "bi bi-search", .Count = 0, .Items = New List(Of SearchItem)}
         End Try
     End Function
 
