@@ -87,27 +87,45 @@ Partial Class Search
         End Try
     End Sub
 
-    Private Function ExecuteSearch(category As String, icon As String, sql As String, keyword As String, url As String) As SearchGroup
-        Dim items As New List(Of SearchItem)
-        Using thisConn As New SqlConnection(myConn)
-            Using thisCmd As New SqlCommand(sql, thisConn)
-                thisCmd.Parameters.Add("@Keyword", SqlDbType.NVarChar, 200).Value = "%" & keyword & "%"
+    Private Function ExecuteSearch(type As String, category As String, icon As String, keyword As String, url As String) As SearchGroup
+        Try
+            Dim items As New List(Of SearchItem)
 
-                thisConn.Open()
-                Using reader As SqlDataReader = thisCmd.ExecuteReader()
-                    While reader.Read()
-                        Dim resultId As String = Convert.ToString(reader("ResultId"))
-                        items.Add(New SearchItem With {
-                            .Title = Convert.ToString(reader("Title")),
-                            .Description = Convert.ToString(reader("Description")),
-                            .Url = ResolveUrl(url & resultId)
+            Using conn As New SqlConnection(ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString)
+                Using cmd As New SqlCommand("sp_GlobalSearch", conn)
+                    cmd.CommandType = CommandType.StoredProcedure
+                    cmd.Parameters.Add("@Type", SqlDbType.NVarChar, 50).Value = type
+                    cmd.Parameters.Add("@Keyword", SqlDbType.NVarChar, 255).Value = keyword
+
+                    conn.Open()
+
+                    Using reader As SqlDataReader = cmd.ExecuteReader()
+                        While reader.Read()
+                            items.Add(New SearchItem With {
+                            .Title = reader("Title").ToString(),
+                            .Description = reader("Description").ToString(),
+                            .Url = ResolveUrl(url & reader("ResultId").ToString())
                         })
-                    End While
+                        End While
+                    End Using
                 End Using
             End Using
-        End Using
 
-        Return New SearchGroup With {.Category = category, .Icon = icon, .Count = items.Count, .Items = items}
+            Return New SearchGroup With {
+                .Category = category,
+                .Icon = icon,
+                .Count = items.Count,
+                .Items = items
+            }
+
+        Catch ex As Exception
+            Return New SearchGroup With {
+                .Category = category,
+                .Icon = icon,
+                .Count = 0,
+                .Items = New List(Of SearchItem)
+            }
+        End Try
     End Function
 
     Private Function SearchPage(keyword As String) As SearchGroup
@@ -173,123 +191,51 @@ Partial Class Search
     End Function
 
     Private Function SearchCustomer(keyword As String) As SearchGroup
-        Try
-            Dim sql As String = "SELECT TOP 20 CAST(Id AS NVARCHAR(50)) AS ResultId, ISNULL(Name,'') AS Title, 'Debtor Code : ' + ISNULL(DebtorCode,'') AS Description FROM Customers WHERE Name LIKE @Keyword ORDER BY Name ASC"
-
-            Return ExecuteSearch("Customer", "bi bi-search", sql, keyword, "~/setting/customer/detail?customerid=")
-        Catch ex As Exception
-            Return New SearchGroup With {.Category = "Design Type", .Icon = "bi bi-search", .Count = 0, .Items = New List(Of SearchItem)}
-        End Try
+        Return ExecuteSearch("Customer", "Customer", "bi bi-search", keyword, "~/setting/customer/detail?customerid=")
     End Function
 
     Private Function SearchDesignType(keyword As String) As SearchGroup
-        Try
-            Dim sql As String = "SELECT TOP 20 CAST(D.Id AS NVARCHAR(50)) AS ResultId, ISNULL(D.Name,'') AS Title, ISNULL(C.CompanyAlias, '') AS Description FROM Designs D OUTER APPLY (SELECT STRING_AGG(CO.Alias, ', ') AS CompanyAlias FROM STRING_SPLIT(D.CompanyId, ',') S INNER JOIN Companys CO ON CO.Id = TRY_CAST(LTRIM(RTRIM(S.value)) AS INT)) C WHERE D.Name LIKE @Keyword ORDER BY D.Name ASC"
-
-            Return ExecuteSearch("Design Type", "bi bi-search", sql, keyword, "~/setting/specification/design/edit?designid=")
-        Catch ex As Exception
-            Return New SearchGroup With {.Category = "Design Type", .Icon = "bi bi-search", .Count = 0, .Items = New List(Of SearchItem)}
-        End Try
+        Return ExecuteSearch("DesignType", "Design Type", "bi bi-search", keyword, "~/setting/specification/design/edit?designid=")
     End Function
 
     Private Function SearchBlindType(keyword As String) As SearchGroup
-        Try
-            Dim sql As String = "SELECT TOP 20 CAST(B.Id AS NVARCHAR(50)) AS ResultId, ISNULL(B.Name,'') AS Title, ISNULL(CD.CompanyDetailName, '') AS Description FROM Blinds B OUTER APPLY (SELECT STRING_AGG(CD.Name, ', ') AS CompanyDetailName FROM STRING_SPLIT(B.CompanyDetailId, ',') S INNER JOIN CompanyDetails CD ON CD.Id = TRY_CAST(LTRIM(RTRIM(S.value)) AS INT)) CD WHERE B.Name LIKE @Keyword ORDER BY B.Name ASC"
-
-            Return ExecuteSearch("Blind Type", "bi bi-search", sql, keyword, "~/setting/specification/blind/edit?blindid=")
-        Catch ex As Exception
-            Return New SearchGroup With {.Category = "Design Type", .Icon = "bi bi-search", .Count = 0, .Items = New List(Of SearchItem)}
-        End Try
+        Return ExecuteSearch("BlindType", "Blind Type", "bi bi-search", keyword, "~/setting/specification/blind/edit?blindid=")
     End Function
 
     Private Function SearchProduct(keyword As String) As SearchGroup
-        Try
-            Dim sql As String = "SELECT TOP 20 CAST(Products.Id AS NVARCHAR(50)) AS ResultId, ISNULL(Products.Name,'') AS Title, 'Design Type : ' + ISNULL(Designs.Name,'') + CHAR(10) + 'Blind Type : ' + ISNULL(Blinds.Name,'') + CHAR(10) + 'Status : ' + ISNULL(Products.Status,'') AS Description FROM Products LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.BlindId=Blinds.Id WHERE Products.Name LIKE @Keyword ORDER BY Products.Name ASC"
-
-            Return ExecuteSearch("Product", "bi bi-search", sql, keyword, "~/setting/specification/product/detail?productid=")
-        Catch ex As Exception
-            Return New SearchGroup With {.Category = "Product", .Icon = "bi bi-search", .Count = 0, .Items = New List(Of SearchItem)}
-        End Try
+        Return ExecuteSearch("Product", "Product", "bi bi-search", keyword, "~/setting/specification/product/detail?productid=")
     End Function
 
     Private Function SearchFabric(keyword As String) As SearchGroup
-        Try
-            Dim sql As String = "SELECT TOP 20 CAST(Id AS NVARCHAR(50)) AS ResultId, ISNULL(Name,'') AS Title, 'Type : ' + ISNULL(Type,'') + CHAR(10) + 'Status : ' + ISNULL(Status,'') AS Description FROM Fabrics WHERE Name LIKE @Keyword ORDER BY Name ASC"
-
-            Return ExecuteSearch("Fabric Type", "bi bi-search", sql, keyword, "~/setting/specification/fabric/colour/edit?fabriccolourid=")
-        Catch ex As Exception
-            Return New SearchGroup With {.Category = "Fabric Type", .Icon = "bi bi-search", .Count = 0, .Items = New List(Of SearchItem)}
-        End Try
+        Return ExecuteSearch("Fabric", "Fabric Type", "bi bi-search", keyword, "~/setting/specification/fabric/colour/edit?fabriccolourid=")
     End Function
 
     Private Function SearchFabricColour(keyword As String) As SearchGroup
-        Try
-            Dim sql As String = "SELECT TOP 20 CAST(Id AS NVARCHAR(50)) AS ResultId, ISNULL(Name,'') AS Title, 'BOE ID : ' + ISNULL(CAST(BoeId AS NVARCHAR(50)),'') + CHAR(10) + 'Status : ' + ISNULL(CAST(Status AS NVARCHAR(50)),'') AS Description FROM FabricColours WHERE Colour LIKE @Keyword ORDER BY Name ASC"
-
-            Return ExecuteSearch("Fabric Colour", "bi bi-search", sql, keyword, "~/setting/specification/fabric/detail?fabricid=")
-        Catch ex As Exception
-            Return New SearchGroup With {.Category = "Fabric Colour", .Icon = "bi bi-search", .Count = 0, .Items = New List(Of SearchItem)}
-        End Try
+        Return ExecuteSearch("FabricColour", "Fabric Colour", "bi bi-search", keyword, "~/setting/specification/fabric/detail?fabricid=")
     End Function
 
     Private Function SearchBottomType(keyword As String) As SearchGroup
-        Try
-            Dim sql As String = "SELECT TOP 20 CAST(B.Id AS NVARCHAR(50)) AS ResultId, ISNULL(B.Name,'') AS Title, ISNULL(CD.CompanyDetailName, '') AS Description FROM Bottoms B OUTER APPLY (SELECT STRING_AGG(CD.Name, ', ') AS CompanyDetailName FROM STRING_SPLIT(B.CompanyDetailId, ',') S INNER JOIN CompanyDetails CD ON CD.Id = TRY_CAST(LTRIM(RTRIM(S.value)) AS INT)) CD WHERE B.Name LIKE @Keyword ORDER BY B.Name ASC"
-
-            Return ExecuteSearch("Bottom Type", "bi bi-search", sql, keyword, "~/setting/specification/bottom/detail?bottomid=")
-        Catch ex As Exception
-            Return New SearchGroup With {.Category = "Design Type", .Icon = "bi bi-search", .Count = 0, .Items = New List(Of SearchItem)}
-        End Try
+        Return ExecuteSearch("BottomType", "Bottom Type", "bi bi-search", keyword, "~/setting/specification/bottom/detail?bottomid=")
     End Function
 
     Private Function SearchBottomColour(keyword As String) As SearchGroup
-        Try
-            Dim sql As String = "SELECT TOP 20 CAST(Id AS NVARCHAR(50)) AS ResultId, ISNULL(Name,'') AS Title, 'BOE ID : ' + ISNULL(CAST(BoeId AS NVARCHAR(50)),'') + CHAR(10) + 'Status : ' + ISNULL(CAST(Status AS NVARCHAR(50)),'') AS Description FROM BottomColours WHERE Colour LIKE @Keyword ORDER BY Name ASC"
-
-            Return ExecuteSearch("Fabric Colour", "bi bi-search", sql, keyword, "~/setting/specification/bottom/detail?bottomid=")
-        Catch ex As Exception
-            Return New SearchGroup With {.Category = "Fabric Colour", .Icon = "bi bi-search", .Count = 0, .Items = New List(Of SearchItem)}
-        End Try
+        Return ExecuteSearch("BottomColour", "Bottom Colour", "bi bi-search", keyword, "~/setting/specification/bottom/detail?bottomid=")
     End Function
 
     Private Function SearchOrder(keyword As String) As SearchGroup
-        Try
-            Dim sql As String = "SELECT TOP 20 CAST(OrderHeaders.Id AS NVARCHAR(50)) AS ResultId, ISNULL(OrderHeaders.OrderId,'') AS Title, 'Customer Name : ' + ISNULL(Customers.Name,'') + CHAR(10) + 'Order Number : ' + ISNULL(OrderHeaders.OrderNumber,'') + CHAR(10) + 'Order Name : ' + ISNULL(OrderHeaders.OrderName,'') + CHAR(10) + 'Order Status : ' + ISNULL(OrderHeaders.Status,'') AS Description FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.OrderNumber LIKE @Keyword OR OrderHeaders.OrderName LIKE @Keyword OR Customers.Name LIKE @Keyword OR OrderHeaders.OrderId LIKE @Keyword ORDER BY OrderHeaders.Id DESC"
-
-            Return ExecuteSearch("Orders", "bi bi-search", sql, keyword, "~/order/detail?orderid=")
-        Catch ex As Exception
-            Return New SearchGroup With {.Category = "Orders", .Icon = "bi bi-search", .Count = 0, .Items = New List(Of SearchItem)}
-        End Try
+        Return ExecuteSearch("Order", "Orders", "bi bi-search", keyword, "~/order/detail?orderid=")
     End Function
 
     Private Function SearchLogin(keyword As String) As SearchGroup
-        Try
-            Dim sql As String = "SELECT TOP 20 CAST(Logins.Id AS NVARCHAR(50)) AS ResultId, ISNULL(Logins.FullName,'') AS Title, 'Customer Name : ' + ISNULL(Customers.Name,'') + CHAR(10) + 'User : ' + ISNULL(Logins.UserName,'') + CHAR(10) + 'Role : ' + ISNULL(LoginRoles.Name,'') AS Description FROM Logins LEFT JOIN Customers ON Logins.CustomerId=Customers.Id LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id WHERE Logins.UserName LIKE @Keyword OR Logins.FullName LIKE @Keyword ORDER BY Logins.FullName ASC"
-
-            Return ExecuteSearch("User Login", "bi bi-search", sql, keyword, "~/setting/login/user/edit?loginid=")
-        Catch ex As Exception
-            Return New SearchGroup With {.Category = "User Login", .Icon = "bi bi-search", .Count = 0, .Items = New List(Of SearchItem)}
-        End Try
+        Return ExecuteSearch("Login", "User Login", "bi bi-search", keyword, "~/setting/login/user/edit?loginid=")
     End Function
 
     Private Function SearchMailing(keyword As String) As SearchGroup
-        Try
-            Dim sql As String = "SELECT TOP 20 CAST(Mailings.Id AS NVARCHAR(50)) AS ResultId, ISNULL(Mailings.Name,'') AS Title, 'Company : ' + ISNULL(Companys.Name,'') AS Description FROM Mailings LEFT JOIN Companys ON Mailings.CompanyId=Companys.Id WHERE Mailings.Name LIKE @Keyword ORDER BY Mailings.Name ASC"
-
-            Return ExecuteSearch("Mailing", "bi bi-search", sql, keyword, "~/setting/general/mailing/edit?mailid=")
-        Catch ex As Exception
-            Return New SearchGroup With {.Category = "Mailing", .Icon = "bi bi-search", .Count = 0, .Items = New List(Of SearchItem)}
-        End Try
+        Return ExecuteSearch("Mailing", "Mailing", "bi bi-search", keyword, "~/setting/general/mailing/edit?mailid=")
     End Function
 
     Private Function SearchTicket(keyword As String) As SearchGroup
-        Try
-            Dim sql As String = "SELECT TOP 20 CAST(Id AS NVARCHAR(50)) AS ResultId, ISNULL(TicketNo,'') AS Title, ISNULL(Subject,'') AS Description FROM Tickets WHERE Id LIKE @Keyword OR TicketNo LIKE @Keyword OR Subject LIKE @Keyword ORDER BY Id ASC"
-
-            Return ExecuteSearch("Ticket", "bi bi-search", sql, keyword, "~/ticket/?id=")
-        Catch ex As Exception
-            Return New SearchGroup With {.Category = "Ticket", .Icon = "bi bi-search", .Count = 0, .Items = New List(Of SearchItem)}
-        End Try
+        Return ExecuteSearch("Ticket", "Ticket", "bi bi-search", keyword, "~/ticket/?id=")
     End Function
 
     Protected Function LoginAccess(action As String) As Boolean
