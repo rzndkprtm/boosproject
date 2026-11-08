@@ -79,20 +79,20 @@ Partial Class Ticket_Default
                     Using dr As SqlDataReader = thisCmd.ExecuteReader()
                         While dr.Read()
                             result.Add(New With {
-                            .Id = Convert.ToInt32(dr("Id")),
-                            .TicketNo = dr("TicketNo").ToString(),
-                            .LoginId = Convert.ToInt32(dr("LoginId")),
-                            .FullName = If(IsDBNull(dr("FullName")), "", dr("FullName").ToString()),
-                            .CustomerName = If(IsDBNull(dr("CustomerName")), "", dr("CustomerName").ToString()),
-                            .Type = dr("Type").ToString(),
-                            .Subject = dr("Subject").ToString(),
-                            .Status = dr("Status").ToString(),
-                            .Priority = dr("Priority").ToString(),
-                            .CreatedDate = Convert.ToDateTime(dr("CreatedDate")).ToString("yyyy-MM-dd HH:mm:ss"),
-                            .LastMessageDate = If(IsDBNull(dr("LastMessageDate")), Nothing, Convert.ToDateTime(dr("LastMessageDate")).ToString("yyyy-MM-dd HH:mm:ss")),
-                            .LastMessage = If(IsDBNull(dr("LastMessage")), "", dr("LastMessage").ToString()),
-                            .UnreadCount = Convert.ToInt32(dr("UnreadCount"))
-                        })
+                                .Id = Convert.ToInt32(dr("Id")),
+                                .TicketNo = dr("TicketNo").ToString(),
+                                .LoginId = Convert.ToInt32(dr("LoginId")),
+                                .FullName = If(IsDBNull(dr("FullName")), "", dr("FullName").ToString()),
+                                .CustomerName = If(IsDBNull(dr("CustomerName")), "", dr("CustomerName").ToString()),
+                                .Type = dr("Type").ToString(),
+                                .Subject = dr("Subject").ToString(),
+                                .Status = dr("Status").ToString(),
+                                .Priority = dr("Priority").ToString(),
+                                .CreatedDate = Convert.ToDateTime(dr("CreatedDate")).ToString("yyyy-MM-dd HH:mm:ss"),
+                                .LastMessageDate = If(IsDBNull(dr("LastMessageDate")), Nothing, Convert.ToDateTime(dr("LastMessageDate")).ToString("yyyy-MM-dd HH:mm:ss")),
+                                .LastMessage = If(IsDBNull(dr("LastMessage")), "", dr("LastMessage").ToString()),
+                                .UnreadCount = Convert.ToInt32(dr("UnreadCount"))
+                            })
                         End While
                     End Using
                 End Using
@@ -162,21 +162,21 @@ Partial Class Ticket_Default
                             Dim senderName As String = If(IsDBNull(dr("SenderName")), senderType, Convert.ToString(dr("SenderName")))
 
                             result.Add(New With {
-                            .Id = Convert.ToInt32(dr("Id")),
-                            .TicketId = Convert.ToInt32(dr("TicketId")),
-                            .SenderType = senderType,
-                            .SenderId = senderId,
-                            .SenderName = senderName,
-                            .Message = If(IsDBNull(dr("Message")), "", Convert.ToString(dr("Message"))),
-                            .CreatedDate = Convert.ToDateTime(dr("CreatedDate")).ToString("yyyy-MM-dd HH:mm:ss"),
-                            .MessageType = messageType,
-                            .FileId = If(IsDBNull(dr("FileId")), CType(Nothing, Integer?), Convert.ToInt32(dr("FileId"))),
-                            .FileName = fileName,
-                            .FilePath = filePath,
-                            .FileSize = fileSize,
-                            .ContentType = contentType,
-                            .IsMine = isMine
-                        })
+                                .Id = Convert.ToInt32(dr("Id")),
+                                .TicketId = Convert.ToInt32(dr("TicketId")),
+                                .SenderType = senderType,
+                                .SenderId = senderId,
+                                .SenderName = senderName,
+                                .Message = If(IsDBNull(dr("Message")), "", Convert.ToString(dr("Message"))),
+                                .CreatedDate = Convert.ToDateTime(dr("CreatedDate")).ToString("yyyy-MM-dd HH:mm:ss"),
+                                .MessageType = messageType,
+                                .FileId = If(IsDBNull(dr("FileId")), CType(Nothing, Integer?), Convert.ToInt32(dr("FileId"))),
+                                .FileName = fileName,
+                                .FilePath = filePath,
+                                .FileSize = fileSize,
+                                .ContentType = contentType,
+                                .IsMine = isMine
+                            })
                         End While
                     End Using
                 End Using

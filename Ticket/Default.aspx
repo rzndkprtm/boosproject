@@ -53,21 +53,15 @@
         .ticket-app .empty-chat { min-height: 200px; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center; color: #9ca3af; }
         .ticket-app .empty-chat i { margin-bottom: 12px; font-size: 48px; color: #cbd5e1; }
         .ticket-app .empty-chat div { font-size: 14px; line-height: 1.6; }
-
-        /* ======================================== SCROLLBAR ======================================== */
         .ticket-app .chat-body::-webkit-scrollbar, .ticket-app .ticket-list::-webkit-scrollbar { width: 6px; }
         .ticket-app .chat-body::-webkit-scrollbar-track, .ticket-app .ticket-list::-webkit-scrollbar-track { background: transparent; }
         .ticket-app .chat-body::-webkit-scrollbar-thumb, .ticket-app .ticket-list::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
         .ticket-app .chat-body::-webkit-scrollbar-thumb:hover, .ticket-app .ticket-list::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
-
-        /* ======================================== TABLET ======================================== */
         @media (max-width: 992px) {
             .ticket-app .sidebar { width: 300px; min-width: 300px; }
             .ticket-app .message-content { max-width: 80%; }
             .ticket-app .chat-body { padding: 20px 16px; }
         }
-
-        /* ======================================== MOBILE ======================================== */
         @media (max-width: 768px) {
             .ticket-app { height: calc(100vh - 120px); min-height: 450px; }
             .ticket-app .sidebar { width: 240px; min-width: 240px; }
@@ -87,8 +81,6 @@
             .ticket-app .reply-box textarea { height: 70px; min-height: 70px; padding: 10px 12px; }
             .ticket-app .btn-send { width: 46px; min-width: 46px; }
         }
-
-        /* ======================================== SMALL MOBILE ======================================== */
         @media (max-width: 480px) {
             .ticket-app { height: calc(100vh - 100px); min-height: 400px; }
             .ticket-app .sidebar { width: 190px; min-width: 190px; }
@@ -100,7 +92,6 @@
             .ticket-app .message-name { font-size: 11px; }
             .ticket-app .message-time { font-size: 10px; }
         }
-
         .ticket-app .ticket-file-link { display: flex; align-items: center; gap: 10px; width: fit-content; max-width: 100%; min-width: 220px; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 10px; background: #ffffff; color: #273142; text-decoration: none; text-align: left; }
         .ticket-app .ticket-file-link:hover { background: #f1f5f9; border-color: #cbd5e1; }
         .ticket-app .message.sent .ticket-file-link { background: #eff6ff; border-color: #bfdbfe; }
@@ -164,7 +155,6 @@
             </div>
         </div>
     </div>
-
     <script type="text/javascript">
         let selectedTicketId = 0;
         let tickets = [];
@@ -202,7 +192,6 @@
                 closeTicket();
             });
         });
-
         function ajaxCall(method, data) {
             return $.ajax({
                 type: "POST",
@@ -231,12 +220,7 @@
 
                 const signature = JSON.stringify(
                     tickets.map(function (x) {
-                        return [
-                            x.Id,
-                            x.Status,
-                            x.LastMessageDate,
-                            x.UnreadCount
-                        ];
+                        return [x.Id, x.Status, x.LastMessageDate, x.UnreadCount];
                     })
                 );
 
@@ -269,7 +253,6 @@
 
                 return (ticket.TicketNo.toLowerCase().includes(searchText) || ticket.Subject.toLowerCase().includes(searchText) || String(ticket.LoginId).includes(searchText) || ticket.FullName.toLowerCase().includes(searchText) || ticket.CustomerName.toLowerCase().includes(searchText) || ticket.Type.toLowerCase().includes(searchText));
             });
-
             if (filtered.length === 0) {
                 container.html(`
                     <div class="text-center text-muted p-4">
@@ -279,7 +262,6 @@
                 `);
                 return;
             }
-
             filtered.forEach(function (ticket) {
                 const active = ticket.Id === selectedTicketId ? "active" : "";
                 let unread = "";
@@ -556,7 +538,6 @@
                 return new Date();
             return new Date(value.replace(" ", "T"));
         }
-
         function formatDateTime(value) {
             const date = parseDate(value);
 
@@ -719,7 +700,6 @@
 
             uploadNext();
         }
-
         $("#btnUploadFile").on("click", function (e) {
             e.preventDefault();
 

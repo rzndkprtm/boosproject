@@ -72,7 +72,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-center" id="modalSuccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -90,7 +89,6 @@
             </div>
         </div>
     </div>
-
     <script>
         document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
             document.activeElement.blur();

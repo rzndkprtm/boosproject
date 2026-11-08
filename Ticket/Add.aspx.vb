@@ -50,7 +50,7 @@ Partial Class Ticket_Add
                         Throw New Exception("FAILED TO GENERATE UNIQUE ORDER ID")
                     End If
 
-                    Dim randomCode As String = ticketClass.GenerateRandomCode()
+                    Dim randomCode As String = ticketClass.GenerateTicketNo()
                     ticketNo = String.Format("BOOS{0}", randomCode)
                     Try
                         Using thisConn As New SqlConnection(myConn)

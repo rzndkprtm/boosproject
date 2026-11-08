@@ -128,7 +128,7 @@ Public Class TicketClass
         Return result
     End Function
 
-    Public Function GenerateRandomCode() As String
+    Public Function GenerateTicketNo() As String
         Try
             Dim chars As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
             Dim rnd As New Random()
