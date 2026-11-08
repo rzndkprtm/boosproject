@@ -158,7 +158,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade" id="modalUpload" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -291,9 +290,7 @@
             </div>
         </div>
     </div>
-
     <asp:HiddenField ID="selected_tab" runat="server" />
-
     <script type="text/javascript">
         ["modalUpload", "modalUploadB", "modalUploadC", "modalUploadD", "modalDelete", "modalDeleteB", "modalDeleteC", "modalDeleteD"].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
@@ -303,14 +300,12 @@
         });
         window.history.replaceState(null, null, window.location.href);
     </script>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblHeaderId"></asp:Label>
         <asp:Label runat="server" ID="lblItemId"></asp:Label>
         <asp:Label runat="server" ID="lblStatus"></asp:Label>
         <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
-
         <asp:Label runat="server" ID="lblPrinting"></asp:Label>
         <asp:Label runat="server" ID="lblPrintingB"></asp:Label>
         <asp:Label runat="server" ID="lblPrintingC"></asp:Label>

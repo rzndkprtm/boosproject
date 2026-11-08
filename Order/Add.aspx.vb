@@ -109,10 +109,8 @@ Partial Class Order_Add
                     Select Case state
                         Case "NSW", "QLD", "NT", "ACT"
                             orderContainer = "SYD"
-
                         Case "VIC", "SA", "TAS", "WA"
                             orderContainer = "MEL"
-
                         Case Else
                             orderContainer = ""
                     End Select

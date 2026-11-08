@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_AluminiumPart
-    Inherits System.Web.UI.Page
+﻿Partial Class Order_AluminiumPart
+    Inherits Page
 
 End Class

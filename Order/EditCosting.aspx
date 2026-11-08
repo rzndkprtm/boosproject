@@ -98,7 +98,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-left" id="modalAddDiscount" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -268,7 +267,6 @@
             </div>
         </div>
     </div>
-    
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblHeaderId"></asp:Label>
@@ -276,7 +274,6 @@
         <asp:Label runat="server" ID="lblOrderStatus"></asp:Label>
         <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
     </div>
-
     <script type="text/javascript">
         function initCostingChangeDetection() {
             var btnUpdateAll = document.getElementById("<%= btnUpdateAll.ClientID %>");
@@ -301,7 +298,6 @@
                         input.dataset.originalValue = input.value;
                     }
                 });
-
                 function checkChanges() {
                     var hasChanges = false;
 
@@ -323,7 +319,6 @@
                     btnUpdateAll.disabled = changedRows.size <= 1;
                     btnUpdateAll.value = originalButtonText;
                 }
-
                 inputs.forEach(function (input) {
                     if (input._costingChangeHandler) {
                         input.removeEventListener("input", input._costingChangeHandler);
@@ -335,23 +330,18 @@
                     input.addEventListener("input", checkChanges);
                     input.addEventListener("change", checkChanges);
                 });
-
                 checkChanges();
             });
         }
-
         document.addEventListener("DOMContentLoaded", function () {
             initCostingChangeDetection();
         });
-
         function showUpdate(id) {
             document.getElementById("<%= txtUpdateId.ClientID %>").value = id;
         }
-
         function showDelete(id) {
             document.getElementById("<%= txtDeleteId.ClientID %>").value = id;
         }
-
         ["modalAddDiscount", "modalAddSurcharge", "modalAddNote", "modalReset", "modalUpdate", "modalDelete"].forEach(function (id) {
             var modal = document.getElementById(id);
 
@@ -365,7 +355,6 @@
                 });
             }
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

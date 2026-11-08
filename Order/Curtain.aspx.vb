@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_Curtain
+﻿Partial Class Order_Curtain
     Inherits Page
 
 End Class
