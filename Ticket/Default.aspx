@@ -165,13 +165,29 @@
         let lastMessageId = 0;
         let searchText = "";
         let selectedType = "";
+        let initialTicketId = null;
+        let ticketsLoaded = false;
+        let messageRequestToken = 0;
 
         $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            if (urlParams.has("id")) {
+                const id = parseInt(urlParams.get("id"), 10);
+
+                if (Number.isInteger(id) && id > 0) {
+                    initialTicketId = id;
+                } else {
+                    resetTicketUrl();
+                }
+            }
+
             loadTickets(false);
+
             setInterval(function () {
                 loadTickets(true);
                 if (selectedTicketId > 0) {
-                    loadMessages(selectedTicketId,true);
+                    loadMessages(selectedTicketId, true);
                 }
             }, 3000);
             $("#txtTicketSearch").on("input", function () {
@@ -191,7 +207,79 @@
             $("#btnCloseTicket").on("click", function () {
                 closeTicket();
             });
+            window.addEventListener("popstate", function () {
+                const params = new URLSearchParams(window.location.search);
+                if (!params.has("id")) {
+                    resetTicketSelection(false);
+                    return;
+                }
+                const id = parseInt(params.get("id"), 10);
+                if (!Number.isInteger(id) || id <= 0) {
+                    resetTicketSelection(true);
+                    return;
+                }
+                if (ticketsLoaded) {
+                    openTicketFromUrl(id);
+                }
+            });
         });
+        function updateTicketUrl(ticketId) {
+            const url = new URL(window.location.href);
+            if (ticketId && ticketId > 0) {
+                url.search = "";
+                url.searchParams.set("id", ticketId);
+            } else {
+                url.search = "";
+            }
+            window.history.pushState(
+                { ticketId: ticketId || null },
+                "",
+                url.pathname + url.search
+            );
+        }
+
+        function resetTicketUrl() {
+            const url = new URL(window.location.href);
+            window.history.replaceState(null, "", url.pathname);
+        }
+        function openTicketFromUrl(ticketId) {
+            const ticket = tickets.find(function (x) {
+                return Number(x.Id) === Number(ticketId);
+            });
+            if (!ticket) {
+                resetTicketSelection(true);
+                return;
+            }
+            selectTicket(ticketId, false);
+        }
+        function resetTicketSelection(resetUrl) {
+            selectedTicketId = 0;
+            messages = [];
+            lastMessageId = 0;
+
+            messageRequestToken++;
+
+            if (resetUrl) {
+                resetTicketUrl();
+            }
+
+            $(".ticket-item").removeClass("active");
+            $("#lblTicketNo").text("Select a ticket");
+            $("#lblType").text("");
+
+            $("#lblStatus").removeClass().addClass("badge bg-secondary").text("-");
+            $("#btnCloseTicket").hide();
+            $("#txtReply").val("").prop("disabled", true).attr("placeholder", "Select a ticket first...");
+            $("#btnUploadFile").prop("disabled", true);
+
+            $(".chat-body").html(`
+                <div class="empty-chat">
+                    <i class="bi bi-chat-left-text"></i>
+                    <br /><br />
+                    <div>Select a ticket to view conversation</div>
+                </div>
+            `);
+        }
         function ajaxCall(method, data) {
             return $.ajax({
                 type: "POST",
@@ -217,6 +305,7 @@
                 }
 
                 tickets = result.data;
+                ticketsLoaded = true;
 
                 const signature = JSON.stringify(
                     tickets.map(function (x) {
@@ -227,6 +316,13 @@
                 if (signature !== lastTicketSignature) {
                     lastTicketSignature = signature;
                     renderTickets();
+                }
+                if (initialTicketId !== null) {
+                    const requestedId = initialTicketId;
+
+                    initialTicketId = null;
+
+                    openTicketFromUrl(requestedId);
                 }
                 if (selectedTicketId > 0) {
                     const current = tickets.find(function (x) {
@@ -284,11 +380,9 @@
                                 ${formatRelativeTime(ticket.LastMessageDate || ticket.CreatedDate)}
                             </span>
                         </div>
-
                         <div class="ticket-subject">
                             ${escapeHtml(ticket.Subject)}
                         </div>
-
                         <div class="ticket-bottom">
                             <span class="badge ${getStatusClass(ticket.Status)}">
                                 ${escapeHtml(ticket.Status)}
@@ -304,67 +398,86 @@
                 selectTicket(ticketId);
             });
         }
-        function selectTicket(ticketId) {
+        function selectTicket(ticketId, updateUrl) {
             if (!ticketId)
                 return;
 
-            selectedTicketId = ticketId;
+            if (updateUrl === undefined) {
+                updateUrl = true;
+            }
 
-            lastMessageId = 0;
-
-            $(".ticket-item").removeClass("active");
-            $('.ticket-item[data-ticket-id="' + ticketId + '"]').addClass("active");
             const ticket = tickets.find(function (x) {
-                return x.Id === ticketId;
+                return Number(x.Id) === Number(ticketId);
             });
 
-            if (ticket) {
-                updateTicketHeader(ticket);
+            if (!ticket) {
+                resetTicketSelection(true);
+                return;
             }
 
-            if (ticket) {
-                updateTicketHeader(ticket);
-            }
+            selectedTicketId = Number(ticketId);
 
-            loadMessages(ticketId, false);
+            lastMessageId = 0;
+            messages = [];
+
+            if (updateUrl) {
+                updateTicketUrl(selectedTicketId);
+            }
+            $(".ticket-item").removeClass("active");
+
+            $('.ticket-item[data-ticket-id="' + selectedTicketId + '"]').addClass("active");
+            updateTicketHeader(ticket);
+
+            $(".chat-body").html(`
+                <div class="empty-chat">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <div class="mt-3">Loading conversation...</div>
+                </div>
+            `);
+
+            $("#txtReply").val("");
+            loadMessages(selectedTicketId, false);
         }
         function loadMessages(ticketId, background) {
-            if (!ticketId || isLoadingMessages)
+            if (!ticketId)
                 return;
-            isLoadingMessages = true;
+
+            const requestToken = ++messageRequestToken;
 
             ajaxCall("GetMessages", { ticketId: ticketId }).done(function (response) {
+                if (requestToken !== messageRequestToken)
+                    return;
+                if (Number(ticketId) !== Number(selectedTicketId))
+                    return;
                 const result = response.d;
                 if (!result.success) {
                     console.error(result.message);
+                    if (!background) {
+                        resetTicketSelection(true);
+                    }
                     return;
                 }
 
                 const newMessages = result.data;
                 let latestId = 0;
-
                 if (newMessages.length > 0) {
                     latestId = newMessages[newMessages.length - 1].Id;
                 }
-
                 if (!background) {
                     messages = newMessages;
-
                     renderMessages(messages, true);
                     lastMessageId = latestId;
                     return;
                 }
-
                 if (latestId > lastMessageId) {
                     messages = newMessages;
-
                     renderMessages(messages, true);
                     lastMessageId = latestId;
                 }
             }).fail(function (xhr) {
+                if (requestToken !== messageRequestToken)
+                    return;
                 console.error("GetMessages error:", xhr.responseText);
-            }).always(function () {
-                isLoadingMessages = false;
             });
         }
         function renderMessages(data, scrollBottom) {
@@ -728,6 +841,5 @@
 
             uploadTicketFiles(files, ticketId);
         });
-        window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

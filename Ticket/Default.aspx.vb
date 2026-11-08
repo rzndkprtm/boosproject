@@ -241,7 +241,6 @@ Partial Class Ticket_Default
                     ticketStatus = Convert.ToString(statusResult)
                 End Using
 
-                ' CUSTOMER TIDAK BOLEH MENGIRIM PESAN JIKA CLOSED
                 If Not isInternal AndAlso String.Equals(ticketStatus, "Closed", StringComparison.OrdinalIgnoreCase) Then
                     Return New With {.success = False, .message = "This ticket is closed. You can no longer send messages."}
                 End If
@@ -260,8 +259,6 @@ Partial Class Ticket_Default
                     thisCmd.ExecuteNonQuery()
                 End Using
 
-                ' INTERNAL BOLEH MEMBUKA KEMBALI TICKET CLOSED
-                ' CUSTOMER TIDAK AKAN MENGUBAH STATUS CLOSED MENJADI OPEN
                 If isInternal Then
                     Dim updateSql As String = "UPDATE Tickets SET Status=CASE WHEN Status = 'Closed' THEN 'Open' ELSE Status END WHERE Id=@TicketId"
 
@@ -350,13 +347,11 @@ Partial Class Ticket_Default
         End Try
     End Sub
 
-    ' GET LOGIN ID
     Private Shared Function GetLoginId() As Integer
         If HttpContext.Current.Session("LoginId") Is Nothing Then Return 0
         Return Convert.ToInt32(HttpContext.Current.Session("LoginId"))
     End Function
 
-    ' CHECK INTERNAL
     Private Shared Function IsInternalUser() As Boolean
         Dim roleName As String = Convert.ToString(HttpContext.Current.Session("RoleName"))
         Return Not String.Equals(roleName, "Customer", StringComparison.OrdinalIgnoreCase)

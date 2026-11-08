@@ -90,14 +90,12 @@
         </div>
     </div>
     <script>
-        document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
-            document.activeElement.blur();
-            document.body.focus();
-        });
-
         var ticketRedirectTimer;
+        var createdTicketId = 0;
 
-        function showSuccessModal(ticketNo) {
+        function showSuccessModal(ticketNo, ticketId) {
+            createdTicketId = ticketId;
+
             document.getElementById("lblTicketNo").textContent = ticketNo;
 
             var modalElement = document.getElementById("modalSuccess");
@@ -106,13 +104,14 @@
             modal.show();
 
             ticketRedirectTimer = setTimeout(function () {
-                window.location.href = '<%= ResolveUrl("~/ticket") %>';
+                window.location.href = '<%= ResolveUrl("~/ticket") %>?id=' + encodeURIComponent(createdTicketId);
             }, 5000);
         }
 
         document.getElementById("btnCloseSuccess").addEventListener("click", function () {
             clearTimeout(ticketRedirectTimer);
-            window.location.href = '<%= ResolveUrl("~/ticket") %>';
+
+            window.location.href = '<%= ResolveUrl("~/ticket") %>?id=' + encodeURIComponent(createdTicketId);
         });
     </script>
 </asp:Content>
