@@ -67,6 +67,7 @@ Partial Class Search
             groups.Add(SearchBottomType(keyword))
             groups.Add(SearchBottomColour(keyword))
             groups.Add(SearchOrder(keyword))
+            groups.Add(SearchOrderDetail(keyword))
             groups.Add(SearchLogin(keyword))
             groups.Add(SearchMailing(keyword))
             groups.Add(SearchTicket(keyword))
@@ -224,6 +225,10 @@ Partial Class Search
 
     Private Function SearchOrder(keyword As String) As SearchGroup
         Return ExecuteSearch("Order", "Orders", "bi bi-search", keyword, "~/order/detail?orderid=")
+    End Function
+
+    Private Function SearchOrderDetail(keyword As String) As SearchGroup
+        Return ExecuteSearch("OrderDetail", "Order Detail", "bi bi-search", keyword, "~/order/detail?orderid=")
     End Function
 
     Private Function SearchLogin(keyword As String) As SearchGroup
