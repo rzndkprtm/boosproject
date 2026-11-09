@@ -122,7 +122,12 @@ Partial Class Stocks_Default
 
             Dim rptRollerColour As Repeater = CType(e.Item.FindControl("rptRollerColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Colour")
+            Dim thisString As String = "SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Colour"
+            If Not String.IsNullOrEmpty(ddlCompanyDetail.SelectedValue) Then
+                thisString = "SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS subCompanyArray WHERE FabricId=" & fabricId & " AND Factory='Express' AND subCompanyArray.VALUE='" & ddlCompanyDetail.SelectedValue & "' ORDER BY Colour"
+            End If
+
+            Dim dt As DataTable = stockClass.GetDataTable(thisString)
 
             rptRollerColour.DataSource = dt
             rptRollerColour.DataBind()
