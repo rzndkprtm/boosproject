@@ -10489,6 +10489,12 @@ Partial Class Order_Method
             Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS !"
         End If
 
+        If data.rolename = "Developer" Then
+            Return data.controllength
+        End If
+
+
+
         If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" OrElse blindName = "Econo 50mm" OrElse blindName = "Econo 63mm" OrElse blindName = "Ultraslat 50mm" OrElse blindName = "Ultraslat 63mm" Then
             If String.IsNullOrEmpty(data.controllength) Then Return "CORD LENGTH IS REQUIRED !"
 
