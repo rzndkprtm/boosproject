@@ -188,14 +188,14 @@
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Layout</label>
                                                 </div>
-                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                <div class="col-12 col-sm-12 col-lg-3 form-group">
                                                     <div class="input-group">
                                                         <select id="layoutcode" class="form-select"></select>
-                                                        <%--<a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalInfo" onclick="return showInfo('Layout');">?</a>--%>
+                                                        <a class="btn btn-primary" onclick="openLayoutModal()">?</a>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="row" id="divwandposition">
+                                            <div class="row" id="divstackposition">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Stack Position</label>
                                                 </div>
@@ -300,7 +300,6 @@
             </section>
         </div>
     </div>
-    
     <div class="modal fade text-left" id="modalSuccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -356,6 +355,52 @@
             </div>
         </div>
     </div>
-
-    <script src="/Scripts/RisaSolihah/PanelGlide.js?v=1.2.5"></script>
+    <div class="modal modal-blur fade" id="modalLayout" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-full modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Layout Reference</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-lg-4">
+                            <div class="card h-100 mb-0">
+                                <div class="card-header">
+                                    <h6 class="mb-0">Select Layout</h6>
+                                </div>
+                                <div class="card-body">
+                                    <label class="form-label">Layout Code</label>
+                                    <select id="layoutPreviewSelect" class="form-select" onchange="viewLayout(this.value)">
+                                        <option value="">-- Select Layout --</option>
+                                    </select>
+                                    <div class="form-text mt-2">
+                                        Select a layout code to preview its reference image.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="card h-100 mb-0">
+                                <div class="card-header">
+                                    <h6 class="mb-0" id="layoutPreviewTitle">Layout Preview</h6>
+                                </div>
+                                <div class="card-body d-flex align-items-center justify-content-center" style="min-height:400px;background:#f8f9fa;">
+                                    <div id="layoutPreviewEmpty" class="text-center text-muted">
+                                        <i class="bi bi-image" style="font-size:48px;"></i>
+                                        <p class="mt-2 mb-0">Select a layout to view its image.</p>
+                                    </div>
+                                    <img id="layoutPreviewImage" src="" alt="Layout Preview" style="display:none;max-width:100%;max-height:650px;height:auto;object-fit:contain;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/Scripts/RisaSolihah/PanelGlide.js?v=1.3.0"></script>
 </asp:Content>

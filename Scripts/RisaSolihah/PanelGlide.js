@@ -1190,3 +1190,154 @@ document.addEventListener("keydown", function (e) {
         document.getElementById("submit").click();
     }
 });
+
+
+// ==========================================
+// LAYOUT CODE
+// ==========================================
+
+const layoutData = [
+    { code: 'A', image: '../Assets/images/products/panelglide/LAYOUT_A.JPG' },
+    { code: 'B', image: '../Assets/images/products/panelglide/LAYOUT_B.JPG' },
+    { code: 'C', image: '../Assets/images/products/panelglide/LAYOUT_C.JPG' },
+    { code: 'D', image: '../Assets/images/products/panelglide/LAYOUT_D.JPG' },
+    { code: 'E', image: '../Assets/images/products/panelglide/LAYOUT_E.JPG' },
+    { code: 'F', image: '../Assets/images/products/panelglide/LAYOUT_F.JPG' },
+    { code: 'G', image: '../Assets/images/products/panelglide/LAYOUT_G.JPG' },
+    { code: 'H', image: '../Assets/images/products/panelglide/LAYOUT_H.JPG' },
+    { code: 'I', image: '../Assets/images/products/panelglide/LAYOUT_I.JPG' },
+    { code: 'J', image: '../Assets/images/products/panelglide/LAYOUT_J.JPG' },
+    { code: 'K', image: '../Assets/images/products/panelglide/LAYOUT_K.JPG' },
+    { code: 'L', image: '../Assets/images/products/panelglide/LAYOUT_L.JPG' },
+    { code: 'M', image: '../Assets/images/products/panelglide/LAYOUT_M.JPG' },
+    { code: 'N', image: '../Assets/images/products/panelglide/LAYOUT_N.JPG' },
+    { code: 'O', image: '../Assets/images/products/panelglide/LAYOUT_O.JPG' },
+    { code: 'P', image: '../Assets/images/products/panelglide/LAYOUT_P.JPG' },
+    { code: 'Q', image: '../Assets/images/products/panelglide/LAYOUT_Q.JPG' },
+    { code: 'R', image: '../Assets/images/products/panelglide/LAYOUT_R.JPG' },
+    { code: 'S', image: '../Assets/images/products/panelglide/LAYOUT_S.JPG' },
+    { code: 'T', image: '../Assets/images/products/panelglide/LAYOUT_T.JPG' },
+    { code: 'U', image: '../Assets/images/products/panelglide/LAYOUT_U.JPG' },
+    { code: 'V', image: '../Assets/images/products/panelglide/LAYOUT_V.JPG' }
+];
+
+
+// ==========================================
+// OPEN MODAL
+// ==========================================
+
+function openLayoutModal() {
+
+    loadLayoutSelect();
+
+    const modalElement = document.getElementById('modalLayout');
+
+    const modal = new bootstrap.Modal(modalElement, {
+        backdrop: 'static',
+        keyboard: false
+    });
+
+    modal.show();
+
+}
+
+
+// ==========================================
+// LOAD LAYOUT FROM MAIN SELECT
+// ==========================================
+
+function loadLayoutSelect() {
+
+    const mainSelect = document.getElementById('layoutcode');
+    const previewSelect = document.getElementById('layoutPreviewSelect');
+
+    previewSelect.innerHTML = '<option value="">-- Select Layout --</option>';
+
+    // Ambil hanya opsi yang tersedia di select utama
+    Array.from(mainSelect.options).forEach(option => {
+
+        if (!option.value) return;
+
+        const previewOption = document.createElement('option');
+
+        previewOption.value = option.value;
+        previewOption.textContent = option.text;
+
+        previewSelect.appendChild(previewOption);
+
+    });
+
+    // Reset preview
+    const image = document.getElementById('layoutPreviewImage');
+    const empty = document.getElementById('layoutPreviewEmpty');
+
+    image.style.display = 'none';
+    image.src = '';
+
+    empty.style.display = 'block';
+    empty.innerHTML = `
+        <i class="bi bi-image" style="font-size:48px;"></i>
+        <p class="mt-2 mb-0">Select a layout to view its image.</p>
+    `;
+
+    document.getElementById('layoutPreviewTitle').innerText = 'Layout Preview';
+
+}
+
+
+// ==========================================
+// VIEW LAYOUT IMAGE
+// ==========================================
+
+function viewLayout(code) {
+
+    const image = document.getElementById('layoutPreviewImage');
+    const empty = document.getElementById('layoutPreviewEmpty');
+    const title = document.getElementById('layoutPreviewTitle');
+
+    if (!code) {
+
+        image.style.display = 'none';
+        image.src = '';
+
+        empty.style.display = 'block';
+        empty.innerHTML = `
+            <i class="bi bi-image" style="font-size:48px;"></i>
+            <p class="mt-2 mb-0">Select a layout to view its image.</p>
+        `;
+
+        title.innerText = 'Layout Preview';
+
+        return;
+    }
+
+    const layout = layoutData.find(x => x.code === code);
+
+    if (!layout) return;
+
+    title.innerText = 'Layout Preview - ' + code;
+
+    image.style.display = 'none';
+    empty.style.display = 'none';
+
+    image.onload = function () {
+        image.style.display = 'block';
+        empty.style.display = 'none';
+    };
+
+    image.onerror = function () {
+
+        image.style.display = 'none';
+
+        empty.style.display = 'block';
+
+        empty.innerHTML = `
+            <i class="bi bi-exclamation-circle" style="font-size:48px;"></i>
+            <p class="mt-2 mb-0">Image not found for Layout ${code}.</p>
+        `;
+
+    };
+
+    image.src = layout.image;
+
+}

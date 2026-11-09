@@ -422,48 +422,48 @@ Partial Class Order_Method
         If type = "LayoutCodePG" Then
             If Not String.IsNullOrEmpty(customtype) Then
                 If customtype = "2 - 2" Then
-                    result.Add(New With {.Value = "2L", .Text = "2L"})
-                    result.Add(New With {.Value = "2R", .Text = "2R"})
+                    result.Add(New With {.Value = "A", .Text = "Layout A"})
+                    result.Add(New With {.Value = "B", .Text = "Layout B"})
                 End If
                 If customtype = "3 - 3" Then
-                    result.Add(New With {.Value = "3L", .Text = "3L"})
-                    result.Add(New With {.Value = "3R", .Text = "3R"})
+                    result.Add(New With {.Value = "C", .Text = "Layout C"})
+                    result.Add(New With {.Value = "D", .Text = "Layout D"})
                 End If
                 If customtype = "3 - 5" Then
-                    result.Add(New With {.Value = "3L-2R", .Text = "3L-2R"})
-                    result.Add(New With {.Value = "2L-3R", .Text = "2L-3R"})
+                    result.Add(New With {.Value = "E", .Text = "Layout E"})
+                    result.Add(New With {.Value = "F", .Text = "Layout F"})
                 End If
                 If customtype = "4 - 4" Then
-                    result.Add(New With {.Value = "4L", .Text = "4L"})
-                    result.Add(New With {.Value = "4R", .Text = "4R"})
+                    result.Add(New With {.Value = "G", .Text = "Layout G"})
+                    result.Add(New With {.Value = "H", .Text = "Layout H"})
                 End If
                 If customtype = "4 - 5" Then
-                    result.Add(New With {.Value = "3L-2R", .Text = "3L-2R"})
-                    result.Add(New With {.Value = "2R-3L", .Text = "2R-3L"})
+                    result.Add(New With {.Value = "I", .Text = "Layout I"})
+                    result.Add(New With {.Value = "J", .Text = "Layout J"})
                 End If
                 If customtype = "4 - 6" Then
-                    result.Add(New With {.Value = "2L-4R", .Text = "2L-4R"})
-                    result.Add(New With {.Value = "4L-2R", .Text = "4L-2R"})
+                    result.Add(New With {.Value = "K", .Text = "Layout K"})
+                    result.Add(New With {.Value = "L", .Text = "Layout L"})
                 End If
                 If customtype = "4 - 7" Then
-                    result.Add(New With {.Value = "4L-3R", .Text = "4L-3R"})
-                    result.Add(New With {.Value = "3L-4R", .Text = "3L-4R"})
+                    result.Add(New With {.Value = "M", .Text = "Layout M"})
+                    result.Add(New With {.Value = "N", .Text = "Layout N"})
                 End If
                 If customtype = "5 - 5" Then
-                    result.Add(New With {.Value = "5L", .Text = "5L"})
-                    result.Add(New With {.Value = "5R", .Text = "5R"})
+                    result.Add(New With {.Value = "O", .Text = "Layout O"})
+                    result.Add(New With {.Value = "P", .Text = "Layout P"})
                 End If
                 If customtype = "5 - 7" Then
-                    result.Add(New With {.Value = "5L-2R", .Text = "5L-2R"})
-                    result.Add(New With {.Value = "2L-5R", .Text = "2L-5R"})
+                    result.Add(New With {.Value = "Q", .Text = "Q"})
+                    result.Add(New With {.Value = "R", .Text = "R"})
                 End If
                 If customtype = "5 - 8" Then
-                    result.Add(New With {.Value = "3L-5R", .Text = "3L-5R"})
-                    result.Add(New With {.Value = "5L-3R", .Text = "5L-3R"})
+                    result.Add(New With {.Value = "S", .Text = "Layout S"})
+                    result.Add(New With {.Value = "T", .Text = "Layout T"})
                 End If
                 If customtype = "5 - 9" Then
-                    result.Add(New With {.Value = "5L-4R", .Text = "5L-4R"})
-                    result.Add(New With {.Value = "4L-5R", .Text = "4L-5R"})
+                    result.Add(New With {.Value = "U", .Text = "Layout U"})
+                    result.Add(New With {.Value = "Layout V", .Text = "Layout V"})
                 End If
             End If
         End If
@@ -882,7 +882,6 @@ Partial Class Order_Method
                 End If
             End If
         End If
-
         If type = "SubType" Then
             Dim blindName As String = orderClass.GetItemData("SELECT Name FROM Blinds WHERE Id='" & blindtype & "'")
 
@@ -957,7 +956,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Single", .Text = "Single Venetian"})
             End If
         End If
-
         If type = "ValanceType" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" Then
@@ -974,7 +972,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Standard", .Text = "Standard"})
             End If
         End If
-
         If type = "ValanceType_Part" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Basswood Valance" Then
@@ -1494,6 +1491,108 @@ Partial Class Order_Method
         End If
 
         Return result
+    End Function
+
+    <WebMethod>
+    Public Shared Function GetTrackNPanel_PG(layoutCode As String) As Object
+        Try
+            If String.IsNullOrWhiteSpace(layoutCode) Then Return Nothing
+
+            Select Case layoutCode.Trim().ToUpper()
+                Case "A"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "2"}, {"Panels", "2"}
+                    }
+                Case "B"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "2"}, {"Panels", "2"}
+                    }
+                Case "C"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "3"}, {"Panels", "3"}
+                    }
+                Case "D"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "3"}, {"Panels", "3"}
+                    }
+                Case "E"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "3"}, {"Panels", "5"}
+                    }
+                Case "F"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "3"}, {"Panels", "5"}
+                    }
+                Case "G"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "4"}, {"Panels", "4"}
+                    }
+                Case "H"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "4"}, {"Panels", "4"}
+                    }
+                Case "I"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "4"}, {"Panels", "5"}
+                    }
+                Case "J"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "4"}, {"Panels", "5"}
+                    }
+                Case "K"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "4"}, {"Panels", "6"}
+                    }
+                Case "L"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "4"}, {"Panels", "6"}
+                    }
+                Case "M"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "4"}, {"Panels", "7"}
+                    }
+                Case "N"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "4"}, {"Panels", "7"}
+                    }
+                Case "O"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "5"}, {"Panels", "5"}
+                    }
+                Case "P"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "5"}, {"Panels", "5"}
+                    }
+                Case "Q"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "5"}, {"Panels", "7"}
+                    }
+                Case "R"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "5"}, {"Panels", "7"}
+                    }
+                Case "S"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "5"}, {"Panels", "8"}
+                    }
+                Case "T"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "5"}, {"Panels", "8"}
+                    }
+                Case "U"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "5"}, {"Panels", "9"}
+                    }
+                Case "V"
+                    Return New Dictionary(Of String, String) From {
+                        {"Tracks", "5"}, {"Panels", "9"}
+                    }
+                Case Else
+                    Return Nothing
+            End Select
+        Catch ex As Exception
+            Return Nothing
+        End Try
     End Function
 
     ' PROCESS
@@ -10390,7 +10489,7 @@ Partial Class Order_Method
             Return "PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS !"
         End If
 
-        If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" OrElse blindName = "Econo 50mm" OrElse blindName = "Econo 63mm" Then
+        If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" OrElse blindName = "Econo 50mm" OrElse blindName = "Econo 63mm" OrElse blindName = "Ultraslat 50mm" OrElse blindName = "Ultraslat 63mm" Then
             If String.IsNullOrEmpty(data.controllength) Then Return "CORD LENGTH IS REQUIRED !"
 
             If data.controllength = "Custom" Then
