@@ -102,7 +102,6 @@
             </div>
         </section>
     </div>
-    
     <div class="modal fade" id="filePreviewModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 1100px;">
             <div class="modal-content">
@@ -116,7 +115,6 @@
             </div>
         </div>
     </div>
-
     <script type="text/javascript">
         var currentPath = "";
         var allFiles = [];
@@ -157,7 +155,6 @@
                 });
             }
         });
-
         function loadFiles(path, page) {
             currentPath = path || "";
             currentPage = page || 1;
@@ -209,7 +206,6 @@
                 showFileMessage(error.message || "Unable to load files.", true);
             });
         }
-
         function renderBreadcrumb() {
             var breadcrumb = document.getElementById("fileBreadcrumb");
 
@@ -274,7 +270,6 @@
                 breadcrumb.appendChild(item);
             });
         }
-
         function renderFiles() {
             var fileList = document.getElementById("fileList");
             var fileEmpty = document.getElementById("fileEmpty");
@@ -414,7 +409,6 @@
                     " of " + totalItems + " items";
             }
         }
-
         function renderPagination() {
             var pagination = document.getElementById("filePagination");
 
@@ -469,7 +463,6 @@
                 }
             );
         }
-
         function addPageControl(container, label, enabled, callback) {
             var item = document.createElement("li");
             item.className = "page-item";
@@ -490,7 +483,6 @@
             item.appendChild(link);
             container.appendChild(item);
         }
-
         function addPageButton(container, page) {
             var item = document.createElement("li");
             item.className = "page-item";
@@ -513,7 +505,6 @@
             item.appendChild(link);
             container.appendChild(item);
         }
-
         function addEllipsis(container) {
             var item = document.createElement("li");
             item.className = "page-item disabled";
@@ -525,7 +516,6 @@
             item.appendChild(span);
             container.appendChild(item);
         }
-
         function resetSearch() {
             currentSearch = "";
             clearTimeout(searchTimer);
@@ -536,7 +526,6 @@
                 searchInput.value = "";
             }
         }
-
         function getFileIcon(file) {
             if (file.IsDirectory) {
                 return "bi bi-folder-fill text-warning";
@@ -545,20 +534,16 @@
             switch ((file.Extension || "").toLowerCase()) {
                 case ".pdf":
                     return "bi bi-file-earmark-pdf text-danger";
-
                 case ".doc":
                 case ".docx":
                     return "bi bi-file-earmark-word text-primary";
-
                 case ".xls":
                 case ".xlsx":
                 case ".csv":
                     return "bi bi-file-earmark-excel text-success";
-
                 case ".ppt":
                 case ".pptx":
                     return "bi bi-file-earmark-ppt text-danger";
-
                 case ".jpg":
                 case ".jpeg":
                 case ".png":
@@ -567,21 +552,17 @@
                 case ".webp":
                 case ".svg":
                     return "bi bi-file-earmark-image text-info";
-
                 case ".txt":
                 case ".log":
                     return "bi bi-file-earmark-text";
-
                 case ".zip":
                 case ".rar":
                 case ".7z":
                     return "bi bi-file-earmark-zip";
-
                 default:
                     return "bi bi-file-earmark";
             }
         }
-
         function isPreviewable(file) {
             if (!file || file.IsDirectory) {
                 return false;
@@ -603,7 +584,6 @@
                 (file.Extension || "").toLowerCase()
             ) !== -1;
         }
-
         function previewFile(file) {
             if (!file || file.IsDirectory || !file.RelativePath) {
                 return;
@@ -642,7 +622,6 @@
                 window.open(previewUrl, "_blank");
             }
         }
-
         function downloadFile(file) {
             if (!file || file.IsDirectory || !file.RelativePath) {
                 showFileMessage("Invalid file path.", true);
@@ -655,7 +634,6 @@
 
             window.location.href = downloadUrl;
         }
-
         function formatBytes(bytes) {
             bytes = Number(bytes) || 0;
 
@@ -672,7 +650,6 @@
 
             return size.toFixed(index === 0 ? 0 : 2) + " " + units[index];
         }
-
         function showFileMessage(message, isError) {
             var fileEmpty = document.getElementById("fileEmpty");
 
@@ -689,7 +666,6 @@
                 fileEmpty.classList.remove("text-danger");
             }
         }
-
         function hideFileMessage() {
             var fileEmpty = document.getElementById("fileEmpty");
 

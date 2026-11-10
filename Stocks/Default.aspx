@@ -18,7 +18,6 @@
         .stock-toolbar .dropdown-item { padding:9px 12px; border-radius:5px; font-size:13px; }
         .stock-toolbar .dropdown-item:hover { background:#f0f2f5; }
     </style>
-
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -508,7 +507,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-left" id="modalGenerate" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -557,9 +555,7 @@
             </div>
         </div>
     </div>
-
     <asp:HiddenField ID="selected_tab" runat="server" />
-
     <script type="text/javascript">
         function showLoading() {
             $("#loadingOverlay").show();

@@ -33,7 +33,7 @@ Partial Class Setting_General_Mailing_Edit
         Try
             If msgError.InnerText = "" Then
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Mailings SET CompanyId=@CompanyId, Name=@Name, Server=@Server, Host=@Host, Port=@Port, NetworkCredentials=@NetworkCredentials, DefaultCredentials=@DefaultCredentials, EnableSSL=@EnableSSL, Account=@Account, Password=@Password, Alias=@Alias, Subject=@Subject, [To]=@To, Cc=@Cc, Bcc=@Bcc, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Mailings SET CompanyId=@CompanyId, Name=@Name, Server=@Server, Host=@Host, Port=@Port, NetworkCredentials=@NetworkCredentials, DefaultCredentials=@DefaultCredentials, EnableSSL=@EnableSSL, Account=@Account, Password=@Password, Alias=@Alias, Subject=@Subject, [To]=@To, Cc=@Cc, Bcc=@Bcc, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@CompanyId", If(String.IsNullOrEmpty(ddlCompanyId.SelectedValue), CType(DBNull.Value, Object), ddlCompanyId.SelectedValue))
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
@@ -51,7 +51,7 @@ Partial Class Setting_General_Mailing_Edit
                         thisCmd.Parameters.AddWithValue("@Cc", txtCC.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Bcc", txtBcc.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -63,9 +63,6 @@ Partial Class Setting_General_Mailing_Edit
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
         End Try
     End Sub
 
@@ -76,7 +73,7 @@ Partial Class Setting_General_Mailing_Edit
 
     Protected Sub BindData(mailingId As String)
         Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Mailings WHERE Id='" & mailingId & "'")
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Mailings WHERE Id='" & mailingId & "' AND (Status='Active' OR Status='Inactive')")
             If myData Is Nothing Then
                 Response.Redirect("~/setting/general/mailing", False)
                 Exit Sub
@@ -102,12 +99,9 @@ Partial Class Setting_General_Mailing_Edit
             txtCC.Text = myData("Cc").ToString()
             txtBcc.Text = myData("Bcc").ToString()
             txtDescription.Text = myData("Description").ToString()
-            ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
+            ddlStatus.SelectedValue = myData("Active").ToString()
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
         End Try
     End Sub
 
@@ -124,9 +118,6 @@ Partial Class Setting_General_Mailing_Edit
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
         End Try
     End Sub
 

@@ -500,7 +500,7 @@ Public Class PackingListClass
 
                 Dim kodeBarang As String = String.Empty
                 If Not String.IsNullOrEmpty(namaBarang) Then
-                    kodeBarang = GetItemData("SELECT ItemCode FROM AKZeros WHERE Name='" & namaBarang & "' AND Active=1")
+                    kodeBarang = GetItemData("SELECT ItemCode FROM AKZeros WHERE Name='" & namaBarang & "' AND Status='Active'")
                     If Not commodityList.Contains(namaBarang) Then
                         commodityList.Add(namaBarang)
                     End If
@@ -886,7 +886,7 @@ Public Class PackingListClass
 
                 Dim kodeBarang As String = String.Empty
                 If Not String.IsNullOrEmpty(namaBarang) Then
-                    kodeBarang = GetItemData("SELECT ItemCode FROM AKZeros WHERE Name='" & namaBarang & "' AND Active=1")
+                    kodeBarang = GetItemData("SELECT ItemCode FROM AKZeros WHERE Name='" & namaBarang & "' AND Status='Active'")
                     If Not commodityList.Contains(namaBarang) Then
                         commodityList.Add(namaBarang)
                     End If

@@ -19,7 +19,6 @@
         .table thead{  background:#435ebe; color:white; }
         .table-hover tbody tr:hover{ background:#f7f9ff; }
     </style>
-
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -110,6 +109,7 @@
                                     <span class="info-value">
                                         <span class="badge bg-success badge-status">
                                             <asp:Label runat="server" ID="lblStatus"></asp:Label>
+                                            <asp:Label runat="server" ID="lblOrderType" Visible="false"></asp:Label>
                                         </span>
                                     </span>
                                 </div>
@@ -232,7 +232,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-center" id="modalSubmitRework" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -446,14 +445,12 @@
             </div>
         </div>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblReworkId"></asp:Label>
         <asp:Label runat="server" ID="lblHeaderId"></asp:Label>
         <asp:Label runat="server" ID="lblCustomerId"></asp:Label>
         <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
     </div>
-
     <script type="text/javascript">
         ["modalSubmitRework", "modalDeleteRework", "modalApproveRework", "modalRejectRework", "modalWaiting", "modalAddItem", "modalUpdateItem", "modalDeleteItem", "modalUpload"].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {

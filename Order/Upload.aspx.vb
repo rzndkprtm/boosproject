@@ -1712,6 +1712,52 @@ Partial Class Order_Upload
 
                                         panelQty = panelQty.Replace("Panels", "").Trim()
 
+                                        Dim fixLayoutCode As String = String.Empty
+                                        If trackType = "2" AndAlso panelQty = "2" Then
+                                            If layoutCode = "2L" Then fixLayoutCode = "A"
+                                            If layoutCode = "2R" Then fixLayoutCode = "B"
+                                        End If
+                                        If trackType = "3" AndAlso panelQty = "3" Then
+                                            If layoutCode = "3L" Then fixLayoutCode = "C"
+                                            If layoutCode = "3R" Then fixLayoutCode = "D"
+                                        End If
+                                        If trackType = "3" AndAlso panelQty = "5" Then
+                                            If layoutCode = "3L - 2R" Then fixLayoutCode = "E"
+                                            If layoutCode = "2L - 3R" Then fixLayoutCode = "F"
+                                        End If
+                                        If trackType = "4" AndAlso panelQty = "4" Then
+                                            If layoutCode = "4L" Then fixLayoutCode = "G"
+                                            If layoutCode = "4R" Then fixLayoutCode = "H"
+                                        End If
+                                        If trackType = "4" AndAlso panelQty = "5" Then
+                                            If layoutCode = "3L - 2R" Then fixLayoutCode = "I"
+                                            If layoutCode = "2L - 3R" Then fixLayoutCode = "J"
+                                        End If
+                                        If trackType = "4" AndAlso panelQty = "6" Then
+                                            If layoutCode = "2L - 4R" Then fixLayoutCode = "K"
+                                            If layoutCode = "4L - 2R" Then fixLayoutCode = "L"
+                                        End If
+                                        If trackType = "4" AndAlso panelQty = "7" Then
+                                            If layoutCode = "4L - 3R" Then fixLayoutCode = "M"
+                                            If layoutCode = "3L - 4R" Then fixLayoutCode = "N"
+                                        End If
+                                        If trackType = "5" AndAlso panelQty = "5" Then
+                                            If layoutCode = "5L" Then fixLayoutCode = "O"
+                                            If layoutCode = "5R" Then fixLayoutCode = "P"
+                                        End If
+                                        If trackType = "5" AndAlso panelQty = "7" Then
+                                            If layoutCode = "5L - 2R" Then fixLayoutCode = "Q"
+                                            If layoutCode = "2L - 5R" Then fixLayoutCode = "R"
+                                        End If
+                                        If trackType = "5" AndAlso panelQty = "8" Then
+                                            If layoutCode = "3L - 5R" Then fixLayoutCode = "S"
+                                            If layoutCode = "5L - 3R" Then fixLayoutCode = "T"
+                                        End If
+                                        If trackType = "5" AndAlso panelQty = "9" Then
+                                            If layoutCode = "5L - 4R" Then fixLayoutCode = "U"
+                                            If layoutCode = "4L - 5R" Then fixLayoutCode = "V"
+                                        End If
+
                                         Dim linearMetre As Decimal = width / 1000
                                         Dim squareMetre As Decimal = width * drop / 1000000
 
@@ -1727,7 +1773,7 @@ Partial Class Order_Upload
                                         Dim itemId As String = orderClass.GetNewOrderItemId()
 
                                         Using thisConn As New SqlConnection(myConn)
-                                            Using thisCmd As New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], WandColour, WandLength, WandLengthValue, LayoutCode, LayoutCodeCustom, TrackType, PanelQty, Batten, BattenB, LinearMetre, SquareMetre, TotalItems, Notes, Markup, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @WandColour, @WandLength, @WandLengthValue, @LayoutCode, @LayoutCodeCustom, @TrackType, @PanelQty, @Batten, @BattenB, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
+                                            Using thisCmd As New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], WandColour, WandLength, WandLengthValue, LayoutCode, LayoutCodeCustom, TrackType, PanelQty, StackPosition, Batten, BattenB, LinearMetre, SquareMetre, TotalItems, Notes, Markup, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @WandColour, @WandLength, @WandLengthValue, @LayoutCode, @LayoutCodeCustom, @TrackType, @PanelQty, 'Front', @Batten, @BattenB, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
                                                 thisCmd.Parameters.AddWithValue("@Id", itemId)
                                                 thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
                                                 thisCmd.Parameters.AddWithValue("@ProductId", productId)
@@ -1743,7 +1789,7 @@ Partial Class Order_Upload
                                                 thisCmd.Parameters.AddWithValue("@WandColour", wandColour)
                                                 thisCmd.Parameters.AddWithValue("@WandLength", wandLength)
                                                 thisCmd.Parameters.AddWithValue("@WandLengthValue", wandLengthValue)
-                                                thisCmd.Parameters.AddWithValue("@LayoutCode", layoutCode)
+                                                thisCmd.Parameters.AddWithValue("@LayoutCode", fixLayoutCode)
                                                 thisCmd.Parameters.AddWithValue("@LayoutCodeCustom", String.Empty)
                                                 thisCmd.Parameters.AddWithValue("@TrackType", trackType)
                                                 thisCmd.Parameters.AddWithValue("@PanelQty", panelQty)

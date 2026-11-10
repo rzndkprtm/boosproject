@@ -132,6 +132,37 @@ Partial Class Order_Rework_Detail
             Dim status As String = "New Order"
             If cashSale = True Then status = "Waiting Proforma"
 
+            Dim newOrderNumber As String = String.Empty
+            Dim newOrderName As String = String.Empty
+
+            If lblOrderType.Text = "Regular" OrElse lblOrderType.Text = "Builder" Then
+                newOrderNumber = lblOrderNumber.Text + " - RW"
+                newOrderName = lblOrderName.Text + " - RW"
+
+                Dim countRework As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderReworks WHERE (HeaderId='" & lblHeaderId.Text & "' OR HeaderIdNew='" & lblHeaderId.Text & "') AND Status = 'Approved' AND Active = 1")
+                If countRework > 0 Then
+                    Dim historyRework As String = CInt(countRework + 1)
+
+                    newOrderNumber = lblOrderNumber.Text + " - RW " + historyRework
+                    newOrderName = lblOrderName.Text + " - RW " + historyRework
+                End If
+            End If
+
+            If lblOrderType.Text = "Rework" Then
+                Dim originalId As String = orderClass.GetItemData("SELECT HeaderId FROM OrderReworks WHERE HeaderIdNew='" & lblHeaderId.Text & "' AND Status='Approved' AND Active=1")
+
+                Dim originalOrderNumber As String = orderClass.GetItemData("SELECT OrderNumber FROM OrderHeaders WHERE Id='" & originalId & "'")
+                Dim originalOrderName As String = orderClass.GetItemData("SELECT OrderName FROM OrderHeaders WHERE Id='" & originalId & "'")
+
+                Dim countRework As Integer = orderClass.GetItemData_Integer("SELECT COUNT(*) FROM OrderReworks WHERE (HeaderId='" & originalId & "' OR HeaderIdNew='" & originalId & "') AND Status = 'Approved' AND Active = 1")
+                If countRework > 0 Then
+                    Dim historyRework As String = CInt(countRework + 1)
+
+                    newOrderNumber = originalOrderNumber + " - RW " + historyRework
+                    newOrderName = originalOrderName + " - RW " + historyRework
+                End If
+            End If
+
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Approved', HeaderIdNew=@HeaderIdNew WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
@@ -154,14 +185,16 @@ Partial Class Order_Rework_Detail
                     Throw New Exception("FAILED TO GENERATE UNIQUE ORDER ID")
                 End If
 
-                Dim randomCode As String = orderClass.GetNewOrderId("Rework")
-                orderId = companyAlias & randomCode
+                Dim randomCode As String = orderClass.GetNewOrderId()
+                orderId = String.Format("RW{0}", randomCode)
                 Try
                     Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, NULL, @OrderId, @OrderId, NULL, 'Rework', OrderFactory, OrderDelivery, OrderContact, OrderAddress, OrderContainer, @Status, NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, @InvoiceNumber, NULL, 0, NULL, 0, @OrderId, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId;", thisConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderHeaders SELECT @NewID, @OrderId, CustomerId, NULL, @OrderNumber, @OrderName, NULL, 'Rework', OrderFactory, OrderDelivery, OrderContact, OrderAddress, OrderContainer, @Status, NULL, @CreatedBy, GETDATE(), NULL, NULL, NULL, GETDATE(), NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, @InvoiceNumber, NULL, 0, NULL, 0, @OrderId, 'No', NULL, 1 FROM OrderHeaders WHERE Id=@OldId;", thisConn)
                             thisCmd.Parameters.AddWithValue("@OldId", lblHeaderId.Text)
                             thisCmd.Parameters.AddWithValue("@NewID", newHeaderId)
                             thisCmd.Parameters.AddWithValue("@OrderId", orderId)
+                            thisCmd.Parameters.AddWithValue("@OrderNumber", newOrderNumber)
+                            thisCmd.Parameters.AddWithValue("@OrderName", newOrderName)
                             thisCmd.Parameters.AddWithValue("@Status", status)
                             thisCmd.Parameters.AddWithValue("@CreatedBy", Session("LoginId").ToString())
                             thisCmd.Parameters.AddWithValue("@InvoiceNumber", orderId)
@@ -545,7 +578,7 @@ Partial Class Order_Rework_Detail
 
     Protected Sub BindDataRework(reworkId As String)
         Try
-            Dim reworkData As DataRow = orderClass.GetDataRow("SELECT OrderReworks.*, Logins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN Logins ON OrderReworks.CreatedBy=Logins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
+            Dim reworkData As DataRow = orderClass.GetDataRow("SELECT OrderReworks.*, Logins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.OrderType AS OrderType, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN Logins ON OrderReworks.CreatedBy=Logins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
             If reworkData Is Nothing Then
                 Response.Redirect("~/order/rework", False)
                 Exit Sub
@@ -559,6 +592,7 @@ Partial Class Order_Rework_Detail
             lblOrderNumber.Text = reworkData("OrderNumber").ToString()
             lblOrderName.Text = reworkData("OrderName").ToString()
             lblStatus.Text = reworkData("Status").ToString()
+            lblOrderType.Text = reworkData("OrderType").ToString()
             lblDescription.Text = reworkData("Description").ToString()
 
             lblCreatedDate.Text = "-"

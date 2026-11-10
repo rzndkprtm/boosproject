@@ -110,7 +110,7 @@ Partial Class Stocks_Jpmd
 
             Dim rptVerticalColour As Repeater = CType(e.Item.FindControl("rptVerticalColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompanyArray WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompanyArray.VALUE='2' ORDER BY Name")
 
             rptVerticalColour.DataSource = dt
             rptVerticalColour.DataBind()
@@ -164,7 +164,7 @@ Partial Class Stocks_Jpmd
 
             Dim rptCellularColour As Repeater = CType(e.Item.FindControl("rptCellularColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompanyArray WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompanyArray.VALUE='2' ORDER BY Name")
 
             rptCellularColour.DataSource = dt
             rptCellularColour.DataBind()

@@ -27,13 +27,13 @@ Partial Class Setting_General_Xero_Add
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Xeros VALUES (@Id, @Name, @ItemCode, @AccountCode, @Description, @Active)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Xeros VALUES (@Id, @Name, @ItemCode, @AccountCode, @Description, @Status)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@ItemCode", txtItemCode.Text)
                         thisCmd.Parameters.AddWithValue("@AccountCode", txtAccountCode.Text)
                         thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using

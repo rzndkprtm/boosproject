@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_General_Mailing_Default
     Inherits Page
@@ -87,12 +88,15 @@ Partial Class Setting_General_Mailing_Default
             Dim thisId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Mailings WHERE Id=@Id; DELETE FROM Logs WHERE Type='Mailings' AND DataId=@Id;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                Using thisCmd As New SqlCommand("UPDATE Mailings SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(thisId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
+
+            dataLog = {"Mailings", thisId, Session("LoginId").ToString(), "Mailing Deleted"}
+            settingClass.Logs(dataLog)
 
             Session("SearchMailing") = txtSearch.Text
             Response.Redirect("~/setting/general/mailing", False)
@@ -108,7 +112,8 @@ Partial Class Setting_General_Mailing_Default
         Session("SearchMailing") = String.Empty
         Try
             Dim params As New List(Of SqlParameter) From {
-                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText))
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText)),
+                New SqlParameter("@RoleName", Session("RoleName").ToString())
             }
             gvList.DataSource = settingClass.GetDataTableSP("sp_Mailings_List", params)
             gvList.DataBind()

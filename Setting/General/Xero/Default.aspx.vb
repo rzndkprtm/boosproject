@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_General_Xero_Default
     Inherits Page
@@ -56,13 +57,17 @@ Partial Class Setting_General_Xero_Default
         MessageError(False, String.Empty)
         Try
             Dim thisId As String = txtIdDelete.Text
+
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Xeros WHERE Id=@Id; DELETE FROM Logs WHERE Type='Xeros' AND DataId=@Id;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                Using thisCmd As New SqlCommand("UPDATE Xeros SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(thisId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
+
+            dataLog = {"Xeros", thisId, Session("LoginId").ToString(), "Xero Deleted"}
+            settingClass.Logs(dataLog)
 
             Session("SearchXero") = txtSearch.Text
             Response.Redirect("~/setting/general/xero", False)
@@ -76,13 +81,11 @@ Partial Class Setting_General_Xero_Default
 
     Protected Sub BindData(searchText As String)
         Try
-            Dim search As String = String.Empty
-            If Not searchText = "" Then
-                search = "WHERE Id LIKE '%" & searchText.Trim() & "%' OR Name LIKE '%" & searchText.Trim() & "%' OR ItemCode LIKE '%" & searchText.Trim() & "%' OR AccountCode LIKE '%" & searchText.Trim() & "%'"
-            End If
-            Dim thisString As String = String.Format("SELECT *, CASE WHEN Active=1 THEN 'Yes' WHEN Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Xeros {0} ORDER BY Name ASC", search)
-
-            gvList.DataSource = settingClass.GetDataTable(thisString)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText)),
+                New SqlParameter("@RoleName", Session("RoleName").ToString())
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_Xeros_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 

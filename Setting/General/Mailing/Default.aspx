@@ -71,21 +71,21 @@
                                             <asp:BoundField DataField="Id" HeaderText="ID" />
                                             <asp:BoundField DataField="CompanyAlias" HeaderText="Company" />
                                             <asp:BoundField DataField="Name" HeaderText="Mail Name" />
-                                            <asp:BoundField DataField="DataActive" HeaderText="Active" />
+                                            <asp:BoundField DataField="Status" HeaderText="Status" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
                                                     <ul class="dropdown-menu">
-                                                        <li runat="server" visible='<%# LoginAccess("Detail") %>'>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Detail") %>'>
                                                             <a id="aDetail" class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDetail" onclick='<%# String.Format("return dataDetail(`{0}`, `{1}`, `{2}`, `{3}`, `{4}`, `{5}`, `{6}`,);", Eval("CompanyAlias").ToString(), Eval("Name").ToString(), Eval("Alias").ToString(), Eval("Subject").ToString(), Eval("To").ToString(), Eval("Cc").ToString(), Eval("Bcc").ToString()) %>'>Detail</a>
                                                         </li>
-                                                        <li runat="server" visible='<%# LoginAccess("Edit") %>'>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/setting/general/mailing/edit?mailid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>
-                                                        <li runat="server" visible='<%# LoginAccess("Copy") %>'>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Copy") %>'>
                                                             <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalCopy" onclick='<%# String.Format("return dataCopy(`{0}`);", Eval("Id").ToString()) %>'>Copy</a>
                                                         </li>
-                                                        <li runat="server" visible='<%# LoginAccess("Delete") %>'>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Delete") %>'>
                                                             <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                         </li>
                                                         <li>
@@ -117,7 +117,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-center" id="modalDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -224,7 +223,6 @@
             </div>
         </div>
     </div>
-
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");

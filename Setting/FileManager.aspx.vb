@@ -16,7 +16,6 @@ Partial Class Setting_FileManager
         End If
 
         If Not IsPostBack Then
-            ' Initial page load.
         End If
     End Sub
 
@@ -169,7 +168,6 @@ Partial Class Setting_FileManager
     End Function
 
     Protected Sub Page_PreRender(sender As Object, e As EventArgs) Handles Me.PreRender
-        ' No additional rendering required.
     End Sub
 
     Protected Overrides Sub Render(writer As HtmlTextWriter)

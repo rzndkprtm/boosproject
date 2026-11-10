@@ -27,12 +27,12 @@ Partial Class Setting_General_Zero_Add
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO AKZeros VALUES (@Id, @ItemCode, @Name, @Description, @Active)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO AKZeros VALUES (@Id, @ItemCode, @Name, @Description, @Status)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@ItemCode", txtItemCode.Text)
                         thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using

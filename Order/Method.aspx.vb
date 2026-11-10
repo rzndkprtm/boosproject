@@ -463,7 +463,7 @@ Partial Class Order_Method
                 End If
                 If customtype = "5 - 9" Then
                     result.Add(New With {.Value = "U", .Text = "Layout U"})
-                    result.Add(New With {.Value = "Layout V", .Text = "Layout V"})
+                    result.Add(New With {.Value = "V", .Text = "Layout V"})
                 End If
             End If
         End If

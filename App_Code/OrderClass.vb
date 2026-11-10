@@ -1932,7 +1932,7 @@ Public Class OrderClass
         Return result
     End Function
 
-    Public Function GetNewOrderId(Optional type As String = "") As String
+    Public Function GetNewOrderId() As String
         Try
             Dim chars As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
             Dim rnd As New Random()
@@ -1941,9 +1941,6 @@ Public Class OrderClass
                 Dim idx As Integer = rnd.Next(0, chars.Length)
                 result.Append(chars(idx))
             Next
-            If type = "Rework" Then
-                Return result.ToString & " - RW"
-            End If
             Return result.ToString()
         Catch ex As Exception
             Return String.Empty
@@ -2531,7 +2528,6 @@ Public Class OrderClass
                     End If
                 End Using
             End Using
-
             Return Nothing
         Catch
             Return Nothing
@@ -2569,7 +2565,7 @@ Public Class OrderClass
 
                     Return Math.Round(gridPrice * sqm, 2)
                 Case "LM"
-                    Return Math.Round(gridPrice * linearMetre, 2)
+                    Return Math.Round(gridPrice * linearMetre, 4)
                 Case "LM_MIN"
                     Dim lm As Decimal = linearMetre
                     If Not IsDBNull(rule("SellMinSize")) AndAlso lm <= CDec(rule("SellMinSize")) Then
@@ -2593,7 +2589,6 @@ Public Class OrderClass
                             Return gridPrice
                         End Try
                     End If
-
                     Return gridPrice
                 Case Else
                     Return gridPrice
@@ -2818,52 +2813,52 @@ Public Class OrderClass
 
                 Dim linearMetre As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetre")) Then
-                    linearMetre = Math.Round(Convert.ToDecimal(thisData("LinearMetre")), 2)
+                    linearMetre = Math.Round(Convert.ToDecimal(thisData("LinearMetre")), 4)
                 End If
                 Dim linearMetreB As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreB")) Then
-                    linearMetreB = Math.Round(Convert.ToDecimal(thisData("LinearMetreB")), 2)
+                    linearMetreB = Math.Round(Convert.ToDecimal(thisData("LinearMetreB")), 4)
                 End If
                 Dim linearMetreC As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreC")) Then
-                    linearMetreC = Math.Round(Convert.ToDecimal(thisData("LinearMetreC")), 2)
+                    linearMetreC = Math.Round(Convert.ToDecimal(thisData("LinearMetreC")), 4)
                 End If
                 Dim linearMetreD As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreD")) Then
-                    linearMetreD = Math.Round(Convert.ToDecimal(thisData("LinearMetreD")), 2)
+                    linearMetreD = Math.Round(Convert.ToDecimal(thisData("LinearMetreD")), 4)
                 End If
                 Dim linearMetreE As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreE")) Then
-                    linearMetreE = Math.Round(Convert.ToDecimal(thisData("LinearMetreE")), 2)
+                    linearMetreE = Math.Round(Convert.ToDecimal(thisData("LinearMetreE")), 4)
                 End If
                 Dim linearMetreF As Decimal = 0D
                 If Not IsDBNull(thisData("LinearMetreF")) Then
-                    linearMetreF = Math.Round(Convert.ToDecimal(thisData("LinearMetreF")), 2)
+                    linearMetreF = Math.Round(Convert.ToDecimal(thisData("LinearMetreF")), 4)
                 End If
 
                 Dim squareMetre As Decimal = 0D
                 If Not IsDBNull(thisData("SquareMetre")) Then
-                    squareMetre = Math.Round(Convert.ToDecimal(thisData("SquareMetre")), 2)
+                    squareMetre = Math.Round(Convert.ToDecimal(thisData("SquareMetre")), 4)
                 End If
                 Dim squareMetreB As Decimal = 0D
                 If Not IsDBNull(thisData("SquareMetreB")) Then
-                    squareMetreB = Math.Round(Convert.ToDecimal(thisData("SquareMetreB")), 2)
+                    squareMetreB = Math.Round(Convert.ToDecimal(thisData("SquareMetreB")), 4)
                 End If
                 Dim squareMetreC As Decimal = 0D
                 If Not IsDBNull(thisData("SquareMetreC")) Then
-                    squareMetreC = Math.Round(Convert.ToDecimal(thisData("SquareMetreC")), 2)
+                    squareMetreC = Math.Round(Convert.ToDecimal(thisData("SquareMetreC")), 4)
                 End If
                 Dim squareMetreD As Decimal = 0D
                 If Not IsDBNull(thisData("SquareMetreD")) Then
-                    squareMetreD = Math.Round(Convert.ToDecimal(thisData("SquareMetreD")), 2)
+                    squareMetreD = Math.Round(Convert.ToDecimal(thisData("SquareMetreD")), 4)
                 End If
                 Dim squareMetreE As Decimal = 0D
                 If Not IsDBNull(thisData("SquareMetreE")) Then
-                    squareMetreE = Math.Round(Convert.ToDecimal(thisData("SquareMetreE")), 2)
+                    squareMetreE = Math.Round(Convert.ToDecimal(thisData("SquareMetreE")), 4)
                 End If
                 Dim squareMetreF As Decimal = 0D
                 If Not IsDBNull(thisData("SquareMetreF")) Then
-                    squareMetreF = Math.Round(Convert.ToDecimal(thisData("SquareMetreF")), 2)
+                    squareMetreF = Math.Round(Convert.ToDecimal(thisData("SquareMetreF")), 4)
                 End If
 
                 Dim itemNumber As Integer = 0

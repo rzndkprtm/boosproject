@@ -136,10 +136,7 @@ Public Class MailingClass
             Dim cipherBytes As Byte() = Convert.FromBase64String(cipherText)
 
             Using encryptor As Aes = Aes.Create()
-                Dim pdb As New Rfc2898DeriveBytes(
-                EncryptionKey,
-                New Byte() {&H49, &H76, &H61, &H6E, &H20, &H4D, &H65, &H64, &H76, &H65, &H64, &H65, &H76}
-                )
+                Dim pdb As New Rfc2898DeriveBytes(EncryptionKey, New Byte() {&H49, &H76, &H61, &H6E, &H20, &H4D, &H65, &H64, &H76, &H65, &H64, &H65, &H76})
 
                 encryptor.Key = pdb.GetBytes(32)
                 encryptor.IV = pdb.GetBytes(16)
@@ -172,7 +169,7 @@ Public Class MailingClass
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
             If companyId = "3" Then companyName = "PT Bumi Indah Global"
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Reset Password' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Reset Password' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString()
@@ -277,7 +274,7 @@ Public Class MailingClass
             Dim actionName As String = actionData("FullName").ToString()
             Dim actionEmail As String = actionData("Email").ToString()
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & dataLogin("CompanyId").ToString() & "' AND Name='Personal Login' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & dataLogin("CompanyId").ToString() & "' AND Name='Personal Login' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString()
@@ -430,7 +427,7 @@ Public Class MailingClass
             Dim actionName As String = actionData("FullName").ToString()
             Dim actionEmail As String = actionData("Email").ToString()
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & customerData("CompanyId").ToString() & "' AND Name='Customer Login' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & customerData("CompanyId").ToString() & "' AND Name='Customer Login' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString()
@@ -605,7 +602,7 @@ Public Class MailingClass
             Dim actionName As String = actionData("FullName").ToString()
             Dim actionEmail As String = actionData("Email").ToString()
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Customer Welcome' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Customer Welcome' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString()
@@ -814,7 +811,7 @@ Public Class MailingClass
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
             If companyId = "3" OrElse companyId = "4" Then companyName = "PT Bumi Indah Global"
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='New Order' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='New Order' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString()
@@ -943,7 +940,7 @@ Public Class MailingClass
             Dim companyId As String = orderData("CompanyId").ToString()
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='New Order | Proforma' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='New Order | Proforma' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString()
@@ -1082,7 +1079,7 @@ Public Class MailingClass
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
             If companyId = "3" Then companyName = "PT Bumi Indah Global"
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Printing Fabric' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Printing Fabric' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString()
@@ -1218,7 +1215,7 @@ Public Class MailingClass
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
             If companyId = "3" Then companyName = "PT Bumi Indah Global"
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Send Quote' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Send Quote' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString().ToString()
@@ -1345,7 +1342,7 @@ Public Class MailingClass
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
             If companyId = "3" Then companyName = "PT Bumi Indah Global"
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Send Invoice' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Send Invoice' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString()
@@ -1491,7 +1488,7 @@ Public Class MailingClass
             Dim companyId As String = GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Rework Order' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Rework Order' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString()
@@ -1612,7 +1609,7 @@ Public Class MailingClass
             Dim companyId As String = orderNewData("CompanyId").ToString()
             Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Rework Approved' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Rework Approved' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString()
@@ -1746,7 +1743,7 @@ Public Class MailingClass
 
             If String.IsNullOrEmpty(mailName) Then Exit Sub
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='" & mailName & "' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='" & mailName & "' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString()
@@ -1853,7 +1850,7 @@ Public Class MailingClass
 
             If companyId = "3" OrElse companyId = "4" Then companyName = "PT Bumi Indah Global"
 
-            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Newsletter Stock' AND Active=1")
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Newsletter Stock' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
 
             Dim mailServer As String = mailData("Server").ToString()

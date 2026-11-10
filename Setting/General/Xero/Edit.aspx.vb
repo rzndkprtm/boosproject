@@ -34,13 +34,13 @@ Partial Class Setting_General_Xero_Edit
                 Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Xeros SET Name=@Name, ItemCode=@ItemCode, AccountCode=@AccountCode, Description=@Description, Active=@Active WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Xeros SET Name=@Name, ItemCode=@ItemCode, AccountCode=@AccountCode, Description=@Description, Status=@Status WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@ItemCode", txtItemCode.Text)
                         thisCmd.Parameters.AddWithValue("@AccountCode", txtAccountCode.Text)
                         thisCmd.Parameters.AddWithValue("@Description", descText)
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -66,7 +66,7 @@ Partial Class Setting_General_Xero_Edit
 
     Protected Sub BindData(xeroId As String)
         Try
-            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Xeros WHERE Id='" & lblId.Text & "'")
+            Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM Xeros WHERE Id='" & lblId.Text & "' AND (Status='Active' OR Status='Inactive')")
             If myData Is Nothing Then
                 Response.Redirect("~/setting/general/xero", False)
                 Exit Sub
@@ -76,7 +76,7 @@ Partial Class Setting_General_Xero_Edit
             txtItemCode.Text = myData("ItemCode").ToString()
             txtAccountCode.Text = myData("AccountCode").ToString()
             txtDescription.Text = myData("Description").ToString()
-            ddlActive.SelectedValue = Convert.ToInt32(myData("Active"))
+            ddlStatus.SelectedValue = myData("Status").ToString()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

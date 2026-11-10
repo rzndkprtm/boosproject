@@ -131,7 +131,6 @@ function getOrderHeader(headerId) {
         });
     });
 }
-
 function getCompanyOrder(headerId) {
     return new Promise((resolve, reject) => {
         companyId = "";
@@ -158,7 +157,6 @@ function getCompanyOrder(headerId) {
         });
     });
 }
-
 function getCompanyDetailOrder(headerId) {
     return new Promise((resolve, reject) => {
         companyDetailId = "";
@@ -185,7 +183,6 @@ function getCompanyDetailOrder(headerId) {
         });
     });
 }
-
 function getRoleAccess(loginId) {
     return new Promise((resolve, reject) => {
         roleAccess = "";
@@ -212,7 +209,6 @@ function getRoleAccess(loginId) {
         });
     });
 }
-
 function getPriceAccess(loginId) {
     return new Promise((resolve, reject) => {
         priceAccess = "";
@@ -239,7 +235,6 @@ function getPriceAccess(loginId) {
         });
     });
 }
-
 function getCompanyName(companyId) {
     if (!companyId) return;
 
@@ -260,7 +255,6 @@ function getCompanyName(companyId) {
         });
     });
 }
-
 function getCompanyDetailName(companyDetailId) {
     if (!companyDetailId) return;
 
@@ -281,7 +275,6 @@ function getCompanyDetailName(companyDetailId) {
         });
     });
 }
-
 function getDesignName(designId) {
     return new Promise((resolve, reject) => {
         const cardTitle = document.getElementById("cardtitle");
@@ -310,7 +303,6 @@ function getDesignName(designId) {
         });
     });
 }
-
 function getBlindName(blindType) {
     if (!blindType) return Promise.resolve(null);
 
@@ -331,7 +323,6 @@ function getBlindName(blindType) {
         });
     });
 }
-
 function getFormAction(itemAction) {
     const pageAction = document.getElementById("pageaction");
     const submitButton = document.getElementById("submit");
@@ -351,7 +342,6 @@ function getFormAction(itemAction) {
         submitButton.innerText = getSubmitButtonText(itemAction);
     }
 }
-
 function getSubmitButtonText(itemAction) {
     const actionMap = {
         create: "Save Item",
@@ -426,7 +416,6 @@ function bindBlindType(designType) {
         });
     });
 }
-
 function bindColourType(blindType) {
     return new Promise((resolve, reject) => {
         const colourtype = document.getElementById("colourtype");
@@ -487,7 +476,6 @@ function bindColourType(blindType) {
         });
     });
 }
-
 function bindSubType(blindType, colourType) {
     return new Promise((resolve, reject) => {
         const subtype = document.getElementById("subtype");
@@ -547,7 +535,6 @@ function bindSubType(blindType, colourType) {
         });
     });
 }
-
 function bindMounting(blindType) {
     return new Promise((resolve, reject) => {
         const mounting = document.getElementById("mounting");
@@ -638,7 +625,6 @@ function bindComponentForm(colourType, subType) {
         resolve();
     });
 }
-
 function visibleCustom(type, text, number) {
     return new Promise((resolve, reject) => {
         let thisDiv;
@@ -666,7 +652,6 @@ function visibleCustom(type, text, number) {
         }
     });
 }
-
 function visibleCutOut(text, number) {
     return new Promise((resolve, reject) => {
         let thisDiv;
@@ -693,17 +678,14 @@ function loader(itemAction) {
         document.getElementById("divorder").style.display = "";
     }
 }
-
 function isError(msg) {
     $("#modalError").modal("show");
     document.getElementById("errorMsg").innerHTML = msg;
 }
-
 function toggleButtonState(disabled, text) {
     $("#submit").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto").text(text);
     $("#cancel").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto");
 }
-
 function startCountdown(seconds) {
     let countdown = seconds;
     const button = $("#vieworder");
@@ -720,7 +702,6 @@ function startCountdown(seconds) {
     }
     updateButton();
 }
-
 function controlForm(status, isEditItem, isCopyItem) {
     if (isEditItem === undefined) isEditItem = false;
     if (isCopyItem === undefined) isCopyItem = false;
@@ -742,7 +723,6 @@ function controlForm(status, isEditItem, isCopyItem) {
         }
     });
 }
-
 function fillSelect(selector, list, selected = null) {
     const el = document.querySelector(selector);
     if (!el) return;
@@ -761,7 +741,6 @@ function fillSelect(selector, list, selected = null) {
         el.appendChild(opt);
     });
 }
-
 function setFormValues(itemData) {
     const mapping = {
         blindtype: "BlindType",
@@ -824,7 +803,6 @@ function setFormValues(itemData) {
         });
     }
 }
-
 function process() {
     toggleButtonState(true, "Processing...");
 

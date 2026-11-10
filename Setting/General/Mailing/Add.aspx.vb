@@ -5,7 +5,6 @@ Partial Class Setting_General_Mailing_Add
 
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim dataLog As Object() = Nothing
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -27,7 +26,7 @@ Partial Class Setting_General_Mailing_Add
                 Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Mailings ORDER BY Id DESC")
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Mailings VALUES (@Id, @CompanyId, @Name, @Server, @Host, @Port, @NetworkCredentials, @DefaultCredentials, @EnableSsl, @Account, @Password, @Alias, @Subject, @To, @Cc, @Bcc, @Description, @Active)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Mailings VALUES (@Id, @CompanyId, @Name, @Server, @Host, @Port, @NetworkCredentials, @DefaultCredentials, @EnableSsl, @Account, @Password, @Alias, @Subject, @To, @Cc, @Bcc, @Description, @Status)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@CompanyId", If(String.IsNullOrEmpty(ddlCompanyId.SelectedValue), CType(DBNull.Value, Object), ddlCompanyId.SelectedValue))
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
@@ -45,22 +44,19 @@ Partial Class Setting_General_Mailing_Add
                         thisCmd.Parameters.AddWithValue("@Cc", txtCC.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Bcc", txtBcc.Text.Trim())
                         thisCmd.Parameters.AddWithValue("@Description", txtDescription.Text)
-                        thisCmd.Parameters.AddWithValue("@Active", ddlActive.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
                 End Using
 
-                dataLog = {"Mailings", thisId, Session("LoginId").ToString(), "Mailing Created"}
+                Dim dataLog As Object() = {"Mailings", thisId, Session("LoginId").ToString(), "Mailing Created"}
                 settingClass.Logs(dataLog)
 
                 Response.Redirect("~/setting/general/mailing", False)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
         End Try
     End Sub
 
@@ -82,9 +78,6 @@ Partial Class Setting_General_Mailing_Add
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-            End If
         End Try
     End Sub
 

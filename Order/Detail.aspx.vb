@@ -3956,7 +3956,7 @@ Partial Class Order_Detail
                 txtSendQuoteCCCustomer.Text = String.Join(vbCrLf, listEmail)
             End If
 
-            Dim dataCCMailing As DataTable = orderClass.GetDataTable("SELECT * FROM Mailings WHERE CompanyId='" & lblCompanyId.Text & "' AND Name='Send Quote' AND Active=1")
+            Dim dataCCMailing As DataTable = orderClass.GetDataTable("SELECT * FROM Mailings WHERE CompanyId='" & lblCompanyId.Text & "' AND Name='Send Quote' AND Status='Active'")
             If dataCCMailing.Rows.Count > 0 Then
                 Dim listEmail As New List(Of String)
 
@@ -4008,7 +4008,7 @@ Partial Class Order_Detail
                 txtSendInvoiceCCCustomer.Text = String.Join(vbCrLf, listEmail)
             End If
 
-            Dim dataCCMailing As DataTable = orderClass.GetDataTable("SELECT * FROM Mailings WHERE CompanyId='" & lblCompanyId.Text & "' AND Name='Send Invoice' AND Active=1")
+            Dim dataCCMailing As DataTable = orderClass.GetDataTable("SELECT * FROM Mailings WHERE CompanyId='" & lblCompanyId.Text & "' AND Name='Send Invoice' AND Status='Active'")
             If dataCCMailing.Rows.Count > 0 Then
                 Dim listEmail As New List(Of String)
 

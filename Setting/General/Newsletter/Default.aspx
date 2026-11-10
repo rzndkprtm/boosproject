@@ -31,7 +31,7 @@
         </section>
         <section class="row mb-3">
             <div class="col-lg-12 d-flex flex-wrap justify-content-end gap-1">
-                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add New" OnClick="btnAdd_Click" />
+                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-secondary" Text="Add New" OnClick="btnAdd_Click" />
             </div>
         </section>
         <section class="row">
@@ -111,7 +111,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -177,12 +176,10 @@
             </div>
         </div>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
-
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");

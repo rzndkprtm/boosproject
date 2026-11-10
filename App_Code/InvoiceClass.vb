@@ -966,7 +966,7 @@ Public Class InvoiceClass
 
                 Dim kodeBarang As String = String.Empty
                 If Not String.IsNullOrEmpty(namaBarang) Then
-                    kodeBarang = GetItemData("SELECT ItemCode FROM AKZeros WHERE Name='" & namaBarang & "' AND Active=1")
+                    kodeBarang = GetItemData("SELECT ItemCode FROM AKZeros WHERE Name='" & namaBarang & "' AND Status='Active'")
                     If Not commodityList.Contains(namaBarang) Then
                         commodityList.Add(namaBarang)
                     End If
@@ -1347,8 +1347,8 @@ Public Class InvoiceClass
                     xeroName = GetItemData("SELECT Name FROM PriceServices WHERE Id='" & serviceId & "'")
                 End If
 
-                Dim xeroItem As String = GetItemData("SELECT ItemCode FROM Xeros WHERE Name='" & xeroName & "' AND Active=1")
-                Dim xeroAccount As String = GetItemData("SELECT AccountCode FROM Xeros WHERE Name='" & xeroName & "' AND Active=1")
+                Dim xeroItem As String = GetItemData("SELECT ItemCode FROM Xeros WHERE Name='" & xeroName & "' AND Status='Active'")
+                Dim xeroAccount As String = GetItemData("SELECT AccountCode FROM Xeros WHERE Name='" & xeroName & "' AND Status='Active'")
 
                 Dim safeDescription As String = itemDescription.Replace("""", """""")
 
