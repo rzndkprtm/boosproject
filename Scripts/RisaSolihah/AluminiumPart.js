@@ -14,17 +14,6 @@ let priceAccess;
 
 initAluminiumPart();
 
-$("#submit").on("click", process);
-$("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-$("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-$("#blindtype").on("change", function () {
-    bindColourType($(this).val());
-});
-$("#colourtype").on("change", function () {
-    const blindtype = document.getElementById("blindtype").value;
-    bindComponentForm(blindtype, $(this).val());
-});
-
 async function initAluminiumPart() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
@@ -66,16 +55,15 @@ async function initAluminiumPart() {
     ]);
 
     if (itemAction === "create") {
-        bindComponentForm("", "");
+        visiblePageDetail("", "");
         controlForm(false);
         bindBlindType(designId);
-        loader(itemAction);
+        loaderPage(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {
         await bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, itemAction);
         controlForm(itemAction === "view", itemAction === "edit", itemAction === "copy");
     }
 }
-
 async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, action) {
     try {
         const response = await $.ajax({
@@ -96,7 +84,7 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
         document.getElementById("divloader").style.display = "none";
         document.getElementById("divorder").style.display = "";
 
-        bindComponentForm(data.ItemData.BlindType, data.ItemData.ProductId);
+        visiblePageDetail(data.ItemData.BlindType, data.ItemData.ProductId);
     } catch (error) {
         document.getElementById("divloader").style.display = "none";
     }
@@ -125,7 +113,6 @@ function getOrderHeader(headerId) {
         });
     });
 }
-
 function getCompanyOrder(headerId) {
     return new Promise((resolve, reject) => {
         companyId = "";
@@ -152,7 +139,6 @@ function getCompanyOrder(headerId) {
         });
     });
 }
-
 function getCompanyDetailOrder(headerId) {
     return new Promise((resolve, reject) => {
         companyDetailId = "";
@@ -179,7 +165,6 @@ function getCompanyDetailOrder(headerId) {
         });
     });
 }
-
 function getRoleAccess(loginId) {
     return new Promise((resolve, reject) => {
         roleAccess = "";
@@ -206,7 +191,6 @@ function getRoleAccess(loginId) {
         });
     });
 }
-
 function getPriceAccess(loginId) {
     return new Promise((resolve, reject) => {
         priceAccess = "";
@@ -233,7 +217,6 @@ function getPriceAccess(loginId) {
         });
     });
 }
-
 function getCompanyName(companyId) {
     if (!companyId) return;
 
@@ -254,7 +237,6 @@ function getCompanyName(companyId) {
         });
     });
 }
-
 function getCompanyDetailName(companyDetailId) {
     if (!companyDetailId) return;
 
@@ -275,7 +257,6 @@ function getCompanyDetailName(companyDetailId) {
         });
     });
 }
-
 function getDesignName(designType) {
     return new Promise((resolve, reject) => {
         const cardTitle = document.getElementById("cardtitle");
@@ -304,7 +285,6 @@ function getDesignName(designType) {
         });
     });
 }
-
 function getBlindName(blindType) {
     if (!blindType) return;
 
@@ -325,7 +305,6 @@ function getBlindName(blindType) {
         });
     });
 }
-
 function getFormAction(itemAction) {
     const pageAction = document.getElementById("pageaction");
     const submitButton = document.getElementById("submit");
@@ -345,7 +324,6 @@ function getFormAction(itemAction) {
         submitButton.innerText = getSubmitButtonText(itemAction);
     }
 }
-
 function getSubmitButtonText(itemAction) {
     const actionMap = {
         create: "Save Item",
@@ -417,7 +395,6 @@ function bindBlindType(designType) {
         });
     });
 }
-
 function bindColourType(blindtype) {
     return new Promise((resolve, reject) => {
         const colourtype = document.getElementById("colourtype");
@@ -426,7 +403,7 @@ function bindColourType(blindtype) {
         if (!blindtype) {
             const selectedValue = colourtype.value || "";
             Promise.all([
-                bindComponentForm(blindtype, selectedValue)
+                visiblePageDetail(blindtype, selectedValue)
             ]).then(resolve).catch(reject);
 
             return;
@@ -464,12 +441,12 @@ function bindColourType(blindtype) {
 
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindComponentForm(blindtype, selectedValue)
+                        visiblePageDetail(blindtype, selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindComponentForm(blindtype, selectedValue)
+                        visiblePageDetail(blindtype, selectedValue)
                     ]).then(resolve).catch(reject);
                 }
                 resolve();
@@ -481,7 +458,7 @@ function bindColourType(blindtype) {
     });
 }
 
-function bindComponentForm(blindType, colourType) {
+function visiblePageDetail(blindType, colourType) {
     return new Promise((resolve, reject) => {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
@@ -519,7 +496,7 @@ function bindComponentForm(blindType, colourType) {
     });
 }
 
-function loader(itemAction) {
+function loaderPage(itemAction) {
     return new Promise((resolve) => {
         if (itemAction === "create") {
             document.getElementById("divloader").style.display = "none";
@@ -528,17 +505,14 @@ function loader(itemAction) {
         resolve();
     });
 }
-
 function isError(msg) {
     $("#modalError").modal("show");
     document.getElementById("errorMsg").innerHTML = msg;
 }
-
 function toggleButtonState(disabled, text) {
     $("#submit").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto").text(text);
     $("#cancel").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto");
 }
-
 function startCountdown(seconds) {
     let countdown = seconds;
     const button = $("#vieworder");
@@ -555,7 +529,6 @@ function startCountdown(seconds) {
     }
     updateButton();
 }
-
 function controlForm(status, isEditItem, isCopyItem) {
     if (isEditItem === undefined) isEditItem = false;
     if (isCopyItem === undefined) isCopyItem = false;
@@ -577,7 +550,6 @@ function controlForm(status, isEditItem, isCopyItem) {
         }
     });
 }
-
 function setFormValues(itemData) {
     const mapping = {
         blindtype: "BlindType",
@@ -605,7 +577,6 @@ function setFormValues(itemData) {
         });
     }
 }
-
 function fillSelect(selector, list, selected = null) {
     const el = document.querySelector(selector);
     el.innerHTML = "<option value=''></option>";
@@ -617,8 +588,7 @@ function fillSelect(selector, list, selected = null) {
         el.appendChild(opt);
     });
 }
-
-function process() {
+function submitProcess() {
     toggleButtonState(true, "Processing...");
 
     const fields = ["blindtype", "colourtype", "qty", "wandlengthvalue", "notes", "markup"];
@@ -657,21 +627,31 @@ function process() {
             }
         },
         error: function () {
+            isError("An error occurred while Processing the item.");
             toggleButtonState(false, getSubmitButtonText(itemAction));
         }
     });
 }
-
 function redirectOrder() {
     window.location.replace("/order");
 }
-
 function updateLinkDetail(myId) {
     const link = document.getElementById("orderDetail");
     if (!link || !headerId) return;
 
     link.href = `/order/detail?orderid=${myId}`;
 }
+
+$("#submit").on("click", submitProcess);
+$("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+$("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+$("#blindtype").on("change", function () {
+    bindColourType($(this).val());
+});
+$("#colourtype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    visiblePageDetail(blindtype, $(this).val());
+});
 
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();

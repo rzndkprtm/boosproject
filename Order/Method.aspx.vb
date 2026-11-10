@@ -1493,108 +1493,6 @@ Partial Class Order_Method
         Return result
     End Function
 
-    <WebMethod>
-    Public Shared Function GetTrackNPanel_PG(layoutCode As String) As Object
-        Try
-            If String.IsNullOrWhiteSpace(layoutCode) Then Return Nothing
-
-            Select Case layoutCode.Trim().ToUpper()
-                Case "A"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "2"}, {"Panels", "2"}
-                    }
-                Case "B"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "2"}, {"Panels", "2"}
-                    }
-                Case "C"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "3"}, {"Panels", "3"}
-                    }
-                Case "D"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "3"}, {"Panels", "3"}
-                    }
-                Case "E"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "3"}, {"Panels", "5"}
-                    }
-                Case "F"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "3"}, {"Panels", "5"}
-                    }
-                Case "G"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "4"}, {"Panels", "4"}
-                    }
-                Case "H"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "4"}, {"Panels", "4"}
-                    }
-                Case "I"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "4"}, {"Panels", "5"}
-                    }
-                Case "J"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "4"}, {"Panels", "5"}
-                    }
-                Case "K"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "4"}, {"Panels", "6"}
-                    }
-                Case "L"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "4"}, {"Panels", "6"}
-                    }
-                Case "M"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "4"}, {"Panels", "7"}
-                    }
-                Case "N"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "4"}, {"Panels", "7"}
-                    }
-                Case "O"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "5"}, {"Panels", "5"}
-                    }
-                Case "P"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "5"}, {"Panels", "5"}
-                    }
-                Case "Q"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "5"}, {"Panels", "7"}
-                    }
-                Case "R"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "5"}, {"Panels", "7"}
-                    }
-                Case "S"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "5"}, {"Panels", "8"}
-                    }
-                Case "T"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "5"}, {"Panels", "8"}
-                    }
-                Case "U"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "5"}, {"Panels", "9"}
-                    }
-                Case "V"
-                    Return New Dictionary(Of String, String) From {
-                        {"Tracks", "5"}, {"Panels", "9"}
-                    }
-                Case Else
-                    Return Nothing
-            End Select
-        Catch ex As Exception
-            Return Nothing
-        End Try
-    End Function
-
     ' PROCESS
 
     <WebMethod()>
@@ -1925,7 +1823,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function CellularProcess(data As ProccessData) As String
+    Public Shared Function CellularShadesProcess(data As ProccessData) As String
         Dim orderClass As New OrderClass
 
         Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
@@ -12636,7 +12534,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function CellularDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
+    Public Shared Function CellularShadesDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")

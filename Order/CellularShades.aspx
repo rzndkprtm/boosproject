@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Cellular.aspx.vb" Inherits="Order_Cellular" MasterPageFile="~/Site.Master" Title="Cellular Shades Order" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="CellularShades.aspx.vb" Inherits="Order_CellularShades" MasterPageFile="~/Site.Master" Title="Cellular Shades Order" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -420,5 +420,5 @@
             </div>
         </div>
     </div>
-    <script src="/Scripts/RisaSolihah/Cellular.js?v=1.3.0"></script>
+    <script src="/Scripts/RisaSolihah/CellularShades.js?v=1.3.1"></script>
 </asp:Content>

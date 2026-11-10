@@ -58,15 +58,14 @@ async function initAluminium() {
 
     if (itemAction === "create") {
         await bindBlindType(designId);
-        bindComponentForm("", "");
+        visiblePageDetail("", "");
         controlForm(false);
-        loader(itemAction);
+        loaderPage(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {
         controlForm(itemAction === "view", itemAction === "edit", itemAction === "copy");
         await bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, itemAction);
     }
 }
-
 async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, action) {
     try {
         const response = await $.ajax({
@@ -89,11 +88,11 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
         document.getElementById("divloader").style.display = "none";
         document.getElementById("divorder").style.display = "";
 
-        bindComponentForm(data.ItemData.ProductId, data.ItemData.SubType);
-        visibleCustom("CordLength", data.ItemData.ControlLength, "1");
-        visibleCustom("CordLength", data.ItemData.ControlLengthB, "2");
-        visibleCustom("WandLength", data.ItemData.WandLength, "1");
-        visibleCustom("WandLength", data.ItemData.WandLengthB, "2");
+        visiblePageDetail(data.ItemData.ProductId, data.ItemData.SubType);
+        visibleCustomCordWandLength("CordLength", data.ItemData.ControlLength, "1");
+        visibleCustomCordWandLength("CordLength", data.ItemData.ControlLengthB, "2");
+        visibleCustomCordWandLength("WandLength", data.ItemData.WandLength, "1");
+        visibleCustomCordWandLength("WandLength", data.ItemData.WandLengthB, "2");
         visibleCutOut(data.ItemData.CutOut, "1");
         visibleCutOut(data.ItemData.CutOutB, "2");
     } catch (error) {
@@ -483,7 +482,7 @@ function bindSubType(blindType, colourType) {
 
         if (!blindType || !colourType) {
             const selectedValue = subtype.value || "";
-            bindComponentForm(colourType, selectedValue);
+            visiblePageDetail(colourType, selectedValue);
             resolve();
             return;
         }
@@ -520,12 +519,12 @@ function bindSubType(blindType, colourType) {
 
                     const selectedValue = subtype.value || "";
                     Promise.all([
-                        bindComponentForm(colourType, selectedValue)
+                        visiblePageDetail(colourType, selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = subtype.value || "";
                     Promise.all([
-                        bindComponentForm(colourType, selectedValue)
+                        visiblePageDetail(colourType, selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -583,7 +582,7 @@ function bindMounting(blindType) {
     });
 }
 
-function bindComponentForm(colourType, subType) {
+function visiblePageDetail(colourType, subType) {
     return new Promise((resolve) => {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
@@ -625,7 +624,7 @@ function bindComponentForm(colourType, subType) {
         resolve();
     });
 }
-function visibleCustom(type, text, number) {
+function visibleCustomCordWandLength(type, text, number) {
     return new Promise((resolve, reject) => {
         let thisDiv;
 
@@ -672,7 +671,7 @@ function visibleCutOut(text, number) {
     });
 }
 
-function loader(itemAction) {
+function loaderPage(itemAction) {
     if (itemAction === "create") {
         document.getElementById("divloader").style.display = "none";
         document.getElementById("divorder").style.display = "";
@@ -803,7 +802,7 @@ function setFormValues(itemData) {
         });
     }
 }
-function process() {
+function submitProcess() {
     toggleButtonState(true, "Processing...");
 
     const fields = ["blindtype", "colourtype", "qty", "room", "mounting", "subtype", "controlposition", "tilterposition", "width", "drop", "widthb", "dropb", "controllength", "wandlength", "controllengthb", "wandlengthb", "controllengthvalue", "wandlengthvalue", "controllengthvalueb", "wandlengthvalueb", "supply", "notes", "cutout", "cuttopleftwidth", "cuttopleftheight", "cuttoprightwidth", "cuttoprightheight", "cutbottomleftwidth", "cutbottomleftheight", "cutbottomrightwidth", "cutbottomrightheight", "cutoutb", "cuttopleftwidthb", "cuttopleftheightb", "cuttoprightwidthb", "cuttoprightheightb", "cutbottomleftwidthb", "cutbottomleftheightb", "cutbottomrightwidthb", "cutbottomrightheightb", "markup"];
@@ -842,12 +841,11 @@ function process() {
             }
         },
         error: function () {
-            isError("An error occurred while processing the item.");
+            isError("An error occurred while Processing the item.");
             toggleButtonState(false, getSubmitButtonText(itemAction));
         }
     });
 }
-
 function otomatisDrop(subType, number, drop) {
     return new Promise((resolve) => {
         if (!subType || !number) return resolve();
@@ -870,7 +868,6 @@ function otomatisDrop(subType, number, drop) {
         resolve();
     });
 }
-
 function showInfo(type) {
     let info;
 
@@ -936,11 +933,9 @@ function showInfo(type) {
     }
     document.getElementById("spanInfo").innerHTML = info;
 }
-
 function redirectOrder() {
     window.location.replace("/order");
 }
-
 function updateLinkDetail(myId) {
     const link = document.getElementById("orderDetail");
     if (!link || !headerId) return;
@@ -948,9 +943,6 @@ function updateLinkDetail(myId) {
     link.href = `/order/detail?orderid=${myId}`;
 }
 
-$("#submit").on("click", process);
-$("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-$("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 $("#blindtype").on("change", function () {
     bindMounting($(this).val());
     bindColourType($(this).val());
@@ -963,7 +955,7 @@ $("#subtype").on("change", function () {
     const colourtype = document.getElementById("colourtype").value;
     const drop = parseFloat(document.getElementById("drop").value) || 0;
 
-    bindComponentForm(colourtype, $(this).val());
+    visiblePageDetail(colourtype, $(this).val());
 
     otomatisDrop($(this).val(), "1", drop);
 
@@ -989,16 +981,16 @@ $("#dropb").on("input", function () {
     otomatisDrop(subtype, "2", $(this).val());
 });
 $("#controllength").on("change", function () {
-    visibleCustom("CordLength", $(this).val(), "1");
+    visibleCustomCordWandLength("CordLength", $(this).val(), "1");
 });
 $("#controllengthb").on("change", function () {
-    visibleCustom("CordLength", $(this).val(), "2");
+    visibleCustomCordWandLength("CordLength", $(this).val(), "2");
 });
 $("#wandlength").on("change", function () {
-    visibleCustom("WandLength", $(this).val(), "1");
+    visibleCustomCordWandLength("WandLength", $(this).val(), "1");
 });
 $("#wandlengthb").on("change", function () {
-    visibleCustom("WandLength", $(this).val(), "2");
+    visibleCustomCordWandLength("WandLength", $(this).val(), "2");
 });
 $("#cutout").on("change", function () {
     visibleCutOut($(this).val(), "1");
@@ -1006,6 +998,9 @@ $("#cutout").on("change", function () {
 $("#cutoutb").on("change", function () {
     visibleCutOut($(this).val(), "2");
 });
+$("#submit").on("click", submitProcess);
+$("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+$("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();

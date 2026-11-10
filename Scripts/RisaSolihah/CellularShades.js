@@ -12,45 +12,9 @@ let loginId;
 let roleAccess;
 let priceAccess;
 
-initCellular();
+initCellularShades();
 
-$("#submit").on("click", process);
-$("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-$("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
-$("#blindtype").on("change", function () {
-    bindMounting($(this).val());
-    bindControlType($(this).val());
-    document.getElementById("controllength").value = "";
-});
-$("#controltype").on("change", function () {
-    const blindtype = document.getElementById("blindtype").value;
-
-    bindColourType(blindtype, $(this).val());
-    bindFabricType(designId);
-    bindFabricTypeB(designId);
-    bindControlColour(designId, $(this).val());
-
-    document.getElementById("controllength").value = "";
-});
-$("#colourtype").on("change", function () {
-    const blindtype = document.getElementById("blindtype").value;
-    const controltype = document.getElementById("controltype").value;
-
-    bindComponentForm(blindtype, controltype, $(this).val());
-
-    document.getElementById("controllength").value = "";
-});
-$("#fabrictype").on("change", function () {
-    bindFabricColour($(this).val());
-});
-$("#fabrictypeb").on("change", function () {
-    bindFabricColourB($(this).val());
-});
-$("#controllength").on("change", function () {
-    visibleCustom($(this).val());
-});
-
-async function initCellular() {
+async function initCellularShades() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionId = urlParams.get("boos");
 
@@ -94,20 +58,19 @@ async function initCellular() {
 
     if (itemAction === "create") {
         await bindBlindType(designId);
-        bindComponentForm("", "", "");
+        visiblePageDetail("", "", "");
         controlForm(false);
-        loader(itemAction);
+        loaderPage(itemAction);
     } else if (["edit", "view", "copy"].includes(itemAction)) {
         await bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, itemAction);
         controlForm(itemAction === "view", itemAction === "edit", itemAction === "copy");
     }
 }
-
 async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, action) {
     try {
         const response = await $.ajax({
             type: "POST",
-            url: "Method.aspx/CellularDetail",
+            url: "Method.aspx/CellularShadesDetail",
             data: JSON.stringify({ itemId, companyDetailId, orderStatus, roleAccess, action }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
@@ -130,8 +93,8 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
 
         setFormValues(data.ItemData);
 
-        bindComponentForm(data.ItemData.BlindType, data.ItemData.ControlType, data.ItemData.ProductId);
-        visibleCustom(data.ItemData.ControlLength);
+        visiblePageDetail(data.ItemData.BlindType, data.ItemData.ControlType, data.ItemData.ProductId);
+        visibleCustomCordLength(data.ItemData.ControlLength);
     } catch (error) {
         document.getElementById("divloader").style.display = "none";
     }
@@ -156,7 +119,6 @@ function getFormAction(itemAction) {
         submitButton.innerText = getSubmitButtonText(itemAction);
     }
 }
-
 function getSubmitButtonText(itemAction) {
     const actionMap = {
         create: "Save Item",
@@ -167,7 +129,6 @@ function getSubmitButtonText(itemAction) {
 
     return actionMap[itemAction] || "Submit";
 }
-
 function getOrderHeader(headerId) {
     return new Promise((resolve, reject) => {
         if (!headerId) return resolve();
@@ -191,7 +152,6 @@ function getOrderHeader(headerId) {
         });
     });
 }
-
 function getCompanyOrder(headerId) {
     return new Promise((resolve, reject) => {
         companyId = "";
@@ -218,7 +178,6 @@ function getCompanyOrder(headerId) {
         });
     });
 }
-
 function getCompanyDetailOrder(headerId) {
     return new Promise((resolve, reject) => {
         companyDetailId = "";
@@ -245,7 +204,6 @@ function getCompanyDetailOrder(headerId) {
         });
     });
 }
-
 function getRoleAccess(loginId) {
     return new Promise((resolve, reject) => {
         roleAccess = "";
@@ -272,7 +230,6 @@ function getRoleAccess(loginId) {
         });
     });
 }
-
 function getPriceAccess(loginId) {
     return new Promise((resolve, reject) => {
         priceAccess = "";
@@ -299,7 +256,6 @@ function getPriceAccess(loginId) {
         });
     });
 }
-
 function getCompanyName(companyId) {
     if (!companyId) return;
 
@@ -320,7 +276,6 @@ function getCompanyName(companyId) {
         });
     });
 }
-
 function getCompanyDetailName(companyDetailId) {
     if (!companyDetailId) return;
 
@@ -341,7 +296,6 @@ function getCompanyDetailName(companyDetailId) {
         });
     });
 }
-
 function getDesignName(designType) {
     return new Promise((resolve, reject) => {
         const cardTitle = document.getElementById("cardtitle");
@@ -370,7 +324,6 @@ function getDesignName(designType) {
         });
     });
 }
-
 function getBlindName(blindType) {
     if (!blindType) return;
 
@@ -391,7 +344,6 @@ function getBlindName(blindType) {
         });
     });
 }
-
 function getControlName(controlType) {
     if (!controlType) return;
 
@@ -476,7 +428,6 @@ function bindBlindType(designType) {
         });
     });
 }
-
 function bindControlType(blindType) {
     return new Promise((resolve, reject) => {
         const controltype = document.getElementById("controltype");
@@ -540,7 +491,6 @@ function bindControlType(blindType) {
         });
     });
 }
-
 function bindColourType(blindType, controlType) {
     return new Promise((resolve, reject) => {
         const colourtype = document.getElementById("colourtype");
@@ -549,7 +499,7 @@ function bindColourType(blindType, controlType) {
         if (!blindType || !controlType) {
             const selectedValue = colourtype.value || "";
             Promise.all([
-                bindComponentForm(blindType, controlType, selectedValue)
+                visiblePageDetail(blindType, controlType, selectedValue)
             ]).then(resolve).catch(reject);
             return;
         }
@@ -586,12 +536,12 @@ function bindColourType(blindType, controlType) {
 
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindComponentForm(blindType, controlType, selectedValue)
+                        visiblePageDetail(blindType, controlType, selectedValue)
                     ]).then(resolve).catch(reject);
                 } else {
                     const selectedValue = colourtype.value || "";
                     Promise.all([
-                        bindComponentForm(blindType, controlType, selectedValue)
+                        visiblePageDetail(blindType, controlType, selectedValue)
                     ]).then(resolve).catch(reject);
                 }
             },
@@ -601,7 +551,6 @@ function bindColourType(blindType, controlType) {
         });
     });
 }
-
 function bindMounting(blindType) {
     return new Promise((resolve, reject) => {
         const mounting = document.getElementById("mounting");
@@ -649,7 +598,6 @@ function bindMounting(blindType) {
         });
     });
 }
-
 function bindControlColour(designType, controlType) {
     return new Promise((resolve, reject) => {
         const remote = document.getElementById("remote");
@@ -672,7 +620,7 @@ function bindControlColour(designType, controlType) {
                 if (Array.isArray(response.d)) {
                     remote.innerHTML = "";
 
-                    if (response.d.length > 1) {
+                    if (response.d.length > 0) {
                         var defaultOption = document.createElement("option");
                         defaultOption.text = "";
                         defaultOption.value = "";
@@ -694,7 +642,6 @@ function bindControlColour(designType, controlType) {
         });
     });
 }
-
 function bindFabricType(designType) {
     return new Promise((resolve, reject) => {
         const fabrictype = document.getElementById("fabrictype");
@@ -755,7 +702,6 @@ function bindFabricType(designType) {
         });
     });
 }
-
 function bindFabricTypeB(designType) {
     return new Promise((resolve, reject) => {
         const fabrictypeb = document.getElementById("fabrictypeb");
@@ -816,7 +762,6 @@ function bindFabricTypeB(designType) {
         });
     });
 }
-
 function bindFabricColour(fabricType) {
     return new Promise((resolve, reject) => {
         const fabriccolour = document.getElementById("fabriccolour");
@@ -865,7 +810,6 @@ function bindFabricColour(fabricType) {
         });
     });
 }
-
 function bindFabricColourB(fabricType) {
     return new Promise((resolve, reject) => {
         const fabriccolourb = document.getElementById("fabriccolourb");
@@ -915,7 +859,7 @@ function bindFabricColourB(fabricType) {
     });
 }
 
-function bindComponentForm(blindType, controlType, colourType) {
+function visiblePageDetail(blindType, controlType, colourType) {
     return new Promise((resolve) => {
         const detail = document.getElementById("divdetail");
         const remote = document.getElementById("divremote");
@@ -978,8 +922,7 @@ function bindComponentForm(blindType, controlType, colourType) {
         });
     });
 }
-
-function visibleCustom(cordLength) {
+function visibleCustomCordLength(cordLength) {
     return new Promise((resolve) => {
         const thisDiv = document.getElementById("divcordlengthvalue");
 
@@ -992,23 +935,20 @@ function visibleCustom(cordLength) {
     });
 }
 
-function loader(itemAction) {
+function loaderPage(itemAction) {
     if (itemAction === "create") {
         document.getElementById("divloader").style.display = "none";
         document.getElementById("divorder").style.display = "";
     }
 }
-
 function isError(msg) {
     $("#modalError").modal("show");
     document.getElementById("errorMsg").innerHTML = msg;
 }
-
 function toggleButtonState(disabled, text) {
     $("#submit").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto").text(text);
     $("#cancel").prop("disabled", disabled).css("pointer-events", disabled ? "none" : "auto");
 }
-
 function startCountdown(seconds) {
     let countdown = seconds;
     const button = $("#vieworder");
@@ -1025,7 +965,6 @@ function startCountdown(seconds) {
     }
     updateButton();
 }
-
 function controlForm(status, isEditItem, isCopyItem) {
     if (isEditItem === undefined) isEditItem = false;
     if (isCopyItem === undefined) isCopyItem = false;
@@ -1047,7 +986,6 @@ function controlForm(status, isEditItem, isCopyItem) {
         }
     });
 }
-
 function fillSelect(selector, list, selected = null) {
     const el = document.querySelector(selector);
     el.innerHTML = "<option value=''></option>";
@@ -1059,7 +997,6 @@ function fillSelect(selector, list, selected = null) {
         el.appendChild(opt);
     });
 }
-
 function setFormValues(itemData) {
     const mapping = {
         blindtype: "BlindType",
@@ -1100,8 +1037,7 @@ function setFormValues(itemData) {
         });
     }
 }
-
-function process() {
+function submitProcess() {
     toggleButtonState(true, "Processing...");
 
     const fields = ["blindtype", "controltype", "colourtype", "qty", "room", "mounting", "remote", "controlposition", "controllength", "controllengthvalue", "width", "drop", "fabrictype", "fabriccolour", "fabrictypeb", "fabriccolourb", "supply", "notes", "markup"];
@@ -1122,7 +1058,7 @@ function process() {
 
     $.ajax({
         type: "POST",
-        url: "Method.aspx/CellularProcess",
+        url: "Method.aspx/CellularShadesProcess",
         data: JSON.stringify({ data: formData }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
@@ -1139,11 +1075,11 @@ function process() {
             }
         },
         error: function () {
+            isError("An error occurred while Processing the item.");
             toggleButtonState(false, getSubmitButtonText(itemAction));
         }
     });
 }
-
 function showInfo(type) {
     let info;
 
@@ -1160,17 +1096,51 @@ function showInfo(type) {
     }
     document.getElementById("spanInfo").innerHTML = info;
 }
-
 function redirectOrder() {
     window.location.replace("/order");
 }
-
 function updateLinkDetail(myId) {
     const link = document.getElementById("orderDetail");
     if (!link || !headerId) return;
 
     link.href = `/order/detail?orderid=${myId}`;
 }
+
+$("#blindtype").on("change", function () {
+    bindMounting($(this).val());
+    bindControlType($(this).val());
+    document.getElementById("controllength").value = "";
+});
+$("#controltype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+
+    bindColourType(blindtype, $(this).val());
+    bindFabricType(designId);
+    bindFabricTypeB(designId);
+    bindControlColour(designId, $(this).val());
+
+    document.getElementById("controllength").value = "";
+});
+$("#colourtype").on("change", function () {
+    const blindtype = document.getElementById("blindtype").value;
+    const controltype = document.getElementById("controltype").value;
+
+    visiblePageDetail(blindtype, controltype, $(this).val());
+
+    document.getElementById("controllength").value = "";
+});
+$("#fabrictype").on("change", function () {
+    bindFabricColour($(this).val());
+});
+$("#fabrictypeb").on("change", function () {
+    bindFabricColourB($(this).val());
+});
+$("#controllength").on("change", function () {
+    visibleCustomCordLength($(this).val());
+});
+$("#submit").on("click", submitProcess);
+$("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
+$("#vieworder").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);
 
 document.getElementById("modalSuccess").addEventListener("hide.bs.modal", function () {
     document.activeElement.blur();
