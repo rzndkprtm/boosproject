@@ -64,7 +64,7 @@ Partial Class Setting_General_Newsletter_Add
                 End If
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Newsletters VALUES (@Id, @CompanyId, @Name, @Type, @Link, @Description, 0);", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Newsletters VALUES (@Id, @CompanyId, @Name, @Type, @Link, @Description, 'Inactive');", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@CompanyId", ddlCompany.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
@@ -106,7 +106,7 @@ Partial Class Setting_General_Newsletter_Add
     Protected Sub BindCompany()
         ddlCompany.Items.Clear()
         Try
-            ddlCompany.DataSource = settingClass.GetDataTable("SELECT * FROM Companys WHERE Status='Active' ORDER BY Name ASC")
+            ddlCompany.DataSource = settingClass.GetDataTable("SELECT Id, Alias FROM Companys WHERE Status='Active' ORDER BY Name ASC")
             ddlCompany.DataTextField = "Alias"
             ddlCompany.DataValueField = "Id"
             ddlCompany.DataBind()

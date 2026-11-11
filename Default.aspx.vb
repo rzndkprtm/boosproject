@@ -18,7 +18,7 @@ Partial Class _Default
                 Exit Sub
             End If
 
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Newsletters WHERE CompanyId='2' AND Active=1")
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Newsletters WHERE CompanyId='2' AND Status='Active'")
             If thisData Is Nothing Then
                 Exit Sub
             End If

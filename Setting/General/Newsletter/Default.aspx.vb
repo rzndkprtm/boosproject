@@ -1,4 +1,5 @@
-﻿Imports System.Data.SqlClient
+﻿Imports System.Data
+Imports System.Data.SqlClient
 
 Partial Class Setting_General_Newsletter_Default
     Inherits Page
@@ -56,23 +57,17 @@ Partial Class Setting_General_Newsletter_Default
         MessageError(False, String.Empty)
         Try
             Dim thisId As String = txtIdDelete.Text
-            Dim type As String = txtTypeDelete.Text
-            Dim link As String = txtLinkDelete.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Newsletters WHERE Id=@Id; DELETE FROM Logs WHERE Type='Newsletters' AND DataId=@Id;", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                Using thisCmd As New SqlCommand("UPDATE Newsletters SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = CInt(thisId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            If type = "Image" Then
-                Dim physicalPath As String = Server.MapPath(link)
-                If IO.File.Exists(physicalPath) Then
-                    IO.File.Delete(physicalPath)
-                End If
-            End If
+            dataLog = {"Newsletters", thisId, Session("LoginId").ToString(), "Newsletter Deleted"}
+            settingClass.Logs(dataLog)
 
             Session("SearchNewsletter") = txtSearch.Text
             Response.Redirect("~/setting/general/newsletter", False)
@@ -84,32 +79,36 @@ Partial Class Setting_General_Newsletter_Default
         End Try
     End Sub
 
-    Protected Sub btnActive_Click(sender As Object, e As EventArgs)
+    Protected Sub btnStatus_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim thisId As String = txtIdActive.Text
-            Dim thisCompany As String = settingClass.GetItemData("SELECT CompanyId FROM Newsletters WHERE Id='" & thisId & "'")
+            Dim thisId As String = txtIdStatus.Text
+            Dim thisStatus As String = txtStatus.Text
+            Dim thisCompany As String = txtCompany.Text
 
-            Dim active As Integer = 1
-            If txtActive.Text = "1" Then : active = 0 : End If
+            Dim newStatus As String = String.Empty
+            If thisStatus = "Active" Then newStatus = "Inactive"
+            If thisStatus = "Inactive" Then newStatus = "Active"
 
-            Dim thisString As String = "UPDATE Newsletters SET Active=@Active WHERE Id=@Id"
-            If active = 1 Then
-                thisString = "UPDATE Newsletters SET Active=0 WHERE CompanyId=@CompanyId; UPDATE Newsletters SET Active=@Active WHERE Id=@Id;"
+
+            Dim thisString As String = "UPDATE Newsletters SET Status=@Status WHERE Id=@Id"
+            If newStatus = "Active" Then
+                thisString = "UPDATE Newsletters SET Status='Inactive' WHERE CompanyId=@CompanyId; UPDATE Newsletters SET Status=@Status WHERE Id=@Id;"
             End If
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As SqlCommand = New SqlCommand(thisString, thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisCmd.Parameters.AddWithValue("@CompanyId", thisCompany)
-                    thisCmd.Parameters.AddWithValue("@Active", active)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            Dim activeDesc As String = "Newsletter Has Been Activated"
-            If active = 0 Then activeDesc = "Newsletter Has Been Deactivated"
+            Dim activeDesc As String = String.Empty
+            If thisStatus = "Active" Then activeDesc = "Newsletter Has Been Activated"
+            If thisStatus = "Inactive" Then activeDesc = "Newsletter Has Been Deactivated"
 
             dataLog = {"Newsletters", thisId, Session("LoginId").ToString(), activeDesc}
             settingClass.Logs(dataLog)
@@ -131,7 +130,7 @@ Partial Class Setting_General_Newsletter_Default
             If Not searchText = "" Then
                 search = "WHERE Newsletters.Id LIKE '%" & searchText.Trim() & "%' OR Newsletters.Name LIKE '%" & searchText.Trim() & "%' OR Newsletters.Description LIKE '%" & searchText.Trim() & "%'"
             End If
-            Dim thisString As String = String.Format("SELECT Newsletters.*, Companys.Alias AS CompanyAlias, CASE WHEN Newsletters.Active=1 THEN 'Yes' WHEN Newsletters.Active=0 THEN 'No' ELSE 'Error' END AS DataActive FROM Newsletters LEFT JOIN Companys ON Newsletters.CompanyId=Companys.Id {0} ORDER BY Newsletters.Id DESC", search)
+            Dim thisString As String = String.Format("SELECT Newsletters.*, Companys.Alias AS CompanyAlias FROM Newsletters LEFT JOIN Companys ON Newsletters.CompanyId=Companys.Id {0} ORDER BY Newsletters.Id DESC", search)
 
             gvList.DataSource = settingClass.GetDataTable(thisString)
             gvList.DataBind()
@@ -186,8 +185,8 @@ Partial Class Setting_General_Newsletter_Default
         divError.Visible = visible : msgError.InnerText = message
     End Sub
 
-    Protected Function TextActive(active As Boolean) As String
-        If active = True Then Return "Deactivate"
+    Protected Function TextStatus(active As String) As String
+        If active = "Active" Then Return "Deactivate"
         Return "Activate"
     End Function
 
