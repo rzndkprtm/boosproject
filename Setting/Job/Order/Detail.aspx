@@ -8,7 +8,6 @@
         .card { transition: all .2s ease-in-out; }
         .card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
     </style>
-
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -123,7 +122,6 @@
             </div>
         </section>
     </div>
-
     <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
         <div class="position-absolute top-50 start-50 translate-middle">
             <div class="card shadow">
@@ -134,11 +132,9 @@
             </div>
         </div>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
     </div>
-
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");

@@ -112,7 +112,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-center" id="modalDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-full modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -133,8 +132,6 @@
                                 <td><span id="spanFactoryMinSize"></span></td>
                             </tr>
                         </table>
-
-                        <!-- MINIMUM WIDTH -->
                         <table class="table table-bordered table-hover w-100 mb-3">
                             <tr>
                                 <th>Sell Minimum Width</th>
@@ -147,8 +144,6 @@
                                 <td><span id="spanFactoryMinWidth"></span></td>
                             </tr>
                         </table>
-
-                        <!-- MINIMUM DROP -->
                         <table class="table table-bordered table-hover w-100 mb-3">
                             <tr>
                                 <th>Sell Minimum Drop</th>
@@ -161,8 +156,6 @@
                                 <td><span id="spanFactoryMinDrop"></span></td>
                             </tr>
                         </table>
-
-                        <!-- CUSTOM FORMULA -->
                         <table class="table table-bordered table-hover w-100">
                             <tr>
                                 <th>Sell Custom Formula</th>
@@ -175,7 +168,6 @@
                                 <td><span id="spanFactoryFormula"></span></td>
                             </tr>
                         </table>
-
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -229,7 +221,6 @@
             </div>
         </div>
     </div>
-
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");

@@ -94,7 +94,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal modal-blur fade" id="modalDetailMarkup" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -138,12 +137,10 @@
             </div>
         </div>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
-
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");
@@ -193,10 +190,10 @@
                 data.forEach((x, i) => {
                     tbody += `
                         <tr>
-                        <td class="text-center">${i + 1}</td>
-                        <td>${x.Type}</td>
-                        <td>${x.Product}</td>
-                        <td>${x.Markup}</td>
+                            <td class="text-center">${i + 1}</td>
+                            <td>${x.Type}</td>
+                            <td>${x.Product}</td>
+                            <td>${x.Markup}</td>
                         </tr>
                     `;
                 });

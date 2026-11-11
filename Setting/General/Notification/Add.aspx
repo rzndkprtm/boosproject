@@ -123,10 +123,8 @@
             </div>
         </div>
     </div>
-
     <asp:HiddenField runat="server" ID="fieldMessage" />
     <asp:HiddenField runat="server" ID="hfMessage" />
-
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");
@@ -182,5 +180,6 @@
             $('#<%= fieldMessage.ClientID %>').val(content);
             return true;
         }
+        window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

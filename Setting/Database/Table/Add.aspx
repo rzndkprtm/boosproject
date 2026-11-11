@@ -103,7 +103,6 @@
             <div class="col-12 col-sm-12 col-lg-5"></div>
         </section>
     </div>
-
     <script type="text/javascript">
         window.history.replaceState(null, null, window.location.href);
     </script>

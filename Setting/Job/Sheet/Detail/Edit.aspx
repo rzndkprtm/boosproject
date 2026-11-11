@@ -22,7 +22,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row">
             <div class="col-12 col-sm-12 col-lg-8 mb-2">
@@ -163,7 +162,6 @@
                                         </div>
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
-            
                                 <div class="row mt-3" runat="server" id="divError">
                                     <div class="col-12">
                                         <div class="alert alert-danger">
@@ -182,7 +180,6 @@
             </div>
         </section>
     </div>
-
     <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
         <div class="position-absolute top-50 start-50 translate-middle">
             <div class="card shadow">
@@ -193,11 +190,9 @@
             </div>
         </div>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
     </div>
-
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");
@@ -223,7 +218,6 @@
                 }
 
                 var isMultiple = el.multiple;
-
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',

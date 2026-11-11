@@ -131,13 +131,11 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="row mt-4">
                                     <div class="col-12 col-sm-12 col-lg-6 mb-2">
                                         <asp:Button runat="server" ID="btnAddKit" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddKit_Click" />
                                     </div>
                                 </div>
-
                                 <div class="row mt-3">
                                     <div class="col-12">
                                         <div class="table-responsive">
@@ -181,7 +179,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-left" id="modalChangeStatus" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -321,15 +318,12 @@
             </div>
         </div>
     </div>
-
     <asp:HiddenField ID="selected_tab" runat="server" />
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblIdKit"></asp:Label>
         <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
-
     <script type="text/javascript">
         $(document).ready(function () {
             var selectedTab = $("#<%=selected_tab.ClientID%>");

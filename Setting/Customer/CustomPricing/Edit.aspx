@@ -68,21 +68,15 @@
                         <h4 class="card-title text-center">Information</h4>
                     </div>
                     <div class="card-content">
-                        <div class="card-body">
-                            <ul>
-                                
-                            </ul>
-                        </div>
+                        <div class="card-body"></div>
                     </div>
                 </div>
             </div>
         </section>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
     </div>
-
     <script type="text/javascript">
         window.history.replaceState(null, null, window.location.href);
     </script>

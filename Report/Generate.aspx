@@ -134,7 +134,6 @@
                 }
 
                 var isMultiple = el.multiple;
-
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',

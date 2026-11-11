@@ -83,12 +83,8 @@
                                                         <li runat="server" visible='<%# LoginAccess("Delete") %>'>
                                                             <a href="javascript:void(0);" runat="server" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return showDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                         </li>
-                                                        <li>
-                                                            <a href="javascript:void(0);" class="dropdown-item" onclick="showRead('<%# Eval("Id") %>')">View Readers</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Notifications', '<%# Eval("Id") %>')">Log</a>
-                                                        </li>
+                                                        <li><a href="javascript:void(0);" class="dropdown-item" onclick="showRead('<%# Eval("Id") %>')">View Readers</a></li>
+                                                        <li><a href="javascript:void(0);" class="dropdown-item" onclick="showLog('Notifications', '<%# Eval("Id") %>')">Log</a></li>
                                                     </ul>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
@@ -115,7 +111,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-left" id="modalTest" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -194,7 +189,10 @@
             </div>
         </div>
     </div>
-
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
+        <asp:Label runat="server" ID="lblAction"></asp:Label>
+    </div>
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");
@@ -319,9 +317,4 @@
         });
         window.history.replaceState(null, null, window.location.href);
     </script>
-
-    <div runat="server" visible="false">
-        <asp:Label runat="server" ID="lblId"></asp:Label>
-        <asp:Label runat="server" ID="lblAction"></asp:Label>
-    </div>
 </asp:Content>

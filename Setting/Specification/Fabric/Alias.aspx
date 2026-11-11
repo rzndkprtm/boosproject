@@ -87,7 +87,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -155,13 +154,11 @@
             </div>
         </div>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblType"></asp:Label>
         <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
-
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvList.ClientID %>');

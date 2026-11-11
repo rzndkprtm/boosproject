@@ -119,7 +119,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal modal-blur fade" id="modalRegisteredMarkup" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -162,12 +161,10 @@
             </div>
         </div>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblCustomerId"></asp:Label>
         <asp:Label runat="server" ID="lblReturnPage"></asp:Label>        
     </div>
-
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");
@@ -214,12 +211,12 @@
                 let tbody = "";
                 data.forEach((x, i) => {
                     tbody += `
-                    <tr>
-                    <td class="text-center">${i + 1}</td>
-                    <td>${x.Type}</td>
-                    <td>${x.Product}</td>
-                    <td>${x.Markup}</td>
-                    </tr>
+                        <tr>
+                            <td class="text-center">${i + 1}</td>
+                            <td>${x.Type}</td>
+                            <td>${x.Product}</td>
+                            <td>${x.Markup}</td>
+                        </tr>
                     `;
                 });
                 document.getElementById("markupBody").innerHTML = tbody;

@@ -142,7 +142,6 @@
             </div>
         </section>
     </div>
-
     <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
         <div class="position-absolute top-50 start-50 translate-middle">
             <div class="card shadow">
@@ -153,7 +152,6 @@
             </div>
         </div>
     </div>
-
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");
@@ -179,7 +177,6 @@
                 }
 
                 var isMultiple = el.multiple;
-
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',

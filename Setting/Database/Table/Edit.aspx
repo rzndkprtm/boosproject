@@ -105,11 +105,9 @@
             <div class="col-12 col-sm-12 col-lg-5"></div>
         </section>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblName"></asp:Label>
     </div>
-
     <script type="text/javascript">
         window.history.replaceState(null, null, window.location.href);
     </script>

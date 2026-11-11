@@ -18,7 +18,6 @@
             .card-footer .btn { flex: 1; }
         }
     </style>
-
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -173,7 +172,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal modal-blur fade" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -304,12 +302,10 @@
             </div>
         </div>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblIdColour"></asp:Label>
         <asp:Label runat="server" ID="lblAction"></asp:Label>
     </div>
-
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvList.ClientID %>');
@@ -320,11 +316,7 @@
                 row.style.cursor = 'pointer';
 
                 row.addEventListener('click', function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
 
@@ -333,17 +325,14 @@
                 });
             }
         });
-
         function showProcessColour() {
             $("#modalProcessColour").modal("show");
         }
-
         function showChangeStatusColour(id, name, status) {
             document.getElementById("<%=txtIdStatusColour.ClientID %>").value = id;
             document.getElementById("<%=txtChangeName.ClientID %>").value = name;
             document.getElementById("<%=ddlOldStatusColour.ClientID %>").value = status;
         }
-
         function showLog(type, dataId) {
             $("#logError").addClass("d-none").html("");
             $("#tblLogs tbody").html("");
@@ -377,14 +366,12 @@
                 }
             });
         }
-
         ["modalDelete", "modalProcessColour", "modalChangeStatusColour", "modalLog"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

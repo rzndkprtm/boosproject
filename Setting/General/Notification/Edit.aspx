@@ -96,14 +96,11 @@
             <div class="col-12 col-sm-12 col-lg-5"></div>
         </section>
     </div>
-
     <asp:HiddenField runat="server" ID="fieldMessage" />
     <asp:HiddenField runat="server" ID="hfMessage" />
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
     </div>
-
     <script type="text/javascript">
         $(document).ready(function () {
             $('#summernote').summernote({
@@ -121,5 +118,6 @@
             $('#<%= fieldMessage.ClientID %>').val(content);
             return true;
         }
+        window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

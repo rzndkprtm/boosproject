@@ -97,7 +97,6 @@
             </div>
         </section>
     </div>
-
     <script type="text/javascript">
         window.history.replaceState(null, null, window.location.href);
     </script>

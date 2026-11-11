@@ -105,7 +105,6 @@
             </div>
         </section>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblUserName"></asp:Label>

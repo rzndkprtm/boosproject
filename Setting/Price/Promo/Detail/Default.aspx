@@ -82,15 +82,12 @@
                                     <asp:Label runat="server" ID="lblEndDate"></asp:Label>
                                 </div>
                             </div>
-                            
                             <div class="col-md-4 mb-3">
                                 <label class="text-muted small">Description</label>
                                 <div>
                                     <asp:Label runat="server" ID="lblDescription"></asp:Label>
                                 </div>
                             </div>
-                            
-                            
                         </div>
                     </div>
                 </div>
@@ -156,7 +153,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal modal-blur fade" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -249,11 +245,9 @@
             </div>
         </div>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
     </div>
-
     <script type="text/javascript">
         function dataChangeDetail(id, discount) {
             document.getElementById("<%=txtChangeValueId.ClientID %>").value = id;

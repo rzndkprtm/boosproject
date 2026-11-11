@@ -8,7 +8,6 @@
         .card { transition: all .2s ease-in-out; }
         .card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
     </style>
-
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -143,7 +142,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-center" id="modalSortOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -253,11 +251,9 @@
             </div>
         </div>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
     </div>
-
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvListDetail.ClientID %>');

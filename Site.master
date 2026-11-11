@@ -7,7 +7,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%: String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %></title>
-
     <link rel="stylesheet" href="/Assets/vendors/choices.js/choices.min.css" />
     <link rel="stylesheet" href="/Assets/css/bootstrap.css" />
     <link rel="stylesheet" href="/Assets/css/widgets/chat.css" />
@@ -18,9 +17,7 @@
     <link rel="stylesheet" href="/Assets/vendors/bootstrap-icons/bootstrap-icons.css" />
     <link rel="stylesheet" href="/Assets/css/app.css" />
     <link rel="icon" type="image/x-icon" href="/Assets/images/logo/boos.ico" />
-
     <script src="/Scripts/jquery-3.7.1.min.js"></script>
-
     <style>
         .header-top > .container { max-width: 100%; padding-inline: clamp(.75rem, 3vw, 3rem); }
         .global-search { position: relative; width: clamp(300px, 30vw, 420px); margin-left: auto; margin-right: 20px; flex-shrink: 0; }
@@ -79,7 +76,6 @@
                                         <li><asp:LinkButton runat="server" ID="linkLogout" CssClass="dropdown-item" Text="Logout" OnClick="linkLogout_Click"></asp:LinkButton></li>
                                     </ul>
                                 </div>
-
                                 <a href="javascript:void(0);" class="burger-btn d-block d-xl-none">
                                     <i class="bi bi-justify fs-3"></i>
                                 </a>
@@ -380,7 +376,6 @@
                 </footer>
             </div>
         </div>
-
         <div class="modal fade text-left" id="modalNotification" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
             <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
                 <div class="modal-content">
@@ -396,7 +391,6 @@
                 </div>
             </div>
         </div>
-
         <script type="text/javascript">
             document.addEventListener("DOMContentLoaded", function () {
                 checkNotification();
@@ -481,7 +475,6 @@
                 var newTitle = '<%= String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %>';
                 document.title = newTitle;
             });
-
             document.getElementById("txtGlobalSearch").addEventListener("keydown", function (e) {
                 if (e.key === "Enter") {
                     e.preventDefault();
@@ -494,7 +487,6 @@
                 }
             });
         </script>
-        
         <script src="/Assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
         <script src="/Assets/js/bootstrap.bundle.min.js"></script>
         <script src="/Assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>

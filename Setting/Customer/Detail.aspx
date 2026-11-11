@@ -6,7 +6,6 @@
         .fw-semibold { font-weight: 600; }
         h6.text-uppercase { letter-spacing: .5px; border-bottom: 1px solid #dee2e6; padding-bottom: .5rem; }
     </style>
-
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -705,7 +704,6 @@
             </div>
         </section>
     </div>
-    
     <div class="modal modal-blur fade" id="modalRecalculate" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -1356,9 +1354,7 @@
             </div>
         </div>
     </div>
-
     <asp:HiddenField ID="selected_tab" runat="server" />
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblIdContact"></asp:Label>
         <asp:Label runat="server" ID="lblIdAddress"></asp:Label>
@@ -1370,7 +1366,6 @@
         <asp:Label runat="server" ID="lblCompanyId"></asp:Label>
         <asp:Label runat="server" ID="lblCompanyDetailId"></asp:Label>
     </div>
-    
     <script type="text/javascript">
         $(document).ready(function () {
             var selectedTab = $("#<%=selected_tab.ClientID%>");

@@ -123,7 +123,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-left" id="modalSendNotification" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -180,10 +179,8 @@
             </div>
         </div>
     </div>
-
     <asp:HiddenField runat="server" ID="fieldMessage" />
     <asp:HiddenField runat="server" ID="hfMessage" />
-
     <script type="text/javascript">
         function checkUserPage(loginId) {
             fetch('/Setting/UpdateSession.aspx/GetCurrentPage', {

@@ -103,12 +103,10 @@
             </div>
         </section>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblCustomerId"></asp:Label>
         <asp:Label runat="server" ID="lblReturnPage"></asp:Label>
     </div>
-
     <script type="text/javascript">
         window.history.replaceState(null, null, window.location.href);
     </script>

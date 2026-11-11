@@ -87,7 +87,6 @@
                                                 <label class="form-label">Level</label>
                                                 <asp:DropDownList runat="server" ID="ddlLevel" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlLevel_SelectedIndexChanged">
                                                     <asp:ListItem Value="" Text=""></asp:ListItem>
-                                                    <%--<asp:ListItem Value="Master" Text="Master Customer"></asp:ListItem>--%>
                                                     <asp:ListItem Value="Standard" Text="Standard Customer"></asp:ListItem>
                                                     <asp:ListItem Value="Primary" Text="Primary Customer"></asp:ListItem>
                                                     <asp:ListItem Value="Linked" Text="Linked Customer"></asp:ListItem>
@@ -154,7 +153,6 @@
             </div>
         </section>
     </div>
-
     <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
         <div class="position-absolute top-50 start-50 translate-middle">
             <div class="card shadow">
@@ -165,12 +163,10 @@
             </div>
         </div>
     </div>
-
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblId"></asp:Label>
         <asp:Label runat="server" ID="lblReturnPage"></asp:Label>
     </div>
-
     <script type="text/javascript">
         window.addEventListener("pageshow", function () {
             var loading = document.getElementById("loadingOverlay");
