@@ -222,6 +222,15 @@
                     openTicketFromUrl(id);
                 }
             });
+            $(document).on("keydown", function (e) {
+                if (e.key === "Escape") {
+                    e.preventDefault();
+
+                    if (selectedTicketId > 0 || window.location.search !== "") {
+                        resetTicketSelection(true);
+                    }
+                }
+            });
         });
         function updateTicketUrl(ticketId) {
             const url = new URL(window.location.href);
