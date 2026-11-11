@@ -27,7 +27,7 @@ Partial Class Setting_General_Newsletter_Preview
 
     Protected Sub BindData(newsletterId As String)
         Try
-            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Newsletters WHERE Id='" & newsletterId & "'")
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Newsletters WHERE Id='" & newsletterId & "' AND (Status='Active' OR Status='Inactive')")
             If thisData Is Nothing Then
                 Response.Redirect("~/setting/general/newsletter", False)
                 Exit Sub
