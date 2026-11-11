@@ -115,6 +115,10 @@
                     <option value="Shipment">Shipment</option>
                     <option value="General">General</option>
                 </select>
+                <select id="ddlTicketReadStatus" class="form-select mb-2">
+                    <option value="">All Tickets</option>
+                    <option value="Unread">Unread</option>
+                </select>
                 <div class="input-group">
                     <span class="input-group-text">
                         <i class="bi bi-search"></i>
@@ -165,6 +169,7 @@
         let lastMessageId = 0;
         let searchText = "";
         let selectedType = "";
+        let selectedReadStatus = "";
         let initialTicketId = null;
         let ticketsLoaded = false;
         let messageRequestToken = 0;
@@ -186,42 +191,65 @@
 
             setInterval(function () {
                 loadTickets(true);
+
                 if (selectedTicketId > 0) {
                     loadMessages(selectedTicketId, true);
                 }
             }, 3000);
+
+            // SEARCH
             $("#txtTicketSearch").on("input", function () {
                 searchText = $(this).val().toLowerCase().trim();
                 renderTickets();
             });
+
+            // FILTER TYPE
             $("#ddlTicketType").on("change", function () {
                 selectedType = $(this).val();
                 loadTickets(false);
             });
+
+            // FILTER READ STATUS
+            $("#ddlTicketReadStatus").on("change", function () {
+                selectedReadStatus = $(this).val();
+                renderTickets();
+            });
+
+            // SEND MESSAGE WITH ENTER
             $("#txtReply").on("keydown", function (e) {
                 if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage();
                 }
             });
+
+            // CLOSE TICKET
             $("#btnCloseTicket").on("click", function () {
                 closeTicket();
             });
+
+            // BROWSER BACK / FORWARD
             window.addEventListener("popstate", function () {
                 const params = new URLSearchParams(window.location.search);
+
                 if (!params.has("id")) {
                     resetTicketSelection(false);
                     return;
                 }
+
                 const id = parseInt(params.get("id"), 10);
+
                 if (!Number.isInteger(id) || id <= 0) {
                     resetTicketSelection(true);
                     return;
                 }
+
                 if (ticketsLoaded) {
                     openTicketFromUrl(id);
                 }
             });
+
+            // ESC KEY
             $(document).on("keydown", function (e) {
                 if (e.key === "Escape") {
                     e.preventDefault();
@@ -232,34 +260,46 @@
                 }
             });
         });
+
+        // UPDATE URL
         function updateTicketUrl(ticketId) {
             const url = new URL(window.location.href);
+
             if (ticketId && ticketId > 0) {
                 url.search = "";
                 url.searchParams.set("id", ticketId);
             } else {
                 url.search = "";
             }
+
             window.history.pushState(
                 { ticketId: ticketId || null },
                 "",
                 url.pathname + url.search
             );
         }
+
+        // RESET URL
         function resetTicketUrl() {
             const url = new URL(window.location.href);
             window.history.replaceState(null, "", url.pathname);
         }
+
+        // OPEN TICKET FROM URL
         function openTicketFromUrl(ticketId) {
             const ticket = tickets.find(function (x) {
                 return Number(x.Id) === Number(ticketId);
             });
+
             if (!ticket) {
                 resetTicketSelection(true);
                 return;
             }
+
             selectTicket(ticketId, false);
         }
+
+        // RESET TICKET SELECTION
         function resetTicketSelection(resetUrl) {
             selectedTicketId = 0;
             messages = [];
@@ -272,12 +312,22 @@
             }
 
             $(".ticket-item").removeClass("active");
+
             $("#lblTicketNo").text("Select a ticket");
             $("#lblType").text("");
 
-            $("#lblStatus").removeClass().addClass("badge bg-secondary").text("-");
+            $("#lblStatus")
+                .removeClass()
+                .addClass("badge bg-secondary")
+                .text("-");
+
             $("#btnCloseTicket").hide();
-            $("#txtReply").val("").prop("disabled", true).attr("placeholder", "Select a ticket first...");
+
+            $("#txtReply")
+                .val("")
+                .prop("disabled", true)
+                .attr("placeholder", "Select a ticket first...");
+
             $("#btnUploadFile").prop("disabled", true);
 
             $(".chat-body").html(`
@@ -288,6 +338,8 @@
                 </div>
             `);
         }
+
+        // AJAX CALL
         function ajaxCall(method, data) {
             return $.ajax({
                 type: "POST",
@@ -298,13 +350,18 @@
                 cache: false
             });
         }
+
+        // LOAD TICKETS
         function loadTickets(background) {
             if (isLoadingTickets)
                 return;
 
             isLoadingTickets = true;
 
-            ajaxCall("GetTickets", { type: selectedType }).done(function (response) {
+            ajaxCall("GetTickets", {
+                type: selectedType
+            }).done(function (response) {
+
                 const result = response.d;
 
                 if (!result.success) {
@@ -317,7 +374,12 @@
 
                 const signature = JSON.stringify(
                     tickets.map(function (x) {
-                        return [x.Id, x.Status, x.LastMessageDate, x.UnreadCount];
+                        return [
+                            x.Id,
+                            x.Status,
+                            x.LastMessageDate,
+                            x.UnreadCount
+                        ];
                     })
                 );
 
@@ -325,6 +387,7 @@
                     lastTicketSignature = signature;
                     renderTickets();
                 }
+
                 if (initialTicketId !== null) {
                     const requestedId = initialTicketId;
 
@@ -332,31 +395,63 @@
 
                     openTicketFromUrl(requestedId);
                 }
+
                 if (selectedTicketId > 0) {
                     const current = tickets.find(function (x) {
-                        return x.Id === selectedTicketId;
+                        return Number(x.Id) === Number(selectedTicketId);
                     });
 
                     if (current) {
                         updateTicketHeader(current);
                     }
                 }
+
             }).fail(function (xhr) {
                 console.error("GetTickets error:", xhr.responseText);
+
             }).always(function () {
                 isLoadingTickets = false;
             });
         }
+
+        // RENDER TICKETS
         function renderTickets() {
             const container = $(".ticket-list");
+
             container.empty();
 
             const filtered = tickets.filter(function (ticket) {
-                if (!searchText)
-                    return true;
 
-                return (ticket.TicketNo.toLowerCase().includes(searchText) || ticket.Subject.toLowerCase().includes(searchText) || String(ticket.LoginId).includes(searchText) || ticket.FullName.toLowerCase().includes(searchText) || ticket.CustomerName.toLowerCase().includes(searchText) || ticket.Type.toLowerCase().includes(searchText));
+                // FILTER UNREAD
+                if (
+                    selectedReadStatus === "Unread" &&
+                    Number(ticket.UnreadCount || 0) <= 0
+                ) {
+                    return false;
+                }
+
+                // FILTER SEARCH
+                if (!searchText) {
+                    return true;
+                }
+
+                const ticketNo = String(ticket.TicketNo || "").toLowerCase();
+                const subject = String(ticket.Subject || "").toLowerCase();
+                const loginId = String(ticket.LoginId || "");
+                const fullName = String(ticket.FullName || "").toLowerCase();
+                const customerName = String(ticket.CustomerName || "").toLowerCase();
+                const type = String(ticket.Type || "").toLowerCase();
+
+                return (
+                    ticketNo.includes(searchText) ||
+                    subject.includes(searchText) ||
+                    loginId.includes(searchText) ||
+                    fullName.includes(searchText) ||
+                    customerName.includes(searchText) ||
+                    type.includes(searchText)
+                );
             });
+
             if (filtered.length === 0) {
                 container.html(`
                     <div class="text-center text-muted p-4">
@@ -364,47 +459,62 @@
                         <div class="mt-2">No tickets found</div>
                     </div>
                 `);
+
                 return;
             }
+
             filtered.forEach(function (ticket) {
-                const active = ticket.Id === selectedTicketId ? "active" : "";
+
+                const active = Number(ticket.Id) === Number(selectedTicketId)
+                    ? "active"
+                    : "";
+
                 let unread = "";
 
-                if (ticket.UnreadCount && ticket.UnreadCount > 0) {
+                if (Number(ticket.UnreadCount || 0) > 0) {
                     unread = `
                         <span class="unread">
                             ${ticket.UnreadCount}
                         </span>
                     `;
                 }
+
                 const html = `
                     <div class="ticket-item ${active}" data-ticket-id="${ticket.Id}">
                         <div class="ticket-top">
                             <span class="ticket-id">
                                 ${escapeHtml(ticket.TicketNo)}
                             </span>
+
                             <span class="ticket-time">
                                 ${formatRelativeTime(ticket.LastMessageDate || ticket.CreatedDate)}
                             </span>
                         </div>
+
                         <div class="ticket-subject">
                             ${escapeHtml(ticket.Subject)}
                         </div>
+
                         <div class="ticket-bottom">
                             <span class="badge ${getStatusClass(ticket.Status)}">
                                 ${escapeHtml(ticket.Status)}
                             </span>
+
                             ${unread}
                         </div>
                     </div>
                 `;
+
                 container.append(html);
             });
+
             container.find(".ticket-item").off("click").on("click", function () {
-                const ticketId = parseInt($(this).attr("data-ticket-id"));
+                const ticketId = parseInt($(this).attr("data-ticket-id"), 10);
                 selectTicket(ticketId);
             });
         }
+
+        // SELECT TICKET
         function selectTicket(ticketId, updateUrl) {
             if (!ticketId)
                 return;
@@ -430,9 +540,11 @@
             if (updateUrl) {
                 updateTicketUrl(selectedTicketId);
             }
+
             $(".ticket-item").removeClass("active");
 
             $('.ticket-item[data-ticket-id="' + selectedTicketId + '"]').addClass("active");
+
             updateTicketHeader(ticket);
 
             $(".chat-body").html(`
@@ -443,50 +555,69 @@
             `);
 
             $("#txtReply").val("");
+
             loadMessages(selectedTicketId, false);
         }
+
+        // LOAD MESSAGES
         function loadMessages(ticketId, background) {
             if (!ticketId)
                 return;
 
             const requestToken = ++messageRequestToken;
 
-            ajaxCall("GetMessages", { ticketId: ticketId }).done(function (response) {
+            ajaxCall("GetMessages", {
+                ticketId: ticketId
+            }).done(function (response) {
+
                 if (requestToken !== messageRequestToken)
                     return;
+
                 if (Number(ticketId) !== Number(selectedTicketId))
                     return;
+
                 const result = response.d;
+
                 if (!result.success) {
                     console.error(result.message);
+
                     if (!background) {
                         resetTicketSelection(true);
                     }
+
                     return;
                 }
 
                 const newMessages = result.data;
+
                 let latestId = 0;
+
                 if (newMessages.length > 0) {
                     latestId = newMessages[newMessages.length - 1].Id;
                 }
+
                 if (!background) {
                     messages = newMessages;
                     renderMessages(messages, true);
                     lastMessageId = latestId;
                     return;
                 }
+
                 if (latestId > lastMessageId) {
                     messages = newMessages;
                     renderMessages(messages, true);
                     lastMessageId = latestId;
                 }
+
             }).fail(function (xhr) {
                 if (requestToken !== messageRequestToken)
                     return;
+
                 console.error("GetMessages error:", xhr.responseText);
             });
         }
+
+        // RENDER MESSAGES
         function renderMessages(data, scrollBottom) {
             const body = $(".chat-body");
 
@@ -497,6 +628,7 @@
                         <div>No messages yet.</div>
                     </div>
                 `);
+
                 return;
             }
 
@@ -505,6 +637,7 @@
             let lastDate = "";
 
             data.forEach(function (message) {
+
                 const date = parseDate(message.CreatedDate);
                 const dateKey = date.toLocaleDateString();
 
@@ -523,6 +656,7 @@
                 let contentHtml = "";
 
                 if (message.MessageType === "File") {
+
                     const fileName = escapeHtml(message.FileName);
                     const filePath = escapeHtml(message.FilePath);
                     const fileSize = formatFileSize(message.FileSize);
@@ -534,11 +668,15 @@
                         icon = "bi-file-earmark-image";
                     } else if (contentType.includes("pdf")) {
                         icon = "bi-file-earmark-pdf";
-                    } else if (contentType.includes("word") ||
-                        contentType.includes("document")) {
+                    } else if (
+                        contentType.includes("word") ||
+                        contentType.includes("document")
+                    ) {
                         icon = "bi-file-earmark-word";
-                    } else if (contentType.includes("spreadsheet") ||
-                        contentType.includes("excel")) {
+                    } else if (
+                        contentType.includes("spreadsheet") ||
+                        contentType.includes("excel")
+                    ) {
                         icon = "bi-file-earmark-excel";
                     }
 
@@ -547,11 +685,14 @@
                            href="${filePath}"
                            target="_blank"
                            rel="noopener noreferrer">
+
                             <i class="bi ${icon} ticket-file-icon"></i>
+
                             <span class="ticket-file-details">
                                 <span class="ticket-file-name">${fileName}</span>
                                 <small>${fileSize}</small>
                             </span>
+
                             <i class="bi bi-download ticket-file-download"></i>
                         </a>
                     `;
@@ -560,15 +701,23 @@
                         <div class="bubble">${escapeHtml(message.Message)}</div>
                     `;
                 }
+
                 const html = `
                     <div class="message ${side}">
                         <div class="message-content">
-                            <div class="message-name">${escapeHtml(message.SenderName)}</div>
+                            <div class="message-name">
+                                ${escapeHtml(message.SenderName)}
+                            </div>
+
                             ${contentHtml}
-                            <div class="message-time">${formatDateTime(message.CreatedDate)}</div>
+
+                            <div class="message-time">
+                                ${formatDateTime(message.CreatedDate)}
+                            </div>
                         </div>
                     </div>
                 `;
+
                 body.append(html);
             });
 
@@ -576,88 +725,132 @@
                 body.scrollTop(body[0].scrollHeight);
             }
         }
+
+        // SEND MESSAGE
         function sendMessage() {
             if (!selectedTicketId)
                 return;
 
             const textbox = $("#txtReply");
             const message = textbox.val().trim();
+
             if (!message)
                 return;
 
-            ajaxCall("SendMessage", { ticketId: selectedTicketId, message: message }).done(function (response) {
+            ajaxCall("SendMessage", {
+                ticketId: selectedTicketId,
+                message: message
+            }).done(function (response) {
+
                 const result = response.d;
+
                 if (!result.success) {
                     alert(result.message);
                     return;
                 }
+
                 textbox.val("");
 
                 loadMessages(selectedTicketId, false);
                 loadTickets(true);
+
             }).fail(function (xhr) {
                 console.error(xhr.responseText);
                 alert("Unable to send message.");
+
             }).always(function () {
                 textbox.focus();
             });
         }
+
+        // CLOSE TICKET
         function closeTicket() {
             if (!selectedTicketId)
                 return;
+
             if (!confirm("Are you sure you want to close this ticket?"))
                 return;
 
-            ajaxCall("CloseTicket", { ticketId: selectedTicketId }).done(function (response) {
+            ajaxCall("CloseTicket", {
+                ticketId: selectedTicketId
+            }).done(function (response) {
+
                 const result = response.d;
+
                 if (!result.success) {
                     alert(result.message);
                     return;
                 }
+
                 loadTickets(false);
                 loadMessages(selectedTicketId, false);
+
             }).fail(function (xhr) {
                 console.error(xhr.responseText);
             });
         }
+
+        // UPDATE TICKET HEADER
         function updateTicketHeader(ticket) {
             $("#lblTicketNo").text(ticket.TicketNo);
             $("#lblType").text("Type : " + ticket.Type);
 
-            $("#lblStatus").removeClass().addClass("badge " + getStatusClass(ticket.Status)).text(ticket.Status);
+            $("#lblStatus")
+                .removeClass()
+                .addClass("badge " + getStatusClass(ticket.Status))
+                .text(ticket.Status);
 
             const isClosed = String(ticket.Status || "").toLowerCase() === "closed";
 
             if (isClosed) {
                 $("#btnCloseTicket").hide();
-                $("#txtReply").prop("disabled", true).attr("placeholder", "This ticket is closed.");
+
+                $("#txtReply")
+                    .prop("disabled", true)
+                    .attr("placeholder", "This ticket is closed.");
+
                 $("#btnUploadFile").prop("disabled", true);
-            }
-            else {
+
+            } else {
                 $("#btnCloseTicket").show();
-                $("#txtReply").prop("disabled", false).attr("placeholder", "Type your reply here...");
+
+                $("#txtReply")
+                    .prop("disabled", false)
+                    .attr("placeholder", "Type your reply here...");
+
                 $("#btnUploadFile").prop("disabled", false);
             }
         }
+
+        // STATUS CLASS
         function getStatusClass(status) {
             switch (status) {
                 case "Open":
                     return "bg-warning text-dark";
+
                 case "Pending":
                     return "bg-info text-dark";
+
                 case "Resolved":
                     return "bg-success";
+
                 case "Closed":
                     return "bg-secondary";
+
                 default:
                     return "bg-secondary";
             }
         }
+
+        // PARSE DATE
         function parseDate(value) {
             if (!value)
                 return new Date();
+
             return new Date(value.replace(" ", "T"));
         }
+
+        // FORMAT DATE TIME
         function formatDateTime(value) {
             const date = parseDate(value);
 
@@ -672,6 +865,8 @@
                 }
             );
         }
+
+        // FORMAT RELATIVE TIME
         function formatRelativeTime(value) {
             if (!value)
                 return "";
@@ -699,34 +894,50 @@
 
             return date.toLocaleDateString();
         }
+
+        // FORMAT FILE SIZE
         function formatFileSize(bytes) {
             bytes = Number(bytes) || 0;
+
             if (bytes < 1024) {
                 return bytes + " B";
             }
+
             if (bytes < 1048576) {
                 return (bytes / 1024).toFixed(1) + " KB";
             }
+
             if (bytes < 1073741824) {
                 return (bytes / 1048576).toFixed(1) + " MB";
             }
+
             return (bytes / 1073741824).toFixed(1) + " GB";
         }
+
+        // ESCAPE HTML
         function escapeHtml(value) {
             if (value === null || value === undefined)
                 return "";
+
             return $("<div>").text(value).html();
         }
+
+        // UPLOAD TICKET FILES
         function uploadTicketFiles(files, ticketId) {
+
             const selectedTicket = tickets.find(function (x) {
-                return x.Id === Number(ticketId);
+                return Number(x.Id) === Number(ticketId);
             });
 
-            if (selectedTicket && String(selectedTicket.Status || "").toLowerCase() === "closed") {
+            if (
+                selectedTicket &&
+                String(selectedTicket.Status || "").toLowerCase() === "closed"
+            ) {
                 $("#fileTicketUpload").val("");
                 alert("This ticket is closed. You can no longer upload files.");
                 return;
             }
+
             if (!files || files.length === 0) {
                 alert("Please select a file to upload.");
                 return;
@@ -740,14 +951,19 @@
             const uploadButton = $("#btnUploadFile");
 
             uploadButton.prop("disabled", true);
-            uploadButton.html('<span class="spinner-border spinner-border-sm" role="status"></span>');
+            uploadButton.html(
+                '<span class="spinner-border spinner-border-sm" role="status"></span>'
+            );
 
             let index = 0;
 
             function uploadNext() {
+
                 if (index >= files.length) {
+
                     uploadButton.prop("disabled", false);
                     uploadButton.html('<i class="bi bi-paperclip"></i>');
+
                     $("#fileTicketUpload").val("");
 
                     loadMessages(ticketId, false);
@@ -764,58 +980,68 @@
 
                 $.ajax({
                     url: '<%= ResolveUrl("~/Handler/UploadTicketFile.ashx") %>',
-                    type: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    cache: false,
-                    success: function (response) {
-                        if (typeof response === "string") {
-                            try {
-                                response = JSON.parse(response);
-                            } catch (e) {
-                                alert("The server returned an invalid response.");
-                                resetUploadButton();
-                                return;
-                            }
-                        }
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                cache: false,
 
-                        if (response && response.success) {
-                            index++;
-                            uploadNext();
-                        } else {
-                            alert(
-                                response && response.message
-                                    ? response.message
-                                    : "Failed to upload file."
-                            );
+                success: function (response) {
 
+                    if (typeof response === "string") {
+                        try {
+                            response = JSON.parse(response);
+                        } catch (e) {
+                            alert("The server returned an invalid response.");
                             resetUploadButton();
+                            return;
                         }
-                    },
-                    error: function (xhr) {
-                        console.error("Upload error:", xhr.responseText);
+                    }
 
-                        let message = "Failed to upload filess.";
+                    if (response && response.success) {
+                        index++;
+                        uploadNext();
 
-                        if (xhr.status === 413) {
-                            message = "The file is too large for the server.";
-                        } else if (xhr.status === 401 || xhr.status === 403) {
-                            message = "You are not authorized to upload this file.";
-                        }
+                    } else {
+                        alert(
+                            response && response.message
+                                ? response.message
+                                : "Failed to upload file."
+                        );
 
-                        alert(message);
                         resetUploadButton();
                     }
-                });
+                },
+
+                error: function (xhr) {
+
+                    console.error("Upload error:", xhr.responseText);
+
+                    let message = "Failed to upload files.";
+
+                    if (xhr.status === 413) {
+                        message = "The file is too large for the server.";
+
+                    } else if (xhr.status === 401 || xhr.status === 403) {
+                        message = "You are not authorized to upload this file.";
+                    }
+
+                    alert(message);
+                    resetUploadButton();
+                }
+            });
             }
+
             function resetUploadButton() {
                 uploadButton.prop("disabled", false);
                 uploadButton.html('<i class="bi bi-paperclip"></i>');
                 $("#fileTicketUpload").val("");
             }
+
             uploadNext();
         }
+
+        // CLICK UPLOAD BUTTON
         $("#btnUploadFile").on("click", function (e) {
             e.preventDefault();
 
@@ -826,7 +1052,10 @@
 
             $("#fileTicketUpload").trigger("click");
         });
+
+        // FILE INPUT CHANGE
         $("#fileTicketUpload").on("change", function () {
+
             const fileInput = this;
 
             if (!fileInput.files || fileInput.files.length === 0) {
@@ -847,6 +1076,7 @@
             });
 
             if (oversizedFiles.length > 0) {
+
                 const fileNames = oversizedFiles.map(function (file) {
                     return file.name + " (" + formatFileSize(file.size) + ")";
                 }).join("\n");
