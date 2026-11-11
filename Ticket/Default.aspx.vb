@@ -107,7 +107,7 @@ Partial Class Ticket_Default
                     thisSql &= " AND C.CompanyId=@CompanyId"
                 End If
 
-                thisSql &= " ORDER BY ISNULL(M.LastMessageDate, T.CreatedDate) DESC, T.Id DESC"
+                thisSql &= " ORDER BY CASE WHEN T.Status = 'Open' THEN 0 ELSE 1 END ASC, T.CreatedDate DESC, T.Id DESC"
 
                 Using thisCmd As New SqlCommand(thisSql, thisConn)
                     thisCmd.Parameters.Add("@LoginId", SqlDbType.Int).Value = loginId

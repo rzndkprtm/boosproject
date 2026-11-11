@@ -394,20 +394,10 @@
             </div>
         </div>
         <script type="text/javascript">
-
-            /* =========================================================
-               1. GLOBAL VARIABLES
-            ========================================================= */
-
             var popupQueue = [];
             var currentPopup = null;
             var loadedPopupIds = new Set();
-
-
-            /* =========================================================
-               2. NOTIFICATION POPUP
-            ========================================================= */
-
+            
             function checkNotification() {
                 fetch('/Setting/General/Notification/Default.aspx/GetNotification', {
                     method: 'POST',
@@ -448,10 +438,6 @@
                     body: JSON.stringify({ popupId: popupId })
                 });
             }
-
-            /* =========================================================
-               3. SESSION & CURRENT PAGE TRACKER
-            ========================================================= */
             function updateCurrentPage() {
                 fetch('/Setting/UpdateSession.aspx/UpdateCurrentPage', {
                     method: 'POST',
@@ -467,11 +453,6 @@
                     cache: 'no-store'
                 }).catch(() => { });
             }
-
-            /* =========================================================
-               4. GLOBAL SEARCH
-            ========================================================= */
-
             function initializeGlobalSearch() {
                 var globalSearch = document.getElementById("txtGlobalSearch");
 
@@ -486,12 +467,7 @@
                     }
                 });
             }
-
-            /* =========================================================
-               5. TICKET UNREAD BADGE
-            ========================================================= */
             function updateTicketUnreadBadge() {
-
                 $.ajax({
                     type: "POST",
                     url: '<%= ResolveUrl("~/Ticket/Default.aspx/GetUnreadTicketCount") %>',
@@ -518,7 +494,6 @@
                     }
                 });
             }
-
             function initializeNotificationModal() {
                 var modalNotification = document.getElementById('modalNotification');
                 if (!modalNotification) return;
@@ -529,35 +504,26 @@
                     showNextPopup();
                 });
             }
-
             if (typeof Sys !== "undefined" && Sys.WebForms) {
                 Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
                     var newTitle = '<%= String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %>';
                     document.title = newTitle;
                 });
             }
-
             document.addEventListener("DOMContentLoaded", function () {
                 checkNotification();
                 setInterval(checkNotification, 10000);
-
-                // Session Tracker
+                
                 updateCurrentPage();
                 setInterval(updateCurrentPage, 5000);
 
                 updateSession();
                 setInterval(updateSession, 240000);
-
-                // Global Search
+                
                 initializeGlobalSearch();
-
-                // Notification Modal
                 initializeNotificationModal();
-
-                // Ticket Badge
                 updateTicketUnreadBadge();
                 setInterval(updateTicketUnreadBadge, 5000);
-
             });
         </script>
         <script src="/Assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>

@@ -368,7 +368,6 @@
                         </span>
                     `;
                 }
-
                 const html = `
                     <div class="ticket-item ${active}" data-ticket-id="${ticket.Id}">
                         <div class="ticket-top">
@@ -737,7 +736,6 @@
             let index = 0;
 
             function uploadNext() {
-
                 if (index >= files.length) {
                     uploadButton.prop("disabled", false);
                     uploadButton.html('<i class="bi bi-paperclip"></i>');
@@ -762,7 +760,6 @@
                     processData: false,
                     contentType: false,
                     cache: false,
-
                     success: function (response) {
                         if (typeof response === "string") {
                             try {
@@ -787,7 +784,6 @@
                             resetUploadButton();
                         }
                     },
-
                     error: function (xhr) {
                         console.error("Upload error:", xhr.responseText);
 
@@ -809,7 +805,6 @@
                 uploadButton.html('<i class="bi bi-paperclip"></i>');
                 $("#fileTicketUpload").val("");
             }
-
             uploadNext();
         }
         $("#btnUploadFile").on("click", function (e) {
