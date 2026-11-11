@@ -836,6 +836,26 @@
             }
 
             const files = Array.from(fileInput.files);
+            const maxFileSize = 5 * 1024 * 1024;
+
+            const oversizedFiles = files.filter(function (file) {
+                return file.size > maxFileSize;
+            });
+
+            if (oversizedFiles.length > 0) {
+                const fileNames = oversizedFiles.map(function (file) {
+                    return file.name + " (" + formatFileSize(file.size) + ")";
+                }).join("\n");
+
+                alert(
+                    "Upload failed! Maximum file size is 5 MB per file.\n\n" +
+                    fileNames
+                );
+
+                fileInput.value = "";
+                return;
+            }
+
             const ticketId = selectedTicketId;
 
             uploadTicketFiles(files, ticketId);

@@ -12,7 +12,7 @@ Public Class UploadTicketFile : Implements IHttpHandler, System.Web.SessionState
 
     Private ReadOnly myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
-    Private Const MaxFileSize As Integer = 20971520
+    Private Const MaxFileSize As Integer = 5242880 ' 5 MB
     Private Const UploadFolder As String = "~/File/Ticket/"
 
     Public Sub ProcessRequest(context As HttpContext) Implements IHttpHandler.ProcessRequest
@@ -21,7 +21,7 @@ Public Class UploadTicketFile : Implements IHttpHandler, System.Web.SessionState
 
         Dim savedFilePath As String = Nothing
         Dim savedPhysicalPath As String = Nothing
-        Dim serializer As New JavaScriptSerializer()
+
         Try
             If Not String.Equals(context.Request.HttpMethod, "POST", StringComparison.OrdinalIgnoreCase) Then
                 WriteResponse(context, New With {.success = False, .message = "Only POST requests are allowed."})
@@ -39,6 +39,7 @@ Public Class UploadTicketFile : Implements IHttpHandler, System.Web.SessionState
             Dim isInternal As Boolean = Not String.Equals(roleName, "Customer", StringComparison.OrdinalIgnoreCase)
 
             Dim ticketId As Integer
+
             If Not Integer.TryParse(context.Request.Form("ticketId"), ticketId) OrElse ticketId <= 0 Then
                 WriteResponse(context, New With {.success = False, .message = "Invalid ticket ID."})
                 Return
@@ -50,13 +51,18 @@ Public Class UploadTicketFile : Implements IHttpHandler, System.Web.SessionState
             End If
 
             Dim uploadedFile As HttpPostedFile = context.Request.Files(0)
+
             If uploadedFile Is Nothing OrElse uploadedFile.ContentLength <= 0 Then
                 WriteResponse(context, New With {.success = False, .message = "The selected file is empty or was not received."})
                 Return
             End If
 
+            ' VALIDASI MAKSIMAL 5 MB
             If uploadedFile.ContentLength > MaxFileSize Then
-                WriteResponse(context, New With {.success = False, .message = "Maximum file size is 20 MB."})
+                WriteResponse(context, New With {
+                    .success = False,
+                    .message = "File size exceeds the maximum allowed size of 5 MB. Your file is " & FormatFileSize(uploadedFile.ContentLength) & "."
+                })
                 Return
             End If
 
@@ -74,6 +80,7 @@ Public Class UploadTicketFile : Implements IHttpHandler, System.Web.SessionState
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
+
                 Using ticketCmd As New SqlCommand("SELECT TicketNo FROM Tickets WHERE Id=@TicketId", thisConn)
                     ticketCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
 
@@ -109,6 +116,7 @@ Public Class UploadTicketFile : Implements IHttpHandler, System.Web.SessionState
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
+
                 Using ticketCmd As New SqlCommand("SELECT Id, LoginId, Status FROM Tickets WHERE Id=@TicketId", thisConn)
                     ticketCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
 
@@ -134,6 +142,7 @@ Public Class UploadTicketFile : Implements IHttpHandler, System.Web.SessionState
                 End Using
             End Using
 
+            ' SIMPAN FILE
             uploadedFile.SaveAs(savedPhysicalPath)
 
             Using thisConn As New SqlConnection(myConn)
@@ -191,25 +200,39 @@ Public Class UploadTicketFile : Implements IHttpHandler, System.Web.SessionState
                                 .IsMine = True
                             }
                         })
+
                     Catch
                         Try
                             thisTrans.Rollback()
                         Catch
                         End Try
+
                         Throw
                     End Try
                 End Using
             End Using
+
         Catch ex As Exception
+
             If Not String.IsNullOrWhiteSpace(savedPhysicalPath) AndAlso File.Exists(savedPhysicalPath) Then
                 Try
                     File.Delete(savedPhysicalPath)
                 Catch
                 End Try
             End If
+
             WriteResponse(context, New With {.success = False, .message = "Upload failed: " & ex.Message})
+
         End Try
     End Sub
+
+    Private Function FormatFileSize(bytes As Long) As String
+        If bytes < 1048576 Then
+            Return (bytes / 1024.0).ToString("0.0") & " KB"
+        End If
+
+        Return (bytes / 1048576.0).ToString("0.0") & " MB"
+    End Function
 
     Private Sub WriteResponse(context As HttpContext, data As Object)
         Dim serializer As New JavaScriptSerializer()
@@ -221,4 +244,5 @@ Public Class UploadTicketFile : Implements IHttpHandler, System.Web.SessionState
             Return False
         End Get
     End Property
+
 End Class
