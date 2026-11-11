@@ -409,252 +409,135 @@
             ========================================================= */
 
             function checkNotification() {
-
                 fetch('/Setting/General/Notification/Default.aspx/GetNotification', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: '{}'
-
-                })
-                    .then(response => response.json())
-                    .then(data => {
-
-                        let notifications = data.d || [];
-
-                        notifications.forEach(function (item) {
-
-                            if (!loadedPopupIds.has(item.popupId)) {
-
-                                loadedPopupIds.add(item.popupId);
-                                popupQueue.push(item);
-
-                            }
-
-                        });
-
-                        if (!currentPopup && popupQueue.length > 0) {
-                            showNextPopup();
+                }).then(response => response.json()).then(data => {
+                    let notifications = data.d || [];
+                    notifications.forEach(function (item) {
+                        if (!loadedPopupIds.has(item.popupId)) {
+                            loadedPopupIds.add(item.popupId);
+                            popupQueue.push(item);
                         }
-
                     });
-
+                    if (!currentPopup && popupQueue.length > 0) {
+                        showNextPopup();
+                    }
+                });
             }
-
-
             function showNextPopup() {
-
                 if (popupQueue.length === 0) return;
 
                 currentPopup = popupQueue.shift();
-
                 document.getElementById("titleNotification").innerText = currentPopup.title;
-
-                document.getElementById("messageNotification").innerHTML =
-                    currentPopup.message
-                        .replace(/\r\n/g, "<br>")
-                        .replace(/\n/g, "<br>");
+                document.getElementById("messageNotification").innerHTML = currentPopup.message.replace(/\r\n/g, "<br>").replace(/\n/g, "<br>");
 
                 var modalEl = document.getElementById('modalNotification');
                 var modal = bootstrap.Modal.getInstance(modalEl);
 
                 if (!modal) {
-
-                    modal = new bootstrap.Modal(modalEl, {
-                        backdrop: 'static',
-                        keyboard: false
-                    });
-
+                    modal = new bootstrap.Modal(modalEl, { backdrop: 'static', keyboard: false });
                 }
-
                 modal.show();
-
             }
-
-
             function savePopupLog(popupId) {
-
                 fetch('/Setting/General/Notification/Default.aspx/SavePopupLog', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        popupId: popupId
-                    })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ popupId: popupId })
                 });
-
             }
-
 
             /* =========================================================
                3. SESSION & CURRENT PAGE TRACKER
             ========================================================= */
-
             function updateCurrentPage() {
-
                 fetch('/Setting/UpdateSession.aspx/UpdateCurrentPage', {
                     method: 'POST',
                     credentials: 'same-origin',
                     cache: 'no-store',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        page: window.location.pathname + window.location.search
-                    })
-
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ page: window.location.pathname + window.location.search })
                 }).catch(() => { });
-
             }
-
-
             function updateSession() {
-
                 fetch('/Setting/UpdateSession.aspx', {
                     credentials: 'same-origin',
                     cache: 'no-store'
                 }).catch(() => { });
-
             }
-
 
             /* =========================================================
                4. GLOBAL SEARCH
             ========================================================= */
 
             function initializeGlobalSearch() {
-
                 var globalSearch = document.getElementById("txtGlobalSearch");
 
                 if (!globalSearch) return;
 
                 globalSearch.addEventListener("keydown", function (e) {
-
                     if (e.key === "Enter") {
-
                         e.preventDefault();
-
                         var keyword = this.value.trim();
-
                         if (keyword === "") return;
-
                         window.location.href = '/search?q=' + encodeURIComponent(keyword);
-
                     }
-
                 });
-
             }
-
 
             /* =========================================================
                5. TICKET UNREAD BADGE
             ========================================================= */
-
             function updateTicketUnreadBadge() {
 
                 $.ajax({
-
                     type: "POST",
-
                     url: '<%= ResolveUrl("~/Ticket/Default.aspx/GetUnreadTicketCount") %>',
-
-            data: "{}",
-
-            contentType: "application/json; charset=utf-8",
-
-            dataType: "json",
-
-            cache: false,
-
-            success: function (response) {
-
-                const result = response.d;
-                const badge = $("#ticketUnreadBadge");
-
-                if (!result || !result.success) {
-
-                    badge.hide();
-                    return;
-
-                }
-
-                const count = Number(result.count) || 0;
-
-                if (count > 0) {
-
-                    badge.text(count > 99 ? "99+" : count).show();
-
-                } else {
-
-                    badge.hide();
-
-                }
-
-            },
-
-            error: function (xhr) {
-
-                console.error("Ticket unread count error:", xhr.responseText);
-
+                    data: "{}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    cache: false,
+                    success: function (response) {
+                        const result = response.d;
+                        const badge = $("#ticketUnreadBadge");
+                        if (!result || !result.success) {
+                            badge.hide();
+                            return;
+                        }
+                        const count = Number(result.count) || 0;
+                        if (count > 0) {
+                            badge.text(count > 99 ? "99+" : count).show();
+                        } else {
+                            badge.hide();
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error("Ticket unread count error:", xhr.responseText);
+                    }
+                });
             }
 
-        });
-
-    }
-
-
-    /* =========================================================
-       6. BOOTSTRAP MODAL EVENTS
-    ========================================================= */
-
-    function initializeNotificationModal() {
-
-        var modalNotification = document.getElementById('modalNotification');
-
-        if (!modalNotification) return;
-
-        modalNotification.addEventListener('hidden.bs.modal', function () {
-
-            if (!currentPopup) return;
-
-            savePopupLog(currentPopup.popupId);
-
-            currentPopup = null;
-
-            showNextPopup();
-
-        });
-
-    }
-
-
-    /* =========================================================
-       7. ASP.NET AJAX PARTIAL POSTBACK
-    ========================================================= */
-
-    if (typeof Sys !== "undefined" && Sys.WebForms) {
-
-        Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
-
-            var newTitle = '<%= String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %>';
-
-            document.title = newTitle;
-
-        });
-
+            function initializeNotificationModal() {
+                var modalNotification = document.getElementById('modalNotification');
+                if (!modalNotification) return;
+                modalNotification.addEventListener('hidden.bs.modal', function () {
+                    if (!currentPopup) return;
+                    savePopupLog(currentPopup.popupId);
+                    currentPopup = null;
+                    showNextPopup();
+                });
             }
 
-
-            /* =========================================================
-               8. DOCUMENT READY
-            ========================================================= */
+            if (typeof Sys !== "undefined" && Sys.WebForms) {
+                Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+                    var newTitle = '<%= String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %>';
+                    document.title = newTitle;
+                });
+            }
 
             document.addEventListener("DOMContentLoaded", function () {
-
-                // Notification
                 checkNotification();
                 setInterval(checkNotification, 10000);
 
