@@ -107,7 +107,6 @@
                 window.location.href = '<%= ResolveUrl("~/ticket") %>?id=' + encodeURIComponent(createdTicketId);
             }, 5000);
         }
-
         document.getElementById("btnCloseSuccess").addEventListener("click", function () {
             clearTimeout(ticketRedirectTimer);
 

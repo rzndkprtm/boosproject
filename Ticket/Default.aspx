@@ -237,7 +237,6 @@
                 url.pathname + url.search
             );
         }
-
         function resetTicketUrl() {
             const url = new URL(window.location.href);
             window.history.replaceState(null, "", url.pathname);

@@ -244,6 +244,9 @@ Partial Class Setting_Log
                 End If
 
                 ' JOB
+                If type = "JobSheets" Then
+                    thisQuery = "SELECT Name FROM JobSheets WHERE Id='" & dataId & "'"
+                End If
 
                 ' PRICE
                 If type = "PriceGroups" Then
