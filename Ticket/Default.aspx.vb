@@ -73,7 +73,6 @@ Partial Class Ticket_Default
                     unreadCount = Convert.ToInt32(thisCmd.ExecuteScalar())
                 End Using
             End Using
-
             Return New With {.success = True, .count = unreadCount}
         Catch ex As Exception
             Return New With {.success = False, .count = 0, .message = ex.Message}
@@ -94,7 +93,7 @@ Partial Class Ticket_Default
             Dim result As New List(Of Object)
 
             If loginId <= 0 Then
-                Return New With {.success = False, .message = "Session expired. Please log in again."}
+                Return New With {.success = False, .message = "SESSION EXPIRED. PLEASE LOG IN AGAIN !"}
             End If
 
             Using thisConn As New SqlConnection(myConn)
