@@ -124,15 +124,12 @@ Partial Class Setting_General_Newsletter_Default
     End Sub
 
     Protected Sub BindData(searchText As String)
-        Session("SearchNewsletter") = String.Empty
         Try
-            Dim search As String = String.Empty
-            If Not searchText = "" Then
-                search = "WHERE Newsletters.Id LIKE '%" & searchText.Trim() & "%' OR Newsletters.Name LIKE '%" & searchText.Trim() & "%' OR Newsletters.Description LIKE '%" & searchText.Trim() & "%'"
-            End If
-            Dim thisString As String = String.Format("SELECT Newsletters.*, Companys.Alias AS CompanyAlias FROM Newsletters LEFT JOIN Companys ON Newsletters.CompanyId=Companys.Id {0} ORDER BY Newsletters.Id DESC", search)
-
-            gvList.DataSource = settingClass.GetDataTable(thisString)
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText)),
+                New SqlParameter("@RoleName", Session("RoleName").ToString())
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_Newsletters_List", params)
             gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID")
 
