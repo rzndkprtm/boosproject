@@ -37,6 +37,49 @@ Partial Class Ticket_Default
         Response.Redirect("~/ticket/add", False)
     End Sub
 
+    <WebMethod(EnableSession:=True)>
+    <ScriptMethod(ResponseFormat:=ResponseFormat.Json)>
+    Public Shared Function GetUnreadTicketCount() As Object
+        Try
+            Dim loginId As Integer = GetLoginId()
+            Dim isInternal As Boolean = IsInternalUser()
+
+            Dim roleName As String = Convert.ToString(HttpContext.Current.Session("RoleName"))
+            Dim companyId As String = Convert.ToString(HttpContext.Current.Session("CompanyId"))
+
+            If loginId <= 0 Then
+                Return New With {.success = False, .count = 0}
+            End If
+
+            Dim unreadCount As Integer = 0
+
+            Using thisConn As New SqlConnection(myConn)
+                Dim thisSql As String = "SELECT COUNT(*) FROM TicketMessages CM INNER JOIN Tickets T ON T.Id=CM.TicketId LEFT JOIN Logins L ON T.LoginId=L.Id LEFT JOIN Customers C ON L.CustomerId=C.Id WHERE CM.SenderType=@SenderType AND NOT EXISTS (SELECT 1 FROM STRING_SPLIT(ISNULL(CM.ReadBy, ''), ',') S WHERE LTRIM(RTRIM(S.value))=CAST(@LoginId AS NVARCHAR(20)))"
+                If Not isInternal Then
+                    thisSql &= " AND T.LoginId=@LoginId"
+                End If
+                If roleName = "Sales" OrElse roleName = "Account" Then
+                    thisSql &= " AND C.CompanyId=@CompanyId"
+                End If
+                Using thisCmd As New SqlCommand(thisSql, thisConn)
+                    thisCmd.Parameters.Add("@LoginId", SqlDbType.Int).Value = loginId
+                    thisCmd.Parameters.Add("@SenderType", SqlDbType.NVarChar, 20).Value = If(isInternal, "Customer", "Internal")
+
+                    If roleName = "Sales" OrElse roleName = "Account" Then
+                        thisCmd.Parameters.Add("@CompanyId", SqlDbType.NVarChar, 50).Value = companyId
+                    End If
+
+                    thisConn.Open()
+                    unreadCount = Convert.ToInt32(thisCmd.ExecuteScalar())
+                End Using
+            End Using
+
+            Return New With {.success = True, .count = unreadCount}
+        Catch ex As Exception
+            Return New With {.success = False, .count = 0, .message = ex.Message}
+        End Try
+    End Function
+
 
     <WebMethod(EnableSession:=True)>
     <ScriptMethod(ResponseFormat:=ResponseFormat.Json)>

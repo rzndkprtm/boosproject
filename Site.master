@@ -25,6 +25,24 @@
         .global-search input:focus { background: #fff; border-color: #435ebe; box-shadow: 0 0 0 2px rgba(67, 94, 190, .1); }
         .global-search i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #7c8db5; font-size: 16px; pointer-events: none; }
         .header-top-right { flex-shrink: 0; }
+        .ticket-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 17px;
+            height: 17px;
+            padding: 0 5px;
+            margin-left: 3px;
+            margin-top: -12px;
+            border-radius: 50px;
+            background: #ff4757;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1;
+            box-shadow: 0 2px 5px rgba(255,71,87,.25);
+            vertical-align: super;
+        }
         @media (max-width: 576px) {
             .header-top > .container { display: grid !important; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "logo profile" "search search"; align-items: center; gap: 12px; padding: 10px 12px; }
             .logo { grid-area: logo; min-width: 0; }
@@ -32,7 +50,7 @@
             .global-search { grid-area: search; width: 100%; margin: 0; min-width: 0; }
             .global-search input { width: 100%; height: 40px; }
             .header-top-right { grid-area: profile; display: flex; align-items: center; gap: 10px; margin: 0; }
-        }
+        }        
     </style>
 </head>
 <body>
@@ -107,6 +125,7 @@
                                     <a runat="server" href="~/ticket" class='menu-link'>
                                         <i class="bi bi-envelope-fill"></i>
                                         <span>Ticket</span>
+                                        <span id="ticketUnreadBadge" class="ticket-badge" style="display:none;">0</span>
                                     </a>
                                 </li>
                                 <li class="menu-item" runat="server" id="liStocks">
@@ -475,16 +494,56 @@
                 var newTitle = '<%= String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %>';
                 document.title = newTitle;
             });
-            document.getElementById("txtGlobalSearch").addEventListener("keydown", function (e) {
-                if (e.key === "Enter") {
-                    e.preventDefault();
+            document.addEventListener("DOMContentLoaded", function () {
+                var globalSearch = document.getElementById("txtGlobalSearch");
+                if (globalSearch) {
+                    globalSearch.addEventListener("keydown", function (e) {
 
-                    var keyword = this.value.trim();
+                        if (e.key === "Enter") {
+                            e.preventDefault();
 
-                    if (keyword === "") return;
+                            var keyword = this.value.trim();
 
-                    window.location.href = '<%= ResolveUrl("~/search") %>?q=' + encodeURIComponent(keyword);
+                            if (keyword === "") return;
+
+                            window.location.href = '/search?q=' + encodeURIComponent(keyword);
+                        }
+
+                    });
                 }
+            });
+            function updateTicketUnreadBadge() {
+                $.ajax({
+                    type: "POST",
+                    url: '<%= ResolveUrl("~/Ticket/Default.aspx/GetUnreadTicketCount") %>',
+                    data: "{}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    cache: false,
+                    success: function (response) {
+                        const result = response.d;
+                        const badge = $("#ticketUnreadBadge");
+                        if (!result || !result.success) {
+                            badge.hide();
+                            return;
+                        }
+                        const count = Number(result.count) || 0;
+                        if (count > 0) {
+                            badge.text(count > 99 ? "99+" : count).show();
+                        } else {
+                            badge.hide();
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error("Ticket unread count error:", xhr.responseText);
+                    }
+                });
+            }
+            $(document).ready(function () {
+                updateTicketUnreadBadge();
+                setInterval(function () {
+                    updateTicketUnreadBadge();
+                }, 5000);
             });
         </script>
         <script src="/Assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
