@@ -21,7 +21,6 @@
             </div>
         </div>
     </div>
-
     <div class="page-content">
         <section class="row" id="divloader">
             <div class="col-12">
@@ -36,7 +35,6 @@
                 </div>
             </div>
         </section>
-
         <div id="divorder" style="display:none;">
             <section class="row">
                 <div class="col-12 col-sm-12 col-lg-7">
@@ -523,7 +521,6 @@
             </section>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalSuccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -569,6 +566,5 @@
             </div>
         </div>
     </div>
-    
-    <script src="/Scripts/RisaSolihah/EvolveExpress.js?v=1.3.0"></script>
+    <script src="/Scripts/Bintang/EvolveExpress.js?v=1.0.0"></script>
 </asp:Content>

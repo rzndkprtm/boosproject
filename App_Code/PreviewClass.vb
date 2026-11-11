@@ -1359,7 +1359,7 @@ Public Class PreviewClass
                         items(0, i) = "Item : " & number
                         items(1, i) = pelmetData.Rows(i)("Room").ToString()
                         items(2, i) = pelmetData.Rows(i)("Mounting").ToString()
-                        items(3, i) = pelmetData.Rows(i)("TubeName").ToString()
+                        items(3, i) = pelmetData.Rows(i)("BlindName").ToString()
                         items(4, i) = pelmetData.Rows(i)("FabricName").ToString()
                         items(5, i) = pelmetData.Rows(i)("FabricColour").ToString()
                         items(6, i) = pelmetData.Rows(i)("Batten").ToString()

@@ -3109,7 +3109,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function EvolveProccess(data As ProccessData) As String
+    Public Shared Function EvolveProcess(data As ProccessData) As String
         Dim orderClass As New OrderClass
 
         Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
@@ -3260,8 +3260,6 @@ Partial Class Order_Method
                 End If
             End If
         End If
-
-        If blindName = "Panel Only" AndAlso String.IsNullOrEmpty(data.panelqty) Then Return "PANEL QTY IS REQUIRED !"
 
         If String.IsNullOrEmpty(data.tiltrodtype) Then Return "TILTROD TYPE IS REQUIRED !"
 
@@ -3470,6 +3468,7 @@ Partial Class Order_Method
             horizontalHeight = 0
             gap1 = 0 : gap2 = 0 : gap3 = 0 : gap4 = 0 : gap5 = 0
             headerLength = 0
+            panelQty = 1
             trackQty = 0
             trackLength = 0
             hingeQtyPerPanel = 0
@@ -3841,7 +3840,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function LineaProcess(data As ProccessData) As String
+    Public Shared Function LineaValanceProcess(data As ProccessData) As String
         Dim orderClass As New OrderClass
 
         Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
@@ -9120,7 +9119,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function SkylineProccess(data As ProccessData) As String
+    Public Shared Function SkylineProcess(data As ProccessData) As String
         Dim orderClass As New OrderClass
 
         Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
@@ -9295,8 +9294,6 @@ Partial Class Order_Method
                 End If
             End If
         End If
-
-        If blindName = "Panel Only" AndAlso String.IsNullOrEmpty(data.panelqty) Then Return "PANEL QTY IS REQUIRED !"
 
         If String.IsNullOrEmpty(data.tiltrodtype) Then Return "TILTROD TYPE IS REQUIRED !"
 
@@ -9554,6 +9551,7 @@ Partial Class Order_Method
             horizontalHeight = 0
             gap1 = 0 : gap2 = 0 : gap3 = 0 : gap4 = 0 : gap5 = 0
             headerLength = 0
+            panelQty = 1
             trackQty = 0
             trackLength = 0
             hingeQtyPerPanel = 0
@@ -12632,7 +12630,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function DesignDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
+    Public Shared Function DesignShadesDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -12759,7 +12757,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function LineaDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
+    Public Shared Function LineaValanceDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -12836,7 +12834,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function PanelDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
+    Public Shared Function PanelGlideDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -13533,7 +13531,7 @@ Partial Class Order_Method
 
         Dim blindReq As New JSONList With {.type = "BlindType", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim colourReq As New JSONList With {.type = "ProductName", .blindtype = blindId, .companydetailid = companyDetailId, .tubetype = tubeId, .controltype = controlId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim partColour As New JSONList With {.type = "PartColour_Shutter", .designtype = designId, .blindtype = blindId, .colourtype = productId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim partColour As New JSONList With {.type = "PartColour_Skyline", .designtype = designId, .blindtype = blindId, .colourtype = productId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
 
         Dim result = New With {
             .ItemData = itemDetail,

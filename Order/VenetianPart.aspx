@@ -186,16 +186,13 @@
                             <h4 class="card-title text-center">Information</h4>
                         </div>
                         <div class="card-content">
-                            <div class="card-body">
-
-                            </div>
+                            <div class="card-body"></div>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalSuccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -239,6 +236,5 @@
             </div>
         </div>
     </div>
-
-    <script src="/Scripts/RisaSolihah/VenetianPart.js?v=1.2.0"></script>
+    <script src="/Scripts/Bintang/VenetianPart.js?v=1.0.0"></script>
 </asp:Content>

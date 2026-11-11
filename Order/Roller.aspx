@@ -1265,7 +1265,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            
                                             <div class="row mt-3">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Special Information</label>
@@ -1339,7 +1338,6 @@
             </section>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalSuccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1483,7 +1481,6 @@
                         <div class="tab-pane fade show active" id="list-link2dep" role="tabpanel" aria-labelledby="link2dep">
                             <asp:Image runat="server" CssClass="mt-3 mb-3 d-block mx-auto img-fluid" ImageUrl="~/Assets/images/products/roller/linkdep2.png" />
                         </div>
-
                         <div class="tab-pane fade" id="list-link2ind" role="tabpanel" aria-labelledby="link2ind">
                             <asp:Image runat="server" CssClass="mt-3 mb-3 d-block mx-auto img-fluid" ImageUrl="~/Assets/images/products/roller/linkind2.png" />
                         </div>
@@ -1501,6 +1498,5 @@
             </div>
         </div>
     </div>
-    
-    <script src="/Scripts/RisaSolihah/Roller.js?v=1.3.0"></script>
+    <script src="/Scripts/Bintang/Roller.js?v=1.0.0"></script>
 </asp:Content>

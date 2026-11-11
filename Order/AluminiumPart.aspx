@@ -196,5 +196,5 @@
             </div>
         </div>
     </div>
-    <script src="/Scripts/RisaSolihah/AluminiumPart.js?v=1.2.1"></script>
+    <script src="/Scripts/Bintang/AluminiumPart.js?v=1.0.0"></script>
 </asp:Content>

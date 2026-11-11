@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Design.aspx.vb" Inherits="Order_Design" MasterPageFile="~/Site.Master" Title="Design Shades Order" %>
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="DesignShades.aspx.vb" Inherits="Order_DesignShades" MasterPageFile="~/Site.Master" Title="Design Shades Order" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
@@ -293,7 +293,6 @@
             </section>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalSuccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -349,6 +348,5 @@
             </div>
         </div>
     </div>
-
-    <script src="/Scripts/RisaSolihah/Design.js?v=1.3.0"></script>
+    <script src="/Scripts/Bintang/DesignShades.js?v=1.0.0"></script>
 </asp:Content>

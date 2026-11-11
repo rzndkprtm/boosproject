@@ -420,5 +420,5 @@
             </div>
         </div>
     </div>
-    <script src="/Scripts/RisaSolihah/CellularShades.js?v=1.3.1"></script>
+    <script src="/Scripts/Bintang/CellularShades.js?v=1.0.0"></script>
 </asp:Content>

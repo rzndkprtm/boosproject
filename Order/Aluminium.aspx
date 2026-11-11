@@ -678,5 +678,5 @@
             </div>
         </div>
     </div>
-    <script src="/Scripts/RisaSolihah/Aluminium.js?v=1.3.1"></script>
+    <script src="/Scripts/Bintang/Aluminium.js?v=1.0.0"></script>
 </asp:Content>

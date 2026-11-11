@@ -81,7 +81,7 @@
                                                 <select id="blindtype" class="form-select"></select>
                                             </div>
                                         </div>
-                                        <div class="row" id="divtubetype">
+                                        <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Slat Type</label>
                                             </div>
@@ -89,7 +89,7 @@
                                                 <select id="tubetype" class="form-select"></select>
                                             </div>
                                         </div>
-                                        <div class="row" id="divcontroltype">
+                                        <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Control Type</label>
                                             </div>
@@ -97,7 +97,7 @@
                                                 <select id="controltype" class="form-select"></select>
                                             </div>
                                         </div>
-                                        <div class="row" id="divcolourtype">
+                                        <div class="row">
                                             <div class="col-12 col-sm-12 col-lg-3">
                                                 <label>Headrail Colour</label>
                                             </div>
@@ -357,7 +357,6 @@
             </section>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalSuccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -413,6 +412,5 @@
             </div>
         </div>
     </div>
-    
-    <script src="/Scripts/RisaSolihah/Vertical.js?v=1.3.0"></script>
+    <script src="/Scripts/Bintang/Vertical.js?v=1.0.0"></script>
 </asp:Content>

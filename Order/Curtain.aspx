@@ -605,5 +605,5 @@
             </div>
         </div>
     </div>
-    <script src="/Scripts/RisaSolihah/Curtain.js?v=1.3.0"></script>
+    <script src="/Scripts/Bintang/Curtain.js?v=1.0.0"></script>
 </asp:Content>
