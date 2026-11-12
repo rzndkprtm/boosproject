@@ -8,13 +8,7 @@ Partial Class Order_Archive_Detail
     Inherits Page
 
     Dim archiveClass As New ArchiveClass
-
-    Dim dataLog As Object() = Nothing
-    Dim url As String = String.Empty
-
     Dim headerId As String = String.Empty
-
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Private Property companyGroup As String
         Get
@@ -59,10 +53,6 @@ Partial Class Order_Archive_Detail
         End Try
     End Sub
 
-    Protected Sub btnConvert_Click(sender As Object, e As EventArgs)
-
-    End Sub
-
     Protected Sub BindDataOrder(headerId As String)
         Try
             Dim thisQuery As String = "SELECT Order_Header.*, Stores.Name AS CustomerName FROM Order_Header LEFT JOIN Users ON Order_Header.UserLogin=Users.UserName LEFT JOIN Stores ON Users.DebtorCode=Stores.Id WHERE Order_Header.OrdID='" & headerId & "'"
@@ -91,11 +81,6 @@ Partial Class Order_Archive_Detail
             lblSubmittedDate.Text = "-"
             If Not String.IsNullOrEmpty(headerData("SubmittedDate").ToString()) Then
                 lblSubmittedDate.Text = Convert.ToDateTime(headerData("SubmittedDate")).ToString("dd MMM yyyy")
-            End If
-
-            aConvert.Visible = False
-            If Session("RoleName") = "Customer" AndAlso status = "Draft" Then
-                aConvert.Visible = True
             End If
 
             BindDataItem(headerId)

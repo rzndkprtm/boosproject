@@ -5,9 +5,6 @@ Partial Class Order_Archive_Default
 
     Dim archiveClass As New ArchiveClass
 
-    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-    Dim url As String = String.Empty
-
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
         If pageAccess = False Then
@@ -17,65 +14,60 @@ Partial Class Order_Archive_Default
 
         If Not IsPostBack Then
             MessageError(False, String.Empty)
+
+            ddlStatus.SelectedValue = Session("ArchiveStatus")
+            ddlActive.SelectedValue = Session("ArchiveActive")
+            txtSearch.Text = Session("ArchiveSearch")
+
             BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlActive.SelectedValue)
         End If
     End Sub
 
     Protected Sub ddlStatus_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlActive.SelectedValue)
+
+        Session("ArchiveStatus") = ddlStatus.SelectedValue
+        Session("ArchiveActive") = ddlActive.SelectedValue
+        Session("ArchiveSearch") = txtSearch.Text
     End Sub
 
     Protected Sub ddlActive_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlActive.SelectedValue)
+
+        Session("ArchiveStatus") = ddlStatus.SelectedValue
+        Session("ArchiveActive") = ddlActive.SelectedValue
+        Session("ArchiveSearch") = txtSearch.Text
     End Sub
 
     Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
         MessageError(False, String.Empty)
         BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlActive.SelectedValue)
     End Sub
 
-    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
-        MessageError(False, String.Empty)
-        Try
-            gvList.PageIndex = e.NewPageIndex
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        If e.CommandName = "Page" Then
+            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
             BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlActive.SelectedValue)
-        Catch ex As Exception
-            MessageError(True, ex.ToString())
-            If Not Session("RoleName") = "Developer" Then
-                MessageError(True, "PLEASE CONTACT IT SUPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
-            End If
-        End Try
+        End If
     End Sub
 
-    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
-        If Not String.IsNullOrEmpty(e.CommandArgument) Then
-            Dim dataId As String = e.CommandArgument.ToString()
-            If e.CommandName = "Detail" Then
-                MessageError(False, String.Empty)
-                Try
-                    'Session("OrderSearch") = txtSearch.Text
-                    'Session("OrderStatus") = ddlStatus.SelectedValue
-                    'Session("OrderActive") = ddlActive.SelectedValue
+    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
 
-                    url = String.Format("~/order/archive/detail?orderid={0}", dataId)
+        MessageError(False, String.Empty)
+        BindDataOrder(txtSearch.Text, ddlStatus.SelectedValue, ddlActive.SelectedValue)
+    End Sub
 
-                    Response.Redirect(url, False)
-                Catch ex As Exception
-                    MessageError(True, ex.ToString())
-                    If Not Session("RoleName") = "Developer" Then
-                        MessageError(True, "PLEASE CONTACT IT AT SUPPORT REZA@BIGBLINDS.CO.ID !")
-                        If Session("RoleName") = "Customer" Then
-                            MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                        End If
-                    End If
-                End Try
-            End If
-        End If
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        BuildPager()
     End Sub
 
     Protected Sub BindDataOrder(search As String, status As String, active As String)
@@ -92,59 +84,6 @@ Partial Class Order_Archive_Default
             gvList.DataBind()
 
             divActive.Visible = LoginAccess("Visible Active")
-
-            'Dim byActive As String = "WHERE Order_Header.Active=1"
-            'Dim byRole As String = String.Empty
-            'Dim byInstaller As String = String.Empty
-            'Dim byStatus As String = String.Empty
-            'Dim byText As String = String.Empty
-            'Dim byOrder As String = "ORDER BY Order_Header.OrdID DESC"
-
-            'If active = "0" Then byActive = "WHERE Order_Header.Active=0"
-
-            'If Not search = "" Then
-            '    byText = "AND (Order_Header.OrdID LIKE '%" + search + "%' OR Order_Header.StoreOrderNo LIKE '%" + search + "%' OR Order_Header.StoreCustomer LIKE '%" + search + "%' OR Stores.Name LIKE '%" + search + "%' OR Order_Header.UserLogin LIKE '%" + search + "%')"
-            'End If
-
-            'If Session("RoleName") = "Developer" Or Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
-            '    byRole = String.Empty
-            '    byStatus = String.Empty
-            '    If Not status = "" Then
-            '        byStatus = "AND Order_Header.Status='" & status & "'"
-            '    End If
-            'End If
-
-            'If Session("RoleName") = "Customer" Then
-            '    byRole = "AND Order_Header.UserLogin='" & Session("UserName") & "'"
-            '    If Session("RoleName") = "Customer" AndAlso Session("CustomerId") = "1536" Then
-            '        byRole = "AND Order_Header.UserLogin='duasaudara'"
-            '    End If
-            '    byStatus = String.Empty
-            '    If Not status = "" Then
-            '        byStatus = "AND Order_Header.Status='" & status & "'"
-            '    End If
-            'End If
-
-            'If Session("RoleName") = "Sales" Then
-            '    byRole = "AND Users.CompanyGroup='JPMD'"
-            '    byStatus = String.Empty
-            '    If Not status = "" Then
-            '        byStatus = "AND Order_Header.Status='" & status & "'"
-            '    End If
-            'End If
-
-            'If Session("RoleName") = "Account" Then
-            '    byRole = "AND Users.CompanyGroup='JPMD'"
-            '    byStatus = String.Empty
-            '    If Not status = "" Then
-            '        byStatus = "AND Order_Header.Status='" & status & "'"
-            '    End If
-            'End If
-
-            'Dim thisQuery As String = String.Format("SELECT DISTINCT Order_Header.*, Users.CompanyGroup AS CompanyGroup, BOEOrder_Header.Name_courier AS Courier, BOEOrder_Header.ContainerNo AS ConNote, BOEOrder_Header.ShipmentNo AS ShipmentNo, Stores.Name AS StoreName FROM Order_Header LEFT JOIN BOEOrder_Header ON Order_Header.IDBOEH = BOEOrder_Header.IDH LEFT JOIN Users INNER JOIN Stores ON Users.DebtorCode=Stores.Id ON Users.UserName = Order_Header.UserLogin {0} {1} {2} {3} {4} {5}", byActive, byRole, byInstaller, byStatus, byText, byOrder)
-
-            'gvList.DataSource = archiveClass.GetDataTable(thisQuery)
-            'gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -153,6 +92,42 @@ Partial Class Order_Archive_Default
                     MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
                 End If
             End If
+        End Try
+    End Sub
+
+    Protected Sub BuildPager()
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
+            navPager.Visible = False
         End Try
     End Sub
 
