@@ -1,5 +1,4 @@
-﻿
-Partial Class Order_Archive_Preview
+﻿Partial Class Order_Archive_Preview
     Inherits Page
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load

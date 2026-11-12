@@ -3136,8 +3136,6 @@ Public Class OrderClass
 
                         If (type = "Designs" AndAlso dataId <> designId) OrElse (type = "PriceProductGroups" AndAlso dataId <> priceProductGroupId) OrElse (type = "RollerFabrics" AndAlso (designName <> "Roller Blind" OrElse dataId <> fabricId)) OrElse (type = "RollerFabricColours" AndAlso (designName <> "Roller Blind" OrElse dataId <> fabricColourId)) OrElse (type = "RomanFabrics" AndAlso (designName <> "Roman Blind" OrElse dataId <> fabricId)) OrElse (type = "RomanFabricColours" AndAlso (designName <> "Roman Blind" OrElse dataId <> fabricColourId)) OrElse (type = "PanelGlideFabrics" AndAlso (designName <> "Panel Glide" OrElse dataId <> fabricId)) OrElse (type = "PanelGlideFabricColours" AndAlso (designName <> "Panel Glide" OrElse dataId <> fabricColourId)) OrElse (type = "RollerChains" AndAlso (designName <> "Roller Blind" OrElse dataId <> chainId)) Then Continue For
 
-                        If type = "Designs" AndAlso designName = "Panel Glide" AndAlso blindName = "Track Only" Then Continue For
-
                         Dim discountValue As Decimal = discount
                         If method = "Percent" Then discountValue = Math.Round(costSell * discount, 4)
                         thisSell = Math.Round(costSell - discountValue, 4)

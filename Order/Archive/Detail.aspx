@@ -151,7 +151,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-center" id="modalConvert" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -168,7 +167,6 @@
             </div>
         </div>
     </div>
-
     <div class="modal fade text-center" id="modalWaiting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -180,7 +178,6 @@
             </div>
         </div>
     </div>
-
     <script type="text/javascript">
         function showWaiting(hideModal = null) {
             $("#modalWaiting").modal("show");
@@ -192,14 +189,12 @@
             }, 30000);
             return true;
         }
-
         ["modalConvert"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

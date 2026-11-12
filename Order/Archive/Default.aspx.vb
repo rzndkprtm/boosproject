@@ -80,71 +80,71 @@ Partial Class Order_Archive_Default
 
     Protected Sub BindDataOrder(search As String, status As String, active As String)
         Try
-            'Dim params As New List(Of SqlParameter) From {
-            '    New SqlParameter("@Search", search.Trim()),
-            '    New SqlParameter("@Status", status),
-            '    New SqlParameter("@Active", active),
-            '    New SqlParameter("@RoleName", Session("RoleName").ToString()),
-            '    New SqlParameter("@UserName", Session("UserName").ToString()),
-            '    New SqlParameter("@CustomerId", Session("CustomerId").ToString())
-            '}
-            'gvList.DataSource = archiveClass.GetDataTableSP("sp_OrderArchives_List", params)
-            'gvList.DataBind()
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@Search", search.Trim()),
+                New SqlParameter("@Status", status),
+                New SqlParameter("@Active", active),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@UserName", Session("UserName").ToString()),
+                New SqlParameter("@CustomerId", Session("CustomerId").ToString())
+            }
+            gvList.DataSource = archiveClass.GetDataTableSP("sp_OrderArchives_List", params)
+            gvList.DataBind()
 
             divActive.Visible = LoginAccess("Visible Active")
 
-            Dim byActive As String = "WHERE Order_Header.Active=1"
-            Dim byRole As String = String.Empty
-            Dim byInstaller As String = String.Empty
-            Dim byStatus As String = String.Empty
-            Dim byText As String = String.Empty
-            Dim byOrder As String = "ORDER BY Order_Header.OrdID DESC"
+            'Dim byActive As String = "WHERE Order_Header.Active=1"
+            'Dim byRole As String = String.Empty
+            'Dim byInstaller As String = String.Empty
+            'Dim byStatus As String = String.Empty
+            'Dim byText As String = String.Empty
+            'Dim byOrder As String = "ORDER BY Order_Header.OrdID DESC"
 
-            If active = "0" Then byActive = "WHERE Order_Header.Active=0"
+            'If active = "0" Then byActive = "WHERE Order_Header.Active=0"
 
-            If Not search = "" Then
-                byText = "AND (Order_Header.OrdID LIKE '%" + search + "%' OR Order_Header.StoreOrderNo LIKE '%" + search + "%' OR Order_Header.StoreCustomer LIKE '%" + search + "%' OR Stores.Name LIKE '%" + search + "%' OR Order_Header.UserLogin LIKE '%" + search + "%')"
-            End If
+            'If Not search = "" Then
+            '    byText = "AND (Order_Header.OrdID LIKE '%" + search + "%' OR Order_Header.StoreOrderNo LIKE '%" + search + "%' OR Order_Header.StoreCustomer LIKE '%" + search + "%' OR Stores.Name LIKE '%" + search + "%' OR Order_Header.UserLogin LIKE '%" + search + "%')"
+            'End If
 
-            If Session("RoleName") = "Developer" Or Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
-                byRole = String.Empty
-                byStatus = String.Empty
-                If Not status = "" Then
-                    byStatus = "AND Order_Header.Status='" & status & "'"
-                End If
-            End If
+            'If Session("RoleName") = "Developer" Or Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" Then
+            '    byRole = String.Empty
+            '    byStatus = String.Empty
+            '    If Not status = "" Then
+            '        byStatus = "AND Order_Header.Status='" & status & "'"
+            '    End If
+            'End If
 
-            If Session("RoleName") = "Customer" Then
-                byRole = "AND Order_Header.UserLogin='" & Session("UserName") & "'"
-                If Session("RoleName") = "Customer" AndAlso Session("CustomerId") = "1536" Then
-                    byRole = "AND Order_Header.UserLogin='duasaudara'"
-                End If
-                byStatus = String.Empty
-                If Not status = "" Then
-                    byStatus = "AND Order_Header.Status='" & status & "'"
-                End If
-            End If
+            'If Session("RoleName") = "Customer" Then
+            '    byRole = "AND Order_Header.UserLogin='" & Session("UserName") & "'"
+            '    If Session("RoleName") = "Customer" AndAlso Session("CustomerId") = "1536" Then
+            '        byRole = "AND Order_Header.UserLogin='duasaudara'"
+            '    End If
+            '    byStatus = String.Empty
+            '    If Not status = "" Then
+            '        byStatus = "AND Order_Header.Status='" & status & "'"
+            '    End If
+            'End If
 
-            If Session("RoleName") = "Sales" Then
-                byRole = "AND Users.CompanyGroup='JPMD'"
-                byStatus = String.Empty
-                If Not status = "" Then
-                    byStatus = "AND Order_Header.Status='" & status & "'"
-                End If
-            End If
+            'If Session("RoleName") = "Sales" Then
+            '    byRole = "AND Users.CompanyGroup='JPMD'"
+            '    byStatus = String.Empty
+            '    If Not status = "" Then
+            '        byStatus = "AND Order_Header.Status='" & status & "'"
+            '    End If
+            'End If
 
-            If Session("RoleName") = "Account" Then
-                byRole = "AND Users.CompanyGroup='JPMD'"
-                byStatus = String.Empty
-                If Not status = "" Then
-                    byStatus = "AND Order_Header.Status='" & status & "'"
-                End If
-            End If
+            'If Session("RoleName") = "Account" Then
+            '    byRole = "AND Users.CompanyGroup='JPMD'"
+            '    byStatus = String.Empty
+            '    If Not status = "" Then
+            '        byStatus = "AND Order_Header.Status='" & status & "'"
+            '    End If
+            'End If
 
-            Dim thisQuery As String = String.Format("SELECT DISTINCT Order_Header.*, Users.CompanyGroup AS CompanyGroup, BOEOrder_Header.Name_courier AS Courier, BOEOrder_Header.ContainerNo AS ConNote, BOEOrder_Header.ShipmentNo AS ShipmentNo, Stores.Name AS StoreName FROM Order_Header LEFT JOIN BOEOrder_Header ON Order_Header.IDBOEH = BOEOrder_Header.IDH LEFT JOIN Users INNER JOIN Stores ON Users.DebtorCode=Stores.Id ON Users.UserName = Order_Header.UserLogin {0} {1} {2} {3} {4} {5}", byActive, byRole, byInstaller, byStatus, byText, byOrder)
+            'Dim thisQuery As String = String.Format("SELECT DISTINCT Order_Header.*, Users.CompanyGroup AS CompanyGroup, BOEOrder_Header.Name_courier AS Courier, BOEOrder_Header.ContainerNo AS ConNote, BOEOrder_Header.ShipmentNo AS ShipmentNo, Stores.Name AS StoreName FROM Order_Header LEFT JOIN BOEOrder_Header ON Order_Header.IDBOEH = BOEOrder_Header.IDH LEFT JOIN Users INNER JOIN Stores ON Users.DebtorCode=Stores.Id ON Users.UserName = Order_Header.UserLogin {0} {1} {2} {3} {4} {5}", byActive, byRole, byInstaller, byStatus, byText, byOrder)
 
-            gvList.DataSource = archiveClass.GetDataTable(thisQuery)
-            gvList.DataBind()
+            'gvList.DataSource = archiveClass.GetDataTable(thisQuery)
+            'gvList.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then

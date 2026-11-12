@@ -36,7 +36,6 @@
                 </div>
             </div>
         </section>
-
         <section class="row">
             <div class="col-12">
                 <div class="card">
@@ -123,7 +122,6 @@
             </div>
         </section>
     </div>
-
     <div class="modal fade text-center" id="modalShipment" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -154,7 +152,6 @@
             </div>
         </div>
     </div>
-
     <script type="text/javascript">
         function showShipment(number, date, container, courier) {
             document.getElementById("spanShipmentNumber").innerText = number;
@@ -162,7 +159,6 @@
             document.getElementById("spanContainerNumber").innerText = container;
             document.getElementById("spanCourier").innerText = courier;
         }
-
         document.addEventListener('DOMContentLoaded', function () {
             const gv = document.getElementById('<%= gvList.ClientID %>');
             if (!gv) return;
@@ -172,11 +168,7 @@
                 row.style.cursor = 'pointer';
 
                 row.addEventListener('click', function (e) {
-                    if (
-                        e.target.closest("a") ||
-                        e.target.closest("button") ||
-                        e.target.closest("[data-bs-toggle]")
-                    ) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
                         return;
                     }
 
@@ -185,14 +177,12 @@
                 });
             }
         });
-
         ["modalShipment"].forEach(function (id) {
             document.getElementById(id).addEventListener("hide.bs.modal", function () {
                 document.activeElement.blur();
                 document.body.focus();
             });
         });
-
         window.history.replaceState(null, null, window.location.href);
     </script>
 </asp:Content>

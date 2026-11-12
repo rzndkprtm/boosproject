@@ -5,9 +5,7 @@ Imports System.Web
 Imports System.IO
 Imports System.Data
 
-Public Class DownloadTicketFile
-    Implements IHttpHandler
-
+Public Class DownloadTicketFile : Implements IHttpHandler
     Public Sub ProcessRequest(context As HttpContext) Implements IHttpHandler.ProcessRequest
         Try
             If Not IsNumeric(context.Request.QueryString("id")) Then
@@ -50,5 +48,4 @@ Public Class DownloadTicketFile
             Return False
         End Get
     End Property
-
 End Class

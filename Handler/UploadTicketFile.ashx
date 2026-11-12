@@ -9,9 +9,7 @@ Imports System.Web
 Imports System.Web.Script.Serialization
 
 Public Class UploadTicketFile : Implements IHttpHandler, System.Web.SessionState.IRequiresSessionState
-
     Private ReadOnly myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
-
     Private Const MaxFileSize As Integer = 5242880 ' 5 MB
     Private Const UploadFolder As String = "~/File/Ticket/"
 

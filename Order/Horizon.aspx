@@ -304,7 +304,6 @@
             </section>
         </div>
     </div>
-
     <div class="modal fade text-left" id="modalSuccess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -348,6 +347,5 @@
             </div>
         </div>
     </div>
-
-    <script src="/Scripts/Bintang/Horizon.js?v=1.2.1"></script>
+    <script src="/Scripts/Bintang/Horizon.js?v=1.0.0"></script>
 </asp:Content>

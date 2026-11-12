@@ -5,7 +5,6 @@ Imports System.Web
 Imports System.IO
 
 Public Class DownloadOrderFile : Implements IHttpHandler
-
     Public Sub ProcessRequest(context As HttpContext) Implements IHttpHandler.ProcessRequest
         Dim folder As String = context.Request("folder")
         Dim file As String = context.Request("file")

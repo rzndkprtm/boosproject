@@ -6,7 +6,6 @@ Imports System.IO
 Imports System.Net
 
 Public Class PDF : Implements IHttpHandler
-
     Public Sub ProcessRequest(ByVal context As HttpContext) Implements IHttpHandler.ProcessRequest
         Dim docId As String = context.Request.QueryString("document")
         If String.IsNullOrEmpty(docId) Then

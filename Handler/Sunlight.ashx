@@ -9,10 +9,8 @@ Imports System.Web.Script.Serialization
 Imports System.Data.SqlClient
 
 Public Class Sunlight : Implements IHttpHandler
-
     Private ReadOnly orderClass As New OrderClass
     Private ReadOnly mailingClass As New MailingClass
-
     Private ReadOnly myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
     Public Sub ProcessRequest(ByVal context As HttpContext) Implements IHttpHandler.ProcessRequest
