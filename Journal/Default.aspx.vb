@@ -26,6 +26,7 @@ Partial Class Journal_Default
             BindCustomer()
             ddlCustomer.SelectedValue = Session("JournalCustomer")
             ddlDateFilter.SelectedValue = Session("JournalDate")
+
             BindData(ddlSales.SelectedValue, ddlCustomer.SelectedValue, ddlDateFilter.SelectedValue)
         End If
     End Sub
@@ -122,8 +123,9 @@ Partial Class Journal_Default
             gvList.DataSource = journalClass.GetDataTableSP("sp_Journals_List", params)
             gvList.DataBind()
             gvList.DataBind()
-            gvList.Columns(1).Visible = LoginAccess("Visible ID")
-            gvList.Columns(2).Visible = LoginAccess("Visible Sales")
+            gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
+            gvList.Columns(2).Visible = LoginAccess("Visible Sales") ' SALES NAME
+            gvList.Columns(7).Visible = LoginAccess("Visible Status") ' STATUS
 
             btnAdd.Visible = LoginAccess("Add")
         Catch ex As Exception

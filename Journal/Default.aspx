@@ -104,6 +104,7 @@
                                                     <asp:LinkButton ID="btnMoreDescription" runat="server" Text="Full Description" CssClass="text-primary text-decoration-none" CausesValidation="false" Visible='<%# If(Eval("Description"), "").ToString().Length > 100 %>' OnClientClick='<%# "showDescription(" & System.Web.HttpUtility.JavaScriptStringEncode(If(Eval("Description"), "").ToString(), True) & "); return false;" %>'></asp:LinkButton>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                            <asp:BoundField DataField="Status" HeaderText="Status" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="110px">
                                                 <ItemTemplate>
                                                     <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
