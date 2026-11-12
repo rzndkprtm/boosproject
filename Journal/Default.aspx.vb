@@ -122,7 +122,6 @@ Partial Class Journal_Default
 
             gvList.DataSource = journalClass.GetDataTableSP("sp_Journals_List", params)
             gvList.DataBind()
-            gvList.DataBind()
             gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
             gvList.Columns(2).Visible = LoginAccess("Visible Sales") ' SALES NAME
             gvList.Columns(7).Visible = LoginAccess("Visible Status") ' STATUS
