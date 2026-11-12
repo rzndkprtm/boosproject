@@ -424,6 +424,12 @@
                                          </div>
                                     </div>
                                 </div>
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <asp:Button runat="server" ID="btnAddMarkup" CssClass="btn btn-primary" Text="Add Markup" OnClick="btnAddMarkup_Click" />
+                                        <a href="javascript:void(0);" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetMarkup">Reset Markup</a>
+                                    </div>
+                                </div>
                                 <div class="row mt-5">
                                     <div class="col-12">
                                         <div class="table-responsive">
@@ -434,7 +440,6 @@
                                                             <%# Container.DataItemIndex + 1 %>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
-                                                    <asp:BoundField DataField="Type" HeaderText="Type" />
                                                     <asp:BoundField DataField="MarkupTitle" HeaderText="Markup Tile" />
                                                     <asp:BoundField DataField="MarkupValue1" HeaderText="Markup 1" ItemStyle-Width="100px" />
                                                     <asp:BoundField DataField="MarkupValue2" HeaderText="Markup 2" ItemStyle-Width="100px" />
@@ -462,12 +467,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <asp:Button runat="server" ID="btnAddMarkup" CssClass="btn btn-primary" Text="Add Markup" OnClick="btnAddMarkup_Click" />
-                                        <a href="javascript:void(0);" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetMarkup">Reset Markup</a>
-                                    </div>
-                                </div>
                             </div>
                             <div class="tab-pane fade" id="list-discount" role="tabpanel" aria-labelledby="listDiscount">
                                 <div class="row mt-5">
@@ -477,6 +476,12 @@
                                                  <span runat="server" id="msgErrorDiscount"></span>
                                              </div>
                                          </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <asp:Button runat="server" ID="btnAddDiscount" CssClass="btn btn-primary" Text="Add Discount" OnClick="btnAddDiscount_Click" />
+                                        <a href="javascript:void(0);" runat="server" id="aResetDiscount" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetDiscount">Reset Discount</a>
                                     </div>
                                 </div>
                                 <div class="row mt-5">
@@ -489,7 +494,6 @@
                                                             <%# Container.DataItemIndex + 1 %>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
-                                                    <asp:BoundField DataField="Type" HeaderText="Type" ItemStyle-Width="180px" />
                                                     <asp:BoundField DataField="DiscountTitle" HeaderText="Discount Tile" />
                                                     <asp:BoundField DataField="DiscountValue1" HeaderText="Discount 1" ItemStyle-Width="100px" />
                                                     <asp:BoundField DataField="DiscountValue2" HeaderText="Discount 2" ItemStyle-Width="100px" />
@@ -516,12 +520,6 @@
                                                 </Columns>
                                             </asp:GridView>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <asp:Button runat="server" ID="btnAddDiscount" CssClass="btn btn-primary" Text="Add Discount" OnClick="btnAddDiscount_Click" />
-                                        <a href="javascript:void(0);" runat="server" id="aResetDiscount" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalResetDiscount">Reset Discount</a>
                                     </div>
                                 </div>
                             </div>
