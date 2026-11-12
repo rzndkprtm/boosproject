@@ -87,15 +87,15 @@ Partial Class Setting_Price_Discount_Add
             If Not String.IsNullOrEmpty(type) Then
                 Dim thisQuery As String = String.Empty
                 If type = "Designs" Then
-                    thisQuery = "SELECT Id, Name FROM Designs WHERE Active=1"
+                    thisQuery = "SELECT Id, Name AS DataName FROM Designs WHERE Active=1"
                 End If
                 If type = "Blinds" Then
-                    thisQuery = "SELECT Id, Name FROM Blinds WHERE Active=1"
+                    thisQuery = "SELECT Blinds.Id, '(' + Designs.Name + ') - ' + Blinds.Name AS DataName FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id WHERE Blinds.Active=1"
                 End If
 
                 If Not String.IsNullOrEmpty(thisQuery) Then
                     ddlProduct.DataSource = settingClass.GetDataTable(thisQuery)
-                    ddlProduct.DataTextField = "Name"
+                    ddlProduct.DataTextField = "DataName"
                     ddlProduct.DataValueField = "Id"
                     ddlProduct.DataBind()
 
