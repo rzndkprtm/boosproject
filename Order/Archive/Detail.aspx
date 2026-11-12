@@ -17,7 +17,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
                             <li class="breadcrumb-item"><a runat="server" href="~/order">Order</a></li>
-                            <li class="breadcrumb-item"><a runat="server" href="~/order/archive">Order Archive</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/order/archive">Archive</a></li>
                             <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
                         </ol>
                     </nav>
