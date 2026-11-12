@@ -62,7 +62,7 @@
                                                 </asp:DropDownList>
                                             </div>
                                             <div class="col-12 col-sm-12 col-lg-4 form-group">
-                                                <label class="form-label">Discount</label>
+                                                <label class="form-label">Markup</label>
                                                 <div class="input-group">
                                                     <asp:TextBox runat="server" ID="txtApplyMarkup" CssClass="form-control" Height="45px" placeholder="Enter Markup..." autocomplete="off"></asp:TextBox>
                                                     <asp:Button runat="server" ID="btnApplyMarkup" Text="Apply" CssClass="btn btn-primary" OnClick="btnApplyMarkup_Click" />
