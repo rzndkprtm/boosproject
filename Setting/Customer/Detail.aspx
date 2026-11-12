@@ -435,23 +435,18 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:BoundField DataField="Type" HeaderText="Type" />
-                                                    <asp:TemplateField HeaderText="Markup Tile">
-                                                        <ItemTemplate>
-                                                            <%# DiscountTitle(Eval("Type").ToString(), Eval("DataId").ToString()) %>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField HeaderText="Markup">
-                                                        <ItemTemplate>
-                                                            <%# DiscountValue(Eval("Method").ToString(), Eval("Markup")) %>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <asp:BoundField DataField="Description" HeaderText="Description" />
-                                                    <asp:TemplateField ItemStyle-Width="120px">
+                                                    <asp:BoundField DataField="MarkupTitle" HeaderText="Markup Tile" />
+                                                    <asp:BoundField DataField="MarkupValue1" HeaderText="Markup 1" ItemStyle-Width="100px" />
+                                                    <asp:BoundField DataField="MarkupValue2" HeaderText="Markup 2" ItemStyle-Width="100px" />
+                                                    <asp:BoundField DataField="MarkupValue3" HeaderText="Markup 3" ItemStyle-Width="100px" />
+                                                    <asp:BoundField DataField="MarkupValue4" HeaderText="Markup 4" ItemStyle-Width="100px" />
+                                                    <asp:BoundField DataField="MarkupValue5" HeaderText="Markup 5" ItemStyle-Width="100px" />
+                                                    <asp:TemplateField ItemStyle-Width="100px">
                                                         <ItemTemplate>
                                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                             <ul class="dropdown-menu">
                                                                 <li>
-                                                                    <a href="javascript:void(0);" id="aChangeMarkup" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeMarkup" onclick='<%# String.Format("return dataChangeMarkup(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Description").ToString()) %>'>Change</a>
+                                                                    <a href="javascript:void(0);" id="aChangeMarkup" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeMarkup" onclick='<%# String.Format("return dataChangeMarkup(`{0}`, `{1}`, `{2}`, `{3}`,`{4}`, `{5}`,`{6}`);", Eval("Id").ToString(), Eval("Markup1"), Eval("Markup2"), Eval("Markup3"), Eval("Markup4"), Eval("Markup5"), Eval("Description").ToString()) %>'>Change</a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteMarkup" onclick='<%# String.Format("return dataDeleteMarkup(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
@@ -495,23 +490,19 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:BoundField DataField="Type" HeaderText="Type" ItemStyle-Width="180px" />
-                                                    <asp:TemplateField HeaderText="Discount Tile" ItemStyle-Width="300px">
-                                                        <ItemTemplate>
-                                                            <%# DiscountTitle(Eval("Type").ToString(), Eval("DataId").ToString()) %>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField HeaderText="Discount">
-                                                        <ItemTemplate>
-                                                            <%# DiscountValue(Eval("Method").ToString(), Eval("Discount")) %>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
+                                                    <asp:BoundField DataField="DiscountTitle" HeaderText="Discount Tile" />
+                                                    <asp:BoundField DataField="DiscountValue1" HeaderText="Discount 1" ItemStyle-Width="100px" />
+                                                    <asp:BoundField DataField="DiscountValue2" HeaderText="Discount 2" ItemStyle-Width="100px" />
+                                                    <asp:BoundField DataField="DiscountValue3" HeaderText="Discount 3" ItemStyle-Width="100px" />
+                                                    <asp:BoundField DataField="DiscountValue4" HeaderText="Discount 4" ItemStyle-Width="100px" />
+                                                    <asp:BoundField DataField="DiscountValue5" HeaderText="Discount 5" ItemStyle-Width="100px" />
                                                     <asp:BoundField DataField="Description" HeaderText="Description" />
                                                     <asp:TemplateField ItemStyle-Width="100px">
                                                         <ItemTemplate>
                                                             <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Action</button>
                                                             <ul class="dropdown-menu">
                                                                 <li>
-                                                                    <a href="javascript:void(0);" id="aChangeDiscount" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeDiscount" onclick='<%# String.Format("return dataChangeDiscount(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("Description").ToString()) %>'>Change</a>
+                                                                    <a href="javascript:void(0);" id="aChangeDiscount" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeDiscount" onclick='<%# String.Format("return dataChangeDiscount(`{0}`, `{1}`, `{2}`, `{3}`,`{4}`, `{5}`,`{6}`);", Eval("Id").ToString(), Eval("Discount1"), Eval("Discount2"), Eval("Discount3"), Eval("Discount4"), Eval("Discount5"), Eval("Description").ToString()) %>'>Change</a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDeleteDiscount" onclick='<%# String.Format("return dataDeleteDiscount(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
@@ -1158,9 +1149,29 @@
                 <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtChangeMarkupId" style="display:none;"></asp:TextBox>
                     <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">New Markup (%)</label>
-                            <asp:TextBox runat="server" ID="txtChangeMarkupValue" CssClass="form-control" placeholder="New Markup ..." autocomplete="off"></asp:TextBox>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Markup 1</label>
+                            <asp:TextBox runat="server" ID="txtChangeMarkupValue1" CssClass="form-control" placeholder="Markup 1 ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Markup 2</label>
+                            <asp:TextBox runat="server" ID="txtChangeMarkupValue2" CssClass="form-control" placeholder="Markup 2 ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Markup 3</label>
+                            <asp:TextBox runat="server" ID="txtChangeMarkupValue3" CssClass="form-control" placeholder="Markup 3 ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Markup 4</label>
+                            <asp:TextBox runat="server" ID="txtChangeMarkupValue4" CssClass="form-control" placeholder="Markup 4 ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Markup 5</label>
+                            <asp:TextBox runat="server" ID="txtChangeMarkupValue5" CssClass="form-control" placeholder="Markup 5 ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row">
@@ -1220,9 +1231,29 @@
                 <div class="modal-body">
                     <asp:TextBox runat="server" ID="txtChangeDiscountId" style="display:none;"></asp:TextBox>
                     <div class="row">
-                        <div class="col-12 form-group">
-                            <label class="form-label">New Discount (%)</label>
-                            <asp:TextBox runat="server" ID="txtChangeDiscountValue" CssClass="form-control" placeholder="New Discount ..." autocomplete="off"></asp:TextBox>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Discount 1</label>
+                            <asp:TextBox runat="server" ID="txtChangeDiscountValue1" CssClass="form-control" placeholder="Discount 1 ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Discount 2</label>
+                            <asp:TextBox runat="server" ID="txtChangeDiscountValue2" CssClass="form-control" placeholder="Discount 2 ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Discount 3</label>
+                            <asp:TextBox runat="server" ID="txtChangeDiscountValue3" CssClass="form-control" placeholder="Discount 3 ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Discount 4</label>
+                            <asp:TextBox runat="server" ID="txtChangeDiscountValue4" CssClass="form-control" placeholder="Discount 4 ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Discount 5</label>
+                            <asp:TextBox runat="server" ID="txtChangeDiscountValue5" CssClass="form-control" placeholder="Discount 5 ..." autocomplete="off"></asp:TextBox>
                         </div>
                     </div>
                     <div class="row">
@@ -1354,7 +1385,6 @@
             </div>
         </div>
     </div>
-    <asp:HiddenField ID="selected_tab" runat="server" />
     <div runat="server" visible="false">
         <asp:Label runat="server" ID="lblIdContact"></asp:Label>
         <asp:Label runat="server" ID="lblIdAddress"></asp:Label>
@@ -1549,15 +1579,25 @@
             }
             return result;
         }
-        function dataChangeMarkup(id, description) {
+        function dataChangeMarkup(id, markup1, markup2, markup3, markup4, markup5, description) {
             document.getElementById("<%=txtChangeMarkupId.ClientID %>").value = id;
+            document.getElementById("<%=txtChangeMarkupValue1.ClientID %>").value = parseFloat(markup1) || 0;
+            document.getElementById("<%=txtChangeMarkupValue2.ClientID %>").value = parseFloat(markup2) || 0;
+            document.getElementById("<%=txtChangeMarkupValue3.ClientID %>").value = parseFloat(markup3) || 0;
+            document.getElementById("<%=txtChangeMarkupValue4.ClientID %>").value = parseFloat(markup4) || 0;
+            document.getElementById("<%=txtChangeMarkupValue5.ClientID %>").value = parseFloat(markup5) || 0;
             document.getElementById("<%=txtChangeMarkupDescription.ClientID %>").value = description;
         }
         function dataDeleteMarkup(markupid) {
             document.getElementById("<%=txtDeleteMarkupId.ClientID %>").value = markupid;
         }
-        function dataChangeDiscount(id, description) {
+        function dataChangeDiscount(id, disc1, disc2, disc3, disc4, disc5, description) {
             document.getElementById("<%=txtChangeDiscountId.ClientID %>").value = id;
+            document.getElementById("<%=txtChangeDiscountValue1.ClientID %>").value = parseFloat(disc1) || 0;
+            document.getElementById("<%=txtChangeDiscountValue2.ClientID %>").value = parseFloat(disc2) || 0;
+            document.getElementById("<%=txtChangeDiscountValue3.ClientID %>").value = parseFloat(disc3) || 0;
+            document.getElementById("<%=txtChangeDiscountValue4.ClientID %>").value = parseFloat(disc4) || 0;
+            document.getElementById("<%=txtChangeDiscountValue5.ClientID %>").value = parseFloat(disc5) || 0;
             document.getElementById("<%=txtChangeDiscountDescription.ClientID %>").value = description;
         }
         function dataDeleteDiscount(discountid) {
@@ -1623,4 +1663,5 @@
         });
         window.history.replaceState(null, null, window.location.href);
     </script>
+    <asp:HiddenField ID="selected_tab" runat="server" />
 </asp:Content>

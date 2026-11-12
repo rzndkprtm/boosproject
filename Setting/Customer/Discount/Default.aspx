@@ -95,7 +95,7 @@
         </section>
     </div>
     <div class="modal modal-blur fade" id="modalDetailDiscount" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-full modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Discount</h5>
@@ -110,9 +110,12 @@
                                     <thead>
                                         <tr>
                                             <th></th>
-                                            <th>Type</th>
                                             <th>Product</th>
-                                            <th>Discount</th>
+                                            <th>Discount 1</th>
+                                            <th>Discount 2</th>
+                                            <th>Discount 3</th>
+                                            <th>Discount 4</th>
+                                            <th>Discount 5</th>
                                         </tr>
                                     </thead>
                                     <tbody id="discountBody"></tbody>
@@ -190,12 +193,15 @@
                 data.forEach((x, i) => {
                     tbody += `
                         <tr>
-                        <td class="text-center">${i + 1}</td>
-                        <td>${x.Type}</td>
-                        <td>${x.Product}</td>
-                        <td>${x.Discount}</td>
+                            <td class="text-center">${i + 1}</td>
+                            <td>${x.Product}</td>
+                            <td>${x.Discount1}</td>
+                            <td>${x.Discount2}</td>
+                            <td>${x.Discount3}</td>
+                            <td>${x.Discount4}</td>
+                            <td>${x.Discount5}</td>
                         </tr>
-                        `;
+                    `;
                 });
                 document.getElementById("discountBody").innerHTML = tbody;
                 showDetailDiscount();

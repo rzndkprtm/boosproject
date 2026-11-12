@@ -14,31 +14,65 @@ Partial Class Setting_Customer_Discount_Default
     <WebMethod()>
     Public Shared Function GetCustomerDiscount(customerId As String) As Object
         Dim settingClass As New SettingClass
-        Dim dt As DataTable = settingClass.GetDataTable("SELECT Id, Type, Method, DataId, Discount FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
+        Dim dt As DataTable = settingClass.GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
 
         Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
 
         Dim result As New List(Of Object)
+
         For Each r As DataRow In dt.Rows
             Dim type As String = r("Type").ToString()
             Dim method As String = r("Method").ToString()
             Dim dataId As String = r("DataId").ToString()
-            Dim discount As Decimal = Convert.ToDecimal(r("Discount"))
             Dim title As String = GetDiscountTitle(type, dataId)
-            Dim value As String = "-"
+
+            Dim discount1 As Decimal = If(IsDBNull(r("Discount1")), 0D, Convert.ToDecimal(r("Discount1")))
+            Dim discount2 As Decimal = If(IsDBNull(r("Discount2")), 0D, Convert.ToDecimal(r("Discount2")))
+            Dim discount3 As Decimal = If(IsDBNull(r("Discount3")), 0D, Convert.ToDecimal(r("Discount3")))
+            Dim discount4 As Decimal = If(IsDBNull(r("Discount4")), 0D, Convert.ToDecimal(r("Discount4")))
+            Dim discount5 As Decimal = If(IsDBNull(r("Discount5")), 0D, Convert.ToDecimal(r("Discount5")))
+
+            Dim discValue1 As String = "-"
+            Dim discValue2 As String = "-"
+            Dim discValue3 As String = "-"
+            Dim discValue4 As String = "-"
+            Dim discValue5 As String = "-"
+
             If method = "Percent" Then
-                value = discount.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
+                discValue1 = discount1.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
+                discValue2 = discount2.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
+                discValue3 = discount3.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
+                discValue4 = discount4.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
+                discValue5 = discount5.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
             End If
+
             If method = "Value" Then
                 If companyId = "2" Then
-                    value = "$" & discount.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    discValue1 = "$" & discount1.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    discValue2 = "$" & discount2.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    discValue3 = "$" & discount3.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    discValue4 = "$" & discount4.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    discValue5 = "$" & discount5.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
                 End If
+
                 If companyId = "3" Then
-                    value = "Rp" & discount.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    discValue1 = "Rp" & discount1.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    discValue2 = "Rp" & discount2.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    discValue3 = "Rp" & discount3.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    discValue4 = "Rp" & discount4.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    discValue5 = "Rp" & discount5.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
                 End If
             End If
 
-            result.Add(New With {.Id = r("Id").ToString(), .Type = type, .Product = title, .Discount = value})
+            result.Add(New With {
+                .Id = r("Id").ToString(),
+                .Product = title,
+                .Discount1 = discValue1,
+                .Discount2 = discValue2,
+                .Discount3 = discValue3,
+                .Discount4 = discValue4,
+                .Discount5 = discValue5
+            })
         Next
         Return result
     End Function

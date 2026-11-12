@@ -95,7 +95,7 @@
         </section>
     </div>
     <div class="modal modal-blur fade" id="modalDetailMarkup" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-full modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Markup</h5>
@@ -110,9 +110,12 @@
                                     <thead>
                                         <tr>
                                             <th></th>
-                                            <th>Type</th>
                                             <th>Product</th>
-                                            <th>Markup</th>
+                                            <th>Markup 1</th>
+                                            <th>Markup 2</th>
+                                            <th>Markup 3</th>
+                                            <th>Markup 4</th>
+                                            <th>Markup 5</th>
                                         </tr>
                                     </thead>
                                     <tbody id="markupBody"></tbody>
@@ -191,9 +194,12 @@
                     tbody += `
                         <tr>
                             <td class="text-center">${i + 1}</td>
-                            <td>${x.Type}</td>
                             <td>${x.Product}</td>
-                            <td>${x.Markup}</td>
+                            <td>${x.Markup1}</td>
+                            <td>${x.Markup2}</td>
+                            <td>${x.Markup3}</td>
+                            <td>${x.Markup4}</td>
+                            <td>${x.Markup5}</td>
                         </tr>
                     `;
                 });

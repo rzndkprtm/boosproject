@@ -1,7 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
-Imports System.Web.Services
 
 Partial Class Setting_Customer_Markup_Add
     Inherits Page
@@ -10,77 +9,25 @@ Partial Class Setting_Customer_Markup_Add
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim url As String = String.Empty
 
-    <WebMethod()>
-    Public Shared Function GetCustomerMarkup(customerId As String) As Object
-        Dim settingClass As New SettingClass
-        Dim dt As DataTable = settingClass.GetDataTable("SELECT Id, Type, Method, DataId, Markup FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
-
-        Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
-
-        Dim result As New List(Of Object)
-        For Each r As DataRow In dt.Rows
-            Dim type As String = r("Type").ToString()
-            Dim method As String = r("Method").ToString()
-            Dim dataId As String = r("DataId").ToString()
-            Dim markup As Decimal = Convert.ToDecimal(r("Markup"))
-            Dim title As String = GetMarkupTitle(type, dataId)
-            Dim value As String = "-"
-            If method = "Percent" Then
-                value = markup.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
-            End If
-            If method = "Value" Then
-                If companyId = "2" Then
-                    value = "$" & markup.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
-                End If
-                If companyId = "3" Then
-                    value = "Rp" & markup.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
-                End If
-            End If
-
-            result.Add(New With {.Id = r("Id").ToString(), .Type = type, .Product = title, .Markup = value})
-        Next
-        Return result
-    End Function
-
-    Private Shared Function GetMarkupTitle(type As String, dataId As String) As String
-        If String.IsNullOrEmpty(type) Then Return String.Empty
-        Dim settingClass As New SettingClass
-
-        Dim dataName As String = String.Empty
-        If type = "Designs" Then
-            dataName = settingClass.GetItemData("Select Name FROM Designs WHERE Id='" & dataId & "'")
-        End If
-        If type = "PriceProductGroups" Then
-            dataName = settingClass.GetItemData("SELECT CASE WHEN Status='Active' THEN Name ELSE Name + ' [' + UPPER(Status) + ']' END FROM PriceProductGroups WHERE Id='" & dataId & "'")
-        End If
-        If type = "RollerFabrics" OrElse type = "RomanFabrics" OrElse type = "PanelGlideFabrics" Then
-            dataName = settingClass.GetItemData("SELECT Name FROM Fabrics WHERE Id='" & dataId & "'")
-        End If
-        If type = "RollerFabricColours" OrElse type = "RomanFabricColours" OrElse type = "PanelGlideFabricColours" Then
-            dataName = settingClass.GetItemData("SELECT Name FROM FabricColours WHERE Id='" & dataId & "'")
-        End If
-        If type = "RollerChains" Then
-            dataName = settingClass.GetItemData("SELECT Name FROM Chains WHERE Id='" & dataId & "'")
-        End If
-        Return dataName
-    End Function
-
-    Private Property PromoTable As DataTable
+    Private Property MarkupTable As DataTable
         Get
-            If Session("PromoTable") Is Nothing Then
+            If Session("MarkupTable") Is Nothing Then
                 Dim dt As New DataTable
                 dt.Columns.Add("Product")
                 dt.Columns.Add("Method")
-                dt.Columns.Add("Markup")
-                dt.Columns.Add("Description")
+                dt.Columns.Add("Markup1")
+                dt.Columns.Add("Markup2")
+                dt.Columns.Add("Markup3")
+                dt.Columns.Add("Markup4")
+                dt.Columns.Add("Markup5")
 
-                Session("PromoTable") = dt
+                Session("MarkupTable") = dt
             End If
 
-            Return DirectCast(Session("PromoTable"), DataTable)
+            Return DirectCast(Session("MarkupTable"), DataTable)
         End Get
         Set(value As DataTable)
-            Session("PromoTable") = value
+            Session("MarkupTable") = value
         End Set
     End Property
 
@@ -103,8 +50,8 @@ Partial Class Setting_Customer_Markup_Add
             MessageError(False, String.Empty)
             BindCustomer(lblCustomerId.Text)
 
-            PromoTable.Rows.Clear()
-            PromoTable.Rows.Add("", "", "", "")
+            MarkupTable.Rows.Clear()
+            MarkupTable.Rows.Add("", "", "", "", "", "", "")
 
             ddlType.SelectedValue = ""
 
@@ -118,52 +65,67 @@ Partial Class Setting_Customer_Markup_Add
             Dim customerId As String = ddlCustomer.SelectedValue
             Dim markupType As String = ddlType.SelectedValue
 
-            PromoTable.Rows.Clear()
+            MarkupTable.Rows.Clear()
 
             If String.IsNullOrEmpty(markupType) Then
-                PromoTable.Rows.Add("", "", "", "")
+                MarkupTable.Rows.Add("", "", "", "", "", "", "")
+                BindGrid()
+                Exit Sub
+            End If
+
+            If markupType = "PriceProductGroups" Then
+                Dim dtProduct As DataTable = GetProductData(customerId, markupType)
+
+                If dtProduct IsNot Nothing AndAlso dtProduct.Rows.Count > 0 Then
+                    For Each productRow As DataRow In dtProduct.Rows
+                        Dim newRow As DataRow = MarkupTable.NewRow()
+                        newRow("Product") = productRow("Id").ToString()
+                        newRow("Method") = ""
+                        newRow("Markup1") = ""
+                        newRow("Markup2") = ""
+                        newRow("Markup3") = ""
+                        newRow("Markup4") = ""
+                        newRow("Markup5") = ""
+
+                        MarkupTable.Rows.Add(newRow)
+                    Next
+                Else
+                    MarkupTable.Rows.Add("", "", "", "", "", "", "")
+                End If
+
                 BindGrid()
 
                 Exit Sub
             End If
 
-            If markupType = "Designs" OrElse markupType = "PriceProductGroups" Then
-                Dim checkData As DataRow = settingClass.GetDataRow("SELECT COUNT(*) AS Total FROM CustomerMarkups WHERE CustomerId='" & customerId & "'")
-                Dim totalMarkup As Integer = 0
-                If checkData IsNot Nothing Then
-                    Integer.TryParse(checkData("Total").ToString(), totalMarkup)
+            Dim totalMarkup As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) AS Total FROM CustomerMarkups WHERE CustomerId='" & customerId & "'")
+            If totalMarkup = 0 Then
+                Dim dtProduct As DataTable = GetProductData(customerId, markupType)
+
+                If dtProduct IsNot Nothing AndAlso dtProduct.Rows.Count > 0 Then
+                    For Each productRow As DataRow In dtProduct.Rows
+                        Dim newRow As DataRow = MarkupTable.NewRow()
+                        newRow("Product") = productRow("Id").ToString()
+                        newRow("Method") = ""
+                        newRow("Markup1") = ""
+                        newRow("Markup2") = ""
+                        newRow("Markup3") = ""
+                        newRow("Markup4") = ""
+                        newRow("Markup5") = ""
+
+                        MarkupTable.Rows.Add(newRow)
+                    Next
+                Else
+                    MarkupTable.Rows.Add("", "", "", "", "", "", "")
                 End If
-
-                If totalMarkup = 0 Then
-                    Dim dtProduct As DataTable = GetProductData(customerId, markupType)
-
-                    If dtProduct IsNot Nothing AndAlso dtProduct.Rows.Count > 0 Then
-                        For Each productRow As DataRow In dtProduct.Rows
-                            Dim newRow As DataRow = PromoTable.NewRow()
-                            newRow("Product") = productRow("Id").ToString()
-                            newRow("Method") = ""
-                            newRow("Markup") = ""
-                            newRow("Description") = ""
-
-                            PromoTable.Rows.Add(newRow)
-                        Next
-                    Else
-                        PromoTable.Rows.Add("", "", "", "")
-                    End If
-
-                    BindGrid()
-
-                    Exit Sub
-                End If
+            Else
+                MarkupTable.Rows.Add("", "", "", "", "", "", "")
             End If
-
-            PromoTable.Rows.Clear()
-            PromoTable.Rows.Add("", "", "", "")
 
             BindGrid()
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Session("RoleName").ToString() <> "Developer" Then
+            If Not Session("RoleName").ToString() = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
@@ -175,52 +137,95 @@ Partial Class Setting_Customer_Markup_Add
             Dim customerId As String = ddlCustomer.SelectedValue
             Dim markupType As String = ddlType.SelectedValue
 
-            PromoTable.Rows.Clear()
+            MarkupTable.Rows.Clear()
 
             If String.IsNullOrEmpty(markupType) Then
-                PromoTable.Rows.Add("", "", "", "")
+                MarkupTable.Rows.Add("", "", "", "", "", "", "")
                 BindGrid()
-
                 Exit Sub
             End If
 
-            If markupType = "Designs" OrElse markupType = "PriceProductGroups" Then
-                Dim checkData As DataRow = settingClass.GetDataRow("SELECT COUNT(*) AS Total FROM CustomerMarkups WHERE CustomerId='" & customerId & "'")
-                Dim totalMarkup As Integer = 0
-                If checkData IsNot Nothing Then
-                    Integer.TryParse(checkData("Total").ToString(), totalMarkup)
+            If markupType = "PriceProductGroups" Then
+                Dim dtProduct As DataTable = GetProductData(customerId, markupType)
+
+                If dtProduct IsNot Nothing AndAlso dtProduct.Rows.Count > 0 Then
+                    For Each productRow As DataRow In dtProduct.Rows
+                        Dim newRow As DataRow = MarkupTable.NewRow()
+                        newRow("Product") = productRow("Id").ToString()
+                        newRow("Method") = "Percent"
+                        newRow("Markup1") = ""
+                        newRow("Markup2") = ""
+                        newRow("Markup3") = ""
+                        newRow("Markup4") = ""
+                        newRow("Markup5") = ""
+
+                        MarkupTable.Rows.Add(newRow)
+                    Next
+                Else
+                    MarkupTable.Rows.Add("", "", "", "", "", "", "")
                 End If
 
-                If totalMarkup = 0 Then
-                    Dim dtProduct As DataTable = GetProductData(customerId, markupType)
-
-                    If dtProduct IsNot Nothing AndAlso dtProduct.Rows.Count > 0 Then
-                        For Each productRow As DataRow In dtProduct.Rows
-                            Dim newRow As DataRow = PromoTable.NewRow()
-                            newRow("Product") = productRow("Id").ToString()
-                            newRow("Method") = "Percent"
-                            newRow("Markup") = ""
-                            newRow("Description") = ""
-
-                            PromoTable.Rows.Add(newRow)
-                        Next
-                    Else
-                        PromoTable.Rows.Add("", "", "", "")
-                    End If
-
-                    BindGrid()
-
-                    Exit Sub
-                End If
+                BindGrid()
+                Exit Sub
             End If
 
-            PromoTable.Rows.Clear()
-            PromoTable.Rows.Add("", "", "", "")
+            Dim totalMarkup As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) AS Total FROM CustomerMarkups WHERE CustomerId='" & customerId & "'")
+            If totalMarkup = 0 Then
+                Dim dtProduct As DataTable = GetProductData(customerId, markupType)
+
+                If dtProduct IsNot Nothing AndAlso dtProduct.Rows.Count > 0 Then
+                    For Each productRow As DataRow In dtProduct.Rows
+                        Dim newRow As DataRow = MarkupTable.NewRow()
+                        newRow("Product") = productRow("Id").ToString()
+                        newRow("Method") = "Percent"
+                        newRow("Markup1") = ""
+                        newRow("Markup2") = ""
+                        newRow("Markup3") = ""
+                        newRow("Markup4") = ""
+                        newRow("Markup5") = ""
+
+                        MarkupTable.Rows.Add(newRow)
+                    Next
+                Else
+                    MarkupTable.Rows.Add("", "", "", "", "", "", "")
+                End If
+            Else
+                MarkupTable.Rows.Add("", "", "", "", "", "", "")
+            End If
 
             BindGrid()
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Session("RoleName").ToString() <> "Developer" Then
+            If Not Session("RoleName").ToString() = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnApplyMarkup_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim markup As String = txtApplyMarkup.Text.Trim()
+
+            If String.IsNullOrEmpty(markup) Then
+                MessageError(True, "PLEASE ENTER MARKUP VALUE !")
+                Exit Sub
+            End If
+
+            SaveGrid()
+
+            Dim dt As DataTable = MarkupTable
+
+            For Each dr As DataRow In dt.Rows
+                dr("Markup1") = markup
+            Next
+
+            MarkupTable = dt
+
+            BindGrid()
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName").ToString() = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
@@ -232,19 +237,31 @@ Partial Class Setting_Customer_Markup_Add
                 Dim drv As DataRowView = CType(e.Item.DataItem, DataRowView)
                 Dim ddlProduct As DropDownList = CType(e.Item.FindControl("ddlProduct"), DropDownList)
                 Dim ddlMethod As DropDownList = CType(e.Item.FindControl("ddlMethod"), DropDownList)
-                Dim txtMarkup As TextBox = CType(e.Item.FindControl("txtMarkup"), TextBox)
-                Dim txtDescription As TextBox = CType(e.Item.FindControl("txtDescription"), TextBox)
+                Dim txtMarkup1 As TextBox = CType(e.Item.FindControl("txtMarkup1"), TextBox)
+                Dim txtMarkup2 As TextBox = CType(e.Item.FindControl("txtMarkup2"), TextBox)
+                Dim txtMarkup3 As TextBox = CType(e.Item.FindControl("txtMarkup3"), TextBox)
+                Dim txtMarkup4 As TextBox = CType(e.Item.FindControl("txtMarkup4"), TextBox)
+                Dim txtMarkup5 As TextBox = CType(e.Item.FindControl("txtMarkup5"), TextBox)
 
                 If ddlProduct Is Nothing Then Exit Sub
 
                 If ddlMethod IsNot Nothing Then
                     ddlMethod.SelectedValue = drv("Method").ToString()
                 End If
-                If txtMarkup IsNot Nothing Then
-                    txtMarkup.Text = drv("Markup").ToString()
+                If txtMarkup1 IsNot Nothing Then
+                    txtMarkup1.Text = drv("Markup1").ToString()
                 End If
-                If txtDescription IsNot Nothing Then
-                    txtDescription.Text = drv("Description").ToString()
+                If txtMarkup2 IsNot Nothing Then
+                    txtMarkup2.Text = drv("Markup2").ToString()
+                End If
+                If txtMarkup3 IsNot Nothing Then
+                    txtMarkup3.Text = drv("Markup3").ToString()
+                End If
+                If txtMarkup4 IsNot Nothing Then
+                    txtMarkup4.Text = drv("Markup4").ToString()
+                End If
+                If txtMarkup5 IsNot Nothing Then
+                    txtMarkup5.Text = drv("Markup5").ToString()
                 End If
 
                 If ddlType.SelectedValue <> "" Then
@@ -262,7 +279,7 @@ Partial Class Setting_Customer_Markup_Add
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Session("RoleName").ToString() <> "Developer" Then
+            If Not Session("RoleName").ToString() = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
@@ -277,16 +294,16 @@ Partial Class Setting_Customer_Markup_Add
             If Not Integer.TryParse(e.CommandArgument.ToString(), index) Then
                 Exit Sub
             End If
-            If index >= 0 AndAlso index < PromoTable.Rows.Count Then
-                PromoTable.Rows.RemoveAt(index)
+            If index >= 0 AndAlso index < MarkupTable.Rows.Count Then
+                MarkupTable.Rows.RemoveAt(index)
             End If
-            If PromoTable.Rows.Count = 0 Then
-                PromoTable.Rows.Add("", "", "", "")
+            If MarkupTable.Rows.Count = 0 Then
+                MarkupTable.Rows.Add("", "", "", "", "", "", "")
             End If
             BindGrid()
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Session("RoleName").ToString() <> "Developer" Then
+            If Not Session("RoleName").ToString() = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
@@ -295,11 +312,11 @@ Partial Class Setting_Customer_Markup_Add
     Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
         Try
             SaveGrid()
-            PromoTable.Rows.Add("", "", "", "")
+            MarkupTable.Rows.Add("", "", "", "", "", "", "")
             BindGrid()
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Session("RoleName").ToString() <> "Developer" Then
+            If Not Session("RoleName").ToString() = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
@@ -325,7 +342,6 @@ Partial Class Setting_Customer_Markup_Add
         MessageError(False, String.Empty)
         Try
             SaveGrid()
-
             If ddlCustomer.SelectedValue = "" Then
                 MessageError(True, "ACCOUNT IS REQUIRED !")
                 Exit Sub
@@ -335,7 +351,7 @@ Partial Class Setting_Customer_Markup_Add
                 Exit Sub
             End If
 
-            Dim dt As DataTable = PromoTable
+            Dim dt As DataTable = MarkupTable
             If dt.Rows.Count = 0 Then
                 MessageError(True, "AT LEAST ONE MARKUP ROW IS REQUIRED !")
                 Exit Sub
@@ -344,67 +360,94 @@ Partial Class Setting_Customer_Markup_Add
             For i As Integer = 0 To dt.Rows.Count - 1
                 Dim product As String = dt.Rows(i)("Product").ToString().Trim()
                 Dim method As String = dt.Rows(i)("Method").ToString().Trim()
-                Dim markup As String = dt.Rows(i)("Markup").ToString().Trim()
+                Dim markup1 As String = dt.Rows(i)("Markup1").ToString().Trim()
+                Dim markup2 As String = dt.Rows(i)("Markup2").ToString().Trim()
+                Dim markup3 As String = dt.Rows(i)("Markup3").ToString().Trim()
+                Dim markup4 As String = dt.Rows(i)("Markup4").ToString().Trim()
+                Dim markup5 As String = dt.Rows(i)("Markup5").ToString().Trim()
 
                 Dim rowNumber As Integer = i + 1
 
-                If product = "" AndAlso markup = "" AndAlso method = "" Then
-                    MessageError(True, String.Format("ROW {0}: PRODUCT, MARKUP & METHOD ARE REQUIRED !", rowNumber))
+                If product = "" AndAlso markup1 = "" AndAlso markup2 = "" AndAlso markup3 = "" AndAlso markup4 = "" AndAlso markup5 = "" AndAlso method = "" Then
+                    MessageError(True, String.Format("ROW {0}: PRODUCT, METHOD AND MARKUP 1 ARE REQUIRED !", rowNumber))
                     Exit Sub
                 End If
+
                 If product = "" Then
                     MessageError(True, String.Format("ROW {0}: PRODUCT IS REQUIRED !", rowNumber))
                     Exit Sub
                 End If
+
                 If method = "" Then
                     MessageError(True, String.Format("ROW {0}: METHOD IS REQUIRED !", rowNumber))
                     Exit Sub
                 End If
-                If markup = "" Then
-                    MessageError(True, String.Format("ROW {0}: MARKUP IS REQUIRED !", rowNumber))
+
+                If markup1 = "" Then
+                    MessageError(True, String.Format("ROW {0}: MARKUP 1 IS REQUIRED !", rowNumber))
+                    Exit Sub
+                End If
+            Next
+
+            Dim seenProducts As New HashSet(Of String)(StringComparer.OrdinalIgnoreCase)
+            For i As Integer = 0 To dt.Rows.Count - 1
+                Dim product As String = dt.Rows(i)("Product").ToString().Trim()
+                Dim rowNumber As Integer = i + 1
+
+                If Not seenProducts.Add(product) Then
+                    MessageError(True, String.Format("ROW {0}: PRODUCT ALREADY EXISTS IN ANOTHER ROW !", rowNumber))
                     Exit Sub
                 End If
             Next
 
             For Each dr As DataRow In dt.Rows
-                If dr("Product").ToString = "" Then Continue For
-                If dr("Method").ToString = "" Then Continue For
-                If dr("Markup").ToString = "" Then Continue For
+                If dr("Product").ToString() = "" Then Continue For
+                If dr("Method").ToString() = "" Then Continue For
+                If dr("Markup1").ToString() = "" Then Continue For
 
-                Dim checkData As DataRow = settingClass.GetDataRow(String.Format("SELECT * FROM CustomerMarkups WHERE CustomerId='{0}' AND Type='{1}' AND DataId='{2}'", ddlCustomer.SelectedValue, ddlType.SelectedValue, dr("Product").ToString))
-                If checkData IsNot Nothing Then
-                    Dim thisId As String = checkData("Id").ToString()
-                    Dim thisMarkup As Decimal = CDec(checkData("Markup"))
-                    Dim newDisc As Decimal = settingClass.GetTotalMarkup(thisMarkup, dr("Markup"))
+                Dim markup1 As Decimal = Convert.ToDecimal(dr("Markup1"), CultureInfo.GetCultureInfo("en-US"))
+                Dim markup2 As Decimal = 0
+                Dim markup3 As Decimal = 0
+                Dim markup4 As Decimal = 0
+                Dim markup5 As Decimal = 0
 
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As New SqlCommand("UPDATE CustomerMarkups SET Markup=@Markup, Description=@Description WHERE Id=@Id", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", thisId)
-                            thisCmd.Parameters.AddWithValue("@Markup", newDisc)
-                            thisCmd.Parameters.AddWithValue("@Description", dr("Description").ToString())
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-                    settingClass.Logs({"CustomerMarkups", thisId, Session("LoginId").ToString(), "Customer Markup Added"})
-                Else
-                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerMarkups ORDER BY Id DESC")
-                    Using thisConn As New SqlConnection(myConn)
-                        Using thisCmd As New SqlCommand("INSERT INTO CustomerMarkups VALUES (@Id, @CustomerId, @Type, @Method, @DataId, @Markup, @Description)", thisConn)
-                            thisCmd.Parameters.AddWithValue("@Id", thisId)
-                            thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
-                            thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
-                            thisCmd.Parameters.AddWithValue("@Method", dr("Method").ToString())
-                            thisCmd.Parameters.AddWithValue("@DataId", dr("Product").ToString())
-                            thisCmd.Parameters.AddWithValue("@Markup", dr("Markup"))
-                            thisCmd.Parameters.AddWithValue("@Description", dr("Description").ToString())
-                            thisConn.Open()
-                            thisCmd.ExecuteNonQuery()
-                        End Using
-                    End Using
-
-                    settingClass.Logs({"CustomerMarkups", thisId, Session("LoginId").ToString(), "Customer Markup Created"})
+                If Not String.IsNullOrWhiteSpace(dr("Markup2").ToString()) Then
+                    markup2 = Convert.ToDecimal(dr("Markup2"), CultureInfo.GetCultureInfo("en-US"))
                 End If
+
+                If Not String.IsNullOrWhiteSpace(dr("Markup3").ToString()) Then
+                    markup3 = Convert.ToDecimal(dr("Markup3"), CultureInfo.GetCultureInfo("en-US"))
+                End If
+
+                If Not String.IsNullOrWhiteSpace(dr("Markup4").ToString()) Then
+                    markup4 = Convert.ToDecimal(dr("Markup4"), CultureInfo.GetCultureInfo("en-US"))
+                End If
+
+                If Not String.IsNullOrWhiteSpace(dr("Markup5").ToString()) Then
+                    markup5 = Convert.ToDecimal(dr("Markup5"), CultureInfo.GetCultureInfo("en-US"))
+                End If
+
+                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerMarkups ORDER BY Id DESC")
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("INSERT INTO CustomerMarkups VALUES (@Id, @CustomerId, @Type, @Method, @DataId, @Markup1, @Markup2, @Markup3, @Markup4, @Markup5, NULL)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Method", dr("Method").ToString())
+                        thisCmd.Parameters.AddWithValue("@DataId", dr("Product").ToString())
+                        thisCmd.Parameters.AddWithValue("@Markup1", markup1)
+                        thisCmd.Parameters.AddWithValue("@Markup2", markup2)
+                        thisCmd.Parameters.AddWithValue("@Markup3", markup3)
+                        thisCmd.Parameters.AddWithValue("@Markup4", markup4)
+                        thisCmd.Parameters.AddWithValue("@Markup5", markup5)
+
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                settingClass.Logs({"CustomerMarkups", thisId, Session("LoginId").ToString(), "Customer Markup Created"})
             Next
 
             url = "~/setting/customer/markup"
@@ -447,21 +490,21 @@ Partial Class Setting_Customer_Markup_Add
             End If
         Catch ex As Exception
             ddlCustomer.Items.Clear()
-            If Session("RoleName") = "Developer" Then
+            If Not Session("RoleName") = "Developer" Then
                 MessageError(True, ex.ToString())
             End If
         End Try
     End Sub
 
-    Protected Sub BindProduct(customerId As String, discType As String, ddl As DropDownList)
+    Protected Sub BindProduct(customerId As String, markupType As String, ddl As DropDownList)
         Try
-            If Not String.IsNullOrEmpty(discType) Then
+            If Not String.IsNullOrEmpty(markupType) Then
 
                 Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@CustomerId", customerId),
-                    New SqlParameter("@DiscType", discType)
+                    New SqlParameter("@MarkupType", markupType)
                 }
-                Dim dt As DataTable = settingClass.GetDataTableSP("sp_BindDiscountData", params)
+                Dim dt As DataTable = settingClass.GetDataTableSP("sp_BindMarkupData", params)
 
                 ddl.SelectedIndex = -1
                 ddl.ClearSelection()
@@ -479,23 +522,23 @@ Partial Class Setting_Customer_Markup_Add
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Session("RoleName").ToString() <> "Developer" Then
+            If Not Session("RoleName").ToString() = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
     End Sub
 
-    Protected Function GetProductData(customerId As String, discType As String) As DataTable
+    Protected Function GetProductData(customerId As String, markupType As String) As DataTable
         Try
             Dim params As New List(Of SqlParameter) From {
                     New SqlParameter("@CustomerId", customerId),
-                    New SqlParameter("@DiscType", discType)
+                    New SqlParameter("@MarkupType", markupType)
                 }
-            Dim dt As DataTable = settingClass.GetDataTableSP("sp_BindDiscountData", params)
+            Dim dt As DataTable = settingClass.GetDataTableSP("sp_BindMarkupData", params)
             Return dt
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Session("RoleName").ToString() <> "Developer" Then
+            If Not Session("RoleName").ToString() = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
             Return New DataTable()
@@ -504,11 +547,11 @@ Partial Class Setting_Customer_Markup_Add
 
     Protected Sub BindGrid()
         Try
-            rptMarkup.DataSource = PromoTable
+            rptMarkup.DataSource = MarkupTable
             rptMarkup.DataBind()
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Session("RoleName").ToString() <> "Developer" Then
+            If Not Session("RoleName").ToString() = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try
@@ -516,10 +559,10 @@ Partial Class Setting_Customer_Markup_Add
 
     Protected Sub SaveGrid()
         Try
-            Dim dt As DataTable = PromoTable
+            Dim dt As DataTable = MarkupTable
 
             While dt.Rows.Count < rptMarkup.Items.Count
-                dt.Rows.Add("", "", "", "")
+                dt.Rows.Add("", "", "", "", "", "", "")
             End While
 
             For i As Integer = 0 To rptMarkup.Items.Count - 1
@@ -527,32 +570,29 @@ Partial Class Setting_Customer_Markup_Add
 
                 Dim ddlProduct As DropDownList = CType(item.FindControl("ddlProduct"), DropDownList)
                 Dim ddlMethod As DropDownList = CType(item.FindControl("ddlMethod"), DropDownList)
-                Dim txtMarkup As TextBox = CType(item.FindControl("txtMarkup"), TextBox)
-                Dim txtDescription As TextBox = CType(item.FindControl("txtDescription"), TextBox)
+                Dim txtMarkup1 As TextBox = CType(item.FindControl("txtMarkup1"), TextBox)
+                Dim txtMarkup2 As TextBox = CType(item.FindControl("txtMarkup2"), TextBox)
+                Dim txtMarkup3 As TextBox = CType(item.FindControl("txtMarkup3"), TextBox)
+                Dim txtMarkup4 As TextBox = CType(item.FindControl("txtMarkup4"), TextBox)
+                Dim txtMarkup5 As TextBox = CType(item.FindControl("txtMarkup5"), TextBox)
 
-                If ddlProduct Is Nothing OrElse ddlMethod Is Nothing OrElse txtMarkup Is Nothing OrElse txtDescription Is Nothing Then
+                If ddlProduct Is Nothing OrElse ddlMethod Is Nothing OrElse txtMarkup1 Is Nothing OrElse txtMarkup2 Is Nothing OrElse txtMarkup3 Is Nothing OrElse txtMarkup4 Is Nothing OrElse txtMarkup5 Is Nothing Then
                     Continue For
                 End If
 
-                dt.Rows(i)("Markup") = txtMarkup.Text.Trim()
-                dt.Rows(i)("Description") = txtDescription.Text.Trim()
-                If ddlMethod.SelectedItem Is Nothing Then
-                    dt.Rows(i)("Method") = ""
-                Else
-                    dt.Rows(i)("Method") =
-                    ddlMethod.SelectedValue
-                End If
-                If ddlProduct.SelectedItem Is Nothing Then
-                    dt.Rows(i)("Product") = ""
-                Else
-                    dt.Rows(i)("Product") =
-                    ddlProduct.SelectedValue
-                End If
+                dt.Rows(i)("Method") = ddlMethod.SelectedValue
+                dt.Rows(i)("Product") = ddlProduct.SelectedValue
+
+                dt.Rows(i)("Markup1") = txtMarkup1.Text.Trim()
+                dt.Rows(i)("Markup2") = txtMarkup2.Text.Trim()
+                dt.Rows(i)("Markup3") = txtMarkup3.Text.Trim()
+                dt.Rows(i)("Markup4") = txtMarkup4.Text.Trim()
+                dt.Rows(i)("Markup5") = txtMarkup5.Text.Trim()
             Next
-            PromoTable = dt
+            MarkupTable = dt
         Catch ex As Exception
             MessageError(True, ex.ToString())
-            If Session("RoleName").ToString() <> "Developer" Then
+            If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
             End If
         End Try

@@ -21,3 +21,8 @@ Password : 4Y_xv&nbC4Hw3fio
 
 Face Fit = Outside
 Reveal Fit = Inside
+
+INSERT INTO CustomerDiscountss SELECT Id, CustomerId, Type, Method, DataId, Discount, 0, 0, 0, 0, Description
+FROM CustomerDiscounts
+
+INSERT INTO CustomerMarkupss SELECT Id, CustomerId, Type, Method, DataId, Markup, 0, 0, 0, 0, Description FROM CustomerMarkups

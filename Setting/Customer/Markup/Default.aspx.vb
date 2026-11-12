@@ -2,6 +2,7 @@
 Imports System.Data.SqlClient
 Imports System.Globalization
 Imports System.Web.Services
+Imports System.Windows
 
 Partial Class Setting_Customer_Markup_Default
     Inherits Page
@@ -14,30 +15,65 @@ Partial Class Setting_Customer_Markup_Default
     <WebMethod()>
     Public Shared Function GetCustomerMarkup(customerId As String) As Object
         Dim settingClass As New SettingClass
-        Dim dt As DataTable = settingClass.GetDataTable("SELECT Id, Type, Method, DataId, Markup FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
+        Dim dt As DataTable = settingClass.GetDataTable("SELECT * FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END, DataId ASC")
 
         Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
 
         Dim result As New List(Of Object)
+
         For Each r As DataRow In dt.Rows
             Dim type As String = r("Type").ToString()
             Dim method As String = r("Method").ToString()
             Dim dataId As String = r("DataId").ToString()
-            Dim markup As Decimal = Convert.ToDecimal(r("Markup"))
             Dim title As String = GetMarkupTitle(type, dataId)
-            Dim value As String = "-"
+
+            Dim markup1 As Decimal = If(IsDBNull(r("Markup1")), 0D, Convert.ToDecimal(r("Markup1")))
+            Dim markup2 As Decimal = If(IsDBNull(r("Markup2")), 0D, Convert.ToDecimal(r("Markup2")))
+            Dim markup3 As Decimal = If(IsDBNull(r("Markup3")), 0D, Convert.ToDecimal(r("Markup3")))
+            Dim markup4 As Decimal = If(IsDBNull(r("Markup4")), 0D, Convert.ToDecimal(r("Markup4")))
+            Dim markup5 As Decimal = If(IsDBNull(r("Markup5")), 0D, Convert.ToDecimal(r("Markup5")))
+
+            Dim markupValue1 As String = "-"
+            Dim markupValue2 As String = "-"
+            Dim markupValue3 As String = "-"
+            Dim markupValue4 As String = "-"
+            Dim markupValue5 As String = "-"
+
             If method = "Percent" Then
-                value = markup.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
+                markupValue1 = markup1.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
+                markupValue2 = markup2.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
+                markupValue3 = markup3.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
+                markupValue4 = markup4.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
+                markupValue5 = markup5.ToString("G29", CultureInfo.GetCultureInfo("en-US")) & "%"
             End If
+
             If method = "Value" Then
                 If companyId = "2" Then
-                    value = "$" & markup.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    markupValue1 = "$" & markup1.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    markupValue2 = "$" & markup2.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    markupValue3 = "$" & markup3.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    markupValue4 = "$" & markup4.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    markupValue5 = "$" & markup5.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
                 End If
+
                 If companyId = "3" Then
-                    value = "Rp" & markup.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    markupValue1 = "Rp" & markup1.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    markupValue2 = "Rp" & markup2.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    markupValue3 = "Rp" & markup3.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    markupValue4 = "Rp" & markup4.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
+                    markupValue5 = "Rp" & markup5.ToString("G29", CultureInfo.GetCultureInfo("en-US"))
                 End If
             End If
-            result.Add(New With {.Id = r("Id").ToString(), .Type = type, .Product = title, .Markup = value})
+
+            result.Add(New With {
+                .Id = r("Id").ToString(),
+                .Product = title,
+                .Markup1 = markupValue1,
+                .Markup2 = markupValue2,
+                .Markup3 = markupValue3,
+                .Markup4 = markupValue4,
+                .Markup5 = markupValue5
+            })
         Next
         Return result
     End Function
@@ -48,10 +84,22 @@ Partial Class Setting_Customer_Markup_Default
 
         Dim dataName As String = String.Empty
         If type = "Designs" Then
-            dataName = settingClass.GetItemData("SELECT Name FROM Designs WHERE Id='" & dataId & "'")
+            dataName = settingClass.GetItemData("Select Name FROM Designs WHERE Id='" & dataId & "'")
+        End If
+        If type = "Blinds" Then
+            dataName = settingClass.GetItemData("Select Name FROM Blinds WHERE Id='" & dataId & "'")
         End If
         If type = "PriceProductGroups" Then
             dataName = settingClass.GetItemData("SELECT CASE WHEN Status='Active' THEN Name ELSE Name + ' [' + UPPER(Status) + ']' END FROM PriceProductGroups WHERE Id='" & dataId & "'")
+        End If
+        If type = "RollerFabrics" OrElse type = "RomanFabrics" OrElse type = "PanelGlideFabrics" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM Fabrics WHERE Id='" & dataId & "'")
+        End If
+        If type = "RollerFabricColours" OrElse type = "RomanFabricColours" OrElse type = "PanelGlideFabricColours" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM FabricColours WHERE Id='" & dataId & "'")
+        End If
+        If type = "RollerChains" Then
+            dataName = settingClass.GetItemData("SELECT Name FROM Chains WHERE Id='" & dataId & "'")
         End If
         Return dataName
     End Function

@@ -40,28 +40,35 @@
                         <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
                             <ContentTemplate>
                                 <div class="row">
-                                    <div class="col-12 col-sm-12 col-lg-7 form-group">
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
                                         <label class="form-label">Account</label>
                                         <asp:DropDownList runat="server" ID="ddlCustomer" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCustomer_SelectedIndexChanged"></asp:DropDownList>
                                     </div>
-                                    <div class="col-12 col-sm-12 col-lg-5 form-group">
-                                        <label class="form-label">Type</label>
-                                        <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
-                                            <asp:ListItem Value="" Text=""></asp:ListItem>
-                                            <asp:ListItem Value="Designs" Text="Product"></asp:ListItem>
-                                            <asp:ListItem Value="PriceProductGroups" Text="Product Group"></asp:ListItem>
-                                            <asp:ListItem Value="RollerFabrics" Text="Fabric Type (Roller)"></asp:ListItem>
-                                            <asp:ListItem Value="RollerFabricColours" Text="Fabric Colour (Roller)"></asp:ListItem>
-                                            <asp:ListItem Value="RomanFabrics" Text="Fabric Type (Roman)"></asp:ListItem>
-                                            <asp:ListItem Value="RomanFabricColours" Text="Fabric Colour (Roman)"></asp:ListItem>
-                                            <asp:ListItem Value="PanelGlideFabrics" Text="Fabric Type (Panel Glide)"></asp:ListItem>
-                                            <asp:ListItem Value="PanelGlideFabricColours" Text="Fabric Colour (Panel Glide)"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <a href="javascript:void(0);" class="btn btn-sm btn-outline-info" data-bs-dismiss="modal" onclick="openRegisteredMarkupModal(document.getElementById('<%= ddlCustomer.ClientID %>').value)">Registered Markup</a>
+                                    <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                        <div class="row">
+                                            <div class="col-12 col-sm-12 col-lg-8 form-group">
+                                                <label class="form-label">Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <%--<asp:ListItem Value="Designs" Text="Product"></asp:ListItem>--%>
+                                                    <asp:ListItem Value="PriceProductGroups" Text="Product"></asp:ListItem>
+                                                    <asp:ListItem Value="RollerFabrics" Text="Fabric Type (Roller)"></asp:ListItem>
+                                                    <asp:ListItem Value="RollerFabricColours" Text="Fabric Colour (Roller)"></asp:ListItem>
+                                                    <asp:ListItem Value="RomanFabrics" Text="Fabric Type (Roman)"></asp:ListItem>
+                                                    <asp:ListItem Value="RomanFabricColours" Text="Fabric Colour (Roman)"></asp:ListItem>
+                                                    <asp:ListItem Value="PanelGlideFabrics" Text="Fabric Type (Panel Glide)"></asp:ListItem>
+                                                    <asp:ListItem Value="PanelGlideFabricColours" Text="Fabric Colour (Panel Glide)"></asp:ListItem>
+                                                    <asp:ListItem Value="RollerChains" Text="Chain Colour (Roller)"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
+                                                <label class="form-label">Discount</label>
+                                                <div class="input-group">
+                                                    <asp:TextBox runat="server" ID="txtApplyMarkup" CssClass="form-control" Height="45px" placeholder="Enter Markup..." autocomplete="off"></asp:TextBox>
+                                                    <asp:Button runat="server" ID="btnApplyMarkup" Text="Apply" CssClass="btn btn-primary" OnClick="btnApplyMarkup_Click" />
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <table class="table table-bordered mt-5">
@@ -69,8 +76,11 @@
                                         <tr>
                                             <th style="width:600px;">Product</th>
                                             <th style="width:200px;">Method</th>
-                                            <th style="width:150px;">Markup (%)</th>
-                                            <th>Description</th>
+                                            <th style="width:100px;">Markup 1</th>
+                                            <th style="width:100px;">Markup 2</th>
+                                            <th style="width:100px;">Markup 3</th>
+                                            <th style="width:100px;">Markup 4</th>
+                                            <th style="width:100px;">Markup 5</th>
                                             <th style="width:80px;"></th>
                                         </tr>
                                     </thead>
@@ -89,10 +99,19 @@
                                                         </asp:DropDownList>
                                                     </td>
                                                     <td>
-                                                        <asp:TextBox runat="server" ID="txtMarkup" CssClass="form-control" placeholder="Markup ......" autocomplete="off"></asp:TextBox>
+                                                        <asp:TextBox runat="server" ID="txtMarkup1" CssClass="form-control" placeholder="Markup 1 ......" autocomplete="off"></asp:TextBox>
                                                     </td>
                                                     <td>
-                                                        <asp:TextBox runat="server" ID="txtDescription" CssClass="form-control" placeholder="Description ..." autocomplete="off"></asp:TextBox>
+                                                        <asp:TextBox runat="server" ID="txtMarkup2" CssClass="form-control" placeholder="Markup 2 ......" autocomplete="off"></asp:TextBox>
+                                                    </td>
+                                                    <td>
+                                                        <asp:TextBox runat="server" ID="txtMarkup3" CssClass="form-control" placeholder="Markup 3 ......" autocomplete="off"></asp:TextBox>
+                                                    </td>
+                                                    <td>
+                                                        <asp:TextBox runat="server" ID="txtMarkup4" CssClass="form-control" placeholder="Markup 4 ......" autocomplete="off"></asp:TextBox>
+                                                    </td>
+                                                    <td>
+                                                        <asp:TextBox runat="server" ID="txtMarkup5" CssClass="form-control" placeholder="Markup 4 ......" autocomplete="off"></asp:TextBox>
                                                     </td>
                                                     <td class="text-center">
                                                         <asp:LinkButton runat="server" ID="btnDelete" CssClass="btn btn-danger btn-sm" CommandName="DeleteRow" CommandArgument='<%# Container.ItemIndex %>'>Delete</asp:LinkButton>
@@ -118,38 +137,6 @@
                 </div>
             </div>
         </section>
-    </div>
-    <div class="modal modal-blur fade" id="modalRegisteredMarkup" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Registered Markup</h5>
-                </div>
-                <div class="modal-body">
-                    <asp:TextBox runat="server" ID="txtCustomerId" style="display:none;"></asp:TextBox>
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Type</th>
-                                            <th>Product</th>
-                                            <th>Markup</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="markupBody"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
-                </div>
-            </div>
-        </div>
     </div>
     <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
         <div class="position-absolute top-50 start-50 translate-middle">
@@ -199,38 +186,6 @@
         document.addEventListener("DOMContentLoaded", function () {
             initUpdatePanelLoading();
             initChoices();
-        });
-        function openRegisteredMarkupModal(customerId) {
-            document.getElementById("<%=txtCustomerId.ClientID %>").value = customerId;
-            fetch('Add.aspx/GetCustomerMarkup', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json; charset=utf-8' },
-                body: JSON.stringify({ customerId: customerId })
-            }).then(res => res.json()).then(res => {
-                const data = res.d;
-                let tbody = "";
-                data.forEach((x, i) => {
-                    tbody += `
-                        <tr>
-                            <td class="text-center">${i + 1}</td>
-                            <td>${x.Type}</td>
-                            <td>${x.Product}</td>
-                            <td>${x.Markup}</td>
-                        </tr>
-                    `;
-                });
-                document.getElementById("markupBody").innerHTML = tbody;
-                showRegisteredMarkup();
-            });
-        }
-        function showRegisteredMarkup() {
-            $("#modalRegisteredMarkup").modal("show");
-        }
-        ["modalRegisteredMarkup"].forEach(function (id) {
-            document.getElementById(id).addEventListener("hide.bs.modal", function () {
-                document.activeElement.blur();
-                document.body.focus();
-            });
         });
         window.history.replaceState(null, null, window.location.href);
     </script>

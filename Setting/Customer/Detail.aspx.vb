@@ -398,6 +398,7 @@ Partial Class Setting_Customer_Detail
                 Using thisCmd As New SqlCommand("sp_CustomerDetail_List", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
                     thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
+                    thisCmd.Parameters.AddWithValue("@CompanyId", lblCompanyId.Text)
                     thisCmd.Parameters.AddWithValue("@RoleName", Session("RoleName").ToString())
                     Using thisAdapter As New SqlDataAdapter(thisCmd)
                         thisAdapter.Fill(thisDataSet)
@@ -1059,9 +1060,13 @@ Partial Class Setting_Customer_Detail
             Dim thisId As String = txtChangeMarkupId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerMarkups SET Markup=@Markup, Description=@Description WHERE Id=@Id", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerMarkups SET Markup1=@Markup1, Markup2=@Markup2, Markup3=@Markup3, Markup4=@Markup4, Markup5=@Markup5, Description=@Description WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
-                    thisCmd.Parameters.AddWithValue("@Markup", txtChangeMarkupValue.Text)
+                    thisCmd.Parameters.AddWithValue("@Markup1", txtChangeMarkupValue1.Text)
+                    thisCmd.Parameters.AddWithValue("@Markup2", txtChangeMarkupValue2.Text)
+                    thisCmd.Parameters.AddWithValue("@Markup3", txtChangeMarkupValue3.Text)
+                    thisCmd.Parameters.AddWithValue("@Markup4", txtChangeMarkupValue4.Text)
+                    thisCmd.Parameters.AddWithValue("@Markup5", txtChangeMarkupValue5.Text)
                     thisCmd.Parameters.AddWithValue("@Description", txtChangeMarkupDescription.Text)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
@@ -1177,9 +1182,13 @@ Partial Class Setting_Customer_Detail
             Dim thisId As String = txtChangeDiscountId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerDiscounts SET Discount=@Discount, Description=@Description WHERE Id=@Id", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerDiscounts SET Discount1=@Discount1, Discount2=@Discount2, Discount3=@Discount3, Discount4=@Discount4, Discount5=@Discount5, Description=@Description WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
-                    thisCmd.Parameters.AddWithValue("@Discount", txtChangeDiscountValue.Text)
+                    thisCmd.Parameters.AddWithValue("@Discount1", txtChangeDiscountValue1.Text)
+                    thisCmd.Parameters.AddWithValue("@Discount2", txtChangeDiscountValue2.Text)
+                    thisCmd.Parameters.AddWithValue("@Discount3", txtChangeDiscountValue3.Text)
+                    thisCmd.Parameters.AddWithValue("@Discount4", txtChangeDiscountValue4.Text)
+                    thisCmd.Parameters.AddWithValue("@Discount5", txtChangeDiscountValue5.Text)
                     thisCmd.Parameters.AddWithValue("@Description", txtChangeDiscountDescription.Text)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
