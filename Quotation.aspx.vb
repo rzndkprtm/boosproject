@@ -57,11 +57,11 @@ Partial Class Quotation
 
             Dim newLogo As String = String.Empty
 
-            Dim allowedExtensions As String() = {".jpg", ".jpeg", ".png", ".gif"}
+            Dim allowedExtensions As String() = {".jpg", ".jpeg", ".png"}
             Dim ext As String = IO.Path.GetExtension(fuLogo.FileName.ToString()).ToLower()
 
             If Not allowedExtensions.Contains(ext) Then
-                MessageError_Logo(True, "Invalid file type. Only JPG, PNG, GIF are allowed.")
+                MessageError_Logo(True, "Invalid file type. Only JPG, PNG are allowed.")
                 ClientScript.RegisterStartupScript(Me.GetType(), "showLogo", thisScript, True)
                 Exit Sub
             End If

@@ -74,6 +74,12 @@ Partial Class Order_Printing
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
         End Try
     End Sub
 
@@ -119,6 +125,12 @@ Partial Class Order_Printing
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
         End Try
     End Sub
 
@@ -164,6 +176,12 @@ Partial Class Order_Printing
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
         End Try
     End Sub
 
@@ -209,6 +227,12 @@ Partial Class Order_Printing
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
         End Try
     End Sub
 
@@ -235,6 +259,12 @@ Partial Class Order_Printing
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
         End Try
     End Sub
 
@@ -261,6 +291,12 @@ Partial Class Order_Printing
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
         End Try
     End Sub
 
@@ -287,6 +323,12 @@ Partial Class Order_Printing
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
         End Try
     End Sub
 
@@ -313,6 +355,12 @@ Partial Class Order_Printing
             Response.Redirect(url, False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
         End Try
     End Sub
 
@@ -421,7 +469,6 @@ Partial Class Order_Printing
                             If lblStatus.Text = "Unsubmitted" Then aDelete.Visible = True
                         End If
                     End If
-
                     If lblCompanyId.Text = "3" Then
                         aPrinting.Visible = True : divPrinting.Visible = True
                         aPrinting.Attributes("class") = aPrinting.Attributes("class") & " active"
@@ -436,7 +483,6 @@ Partial Class Order_Printing
                         End If
                     End If
                 End If
-
                 If blindName = "Dual Blinds" Then
                     If width <= 1510 OrElse drop <= 1510 Then
                         aPrinting.Visible = True : divPrinting.Visible = True
@@ -459,7 +505,6 @@ Partial Class Order_Printing
                             If lblStatus.Text = "Unsubmitted" Then aDeleteB.Visible = True
                         End If
                     End If
-
                     If lblCompanyId.Text = "3" Then
                         aPrinting.Visible = True : divPrinting.Visible = True
                         aPrintingB.Visible = True : divPrintingB.Visible = True
@@ -482,7 +527,6 @@ Partial Class Order_Printing
                         End If
                     End If
                 End If
-
                 If blindName = "Link 2 Blinds Dependent" OrElse blindName = "Link 2 Blinds Independent" Then
                     If width <= 1510 OrElse drop <= 1510 Then
                         aPrinting.Visible = True : divPrinting.Visible = True
@@ -550,7 +594,6 @@ Partial Class Order_Printing
                     End If
                 End If
             End If
-
             If designName = "Roman Blind" Then
                 If width <= 1510 OrElse drop <= 1510 Then
                     aPrinting.Visible = True : divPrinting.Visible = True

@@ -181,7 +181,6 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            
                                             <div class="row" id="divcontrollength">
                                                 <div class="col-12 col-sm-12 col-lg-3 mb-1">
                                                     <label>Control Length</label>
