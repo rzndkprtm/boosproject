@@ -1842,7 +1842,6 @@ Public Class MailingClass
         Try
             Dim stockClass As New StockClass
             Dim excelBytes As Byte() = stockClass.GenerateStockExcel(companyDetailId)
-
             If excelBytes Is Nothing OrElse excelBytes.Length = 0 Then Exit Sub
 
             Dim companyId As String = String.Empty
@@ -1850,13 +1849,14 @@ Public Class MailingClass
             Dim companyDetailName As String = String.Empty
 
             Dim companyData As DataRow = GetDataRow("SELECT CompanyDetails.CompanyId AS CompanyId, CompanyDetails.Name AS CompanyDetailName, Companys.Name AS CompanyName FROM Companys LEFT JOIN CompanyDetails ON Companys.Id=CompanyDetails.CompanyId WHERE CompanyDetails.Id='" & companyDetailId & "'")
-            If companyData Is Nothing Then
-                Exit Sub
-            End If
+            If companyData Is Nothing Then Exit Sub
 
             companyId = companyData("CompanyId").ToString()
             companyName = companyData("CompanyName").ToString()
             companyDetailName = companyData("CompanyDetailName").ToString()
+
+            Dim signatureName As String = companyName
+            If companyId = "4" Then signatureName = "PT Bumi Indah Global"
 
             Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Newsletter Stock' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
@@ -1892,26 +1892,7 @@ Public Class MailingClass
                 url = "https://ordersblindonline.com/stocks/global"
             End If
 
-            Dim mailBody As String = String.Empty
-            mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
-            mailBody &= "<i>- THIS IS AN AUTOMATED EMAIL -</i>"
-            mailBody &= "<br /><br /><br />"
-            mailBody &= "Please find attached our latest stock report as of " & DateTime.Now.ToString("dd MMMM yyyy") & "."
-            mailBody &= "<br /><br />"
-            mailBody &= "You can also view the latest stock information online through the <b>Stocks</b> menu in our Web Order system, or access the link below to view real-time stock availability:"
-            mailBody &= "<br /><br />"
-            mailBody &= "<a href='" & url & "' target='_blank' style='color: #0d6efd; font-weight: bold;'>View Real-Time Stock Availability</a>"
-            mailBody &= "<br /><br />"
-            mailBody &= "You do not need to log in to access the stock information using the link above."
-            mailBody &= "<br /><br />"
-            mailBody &= "Please note that stock availability is subject to change without prior notice."
-            mailBody &= "<br /><br /><br />"
-            mailBody &= "</span>"
-            mailBody &= "<span style='font-family: Cambria; font-size: 16px;'>Kind Regards,</span>"
-            mailBody &= "<br /><br />"
-            mailBody &= "<span style='font-family: Cambria; font-size: 16px; font-weight: bold;'>" & companyName.ToUpper() & "</span>"
-
-            Dim customerMail As DataTable = GetDataTable("SELECT DISTINCT CustomerContacts.Email FROM dbo.CustomerContacts INNER JOIN dbo.Customers ON CustomerContacts.CustomerId=Customers.Id WHERE Customers.CompanyDetailId = '" & companyDetailId & "' AND EXISTS (SELECT 1 FROM STRING_SPLIT(CustomerContacts.Tags, ',') WHERE LTRIM(RTRIM(value))='Newsletter') AND CustomerContacts.Email IS NOT NULL AND LTRIM(RTRIM(CustomerContacts.Email))<>''")
+            Dim customerMail As DataTable = GetDataTable("SELECT DISTINCT Customers.Name AS CustomerName, CustomerContacts.Email AS CustomerEmail FROM dbo.CustomerContacts INNER JOIN dbo.Customers ON CustomerContacts.CustomerId=Customers.Id WHERE Customers.CompanyDetailId = '" & companyDetailId & "' AND EXISTS (SELECT 1 FROM STRING_SPLIT(CustomerContacts.Tags, ',') WHERE LTRIM(RTRIM(value))='Newsletter') AND CustomerContacts.Email IS NOT NULL AND LTRIM(RTRIM(CustomerContacts.Email))<>''")
             If customerMail Is Nothing OrElse customerMail.Rows.Count = 0 Then Exit Sub
 
             Using smtpClient As New SmtpClient()
@@ -1929,16 +1910,52 @@ Public Class MailingClass
                 End If
 
                 For Each row As DataRow In customerMail.Rows
-                    Dim customerEmail As String = row("Email").ToString().Trim()
+                    Dim customerEmail As String = row("CustomerEmail").ToString().Trim()
+                    Dim customerName As String = row("CustomerName").ToString().Trim()
+
                     If String.IsNullOrEmpty(customerEmail) Then Continue For
+
                     Try
+                        Dim mailBody As String = String.Empty
+                        mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
+                        mailBody &= "<i>- THIS IS AN AUTOMATED EMAIL -</i>"
+                        mailBody &= "<br /><br /><br />"
+                        mailBody &= "<b>TESTING STOCK NEWSLETTER SENT DIRECTLY TO CUSTOMERS VIA WEB ORDER</b>"
+                        mailBody &= "<br /><br /><br />"
+                        mailBody &= "Dear <b>" & customerName & "</b>,"
+                        mailBody &= "<br /><br />"
+                        mailBody &= "Please find attached our latest stock report as of <b>" & DateTime.Now.ToString("dd MMMM yyyy") & "</b>."
+                        mailBody &= "<br /><br />"
+                        mailBody &= "You can also view the latest stock information online through the <b>Stocks</b> menu in our Web Order system, or access the link below to view real-time stock availability:"
+                        mailBody &= "<br /><br />"
+                        mailBody &= "<a href='" & url & "' target='_blank' style='color: #0d6efd; font-weight: bold;'>View Real-Time Stock Availability</a>"
+                        mailBody &= "<br /><br />"
+                        mailBody &= "You do not need to log in to access the stock information using the link above."
+                        mailBody &= "<br /><br />"
+                        mailBody &= "Please note that stock availability is subject to change without prior notice."
+                        mailBody &= "<br /><br /><br />"
+                        mailBody &= "</span>"
+                        mailBody &= "<span style='font-family: Cambria; font-size: 16px;'>Kind Regards,</span>"
+                        mailBody &= "<br /><br /><br />"
+                        mailBody &= "<span style='font-family: Cambria; font-size: 16px; font-weight: bold;'>" & signatureName.ToUpper() & "</span>"
+
                         Using myMail As New MailMessage()
                             myMail.Subject = mailSubject
                             myMail.From = New MailAddress(mailServer, mailAlias)
                             myMail.To.Add(New MailAddress(customerEmail))
+
                             If Not String.IsNullOrEmpty(mailCc) Then
                                 For Each thisMail In mailCc.Split(";"c)
-                                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.CC.Add(thisMail.Trim())
+                                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then
+                                        myMail.CC.Add(thisMail.Trim())
+                                    End If
+                                Next
+                            End If
+                            If Not String.IsNullOrEmpty(mailBcc) Then
+                                For Each thisMail In mailBcc.Split(";"c)
+                                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then
+                                        myMail.Bcc.Add(thisMail.Trim())
+                                    End If
                                 Next
                             End If
 
@@ -1949,7 +1966,6 @@ Public Class MailingClass
                             Dim fileName As String = String.Format("NEWSLETTER_STOCK_{0}.xlsx", companyDetailName)
                             Dim attach As New Attachment(ms, fileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
                             myMail.Attachments.Add(attach)
-
                             smtpClient.Send(myMail)
                         End Using
                     Catch emailEx As Exception

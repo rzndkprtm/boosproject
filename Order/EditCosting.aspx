@@ -282,17 +282,14 @@
 
             document.querySelectorAll("#<%= gvList.ClientID %> tr").forEach(function (row) {
                 var updateButton = row.querySelector(".btn-update-costing");
-
                 if (!updateButton) return;
 
                 var rowId = updateButton.getAttribute("data-id");
-
                 var inputs = row.querySelectorAll(
                     'input[id*="txtNewSellPrice"], input[id*="txtNewBuyPrice"], input[id*="txtNewFactoryPrice"]'
                 );
 
                 if (inputs.length === 0) return;
-
                 inputs.forEach(function (input) {
                     if (input.dataset.originalValue === undefined) {
                         input.dataset.originalValue = input.value;
@@ -326,7 +323,6 @@
                     }
 
                     input._costingChangeHandler = checkChanges;
-
                     input.addEventListener("input", checkChanges);
                     input.addEventListener("change", checkChanges);
                 });
@@ -350,7 +346,6 @@
                     if (document.activeElement) {
                         document.activeElement.blur();
                     }
-
                     document.body.focus();
                 });
             }

@@ -598,7 +598,7 @@
                 if (hideModal) {
                     $(`#${hideModal}`).modal("hide");
                 }
-            }, 1000);
+            }, 5000);
 
             return true;
         }
