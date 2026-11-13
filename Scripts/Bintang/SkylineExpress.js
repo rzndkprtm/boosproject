@@ -118,6 +118,7 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
             visibleBottomTrackReccess(data.ItemData.BottomTrackType),
             visibleSplitHeight(data.ItemData.TiltrodType),
             visibleHorizontalRequired(data.ItemData.HorizontalTPostHeight),
+            visiblePaintingColour(data.ItemData.Painting)
         ]);
     } catch (error) {
         document.getElementById("divloader").style.display = "none";
@@ -930,6 +931,7 @@ function visiblePageDetail(blindType, colourType) {
             "divmidrailcritical",
             "divjoinedpanels",
             "divhingecolour",
+            "divhingesloose",
             "divsemiinside",
             "divcustomheaderlength",
             "divlayoutcode",
@@ -953,7 +955,8 @@ function visiblePageDetail(blindType, colourType) {
             "divreversehinged",
             "divpelmetflat",
             "divextrafascia",
-            "divhingesloose"
+            "divpainting",
+            "divpaintingcolour"
         ].map(id => document.getElementById(id));
 
 
@@ -969,9 +972,10 @@ function visiblePageDetail(blindType, colourType) {
 
         toggleDisplay(detail, true);
 
-        const divShow = [];
-
-        getBlindName(blindType).then((blindName) => {
+        Promise.all([
+            getBlindName(blindType),
+            getCompanyName(companyId)
+        ]).then(([blindName, companyName]) => {
             if (blindName === "Panel Only") {
                 divShow.push("divtiltrodtype", "divtiltrodsplit");
             } else if (blindName === "Hinged" || blindName === "Hinged Bi-fold") {
@@ -986,6 +990,10 @@ function visiblePageDetail(blindType, colourType) {
                 divShow.push("divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit");
             }
 
+            if (companyName === "PT Bumi Indah Global") {
+                divShow.push("divpainting");
+            }
+
             divShow.forEach(id => {
                 const el = document.getElementById(id);
                 toggleDisplay(el, true);
@@ -996,6 +1004,14 @@ function visiblePageDetail(blindType, colourType) {
             }
 
             resolve();
+        }).catch(error => {
+            resolve();
+        });
+
+        const divShow = [];
+
+        getBlindName(blindType).then((blindName) => {
+            
         }).catch((error) => {
             reject(error);
         });
@@ -1265,6 +1281,16 @@ function visibleHorizontalRequired(horizontalHeigth) {
         resolve();
     })
 }
+function visiblePaintingColour(painting) {
+    return new Promise((resolve) => {
+        const divpaintingcolour = document.getElementById("divpaintingcolour");
+        divpaintingcolour.style.display = "none";
+        if (painting === "Yes") {
+            divpaintingcolour.style.display = "";
+        }
+        resolve();
+    });
+}
 
 function loaderPage(itemAction) {
     return new Promise((resolve) => {
@@ -1305,7 +1331,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = ["blindtype", "colourtype", "qty", "room", "mounting", "width", "drop", "louvresize", "louvreposition", "midrailheight1", "midrailheight2", "midrailcritical", "joinedpanels", "hingecolour", "semiinside", "customheaderlength", "layoutcode", "layoutcodecustom", "frametype", "frameleft", "frameright", "frametop", "framebottom", "bottomtracktype", "bottomtrackrecess", "buildout", "buildoutposition", "samesizepanel", "gap1", "gap2", "gap3", "gap4", "gap5", "horizontaltpostheight", "horizontaltpost", "tiltrodtype", "tiltrodsplit", "splitheight1", "splitheight2", "reversehinged", "pelmetflat", "extrafascia", "hingesloose", "markup", "notes"];
+    const inputs = ["blindtype", "colourtype", "qty", "room", "mounting", "width", "drop", "louvresize", "louvreposition", "midrailheight1", "midrailheight2", "midrailcritical", "joinedpanels", "hingecolour", "semiinside", "customheaderlength", "layoutcode", "layoutcodecustom", "frametype", "frameleft", "frameright", "frametop", "framebottom", "bottomtracktype", "bottomtrackrecess", "buildout", "buildoutposition", "samesizepanel", "gap1", "gap2", "gap3", "gap4", "gap5", "horizontaltpostheight", "horizontaltpost", "tiltrodtype", "tiltrodsplit", "splitheight1", "splitheight2", "reversehinged", "pelmetflat", "extrafascia", "hingesloose", "painting", "paintingcolour", "markup", "notes"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
@@ -1365,6 +1391,8 @@ function setFormValues(itemData) {
         pelmetflat: "PelmetFlat",
         extrafascia: "ExtraFascia",
         hingesloose: "HingesLoose",
+        painting: "Painting",
+        paintingcolour: "PaintingColour",
         notes: "Notes",
         markup: "MarkUp",
     };
@@ -1457,7 +1485,7 @@ function submitProcess() {
         "frametype", "frameleft", "frameright", "frametop", "framebottom",
         "bottomtracktype", "bottomtrackrecess",
         "buildout", "buildoutposition", "samesizepanel", "gap1", "gap2", "gap3", "gap4", "gap5",
-        "horizontaltpostheight", "horizontaltpost", "tiltrodtype", "tiltrodsplit", "splitheight1", "splitheight2", "reversehinged", "pelmetflat", "extrafascia", "hingesloose", "markup", "notes"];
+        "horizontaltpostheight", "horizontaltpost", "tiltrodtype", "tiltrodsplit", "splitheight1", "splitheight2", "reversehinged", "pelmetflat", "extrafascia", "hingesloose", "painting", "paintingcolour", "markup", "notes"];
 
     const formData = {
         headerid: headerId,
@@ -1637,6 +1665,9 @@ $("#horizontaltpostheight").on("input", function () {
 });
 $("#tiltrodsplit").on("change", function () {
     visibleSplitHeight($(this).val());
+});
+$("#painting").on("change", function () {
+    visiblePaintingColour($(this).val());
 });
 $("#submit").on("click", submitProcess);
 $("#cancel").on("click", () => window.location.href = `/order/detail?orderid=${headerId}`);

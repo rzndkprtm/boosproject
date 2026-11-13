@@ -860,7 +860,7 @@ Public Class PreviewClass
                         items(32, i) = shutterData.Rows(i)("PelmetFlat").ToString()
                         items(33, i) = shutterData.Rows(i)("ExtraFascia").ToString()
                         items(34, i) = shutterData.Rows(i)("HingesLoose").ToString()
-                        items(35, i) = FormatNumber(shutterData.Rows(i)("SquareMetre"), 2)
+                        items(35, i) = Convert.ToDecimal(shutterData.Rows(i)("SquareMetre")).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
                         items(36, i) = shutterData.Rows(i)("Notes").ToString()
                     Next
 
@@ -1041,7 +1041,7 @@ Public Class PreviewClass
                         items(32, i) = shutterData.Rows(i)("PelmetFlat").ToString()
                         items(33, i) = shutterData.Rows(i)("ExtraFascia").ToString()
                         items(34, i) = shutterData.Rows(i)("HingesLoose").ToString()
-                        items(35, i) = FormatNumber(shutterData.Rows(i)("SquareMetre"), 2)
+                        items(35, i) = Convert.ToDecimal(shutterData.Rows(i)("SquareMetre")).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
                         items(36, i) = shutterData.Rows(i)("Notes").ToString()
                     Next
 
@@ -1652,7 +1652,7 @@ Public Class PreviewClass
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
                         Dim headers As String() = {"", "Location", "Mounting", "Roller Type", "Tube Type", "Control Type", "Bracket Colour", "Fabric Type", "Fabric Colour", "Roll Direction", "Width (mm)", "Drop (mm)", "Control Position", "Remote Type", "Battery Charger", "Extension Cable", "Neo Box", "", "Chain Type", "Chain Stopper", "Chain Length", "Bottom Type", "Bottom Colour", "Bottom Option", "Bracket Extension", "Spring Assist", "Bracket Size", "Adjusting Spanner", "", "Fabric Printing", "Special Information"}
-                        If companyDetailId = "5" OrElse companyDetailId = "6" Then
+                        If companyDetailId = "5" OrElse companyDetailId = "6" OrElse companyDetailId = "8" Then
                             headers = {"", "Location", "Mounting", "Roller Type", "Tube Type", "Control Type", "Bracket Colour", "Fabric Type", "Fabric Colour", "Roll Direction", "Width (mm)", "Drop (mm)", "Control Position", "Remote Type", "Battery Charger", "Extension Cable", "", "Dry Contact", "Chain Type", "Chain Stopper", "Chain Length", "Bottom Type", "Bottom Colour", "Bottom Option", "Bracket Extension", "", "", "", "Top Track", "Fabric Printing", "Special Information"}
                         End If
 
@@ -2058,7 +2058,7 @@ Public Class PreviewClass
                     Dim table As New PdfPTable(5)
                     table.WidthPercentage = 100
 
-                    Dim items(38, shutterData.Rows.Count - 1) As String
+                    Dim items(40, shutterData.Rows.Count - 1) As String
 
                     For i As Integer = 0 To shutterData.Rows.Count - 1
                         Dim layoutCode As String = If(shutterData.Rows(i)("LayoutCode").ToString() = "Other", shutterData.Rows(i)("LayoutCodeCustom").ToString(), shutterData.Rows(i)("LayoutCode").ToString())
@@ -2185,8 +2185,10 @@ Public Class PreviewClass
                         items(33, i) = shutterData.Rows(i)("PelmetFlat").ToString()
                         items(34, i) = shutterData.Rows(i)("ExtraFascia").ToString()
                         items(35, i) = shutterData.Rows(i)("HingesLoose").ToString()
-                        items(36, i) = FormatNumber(shutterData.Rows(i)("SquareMetre"), 2)
-                        items(37, i) = shutterData.Rows(i)("Notes").ToString()
+                        items(36, i) = shutterData.Rows(i)("Painting").ToString()
+                        items(37, i) = shutterData.Rows(i)("PaintingColour").ToString()
+                        items(38, i) = Convert.ToDecimal(shutterData.Rows(i)("SquareMetre")).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
+                        items(39, i) = shutterData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 4
@@ -2195,7 +2197,10 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Buildout Position", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "M2", "Special Information"}
+                        Dim headers As String() = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Buildout Position", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "", "", "M2", "Special Information"}
+                        If companyDetailId = "5" OrElse companyDetailId = "6" OrElse companyDetailId = "8" Then
+                            headers = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Buildout Position", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "Painting", "PaintingColour", "M2", "Special Information"}
+                        End If
 
                         For row As Integer = 0 To headers.Length - 1
                             Dim cellHeader As New PdfPCell(New Phrase(headers(row), fontHeader))
@@ -2374,7 +2379,7 @@ Public Class PreviewClass
                         items(36, i) = shutterData.Rows(i)("DoorCutOut").ToString()
                         items(37, i) = shutterData.Rows(i)("SpecialShape").ToString()
                         items(38, i) = shutterData.Rows(i)("TemplateProvided").ToString()
-                        items(39, i) = FormatNumber(shutterData.Rows(i)("SquareMetre"), 2)
+                        items(39, i) = Convert.ToDecimal(shutterData.Rows(i)("SquareMetre")).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
                         items(40, i) = shutterData.Rows(i)("Notes").ToString()
                     Next
 

@@ -9772,6 +9772,16 @@ Partial Class Order_Method
             If data.specialshape = "" Then data.templateprovided = ""
         End If
 
+        If blindName = "Skyline Shutter Ocean" Then
+            data.painting = String.Empty : data.paintingcolour = String.Empty
+        End If
+        If data.companyid = "2" Then
+            data.painting = String.Empty : data.paintingcolour = String.Empty
+        End If
+        If String.IsNullOrEmpty(data.painting) Then
+            data.paintingcolour = String.Empty
+        End If
+
         Dim groupName As String = String.Empty
         If designName = "Skyline Shutter Express" Then
             groupName = String.Format("{0} - {1}", designName, blindName)
@@ -9855,6 +9865,8 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@DoorCutOut", data.cutout)
                         thisCmd.Parameters.AddWithValue("@SpecialShape", data.specialshape)
                         thisCmd.Parameters.AddWithValue("@TemplateProvided", data.templateprovided)
+                        thisCmd.Parameters.AddWithValue("@Painting", data.painting)
+                        thisCmd.Parameters.AddWithValue("@PaintingColour", data.paintingcolour)
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                         thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                         thisCmd.Parameters.AddWithValue("@TotalItems", 1)
@@ -9937,6 +9949,8 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@DoorCutOut", data.cutout)
                     thisCmd.Parameters.AddWithValue("@SpecialShape", data.specialshape)
                     thisCmd.Parameters.AddWithValue("@TemplateProvided", data.templateprovided)
+                    thisCmd.Parameters.AddWithValue("@Painting", data.painting)
+                    thisCmd.Parameters.AddWithValue("@PaintingColour", data.paintingcolour)
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                     thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                     thisCmd.Parameters.AddWithValue("@TotalItems", 1)
@@ -13950,6 +13964,8 @@ Public Class ProccessData
     Public Property specialshape As String
     Public Property templateprovided As String
     Public Property partcolour As String
+    Public Property painting As String
+    Public Property paintingcolour As String
 
     ' DOOR PUNYA
     Public Property midrailposition As String

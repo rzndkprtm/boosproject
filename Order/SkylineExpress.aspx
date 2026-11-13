@@ -482,6 +482,25 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                            <div class="row mt-3" id="divpainting">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Painting</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-2 form-group">
+                                                    <select id="painting" class="form-select">
+                                                        <option value=""></option>
+                                                        <option value="Yes">Yes</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row" id="divpaintingcolour">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Painting Colour</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-6 form-group">
+                                                    <input type="text" id="paintingcolour" class="form-control" autocomplete="off" placeholder="Painting Colour" />
+                                                </div>
+                                            </div>
                                             <div class="row mt-3">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Special Information</label>
@@ -581,5 +600,5 @@
             </div>
         </div>
     </div>
-    <script src="/Scripts/Bintang/SkylineExpress.js?v=1.0.0"></script>
+    <script src="/Scripts/Bintang/SkylineExpress.js?v=1.0.1"></script>
 </asp:Content>

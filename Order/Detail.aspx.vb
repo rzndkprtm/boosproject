@@ -500,7 +500,7 @@ Partial Class Order_Detail
                     orderClass.OrderCostings(costingArray)
                     orderClass.FinalCostItem(lblHeaderId.Text, itemId)
 
-                    Dim dataLog As Object() = {"OrderDetails", itemId, Session("LoginId"), "Order Item Added"}
+                    Dim dataLog As Object() = {"OrderDetails", itemId, 2, "Order Item Added"}
                     orderClass.Logs(dataLog)
                 Next
 
