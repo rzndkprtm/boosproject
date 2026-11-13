@@ -116,7 +116,7 @@ Partial Class Setting_Specification_Fabric_Detail
                 Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status, RollQty=@RollQty, EtaFactory=@EtaFactory WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisCmd.Parameters.AddWithValue("@Status", newStatus)
-                    thisCmd.Parameters.AddWithValue("@RollQty", rollQty)
+                    thisCmd.Parameters.AddWithValue("@RollQty", If(String.IsNullOrEmpty(rollQty), CType(DBNull.Value, Object), rollQty))
                     thisCmd.Parameters.AddWithValue("@EtaFactory", If(String.IsNullOrEmpty(etaFactory), CType(DBNull.Value, Object), etaFactory))
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
