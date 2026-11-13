@@ -98,7 +98,14 @@ Partial Class Order_Default
     End Sub
 
     Protected Sub btnShipment_Click(sender As Object, e As EventArgs)
+        Session("OrderCompany") = ddlCompany.SelectedValue
+        Session("OrderState") = ddlState.SelectedValue
+        Session("OrderType") = ddlType.SelectedValue
+        Session("OrderStatus") = ddlStatus.SelectedValue
+        Session("OrderSearch") = txtSearch.Text
+        Session("OrderActive") = ddlActive.SelectedValue
 
+        Response.Redirect("~/order/shipment", False)
     End Sub
 
     Protected Sub btnFile_Click(sender As Object, e As EventArgs)
