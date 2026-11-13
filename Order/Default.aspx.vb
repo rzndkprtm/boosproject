@@ -97,6 +97,10 @@ Partial Class Order_Default
         Response.Redirect("~/order/archive", False)
     End Sub
 
+    Protected Sub btnShipment_Click(sender As Object, e As EventArgs)
+
+    End Sub
+
     Protected Sub btnFile_Click(sender As Object, e As EventArgs)
         Session("OrderCompany") = ddlCompany.SelectedValue
         Session("OrderState") = ddlState.SelectedValue
@@ -695,8 +699,10 @@ Partial Class Order_Default
                 If onStop = True Then btnAdd.Visible = True
             End If
 
+            btnAnotherOrder.Visible = LoginAccess("Another Order")
             btnRework.Visible = LoginAccess("Rework")
             btnArchive.Visible = LoginAccess("Archive")
+            btnShipment.Visible = LoginAccess("Shipment Schedule")
             btnFile.Visible = LoginAccess("File")
 
             divActive.Visible = LoginAccess("Active")

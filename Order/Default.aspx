@@ -112,8 +112,12 @@
                     <asp:Button runat="server" ID="btnInsert" CssClass="dropdown-item" Text="Insert Order" OnClick="btnInsert_Click" />
                     <asp:Button runat="server" ID="btnUpload" CssClass="dropdown-item" Text="Upload Order" OnClick="btnUpload_Click" />
                 </ul>
-                <asp:Button runat="server" ID="btnRework" CssClass="btn btn-danger" Text="Rework Order" OnClick="btnRework_Click" />
-                <asp:Button runat="server" ID="btnArchive" CssClass="btn btn-info" Text="Archive Order" OnClick="btnArchive_Click" />
+                <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnAnotherOrder">Another Order</button>
+                <ul class="dropdown-menu">
+                    <asp:Button runat="server" ID="btnRework" CssClass="dropdown-item" Text="Rework Order" OnClick="btnRework_Click" />
+                    <asp:Button runat="server" ID="btnArchive" CssClass="dropdown-item" Text="Archive Order" OnClick="btnArchive_Click" />
+                    <asp:Button runat="server" ID="btnShipment" CssClass="dropdown-item" Text="Shipment Schedule" OnClick="btnShipment_Click" />
+                </ul>
                 <asp:Button runat="server" ID="btnFile" CssClass="btn btn-secondary" Text="File Order" OnClick="btnFile_Click" />
             </div>
         </section>
