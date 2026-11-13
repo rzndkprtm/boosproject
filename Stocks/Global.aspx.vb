@@ -24,7 +24,7 @@ Partial Class Stocks_Global
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "12"),
-                New SqlParameter("@CompanyDetailId", 7),
+                New SqlParameter("@CompanyDetailId", "7"),
                 New SqlParameter("@SearchText", searchText),
                 New SqlParameter("@Type", "ROLLER")
             }
@@ -78,7 +78,7 @@ Partial Class Stocks_Global
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "11"),
-                New SqlParameter("@CompanyDetailId", 7),
+                New SqlParameter("@CompanyDetailId", "7"),
                 New SqlParameter("@SearchText", searchText),
                 New SqlParameter("@Type", "VERTICAL")
             }
@@ -132,7 +132,7 @@ Partial Class Stocks_Global
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "2"),
-                New SqlParameter("@CompanyDetailId", 7),
+                New SqlParameter("@CompanyDetailId", "7"),
                 New SqlParameter("@SearchText", String.Empty),
                 New SqlParameter("@Type", "CELLULAR SHADES")
             }
@@ -182,7 +182,7 @@ Partial Class Stocks_Global
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "4"),
-                New SqlParameter("@CompanyDetailId", 7),
+                New SqlParameter("@CompanyDetailId", "7"),
                 New SqlParameter("@SearchText", String.Empty),
                 New SqlParameter("@Type", "DESIGN SHADES")
             }
@@ -232,7 +232,7 @@ Partial Class Stocks_Global
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "3"),
-                New SqlParameter("@CompanyDetailId", 7),
+                New SqlParameter("@CompanyDetailId", "7"),
                 New SqlParameter("@SearchText", searchText),
                 New SqlParameter("@Type", "CURTAIN")
             }
@@ -358,7 +358,7 @@ Partial Class Stocks_Global
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "1"),
-                New SqlParameter("@CompanyDetailId", "2")
+                New SqlParameter("@CompanyDetailId", "7")
             }
             gvListAluminium.DataSource = stockClass.GetDataTableSP("sp_Stock_Venetian", paramsItem)
             gvListAluminium.DataBind()
