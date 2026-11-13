@@ -4,11 +4,13 @@
     <style>
         .ticket-app, .ticket-app * { box-sizing: border-box; }
         .ticket-app { height: calc(100vh - 150px); min-height: 600px; display: flex; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
-        .ticket-app .sidebar { width: 380px; min-width: 380px; display: flex; flex-direction: column; background: #ffffff; border-right: 1px solid #e5e7eb; min-height: 0; }
+        .ticket-app .sidebar { width: 520px; min-width: 520px; display: flex; flex-direction: column; background: #ffffff; border-right: 1px solid #e5e7eb; min-height: 0; }
         .ticket-app .sidebar-header { padding: 20px; border-bottom: 1px solid #eef2f7; flex-shrink: 0; }
         .ticket-app .sidebar-header h4 { margin: 0 0 15px; font-size: 20px; font-weight: 700; color: #1f2937; }
         .ticket-app .btn-new-ticket { width: 100%; }
         .ticket-app .sidebar-search { padding: 15px; border-bottom: 1px solid #eef2f7; flex-shrink: 0; }
+        .ticket-app .filter-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .ticket-app .filter-row select { flex: 1; min-width: 0; margin-bottom: 0 !important; }
         .ticket-app .ticket-list { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; }
         .ticket-app .ticket-item { padding: 16px 18px; border-bottom: 1px solid #f1f3f5; cursor: pointer; transition: background-color 0.2s ease; }
         .ticket-app .ticket-item:hover { background: #f8fafc; }
@@ -17,6 +19,11 @@
         .ticket-app .ticket-id { font-size: 14px; font-weight: 700; color: #1f2937; overflow-wrap: anywhere; }
         .ticket-app .ticket-time { font-size: 12px; color: #9ca3af; white-space: nowrap; flex-shrink: 0; }
         .ticket-app .ticket-subject { margin-bottom: 10px; font-size: 14px; line-height: 1.5; color: #4b5563; overflow-wrap: anywhere; }
+        .ticket-app .ticket-preview { display: flex; align-items: center; gap: 6px; min-width: 0; margin: 0 0 12px; color: #8490a0; font-size: 12px; line-height: 18px; }
+        .ticket-app .ticket-preview-text { display: -webkit-box; min-width: 0; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow-wrap: anywhere; }
+        .ticket-app .ticket-preview i { flex-shrink: 0; font-size: 14px; }
+        .ticket-app .ticket-preview.file-preview { color: #2563eb; }
+        .ticket-app .ticket-preview.empty-preview { color: #a0a8b5; font-style: italic; }
         .ticket-app .ticket-bottom { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .ticket-app .unread { min-width: 22px; height: 22px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50px; background: #dc3545; color: #ffffff; font-size: 12px; flex-shrink: 0; }
         .ticket-app .chat-panel { flex: 1; min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; background: #ffffff; }
@@ -58,13 +65,13 @@
         .ticket-app .chat-body::-webkit-scrollbar-thumb, .ticket-app .ticket-list::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
         .ticket-app .chat-body::-webkit-scrollbar-thumb:hover, .ticket-app .ticket-list::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
         @media (max-width: 992px) {
-            .ticket-app .sidebar { width: 300px; min-width: 300px; }
+            .ticket-app .sidebar { width: 380px; min-width: 380px; }
             .ticket-app .message-content { max-width: 80%; }
             .ticket-app .chat-body { padding: 20px 16px; }
         }
         @media (max-width: 768px) {
             .ticket-app { height: calc(100vh - 120px); min-height: 450px; }
-            .ticket-app .sidebar { width: 240px; min-width: 240px; }
+            .ticket-app .sidebar { width: 260px; min-width: 260px; }
             .ticket-app .sidebar-header { padding: 14px; }
             .ticket-app .sidebar-search { padding: 10px; }
             .ticket-app .ticket-item { padding: 13px; }
@@ -108,17 +115,19 @@
                 <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary btn-new-ticket" Text="New Ticket" OnClick="btnAdd_Click" />
             </div>
             <div class="sidebar-search">
-                <select id="ddlTicketType" class="form-select mb-2">
-                    <option value="">All Types</option>
-                    <option value="Pricing">Pricing</option>
-                    <option value="Product">Product</option>
-                    <option value="Shipment">Shipment</option>
-                    <option value="General">General</option>
-                </select>
-                <select id="ddlTicketReadStatus" class="form-select mb-2">
-                    <option value="">All Tickets</option>
-                    <option value="Unread">Unread</option>
-                </select>
+                <div class="filter-row">
+                    <select id="ddlTicketType" class="form-select">
+                        <option value="">All Types</option>
+                        <option value="Pricing">Pricing</option>
+                        <option value="Product">Product</option>
+                        <option value="Shipment">Shipment</option>
+                        <option value="General">General</option>
+                    </select>
+                    <select id="ddlTicketReadStatus" class="form-select">
+                        <option value="">All Tickets</option>
+                        <option value="Unread">Unread</option>
+                    </select>
+                </div>
                 <div class="input-group">
                     <span class="input-group-text">
                         <i class="bi bi-search"></i>
@@ -196,110 +205,80 @@
                     loadMessages(selectedTicketId, true);
                 }
             }, 3000);
-
-            // SEARCH
             $("#txtTicketSearch").on("input", function () {
                 searchText = $(this).val().toLowerCase().trim();
                 renderTickets();
             });
-
-            // FILTER TYPE
             $("#ddlTicketType").on("change", function () {
                 selectedType = $(this).val();
                 loadTickets(false);
             });
-
-            // FILTER READ STATUS
             $("#ddlTicketReadStatus").on("change", function () {
                 selectedReadStatus = $(this).val();
                 renderTickets();
             });
-
-            // SEND MESSAGE WITH ENTER
             $("#txtReply").on("keydown", function (e) {
                 if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage();
                 }
             });
-
-            // CLOSE TICKET
             $("#btnCloseTicket").on("click", function () {
                 closeTicket();
             });
-
-            // BROWSER BACK / FORWARD
             window.addEventListener("popstate", function () {
                 const params = new URLSearchParams(window.location.search);
-
                 if (!params.has("id")) {
                     resetTicketSelection(false);
                     return;
                 }
-
                 const id = parseInt(params.get("id"), 10);
-
                 if (!Number.isInteger(id) || id <= 0) {
                     resetTicketSelection(true);
                     return;
                 }
-
                 if (ticketsLoaded) {
                     openTicketFromUrl(id);
                 }
             });
-
-            // ESC KEY
             $(document).on("keydown", function (e) {
                 if (e.key === "Escape") {
                     e.preventDefault();
-
                     if (selectedTicketId > 0 || window.location.search !== "") {
                         resetTicketSelection(true);
                     }
                 }
             });
         });
-
         // UPDATE URL
         function updateTicketUrl(ticketId) {
             const url = new URL(window.location.href);
-
             if (ticketId && ticketId > 0) {
                 url.search = "";
                 url.searchParams.set("id", ticketId);
             } else {
                 url.search = "";
             }
-
             window.history.pushState(
                 { ticketId: ticketId || null },
                 "",
                 url.pathname + url.search
             );
         }
-
-        // RESET URL
         function resetTicketUrl() {
             const url = new URL(window.location.href);
             window.history.replaceState(null, "", url.pathname);
         }
-
-        // OPEN TICKET FROM URL
         function openTicketFromUrl(ticketId) {
             const ticket = tickets.find(function (x) {
                 return Number(x.Id) === Number(ticketId);
             });
-
             if (!ticket) {
                 resetTicketSelection(true);
                 return;
             }
-
             selectTicket(ticketId, false);
         }
-
-        // RESET TICKET SELECTION
         function resetTicketSelection(resetUrl) {
             selectedTicketId = 0;
             messages = [];
@@ -312,24 +291,12 @@
             }
 
             $(".ticket-item").removeClass("active");
-
             $("#lblTicketNo").text("Select a ticket");
             $("#lblType").text("");
-
-            $("#lblStatus")
-                .removeClass()
-                .addClass("badge bg-secondary")
-                .text("-");
-
+            $("#lblStatus").removeClass().addClass("badge bg-secondary").text("-");
             $("#btnCloseTicket").hide();
-
-            $("#txtReply")
-                .val("")
-                .prop("disabled", true)
-                .attr("placeholder", "Select a ticket first...");
-
+            $("#txtReply").val("").prop("disabled", true).attr("placeholder", "Select a ticket first...");
             $("#btnUploadFile").prop("disabled", true);
-
             $(".chat-body").html(`
                 <div class="empty-chat">
                     <i class="bi bi-chat-left-text"></i>
@@ -338,8 +305,6 @@
                 </div>
             `);
         }
-
-        // AJAX CALL
         function ajaxCall(method, data) {
             return $.ajax({
                 type: "POST",
@@ -350,8 +315,6 @@
                 cache: false
             });
         }
-
-        // LOAD TICKETS
         function loadTickets(background) {
             if (isLoadingTickets)
                 return;
@@ -361,7 +324,6 @@
             ajaxCall("GetTickets", {
                 type: selectedType
             }).done(function (response) {
-
                 const result = response.d;
 
                 if (!result.success) {
@@ -378,63 +340,47 @@
                             x.Id,
                             x.Status,
                             x.LastMessageDate,
+                            x.LastMessage,
+                            x.LastMessageType,
                             x.UnreadCount
                         ];
                     })
                 );
-
                 if (signature !== lastTicketSignature) {
                     lastTicketSignature = signature;
                     renderTickets();
                 }
-
                 if (initialTicketId !== null) {
                     const requestedId = initialTicketId;
-
                     initialTicketId = null;
-
                     openTicketFromUrl(requestedId);
                 }
-
                 if (selectedTicketId > 0) {
                     const current = tickets.find(function (x) {
                         return Number(x.Id) === Number(selectedTicketId);
                     });
-
                     if (current) {
                         updateTicketHeader(current);
                     }
                 }
-
             }).fail(function (xhr) {
                 console.error("GetTickets error:", xhr.responseText);
-
             }).always(function () {
                 isLoadingTickets = false;
             });
         }
-
-        // RENDER TICKETS
         function renderTickets() {
             const container = $(".ticket-list");
 
             container.empty();
 
             const filtered = tickets.filter(function (ticket) {
-
-                // FILTER UNREAD
-                if (
-                    selectedReadStatus === "Unread" &&
-                    Number(ticket.UnreadCount || 0) <= 0
-                ) {
+                if (selectedReadStatus === "Unread" && Number(ticket.UnreadCount || 0) <= 0) {
                     return false;
                 }
-
-                // FILTER SEARCH
                 if (!searchText) {
                     return true;
                 }
-
                 const ticketNo = String(ticket.TicketNo || "").toLowerCase();
                 const subject = String(ticket.Subject || "").toLowerCase();
                 const loginId = String(ticket.LoginId || "");
@@ -451,7 +397,6 @@
                     type.includes(searchText)
                 );
             });
-
             if (filtered.length === 0) {
                 container.html(`
                     <div class="text-center text-muted p-4">
@@ -459,18 +404,14 @@
                         <div class="mt-2">No tickets found</div>
                     </div>
                 `);
-
                 return;
             }
-
             filtered.forEach(function (ticket) {
-
                 const active = Number(ticket.Id) === Number(selectedTicketId)
                     ? "active"
                     : "";
 
                 let unread = "";
-
                 if (Number(ticket.UnreadCount || 0) > 0) {
                     unread = `
                         <span class="unread">
@@ -478,43 +419,67 @@
                         </span>
                     `;
                 }
-
+                let previewHtml = "";
+                const lastMessage = String(ticket.LastMessage || "").trim();
+                const lastMessageType = String(ticket.LastMessageType || "").toLowerCase();
+                if (lastMessageType === "file") {
+                    previewHtml = `
+                        <div class="ticket-preview file-preview">
+                            <i class="bi bi-paperclip"></i>
+                            <span class="ticket-preview-text">
+                                Attachment: ${escapeHtml(lastMessage)}
+                            </span>
+                        </div>
+                    `;
+                } else if (lastMessage) {
+                    const maxPreviewLength = 90;
+                    const previewText = lastMessage.length > maxPreviewLength
+                                        ? lastMessage.substring(0, maxPreviewLength) + "..."
+                        : lastMessage;
+                    previewHtml = `
+                        <div class="ticket-preview">
+                            <i class="bi bi-chat-left-text"></i>
+                            <span class="ticket-preview-text">
+                                ${escapeHtml(previewText)}
+                            </span>
+                        </div>
+                    `;
+                } else {
+                    previewHtml = `
+                        <div class="ticket-preview empty-preview">
+                            <span class="ticket-preview-text">No messages yet</span>
+                        </div>
+                    `;
+                }
                 const html = `
                     <div class="ticket-item ${active}" data-ticket-id="${ticket.Id}">
                         <div class="ticket-top">
                             <span class="ticket-id">
                                 ${escapeHtml(ticket.TicketNo)}
                             </span>
-
                             <span class="ticket-time">
                                 ${formatRelativeTime(ticket.LastMessageDate || ticket.CreatedDate)}
                             </span>
                         </div>
-
                         <div class="ticket-subject">
                             ${escapeHtml(ticket.Subject)}
                         </div>
-
+                        ${previewHtml}
                         <div class="ticket-bottom">
                             <span class="badge ${getStatusClass(ticket.Status)}">
                                 ${escapeHtml(ticket.Status)}
                             </span>
-
                             ${unread}
                         </div>
                     </div>
                 `;
-
                 container.append(html);
             });
-
             container.find(".ticket-item").off("click").on("click", function () {
                 const ticketId = parseInt($(this).attr("data-ticket-id"), 10);
                 selectTicket(ticketId);
             });
         }
-
-        // SELECT TICKET
         function selectTicket(ticketId, updateUrl) {
             if (!ticketId)
                 return;
@@ -522,16 +487,13 @@
             if (updateUrl === undefined) {
                 updateUrl = true;
             }
-
             const ticket = tickets.find(function (x) {
                 return Number(x.Id) === Number(ticketId);
             });
-
             if (!ticket) {
                 resetTicketSelection(true);
                 return;
             }
-
             selectedTicketId = Number(ticketId);
 
             lastMessageId = 0;
@@ -542,24 +504,17 @@
             }
 
             $(".ticket-item").removeClass("active");
-
             $('.ticket-item[data-ticket-id="' + selectedTicketId + '"]').addClass("active");
-
             updateTicketHeader(ticket);
-
             $(".chat-body").html(`
                 <div class="empty-chat">
                     <div class="spinner-border text-primary" role="status"></div>
                     <div class="mt-3">Loading conversation...</div>
                 </div>
             `);
-
             $("#txtReply").val("");
-
             loadMessages(selectedTicketId, false);
         }
-
-        // LOAD MESSAGES
         function loadMessages(ticketId, background) {
             if (!ticketId)
                 return;
@@ -569,25 +524,18 @@
             ajaxCall("GetMessages", {
                 ticketId: ticketId
             }).done(function (response) {
-
                 if (requestToken !== messageRequestToken)
                     return;
-
                 if (Number(ticketId) !== Number(selectedTicketId))
                     return;
-
                 const result = response.d;
-
                 if (!result.success) {
                     console.error(result.message);
-
                     if (!background) {
                         resetTicketSelection(true);
                     }
-
                     return;
                 }
-
                 const newMessages = result.data;
 
                 let latestId = 0;
@@ -595,32 +543,25 @@
                 if (newMessages.length > 0) {
                     latestId = newMessages[newMessages.length - 1].Id;
                 }
-
                 if (!background) {
                     messages = newMessages;
                     renderMessages(messages, true);
                     lastMessageId = latestId;
                     return;
                 }
-
                 if (latestId > lastMessageId) {
                     messages = newMessages;
                     renderMessages(messages, true);
                     lastMessageId = latestId;
                 }
-
             }).fail(function (xhr) {
                 if (requestToken !== messageRequestToken)
                     return;
-
                 console.error("GetMessages error:", xhr.responseText);
             });
         }
-
-        // RENDER MESSAGES
         function renderMessages(data, scrollBottom) {
             const body = $(".chat-body");
-
             if (!data || data.length === 0) {
                 body.html(`
                     <div class="empty-chat">
@@ -637,7 +578,6 @@
             let lastDate = "";
 
             data.forEach(function (message) {
-
                 const date = parseDate(message.CreatedDate);
                 const dateKey = date.toLocaleDateString();
 
@@ -647,7 +587,6 @@
                             ${escapeHtml(dateKey)}
                         </div>
                     `);
-
                     lastDate = dateKey;
                 }
 
@@ -656,7 +595,6 @@
                 let contentHtml = "";
 
                 if (message.MessageType === "File") {
-
                     const fileName = escapeHtml(message.FileName);
                     const filePath = escapeHtml(message.FilePath);
                     const fileSize = formatFileSize(message.FileSize);
@@ -679,7 +617,6 @@
                     ) {
                         icon = "bi-file-earmark-excel";
                     }
-
                     contentHtml = `
                         <a class="ticket-file-link"
                            href="${filePath}"
@@ -701,7 +638,6 @@
                         <div class="bubble">${escapeHtml(message.Message)}</div>
                     `;
                 }
-
                 const html = `
                     <div class="message ${side}">
                         <div class="message-content">
@@ -717,16 +653,12 @@
                         </div>
                     </div>
                 `;
-
                 body.append(html);
             });
-
             if (scrollBottom) {
                 body.scrollTop(body[0].scrollHeight);
             }
         }
-
-        // SEND MESSAGE
         function sendMessage() {
             if (!selectedTicketId)
                 return;
@@ -741,7 +673,6 @@
                 ticketId: selectedTicketId,
                 message: message
             }).done(function (response) {
-
                 const result = response.d;
 
                 if (!result.success) {
@@ -757,13 +688,10 @@
             }).fail(function (xhr) {
                 console.error(xhr.responseText);
                 alert("Unable to send message.");
-
             }).always(function () {
                 textbox.focus();
             });
         }
-
-        // CLOSE TICKET
         function closeTicket() {
             if (!selectedTicketId)
                 return;
@@ -774,7 +702,6 @@
             ajaxCall("CloseTicket", {
                 ticketId: selectedTicketId
             }).done(function (response) {
-
                 const result = response.d;
 
                 if (!result.success) {
@@ -784,13 +711,10 @@
 
                 loadTickets(false);
                 loadMessages(selectedTicketId, false);
-
             }).fail(function (xhr) {
                 console.error(xhr.responseText);
             });
         }
-
-        // UPDATE TICKET HEADER
         function updateTicketHeader(ticket) {
             $("#lblTicketNo").text(ticket.TicketNo);
             $("#lblType").text("Type : " + ticket.Type);
@@ -804,53 +728,33 @@
 
             if (isClosed) {
                 $("#btnCloseTicket").hide();
-
-                $("#txtReply")
-                    .prop("disabled", true)
-                    .attr("placeholder", "This ticket is closed.");
-
+                $("#txtReply").prop("disabled", true).attr("placeholder", "This ticket is closed.");
                 $("#btnUploadFile").prop("disabled", true);
-
             } else {
                 $("#btnCloseTicket").show();
-
-                $("#txtReply")
-                    .prop("disabled", false)
-                    .attr("placeholder", "Type your reply here...");
-
+                $("#txtReply").prop("disabled", false).attr("placeholder", "Type your reply here...");
                 $("#btnUploadFile").prop("disabled", false);
             }
         }
-
-        // STATUS CLASS
         function getStatusClass(status) {
             switch (status) {
                 case "Open":
                     return "bg-warning text-dark";
-
                 case "Pending":
                     return "bg-info text-dark";
-
                 case "Resolved":
                     return "bg-success";
-
                 case "Closed":
                     return "bg-secondary";
-
                 default:
                     return "bg-secondary";
             }
         }
-
-        // PARSE DATE
         function parseDate(value) {
             if (!value)
                 return new Date();
-
             return new Date(value.replace(" ", "T"));
         }
-
-        // FORMAT DATE TIME
         function formatDateTime(value) {
             const date = parseDate(value);
 
@@ -865,8 +769,6 @@
                 }
             );
         }
-
-        // FORMAT RELATIVE TIME
         function formatRelativeTime(value) {
             if (!value)
                 return "";
@@ -878,89 +780,61 @@
 
             if (minutes < 1)
                 return "now";
-
             if (minutes < 60)
                 return minutes + "m";
-
             const hours = Math.floor(minutes / 60);
-
             if (hours < 24)
                 return hours + "h";
-
             const days = Math.floor(hours / 24);
-
             if (days < 7)
                 return days + "d";
-
             return date.toLocaleDateString();
         }
-
-        // FORMAT FILE SIZE
         function formatFileSize(bytes) {
             bytes = Number(bytes) || 0;
-
             if (bytes < 1024) {
                 return bytes + " B";
             }
-
             if (bytes < 1048576) {
                 return (bytes / 1024).toFixed(1) + " KB";
             }
-
             if (bytes < 1073741824) {
                 return (bytes / 1048576).toFixed(1) + " MB";
             }
-
             return (bytes / 1073741824).toFixed(1) + " GB";
         }
-
-        // ESCAPE HTML
         function escapeHtml(value) {
             if (value === null || value === undefined)
                 return "";
 
             return $("<div>").text(value).html();
         }
-
-        // UPLOAD TICKET FILES
         function uploadTicketFiles(files, ticketId) {
-
             const selectedTicket = tickets.find(function (x) {
                 return Number(x.Id) === Number(ticketId);
             });
 
-            if (
-                selectedTicket &&
-                String(selectedTicket.Status || "").toLowerCase() === "closed"
-            ) {
+            if (selectedTicket && String(selectedTicket.Status || "").toLowerCase() === "closed") {
                 $("#fileTicketUpload").val("");
                 alert("This ticket is closed. You can no longer upload files.");
                 return;
             }
-
             if (!files || files.length === 0) {
                 alert("Please select a file to upload.");
                 return;
             }
-
             if (!ticketId || Number(ticketId) <= 0) {
                 alert("Please select a valid ticket.");
                 return;
             }
-
             const uploadButton = $("#btnUploadFile");
 
             uploadButton.prop("disabled", true);
-            uploadButton.html(
-                '<span class="spinner-border spinner-border-sm" role="status"></span>'
-            );
-
+            uploadButton.html('<span class="spinner-border spinner-border-sm" role="status"></span>');
             let index = 0;
 
             function uploadNext() {
-
                 if (index >= files.length) {
-
                     uploadButton.prop("disabled", false);
                     uploadButton.html('<i class="bi bi-paperclip"></i>');
 
@@ -980,118 +854,89 @@
 
                 $.ajax({
                     url: '<%= ResolveUrl("~/Handler/UploadTicketFile.ashx") %>',
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                cache: false,
-
-                success: function (response) {
-
-                    if (typeof response === "string") {
-                        try {
-                            response = JSON.parse(response);
-                        } catch (e) {
-                            alert("The server returned an invalid response.");
-                            resetUploadButton();
-                            return;
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    success: function (response) {
+                        if (typeof response === "string") {
+                            try {
+                                response = JSON.parse(response);
+                            } catch (e) {
+                                alert("The server returned an invalid response.");
+                                resetUploadButton();
+                                return;
+                            }
                         }
-                    }
+                        if (response && response.success) {
+                            index++;
+                            uploadNext();
+                        } else {
+                            alert(
+                                response && response.message
+                                    ? response.message
+                                    : "Failed to upload file."
+                            );
+                            resetUploadButton();
+                        }
+                    },
 
-                    if (response && response.success) {
-                        index++;
-                        uploadNext();
+                    error: function (xhr) {
+                        console.error("Upload error:", xhr.responseText);
+                        let message = "Failed to upload files.";
 
-                    } else {
-                        alert(
-                            response && response.message
-                                ? response.message
-                                : "Failed to upload file."
-                        );
+                        if (xhr.status === 413) {
+                            message = "The file is too large for the server.";
 
+                        } else if (xhr.status === 401 || xhr.status === 403) {
+                            message = "You are not authorized to upload this file.";
+                        }
+                        alert(message);
                         resetUploadButton();
                     }
-                },
-
-                error: function (xhr) {
-
-                    console.error("Upload error:", xhr.responseText);
-
-                    let message = "Failed to upload files.";
-
-                    if (xhr.status === 413) {
-                        message = "The file is too large for the server.";
-
-                    } else if (xhr.status === 401 || xhr.status === 403) {
-                        message = "You are not authorized to upload this file.";
-                    }
-
-                    alert(message);
-                    resetUploadButton();
-                }
-            });
+                });
             }
-
             function resetUploadButton() {
                 uploadButton.prop("disabled", false);
                 uploadButton.html('<i class="bi bi-paperclip"></i>');
                 $("#fileTicketUpload").val("");
             }
-
             uploadNext();
         }
-
-        // CLICK UPLOAD BUTTON
         $("#btnUploadFile").on("click", function (e) {
             e.preventDefault();
-
             if (!selectedTicketId || selectedTicketId <= 0) {
                 alert("Please select a ticket first.");
                 return;
             }
-
             $("#fileTicketUpload").trigger("click");
         });
-
-        // FILE INPUT CHANGE
         $("#fileTicketUpload").on("change", function () {
-
             const fileInput = this;
-
             if (!fileInput.files || fileInput.files.length === 0) {
                 return;
             }
-
             if (!selectedTicketId || selectedTicketId <= 0) {
                 alert("Please select a ticket first.");
                 fileInput.value = "";
                 return;
             }
-
             const files = Array.from(fileInput.files);
             const maxFileSize = 5 * 1024 * 1024;
-
             const oversizedFiles = files.filter(function (file) {
                 return file.size > maxFileSize;
             });
-
             if (oversizedFiles.length > 0) {
-
                 const fileNames = oversizedFiles.map(function (file) {
                     return file.name + " (" + formatFileSize(file.size) + ")";
                 }).join("\n");
 
-                alert(
-                    "Upload failed! Maximum file size is 5 MB per file.\n\n" +
-                    fileNames
-                );
-
+                alert("Upload failed! Maximum file size is 5 MB per file.\n\n" + fileNames);
                 fileInput.value = "";
                 return;
             }
-
             const ticketId = selectedTicketId;
-
             uploadTicketFiles(files, ticketId);
         });
     </script>

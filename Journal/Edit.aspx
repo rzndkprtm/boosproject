@@ -133,7 +133,6 @@
                 if (el.choices) {
                     el.choices.destroy();
                 }
-
                 el.choices = new Choices(el, {
                     searchEnabled: true,
                     itemSelectText: '',

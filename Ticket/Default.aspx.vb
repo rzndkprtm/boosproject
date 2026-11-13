@@ -97,7 +97,7 @@ Partial Class Ticket_Default
             End If
 
             Using thisConn As New SqlConnection(myConn)
-                Dim thisSql As String = "SELECT T.Id, T.TicketNo, T.LoginId, L.FullName, C.Name AS CustomerName, T.Type, T.Subject, T.Status, T.Priority, T.CreatedDate, M.LastMessageDate, M.LastMessage, ISNULL(U.UnreadCount, 0) AS UnreadCount FROM Tickets T LEFT JOIN Logins L ON T.LoginId=L.Id LEFT JOIN Customers C ON L.CustomerId=C.Id OUTER APPLY (SELECT TOP 1 X.CreatedDate AS LastMessageDate, X.LastMessage FROM (SELECT CM.CreatedDate, CM.Message AS LastMessage, CM.Id, 1 AS SortType FROM TicketMessages CM WHERE CM.TicketId=T.Id UNION ALL SELECT F.CreatedDate, F.FileName AS LastMessage, F.Id, 2 AS SortType FROM TicketFiles F WHERE F.TicketId=T.Id) X ORDER BY X.CreatedDate DESC, X.SortType DESC, X.Id DESC) M OUTER APPLY (SELECT COUNT(*) AS UnreadCount FROM TicketMessages CM2 WHERE CM2.TicketId=T.Id AND CM2.SenderType=@SenderType AND NOT EXISTS (SELECT 1 FROM STRING_SPLIT(ISNULL(CM2.ReadBy, ''), ',') S WHERE LTRIM(RTRIM(S.value))=CAST(@LoginId AS NVARCHAR(20)))) U WHERE (@Type='' OR T.Type=@Type)"
+                Dim thisSql As String = "SELECT T.Id, T.TicketNo, T.LoginId, L.FullName, C.Name AS CustomerName, T.Type, T.Subject, T.Status, T.Priority, T.CreatedDate, M.LastMessageDate, M.LastMessage, M.LastMessageType, ISNULL(U.UnreadCount, 0) AS UnreadCount FROM Tickets T LEFT JOIN Logins L ON T.LoginId = L.Id LEFT JOIN Customers C ON L.CustomerId = C.Id OUTER APPLY (SELECT TOP 1 CM.CreatedDate AS LastMessageDate, CASE WHEN F.FileName IS NOT NULL THEN F.FileName ELSE CM.Message END AS LastMessage, CASE WHEN F.FileName IS NOT NULL THEN 'File' ELSE 'Text' END AS LastMessageType FROM TicketMessages CM OUTER APPLY (SELECT TOP 1 TF.FileName FROM TicketFiles TF WHERE TF.MessageId = CM.Id ORDER BY TF.Id DESC) F WHERE CM.TicketId = T.Id ORDER BY CM.CreatedDate DESC, CM.Id DESC) M OUTER APPLY (SELECT COUNT(*) AS UnreadCount FROM TicketMessages CM2 WHERE CM2.TicketId = T.Id AND CM2.SenderType = @SenderType AND NOT EXISTS (SELECT 1 FROM STRING_SPLIT(ISNULL(CM2.ReadBy, ''), ',') S WHERE LTRIM(RTRIM(S.value)) = CAST(@LoginId AS NVARCHAR(20)))) U WHERE (@Type = '' OR T.Type = @Type) "
 
                 If Not isInternal Then
                     thisSql &= " AND T.LoginId=@LoginId"
@@ -133,6 +133,7 @@ Partial Class Ticket_Default
                                 .CreatedDate = Convert.ToDateTime(dr("CreatedDate")).ToString("yyyy-MM-dd HH:mm:ss"),
                                 .LastMessageDate = If(IsDBNull(dr("LastMessageDate")), Nothing, Convert.ToDateTime(dr("LastMessageDate")).ToString("yyyy-MM-dd HH:mm:ss")),
                                 .LastMessage = If(IsDBNull(dr("LastMessage")), "", dr("LastMessage").ToString()),
+                                .LastMessageType = If(IsDBNull(dr("LastMessageType")), "", dr("LastMessageType").ToString()),
                                 .UnreadCount = Convert.ToInt32(dr("UnreadCount"))
                             })
                         End While
@@ -257,16 +258,11 @@ Partial Class Ticket_Default
 
             Using thisConn As New SqlConnection(myConn)
                 thisConn.Open()
-
-                ' VALIDASI TICKET DAN STATUS
                 Dim checkSql As String = "SELECT Status FROM Tickets WHERE Id=@TicketId"
-
                 If Not isInternal Then
-                    checkSql &= " AND LoginId = @LoginId"
+                    checkSql &= " AND LoginId=@LoginId"
                 End If
-
                 Dim ticketStatus As String = ""
-
                 Using thisCmd As New SqlCommand(checkSql, thisConn)
                     thisCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
 
@@ -302,7 +298,7 @@ Partial Class Ticket_Default
                 End Using
 
                 If isInternal Then
-                    Dim updateSql As String = "UPDATE Tickets SET Status=CASE WHEN Status = 'Closed' THEN 'Open' ELSE Status END WHERE Id=@TicketId"
+                    Dim updateSql As String = "UPDATE Tickets SET Status=CASE WHEN Status='Closed' THEN 'Open' ELSE Status END WHERE Id=@TicketId"
 
                     Using thisCmd As New SqlCommand(updateSql, thisConn)
                         thisCmd.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId
@@ -312,7 +308,6 @@ Partial Class Ticket_Default
             End Using
 
             Return New With {.success = True}
-
         Catch ex As Exception
             Return New With {.success = False, .message = ex.Message}
         End Try
@@ -354,7 +349,6 @@ Partial Class Ticket_Default
                     End If
                 End Using
             End Using
-
             Return New With {.success = True}
         Catch ex As Exception
             Return New With {.success = False, .message = ex.Message}
