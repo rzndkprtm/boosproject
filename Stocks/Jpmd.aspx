@@ -465,26 +465,26 @@
                                                             </div>
                                                         </div>
                                                         <div class="row mt-3">
-                                                                <div class="col-12">
-                                                                    <div class="table-responsive grid-container">
-                                                                        <asp:GridView runat="server" ID="gvListFabricChart" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowFooter="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListFabricChart_RowDataBound">
-                                                                            <RowStyle />
-                                                                            <Columns>
-                                                                                <asp:BoundField DataField="FabricName" HeaderText="Fabric Type" />
-                                                                                <asp:BoundField DataField="Roller" HeaderText="Roller" />
-                                                                                <asp:BoundField DataField="RomanClassic" HeaderText="Roman (Classic)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                                <asp:BoundField DataField="RomanPlantation" HeaderText="Roman (Plantation)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                                <asp:BoundField DataField="RomanSewless" HeaderText="Roman (Sewless)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                                <asp:BoundField DataField="PGPlain" HeaderText="PG (Plain)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                                <asp:BoundField DataField="PGPlantation" HeaderText="PG (Plantation)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                                <asp:BoundField DataField="PGSewless" HeaderText="PG (Sewless)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                                <asp:BoundField DataField="Vertical89mm" HeaderText="Vertical (89mm)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                                <asp:BoundField DataField="Vertical127mm" HeaderText="Vertical (127mm)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                            </Columns>
-                                                                        </asp:GridView>
-                                                                    </div>
+                                                            <div class="col-12">
+                                                                <div class="table-responsive grid-container">
+                                                                    <asp:GridView runat="server" ID="gvListFabricChart" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowFooter="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListFabricChart_RowDataBound">
+                                                                        <RowStyle />
+                                                                        <Columns>
+                                                                            <asp:BoundField DataField="FabricName" HeaderText="Fabric Type" />
+                                                                            <asp:BoundField DataField="Roller" HeaderText="Roller" />
+                                                                            <asp:BoundField DataField="RomanClassic" HeaderText="Roman (Classic)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                            <asp:BoundField DataField="RomanPlantation" HeaderText="Roman (Plantation)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                            <asp:BoundField DataField="RomanSewless" HeaderText="Roman (Sewless)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                            <asp:BoundField DataField="PGPlain" HeaderText="PG (Plain)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                            <asp:BoundField DataField="PGPlantation" HeaderText="PG (Plantation)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                            <asp:BoundField DataField="PGSewless" HeaderText="PG (Sewless)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                            <asp:BoundField DataField="Vertical89mm" HeaderText="Vertical (89mm)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                            <asp:BoundField DataField="Vertical127mm" HeaderText="Vertical (127mm)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                        </Columns>
+                                                                    </asp:GridView>
                                                                 </div>
                                                             </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

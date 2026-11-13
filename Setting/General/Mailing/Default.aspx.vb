@@ -61,7 +61,7 @@ Partial Class Setting_General_Mailing_Default
             Dim newId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Mailings ORDER BY Id DESC")
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Mailings SELECT @NewId, CompanyId, Name + ' - Copy', Server, Host, Port, NetworkCredentials, DefaultCredentials, EnableSSL, Account, Password, Alias, Subject, [To], Cc, Bcc, Description, Active FROM Mailings WHERE Id=@Id", thisConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Mailings SELECT @NewId, CompanyId, Name + ' - Copy', Server, Host, Port, NetworkCredentials, DefaultCredentials, EnableSSL, Account, Password, Alias, Subject, [To], Cc, Bcc, Description, 'Inactive' FROM Mailings WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@NewId", newId)
                     thisCmd.Parameters.AddWithValue("@Id", thisId)
                     thisConn.Open()

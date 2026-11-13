@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stocks</title>
-
     <link rel="stylesheet" href="/Assets/vendors/choices.js/choices.min.css" />
     <link rel="stylesheet" href="/Assets/css/bootstrap.css" />
     <link rel="stylesheet" href="/Assets/css/widgets/chat.css" />
@@ -14,7 +13,6 @@
     <link rel="stylesheet" href="/Assets/vendors/perfect-scrollbar/perfect-scrollbar.css" />
     <link rel="stylesheet" href="/Assets/vendors/bootstrap-icons/bootstrap-icons.css" />
     <link rel="stylesheet" href="/Assets/css/app.css" />
-
     <style>
         .header-top > .container { max-width: 100%; padding-inline: clamp(.75rem, 3vw, 3rem); }
         .grid-container { width: 100%; height: calc(100vh - 150px); overflow: auto; border: 1px solid #ddd; }
@@ -26,9 +24,7 @@
         .grid-container tr:last-child td { position: sticky; bottom: 0; background: #f5f5f5; z-index: 3; }
         .grid-container tr:last-child td:first-child { left: 0; z-index: 6; background: #f5f5f5; }
     </style>
-    
     <link rel="icon" type="image/x-icon" href="/Assets/images/logo/boos.ico" />
-
     <script src="/Scripts/jquery-3.7.1.min.js"></script>
 </head>
 <body>
@@ -469,26 +465,26 @@
                                                             </div>
                                                         </div>
                                                         <div class="row mt-3">
-                                                                <div class="col-12">
-                                                                    <div class="table-responsive grid-container">
-                                                                        <asp:GridView runat="server" ID="gvListFabricChart" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowFooter="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListFabricChart_RowDataBound">
-                                                                            <RowStyle />
-                                                                            <Columns>
-                                                                                <asp:BoundField DataField="FabricName" HeaderText="Fabric Type" />
-                                                                                <asp:BoundField DataField="Roller" HeaderText="Roller" />
-                                                                                <asp:BoundField DataField="RomanClassic" HeaderText="Roman (Classic)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                                <asp:BoundField DataField="RomanPlantation" HeaderText="Roman (Plantation)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                                <asp:BoundField DataField="RomanSewless" HeaderText="Roman (Sewless)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                                <asp:BoundField DataField="PGPlain" HeaderText="PG (Plain)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                                <asp:BoundField DataField="PGPlantation" HeaderText="PG (Plantation)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                                <asp:BoundField DataField="PGSewless" HeaderText="PG (Sewless)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                                <asp:BoundField DataField="Vertical89mm" HeaderText="Vertical (89mm)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                                <asp:BoundField DataField="Vertical127mm" HeaderText="Vertical (127mm)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
-                                                                            </Columns>
-                                                                        </asp:GridView>
-                                                                    </div>
+                                                            <div class="col-12">
+                                                                <div class="table-responsive grid-container">
+                                                                    <asp:GridView runat="server" ID="gvListFabricChart" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowFooter="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListFabricChart_RowDataBound">
+                                                                        <RowStyle />
+                                                                        <Columns>
+                                                                            <asp:BoundField DataField="FabricName" HeaderText="Fabric Type" />
+                                                                            <asp:BoundField DataField="Roller" HeaderText="Roller" />
+                                                                            <asp:BoundField DataField="RomanClassic" HeaderText="Roman (Classic)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                            <asp:BoundField DataField="RomanPlantation" HeaderText="Roman (Plantation)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                            <asp:BoundField DataField="RomanSewless" HeaderText="Roman (Sewless)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                            <asp:BoundField DataField="PGPlain" HeaderText="PG (Plain)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                            <asp:BoundField DataField="PGPlantation" HeaderText="PG (Plantation)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                            <asp:BoundField DataField="PGSewless" HeaderText="PG (Sewless)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                            <asp:BoundField DataField="Vertical89mm" HeaderText="Vertical (89mm)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                            <asp:BoundField DataField="Vertical127mm" HeaderText="Vertical (127mm)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                                        </Columns>
+                                                                    </asp:GridView>
                                                                 </div>
                                                             </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -513,7 +509,6 @@
                 </footer>
             </div>
         </div>
-
         <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
             <div class="position-absolute top-50 start-50 translate-middle">
                 <div class="card shadow">
@@ -524,16 +519,13 @@
                 </div>
             </div>
         </div>
-
         <asp:HiddenField ID="selected_tab" runat="server" />
-
         <script src="/Assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
         <script src="/Assets/js/bootstrap.bundle.min.js"></script>
         <script src="/Assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
         <script src="/Assets/vendors/choices.js/choices.min.js"></script>
         <script src="/Assets/js/pages/form-element-select.js"></script>
         <script src="/Assets/js/pages/horizontal-layout.js"></script>
-
         <script type="text/javascript">
             function showLoading() {
                 $("#loadingOverlay").show();

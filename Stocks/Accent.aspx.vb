@@ -56,7 +56,7 @@ Partial Class Stocks_Accent
 
             Dim rptRollerColour As Repeater = CType(e.Item.FindControl("rptRollerColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Colour")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompany.VALUE='5' ORDER BY Colour")
 
             rptRollerColour.DataSource = dt
             rptRollerColour.DataBind()
@@ -110,7 +110,7 @@ Partial Class Stocks_Accent
 
             Dim rptVerticalColour As Repeater = CType(e.Item.FindControl("rptVerticalColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompany.VALUE='5' ORDER BY Name")
 
             rptVerticalColour.DataSource = dt
             rptVerticalColour.DataBind()
@@ -164,7 +164,7 @@ Partial Class Stocks_Accent
 
             Dim rptCellularColour As Repeater = CType(e.Item.FindControl("rptCellularColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompany.VALUE='5' ORDER BY Name")
 
             rptCellularColour.DataSource = dt
             rptCellularColour.DataBind()
@@ -214,7 +214,7 @@ Partial Class Stocks_Accent
 
             Dim rptDesignShadesColour As Repeater = CType(e.Item.FindControl("rptDesignShadesColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompany.VALUE='5' ORDER BY Name")
 
             rptDesignShadesColour.DataSource = dt
             rptDesignShadesColour.DataBind()
@@ -272,7 +272,7 @@ Partial Class Stocks_Accent
 
             Dim rptCurtainColour As Repeater = CType(e.Item.FindControl("rptCurtainColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND SubCompany.VALUE='5' ORDER BY Name")
 
             rptCurtainColour.DataSource = dt
             rptCurtainColour.DataBind()
@@ -476,7 +476,6 @@ Partial Class Stocks_Accent
         If status Is Nothing OrElse status Is DBNull.Value Then
             Return "badge bg-secondary"
         End If
-
         Select Case status.ToString().Trim()
             Case "In Stock"
                 Return "badge bg-success"

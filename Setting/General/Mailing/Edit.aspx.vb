@@ -99,7 +99,7 @@ Partial Class Setting_General_Mailing_Edit
             txtCC.Text = myData("Cc").ToString()
             txtBcc.Text = myData("Bcc").ToString()
             txtDescription.Text = myData("Description").ToString()
-            ddlStatus.SelectedValue = myData("Active").ToString()
+            ddlStatus.SelectedValue = myData("Status").ToString()
         Catch ex As Exception
             MessageError(True, ex.ToString())
         End Try

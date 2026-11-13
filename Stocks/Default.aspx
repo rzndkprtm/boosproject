@@ -565,13 +565,10 @@
         }
         function activateCurrentTab() {
             var tabId = $("#<%= selected_tab.ClientID %>").val();
-
             if (!tabId) {
                 tabId = "list-roller";
             }
-
             var $tab = $('#dvTab a[href="#' + tabId + '"]');
-
             if ($tab.length) {
                 $tab.tab('show');
             }

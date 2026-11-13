@@ -24,7 +24,7 @@ Partial Class Stocks_CWS
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "12"),
-                New SqlParameter("@CompanyDetailId", 2),
+                New SqlParameter("@CompanyDetailId", 4),
                 New SqlParameter("@SearchText", searchText),
                 New SqlParameter("@Type", "ROLLER")
             }
@@ -56,7 +56,7 @@ Partial Class Stocks_CWS
 
             Dim rptRollerColour As Repeater = CType(e.Item.FindControl("rptRollerColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Colour")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompany.VALUE='5' ORDER BY Colour")
 
             rptRollerColour.DataSource = dt
             rptRollerColour.DataBind()
@@ -78,7 +78,7 @@ Partial Class Stocks_CWS
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "11"),
-                New SqlParameter("@CompanyDetailId", 2),
+                New SqlParameter("@CompanyDetailId", 4),
                 New SqlParameter("@SearchText", searchText),
                 New SqlParameter("@Type", "VERTICAL")
             }
@@ -110,7 +110,7 @@ Partial Class Stocks_CWS
 
             Dim rptVerticalColour As Repeater = CType(e.Item.FindControl("rptVerticalColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompany.VALUE='5' ORDER BY Name")
 
             rptVerticalColour.DataSource = dt
             rptVerticalColour.DataBind()
@@ -132,7 +132,7 @@ Partial Class Stocks_CWS
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "2"),
-                New SqlParameter("@CompanyDetailId", 2),
+                New SqlParameter("@CompanyDetailId", 4),
                 New SqlParameter("@SearchText", String.Empty),
                 New SqlParameter("@Type", "CELLULAR SHADES")
             }
@@ -164,7 +164,7 @@ Partial Class Stocks_CWS
 
             Dim rptCellularColour As Repeater = CType(e.Item.FindControl("rptCellularColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompany.VALUE='5' ORDER BY Name")
 
             rptCellularColour.DataSource = dt
             rptCellularColour.DataBind()
@@ -182,7 +182,7 @@ Partial Class Stocks_CWS
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "4"),
-                New SqlParameter("@CompanyDetailId", 2),
+                New SqlParameter("@CompanyDetailId", 4),
                 New SqlParameter("@SearchText", String.Empty),
                 New SqlParameter("@Type", "DESIGN SHADES")
             }
@@ -214,7 +214,7 @@ Partial Class Stocks_CWS
 
             Dim rptDesignShadesColour As Repeater = CType(e.Item.FindControl("rptDesignShadesColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompany.VALUE='5' ORDER BY Name")
 
             rptDesignShadesColour.DataSource = dt
             rptDesignShadesColour.DataBind()
@@ -232,7 +232,7 @@ Partial Class Stocks_CWS
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "3"),
-                New SqlParameter("@CompanyDetailId", 2),
+                New SqlParameter("@CompanyDetailId", 4),
                 New SqlParameter("@SearchText", searchText),
                 New SqlParameter("@Type", "CURTAIN")
             }
@@ -272,7 +272,7 @@ Partial Class Stocks_CWS
 
             Dim rptCurtainColour As Repeater = CType(e.Item.FindControl("rptCurtainColour"), Repeater)
 
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " ORDER BY Name")
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND SubCompany.VALUE='5' ORDER BY Name")
 
             rptCurtainColour.DataSource = dt
             rptCurtainColour.DataBind()
@@ -286,7 +286,7 @@ Partial Class Stocks_CWS
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "10"),
-                New SqlParameter("@CompanyDetailId", "2")
+                New SqlParameter("@CompanyDetailId", "4")
             }
             gvListVenetian.DataSource = stockClass.GetDataTableSP("sp_Stock_Venetian", paramsItem)
             gvListVenetian.DataBind()
@@ -358,7 +358,7 @@ Partial Class Stocks_CWS
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@DesignId", "1"),
-                New SqlParameter("@CompanyDetailId", "2")
+                New SqlParameter("@CompanyDetailId", "4")
             }
             gvListAluminium.DataSource = stockClass.GetDataTableSP("sp_Stock_Venetian", paramsItem)
             gvListAluminium.DataBind()
@@ -459,7 +459,7 @@ Partial Class Stocks_CWS
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", searchText),
-                New SqlParameter("@CompanyDetailId", "2")
+                New SqlParameter("@CompanyDetailId", "4")
             }
             gvListFabricChart.DataSource = stockClass.GetDataTableSP("sp_Stock_Fabric_Chart", paramsItem)
             gvListFabricChart.DataBind()
@@ -476,7 +476,6 @@ Partial Class Stocks_CWS
         If status Is Nothing OrElse status Is DBNull.Value Then
             Return "badge bg-secondary"
         End If
-
         Select Case status.ToString().Trim()
             Case "In Stock"
                 Return "badge bg-success"

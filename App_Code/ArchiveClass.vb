@@ -3,7 +3,6 @@ Imports System.Data.SqlClient
 
 Public Class ArchiveClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("ArchiveConnection").ConnectionString
-    Dim shutterOrder As String = ConfigurationManager.ConnectionStrings("ArchiveConnection").ConnectionString
 
     Public Function GetDataRow(thisString As String) As DataRow
         Try
@@ -99,7 +98,7 @@ Public Class ArchiveClass
 
     Public Function GetListData_Ocean(queryString As String) As DataSet
         Dim thisCmd As New SqlCommand(queryString)
-        Using thisConn As New SqlConnection(shutterOrder)
+        Using thisConn As New SqlConnection(myConn)
             Using thisAdapter As New SqlDataAdapter()
                 thisCmd.Connection = thisConn
                 thisAdapter.SelectCommand = thisCmd
