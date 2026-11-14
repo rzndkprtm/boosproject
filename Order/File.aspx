@@ -128,7 +128,10 @@
         var fileRequestUrl = '<%= ResolveUrl("~/Order/File.aspx") %>';
 
         document.addEventListener("DOMContentLoaded", function () {
-            loadFiles("", 1);
+            var urlParams = new URLSearchParams(window.location.search);
+            var initialFolder = urlParams.get("folder") || "";
+
+            loadFiles(initialFolder, 1);
 
             var searchInput = document.getElementById("txtSearchFile");
 
@@ -185,6 +188,17 @@
 
                 currentPath = result.CurrentPath || "";
                 currentPage = result.CurrentPage || 1;
+
+                var newUrl = new URL(window.location.href);
+
+                if (currentPath) {
+                    newUrl.searchParams.set("folder", currentPath);
+                } else {
+                    newUrl.searchParams.delete("folder");
+                }
+
+                window.history.replaceState({}, "", newUrl);
+
                 pageSize = result.PageSize || pageSize;
                 totalItems = result.TotalItems || 0;
                 totalPages = result.TotalPages || 0;

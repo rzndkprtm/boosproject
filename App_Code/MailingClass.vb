@@ -1110,7 +1110,7 @@ Public Class MailingClass
             mailBody &= "<br />"
             mailBody &= "Navigation:"
             mailBody &= "<br />"
-            mailBody &= "<b>Order → File Order → Enter this <u>Order #</u> in the search field.</b>"
+            mailBody &= "<b><a href='https://ordersblindonline.com/filemanager?folder=" & HttpUtility.UrlEncode(orderId) & "' target='_blank' style='color:#435ebe; text-decoration:underline;'>Click here to access the uploaded order files.</a></b>"
 
             If orderStatus = "Waiting Proforma" Then
                 mailBody &= "<br /><br />"
