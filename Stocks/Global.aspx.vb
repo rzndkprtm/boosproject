@@ -11,6 +11,7 @@ Partial Class Stocks_Global
             BindRoller(txtSearchRoller.Text)
             BindDesignShades()
             BindCurtain(txtSearchCurtain.Text)
+            BindVertical(txtSearchVertical.Text)
             BindSaphora()
             BindVenetian()
             BindCellularShades()
@@ -70,6 +71,60 @@ Partial Class Stocks_Global
 
     Protected Sub MessageError_Roller(visible As Boolean, message As String)
         divErrorRoller.Visible = visible : msgErrorRoller.InnerText = message
+    End Sub
+
+    Protected Sub BindVertical(searchText As String)
+        MessageError_Vertical(False, String.Empty)
+        Try
+            Dim paramsItem As New List(Of SqlParameter) From {
+                New SqlParameter("@DesignId", "11"),
+                New SqlParameter("@CompanyDetailId", "7"),
+                New SqlParameter("@SearchText", searchText),
+                New SqlParameter("@Type", "VERTICAL")
+            }
+            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
+
+            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
+                rptVertical.DataSource = Nothing
+                rptVertical.DataBind()
+                pnlNoDataVertical.Visible = True
+                Return
+            End If
+
+            pnlNoDataVertical.Visible = False
+
+            rptVertical.DataSource = dt
+            rptVertical.DataBind()
+        Catch ex As Exception
+            MessageError_Vertical(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub rptVertical_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
+        Try
+            If e.Item.ItemType <> ListItemType.Item AndAlso e.Item.ItemType <> ListItemType.AlternatingItem Then
+                Return
+            End If
+
+            Dim fabricId As Integer = Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "Id"))
+
+            Dim rptVerticalColour As Repeater = CType(e.Item.FindControl("rptVerticalColour"), Repeater)
+
+            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompany.VALUE='7' ORDER BY Name")
+
+            rptVerticalColour.DataSource = dt
+            rptVerticalColour.DataBind()
+        Catch ex As Exception
+            MessageError_Vertical(True, ex.Message)
+        End Try
+    End Sub
+
+    Protected Sub MessageError_Vertical(visible As Boolean, message As String)
+        divErrorVertical.Visible = visible : msgErrorVertical.InnerText = message
+    End Sub
+
+    Protected Sub btnSearchVertical_Click(sender As Object, e As EventArgs)
+        BindVertical(txtSearchVertical.Text)
     End Sub
 
     Protected Sub BindSaphora()
