@@ -1,0 +1,549 @@
+﻿<%@ Master Language="VB" AutoEventWireup="true" CodeFile="Site.master.vb" Inherits="SiteMaster" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%: String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %></title>
+    <link rel="stylesheet" href="/Assets/vendors/choices.js/choices.min.css" />
+    <link rel="stylesheet" href="/Assets/css/bootstrap.css" />
+    <link rel="stylesheet" href="/Assets/css/widgets/chat.css" />
+    <link rel="stylesheet" href="/Assets/vendors/sweetalert2/sweetalert2.min.css" />
+    <link rel="stylesheet" href="/Assets/vendors/iconly/bold.css" />
+    <link rel="stylesheet" href="/Assets/vendors/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="/Assets/vendors/summernote/summernote-lite.min.css" />
+    <link rel="stylesheet" href="/Assets/vendors/bootstrap-icons/bootstrap-icons.css" />
+    <link rel="stylesheet" href="/Assets/css/app.css" />
+    <link rel="icon" type="image/x-icon" href="/Assets/images/logo/boos.ico" />
+    <script src="/Scripts/jquery-3.7.1.min.js"></script>
+    <style>
+        .header-top > .container { max-width: 100%; padding-inline: clamp(.75rem, 3vw, 3rem); }
+        .global-search { position: relative; width: clamp(300px, 30vw, 420px); margin-left: auto; margin-right: 20px; flex-shrink: 0; }
+        .global-search input { width: 100%; height: 38px; padding-left: 38px; border: 1px solid #dee2e6; border-radius: 8px; font-size: 13px; background: #f8f9fa; }
+        .global-search input:focus { background: #fff; border-color: #435ebe; box-shadow: 0 0 0 2px rgba(67, 94, 190, .1); }
+        .global-search i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #7c8db5; font-size: 16px; pointer-events: none; }
+        .header-top-right { flex-shrink: 0; }
+        .ticket-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 17px; height: 17px; padding: 0 5px; margin-left: 3px; margin-top: -12px; border-radius: 50px; background: #ff4757; color: #fff; font-size: 10px; font-weight: 700; line-height: 1; box-shadow: 0 2px 5px rgba(255,71,87,.25); vertical-align: super; }
+        @media (max-width: 576px) {
+            .header-top > .container { display: grid !important; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "logo profile" "search search"; align-items: center; gap: 12px; padding: 10px 12px; }
+            .logo { grid-area: logo; min-width: 0; }
+            .logo img { max-width: 165px; height: auto; }
+            .global-search { grid-area: search; width: 100%; margin: 0; min-width: 0; }
+            .global-search input { width: 100%; height: 40px; }
+            .header-top-right { grid-area: profile; display: flex; align-items: center; gap: 10px; margin: 0; }
+        }
+        .customer-ticket-fab { position: fixed; right: 25px; bottom: 25px; z-index: 1050; display: inline-flex; align-items: center; gap: 10px; padding: 13px 21px; border-radius: 50px; background: #435ebe; color: #fff; font-size: 14px; font-weight: 600; text-decoration: none; box-shadow: 0 5px 18px rgba(67,94,190,.3); transition: all .25s ease; }
+        .customer-ticket-fab:hover { background: #364da3; color: #fff; transform: translateY(-4px); box-shadow: 0 8px 22px rgba(67,94,190,.4); }
+        .customer-ticket-fab i { font-size: 19px; }
+        @media (max-width: 576px) { .customer-ticket-fab { right: 16px; bottom: 18px; padding: 13px 18px; font-size: 13px; } }
+    </style>
+</head>
+<body>
+    <form runat="server">
+        <asp:ScriptManager runat="server"></asp:ScriptManager>
+        <div id="app">
+            <div id="main" class="layout-horizontal">
+                <header class="mb-5">
+                    <div class="header-top">
+                        <div class="container">
+                            <div class="logo">
+                                <a runat="server" href="~/">
+                                    <asp:Image runat="server" ID="imgLogo" ImageUrl="~/Assets/images/logo/general.jpg" AlternateText="BOOS" />
+                                </a>
+                            </div>
+                            <div class="global-search" runat="server" id="divSearch">
+                                <i class="bi bi-search"></i>
+                                <input type="text" id="txtGlobalSearch" class="form-control" placeholder="Search anything..." autocomplete="off" />
+                            </div>
+                            <div class="header-top-right">
+                                <div class="dropdown">
+                                    <a href="#" class="user-dropdown d-flex dropend" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <div class="avatar avatar-md2">
+                                            <img runat="server" src="~/Assets/images/avatars.png" alt="Avatar">
+                                        </div>
+                                        <div class="text">
+                                            <h6 class="user-dropdown-name">
+                                                <% If Not String.IsNullOrEmpty(Session("FullName")) Then %>
+                                                <%: Session("FullName") %>
+                                                <% Else %>
+                                                <%: Session("UserName") %>
+                                                <% End If %>
+                                            </h6>
+                                            <p class="user-dropdown-status text-sm text-muted"><%: Session("RoleName") %></p>
+                                        </div>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-lg">
+                                        <li><a class="dropdown-item" href='<%= ResolveUrl("~/account?uid=" & Session("LoginId")) %>'>My Account</a></li>
+                                        <li><a class="dropdown-item" runat="server" href="~/account/password">Change Password</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><asp:LinkButton runat="server" ID="linkLogout" CssClass="dropdown-item" Text="Logout" OnClick="linkLogout_Click"></asp:LinkButton></li>
+                                    </ul>
+                                </div>
+                                <a href="javascript:void(0);" class="burger-btn d-block d-xl-none">
+                                    <i class="bi bi-justify fs-3"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <nav class="main-navbar">
+                        <div class="container-fluid px-2 px-md-4 px-xl-5">
+                            <ul>
+                                <li class="menu-item">
+                                    <a runat="server" href="~/" class='menu-link'>
+                                        <i class="bi bi-house-door-fill"></i>
+                                        <span>Home</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item">
+                                    <a runat="server" href="~/order" class='menu-link'>
+                                        <i class="bi bi-basket-fill"></i>
+                                        <span>Order</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item" runat="server" id="liSchedule">
+                                    <a runat="server" href="~/schedule" class='menu-link'>
+                                        <i class="bi bi-box-seam"></i>
+                                        <span>Schedule</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item" runat="server" id="liGuide">
+                                    <a runat="server" href="~/guide" class='menu-link'>
+                                        <i class="bi bi-book-fill"></i>
+                                        <span>Guide</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item" runat="server" id="liTicket">
+                                    <a runat="server" href="~/ticket" class='menu-link'>
+                                        <i class="bi bi-envelope-fill"></i>
+                                        <span>Ticket</span>
+                                        <span id="ticketUnreadBadge" class="ticket-badge" style="display:none;">0</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item" runat="server" id="liStocks">
+                                    <a runat="server" href="~/stocks" class='menu-link'>
+                                        <i class="bi bi-ui-checks"></i>
+                                        <span>Stocks</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item" runat="server" id="liSpecs">
+                                    <a runat="server" href="~/specs" class='menu-link'>
+                                        <i class="bi bi-box-seam"></i>
+                                        <span>Specs</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item" runat="server" id="liJournal">
+                                    <a runat="server" href="~/journal" class='menu-link'>
+                                        <i class="bi bi-journal-album"></i>
+                                        <span>Journal</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item" runat="server" id="liReport">
+                                    <a runat="server" href="~/report" class='menu-link'>
+                                        <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                                        <span>Report</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item" runat="server" id="liSales">
+                                    <a runat="server" href="~/sales" class='menu-link'>
+                                        <i class="bi bi-bar-chart-fill"></i>
+                                        <span>Sales</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item" runat="server" id="liQuotation">
+                                    <a href='<%= ResolveUrl("~/quotation?accountid=" & Session("CustomerId")) %>' class="menu-link">
+                                        <i class="bi bi-gear-fill"></i>
+                                        <span>Quote Setting</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item has-sub" runat="server" id="liSetting">
+                                    <a href="javascript:void(0);" class='menu-link'>
+                                        <i class="bi bi-gear-fill"></i>
+                                        <span>Setting</span>
+                                    </a>
+                                    <div class="submenu">
+                                        <div class="submenu-group-wrapper">
+                                            <ul class="submenu-group">
+                                                <li class="submenu-item" runat="server" id="liDashboard">
+                                                    <a runat="server" href="~/setting" class='submenu-link'>Dashbord</a>
+                                                </li>
+                                                <li class="submenu-item has-sub" runat="server" id="liGeneral">
+                                                    <a href="javascript:void(0);" class='submenu-link'>General</a>
+                                                    <ul class="subsubmenu">
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/general/company" class="subsubmenu-link">Company</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/general/mailing" class="subsubmenu-link">Mailing</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/general/newsletter" class="subsubmenu-link">Newsletter</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/general/tutorial" class="subsubmenu-link">Tutorial</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/general/notification" class="subsubmenu-link">Notification</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/general/ticket" class="subsubmenu-link">Ticket</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/general/xero" class="subsubmenu-link">Xero</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/general/zero" class="subsubmenu-link">AK Zero</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li class="submenu-item has-sub" runat="server" id="liLogin">
+                                                    <a href="javascript:void(0);" class='submenu-link'>Login</a>
+                                                    <ul class="subsubmenu">
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/login/user" class="subsubmenu-link">User</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/login/role" class="subsubmenu-link">Role</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/login/level" class="subsubmenu-link">Level</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/login/access" class="subsubmenu-link">Access</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/login/online" class="subsubmenu-link">Online</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li class="submenu-item has-sub" runat="server" id="liCustomer">
+                                                    <a href="javascript:void(0);" class='submenu-link'>Customer</a>
+                                                    <ul class="subsubmenu">
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/list" class="subsubmenu-link">List</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <hr class="dropdown-divider">
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/contact" class="subsubmenu-link">Contact</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/address" class="subsubmenu-link">Address</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/business" class="subsubmenu-link">Business</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/login" class="subsubmenu-link">Login</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/markup" class="subsubmenu-link">Markup</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/discount" class="subsubmenu-link">Discount</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/service" class="subsubmenu-link">Service</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/custompricing" class="subsubmenu-link">Custom Pricing</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/promo" class="subsubmenu-link">Promo</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/product" class="subsubmenu-link">Product Access</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/customer/quote" class="subsubmenu-link">Quote</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li class="submenu-item has-sub" runat="server" id="liSpecification">
+                                                    <a href="javascript:void(0);" class='submenu-link'>Specification</a>
+                                                    <ul class="subsubmenu">
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/specification/design" class="subsubmenu-link">Design Type</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/specification/blind" class="subsubmenu-link">Blind Type</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/specification/product" class="subsubmenu-link">Product</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/specification/fabric" class="subsubmenu-link">Fabric</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/specification/chain" class="subsubmenu-link">Chain</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/specification/remote" class="subsubmenu-link">Remote</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/specification/bottom" class="subsubmenu-link">Bottom Rail</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/specification/mounting" class="subsubmenu-link">Mounting</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li class="submenu-item has-sub" runat="server" id="liJob">
+                                                    <a href="javascript:void(0);" class='submenu-link'>Job</a>
+                                                    <ul class="subsubmenu">
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/job/sheet" class="subsubmenu-link">Job Sheet</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/job/order" class="subsubmenu-link">Job Order</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li class="submenu-item has-sub" runat="server" id="liPrice">
+                                                    <a href="javascript:void(0);" class='submenu-link'>Price</a>
+                                                    <ul class="subsubmenu">
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/price/group" class="subsubmenu-link">Group</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/price/product" class="subsubmenu-link">Product Group</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/price/discount" class="subsubmenu-link">Product Discount</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/price/base" class="subsubmenu-link">Base</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/price/surcharge" class="subsubmenu-link">Surcharge</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/price/promo" class="subsubmenu-link">Promo</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/price/service" class="subsubmenu-link">Service</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/price/calculation" class="subsubmenu-link">Calculation</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li class="submenu-item has-sub" runat="server" id="liDatabase">
+                                                    <a href="javascript:void(0);" class='submenu-link'>Database</a>
+                                                    <ul class="subsubmenu">
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/database/table" class="subsubmenu-link">Table</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/database/view" class="subsubmenu-link">View</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/database/function" class="subsubmenu-link">Function</a>
+                                                        </li>
+                                                        <li class="subsubmenu-item">
+                                                            <a runat="server" href="~/setting/database/query" class="subsubmenu-link">Query</a>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li runat="server" id="liManager" class="submenu-item">
+                                                    <a runat="server" href="~/setting/filemanager" class="subsubmenu-link">File Manager</a>
+                                                </li>
+                                                <li runat="server" id="liValidation" class="submenu-item">
+                                                    <a runat="server" href="~/setting/validation" class="subsubmenu-link">Validation</a>
+                                                </li>
+                                                <li runat="server" id="liExport" class="submenu-item">
+                                                    <a runat="server" href="~/setting/export" class="subsubmenu-link">Export</a>
+                                                </li>
+                                                <li runat="server" id="liLog" class="submenu-item">
+                                                    <a runat="server" href="~/setting/log" class="subsubmenu-link">Log</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </header>
+                <div class="container-fluid px-2 px-md-4 px-xl-5">
+                    <asp:ContentPlaceHolder ID="MainContent" runat="server"></asp:ContentPlaceHolder>
+                </div>
+                <footer class="mt-4 py-3 border-top">
+                    <div class="container-fluid px-2 px-md-4 px-xl-5">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center text-muted small gap-2">
+                            <div>&copy; 2026 <strong>BOOS</strong>. All rights reserved.</div>
+
+                            <div class="d-flex flex-wrap justify-content-center">
+                                <a runat="server" href="~/contact" class="text-muted me-3 text-decoration-none">Contact</a>
+                                <a runat="server" href="~/about" class="text-muted me-3 text-decoration-none">About</a>
+                                <a runat="server" href="~/faq" class="text-muted text-decoration-none">FAQ</a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                <asp:HyperLink runat="server" ID="hlAddTicket" NavigateUrl="~/ticket/add" CssClass="customer-ticket-fab" Visible="false">
+                    <i class="bi bi-chat-square-text-fill"></i>
+                    <span>Open Ticket</span>
+                </asp:HyperLink>
+            </div>
+        </div>
+        <div class="modal fade text-left" id="modalNotification" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-secondary">
+                        <h4 class="modal-title white" id="titleNotification"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p id="messageNotification"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="javascript:void(0);" class="btn btn-secondary" data-bs-dismiss="modal">I have read the information.</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var popupQueue = [];
+            var currentPopup = null;
+            var loadedPopupIds = new Set();
+            
+            function checkNotification() {
+                fetch('/Setting/General/Notification/Default.aspx/GetNotification', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: '{}'
+                }).then(response => response.json()).then(data => {
+                    let notifications = data.d || [];
+                    notifications.forEach(function (item) {
+                        if (!loadedPopupIds.has(item.popupId)) {
+                            loadedPopupIds.add(item.popupId);
+                            popupQueue.push(item);
+                        }
+                    });
+                    if (!currentPopup && popupQueue.length > 0) {
+                        showNextPopup();
+                    }
+                });
+            }
+            function showNextPopup() {
+                if (popupQueue.length === 0) return;
+
+                currentPopup = popupQueue.shift();
+                document.getElementById("titleNotification").innerText = currentPopup.title;
+                document.getElementById("messageNotification").innerHTML = currentPopup.message.replace(/\r\n/g, "<br>").replace(/\n/g, "<br>");
+
+                var modalEl = document.getElementById('modalNotification');
+                var modal = bootstrap.Modal.getInstance(modalEl);
+
+                if (!modal) {
+                    modal = new bootstrap.Modal(modalEl, { backdrop: 'static', keyboard: false });
+                }
+                modal.show();
+            }
+            function savePopupLog(popupId) {
+                fetch('/Setting/General/Notification/Default.aspx/SavePopupLog', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ popupId: popupId })
+                });
+            }
+            function updateCurrentPage() {
+                fetch('/Setting/UpdateSession.aspx/UpdateCurrentPage', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    cache: 'no-store',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ page: window.location.pathname + window.location.search })
+                }).catch(() => { });
+            }
+            function updateSession() {
+                fetch('/Setting/UpdateSession.aspx', {
+                    credentials: 'same-origin',
+                    cache: 'no-store'
+                }).catch(() => { });
+            }
+            function initializeGlobalSearch() {
+                var globalSearch = document.getElementById("txtGlobalSearch");
+
+                if (!globalSearch) return;
+
+                globalSearch.addEventListener("keydown", function (e) {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        var keyword = this.value.trim();
+                        if (keyword === "") return;
+                        window.location.href = '/search?q=' + encodeURIComponent(keyword);
+                    }
+                });
+            }
+            function updateTicketUnreadBadge() {
+                $.ajax({
+                    type: "POST",
+                    url: '<%= ResolveUrl("~/Ticket/Default.aspx/GetUnreadTicketCount") %>',
+                    data: "{}",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    cache: false,
+                    success: function (response) {
+                        const result = response.d;
+                        const badge = $("#ticketUnreadBadge");
+                        if (!result || !result.success) {
+                            badge.hide();
+                            return;
+                        }
+                        const count = Number(result.count) || 0;
+                        if (count > 0) {
+                            badge.text(count > 99 ? "99+" : count).show();
+                        } else {
+                            badge.hide();
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error("Ticket unread count error:", xhr.responseText);
+                    }
+                });
+            }
+            function initializeNotificationModal() {
+                var modalNotification = document.getElementById('modalNotification');
+                if (!modalNotification) return;
+                modalNotification.addEventListener('hidden.bs.modal', function () {
+                    if (!currentPopup) return;
+                    savePopupLog(currentPopup.popupId);
+                    currentPopup = null;
+                    showNextPopup();
+                });
+            }
+            if (typeof Sys !== "undefined" && Sys.WebForms) {
+                Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+                    var newTitle = '<%= String.Format("{0}{1}", Page.Title, If(String.IsNullOrEmpty(TryCast(Session("CompanyName"), String)), "", " - " & Session("CompanyName"))) %>';
+                    document.title = newTitle;
+                });
+            }
+            document.addEventListener("DOMContentLoaded", function () {
+                checkNotification();
+                setInterval(checkNotification, 10000);
+                
+                updateCurrentPage();
+                setInterval(updateCurrentPage, 5000);
+
+                updateSession();
+                setInterval(updateSession, 240000);
+                
+                initializeGlobalSearch();
+                initializeNotificationModal();
+                updateTicketUnreadBadge();
+                setInterval(updateTicketUnreadBadge, 5000);
+            });
+        </script>
+        <script src="/Assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+        <script src="/Assets/js/bootstrap.bundle.min.js"></script>
+        <script src="/Assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+        <script src="/Assets/vendors/choices.js/choices.min.js"></script>
+        <script src="/Assets/js/pages/form-element-select.js?v=1.0.2"></script>
+        <script src="/Assets/js/pages/horizontal-layout.js?v=1.0.0"></script>
+        <script src="/Assets/vendors/summernote/summernote-lite.min.js"></script>
+    </form>
+</body>
+</html>

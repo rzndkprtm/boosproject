@@ -1,0 +1,274 @@
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Detail.aspx.vb" Inherits="Setting_General_Company_Detail" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Company Detail" %>
+
+<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3><%: Page.Title %></h3>
+                    <p class="text-subtitle text-muted"></p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/general">General</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/general/company">Company</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-content">
+        <section class="row" runat="server" id="divError">
+            <div class="col-12">
+                <div class="alert alert-danger">
+                    <span runat="server" id="msgError"></span>
+                </div>
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-12 col-sm-12 col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">General Data</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Company Name</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblName" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Alias</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblAlias" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Attention</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblAttention" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Address</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblAddress" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Phone</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblPhone" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Email</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblEmail" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Description</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblDescription" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 form-group">
+                                <label class="form-label">Status</label>
+                                <br />
+                                <asp:Label runat="server" CssClass="form-label" ID="lblStatus" Font-Bold="true"></asp:Label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-6">
+                                <h3 class="card-title">List Detail</h3>
+                            </div>
+                            <div class="col-6 d-flex justify-content-end">
+                                <asp:Button runat="server" ID="btnAddDetail" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddDetail_Click" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="True" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
+                                <Columns>
+                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                        <ItemTemplate>
+                                            <%# Container.DataItemIndex + 1 %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:BoundField DataField="Id" HeaderText="ID" />
+                                    <asp:BoundField DataField="Name" HeaderText="Name" />
+                                    <asp:BoundField DataField="Description" HeaderText="Description" />
+                                    <asp:BoundField DataField="Status" HeaderText="Status" />
+                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
+                                        <ItemTemplate>
+                                            <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                            <ul class="dropdown-menu">
+                                                <li runat="server" visible='<%# LoginAccess("Edit Detail") %>'>
+                                                    <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                </li>
+                                                <li>
+                                                    <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('CompanyDetails', '<%# Eval("Id") %>')">Log</a>
+                                                </li>
+                                            </ul>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                                <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
+                                <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
+                                <AlternatingRowStyle BackColor="White" />
+                            </asp:GridView>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="modal fade text-left" id="modalProcessDetail" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" runat="server" id="titleProcessDetail"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Name</label>
+                            <asp:TextBox runat="server" ID="txtNameDetail" CssClass="form-control" placeholder="Name ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Description</label>
+                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescriptionDetail" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                            <label class="form-label">Status</label>
+                            <asp:DropDownList runat="server" ID="ddlStatusDetail" CssClass="form-select">
+                                <asp:ListItem Value="Active" Text="Active"></asp:ListItem>
+                                <asp:ListItem Value="Inactive" Text="Inactive"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row mb-2" runat="server" id="divErrorProcessDetail">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorProcessDetail"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnProcessDetail" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcessDetail_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Changelog</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger d-none" id="logError"></div>
+                    <div class="table-responsive">
+                        <table class="table table-vcenter card-table" id="tblLogs">
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
+        <asp:Label runat="server" ID="lblDetailId"></asp:Label>
+        <asp:Label runat="server" ID="lblAction"></asp:Label>
+    </div>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const gv = document.getElementById('<%= gvList.ClientID %>');
+            if (!gv) return;
+            for (let i = 1; i < gv.rows.length; i++) {
+                const row = gv.rows[i];
+                row.style.cursor = 'pointer';
+                row.addEventListener('click', function (e) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
+                        return;
+                    }
+                    const btn = this.querySelector("a[id*='linkDetail']");
+                    if (btn) btn.click();
+                });
+            }
+        });
+        function showProcessDetail() {
+            $("#modalProcessDetail").modal("show");
+        }
+        function showLog(type, dataId) {
+            $("#logError").addClass("d-none").html("");
+            $("#tblLogs tbody").html("");
+            $("#modalLog").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "/Setting/Method.aspx/GetLogs",
+                data: JSON.stringify({ type: type, dataId: dataId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {
+                    const logs = res.d;
+
+                    if (!logs || logs.length === 0) {
+                        $("#tblLogs tbody").html(
+                            `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+                    logs.forEach(r => {
+                        html += `<tr><td>${r.TextLog}</td></tr>`;
+                    });
+
+                    $("#tblLogs tbody").html(html);
+                },
+                error: function (err) {
+                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
+                }
+            });
+        }
+        ["modalProcessDetail", "modalLog"].forEach(function (id) {
+            document.getElementById(id).addEventListener("hide.bs.modal", function () {
+                document.activeElement.blur();
+                document.body.focus();
+            });
+        });
+        window.history.replaceState(null, null, window.location.href);
+    </script>
+</asp:Content>

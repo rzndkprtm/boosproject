@@ -1,0 +1,366 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports System.Globalization
+
+Partial Class Setting_Price_Base_Default
+    Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim enUS As CultureInfo = New CultureInfo("en-US")
+    Dim idIDR As New CultureInfo("id-ID")
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/price", False)
+            Exit Sub
+        End If
+
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+
+            BindPriceGroup()
+            ddlPriceGroup.SelectedValue = Session("PriceBasePriceGroup")
+            BindProductGroup(ddlPriceGroup.SelectedValue)
+            ddlProductGroup.SelectedValue = Session("PriceBaseProductGroup")
+            ddlCategory.SelectedValue = Session("PriceBaseCategory")
+            ddlMethod.SelectedValue = Session("PriceBaseMethod")
+
+            BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+        End If
+    End Sub
+
+    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+
+        Response.Redirect("~/setting/price/base/add", False)
+    End Sub
+
+    Protected Sub btnImport_Click(sender As Object, e As EventArgs)
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+
+        Response.Redirect("~/setting/price/base/import", False)
+    End Sub
+
+    Protected Sub btnDeletePricing_Click(sender As Object, e As EventArgs)
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+
+        Response.Redirect("~/setting/price/base/delete", False)
+    End Sub
+
+    Protected Sub btnCopy_Click(sender As Object, e As EventArgs)
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+
+        Response.Redirect("~/setting/price/base/copy", False)
+    End Sub
+
+    Protected Sub btnDiscount_Click(sender As Object, e As EventArgs)
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+
+        Response.Redirect("~/setting/price/base/discount", False)
+    End Sub
+
+    Protected Sub btnMarkup_Click(sender As Object, e As EventArgs)
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+
+        Response.Redirect("~/setting/price/base/markup", False)
+    End Sub
+
+    Protected Sub ddlCategory_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
+        BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+    End Sub
+
+    Protected Sub ddlProductGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
+        BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+    End Sub
+
+    Protected Sub ddlMethod_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
+        BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+    End Sub
+
+    Protected Sub ddlPriceGroup_SelectedIndexChanged(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
+
+        BindProductGroup(ddlPriceGroup.SelectedValue)
+        BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+
+        Session("PriceBaseCategory") = ddlCategory.SelectedValue
+        Session("PriceBaseMethod") = ddlMethod.SelectedValue
+        Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+        Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+    End Sub
+
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+        BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+    End Sub
+
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        BuildPager()
+    End Sub
+
+    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        MessageError(False, String.Empty)
+
+        gvList.PageIndex = e.NewPageIndex
+        BindData(ddlCategory.SelectedValue, ddlMethod.SelectedValue, ddlProductGroup.SelectedValue, ddlPriceGroup.SelectedValue)
+    End Sub
+
+    Protected Sub btnConditional_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("sp_PriceBases_UpdateConditional", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    thisCmd.Parameters.AddWithValue("@Conditional", "Excl. $7 Disc")
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnRePrice_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim dataOrder As DataTable = settingClass.GetDataTable("SELECT Id FROM OrderHeaders WHERE Active=1 AND (Status='Unsubmitted' OR Status='Waiting Proforma')")
+            If Not dataOrder.Rows.Count = 0 Then
+                Dim orderClass As New OrderClass
+                For i As Integer = 0 To dataOrder.Rows.Count - 1
+                    Dim orderId As String = dataOrder.Rows(i)("Id").ToString()
+                    orderClass.CalculatePriceByOrder(orderId)
+
+                    Dim dataLog As Object() = {"OrderHeaders", orderId, Session("LoginId").ToString(), "Re Price Order"}
+                    settingClass.Logs(dataLog)
+                Next
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtDeleteId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM PriceBases WHERE Id=@Id; DELETE FROM Logs WHERE Type='PriceBases' AND DataId=@Id;", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Session("PriceBaseCategory") = ddlCategory.SelectedValue
+            Session("PriceBaseMethod") = ddlMethod.SelectedValue
+            Session("PriceBasePriceGroup") = ddlPriceGroup.SelectedValue
+            Session("PriceBaseProductGroup") = ddlProductGroup.SelectedValue
+
+            Response.Redirect("~/setting/price/base", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindData(category As String, method As String, productgroup As String, pricegroup As String)
+        Try
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@Category", If(String.IsNullOrEmpty(category), CType(DBNull.Value, Object), category)),
+                New SqlParameter("@Method", If(String.IsNullOrEmpty(method), CType(DBNull.Value, Object), method)),
+                New SqlParameter("@PriceGroup", If(String.IsNullOrEmpty(pricegroup), CType(DBNull.Value, Object), pricegroup)),
+                New SqlParameter("@ProductGroup", If(String.IsNullOrEmpty(productgroup), CType(DBNull.Value, Object), productgroup)),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString())
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_PriceBases_List", params)
+            gvList.DataBind()
+
+            addPrice.Visible = LoginAccess("Add")
+            btnDeletePricing.Visible = LoginAccess("Delete Pricing")
+            morePrice.Visible = LoginAccess("More")
+
+            aMatrix.Visible = False
+            If (pricegroup = "1" OrElse pricegroup = "26") AndAlso Not String.IsNullOrWhiteSpace(category) AndAlso Not String.IsNullOrWhiteSpace(productgroup) AndAlso Not String.IsNullOrWhiteSpace(method) Then
+                aMatrix.Visible = True
+
+                Dim paramMatrixs As New List(Of SqlParameter) From {
+                    New SqlParameter("@Category", category),
+                    New SqlParameter("@Method", method),
+                    New SqlParameter("@ProductGroupId", productgroup),
+                    New SqlParameter("@PriceGroupId", pricegroup)
+                }
+                gvListMatrix.DataSource = settingClass.GetDataTableSP("sp_PriceBases_Pivot", paramMatrixs)
+                gvListMatrix.DataBind()
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindPriceGroup()
+        ddlPriceGroup.Items.Clear()
+        Try
+            Dim thisString As String = "SELECT Id, Name FROM PriceGroups WHERE Status='Active' ORDER BY Id ASC"
+            If Session("RoleName") = "Account" OrElse Session("RoleName") = "Sales" Then
+                thisString = "SELECT Id, Name FROM PriceGroups WHERE CompanyId='" & Session("CompanyId").ToString() & "' AND Status='Active' ORDER BY Id ASC"
+            End If
+            ddlPriceGroup.DataSource = settingClass.GetDataTable(thisString)
+            ddlPriceGroup.DataTextField = "Name"
+            ddlPriceGroup.DataValueField = "Id"
+            ddlPriceGroup.DataBind()
+
+            If ddlPriceGroup.Items.Count > 0 Then
+                ddlPriceGroup.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlPriceGroup.Items.Clear()
+        End Try
+    End Sub
+
+    Protected Sub BindProductGroup(priceGroupId As String)
+        ddlProductGroup.Items.Clear()
+        Try
+            If Not String.IsNullOrEmpty(priceGroupId) Then
+                ddlProductGroup.DataSource = settingClass.GetDataTable("SELECT PriceProductGroups.Id, PriceProductGroups.Name FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE thisArray.VALUE='" & priceGroupId & "'")
+                ddlProductGroup.DataTextField = "Name"
+                ddlProductGroup.DataValueField = "Id"
+                ddlProductGroup.DataBind()
+
+                If ddlProductGroup.Items.Count > 0 Then
+                    ddlProductGroup.Items.Insert(0, New ListItem("", ""))
+                End If
+            End If
+        Catch ex As Exception
+            ddlProductGroup.Items.Clear()
+        End Try
+    End Sub
+
+    Protected Sub BuildPager()
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
+            navPager.Visible = False
+        End Try
+    End Sub
+
+    Protected Function BindCost(cost As Decimal, companyId As String) As String
+        Try
+            If cost >= 0 Then
+                cost = Math.Round(cost, 2)
+                If companyId = "3" Then
+                    Return cost.ToString("N2", idIDR)
+                End If
+                Return cost.ToString("N2", enUS)
+            End If
+        Catch ex As Exception
+            Return String.Empty
+        End Try
+        Return String.Empty
+    End Function
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class

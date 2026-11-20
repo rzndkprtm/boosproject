@@ -1,0 +1,307 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports System.Web.Services
+
+Partial Class Setting_Specification_Product_Detail
+    Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
+    Dim url As String = String.Empty
+
+    <WebMethod(EnableSession:=True)>
+    Public Shared Sub UpdateSession(value As String)
+        HttpContext.Current.Session("selectedTabProduct") = value
+    End Sub
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/specification/product", False)
+            Exit Sub
+        End If
+
+        If String.IsNullOrEmpty(Request.QueryString("productid")) Then
+            Response.Redirect("~/setting/specification/product", False)
+            Exit Sub
+        End If
+
+        If Not Session("selectedTabProduct") = "" Then
+            selected_tab.Value = Session("selectedTabProduct").ToString()
+        End If
+
+        lblId.Text = Request.QueryString("productid").ToString()
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            MessageError_Kit(False, String.Empty)
+            BindData(lblId.Text)
+        End If
+    End Sub
+
+    Protected Sub btnEditProduct_Click(sender As Object, e As EventArgs)
+        url = String.Format("~/setting/specification/product/edit?productid={0}&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnChangeStatus_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim newStatus As String = ddlNewStatus.SelectedValue
+
+            If newStatus = "" Then
+                url = String.Format("~/setting/specification/product/detail?id={0}", lblId.Text)
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim changeDesc As String = String.Format("Change Status Product : {0}", newStatus)
+            dataLog = {"Products", lblId.Text, Session("LoginId").ToString(), changeDesc}
+            settingClass.Logs(dataLog)
+
+            Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM ProductAlias WHERE FirstId='" & lblId.Text & "'")
+            If aliasData IsNot Nothing Then
+                Dim aliasId As String = aliasData(0).ToString()
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Products SET Status=@Status WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", aliasId)
+                        thisCmd.Parameters.AddWithValue("@Status", newStatus)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                changeDesc = String.Format("Change Status Product : {0}", newStatus)
+                dataLog = {"Products", aliasId, Session("LoginId").ToString(), changeDesc}
+                settingClass.Logs(dataLog)
+            End If
+
+            url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnAddKit_Click(sender As Object, e As EventArgs)
+        MessageError_ProcessKit(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showProcessKit(); };"
+        Session("selectedTabProduct") = "list-kit"
+        Try
+            lblAction.Text = "Add"
+            titleProcess.InnerText = "Add Product Kit"
+
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessKit", thisScript, True)
+        Catch ex As Exception
+            MessageError_ProcessKit(True, ex.ToString())
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessKit", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
+        If Not String.IsNullOrEmpty(e.CommandArgument) Then
+            Dim dataId As String = e.CommandArgument.ToString()
+            Session("selectedTabProduct") = "list-kit"
+
+            If e.CommandName = "Detail" Then
+                MessageError_ProcessKit(False, String.Empty)
+                Dim thisScript As String = "window.onload = function() { showProcessKit(); };"
+                Try
+                    lblIdKit.Text = dataId
+                    lblAction.Text = "Edit"
+                    titleProcess.InnerText = "Edit Product Kit"
+
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM ProductKits WHERE Id='" & lblIdKit.Text & "'")
+                    If myData Is Nothing Then Exit Sub
+
+                    txtKitId.Text = myData("KitId").ToString()
+                    txtVenId.Text = myData("VenId").ToString()
+                    txtCustomName.Text = myData("Name").ToString().Replace(txtNameKit.Text, "").Trim()
+                    ddlBlindStatus.SelectedValue = myData("BlindStatus").ToString()
+
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessKit", thisScript, True)
+                Catch ex As Exception
+                    MessageError_ProcessKit(True, ex.ToString())
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessKit", thisScript, True)
+                End Try
+            End If
+        End If
+    End Sub
+
+    Protected Sub btnProcessKit_Click(sender As Object, e As EventArgs)
+        MessageError_ProcessKit(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showProcessKit(); };"
+        Try
+            If Not String.IsNullOrEmpty(txtKitId.Text) Then
+                If Not IsNumeric(txtKitId.Text) Then
+                    MessageError_ProcessKit(True, "KIT ID SHOULD BE NUMERIC !")
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessKit", thisScript, True)
+                End If
+            End If
+
+            If Not String.IsNullOrEmpty(txtVenId.Text) Then
+                If Not IsNumeric(txtVenId.Text) Then
+                    MessageError_ProcessKit(True, "VEN ID SHOULD BE NUMERIC !")
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcessKit", thisScript, True)
+                End If
+            End If
+
+            If msgErrorProcessKit.InnerText = "" Then
+                Dim kitName As String = txtNameKit.Text.Trim() & " " & txtCustomName.Text.Trim()
+
+                If lblAction.Text = "Add" Then
+                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductKits ORDER BY Id DESC")
+
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductKits VALUES (@Id, @ProductId, @KitId, @VenId, @Name, @Status)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@ProductId", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@KitId", If(String.IsNullOrEmpty(txtKitId.Text), CType(DBNull.Value, Object), txtKitId.Text))
+                            thisCmd.Parameters.AddWithValue("@VenId", If(txtVenId.Text = String.Empty, CType(DBNull.Value, Object), txtVenId.Text))
+                            thisCmd.Parameters.AddWithValue("@Name", kitName)
+                            thisCmd.Parameters.AddWithValue("@Status", ddlBlindStatus.SelectedValue)
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    Dim dataLog As Object() = {"ProductKits", thisId, Session("LoginId").ToString(), "HardwareKit Created"}
+                    settingClass.Logs(dataLog)
+
+                    url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
+                    Response.Redirect(url, False)
+                End If
+                If lblAction.Text = "Edit" Then
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE ProductKits SET KitId=@KitId, VenId=@VenId, Name=@Name, BlindStatus=@Status WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", lblIdKit.Text)
+                            thisCmd.Parameters.AddWithValue("@ProductId", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@KitId", If(String.IsNullOrEmpty(txtKitId.Text), CType(DBNull.Value, Object), txtKitId.Text))
+                            thisCmd.Parameters.AddWithValue("@VenId", If(txtVenId.Text = String.Empty, CType(DBNull.Value, Object), txtVenId.Text))
+                            thisCmd.Parameters.AddWithValue("@Name", kitName)
+                            thisCmd.Parameters.AddWithValue("@Status", ddlBlindStatus.SelectedValue)
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    Dim dataLog As Object() = {"ProductKits", lblIdKit.Text, Session("LoginId").ToString(), "HardwareKit Updated"}
+                    settingClass.Logs(dataLog)
+
+                    url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
+                    Response.Redirect(url, False)
+                End If
+            End If
+        Catch ex As Exception
+            MessageError_ProcessKit(True, ex.ToString())
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcessKit", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnDeleteKit_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Session("selectedTabProduct") = "list-kit"
+        Try
+            Dim thisId As String = txtIdDeleteKit.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM ProductKits WHERE Id=@Id; DELETE FROM Logs WHERE Type='ProductKits' AND DataId=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            url = String.Format("~/setting/specification/product/detail?productid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindData(productId As String)
+        Try
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@ProductId", productId)
+            }
+            Dim thisData As DataRow = settingClass.GetDataRowSP("sp_Products_Get", params)
+            If thisData Is Nothing Then
+                Response.Redirect("~/setting/specification/product", False)
+                Exit Sub
+            End If
+
+            lblName.Text = thisData("Name").ToString()
+            lblJobSheetName.Text = thisData("JobSheetName").ToString()
+            lblInvoiceName.Text = thisData("InvoiceName").ToString()
+            txtNameKit.Text = thisData("Name").ToString()
+            lblDesignName.Text = thisData("DesignName").ToString()
+            lblBlindName.Text = thisData("BlindName").ToString()
+            lblTubeType.Text = thisData("TubeName").ToString()
+            lblControlType.Text = thisData("ControlName").ToString()
+            lblColourType.Text = thisData("ColourName").ToString()
+            lblDescription.Text = thisData("Description").ToString()
+            lblStatus.Text = thisData("Status").ToString()
+
+            Dim company As String = thisData("CompanyDetailId").ToString()
+            If Not String.IsNullOrEmpty(company) Then
+                Dim myData As DataTable = settingClass.GetDataTable("SELECT CompanyDetails.Name AS CompanyName FROM Products CROSS APPLY STRING_SPLIT(Products.CompanyDetailId, ',') AS splitArray LEFT JOIN CompanyDetails ON splitArray.VALUE=CompanyDetails.Id WHERE Products.Id='" & productId & "' ORDER BY CompanyDetails.Id ASC")
+                Dim hasil As String = String.Empty
+                If Not myData.Rows.Count = 0 Then
+                    For i As Integer = 0 To myData.Rows.Count - 1
+                        Dim designName As String = myData.Rows(i)("CompanyName").ToString()
+                        hasil += designName & ", "
+                    Next
+                End If
+                lblCompanyName.Text = hasil.Remove(hasil.Length - 2).ToString()
+            End If
+
+            gvList.DataSource = settingClass.GetDataTable("SELECT * FROM ProductKits WHERE ProductId='" & productId & "'")
+            gvList.DataBind()
+
+            btnEditProduct.Visible = LoginAccess("Edit")
+            aChangeStatus.Visible = LoginAccess("Change Status")
+            btnAddKit.Visible = LoginAccess("Add Kit")
+        Catch ex As Exception
+            MessageError(True, ex.ToString)
+        End Try
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Kit(visible As Boolean, message As String)
+        divErrorKit.Visible = visible : msgErrorKit.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_ProcessKit(visible As Boolean, message As String)
+        divErrorProcessKit.Visible = visible : msgErrorProcessKit.InnerText = message
+    End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class

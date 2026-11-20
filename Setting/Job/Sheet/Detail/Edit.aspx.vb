@@ -1,0 +1,418 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class Setting_Job_Sheet_Detail_Edit
+    Inherits Page
+
+    Dim jobClass As New JobClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/job/sheet", False)
+            Exit Sub
+        End If
+
+        If String.IsNullOrEmpty(Request.QueryString("detailid")) Then
+            Response.Redirect("~/setting/job/sheet", False)
+            Exit Sub
+        End If
+
+        lblId.Text = Request.QueryString("detailid").ToString()
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            BindData(lblId.Text)
+        End If
+    End Sub
+
+    Protected Sub ddlType_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        VisibleFormula("1", ddlType.SelectedValue)
+    End Sub
+
+    Protected Sub ddlType2_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        VisibleFormula("2", ddlType2.SelectedValue)
+    End Sub
+
+    Protected Sub ddlType3_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        VisibleFormula("3", ddlType3.SelectedValue)
+    End Sub
+
+    Protected Sub ddlType4_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        VisibleFormula("4", ddlType4.SelectedValue)
+    End Sub
+
+    Protected Sub ddlType5_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        VisibleFormula("5", ddlType5.SelectedValue)
+    End Sub
+
+    Protected Sub ddlType6_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        VisibleFormula("6", ddlType6.SelectedValue)
+    End Sub
+
+    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            If msgError.InnerText = "" Then
+                Dim companyDetailId As String = String.Empty
+                If Not lbCompanyDetail.SelectedValue = "" Then
+                    companyDetailId = String.Join(",", lbCompanyDetail.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
+                Dim formula As String = ddlFormula.SelectedValue
+                If ddlType.SelectedValue = "Custom" Then formula = txtFormula.Text
+
+                Dim formula2 As String = ddlFormula2.SelectedValue
+                If ddlType2.SelectedValue = "Custom" Then formula2 = txtFormula2.Text
+
+                Dim formula3 As String = ddlFormula3.SelectedValue
+                If ddlType3.SelectedValue = "Custom" Then formula3 = txtFormula3.Text
+
+                Dim formula4 As String = ddlFormula4.SelectedValue
+                If ddlType4.SelectedValue = "Custom" Then formula4 = txtFormula4.Text
+
+                Dim formula5 As String = ddlFormula5.SelectedValue
+                If ddlType5.SelectedValue = "Custom" Then formula5 = txtFormula5.Text
+
+                Dim formula6 As String = ddlFormula6.SelectedValue
+                If ddlType6.SelectedValue = "Custom" Then formula6 = txtFormula6.Text
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE JobSheetDetails SET JobSheetId=@JobSheetId, CompanyDetailId=@CompanyDetailId, Name=@Name, Type1=@Type1, Formula1=@Formula1, Type2=@Type2, Formula2=@Formula2, Type3=@Type3, Formula3=@Formula3, Type4=@Type4, Formula4=@Formula4, Type5=@Type5, Formula5=@Formula5, Type6=@Type6, Formula6=@Formula6 WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@JobSheetId", ddlJobSheet.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@CompanyDetailId", companyDetailId)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text)
+                        thisCmd.Parameters.AddWithValue("@Type1", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type2", ddlType2.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type3", ddlType3.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type4", ddlType4.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type5", ddlType5.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type6", ddlType6.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Formula1", formula)
+                        thisCmd.Parameters.AddWithValue("@Formula2", formula2)
+                        thisCmd.Parameters.AddWithValue("@Formula3", formula3)
+                        thisCmd.Parameters.AddWithValue("@Formula4", formula4)
+                        thisCmd.Parameters.AddWithValue("@Formula5", formula5)
+                        thisCmd.Parameters.AddWithValue("@Formula6", formula6)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim dataLog As Object() = {"JobSheetDetails", lblId.Text, Session("LoginId").ToString(), "Job Sheet Detail Updated"}
+                jobClass.Logs(dataLog)
+
+                url = String.Format("~/setting/job/sheet/detail/?sheetid={0}", ddlJobSheet.SelectedValue)
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
+        url = String.Format("~/setting/job/sheet/detail/?sheetid={0}", ddlJobSheet.SelectedValue)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub BindData(detailId As String)
+        Try
+            Dim myData As DataRow = jobClass.GetDataRow("SELECT * FROM JobSheetDetails WHERE Id='" & detailId & "'")
+            If myData Is Nothing Then
+                Response.Redirect("~/setting/job/sheet", False)
+                Exit Sub
+            End If
+
+            BindJobSheet()
+            BindCompanyDetail()
+            BindViewJob()
+
+            Dim type As String = myData("Type1").ToString()
+            Dim type2 As String = myData("Type2").ToString()
+            Dim type3 As String = myData("Type3").ToString()
+            Dim type4 As String = myData("Type4").ToString()
+            Dim type5 As String = myData("Type5").ToString()
+            Dim type6 As String = myData("Type6").ToString()
+
+            Dim formula As String = myData("Formula1").ToString()
+            Dim formula2 As String = myData("Formula2").ToString()
+            Dim formula3 As String = myData("Formula3").ToString()
+            Dim formula4 As String = myData("Formula4").ToString()
+            Dim formula5 As String = myData("Formula5").ToString()
+            Dim formula6 As String = myData("Formula6").ToString()
+
+            ddlJobSheet.SelectedValue = myData("JobSheetId").ToString()
+            txtName.Text = myData("Name").ToString()
+            ddlType.SelectedValue = type
+            ddlType2.SelectedValue = type2
+            ddlType3.SelectedValue = type3
+            ddlType4.SelectedValue = type4
+            ddlType5.SelectedValue = type5
+            ddlType6.SelectedValue = type6
+
+            If Not myData("CompanyDetailId").ToString() = "" Then
+                Dim companyDetailArray() As String = myData("CompanyDetailId").ToString().Split(",")
+                For Each i In companyDetailArray
+                    If Not String.IsNullOrEmpty(i) Then
+                        Dim item = lbCompanyDetail.Items.FindByValue(i)
+                        If item IsNot Nothing Then
+                            item.Selected = True
+                        End If
+                    End If
+                Next
+            End If
+
+            If type = "Field" Then
+                ddlFormula.SelectedValue = myData("Formula1").ToString()
+                txtFormula.Text = String.Empty
+            End If
+            If type = "Custom" Then
+                ddlFormula.SelectedValue = ""
+                txtFormula.Text = myData("Formula1").ToString()
+            End If
+
+            If type = "Field" Then
+                ddlFormula2.SelectedValue = myData("Formula2").ToString()
+                txtFormula2.Text = String.Empty
+            End If
+            If type = "Custom" Then
+                ddlFormula2.SelectedValue = ""
+                txtFormula2.Text = myData("Formula2").ToString()
+            End If
+
+            If type = "Field" Then
+                ddlFormula3.SelectedValue = myData("Formula3").ToString()
+                txtFormula3.Text = String.Empty
+            End If
+            If type = "Custom" Then
+                ddlFormula3.SelectedValue = ""
+                txtFormula3.Text = myData("Formula3").ToString()
+            End If
+
+            If type = "Field" Then
+                ddlFormula4.SelectedValue = myData("Formula4").ToString()
+                txtFormula4.Text = String.Empty
+            End If
+            If type = "Custom" Then
+                ddlFormula4.SelectedValue = ""
+                txtFormula4.Text = myData("Formula4").ToString()
+            End If
+
+            If type = "Field" Then
+                ddlFormula5.SelectedValue = myData("Formula5").ToString()
+                txtFormula5.Text = String.Empty
+            End If
+            If type = "Custom" Then
+                ddlFormula5.SelectedValue = ""
+                txtFormula5.Text = myData("Formula5").ToString()
+            End If
+
+            If type = "Field" Then
+                ddlFormula6.SelectedValue = myData("Formula6").ToString()
+                txtFormula6.Text = String.Empty
+            End If
+            If type = "Custom" Then
+                ddlFormula6.SelectedValue = ""
+                txtFormula6.Text = myData("Formula6").ToString()
+            End If
+
+            VisibleFormula("1", type)
+            VisibleFormula("2", type2)
+            VisibleFormula("3", type3)
+            VisibleFormula("4", type4)
+            VisibleFormula("5", type5)
+            VisibleFormula("6", type6)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindJobSheet()
+        ddlJobSheet.Items.Clear()
+        Try
+            ddlJobSheet.DataSource = jobClass.GetDataTable("SELECT Id, Name FROM JobSheets ORDER BY Name ASC")
+            ddlJobSheet.DataTextField = "Name"
+            ddlJobSheet.DataValueField = "Id"
+            ddlJobSheet.DataBind()
+
+            ddlJobSheet.Enabled = False
+        Catch ex As Exception
+            ddlJobSheet.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindCompanyDetail()
+        lbCompanyDetail.Items.Clear()
+        Try
+            lbCompanyDetail.DataSource = jobClass.GetDataTable("SELECT Id, Name FROM CompanyDetails")
+            lbCompanyDetail.DataTextField = "Name"
+            lbCompanyDetail.DataValueField = "Id"
+            lbCompanyDetail.DataBind()
+
+            If lbCompanyDetail.Items.Count > 0 Then
+                lbCompanyDetail.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindViewJob()
+        ddlFormula.Items.Clear() : ddlFormula2.Items.Clear() : ddlFormula3.Items.Clear() : ddlFormula4.Items.Clear() : ddlFormula5.Items.Clear() : ddlFormula6.Items.Clear()
+        Try
+            Dim thisString As String = "SELECT COLUMN_NAME AS FieldName FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME=N'viewJob'"
+
+            ddlFormula.DataSource = jobClass.GetDataTable(thisString)
+            ddlFormula.DataTextField = "FieldName"
+            ddlFormula.DataValueField = "FieldName"
+            ddlFormula.DataBind()
+
+            ddlFormula2.DataSource = jobClass.GetDataTable(thisString)
+            ddlFormula2.DataTextField = "FieldName"
+            ddlFormula2.DataValueField = "FieldName"
+            ddlFormula2.DataBind()
+
+            ddlFormula3.DataSource = jobClass.GetDataTable(thisString)
+            ddlFormula3.DataTextField = "FieldName"
+            ddlFormula3.DataValueField = "FieldName"
+            ddlFormula3.DataBind()
+
+            ddlFormula4.DataSource = jobClass.GetDataTable(thisString)
+            ddlFormula4.DataTextField = "FieldName"
+            ddlFormula4.DataValueField = "FieldName"
+            ddlFormula4.DataBind()
+
+            ddlFormula5.DataSource = jobClass.GetDataTable(thisString)
+            ddlFormula5.DataTextField = "FieldName"
+            ddlFormula5.DataValueField = "FieldName"
+            ddlFormula5.DataBind()
+
+            ddlFormula6.DataSource = jobClass.GetDataTable(thisString)
+            ddlFormula6.DataTextField = "FieldName"
+            ddlFormula6.DataValueField = "FieldName"
+            ddlFormula6.DataBind()
+
+            If ddlFormula.Items.Count > 0 Then
+                ddlFormula.Items.Insert(0, New ListItem("", ""))
+            End If
+            If ddlFormula2.Items.Count > 0 Then
+                ddlFormula2.Items.Insert(0, New ListItem("", ""))
+            End If
+            If ddlFormula3.Items.Count > 0 Then
+                ddlFormula3.Items.Insert(0, New ListItem("", ""))
+            End If
+            If ddlFormula4.Items.Count > 0 Then
+                ddlFormula4.Items.Insert(0, New ListItem("", ""))
+            End If
+            If ddlFormula5.Items.Count > 0 Then
+                ddlFormula5.Items.Insert(0, New ListItem("", ""))
+            End If
+            If ddlFormula6.Items.Count > 0 Then
+                ddlFormula6.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlFormula.Items.Clear() : ddlFormula2.Items.Clear() : ddlFormula3.Items.Clear() : ddlFormula4.Items.Clear() : ddlFormula5.Items.Clear() : ddlFormula6.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
+            End If
+        End Try
+    End Sub
+
+    Protected Sub VisibleFormula(number As String, type As String)
+        Try
+            If number = "1" Then
+                divFormulaField.Visible = False : divFormulaCustom.Visible = False
+                If type = "Field" Then
+                    divFormulaField.Visible = True : divFormulaCustom.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField.Visible = False : divFormulaCustom.Visible = True
+                End If
+            End If
+            If number = "2" Then
+                divFormulaField2.Visible = False : divFormulaCustom2.Visible = False
+                If type = "Field" Then
+                    divFormulaField2.Visible = True : divFormulaCustom2.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField2.Visible = False : divFormulaCustom2.Visible = True
+                End If
+            End If
+            If number = "3" Then
+                divFormulaField3.Visible = False : divFormulaCustom3.Visible = False
+                If type = "Field" Then
+                    divFormulaField3.Visible = True : divFormulaCustom3.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField3.Visible = False : divFormulaCustom3.Visible = True
+                End If
+            End If
+            If number = "4" Then
+                divFormulaField4.Visible = False : divFormulaCustom4.Visible = False
+                If type = "Field" Then
+                    divFormulaField4.Visible = True : divFormulaCustom4.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField4.Visible = False : divFormulaCustom4.Visible = True
+                End If
+            End If
+            If number = "5" Then
+                divFormulaField5.Visible = False : divFormulaCustom5.Visible = False
+                If type = "Field" Then
+                    divFormulaField5.Visible = True : divFormulaCustom5.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField5.Visible = False : divFormulaCustom5.Visible = True
+                End If
+            End If
+            If number = "6" Then
+                divFormulaField6.Visible = False : divFormulaCustom6.Visible = False
+                If type = "Field" Then
+                    divFormulaField6.Visible = True : divFormulaCustom6.Visible = False
+                End If
+                If type = "Custom" Then
+                    divFormulaField6.Visible = False : divFormulaCustom6.Visible = True
+                End If
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class

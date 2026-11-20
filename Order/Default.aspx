@@ -1,0 +1,875 @@
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Order_Default" MasterPageFile="~/Site.master" MaintainScrollPositionOnPostback="true" Debug="true" Title="List Order" %>
+
+<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <style>
+        .order-filter-card { border: 1px solid #e9ecef; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); overflow: hidden; background: #fff; }
+        .order-filter-card .card-header { background: #f8f9fa; border-bottom: 1px solid #e9ecef; padding: 0.85rem 1.25rem; }
+        .order-filter-card .filter-title { display: flex; align-items: center; gap: 0.55rem; margin: 0; color: #495057; font-size: 0.9rem; font-weight: 600; line-height: 1.2; }
+        .order-filter-card .filter-title i { font-size: 0.95rem; }
+        .order-filter-card .card-body { padding: 1rem 1.25rem; }
+        .order-filter-card .input-group { height: 42px; }
+        .order-filter-card .input-group-text { display: flex; align-items: center; justify-content: center; min-width: 95px; padding: 0.375rem 0.75rem; background: #f8f9fa; border-color: #dee2e6; color: #495057; font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
+        .order-filter-card .form-select { height: 42px; border-color: #dee2e6; color: #495057; font-size: 0.9rem; box-shadow: none; cursor: pointer; }
+        .order-filter-card .form-select:hover { border-color: #adb5bd; }
+        .order-filter-card .form-select:focus { border-color: #86b7fe; box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10); }
+        .order-list-card { border: 1px solid #e9ecef; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); overflow: visible !important; background: #fff; }
+        .order-list-card .card-header { background: #fff; border-bottom: 1px solid #e9ecef; padding: 1rem 1.25rem; overflow: visible !important; }
+        .order-list-card .card-body { overflow: visible !important; }
+        .order-list-card .input-group { height: 42px; }
+        .order-list-card .input-group-text { display: flex; align-items: center; justify-content: center; min-width: 75px; padding: 0.375rem 0.75rem; background: #f8f9fa; border-color: #dee2e6; color: #495057; font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
+        .order-list-card .form-select, .order-list-card .form-control { height: 42px; border-color: #dee2e6; color: #495057; font-size: 0.9rem; box-shadow: none; }
+        .order-list-card .form-select:focus, .order-list-card .form-control:focus { border-color: #86b7fe; box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10); }
+        .order-list-card .btn-primary { min-width: 90px; font-weight: 500; }
+        .order-grid-responsive { width: 100%; max-width: 100%; overflow-x: auto !important; overflow-y: hidden !important; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; scrollbar-width: thin; }
+        .order-grid { width: 100%; font-size: 0.95rem; margin-bottom: 0; }
+        .order-grid thead th { background: #f8f9fa; color: #495057; font-size: 0.85rem; font-weight: 600; white-space: nowrap; vertical-align: middle; border-bottom: 1px solid #dee2e6; padding: 0.7rem 0.65rem; }
+        .order-grid tbody td { padding: 0.65rem 0.65rem; vertical-align: middle; }
+        .order-grid tbody tr { transition: background-color 0.15s ease; }
+        .order-grid tbody tr:hover { background-color: rgba(13, 110, 253, 0.035); }
+        .order-grid .btn-sm { font-size: 0.78rem; padding: 0.3rem 0.65rem; }
+        .order-grid td:last-child { position: relative; white-space: nowrap; }
+        .order-grid td:last-child .dropdown { position: static; }
+        .order-grid .dropdown-toggle { white-space: nowrap; }
+        .order-grid .dropdown-menu { font-size: 0.85rem; min-width: 170px; border: 1px solid #e9ecef; box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.10); z-index: 99999 !important; position: fixed !important; margin: 0 !important; max-height: calc(100vh - 20px); overflow-y: auto; overflow-x: hidden; }
+        .order-grid .dropdown-menu.show { display: block !important; }
+        .order-grid .dropdown-item { padding: 0.45rem 0.85rem; white-space: nowrap; }
+        .order-grid .dropdown-item:hover { background-color: #f8f9fa; }
+        .order-grid-body { padding: 1rem 1.25rem 1.25rem !important; overflow: visible !important; }
+        #navPager .pagination { gap: 3px; }
+        #navPager .page-link { border-radius: 6px !important; border: 1px solid #dee2e6; font-size: 0.82rem; min-width: 34px; text-align: center; }
+        #navPager .page-item.active .page-link { font-weight: 600; }
+        .order-filter-footer { background: #fff; border-top: 1px solid #e9ecef; padding: 0.85rem 1.25rem !important; }
+        .order-filter-footer .form-select { min-width: 130px; height: 38px; font-size: 0.85rem; border-color: #dee2e6; box-shadow: none; }
+        .order-filter-footer .form-select:focus { border-color: #86b7fe; box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.10); }
+        .order-action-buttons { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+        .order-action-buttons .btn { min-height: 38px; }
+        @media (max-width: 991.98px) {
+            .order-filter-card .card-header { padding: 0.75rem 1rem; }
+            .order-filter-card .card-body { padding: 0.85rem 1rem; }
+            .order-filter-card .input-group { height: 40px; }
+            .order-filter-card .input-group-text { min-width: 90px; font-size: 0.82rem; }
+            .order-filter-card .form-select { height: 40px; font-size: 0.88rem; }
+            .order-list-card .card-header { padding: 0.85rem 1rem; }
+            .order-list-card .input-group { height: 40px; }
+            .order-list-card .input-group-text { min-width: 70px; font-size: 0.82rem; }
+            .order-list-card .form-select, .order-list-card .form-control { height: 40px; font-size: 0.88rem; }
+            .order-grid-body { padding: 0.75rem !important; }
+            .order-grid-responsive { width: 100%; max-width: 100%; overflow-x: auto !important; overflow-y: hidden !important; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+            .order-grid { width: max-content; min-width: 100%; }
+            .order-grid th, .order-grid td { white-space: nowrap; }
+            .order-filter-footer { padding: 0.75rem 1rem !important; }
+        }
+        @media (max-width: 575.98px) {
+            .order-filter-card { border-radius: 8px; }
+            .order-list-card { border-radius: 8px; }
+            .order-filter-card .filter-title { font-size: 0.85rem; }
+            .order-filter-card .input-group-text { min-width: 85px; padding-left: 0.5rem; padding-right: 0.5rem; }
+            .order-list-card .input-group-text { min-width: 65px; padding-left: 0.5rem; padding-right: 0.5rem; }
+            .order-action-buttons { justify-content: stretch; }
+            .order-action-buttons .btn { flex: 1 1 auto; }
+            .order-grid-responsive { width: 100%; max-width: 100%; overflow-x: auto !important; overflow-y: hidden !important; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+            .order-grid { width: max-content; min-width: 100%; }
+            .order-grid th, .order-grid td { white-space: nowrap; }
+            .order-filter-footer { padding: 0.75rem 1rem !important; }
+            .order-grid .dropdown-menu { min-width: 165px; max-width: calc(100vw - 20px); }
+        }
+    </style>
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3><%: Page.Title %></h3>
+                    <p class="text-subtitle text-muted"></p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-content">
+        <section class="row mb-3" runat="server" id="divError">
+            <div class="col-12">
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            <span runat="server" id="msgError"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="row mb-3">
+            <div class="col-12 d-flex justify-content-end flex-wrap gap-2">
+                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Create Order" OnClick="btnAdd_Click" />
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnAddOrder">Create Order</button>
+                <ul class="dropdown-menu">
+                    <asp:Button runat="server" ID="btnInsert" CssClass="dropdown-item" Text="Insert Order" OnClick="btnInsert_Click" />
+                    <asp:Button runat="server" ID="btnUpload" CssClass="dropdown-item" Text="Upload Order" OnClick="btnUpload_Click" />
+                </ul>
+                <button class="btn btn-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" runat="server" id="btnAnotherOrder">Another Order</button>
+                <ul class="dropdown-menu">
+                    <asp:Button runat="server" ID="btnRework" CssClass="dropdown-item" Text="Rework Order" OnClick="btnRework_Click" />
+                    <asp:Button runat="server" ID="btnArchive" CssClass="dropdown-item" Text="Archive Order" OnClick="btnArchive_Click" />
+                    <asp:Button runat="server" ID="btnShipment" CssClass="dropdown-item" Text="Shipment Schedule" OnClick="btnShipment_Click" />
+                </ul>
+                <asp:Button runat="server" ID="btnFile" CssClass="btn btn-secondary" Text="File Order" OnClick="btnFile_Click" />
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-12">
+                <asp:UpdatePanel runat="server" ID="upList" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <section class="row" runat="server" id="divFilter">
+                            <div class="col-12">
+                                <div class="card order-filter-card">
+                                    <div class="card-header">
+                                        <div class="filter-title">
+                                            <span>Filters</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mt-2 g-3">
+                                            <div class="col-12 col-md-4">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Company :</span>
+                                                    <asp:DropDownList runat="server" ID="ddlCompany" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompany_SelectedIndexChanged"></asp:DropDownList>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-4">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">State :</span>
+                                                    <asp:DropDownList runat="server" ID="ddlState" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlState_SelectedIndexChanged">
+                                                        <asp:ListItem Value="" Text="All"></asp:ListItem>
+                                                        <asp:ListItem Value="ACT" Text="ACT"></asp:ListItem>
+                                                        <asp:ListItem Value="NSW" Text="NSW"></asp:ListItem>
+                                                        <asp:ListItem Value="NT" Text="NT"></asp:ListItem>
+                                                        <asp:ListItem Value="QLD" Text="QLD"></asp:ListItem>
+                                                        <asp:ListItem Value="SA" Text="SA"></asp:ListItem>
+                                                        <asp:ListItem Value="TAS" Text="TAS"></asp:ListItem>
+                                                        <asp:ListItem Value="VIC" Text="VIC"></asp:ListItem>
+                                                        <asp:ListItem Value="WA" Text="WA"></asp:ListItem>
+                                                    </asp:DropDownList>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-4" runat="server" id="divType">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Order Type : </span>
+                                                    <asp:DropDownList runat="server" ID="ddlType" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlType_SelectedIndexChanged"></asp:DropDownList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section class="row">
+                            <div class="col-12">
+                                <div class="card order-list-card">
+                                    <div class="card-header order-filter-header">
+                                        <div class="row mt-3 g-2 align-items-center">
+                                            <div class="col-12 col-sm-12 col-lg-3">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">Status :</span>
+                                                    <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged"></asp:DropDownList>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-sm-12 col-lg-7 ms-auto">
+                                                <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Search :</span>
+                                                        <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" placeholder="Search..." autocomplete="off" />
+                                                        <asp:Button runat="server" ID="btnSearch" Text="Search" CssClass="btn btn-primary" OnClick="btnSearch_Click" />
+                                                    </div>
+                                                </asp:Panel>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body order-grid-body">
+                                        <div class="table-responsive order-grid-responsive">
+                                            <asp:GridView runat="server" ID="gvList" CssClass="table table-striped table-hover align-middle order-grid" AutoGenerateColumns="false" AllowPaging="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Visible="false" OnPageIndexChanging="gvList_PageIndexChanging" OnDataBound="gvList_DataBound">
+                                                <Columns>
+                                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <%# Container.DataItemIndex + 1 %>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:BoundField DataField="Id" HeaderText="ID" />
+                                                    <asp:BoundField DataField="OrderId" HeaderText="Order ID" />
+                                                    <asp:TemplateField HeaderText="Customer Name" ItemStyle-Wrap="true">
+                                                        <ItemTemplate>
+                                                            <%# BindCustomerText(Eval("CustomerName").ToString(), Eval("OperatorName").ToString()) %>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:BoundField DataField="OrderNumber" HeaderText="Order Number" ItemStyle-Wrap="true" />
+                                                    <asp:BoundField DataField="OrderName" HeaderText="Order Name" ItemStyle-Wrap="true" />
+                                                    <asp:BoundField DataField="Status" HeaderText="Status" ItemStyle-Wrap="true" />
+                                                    <asp:BoundField DataField="CreatedDate" HeaderText="Created" DataFormatString="{0:dd MMM yyyy}" />
+                                                    <asp:BoundField DataField="SubmittedDate" HeaderText="Submitted" DataFormatString="{0:dd MMM yyyy}" />
+                                                    <asp:BoundField DataField="ProductionDate" HeaderText="Production" DataFormatString="{0:dd MMM yyyy}" />
+                                                    <asp:BoundField DataField="OrderFactory" HeaderText="Factory" ItemStyle-Wrap="true" />
+                                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Shipment">
+                                                        <ItemTemplate>
+                                                            <a class="btn btn-sm btn-outline-info" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalShipment" onclick='<%# String.Format("return dataShipment(`{0}`, `{1:dd MMM yyyy}`, `{2}`, `{3:dd MMM yyyy}`, `{4}`);", Eval("ShipmentNumber").ToString(), Eval("ShipmentDate"), Eval("ContainerNumber").ToString(), Eval("ContainerETA"), Eval("Courier").ToString()) %>'>Show
+                                                            </a>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="BOE">
+                                                        <ItemTemplate>
+                                                            <a class="btn btn-sm btn-outline-secondary" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalBOEDownload" onclick='<%# String.Format("return dataBOEDownload(`{0}`, `{1:dd MMM yyyy HH:mm:ss}`);", Eval("Download").ToString(), Eval("DownloadDate")) %>'>Show</a>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField ItemStyle-Width="150px" ItemStyle-HorizontalAlign="Center">
+                                                        <ItemTemplate>
+                                                            <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                                            <ul class="dropdown-menu">
+                                                                <li><a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/order/detail?orderid=" & Eval("Id").ToString()) %>'>Detail</a></li>
+                                                                <li runat="server" visible='<%# VisibleEdit(New Object() {Eval("Active"), Eval("Status"), Eval("CreatedBy"), Eval("CreatedRole")}) %>'>
+                                                                    <a class="dropdown-item" href='<%# Page.ResolveUrl("~/order/edit?orderid=" & Eval("Id").ToString()) %>'>Edit</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleDelete(New Object() {Eval("Active"), Eval("Status"), Eval("CreatedBy"), Eval("CreatedRole")}) %>'>
+                                                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Delete Order", "") %>'>Delete</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleCopy(Eval("Active")) %>'>
+                                                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDuplicateOrder" onclick='<%# String.Format("return dataDuplicateOrder(`{0}`, `{1}`);", Eval("Id").ToString(), Eval("CustomerId").ToString()) %>'>Copy / Duplicate</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleUnsubmitOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Unsubmit Order", Eval("Status").ToString()) %>'>Unsubmit Order</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleNewOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "New Order", Eval("Status").ToString()) %>'>New Order</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleProductionOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Production Order", Eval("Status").ToString()) %>'>Production Order</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleHoldOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Hold Order", Eval("Status").ToString()) %>'>Hold Order</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleShipmentOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalShipmentOrder" onclick='<%# String.Format("return dataShipmentOrder(`{0}`);", Eval("Id").ToString()) %>'>Shipment Order</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleReceivePayment(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Receive Payment", Eval("Status").ToString()) %>'>Receive Payment</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleCompleteOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Complete Order", Eval("Status").ToString()) %>'>Complete Order</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleCancelOrder(Eval("Status").ToString(), Eval("Active")) %>'>
+                                                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalCancelOrder" onclick='<%# String.Format("return dataCancelOrder(`{0}`);", Eval("Id").ToString()) %>'>Cancel Order</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleOrignalOrder(New Object() {Eval("Active"), Eval("OrderType")}) %>'>
+                                                                    <a href="javascript:void(0);" class="dropdown-item" onclick="showOriginalOrder('<%# Eval("Id") %>')">Original Order</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleSurat(Eval("Status").ToString(), Eval("CompanyId").ToString(), Eval("Active")) %>'>
+                                                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Surat Jalan", Eval("Status").ToString()) %>'>Surat Jalan</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleDownloadBOE(Eval("Status").ToString(), Eval("Download").ToString(), Eval("Active")) %>'>
+                                                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalStatusOrder" onclick='<%# String.Format("return dataStatusOrder(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), "Download BOE", "") %>'>Download BOE</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleChina(Eval("Active"), Eval("Status").ToString(), Eval("OrderFactory").ToString()) %>'>
+                                                                    <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalOcean" onclick='<%# String.Format("return dataOcean(`{0}`);", Eval("Id").ToString()) %>'>Shutter Ocean</a>
+                                                                </li>
+                                                                <li runat="server" visible='<%# VisibleLog() %>'>
+                                                                    <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('OrderHeaders', '<%# Eval("Id") %>')">Log</a>
+                                                                </li>
+                                                            </ul>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                </Columns>
+                                            </asp:GridView>
+                                        </div>
+                                        <div class="d-flex justify-content-end mt-3">
+                                            <nav runat="server" id="navPager" visible="false">
+                                                <ul class="pagination mb-0">
+                                                    <asp:Repeater runat="server" ID="rptPager" OnItemCommand="rptPager_ItemCommand">
+                                                        <ItemTemplate>
+                                                            <li class='page-item <%# Eval("CssClass") %>'>
+                                                                <asp:LinkButton runat="server" ID="lnkPage" CssClass="page-link" Text='<%# Eval("Text") %>' CommandName="Page" CommandArgument='<%# Eval("PageIndex") %>' />
+                                                            </li>
+                                                        </ItemTemplate>
+                                                    </asp:Repeater>
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 col-lg-3 ms-lg-auto">
+                                            <div class="card-footer order-filter-footer" runat="server" id="divActive">
+                                                <asp:DropDownList runat="server" ID="ddlActive" CssClass="form-select"
+                                                    AutoPostBack="true" OnSelectedIndexChanged="ddlActive_SelectedIndexChanged">
+                                                    <asp:ListItem Value="1" Text="Active"></asp:ListItem>
+                                                    <asp:ListItem Value="0" Text="Non Active"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+        </section>
+    </div>
+    <div class="modal fade text-center" id="modalShipment" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Shipment</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <tr>
+                                <th>Shipment Number</th>
+                                <th>Shipment Date</th>
+                                <th>Container Number</th>
+                                <th>Container ETA</th>
+                                <th>Courier</th>
+                            </tr>
+                            <tr>
+                                <td><span id="spanShipmentNumber"></span></td>
+                                <td><span id="spanShipmentDate"></span></td>
+                                <td><span id="spanContainerNumber"></span></td>
+                                <td><span id="spanContainerEta"></span></td>
+                                <td><span id="spanCourier"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalBOEDownload" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">BOE Download</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <tr>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                            <tr>
+                                <td><span id="spanBOEDownloadStatus"></span></td>
+                                <td><span id="spanBOEDownloadDate"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalStatusOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white" id="titleStatus"></h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtStatusOrderId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtStatusOrderNew" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtStatusOrderOld" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnStatusOrder" CssClass="btn btn-info" Text="Confirm" OnClick="btnStatusOrder_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-left" id="modalDuplicateOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Dulicate Order</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtDuplicateOrderId" style="display:none;"></asp:TextBox>
+                    <asp:TextBox runat="server" ID="txtDuplicateOrderCustomerId" style="display:none;"></asp:TextBox>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Order Number (New)</label>
+                            <asp:TextBox runat="server" ID="txtOrderNumberNew" CssClass="form-control" placeholder="Order Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Order Name (New)</label>
+                            <asp:TextBox runat="server" ID="txtOrderNameNew" CssClass="form-control" placeholder="Order Name ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Order Note (New)</label>
+                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtOrderNoteNew" Height="130px" CssClass="form-control" placeholder="Order Note ...." autocomplete="off" style="resize: none"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2" runat="server" id="divErrorDuplicateOrder">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorDuplicateOrder"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDuplicateOrder" CssClass="btn btn-primary" Text="Submit" OnClick="btnDuplicateOrder_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-left" id="modalShipmentOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Shipment Order</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtShipmentOrderId" style="display:none;"></asp:TextBox>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Shipment Number</label>
+                            <asp:TextBox runat="server" ID="txtShipmentNumber" CssClass="form-control" placeholder="Shipment Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Shipment Date</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtShipmentDate" CssClass="form-control"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Container Number</label>
+                            <asp:TextBox runat="server" ID="txtContainerNumber" CssClass="form-control" placeholder="Container Number ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Container ETA</label>
+                            <asp:TextBox runat="server" TextMode="Date" ID="txtContainerEta" CssClass="form-control"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Courier</label>
+                            <asp:TextBox runat="server" ID="txtCourier" CssClass="form-control" placeholder="Courier ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2" runat="server" id="divErrorShipmentOrder">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorShipmentOrder"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnShipmentOrder" CssClass="btn btn-primary" Text="Submit" OnClick="btnShipmentOrder_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-left" id="modalCancelOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Cancel Order</h5>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtCancelOrderId" style="display:none;"></asp:TextBox>
+                    <div class="row mb-3">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Description</label>
+                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtCancelDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row" runat="server" id="divErrorCancelOrder">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorCancelOrder"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnCancelOrder" CssClass="btn btn-danger" Text="Submit" OnClick="btnCancelOrder_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalOcean" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title white">Shutter Ocean</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <asp:TextBox runat="server" ID="txtOceanId" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnOcean" CssClass="btn btn-info" Text="Confirm" OnClick="btnOcean_Click" OnClientClick="return showWaiting($(this).closest('.modal').attr('id'));" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalOriginalOrder" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Original Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger d-none" id="originalOrderError"></div>
+                    <div class="table-responsive">
+                        <table class="table table-vcenter card-table" id="tblOriginalOrder">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Order Number</th>
+                                    <th>Order Name</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalLog" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Changelog</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger d-none" id="logError"></div>
+                    <div class="table-responsive">
+                        <table class="table table-vcenter card-table" id="tblLogs">
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalWaiting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        window.addEventListener("pageshow", function () {
+            var loading = document.getElementById("loadingOverlay");
+            if (loading) {
+                loading.style.display = "none";
+            }
+        });
+        function initUpdatePanelLoading() {
+            if (typeof Sys === "undefined") {
+                return;
+            }
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) {
+                    loading.style.display = "block";
+                }
+            });
+            prm.add_endRequest(function () {
+                var loading = document.getElementById("loadingOverlay");
+                if (loading) {
+                    loading.style.display = "none";
+                }
+                bindGridRowClick();
+            });
+        }
+        function bindGridRowClick() {
+            const gv = document.getElementById('<%= gvList.ClientID %>');
+            if (!gv) {
+                return;
+            }
+            for (let i = 1; i < gv.rows.length; i++) {
+                const row = gv.rows[i];
+                row.style.cursor = "pointer";
+                row.onclick = function (e) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]") || e.target.closest(".dropdown-menu")) {
+                        return;
+                    }
+                    const btn = this.querySelector("a[id*='aDetail']");
+                    if (btn) {
+                        btn.click();
+                    }
+                };
+            }
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+            initUpdatePanelLoading();
+            bindGridRowClick();
+        });
+        function dataShipment(number, date, container, coneta, courier) {
+            document.getElementById("spanShipmentNumber").innerText = number;
+            document.getElementById("spanShipmentDate").innerText = date;
+            document.getElementById("spanContainerNumber").innerText = container;
+            document.getElementById("spanContainerEta").innerText = coneta;
+            document.getElementById("spanCourier").innerText = courier;
+        }
+        function dataBOEDownload(status, date) {
+            document.getElementById("spanBOEDownloadStatus").innerText = status;
+            document.getElementById("spanBOEDownloadDate").innerText = date;
+        }
+        function dataStatusOrder(id, status, oldStatus) {
+            document.getElementById("titleStatus").textContent = status;
+            document.getElementById("<%=txtStatusOrderId.ClientID %>").value = id;
+            document.getElementById("<%=txtStatusOrderNew.ClientID %>").value = status;
+            document.getElementById("<%=txtStatusOrderOld.ClientID %>").value = oldStatus;
+        }
+        function dataDuplicateOrder(id, customerid) {
+            document.getElementById("<%=txtDuplicateOrderId.ClientID %>").value = id;
+            document.getElementById("<%=txtDuplicateOrderCustomerId.ClientID %>").value = customerid;
+        }
+        function showDuplicateOrder() {
+            $("#modalDuplicateOrder").modal("show");
+        }
+        function dataShipmentOrder(id) {
+            document.getElementById("<%=txtShipmentOrderId.ClientID %>").value = id;
+        }
+        function showShipmentOrder() {
+            $("#modalShipmentOrder").modal("show");
+        }
+        function dataCancelOrder(id) {
+            document.getElementById("<%=txtCancelOrderId.ClientID %>").value = id;
+        }
+        function showCancelOrder() {
+            $("#modalCancelOrder").modal("show");
+        }
+        function dataOcean(id) {
+            document.getElementById("<%=txtOceanId.ClientID %>").value = id;
+        }
+        function showOriginalOrder(id) {
+            $("#originalOrderError").addClass("d-none").html("");
+            $("#tblOriginalOrder tbody").html("");
+            $("#modalOriginalOrder").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "Method.aspx/GetOriginalOrder",
+                data: JSON.stringify({ id: id }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function (res) {
+                    const orders = res.d;
+
+                    if (!orders || orders.length === 0) {
+                        $("#tblOriginalOrder tbody").html(
+                            `<tr><td colspan="3" class="text-center text-muted">ORIGINAL ORDER NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+
+                    orders.forEach(r => {
+                        html += `
+                            <tr>
+                                <td>${r.OrderId ?? ""}</td>
+                                <td>${r.OrderNumber ?? ""}</td>
+                                <td>${r.OrderName ?? ""}</td>
+                            </tr>
+                        `;
+                    });
+
+                    $("#tblOriginalOrder tbody").html(html);
+                },
+
+                error: function () {
+                    $("#originalOrderError").removeClass("d-none").html("FAILED TO LOAD ORIGINAL ORDER");
+                }
+            });
+        }
+        function showLog(type, dataId) {
+            $("#logError").addClass("d-none").html("");
+            $("#tblLogs tbody").html("");
+            $("#modalLog").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "Method.aspx/GetLogs",
+                data: JSON.stringify({type: type, dataId: dataId}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function (res) {
+                    const logs = res.d;
+
+                    if (!logs || logs.length === 0) {
+                        $("#tblLogs tbody").html(
+                            `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+                    logs.forEach(r => {
+                        html += `<tr><td>${r.TextLog}</td></tr>`;
+                    });
+                    $("#tblLogs tbody").html(html);
+                },
+                error: function (err) {
+                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
+                }
+            });
+        }
+        function showWaiting(hideModal = null) {
+            $("#modalWaiting").modal("show");
+
+            setTimeout(function () {
+                $("#modalWaiting").modal("hide");
+                if (hideModal) {
+                    $(`#${hideModal}`).modal("hide");
+                }
+            }, 5000);
+            return true;
+        }
+        [
+            "modalBOEDownload",
+            "modalShipment",
+            "modalStatusOrder",
+            "modalDuplicateOrder",
+            "modalCancelOrder",
+            "modalShipmentOrder",
+            "modalOcean",
+            "modalOriginalOrder",
+            "modalLog"
+        ].forEach(function (id) {
+            document.getElementById(id).addEventListener("hide.bs.modal", function () {
+                document.activeElement.blur();
+                document.body.focus();
+            });
+        });
+        window.history.replaceState(null, null, window.location.href);
+        document.addEventListener("DOMContentLoaded", function () {
+            document.addEventListener("shown.bs.dropdown", function (event) {
+                var button = event.target;
+                if (!button.closest(".order-grid")) {
+                    return;
+                }
+
+                var dropdown = button.parentElement.querySelector(".dropdown-menu");
+                if (!dropdown) {
+                    return;
+                }
+
+                if (!dropdown._originalParent) {
+                    dropdown._originalParent = dropdown.parentElement;
+                    dropdown._originalNextSibling = dropdown.nextSibling;
+                }
+                dropdown._dropdownButton = button;
+
+                document.body.appendChild(dropdown);
+
+                var rect = button.getBoundingClientRect();
+                var dropdownWidth = dropdown.offsetWidth;
+                var dropdownHeight = dropdown.offsetHeight;
+                var left = rect.right - dropdownWidth;
+                var top = rect.bottom + 4;
+
+                if (left < 10) {
+                    left = 10;
+                }
+                if (left + dropdownWidth > window.innerWidth - 10) {
+                    left = window.innerWidth - dropdownWidth - 10;
+                }
+                if (top + dropdownHeight > window.innerHeight - 10) {
+                    top = rect.top - dropdownHeight - 4;
+                }
+                if (top < 10) {
+                    top = 10;
+                }
+                dropdown.style.position = "fixed";
+                dropdown.style.left = left + "px";
+                dropdown.style.top = top + "px";
+                dropdown.style.right = "auto";
+                dropdown.style.bottom = "auto";
+                dropdown.style.transform = "none";
+                dropdown.style.margin = "0";
+                dropdown.style.zIndex = "999999";
+            });
+            document.addEventListener("hidden.bs.dropdown", function (event) {
+                var button = event.target;
+                if (!button.closest(".order-grid")) {
+                    return;
+                }
+
+                var dropdown = document.querySelector("body > .dropdown-menu");
+                if (!dropdown || dropdown._dropdownButton !== button) {
+                    return;
+                }
+
+                var originalParent = dropdown._originalParent;
+                var originalNextSibling = dropdown._originalNextSibling;
+
+                if (originalParent) {
+                    if (originalNextSibling && originalNextSibling.parentNode === originalParent) {
+                        originalParent.insertBefore(dropdown, originalNextSibling);
+                    } else {
+                        originalParent.appendChild(dropdown);
+                    }
+                }
+
+                dropdown.style.position = "";
+                dropdown.style.left = "";
+                dropdown.style.top = "";
+                dropdown.style.right = "";
+                dropdown.style.bottom = "";
+                dropdown.style.transform = "";
+                dropdown.style.margin = "";
+                dropdown.style.zIndex = "";
+                dropdown._dropdownButton = null;
+            });
+        });
+    </script>
+</asp:Content>

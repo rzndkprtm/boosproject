@@ -1,0 +1,186 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class Setting_Customer_Address_Edit
+    Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/customer/address", False)
+            Exit Sub
+        End If
+
+        If String.IsNullOrEmpty(Request.QueryString("addressid")) Then
+            Response.Redirect("~/setting/customer/address", False)
+            Exit Sub
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            lblReturnPage.Text = Request.QueryString("returnpage").ToString()
+        End If
+
+        lblId.Text = Request.QueryString("addressid").ToString()
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            BindData(lblId.Text)
+        End If
+    End Sub
+
+    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            If ddlCustomer.SelectedValue = "" Then
+                MessageError(True, "CUSTOMER ACCOUNT IS REQURIED !")
+                Exit Sub
+            End If
+            If ddlType.SelectedValue = "" Then
+                MessageError(True, "ADDRESS TYPE IS REQURIED !")
+                Exit Sub
+            End If
+            If txtAddress.Text = "" Then
+                MessageError(True, "ADDRESS IS REQUIRED !")
+                Exit Sub
+            End If
+            If txtAddress.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
+                MessageError(True, "ADDRESS CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
+                Exit Sub
+            End If
+            If txtSuburb.Text = "" Then
+                MessageError(True, "SUBURB IS REQUIRED !")
+                Exit Sub
+            End If
+            If txtSuburb.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
+                MessageError(True, "SUBURB CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
+                Exit Sub
+            End If
+            If txtState.Text = "" Then
+                MessageError(True, "STATE IS REQUIRED !")
+                Exit Sub
+            End If
+            If txtState.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
+                MessageError(True, "STATE CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
+                Exit Sub
+            End If
+            If txtPostCode.Text = "" Then
+                MessageError(True, "POST CODE IS REQUIRED !")
+                Exit Sub
+            End If
+            If txtPostCode.Text.Contains(",") OrElse txtAddress.Text.Contains(";") Then
+                MessageError(True, "POST CODE CANNOT CONTAIN COMMA (,) OR SEMICOLON (;) !")
+                Exit Sub
+            End If
+            If msgError.InnerText = "" Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerAddress SET CustomerId=@CustomerId, Type=@Type, Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode, Note=@Note WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Suburb", txtSuburb.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@PostCode", txtPostCode.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Note", txtNote.Text.Trim())
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim dataLog As Object() = {"CustomerAddress", lblId.Text, Session("LoginId").ToString(), "Customer Address Updated"}
+                settingClass.Logs(dataLog)
+
+                url = "~/setting/customer/address"
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                End If
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
+        url = "~/setting/customer/address"
+        If lblReturnPage.Text = "detail" Then
+            url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+        End If
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub BindData(addressId As String)
+        Try
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerAddress WHERE Id='" & addressId & "'")
+            If thisData Is Nothing Then Exit Sub
+
+            BindCustomer(thisData("CustomerId").ToString())
+
+            ddlCustomer.SelectedValue = thisData("CustomerId").ToString()
+            ddlType.SelectedValue = thisData("Type").ToString()
+            txtAddress.Text = thisData("Address").ToString()
+            txtSuburb.Text = thisData("Suburb").ToString()
+            txtState.Text = thisData("State").ToString()
+            txtPostCode.Text = thisData("PostCode").ToString()
+            txtNote.Text = thisData("Note").ToString()
+
+            ddlCustomer.Enabled = False
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindCustomer(customerId As String)
+        ddlCustomer.Items.Clear()
+        Try
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@CustomerId", If(customerId Is Nothing, CType(DBNull.Value, Object), customerId)),
+                New SqlParameter("@LoginId", Session("LoginId"))
+            }
+
+            ddlCustomer.DataSource = settingClass.GetDataTableSP("sp_Customers_List_Dropdown_Setting", params)
+            ddlCustomer.DataTextField = "Name"
+            ddlCustomer.DataValueField = "Id"
+            ddlCustomer.DataBind()
+
+            If ddlCustomer.Items.Count > 1 Then
+                ddlCustomer.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlCustomer.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
+            End If
+        End Try
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class

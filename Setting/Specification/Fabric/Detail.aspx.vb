@@ -1,0 +1,268 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports System.Web.Services
+
+Partial Class Setting_Specification_Fabric_Detail
+    Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
+    Dim url As String = String.Empty
+
+
+    <WebMethod(EnableSession:=True)>
+    Public Shared Sub UpdateSession(value As String)
+        HttpContext.Current.Session("selectedTabFabric") = value
+    End Sub
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/specification/fabric", False)
+            Exit Sub
+        End If
+        If String.IsNullOrEmpty(Request.QueryString("fabricid")) Then
+            Response.Redirect("~/setting/specification/fabric", False)
+            Exit Sub
+        End If
+
+        If Not Session("selectedTabFabric") = "" Then
+            selected_tab.Value = Session("selectedTabFabric").ToString()
+        End If
+
+        lblId.Text = Request.QueryString("fabricid").ToString()
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            MessageError_Colour(False, String.Empty)
+
+            BindData(lblId.Text)
+            BindDataColour(lblId.Text, txtSearchColour.Text)
+        End If
+    End Sub
+
+    Protected Sub btnEditFabric_Click(sender As Object, e As EventArgs)
+        url = String.Format("~/setting/specification/fabric/edit?fabricid={0}&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("UPDATE Fabrics SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"Fabrics", lblId.Text, Session("LoginId").ToString(), "Fabric Type Deleted"}
+            settingClass.Logs(dataLog)
+
+            Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM FabricAlias WHERE Type='Fabrics' AND FirstId='" & lblId.Text & "'")
+            If aliasData IsNot Nothing Then
+                Dim aliasId As String = aliasData(0).ToString()
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("UPDATE Fabrics SET Status='Deleted', Name=CASE WHEN Name LIKE '%(DELETED)%' THEN Name ELSE Name + ' (DELETED)' END WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", aliasId)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                dataLog = {"Fabrics", aliasId, Session("LoginId").ToString(), "Fabric Type Deleted"}
+                settingClass.Logs(dataLog)
+            End If
+
+            url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnSearchColour_Click(sender As Object, e As EventArgs)
+        MessageError_Colour(False, String.Empty)
+        BindDataColour(lblId.Text, txtSearchColour.Text)
+    End Sub
+
+    Protected Sub btnAddColour_Click(sender As Object, e As EventArgs)
+        Session("selectedTabFabric") = "list-colour"
+
+        url = String.Format("~/setting/specification/fabric/colour/add?fabricid={0}&returnpage=detail", lblId.Text)
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub btnChangeStatusColour_Click(sender As Object, e As EventArgs)
+        MessageError_Colour(False, String.Empty)
+        Session("selectedTabFabric") = "list-colour"
+        Try
+            Dim thisId As String = txtIdStatusColour.Text
+            Dim newStatus As String = ddlNewStatusColour.SelectedValue
+            Dim oldStatus As String = ddlOldStatusColour.SelectedValue
+            Dim rollQty As String = txtNewRollQty.Text
+            Dim etaFactory As String = txtNewEtaFactory.Text
+
+            If newStatus = "In Stock" OrElse newStatus = "Discontinued" Then
+                etaFactory = String.Empty
+            End If
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status, RollQty=@RollQty, EtaFactory=@EtaFactory WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@Status", newStatus)
+                    thisCmd.Parameters.AddWithValue("@RollQty", If(String.IsNullOrEmpty(rollQty), CType(DBNull.Value, Object), rollQty))
+                    thisCmd.Parameters.AddWithValue("@EtaFactory", If(String.IsNullOrEmpty(etaFactory), CType(DBNull.Value, Object), etaFactory))
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim changeDesc As String = String.Format("Change Status Fabric Colour : {0}", newStatus)
+            dataLog = {"FabricColours", thisId, Session("LoginId").ToString(), changeDesc}
+            settingClass.Logs(dataLog)
+
+            Dim aliasData As DataRow = settingClass.GetDataRow("SELECT SecondId FROM FabricAlias WHERE Type='FabricColours' AND FirstId='" & thisId & "'")
+            If aliasData IsNot Nothing Then
+                Dim aliasId As String = aliasData(0).ToString()
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE FabricColours SET Status=@Status, RollQty=@RollQty, EtaFactory=@EtaFactory WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", aliasId)
+                        thisCmd.Parameters.AddWithValue("@Status", newStatus)
+                        thisCmd.Parameters.AddWithValue("@RollQty", rollQty)
+                        thisCmd.Parameters.AddWithValue("@EtaFactory", If(String.IsNullOrEmpty(etaFactory), CType(DBNull.Value, Object), etaFactory))
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                changeDesc = String.Format("Change Status Fabric Colour : {0}", newStatus)
+                dataLog = {"FabricColours", aliasId, Session("LoginId").ToString(), changeDesc}
+                settingClass.Logs(dataLog)
+            End If
+
+            url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", lblId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Colour(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Colour(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindData(fabricId As String)
+        Try
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Fabrics WHERE Id='" & fabricId & "' AND (Status='Active' OR Status='In Active')")
+            If thisData Is Nothing Then
+                Response.Redirect("~/setting/specification/fabric", False)
+                Exit Sub
+            End If
+
+            lblName.Text = thisData("Name").ToString()
+            lblType.Text = thisData("Type").ToString()
+            lblGroup.Text = thisData("Group").ToString()
+
+            Dim norailroad As Integer = Convert.ToInt32(thisData("NoRailRoad"))
+            lblNoRailRoad.Text = "Error"
+            If norailroad = 1 Then lblNoRailRoad.Text = "Yes"
+            If norailroad = 0 Then lblNoRailRoad.Text = "No"
+
+            lblStatus.Text = thisData("Status").ToString()
+
+            lblDesignName.Text = String.Empty
+            If Not thisData("DesignId").ToString() = "" Then
+                Dim designArray() As String = thisData("DesignId").ToString().Split(",")
+
+                Dim designName As String = String.Empty
+                For Each i In designArray
+                    Dim thisName As String = settingClass.GetItemData("SELECT Name FROM Designs WHERE Id='" & i & "'")
+                    designName &= thisName & ", "
+                Next
+
+                lblDesignName.Text = designName.Remove(designName.Length - 2).ToString()
+            End If
+
+            lblTubeType.Text = String.Empty
+            If Not thisData("TubeId").ToString() = "" Then
+                Dim tubeArray() As String = thisData("TubeId").ToString().Split(",")
+
+                Dim tubeName As String = String.Empty
+                For Each i In tubeArray
+                    Dim thisName As String = settingClass.GetItemData("SELECT Alias FROM ProductTubes WHERE Id='" & i & "'")
+                    tubeName &= thisName & ", "
+                Next
+
+                lblTubeType.Text = tubeName.Remove(tubeName.Length - 2).ToString()
+            End If
+
+            lblCompanyDetailName.Text = String.Empty
+            lblCompanyDetail.Text = thisData("CompanyDetailId").ToString()
+            If Not thisData("CompanyDetailId").ToString() = "" Then
+                Dim companyArray() As String = thisData("CompanyDetailId").ToString().Split(",")
+
+                Dim companyDetailName As String = String.Empty
+                For Each i In companyArray
+                    Dim thisName As String = settingClass.GetItemData("SELECT Name FROM CompanyDetails WHERE Id='" & i & "'")
+                    companyDetailName += thisName & ", "
+                Next
+
+                lblCompanyDetailName.Text = companyDetailName.Remove(companyDetailName.Length - 2).ToString()
+            End If
+
+            btnEditFabric.Visible = LoginAccess("Edit")
+            aDeleteFabric.Visible = LoginAccess("Delete")
+            btnAddColour.Visible = LoginAccess("Add Colour")
+        Catch ex As Exception
+            MessageError(True, ex.ToString)
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindDataColour(fabricId As String, searchText As String)
+        Try
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@FabricId", fabricId),
+                New SqlParameter("@SearchText", If(String.IsNullOrWhiteSpace(searchText), CType(DBNull.Value, Object), searchText))
+            }
+            gvListColour.DataSource = settingClass.GetDataTableSP("sp_FabricColours_List", params)
+            gvListColour.DataBind()
+            gvListColour.Columns(1).Visible = LoginAccess("Visible ID Detail")
+        Catch ex As Exception
+            MessageError_Colour(True, ex.ToString)
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Colour(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Colour(visible As Boolean, message As String)
+        divErrorColour.Visible = visible : msgErrorColour.InnerText = message
+    End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class

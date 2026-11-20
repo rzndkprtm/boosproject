@@ -1,0 +1,6062 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports System.Globalization
+
+Public Class OrderClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim enUS As CultureInfo = New CultureInfo("en-US")
+
+    Public Function GetDataRow(thisString As String) As DataRow
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        If thisTable.Rows.Count > 0 Then
+                            Return thisTable.Rows(0)
+                        Else
+                            Return Nothing
+                        End If
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
+    End Function
+
+    Public Function GetDataRowSP(spName As String, params As List(Of SqlParameter)) As DataRow
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    thisCmd.Parameters.AddRange(params.ToArray())
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        If thisTable.Rows.Count > 0 Then
+                            Return thisTable.Rows(0)
+                        End If
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+        End Try
+        Return Nothing
+    End Function
+
+    Public Function GetDataTable(thisString As String) As DataTable
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        Return thisTable
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
+    End Function
+
+    Public Function GetDataTableSP(spName As String, params As List(Of SqlParameter)) As DataTable
+        Dim thisTable As New DataTable()
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    If params IsNot Nothing Then
+                        If params.Count > 0 Then
+                            thisCmd.Parameters.AddRange(params.ToArray())
+                        End If
+                    End If
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        thisAdapter.Fill(thisTable)
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+            thisTable = New DataTable()
+        End Try
+        Return thisTable
+    End Function
+
+    Public Sub ExecuteSP(spName As String, params As List(Of SqlParameter))
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(spName, thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
+                    If params IsNot Nothing AndAlso params.Count > 0 Then
+                        thisCmd.Parameters.AddRange(params.ToArray())
+                    End If
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Public Function GetItemData(thisString As String) As String
+        Dim result As String = String.Empty
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
+                        While rdResult.Read
+                            result = rdResult.Item(0).ToString()
+                        End While
+                    End Using
+                End Using
+                thisConn.Close()
+            End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetItemData_Integer(thisString As String) As Integer
+        Dim result As Integer = 0
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
+                        While rdResult.Read
+                            result = rdResult.Item(0)
+                        End While
+                    End Using
+                End Using
+                thisConn.Close()
+            End Using
+        Catch ex As Exception
+            result = 0
+        End Try
+        Return result
+    End Function
+
+    Public Function GetItemData_Decimal(thisString As String) As Decimal
+        Dim result As Double = 0D
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
+                        While rdResult.Read
+                            result = rdResult.Item(0)
+                        End While
+                    End Using
+                End Using
+                thisConn.Close()
+            End Using
+        Catch ex As Exception
+            result = 0D
+        End Try
+        Return result
+    End Function
+
+    Public Function GetItemData_Boolean(thisString As String) As Boolean
+        Dim result As Boolean = False
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using rdResult = thisCmd.ExecuteReader
+                        While rdResult.Read
+                            result = rdResult.Item(0)
+                        End While
+                    End Using
+                End Using
+                thisConn.Close()
+            End Using
+        Catch ex As Exception
+            result = False
+        End Try
+        Return result
+    End Function
+
+    Public Function IsValidEmail(email As String) As Boolean
+        Try
+            Dim mail As New Net.Mail.MailAddress(email)
+            Return True
+        Catch
+            Return False
+        End Try
+    End Function
+
+    Public Function GetOrderContext(id As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(id) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT QueryString FROM OrderActionContext WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", id)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetOrderType(headerId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(headerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT OrderType FROM OrderHeaders WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", headerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetOrderStatus(headerId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(headerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Status FROM OrderHeaders WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", headerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetUserRoleName(loginId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(loginId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT LoginRoles.Name FROM Logins INNER JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id WHERE Logins.Id=@LoginId", thisConn)
+                        thisCmd.Parameters.AddWithValue("@LoginId", loginId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetCustomerPriceAccess(loginId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(loginId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT CASE WHEN Pricing=1 THEN 'Yes' ELSE '' END AS PriceAccess FROM Logins WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", loginId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetCustomerIdByOrder(headerId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(headerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT CustomerId FROM OrderHeaders WHERE Id=@OrderId", thisConn)
+                        thisCmd.Parameters.AddWithValue("@OrderId", headerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetCompanyIdByOrder(orderId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(orderId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Customers.CompanyId FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id=@OrderId", thisConn)
+                        thisCmd.Parameters.AddWithValue("@OrderId", orderId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetCompanyDetailIdByOrder(orderId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(orderId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Customers.CompanyDetailId FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id=@OrderId", thisConn)
+                        thisCmd.Parameters.AddWithValue("@OrderId", orderId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetCompanyAliasByCustomer(customerId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Companys.Alias FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id WHERE Customers.Id=@CustomerId", thisConn)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetCompanyName(companyId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(companyId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Companys WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", companyId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetCompanyDetailName(companyDetailId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(companyDetailId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM CompanyDetails WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", companyDetailId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetCompanyDetailIdByCustomer(customerId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT CompanyDetailId FROM Customers WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", customerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetCompanyDetailNameByCustomer(customerId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT CompanyDetails.Name FROM Customers LEFT JOIN CompanyDetails ON Customers.CompanyDetailId=CompanyDetails.Id WHERE Customers.Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", customerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetPriceGroupByOrder(orderId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(orderId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Customers.PriceGroupId FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id=@OrderId", thisConn)
+                        thisCmd.Parameters.AddWithValue("@OrderId", orderId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetShutterPriceGroupByOrder(orderId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(orderId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Customers.ShutterPriceGroupId FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id=@OrderId", thisConn)
+                        thisCmd.Parameters.AddWithValue("@OrderId", orderId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetDoorPriceGroupByOrder(orderId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(orderId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Customers.DoorPriceGroupId FROM OrderHeaders INNER JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id=@OrderId", thisConn)
+                        thisCmd.Parameters.AddWithValue("@OrderId", orderId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetPriceProductGroupId(groupName As String, designId As String, priceGroupId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(groupName) OrElse String.IsNullOrEmpty(designId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Id FROM PriceProductGroups CROSS APPLY STRING_SPLIT(PriceGroupId, ',') AS thisArray WHERE Name=@Name AND DesignId=@DesignId AND thisArray.VALUE=@PriceGroupId AND Status='Active'", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Name", groupName)
+                        thisCmd.Parameters.AddWithValue("@DesignId", designId)
+                        thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetPriceProductGroupName(groupId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(groupId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM PriceProductGroups WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", groupId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetPriceProductGroupStatus(groupId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(groupId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Status FROM PriceProductGroups WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", groupId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetDesignId(productId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(productId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT DesignId FROM Products WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", productId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetBlindId(productId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(productId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT BlindId FROM Products WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", productId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetTubeId(productId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(productId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT TubeType FROM Products WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", productId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetControlId(productId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(productId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT ControlType FROM Products WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", productId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetDesignName(designId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(designId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Designs WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", designId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetDesignPage(designId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(designId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Page FROM Designs WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", designId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetBlindName(blindId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(blindId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Blinds WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", blindId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetProductName(productId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(productId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Products WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", productId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetProductDescription(itemId As String, showStock As Boolean) As String
+        Dim result As String = String.Empty
+        Try
+            Dim param As New List(Of SqlParameter) From {
+                New SqlParameter("@ItemId", Convert.ToInt32(itemId))
+            }
+            Dim thisData As DataRow = GetDataRowSP("sp_OrderDetails_Description", param)
+            If thisData Is Nothing Then
+                Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
+            End If
+
+            Dim productId As String = thisData("ProductId").ToString()
+            Dim serviceId As String = thisData("ServiceId").ToString()
+            Dim productName As String = thisData("ProductName").ToString()
+            Dim designName As String = thisData("DesignName").ToString()
+            Dim blindName As String = thisData("BlindName").ToString()
+
+            Dim subType As String = thisData("SubType").ToString()
+            Dim heading As String = thisData("Heading").ToString()
+            Dim headingB As String = thisData("HeadingB").ToString()
+
+            Dim trackType As String = thisData("TrackType").ToString()
+            Dim trackTypeB As String = thisData("TrackTypeB").ToString()
+
+            Dim fabricId As String = thisData("FabricId").ToString()
+
+            Dim fabricColourId As String = thisData("FabricColourId").ToString()
+            Dim fabricColourIdB As String = thisData("FabricColourIdB").ToString()
+            Dim fabricColourIdC As String = thisData("FabricColourIdC").ToString()
+            Dim fabricColourIdD As String = thisData("FabricColourIdD").ToString()
+            Dim fabricColourIdE As String = thisData("FabricColourIdE").ToString()
+            Dim fabricColourIdF As String = thisData("FabricColourIdF").ToString()
+
+            Dim width As String = thisData("Width").ToString()
+            Dim widthB As String = thisData("WidthB").ToString()
+            Dim widthC As String = thisData("WidthC").ToString()
+            Dim widthD As String = thisData("WidthD").ToString()
+            Dim widthE As String = thisData("WidthE").ToString()
+            Dim widthF As String = thisData("WidthF").ToString()
+
+            Dim drop As String = thisData("Drop").ToString()
+            Dim dropB As String = thisData("DropB").ToString()
+            Dim dropC As String = thisData("DropC").ToString()
+            Dim dropD As String = thisData("DropD").ToString()
+            Dim dropE As String = thisData("DropE").ToString()
+            Dim dropF As String = thisData("DropF").ToString()
+
+            Dim printing As String = thisData("Printing").ToString()
+            Dim printingB As String = thisData("PrintingB").ToString()
+            Dim printingC As String = thisData("PrintingC").ToString()
+            Dim printingD As String = thisData("PrintingD").ToString()
+            Dim printingE As String = thisData("PrintingE").ToString()
+            Dim printingF As String = thisData("PrintingF").ToString()
+
+            Dim layoutCode As String = thisData("LayoutCode").ToString()
+            Dim frameColour As String = thisData("FrameColour").ToString()
+
+            Dim size As String = String.Format("({0}x{1})", width, drop)
+            Dim sizeB As String = String.Format("({0}x{1})", widthB, dropB)
+            Dim sizeC As String = String.Format("({0}x{1})", widthC, dropC)
+            Dim sizeD As String = String.Format("({0}x{1})", widthD, dropD)
+            Dim sizeE As String = String.Format("({0}x{1})", widthE, dropE)
+            Dim sizeF As String = String.Format("({0}x{1})", widthF, dropF)
+
+            Dim fabricName As String = GetFabricName(fabricId)
+
+            Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+            Dim fabricColourNameB As String = GetFabricColourName(fabricColourIdB)
+            Dim fabricColourNameC As String = GetFabricColourName(fabricColourIdC)
+            Dim fabricColourNameD As String = GetFabricColourName(fabricColourIdD)
+            Dim fabricColourNameE As String = GetFabricColourName(fabricColourIdE)
+            Dim fabricColourNameF As String = GetFabricColourName(fabricColourIdF)
+
+            Dim productStatus As String = GetItemData("SELECT Status FROM Products WHERE Id='" & productId & "'")
+
+            Dim fabricColourStatus As String = GetFabricColourStatus(fabricColourId)
+            Dim fabricColourStatusB As String = GetFabricColourStatus(fabricColourIdB)
+            Dim fabricColourStatusC As String = GetFabricColourStatus(fabricColourIdC)
+            Dim fabricColourStatusD As String = GetFabricColourStatus(fabricColourIdD)
+
+            Dim squareMetre As Decimal = 0D
+            Dim squareMetreB As Decimal = 0D
+            Dim squareMetreC As Decimal = 0D
+            Dim squareMetreD As Decimal = 0D
+            Dim squareMetreE As Decimal = 0D
+            Dim squareMetreF As Decimal = 0D
+
+            If Not IsDBNull(thisData("SquareMetre")) Then
+                squareMetre = Math.Round(Convert.ToDecimal(thisData("SquareMetre")), 2)
+            End If
+            If Not IsDBNull(thisData("SquareMetreB")) Then
+                squareMetreB = Math.Round(Convert.ToDecimal(thisData("SquareMetreB")), 2)
+            End If
+            If Not IsDBNull(thisData("SquareMetreC")) Then
+                squareMetreC = Math.Round(Convert.ToDecimal(thisData("SquareMetreC")), 2)
+            End If
+            If Not IsDBNull(thisData("SquareMetreD")) Then
+                squareMetreD = Math.Round(Convert.ToDecimal(thisData("SquareMetreD")), 2)
+            End If
+            If Not IsDBNull(thisData("SquareMetreE")) Then
+                squareMetreE = Math.Round(Convert.ToDecimal(thisData("SquareMetreE")), 2)
+            End If
+            If Not IsDBNull(thisData("SquareMetreF")) Then
+                squareMetreF = Math.Round(Convert.ToDecimal(thisData("SquareMetreF")), 2)
+            End If
+
+            Dim squareMetreText As String = String.Format("{0}sqm", squareMetre.ToString("0.##", enUS))
+            Dim squareMetreTextB As String = String.Format("{0}sqm", squareMetreB.ToString("0.##", enUS))
+            Dim squareMetreTextC As String = String.Format("{0}sqm", squareMetreC.ToString("0.##", enUS))
+            Dim squareMetreTextD As String = String.Format("{0}sqm", squareMetreD.ToString("0.##", enUS))
+            Dim squareMetreTextE As String = String.Format("{0}sqm", squareMetreE.ToString("0.##", enUS))
+            Dim squareMetreTextF As String = String.Format("{0}sqm", squareMetreF.ToString("0.##", enUS))
+
+            Dim linearMetre As Decimal = 0D
+            Dim linearMetreB As Decimal = 0D
+            Dim linearMetreC As Decimal = 0D
+
+            If Not IsDBNull(thisData("LinearMetre")) Then
+                linearMetre = Math.Round(Convert.ToDecimal(thisData("LinearMetre")), 2)
+            End If
+            If Not IsDBNull(thisData("LinearMetreB")) Then
+                linearMetreB = Math.Round(Convert.ToDecimal(thisData("LinearMetreB")), 2)
+            End If
+            If Not IsDBNull(thisData("LinearMetreC")) Then
+                linearMetreC = Math.Round(Convert.ToDecimal(thisData("LinearMetreC")), 2)
+            End If
+
+            Dim linearMetreText As String = String.Format("{0}lm", linearMetre.ToString("0.##", enUS))
+            Dim linearMetreTextB As String = String.Format("{0}lm", linearMetreB.ToString("0.##", enUS))
+            Dim linearMetreTextC As String = String.Format("{0}lm", linearMetreC.ToString("0.##", enUS))
+
+            Dim room As String = thisData("Room").ToString()
+            Dim itemDescription As String = String.Format("<b>{0}</b>, {1}", room, productName)
+            If String.IsNullOrEmpty(room) Then
+                itemDescription = productName
+            End If
+
+            If designName = "Aluminium Blind" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+                If subType.Contains("2 on 1") Then
+                    result = String.Format("<b>{0}</b>, 2 on 1 Headrail", room)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2}", productName, size, squareMetreText)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2}", productName, sizeB, squareMetreTextB)
+                End If
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+                End If
+            End If
+            If designName = "Cellular Shades" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If showStock = True Then
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+
+                If blindName = "Day & Night" Then
+                    result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+                    result &= "<br />"
+                    result &= fabricColourName
+                    If showStock = True Then
+                        If fabricColourStatus = "Limited Stock" Then
+                            result &= "<span style='color: #B8860B; font-weight: 700;'> [ Limited Stock ! ]</span>"
+                        End If
+                        If fabricColourStatus = "Out of Stock" Then
+                            result &= "<span style='color: #D9534F; font-weight: 700;'> [ Out of Stock ! ]</span>"
+                        End If
+                        If fabricColourStatus = "Discontinued" Then
+                            result &= "<span style='color: #6F42C1; font-weight: 700;'> [ Discountinued ! ]</span>"
+                        End If
+                    End If
+                    result &= "<br />"
+                    result &= fabricColourNameB
+                    If showStock = True Then
+                        If showStock = True Then
+                            If fabricColourStatusB = "Limited Stock" Then
+                                result &= "<span style='color: #B8860B; font-weight: 700;'> [ Limited Stock ! ]</span>"
+                            End If
+                            If fabricColourStatusB = "Out of Stock" Then
+                                result &= "<span style='color: #D9534F; font-weight: 700;'> [ Out of Stock ! ]</span>"
+                            End If
+                            If fabricColourStatusB = "Discontinued" Then
+                                result &= "<span style='color: #6F42C1; font-weight: 700;'> [ Discountinued ! ]</span>"
+                            End If
+                        End If
+                    End If
+                End If
+
+            End If
+            If designName = "Curtain" Then
+                result = itemDescription
+                result &= "<br />"
+                result &= String.Format("{0} {1} {2} | {3} ({4}) {5}", fabricColourName, size, squareMetreText, trackType, width, linearMetreText)
+
+                If blindName = "Complete Set (Double)" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2} | {3} ({4}) {5}", fabricColourName, size, squareMetreText, trackType, width, linearMetreText)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2} | {3} ({4}) {5}", fabricColourNameB, sizeB, squareMetreTextB, trackTypeB, widthB, linearMetreTextB)
+                End If
+                If blindName = "Curtain Only" Then
+                    result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                End If
+                If blindName = "Fabric Only" Then
+                    result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                End If
+                If blindName = "Track Only" Then
+                    result = String.Format("{0} {1} ({2}) {3}", itemDescription, trackType, width, linearMetreText)
+                End If
+            End If
+            If designName = "Design Shades" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+
+            End If
+            If designName = "Door" Then
+                result = String.Format("{0} - {1} {2} {3}", itemDescription, frameColour, size, squareMetreText)
+            End If
+            If designName = "Evolve Shutter Express" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+            End If
+            If designName = "Evolve Shutter Ocean" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+            End If
+            If designName = "Linea Valance" Then
+                result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+            End If
+            If designName = "Outdoor" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+
+                If showStock = True Then
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+            End If
+            If designName = "Panel Glide" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If blindName = "Track Only" Then
+                    result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
+                End If
+
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+            End If
+            If designName = "Pelmet" Then
+                result = String.Format("{0} {1} ({2}mm) {3}", itemDescription, fabricColourName, width, linearMetreText)
+                If layoutCode = "B" OrElse layoutCode = "C" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("{0} ({1}mm) {2}", fabricColourName, width, linearMetreText)
+                    result &= "<br />"
+                    result &= String.Format("{0} ({1}mm) {2}", fabricColourName, widthB, linearMetreTextB)
+                End If
+
+                If layoutCode = "D" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("{0} ({1}mm) {2}", fabricColourName, width, linearMetreText)
+                    result &= "<br />"
+                    result &= String.Format("{0} ({1}mm) {2}", fabricColourName, widthB, linearMetreTextB)
+                    result &= "<br />"
+                    result &= String.Format("{0} ({1}mm) {2}", fabricColourName, widthC, linearMetreTextC)
+                End If
+            End If
+            If designName = "Privacy Venetian" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+            End If
+            If designName = "Roller Blind" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If Not String.IsNullOrEmpty(printing) Then
+                    result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                    result &= "<br />"
+                    result &= "<b>[Printed Fabric]</b>"
+                End If
+
+                If showStock = True Then
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+
+                If blindName = "Dual Blinds" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If showStock = True Then
+                        If fabricColourStatus = "Limited Stock" Then
+                            result &= "<span style='color: #B8860B; font-weight: 700;'> [ Limited Stock ! ]</span>"
+                        End If
+                        If fabricColourStatus = "Out of Stock" Then
+                            result &= "<span style='color: #D9534F; font-weight: 700;'> [ Out of Stock ! ]</span>"
+                        End If
+                        If fabricColourStatus = "Discontinued" Then
+                            result &= "<span style='color: #6F42C1; font-weight: 700;'> [ Discountinued ! ]</span>"
+                        End If
+                    End If
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If showStock = True Then
+                        If fabricColourStatusB = "Limited Stock" Then
+                            result &= "<span style='color: #B8860B; font-weight: 700;'> [ Limited Stock ! ]</span>"
+                        End If
+                        If fabricColourStatusB = "Out of Stock" Then
+                            result &= "<span style='color: #D9534F; font-weight: 700;'> [ Out of Stock ! ]</span>"
+                        End If
+                        If fabricColourStatusB = "Discontinued" Then
+                            result &= "<span style='color: #6F42C1; font-weight: 700;'> [ Discountinued ! ]</span>"
+                        End If
+                    End If
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                End If
+                If blindName = "Link 2 Blinds Dependent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("First & Control Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    If showStock = True Then
+                        If fabricColourStatus = "Limited Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #B8860B; font-weight: 700;'> Fabric : Limited Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Out of Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #D9534F; font-weight: 700;'> Fabric : Out of Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Discontinued" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #6F42C1; font-weight: 700;'> Fabric : Discountinued !</span>"
+                        End If
+                    End If
+                End If
+                If blindName = "Link 2 Blinds Independent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("Left Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Right Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    If showStock = True Then
+                        If fabricColourStatus = "Limited Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #B8860B; font-weight: 700;'> Fabric : Limited Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Out of Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #D9534F; font-weight: 700;'> Fabric : Out of Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Discontinued" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #6F42C1; font-weight: 700;'> Fabric : Discountinued !</span>"
+                        End If
+                    End If
+                End If
+                If blindName = "Link 3 Blinds Dependent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("Control Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Third Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
+                    If Not String.IsNullOrEmpty(printingC) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    If showStock = True Then
+                        If fabricColourStatus = "Limited Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #B8860B; font-weight: 700;'> Fabric : Limited Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Out of Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #D9534F; font-weight: 700;'> Fabric : Out of Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Discontinued" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #6F42C1; font-weight: 700;'> Fabric : Discountinued !</span>"
+                        End If
+                    End If
+                End If
+                If blindName = "Link 3 Blinds Independent with Dependent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("Independent Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Control Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
+                    If Not String.IsNullOrEmpty(printingC) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    If showStock = True Then
+                        If fabricColourStatus = "Limited Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #B8860B; font-weight: 700;'> Fabric : Limited Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Out of Stock" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #D9534F; font-weight: 700;'> Fabric : Out of Stock !</span>"
+                        End If
+                        If fabricColourStatus = "Discontinued" Then
+                            result &= "<br />"
+                            result &= "<span style='color: #6F42C1; font-weight: 700;'> Fabric : Discountinued !</span>"
+                        End If
+                    End If
+                End If
+                If blindName = "DB Link 2 Blinds Dependent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Third Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
+                    If Not String.IsNullOrEmpty(printingC) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Fourth Blind : {0} {1} {2}", fabricColourNameD, sizeD, squareMetreTextD)
+                    If Not String.IsNullOrEmpty(printingD) Then
+                        result &= " (<b>[Printed Fabric]</b>>)"
+                    End If
+                End If
+                If blindName = "DB Link 2 Blinds Independent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Third Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
+                    If Not String.IsNullOrEmpty(printingC) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Fourth Blind : {0} {1} {2}", fabricColourNameD, sizeD, squareMetreTextD)
+                    If Not String.IsNullOrEmpty(printingD) Then
+                        result &= " (<b>[Printed Fabric]</b>>)"
+                    End If
+                End If
+                If blindName = "DB Link 3 Blinds Dependent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Third Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
+                    If Not String.IsNullOrEmpty(printingC) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Fourth Blind : {0} {1} {2}", fabricColourNameD, sizeD, squareMetreTextD)
+                    If Not String.IsNullOrEmpty(printingD) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Fifth Blind : {0} {1} {2}", fabricColourNameE, sizeE, squareMetreTextE)
+                    If Not String.IsNullOrEmpty(printingE) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Sixth Blind : {0} {1} {2}", fabricColourNameF, sizeF, squareMetreTextF)
+                    If Not String.IsNullOrEmpty(printingF) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                End If
+                If blindName = "DB Link 3 Blinds Independent with Dependent" Then
+                    result = itemDescription
+                    result &= "<br />"
+                    result &= String.Format("First Blind : {0} {1} {2}", fabricColourName, size, squareMetreText)
+                    If Not String.IsNullOrEmpty(printing) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Second Blind : {0} {1} {2}", fabricColourNameB, sizeB, squareMetreTextB)
+                    If Not String.IsNullOrEmpty(printingB) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Third Blind : {0} {1} {2}", fabricColourNameC, sizeC, squareMetreTextC)
+                    If Not String.IsNullOrEmpty(printingC) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Fourth Blind : {0} {1} {2}", fabricColourNameD, sizeD, squareMetreTextD)
+                    If Not String.IsNullOrEmpty(printingD) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Fifth Blind : {0} {1} {2}", fabricColourNameE, sizeE, squareMetreTextE)
+                    If Not String.IsNullOrEmpty(printingE) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                    result &= "<br />"
+                    result &= String.Format("Sixth Blind : {0} {1} {2}", fabricColourNameF, sizeF, squareMetreTextF)
+                    If Not String.IsNullOrEmpty(printingF) Then
+                        result &= " (<b>[Printed Fabric]</b>)"
+                    End If
+                End If
+            End If
+            If designName = "Roller Horizon" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+            End If
+            If designName = "Roman Blind" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If Not String.IsNullOrEmpty(printing) Then
+                    result &= "<br />"
+                    result &= "<b>[Printed Fabric]</b>"
+                End If
+
+                If showStock = True Then
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+            End If
+            If designName = "Sample" Then
+                result = String.Format("{0} {1}", designName, productName)
+                If productName = "Roller Fabric" Then
+                    result = String.Format("{0} {1}", itemDescription, fabricName)
+                End If
+            End If
+            If designName = "Saphora Drape" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+
+                If blindName = "Track Only" Then
+                    result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
+                End If
+
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+            End If
+            If designName = "Service" Then
+                result = GetItemData("SELECT Name FROM PriceServices WHERE Id='" & serviceId & "'")
+            End If
+            If designName = "Skyline Shutter Express" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+            End If
+            If designName = "Skyline Shutter Ocean" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+            End If
+            If designName = "Soft Roman" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If Not String.IsNullOrEmpty(printing) Then
+                    result &= "<br />"
+                    result &= "<b>[Printed Fabric]</b>"
+                End If
+
+                If showStock = True Then
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+            End If
+            If designName = "Venetian Blind" Then
+                result = String.Format("{0} {1} {2}", itemDescription, size, squareMetreText)
+                If subType.Contains("2 on 1") Then
+                    result = String.Format("<b>{0}</b>, 2 on 1 Headrail", room)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2}", productName, size, squareMetreText)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2}", productName, sizeB, squareMetreTextB)
+                End If
+                If subType.Contains("3 on 1") Then
+                    result = String.Format("<b>{0}</b>, 3 on 1 Headrail", room)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2}", productName, size, squareMetreText)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2}", productName, sizeB, squareMetreTextB)
+                    result &= "<br />"
+                    result &= String.Format("{0} {1} {2}", productName, sizeC, squareMetreTextC)
+                End If
+
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+                End If
+            End If
+            If designName = "Vertical" Then
+                result = String.Format("{0} {1} {2} {3}", itemDescription, fabricColourName, size, squareMetreText)
+                If blindName = "Track Only" Then
+                    result = String.Format("{0} ({1}mm) {2}", itemDescription, width, linearMetreText)
+                End If
+
+                If showStock = True Then
+                    If productStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Limited Stock !</span>"
+                    End If
+                    If productStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Discountinued !</span>"
+                    End If
+
+                    If fabricColourStatus = "Limited Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #B8860B; font-weight: 700;'>Fabric : Limited Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Out of Stock" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #D9534F; font-weight: 700;'>Fabric : Out of Stock !</span>"
+                    End If
+                    If fabricColourStatus = "Discontinued" Then
+                        result &= "<br />"
+                        result &= "<span style='color: #6F42C1; font-weight: 700;'>Fabric : Discountinued !</span>"
+                    End If
+                End If
+            End If
+            If designName = "Window" Then
+                result = String.Format("{0} - {1} {2} {3}", itemDescription, frameColour, size, squareMetreText)
+            End If
+
+            If designName = "Aluminium Part" Then
+                result = String.Format("{0} - {1}", designName, productName)
+            End If
+            If designName = "Venetian Part" Then
+                result = String.Format("{0} - {1}", designName, productName)
+            End If
+            If designName = "Roller Part" Then
+                result = String.Format("{0} - {1}", designName, productName)
+            End If
+            If designName = "Skyline Part Express" Then
+                result = String.Format("{0} - {1}", designName, productName)
+            End If
+            If designName = "Skyline Part Ocean" Then
+                result = String.Format("{0} - {1}", designName, productName)
+            End If
+            If designName = "Evolve Part Express" Then
+                result = String.Format("{0} - {1}", designName, productName)
+            End If
+            If designName = "Evolve Part Ocean" Then
+                result = String.Format("{0} - {1}", designName, productName)
+            End If
+            If designName = "Vertical Part" Then
+                result = String.Format("{0} - {1}", designName, productName)
+            End If
+            If designName = "Saphora Drape Part" Then
+                result = String.Format("{0} - {1}", designName, productName)
+            End If
+
+            Dim checkNote As String = GetItemData("SELECT Description FROM OrderCostings WHERE ItemId='" & itemId & "' AND Type='Note'")
+            If Not String.IsNullOrEmpty(checkNote) Then
+                result &= "<br />"
+                result &= String.Format("<i>* {0} </i>", checkNote)
+            End If
+
+            Return result
+        Catch ex As Exception
+            Return result
+        End Try
+    End Function
+
+    Public Function GetTubeName(tubeId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(tubeId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM ProductTubes WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", tubeId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetControlType(controlId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(controlId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Type FROM ProductControls WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", controlId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetControlName(controlId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(controlId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM ProductControls WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", controlId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetColourName(colourId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(colourId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM ProductColours WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", colourId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetFabricName(fabricId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(fabricId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Fabrics WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetFabricColourName(fabricColourId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(fabricColourId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM FabricColours WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricColourId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetFabricColourStatus(fabricColourId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(fabricColourId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Status FROM FabricColours WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricColourId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetFabricGroup(fabricId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(fabricId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT [Group] FROM Fabrics WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetFabricGroupLocal(product As String, fabricId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(product) AndAlso Not String.IsNullOrEmpty(fabricId) Then
+                Dim thisQuery As String = String.Format("SELECT {0} FROM FabricGroupLocals WHERE Id=@Id", product)
+
+                If Not String.IsNullOrEmpty(thisQuery) Then
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As New SqlCommand(thisQuery, thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", fabricId)
+                            thisConn.Open()
+                            Dim obj = thisCmd.ExecuteScalar()
+                            If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                                result = obj.ToString()
+                            End If
+                        End Using
+                    End Using
+                End If
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetFabricFactory(fabricColourId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(fabricColourId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Factory FROM FabricColours WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", fabricColourId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetChainName(chainId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(chainId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Chains WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", chainId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetChainType(chainId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(chainId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT ChainType FROM Chains WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", chainId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetChainLength(chainId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(chainId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT ChainLength FROM Chains WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", chainId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetBottomName(bottomId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(bottomId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Name FROM Bottoms WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", bottomId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetNewOrderId() As String
+        Try
+            Dim chars As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            Dim rnd As New Random()
+            Dim result As New StringBuilder()
+            For i As Integer = 1 To 5
+                Dim idx As Integer = rnd.Next(0, chars.Length)
+                result.Append(chars(idx))
+            Next
+            Return result.ToString()
+        Catch ex As Exception
+            Return String.Empty
+        End Try
+    End Function
+
+    Public Function GetNewOrderHeaderId() As String
+        Dim result As String = String.Empty
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderHeaders ORDER BY Id DESC", thisConn)
+                    thisConn.Open()
+                    Dim lastId As Object = thisCmd.ExecuteScalar()
+                    If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
+                        result = (CInt(lastId) + 1).ToString()
+                    Else
+                        result = "1"
+                    End If
+                End Using
+            End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetNewOrderItemId() As String
+        Dim result As String = String.Empty
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderDetails ORDER BY Id DESC", thisConn)
+                    thisConn.Open()
+                    Dim lastId As Object = thisCmd.ExecuteScalar()
+                    If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
+                        result = (CInt(lastId) + 1).ToString()
+                    Else
+                        result = "1"
+                    End If
+                End Using
+            End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetNewOrderReworkId() As String
+        Dim result As String = String.Empty
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderReworks ORDER BY Id DESC", thisConn)
+                    thisConn.Open()
+                    Dim lastId As Object = thisCmd.ExecuteScalar()
+                    If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
+                        result = (CInt(lastId) + 1).ToString()
+                    Else
+                        result = "1"
+                    End If
+                End Using
+            End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetNewOrderReworkDetailId() As String
+        Dim result As String = String.Empty
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderReworkDetails ORDER BY Id DESC", thisConn)
+                    thisConn.Open()
+                    Dim lastId As Object = thisCmd.ExecuteScalar()
+                    If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
+                        result = (CInt(lastId) + 1).ToString()
+                    Else
+                        result = "1"
+                    End If
+                End Using
+            End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function CreateOrderJobId() As String
+        Dim result As String = String.Empty
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("SELECT TOP 1 Id FROM OrderJobs ORDER BY Id DESC", thisConn)
+                    thisConn.Open()
+                    Dim lastId As Object = thisCmd.ExecuteScalar()
+                    If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
+                        result = (CInt(lastId) + 1).ToString()
+                    Else
+                        result = "1"
+                    End If
+                End Using
+            End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function CreateItemNumberJob(orderJobId As String, jobSheetId As String) As Integer
+        Dim result As Integer = 0
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("SELECT TOP 1 ItemNumber FROM OrderJobDetails WHERE OrderJobId='" & orderJobId & "' AND JobSheetId='" & jobSheetId & "' ORDER BY ItemNumber DESC", thisConn)
+                    thisConn.Open()
+                    Dim lastId As Object = thisCmd.ExecuteScalar()
+                    If lastId IsNot Nothing AndAlso Not IsDBNull(lastId) Then
+                        result = CInt(lastId) + 1
+                    Else
+                        result = "1"
+                    End If
+                End Using
+            End Using
+        Catch ex As Exception
+            result = 0
+        End Try
+        Return result
+    End Function
+
+    Public Function IsOrderExist(customerId As String, orderNumber As String) As String
+        Dim result As String = String.Empty
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("SELECT OrderNumber FROM OrderHeaders WHERE CustomerId=@CustomerId AND OrderNumber=@OrderNumber AND Active=1", thisConn)
+                    thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
+                    thisCmd.Parameters.AddWithValue("@OrderNumber", orderNumber)
+                    thisConn.Open()
+                    Dim obj = thisCmd.ExecuteScalar()
+                    If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                        result = obj.ToString()
+                    End If
+                End Using
+            End Using
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetCustomerState(customerId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT State FROM Customers WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", customerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = False
+        End Try
+        Return result
+    End Function
+
+    Public Function GetCustomerCashSale(customerId As String) As Boolean
+        Dim result As Boolean = False
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT CashSale FROM Customers WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", customerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = False
+        End Try
+        Return result
+    End Function
+
+    Public Function GetCustomerOnStop(customerId As String) As Boolean
+        Dim result As Boolean = False
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT OnStop FROM Customers WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", customerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = False
+        End Try
+        Return result
+    End Function
+
+    Public Function GetCustomerPrimaryEmail(customerId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT Email FROM CustomerContacts WHERE CustomerId=@CustomerId AND [Primary]=1", thisConn)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetCustomerPrimaryAddress(customerId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT CONCAT_WS(', ', NULLIF(Address, ''), NULLIF(Suburb, ''), CONCAT_WS(' ', NULLIF(State, ''), NULLIF(PostCode, ''))) FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND [Primary]=1", thisConn)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", customerId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = String.Empty
+        End Try
+        Return result
+    End Function
+
+    Public Function GetTotalItemOrder(headerId As String) As Integer
+        Dim result As String = 0
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand("SELECT SUM (CASE WHEN Designs.Type='Blinds' THEN OrderDetails.TotalItems WHEN Designs.Type='Shutters' OR Designs.Type = 'Doors' THEN 1 ELSE 0 END) AS totalOrder FROM OrderHeaders INNER JOIN OrderDetails ON OrderHeaders.Id=OrderDetails.HeaderId INNER JOIN Products ON OrderDetails.ProductId=Products.Id INNER JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderHeaders.Id=@Id AND OrderHeaders.Active=1 AND OrderDetails.Active=1 AND Designs.Type IN ('Blinds', 'Shutters', 'Doors', 'Samples');", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", headerId)
+                    thisConn.Open()
+                    Dim obj = thisCmd.ExecuteScalar()
+                    If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                        result = obj.ToString()
+                    End If
+                End Using
+            End Using
+        Catch ex As Exception
+            result = 0
+        End Try
+        Return result
+    End Function
+
+    Public Function GetTextLog(logId As String) As String
+        Dim result As String = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(logId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("SELECT '<b>' + Logins.FullName + '</b> on ' + FORMAT(Logs.ActionDate, 'dd MMMM yyyy HH:mm') + '. Action : ' + Logs.Description AS FinalLog FROM Logs LEFT JOIN Logins ON Logs.ActionBy = Logins.Id WHERE Logs.Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", logId)
+                        thisConn.Open()
+                        Dim obj = thisCmd.ExecuteScalar()
+                        If obj IsNot Nothing AndAlso obj IsNot DBNull.Value Then
+                            result = obj.ToString()
+                        End If
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = "ERROR"
+        End Try
+        Return result
+    End Function
+
+    Public Sub UpdateOrderFactory(headerId As String)
+        Try
+            Try
+                Dim factoryList As New List(Of String)
+
+                Dim detailData As DataTable = GetDataTable("SELECT OrderDetails.*, Products.Name AS ProductName, Designs.Name AS DesignName, Blinds.Name AS BlindName FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id LEFT JOIN Blinds ON Products.DesignId=Blinds.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1")
+                For iDetail As Integer = 0 To detailData.Rows.Count - 1
+                    Dim designName As String = detailData.Rows(iDetail)("DesignName").ToString()
+                    Dim blindName As String = detailData.Rows(iDetail)("BlindName").ToString()
+
+                    Dim isBig As Boolean = False
+                    Dim isAustralia As Boolean = False
+                    Dim isTaiwan As Boolean = False
+                    Dim isChina As Boolean = False
+
+                    If designName = "Aluminium Blind" Then
+                        isBig = True
+                    End If
+                    If designName = "Cellular Shades" Then
+                        Dim fabricColourId As String = detailData.Rows(iDetail)("FabricColourId").ToString()
+                        Dim fabricFactory As String = GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourId & "'")
+
+                        If fabricFactory = "Express" Then isBig = True
+                        If fabricFactory = "Regular" Then isTaiwan = True
+                    End If
+                    If designName = "Curtain" Then
+                        Dim fabricColourId As String = detailData.Rows(iDetail)("FabricColourId").ToString()
+                        Dim fabricColourIdB As String = detailData.Rows(iDetail)("FabricColourIdB").ToString()
+
+                        Dim trackType As String = detailData.Rows(iDetail)("TrackType").ToString()
+                        Dim trackTypeB As String = detailData.Rows(iDetail)("TrackTypeB").ToString()
+
+                        Dim fabricFactory As String = String.Empty
+                        Dim fabricFactoryB As String = String.Empty
+
+                        If fabricColourId <> "" Then
+                            fabricFactory = GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourId & "'")
+                        End If
+
+                        If fabricColourIdB <> "" Then
+                            fabricFactoryB = GetItemData("SELECT Factory FROM FabricColours WHERE Id='" & fabricColourIdB & "'")
+                        End If
+
+                        If fabricFactory = "Express" Then
+                            isBig = True
+                        ElseIf fabricFactory = "Regular" Then
+                            isAustralia = True
+                        End If
+
+                        If fabricFactoryB = "Express" Then
+                            isBig = True
+                        ElseIf fabricFactoryB = "Regular" Then
+                            isAustralia = True
+                        End If
+
+                        If trackType = "Standard Track" Then
+                            isAustralia = True
+                        ElseIf trackType = "Motorised Track" Then
+                            isBig = True
+                        End If
+
+                        If trackTypeB = "Standard Track" Then
+                            isAustralia = True
+                        ElseIf trackTypeB = "Motorised Track" Then
+                            isBig = True
+                        End If
+                    End If
+                    If designName = "Design Shades" Then
+                        isBig = True
+                    End If
+                    If designName = "Door" Then
+                        Dim frameColour As String = detailData.Rows(iDetail)("FrameColour").ToString()
+
+                        If frameColour.Contains("Regular") Then isAustralia = True
+                        If frameColour.Contains("Express") Then isBig = True
+                    End If
+                    If designName = "Evolve Shutter Express" Then
+                        isBig = True
+                    End If
+                    If designName = "Evolve Shutter Ocean" Then
+                        isChina = True
+                    End If
+                    If designName = "Linea Valance" Then
+                        isBig = True
+                    End If
+                    If designName = "Outdoor" Then
+                        isBig = True
+                    End If
+                    If designName = "Panel Glide" Then
+                        isBig = True
+                    End If
+                    If designName = "Pelmet" Then
+                        isBig = True
+                    End If
+                    If designName = "Privacy Venetian" Then
+                        isBig = True
+                    End If
+                    If designName = "Roller Blind" Then
+                        isBig = True
+                    End If
+                    If designName = "Roller Horizon" Then
+                        isBig = True
+                    End If
+                    If designName = "Roman Blind" Then
+                        isBig = True
+                    End If
+                    If designName = "Sample" Then
+                        isBig = True
+                    End If
+                    If designName = "Saphora Drape" Then
+                        isBig = True
+                    End If
+                    If designName = "Skyline Shutter Express" Then
+                        isBig = True
+                    End If
+                    If designName = "Skyline Shutter Ocean" Then
+                        isChina = True
+                    End If
+                    If designName = "Soft Roman" Then
+                        isBig = True
+                    End If
+                    If designName = "Venetian Blind" Then
+                        isBig = True
+                    End If
+                    If designName = "Vertical" Then
+                        isBig = True
+                    End If
+                    If designName = "Window" Then
+                        Dim frameColour As String = detailData.Rows(iDetail)("FrameColour").ToString()
+
+                        If frameColour.Contains("Regular") Then isAustralia = True
+                        If frameColour.Contains("Express") Then isBig = True
+                    End If
+
+                    If designName = "Aluminium Part" Then
+                        isBig = True
+                    End If
+                    If designName = "Venetian Part" Then
+                        isBig = True
+                    End If
+                    If designName = "Roller Part" Then
+                        isBig = True
+                    End If
+                    If designName = "Skyline Part Express" Then
+                        isBig = True
+                    End If
+                    If designName = "Skyline Part Ocean" Then
+                        isChina = True
+                    End If
+                    If designName = "Evolve Part Express" Then
+                        isBig = True
+                    End If
+                    If designName = "Evolve Part Ocean" Then
+                        isChina = True
+                    End If
+                    If designName = "Vertical Part" Then
+                        isBig = True
+                    End If
+                    If designName = "Saphora Drape Part" Then
+                        isBig = True
+                    End If
+
+                    If isBig AndAlso Not factoryList.Contains("BIG") Then
+                        factoryList.Add("BIG")
+                    End If
+                    If isTaiwan AndAlso Not factoryList.Contains("TAIWAN") Then
+                        factoryList.Add("TAIWAN")
+                    End If
+                    If isAustralia AndAlso Not factoryList.Contains("AUS") Then
+                        factoryList.Add("AUS")
+                    End If
+                    If isChina AndAlso Not factoryList.Contains("CHINA") Then
+                        factoryList.Add("CHINA")
+                    End If
+                Next
+
+                Dim factory As String = String.Join(", ", factoryList)
+
+                Using thisConn As SqlConnection = New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderFactory=@OrderFactory WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", headerId)
+                        thisCmd.Parameters.AddWithValue("@OrderFactory", factory)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+            Catch ex As Exception
+            End Try
+        Catch ex As Exception
+
+        End Try
+    End Sub
+
+
+    ' PRICING
+
+    Public Function GetGridPrice(data As Object()) As DataRow
+        Try
+            Dim productGroupId As String = Convert.ToString(data(0))
+            Dim priceGroupId As String = Convert.ToString(data(1))
+            Dim drop As Integer = Convert.ToInt32(data(2))
+            Dim width As Integer = Convert.ToInt32(data(3))
+            Dim category As String = Convert.ToString(data(4))
+
+            Dim thisString As String = String.Format("SELECT TOP 1 * FROM PriceBases WHERE ProductGroupId='{0}' AND PriceGroupId='{1}' AND (Height IS NULL OR Height>='{2}') AND (Width IS NULL OR Width>='{3}') AND Category='{4}' AND Price>=0 ORDER BY Height, Width, Price, Conditional ASC", productGroupId, priceGroupId, drop, width, category)
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisString, thisConn)
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        Dim thisTable As New DataTable()
+                        thisAdapter.Fill(thisTable)
+                        If thisTable.Rows.Count > 0 Then
+                            Return thisTable.Rows(0)
+                        Else
+                            Return Nothing
+                        End If
+                    End Using
+                End Using
+            End Using
+        Catch ex As Exception
+            Return Nothing
+        End Try
+    End Function
+
+    Public Sub ResetPriceDetail(headerId As String, itemId As String)
+        Try
+            Using thisConn As SqlConnection = New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId", thisConn)
+                    thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                    thisCmd.Parameters.AddWithValue("@ItemId", itemId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Public Sub FinalCostItem(headerId As String, itemId As String)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE ItemId=@ItemId AND Type='Final'", thisConn)
+                    thisCmd.Parameters.AddWithValue("@ItemId", itemId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim custPrice As Decimal = GetItemData_Decimal("SELECT SUM(CASE WHEN Type='Base' THEN CustomerPrice WHEN Type='Discount' THEN -CustomerPrice WHEN Type='Surcharge' THEN CustomerPrice ELSE 0 END) AS TotalPrice FROM OrderCostings WHERE ItemId='" & itemId & "'")
+            Dim sellPrice As Decimal = GetItemData_Decimal("SELECT SUM(CASE WHEN Type='Base' THEN SellPrice WHEN Type='Discount' THEN -SellPrice WHEN Type='Surcharge' THEN SellPrice ELSE 0 END) AS TotalPrice FROM OrderCostings WHERE ItemId='" & itemId & "'")
+            Dim buyPrice As Decimal = GetItemData_Decimal("SELECT SUM(CASE WHEN Type='Base' THEN BuyPrice WHEN Type='Discount' THEN -BuyPrice WHEN Type='Surcharge' THEN BuyPrice ELSE 0 END) AS TotalPrice FROM OrderCostings WHERE ItemId='" & itemId & "'")
+            Dim factoryPrice As Decimal = GetItemData_Decimal("SELECT SUM(CASE WHEN Type='Base' THEN FactoryPrice WHEN Type='Discount' THEN -FactoryPrice WHEN Type='Surcharge' THEN FactoryPrice ELSE 0 END) AS TotalPrice FROM OrderCostings WHERE ItemId='" & itemId & "'")
+
+            Dim dataCosting As Object() = {headerId, itemId, 0, "Final", "Final Cost This Item", custPrice, sellPrice, buyPrice, factoryPrice}
+            OrderCostings(dataCosting)
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Public Sub CalculatePriceByOrder(headerId As String)
+        Try
+            Dim thisData As DataTable = GetDataTable("SELECT OrderDetails.Id FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.HeaderId='" & headerId & "' AND OrderDetails.Active=1 AND Designs.Type<>'Services'")
+            If Not thisData.Rows.Count = 0 Then
+                For i As Integer = 0 To thisData.Rows.Count - 1
+                    Dim itemId As String = thisData.Rows(i)("Id").ToString()
+
+                    ResetPriceDetail(headerId, itemId)
+                    CalculatePrice(headerId, itemId)
+                    FinalCostItem(headerId, itemId)
+                Next
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Private Function GetPriceCalculationRule(method As String, priceGroupId As String, designId As String, blindId As String) As DataRow
+        Try
+            Dim thisSql As String = "SELECT TOP 1 * FROM PriceCalculations WHERE Status='Active' AND Method=@Method AND EXISTS (SELECT 1 FROM STRING_SPLIT(PriceGroupId, ',') AS PG WHERE LTRIM(RTRIM(PG.value))=@PriceGroupId) AND ((DataType='Designs' AND DataId=@DesignId) OR (DataType='Blinds' AND DataId=@BlindId) OR (DataType IS NULL OR DataType='')) ORDER BY CASE WHEN DataType='Designs' AND DataId=@DesignId THEN 2 WHEN DataType='Blinds' AND DataId=@BlindId THEN 2 WHEN DataType IS NULL OR DataType='' THEN 1 ELSE 0 END DESC, Id"
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As New SqlCommand(thisSql, thisConn)
+                    thisCmd.Parameters.AddWithValue("@Method", method)
+                    thisCmd.Parameters.AddWithValue("@PriceGroupId", priceGroupId)
+                    thisCmd.Parameters.AddWithValue("@DesignId", designId)
+                    thisCmd.Parameters.AddWithValue("@BlindId", blindId)
+
+                    Dim thisTable As New DataTable
+                    Using thisAdapter As New SqlDataAdapter(thisCmd)
+                        thisAdapter.Fill(thisTable)
+                    End Using
+
+                    If thisTable.Rows.Count > 0 Then
+                        Return thisTable.Rows(0)
+                    End If
+                End Using
+            End Using
+            Return Nothing
+        Catch
+            Return Nothing
+        End Try
+    End Function
+
+    Private Function CalculateSell(rule As DataRow, gridPrice As Decimal, width As Integer, drop As Integer, squareMetre As Decimal, linearMetre As Decimal, cutLength As Integer) As Decimal
+        Try
+            If rule Is Nothing Then Return gridPrice
+
+            Select Case rule("Formula").ToString().ToUpper()
+                Case "COST"
+                    Return gridPrice
+                Case "SQM"
+                    Return Math.Round(gridPrice * squareMetre, 2)
+                Case "SQM_MIN"
+                    Dim qty As Decimal = squareMetre
+
+                    If Not IsDBNull(rule("SellMinSize")) AndAlso qty <= CDec(rule("SellMinSize")) Then
+                        qty = CDec(rule("SellMinSize"))
+                    End If
+
+                    Return Math.Round(gridPrice * qty, 2)
+                Case "SQM_ROUND"
+                    Dim w As Integer = width
+                    Dim d As Integer = drop
+
+                    If Not IsDBNull(rule("SellMinWidth")) AndAlso w < CInt(rule("SellMinWidth")) Then
+                        w = CInt(rule("SellMinWidth"))
+                    End If
+                    If Not IsDBNull(rule("SellMinDrop")) AndAlso d < CInt(rule("SellMinDrop")) Then
+                        d = CInt(rule("SellMinDrop"))
+                    End If
+                    Dim sqm As Decimal = Math.Round((w * d) / 1000000D)
+
+                    Return Math.Round(gridPrice * sqm, 2)
+                Case "LM"
+                    Return Math.Round(gridPrice * linearMetre, 4)
+                Case "LM_MIN"
+                    Dim lm As Decimal = linearMetre
+                    If Not IsDBNull(rule("SellMinSize")) AndAlso lm <= CDec(rule("SellMinSize")) Then
+                        lm = CDec(rule("SellMinSize"))
+                    End If
+
+                    Return Math.Round(gridPrice * lm, 2)
+                Case "CUT_LENGTH"
+                    Return Math.Round((cutLength / 1000D) * gridPrice, 2)
+                Case "FEET"
+                    Dim sellFormula As String = rule("SellFormula").ToString()
+                    If Not String.IsNullOrWhiteSpace(sellFormula) Then
+                        sellFormula = sellFormula.Replace("Width", width.ToString(CultureInfo.InvariantCulture))
+                        Try
+                            Dim thisTable As New DataTable()
+                            Dim result As Object = thisTable.Compute(sellFormula, Nothing)
+                            If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
+                                Return Math.Round(Convert.ToDecimal(result), 2)
+                            End If
+                        Catch
+                            Return gridPrice
+                        End Try
+                    End If
+                    Return gridPrice
+                Case Else
+                    Return gridPrice
+            End Select
+        Catch
+            Return gridPrice
+        End Try
+    End Function
+
+    Private Function CalculateBuy(rule As DataRow, gridPrice As Decimal, width As Integer, drop As Integer, squareMetre As Decimal, linearMetre As Decimal) As Decimal
+        Try
+            If rule Is Nothing Then Return gridPrice
+
+            Select Case rule("Formula").ToString().ToUpper()
+                Case "COST"
+                    Return gridPrice
+                Case "SQM"
+                    Return Math.Round(gridPrice * squareMetre, 2)
+                Case "SQM_MIN"
+                    Dim qty As Decimal = squareMetre
+
+                    If Not IsDBNull(rule("BuyMinSize")) AndAlso qty <= CDec(rule("BuyMinSize")) Then
+                        qty = CDec(rule("BuyMinSize"))
+                    End If
+
+                    Return Math.Round(gridPrice * qty, 2)
+                Case "LM"
+                    Return Math.Round(gridPrice * linearMetre, 2)
+                Case "LM_MIN"
+                    Dim lm As Decimal = linearMetre
+
+                    If Not IsDBNull(rule("BuyMinSize")) AndAlso lm <= CDec(rule("BuyMinSize")) Then
+                        lm = CDec(rule("BuyMinSize"))
+                    End If
+
+                    Return Math.Round(gridPrice * lm, 2)
+                Case "FEET"
+                    Dim buyFormula As String = rule("BuyFormula").ToString()
+
+                    If Not String.IsNullOrWhiteSpace(buyFormula) Then
+                        buyFormula = buyFormula.Replace("Width", width.ToString(CultureInfo.InvariantCulture))
+                        Try
+                            Dim thisTable As New DataTable()
+                            Dim result As Object = thisTable.Compute(buyFormula, Nothing)
+
+                            If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
+                                Return Math.Round(Convert.ToDecimal(result), 2)
+                            End If
+                        Catch
+                            Return gridPrice
+                        End Try
+                    End If
+
+                    Return gridPrice
+                Case Else
+                    Return gridPrice
+            End Select
+        Catch
+            Return gridPrice
+        End Try
+    End Function
+
+    Private Function CalculateFactory(rule As DataRow, gridPrice As Decimal, width As Integer, drop As Integer, squareMetre As Decimal, linearMetre As Decimal) As Decimal
+        Try
+            If rule Is Nothing Then Return gridPrice
+
+            Select Case rule("Formula").ToString().ToUpper()
+                Case "COST"
+                    Return gridPrice
+                Case "SQM"
+                    Return Math.Round(gridPrice * squareMetre, 2)
+                Case "SQM_MIN"
+                    Dim qty As Decimal = squareMetre
+
+                    If Not IsDBNull(rule("FactoryMinSize")) AndAlso qty <= CDec(rule("FactoryMinSize")) Then
+                        qty = CDec(rule("FactoryMinSize"))
+                    End If
+
+                    Return Math.Round(gridPrice * qty, 2)
+                Case "LM"
+                    Return Math.Round(gridPrice * linearMetre, 2)
+                Case "LM_MIN"
+                    Dim lm As Decimal = linearMetre
+
+                    If Not IsDBNull(rule("FactoryMinSize")) AndAlso lm <= CDec(rule("FactoryMinSize")) Then
+                        lm = CDec(rule("FactoryMinSize"))
+                    End If
+
+                    Return Math.Round(gridPrice * lm, 2)
+                Case "FEET"
+                    Dim buyFormula As String = rule("BuyFormula").ToString()
+
+                    If Not String.IsNullOrWhiteSpace(buyFormula) Then
+                        buyFormula = buyFormula.Replace("Width", width.ToString(CultureInfo.InvariantCulture))
+                        Try
+                            Dim thisTable As New DataTable()
+                            Dim result As Object = thisTable.Compute(buyFormula, Nothing)
+
+                            If result IsNot Nothing AndAlso result IsNot DBNull.Value Then
+                                Return Math.Round(Convert.ToDecimal(result), 2)
+                            End If
+                        Catch
+                            Return gridPrice
+                        End Try
+                    End If
+
+                    Return gridPrice
+                Case Else
+                    Return gridPrice
+            End Select
+        Catch
+            Return gridPrice
+        End Try
+    End Function
+
+    Public Sub CalculatePrice(headerId As String, itemId As String)
+        Try
+            Dim thisData As DataRow = GetDataRow("SELECT * FROM OrderDetails WHERE Id='" & itemId & "' AND Active=1")
+            If thisData IsNot Nothing Then
+                Dim customerId As String = GetCustomerIdByOrder(headerId)
+
+                Dim companyId As String = GetCompanyIdByOrder(headerId)
+                Dim companyDetailId As String = GetCompanyDetailIdByOrder(headerId)
+
+                Dim orderType As String = GetOrderType(headerId)
+                Dim priceGroupId As String = GetPriceGroupByOrder(headerId)
+                Dim shutterPriceGroup As String = GetShutterPriceGroupByOrder(headerId)
+                Dim doorPriceGroup As String = GetDoorPriceGroupByOrder(headerId)
+
+                Dim productId As String = thisData("ProductId").ToString()
+                Dim designId As String = GetDesignId(productId)
+                Dim blindId As String = GetBlindId(productId)
+                Dim tubeId As String = GetTubeId(productId)
+
+                Dim designName As String = GetDesignName(designId)
+                Dim blindName As String = GetBlindName(blindId)
+                Dim productName As String = GetProductName(productId)
+                Dim tubeName As String = GetTubeName(tubeId)
+
+                Dim fabricId As String = thisData("FabricId").ToString()
+                Dim fabricIdB As String = thisData("FabricIdB").ToString()
+                Dim fabricIdC As String = thisData("FabricIdC").ToString()
+                Dim fabricIdD As String = thisData("FabricIdD").ToString()
+                Dim fabricIdE As String = thisData("FabricIdE").ToString()
+                Dim fabricIdF As String = thisData("FabricIdF").ToString()
+
+                Dim fabricColourId As String = thisData("FabricColourId").ToString()
+                Dim fabricColourIdB As String = thisData("FabricColourIdB").ToString()
+                Dim fabricColourIdC As String = thisData("FabricColourIdC").ToString()
+                Dim fabricColourIdD As String = thisData("FabricColourIdD").ToString()
+                Dim fabricColourIdE As String = thisData("FabricColourIdE").ToString()
+                Dim fabricColourIdF As String = thisData("FabricColourIdF").ToString()
+
+                Dim chainId As String = thisData("ChainId").ToString()
+                Dim chainIdB As String = thisData("ChainIdB").ToString()
+                Dim chainIdC As String = thisData("ChainIdC").ToString()
+                Dim chainIdD As String = thisData("ChainIdD").ToString()
+                Dim chainIdE As String = thisData("ChainIdE").ToString()
+                Dim chainIdF As String = thisData("ChainIdF").ToString()
+
+                Dim priceProductGroupId As String = thisData("PriceProductGroupId").ToString()
+                Dim priceProductGroupIdB As String = thisData("PriceProductGroupIdB").ToString()
+                Dim priceProductGroupIdC As String = thisData("PriceProductGroupIdC").ToString()
+                Dim priceProductGroupIdD As String = thisData("PriceProductGroupIdD").ToString()
+                Dim priceProductGroupIdE As String = thisData("PriceProductGroupIdE").ToString()
+                Dim priceProductGroupIdF As String = thisData("PriceProductGroupIdF").ToString()
+                Dim priceProductGroupIdG As String = thisData("PriceProductGroupIdG").ToString()
+
+                Dim priceProductGroupName As String = GetPriceProductGroupName(priceProductGroupId)
+                Dim priceProductGroupNameB As String = GetPriceProductGroupName(priceProductGroupIdB)
+                Dim priceProductGroupNameC As String = GetPriceProductGroupName(priceProductGroupIdC)
+                Dim priceProductGroupNameD As String = GetPriceProductGroupName(priceProductGroupIdD)
+                Dim priceProductGroupNameE As String = GetPriceProductGroupName(priceProductGroupIdE)
+                Dim priceProductGroupNameF As String = GetPriceProductGroupName(priceProductGroupIdF)
+                Dim priceProductGroupNameG As String = GetPriceProductGroupName(priceProductGroupIdG)
+
+                Dim priceProductGroupStatus As String = GetPriceProductGroupStatus(priceProductGroupId)
+                Dim priceProductGroupStatusB As String = GetPriceProductGroupStatus(priceProductGroupIdB)
+                Dim priceProductGroupStatusC As String = GetPriceProductGroupStatus(priceProductGroupIdC)
+                Dim priceProductGroupStatusD As String = GetPriceProductGroupStatus(priceProductGroupIdD)
+                Dim priceProductGroupStatusE As String = GetPriceProductGroupStatus(priceProductGroupIdE)
+                Dim priceProductGroupStatusF As String = GetPriceProductGroupStatus(priceProductGroupIdF)
+                Dim priceProductGroupStatusG As String = GetPriceProductGroupStatus(priceProductGroupIdG)
+
+                Dim priceAdditional As String = thisData("PriceAdditional").ToString()
+                Dim priceAdditionalB As String = thisData("PriceAdditionalB").ToString()
+
+                Dim priceAdditionalName As String = GetPriceProductGroupName(priceAdditional)
+                Dim priceAdditionalNameB As String = GetPriceProductGroupName(priceAdditionalB)
+
+                Dim width As String = thisData("Width").ToString()
+                Dim widthB As String = thisData("WidthB").ToString()
+                Dim widthC As String = thisData("widthC").ToString()
+                Dim widthD As String = thisData("WidthD").ToString()
+                Dim widthE As String = thisData("WidthE").ToString()
+                Dim widthF As String = thisData("WidthF").ToString()
+                Dim widthG As String = thisData("WidthG").ToString()
+                Dim widthH As String = thisData("WidthH").ToString()
+
+                Dim drop As String = thisData("Drop").ToString()
+                Dim dropB As String = thisData("DropB").ToString()
+                Dim dropC As String = thisData("DropC").ToString()
+                Dim dropD As String = thisData("DropD").ToString()
+                Dim dropE As String = thisData("DropE").ToString()
+                Dim dropF As String = thisData("DropF").ToString()
+                Dim dropG As String = thisData("DropG").ToString()
+                Dim dropH As String = thisData("DropH").ToString()
+
+                Dim trackType As String = thisData("TrackType").ToString()
+                Dim trackTypeb As String = thisData("TrackTypeB").ToString()
+
+                Dim subType As String = thisData("SubType").ToString()
+                Dim layoutCode As String = thisData("LayoutCode").ToString()
+                Dim frameColour As String = thisData("FrameColour").ToString()
+
+                Dim totalItems As Integer = thisData("TotalItems")
+
+                Dim cutLength As Integer = 0
+                If Not IsDBNull(thisData("LouvreSize")) Then
+                    cutLength = thisData("LouvreSize")
+                End If
+
+                Dim linearMetre As Decimal = 0D
+                If Not IsDBNull(thisData("LinearMetre")) Then
+                    linearMetre = Math.Round(Convert.ToDecimal(thisData("LinearMetre")), 4)
+                End If
+                Dim linearMetreB As Decimal = 0D
+                If Not IsDBNull(thisData("LinearMetreB")) Then
+                    linearMetreB = Math.Round(Convert.ToDecimal(thisData("LinearMetreB")), 4)
+                End If
+                Dim linearMetreC As Decimal = 0D
+                If Not IsDBNull(thisData("LinearMetreC")) Then
+                    linearMetreC = Math.Round(Convert.ToDecimal(thisData("LinearMetreC")), 4)
+                End If
+                Dim linearMetreD As Decimal = 0D
+                If Not IsDBNull(thisData("LinearMetreD")) Then
+                    linearMetreD = Math.Round(Convert.ToDecimal(thisData("LinearMetreD")), 4)
+                End If
+                Dim linearMetreE As Decimal = 0D
+                If Not IsDBNull(thisData("LinearMetreE")) Then
+                    linearMetreE = Math.Round(Convert.ToDecimal(thisData("LinearMetreE")), 4)
+                End If
+                Dim linearMetreF As Decimal = 0D
+                If Not IsDBNull(thisData("LinearMetreF")) Then
+                    linearMetreF = Math.Round(Convert.ToDecimal(thisData("LinearMetreF")), 4)
+                End If
+
+                Dim squareMetre As Decimal = 0D
+                If Not IsDBNull(thisData("SquareMetre")) Then
+                    squareMetre = Math.Round(Convert.ToDecimal(thisData("SquareMetre")), 4)
+                End If
+                Dim squareMetreB As Decimal = 0D
+                If Not IsDBNull(thisData("SquareMetreB")) Then
+                    squareMetreB = Math.Round(Convert.ToDecimal(thisData("SquareMetreB")), 4)
+                End If
+                Dim squareMetreC As Decimal = 0D
+                If Not IsDBNull(thisData("SquareMetreC")) Then
+                    squareMetreC = Math.Round(Convert.ToDecimal(thisData("SquareMetreC")), 4)
+                End If
+                Dim squareMetreD As Decimal = 0D
+                If Not IsDBNull(thisData("SquareMetreD")) Then
+                    squareMetreD = Math.Round(Convert.ToDecimal(thisData("SquareMetreD")), 4)
+                End If
+                Dim squareMetreE As Decimal = 0D
+                If Not IsDBNull(thisData("SquareMetreE")) Then
+                    squareMetreE = Math.Round(Convert.ToDecimal(thisData("SquareMetreE")), 4)
+                End If
+                Dim squareMetreF As Decimal = 0D
+                If Not IsDBNull(thisData("SquareMetreF")) Then
+                    squareMetreF = Math.Round(Convert.ToDecimal(thisData("SquareMetreF")), 4)
+                End If
+
+                Dim itemNumber As Integer = 0
+
+                Dim thisCustomer As Decimal = 0
+                Dim thisSell As Decimal = 0
+                Dim thisBuy As Decimal = 0
+                Dim thisFactory As Decimal = 0
+
+                Dim thisCustomerAdditional As Decimal = 0
+                Dim thisSellAdditional As Decimal = 0
+                Dim thisBuyAdditional As Decimal = 0
+                Dim thisFactoryAdditional As Decimal = 0
+
+                Dim customPricing As String = GetItemData("SELECT Description FROM CustomerCustomPricings WHERE Id='" & customerId & "'")
+                Dim isWithoutGR As Boolean = Not String.IsNullOrEmpty(customPricing) AndAlso customPricing.Contains("Without GR")
+
+                ' FIRST BLIND
+                If Not String.IsNullOrEmpty(priceProductGroupId) AndAlso priceProductGroupStatus = "Active" Then
+                    itemNumber = 1
+
+                    Dim sellArray As Object() = {priceProductGroupId, priceGroupId, drop, width, "Sell"}
+                    If designName = "Skyline Shutter Express" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Skyline Shutter Ocean" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Evolve Shutter Express" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Evolve Shutter Ocean" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Skyline Part Express" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Skyline Part Ocean" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Evolve Part Express" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Evolve Part Ocean" Then
+                        sellArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Door" Then
+                        sellArray = {priceProductGroupId, doorPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Window" Then
+                        sellArray = {priceProductGroupId, doorPriceGroup, drop, width, "Sell"}
+                    End If
+                    If designName = "Outdoor" Then
+                        sellArray = {priceProductGroupId, priceGroupId, squareMetre, squareMetre, "Sell"}
+                    End If
+
+                    Dim buyArray As Object() = {priceProductGroupId, priceGroupId, drop, width, "Buy"}
+                    If designName = "Skyline Shutter Express" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Skyline Part Express" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Skyline Shutter Ocean" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Skyline Part Ocean" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Evolve Shutter Express" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Evolve Part Express" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Evolve Shutter Ocean" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Evolve Part Ocean" Then
+                        buyArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Door" Then
+                        buyArray = {priceProductGroupId, doorPriceGroup, drop, width, "Buy"}
+                    End If
+                    If designName = "Window" Then
+                        buyArray = {priceProductGroupId, doorPriceGroup, drop, width, "Buy"}
+                    End If
+
+                    Dim factoryArray As Object() = {priceProductGroupId, priceGroupId, drop, width, "Factory"}
+                    If designName = "Skyline Shutter Express" Then
+                        factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
+                    End If
+                    If designName = "Skyline Part Express" Then
+                        factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
+                    End If
+                    If designName = "Skyline Shutter Ocean" Then
+                        factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
+                    End If
+                    If designName = "Skyline Part Ocean" Then
+                        factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
+                    End If
+                    If designName = "Evolve Shutter Express" Then
+                        factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
+                    End If
+                    If designName = "Evolve Part Express" Then
+                        factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
+                    End If
+                    If designName = "Evolve Shutter Ocean" Then
+                        factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
+                    End If
+                    If designName = "Evolve Part Ocean" Then
+                        factoryArray = {priceProductGroupId, shutterPriceGroup, drop, width, "Factory"}
+                    End If
+                    If designName = "Door" Then
+                        factoryArray = {priceProductGroupId, doorPriceGroup, drop, width, "Factory"}
+                    End If
+                    If designName = "Window" Then
+                        factoryArray = {priceProductGroupId, doorPriceGroup, drop, width, "Factory"}
+                    End If
+
+                    Dim priceGroupCalculation As String = priceGroupId
+                    If designName = "Skyline Shutter Express" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Skyline Shutter Ocean" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Skyline Part Express" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Skyline Part Ocean" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Evolve Shutter Express" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Evolve Shutter Ocean" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Evolve Part Express" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Evolve Part Ocean" Then
+                        priceGroupCalculation = shutterPriceGroup
+                    End If
+                    If designName = "Door" Then
+                        priceGroupCalculation = doorPriceGroup
+                    End If
+                    If designName = "Window" Then
+                        priceGroupCalculation = doorPriceGroup
+                    End If
+
+                    Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
+                    Dim dataPriceFactory As DataRow = GetGridPrice(factoryArray)
+
+                    Dim gridSellPrice As Decimal = 0D
+                    Dim gridBuyPrice As Decimal = 0D
+                    Dim gridFactoryPrice As Decimal = 0D
+
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridBuyMethod As String = String.Empty
+                    Dim gridFactoryMethod As String = String.Empty
+
+                    Dim gridSellConditional As String = String.Empty
+                    Dim gridBuyConditional As String = String.Empty
+                    Dim gridFactoryConditional As String = String.Empty
+
+                    If dataPriceSell IsNot Nothing Then
+                        gridSellMethod = dataPriceSell("Method").ToString()
+                        gridSellPrice = Convert.ToDecimal(dataPriceSell("Price"))
+                        gridSellConditional = dataPriceSell("Conditional").ToString()
+                    End If
+                    If dataPriceBuy IsNot Nothing Then
+                        gridBuyMethod = dataPriceBuy("Method").ToString()
+                        gridBuyPrice = Convert.ToDecimal(dataPriceBuy("Price"))
+                        gridBuyConditional = dataPriceBuy("Conditional").ToString()
+                    End If
+                    If dataPriceFactory IsNot Nothing Then
+                        gridFactoryMethod = dataPriceFactory("Method").ToString()
+                        gridFactoryPrice = Convert.ToDecimal(dataPriceFactory("Price"))
+                        gridFactoryConditional = dataPriceFactory("Conditional").ToString()
+                    End If
+
+                    Dim gridSellAdditional As Decimal = 0D
+                    Dim gridBuyAdditional As Decimal = 0D
+                    Dim gridFactoryAdditional As Decimal = 0D
+                    If Not String.IsNullOrEmpty(priceAdditional) Then
+                        Dim additionalArray As Object() = {priceAdditional, priceGroupId, 0, width, "Sell"}
+                        Dim addData As DataRow = GetGridPrice(additionalArray)
+                        If addData IsNot Nothing Then
+                            gridSellAdditional = addData("Price")
+                        End If
+                    End If
+                    If Not String.IsNullOrEmpty(priceAdditional) Then
+                        Dim additionalArray As Object() = {priceAdditional, priceGroupId, 0, width, "Buy"}
+                        Dim addData As DataRow = GetGridPrice(additionalArray)
+                        If addData IsNot Nothing Then
+                            gridBuyAdditional = addData("Price")
+                        End If
+                    End If
+                    If Not String.IsNullOrEmpty(priceAdditional) Then
+                        Dim additionalArray As Object() = {priceAdditional, priceGroupId, 0, width, "Factory"}
+                        Dim addData As DataRow = GetGridPrice(additionalArray)
+                        If addData IsNot Nothing Then
+                            gridFactoryAdditional = addData("Price")
+                        End If
+                    End If
+
+                    Dim costSell As Decimal = gridSellPrice
+                    Dim costBuy As Decimal = gridBuyPrice
+                    Dim costFactory As Decimal = gridFactoryPrice
+
+                    Dim costSellAdditional As Decimal = gridSellAdditional
+                    Dim costBuyAdditional As Decimal = gridBuyAdditional
+                    Dim costFactoryAdditional As Decimal = gridFactoryAdditional
+
+                    thisSell = costSell
+                    thisBuy = costBuy
+                    thisFactory = costFactory
+
+                    thisSellAdditional = costSellAdditional
+                    thisBuyAdditional = costBuyAdditional
+                    thisFactoryAdditional = costFactoryAdditional
+
+                    Dim markupData As DataTable = GetDataTable("SELECT * FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
+                    For Each markupRow As DataRow In markupData.Rows
+                        Dim type As String = markupRow("Type").ToString()
+                        Dim method As String = markupRow("Method").ToString()
+                        Dim dataId As String = markupRow("DataId").ToString()
+
+                        If (type = "Designs" AndAlso dataId <> designId) OrElse (type = "PriceProductGroups" AndAlso dataId <> priceProductGroupId) Then Continue For
+
+                        For Each markupColumn As String In {"Markup1", "Markup2", "Markup3", "Markup4", "Markup5"}
+                            If Not markupRow.Table.Columns.Contains(markupColumn) Then Continue For
+
+                            If IsDBNull(markupRow(markupColumn)) OrElse String.IsNullOrWhiteSpace(markupRow(markupColumn).ToString()) Then Continue For
+
+                            Dim markup As Decimal = CDec(markupRow(markupColumn))
+                            If markup = 0 Then Continue For
+
+                            If method = "Percent" Then
+                                markup = Math.Round(markup / 100, 2)
+                            End If
+                            Dim markupValue As Decimal = markup
+                            If method = "Percent" Then
+                                markupValue = Math.Round(costSell * markup, 4)
+                            End If
+
+                            thisSell = Math.Round(costSell + markupValue, 4)
+                            If designName = "Roller Blind" AndAlso (type = "Designs" OrElse type = "PriceProductGroups") AndAlso (priceProductGroupName.Contains("Standard") OrElse priceProductGroupName.Contains("Gear Reduction") OrElse priceProductGroupName.Contains("Sunboss")) Then
+                                If gridSellConditional = "Excl. $7 Disc" Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim markupExcl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupExcl7 = Math.Round(costExcl7 * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 + markupExcl7 + 7, 4)
+                                Else
+                                    Dim markupIncl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupIncl7 = Math.Round(costSell * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costSell + markupIncl7, 4)
+                                End If
+
+                                If isWithoutGR Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim markupExl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupExl7 = Math.Round(costExcl7 * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 + markupExl7, 4)
+                                End If
+                            End If
+
+                            costSell = thisSell
+
+                            Dim markupAdditionalValue As Decimal = 0
+                            If method = "Percent" Then
+                                markupAdditionalValue = Math.Round(costSellAdditional * markup, 4)
+                            End If
+                            If method = "Value" Then
+                                markupAdditionalValue = markup
+                            End If
+                            thisSellAdditional = Math.Round(costSellAdditional + markupAdditionalValue, 4)
+                            costSellAdditional = thisSellAdditional
+                        Next
+                    Next
+
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 WHEN Type='PriceProductGroups' THEN 2 ELSE 3 END ASC")
+                    For Each discountRow As DataRow In discountData.Rows
+                        Dim type As String = discountRow("Type").ToString()
+                        Dim method As String = discountRow("Method").ToString()
+                        Dim dataId As String = discountRow("DataId").ToString()
+
+                        If (type = "Designs" AndAlso dataId <> designId) OrElse (type = "PriceProductGroups" AndAlso dataId <> priceProductGroupId) OrElse (type = "RollerFabrics" AndAlso (designName <> "Roller Blind" OrElse dataId <> fabricId)) OrElse (type = "RollerFabricColours" AndAlso (designName <> "Roller Blind" OrElse dataId <> fabricColourId)) OrElse (type = "RomanFabrics" AndAlso (designName <> "Roman Blind" OrElse dataId <> fabricId)) OrElse (type = "RomanFabricColours" AndAlso (designName <> "Roman Blind" OrElse dataId <> fabricColourId)) OrElse (type = "PanelGlideFabrics" AndAlso (designName <> "Panel Glide" OrElse dataId <> fabricId)) OrElse (type = "PanelGlideFabricColours" AndAlso (designName <> "Panel Glide" OrElse dataId <> fabricColourId)) OrElse (type = "RollerChains" AndAlso (designName <> "Roller Blind" OrElse dataId <> chainId)) Then Continue For
+
+                        For Each discountColumn As String In {"Discount1", "Discount2", "Discount3", "Discount4", "Discount5"}
+                            If Not discountRow.Table.Columns.Contains(discountColumn) Then Continue For
+
+                            If IsDBNull(discountRow(discountColumn)) OrElse String.IsNullOrWhiteSpace(discountRow(discountColumn).ToString()) Then Continue For
+
+                            Dim discount As Decimal = CDec(discountRow(discountColumn))
+                            If discount = 0 Then Continue For
+
+                            If method = "Percent" Then
+                                discount = Math.Round(discount / 100, 2)
+                            End If
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then
+                                discountValue = Math.Round(costSell * discount, 4)
+                            End If
+
+                            thisSell = Math.Round(costSell - discountValue, 4)
+                            If designName = "Roller Blind" AndAlso (type = "Designs" OrElse type = "PriceProductGroups") AndAlso (priceProductGroupName.Contains("Standard") OrElse priceProductGroupName.Contains("Gear Reduction") OrElse priceProductGroupName.Contains("Sunboss")) Then
+                                If gridSellConditional = "Excl. $7 Disc" Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim discExcl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discExcl7 = Math.Round(costExcl7 * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 - discExcl7 + 7, 4)
+                                Else
+                                    Dim discIncl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discIncl7 = Math.Round(costSell * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costSell - discIncl7, 4)
+                                End If
+
+                                If isWithoutGR Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim discExl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discExl7 = Math.Round(costExcl7 * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 - discExl7, 4)
+                                End If
+                            End If
+
+                            costSell = thisSell
+
+                            Dim discountAdditionalValue As Decimal = 0
+                            If method = "Percent" Then
+                                discountAdditionalValue = Math.Round(costSellAdditional * discount, 4)
+                            End If
+                            If method = "Value" Then
+                                discountAdditionalValue = discount
+                            End If
+                            thisSellAdditional = Math.Round(costSellAdditional - discountAdditionalValue, 4)
+                            costSellAdditional = thisSellAdditional
+                        Next
+                    Next
+
+                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupCalculation, designId, blindId)
+                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupCalculation, designId, blindId)
+                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupCalculation, designId, blindId)
+
+                    Dim sellAdditionalCalculation As DataRow = GetPriceCalculationRule(gridSellAdditional, priceGroupCalculation, designId, blindId)
+                    Dim buyAdditionalCalculation As DataRow = GetPriceCalculationRule(gridBuyAdditional, priceGroupCalculation, designId, blindId)
+                    Dim factoryAdditionalCalculation As DataRow = GetPriceCalculationRule(gridFactoryAdditional, priceGroupCalculation, designId, blindId)
+
+                    thisCustomer = CalculateSell(sellCalculation, costSell, CInt(width), CInt(drop), squareMetre, linearMetre, cutLength)
+                    thisSell = CalculateSell(sellCalculation, costSell, CInt(width), CInt(drop), squareMetre, linearMetre, cutLength)
+                    thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(width), CInt(drop), squareMetre, linearMetre)
+                    thisFactory = CalculateFactory(factoryCalculation, costFactory, CInt(width), CInt(drop), squareMetre, linearMetre)
+
+                    thisCustomerAdditional = CalculateSell(sellAdditionalCalculation, costSellAdditional, CInt(width), CInt(drop), squareMetre, linearMetre, cutLength)
+                    thisSellAdditional = CalculateSell(sellAdditionalCalculation, costSellAdditional, CInt(width), CInt(drop), squareMetre, linearMetre, cutLength)
+                    thisBuyAdditional = CalculateBuy(buyAdditionalCalculation, costBuyAdditional, CInt(width), CInt(drop), squareMetre, linearMetre)
+                    thisFactoryAdditional = CalculateFactory(factoryAdditionalCalculation, costFactoryAdditional, CInt(width), CInt(drop), squareMetre, linearMetre)
+
+                    costSell = thisSell
+                    costBuy = thisBuy
+                    costFactory = thisFactory
+
+                    costSellAdditional = thisSellAdditional
+                    costBuyAdditional = thisBuyAdditional
+                    costFactoryAdditional = thisFactoryAdditional
+
+                    Dim defaultDiscountData As DataTable = GetDataTable("SELECT * FROM PriceProductDiscounts WHERE Status='Active'")
+                    For Each defaultDiscountRow As DataRow In defaultDiscountData.Rows
+                        Dim type As String = defaultDiscountRow("Type").ToString()
+                        Dim method As String = defaultDiscountRow("Method").ToString()
+                        Dim dataId As String = defaultDiscountRow("DataId").ToString()
+                        Dim discount As Decimal = CDec(defaultDiscountRow("Discount"))
+                        If method = "Percent" Then discount = Math.Round(CDec(defaultDiscountRow("Discount")) / 100, 2)
+
+                        If (type = "Designs" AndAlso dataId = designId) OrElse (type = "Blinds" AndAlso dataId = blindId) Then
+                            Dim discountValue_Sell As Decimal = discount
+                            Dim discountValue_Buy As Decimal = discount
+                            Dim discountValue_Factory As Decimal = discount
+                            If method = "Percent" Then
+                                discountValue_Sell = Math.Round(costSell * discount, 4)
+                            End If
+                            If method = "Percent" Then
+                                discountValue_Buy = Math.Round(costBuy * discount, 4)
+                            End If
+                            If method = "Percent" Then
+                                discountValue_Factory = Math.Round(costFactory * discount, 4)
+                            End If
+
+                            thisSell = Math.Round(costSell - discountValue_Sell, 4)
+                            thisBuy = Math.Round(costBuy - discountValue_Buy, 4)
+                            thisFactory = Math.Round(costFactory - discountValue_Factory, 4)
+                        End If
+
+                        costSell = thisSell
+                        costBuy = thisBuy
+                        costFactory = thisFactory
+                    Next
+
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each sellPromoRow As DataRow In sellPromoData.Rows
+                        Dim promoId As String = sellPromoRow("PromoId").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim compareId As String = String.Empty
+                            Select Case type
+                                Case "Designs"
+                                    compareId = designId
+                                Case "Blinds"
+                                    compareId = blindId
+                                Case "Products"
+                                    compareId = productId
+                                    If companyDetailId = "4" Then
+                                        compareId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'")
+                                    End If
+                                Case "RollerFabrics"
+                                    If designName = "Roller Blind" Then compareId = fabricId
+                                    If companyDetailId = "4" AndAlso designName = "Roller Blind" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricId & "' AND Type='Fabrics'")
+                                    End If
+                                Case "CurtainFabrics"
+                                    If designName = "Curtain" Then compareId = fabricId
+                                    If companyDetailId = "4" AndAlso designName = "Curtain" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricId & "' AND Type='Fabrics'")
+                                    End If
+                                Case "RollerFabricColours"
+                                    If designName = "Roller Blind" Then compareId = fabricColourId
+                                    If companyDetailId = "4" AndAlso designName = "Roller Blind" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourId & "' AND Type='FabricColours'")
+                                    End If
+                                Case "CurtainFabricColours"
+                                    If designName = "Curtain" Then compareId = fabricColourId
+                                    If companyDetailId = "4" AndAlso designName = "Curtain" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourId & "' AND Type='FabricColours'")
+                                    End If
+                                Case "FrameColours"
+                                    compareId = frameColour
+                            End Select
+
+                            If compareId <> dataId Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costSell * discount, 4)
+
+                            thisSell = Math.Round(costSell - discountValue, 4)
+                            costSell = thisSell
+                        Next
+                    Next
+
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT * FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each buyPromoRow As DataRow In buyPromoData.Rows
+                        Dim promoId As String = buyPromoRow("Id").ToString()
+                        Dim promoDataType As String = buyPromoRow("DataType").ToString()
+                        Dim promoDataId As String = buyPromoRow("DataId").ToString()
+
+                        If promoDataType = "Companys" AndAlso Not promoDataId = companyId Then
+                            Continue For
+                        End If
+                        If promoDataType = "Customers" AndAlso Not promoDataId = customerId Then
+                            Continue For
+                        End If
+
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim isMatch As Boolean = False
+                            Select Case type
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
+                                    End If
+                                Case "PriceProductGroups"
+                                    isMatch = (dataId = priceProductGroupId)
+                                Case "RollerFabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricId & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricId & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "RollerFabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourId & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourId & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costBuy * discount, 4)
+
+                            thisBuy = Math.Round(costBuy - discountValue, 4)
+                            costBuy = thisBuy
+                        Next
+                    Next
+
+                    Dim factoryPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Factory' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each factoryPromoRow As DataRow In factoryPromoData.Rows
+                        Dim promoId As String = factoryPromoRow("Id").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim isMatch As Boolean = False
+                            Select Case type
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
+                                    End If
+                                Case "RollerFabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricId & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricId & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "RollerFabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourId & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourId & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costFactory * discount, 4)
+
+                            thisFactory = Math.Round(costFactory - discountValue, 4)
+                            costFactory = thisFactory
+                        Next
+                    Next
+
+                    Dim costingDescription As String = priceProductGroupName
+                    If totalItems > 1 AndAlso Not (designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" OrElse designName = "Evolve Shutter Express" OrElse designName = "Evolve Shutter Ocean") Then
+                        costingDescription = String.Format("#1 {0}", priceProductGroupName)
+                    End If
+
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomer, thisSell, thisBuy, thisFactory}
+                    OrderCostings(costingArray)
+
+                    If designName = "Curtain" Then
+                        If blindName = "Complete Set (Single)" Then
+                            costingDescription = priceAdditionalName
+                            costingArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomerAdditional, thisSellAdditional, thisBuyAdditional, thisFactoryAdditional}
+                            OrderCostings(costingArray)
+                        End If
+                        If blindName = "Complete Set (Double)" Then
+                            costingDescription = String.Format("#1 {0}", priceAdditionalName)
+                            costingArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomerAdditional, thisSellAdditional, thisBuyAdditional, thisFactoryAdditional}
+                            OrderCostings(costingArray)
+                        End If
+                    End If
+
+                    Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroupId}
+                    If designName = "Skyline Shutter Express" Then
+                        surchargeArray = {headerId, itemId, designId, itemNumber, shutterPriceGroup}
+                    End If
+                    If designName = "Skyline Part Express" Then
+                        surchargeArray = {headerId, itemId, designId, itemNumber, shutterPriceGroup}
+                    End If
+                    If designName = "Skyline Shutter Ocean" Then
+                        surchargeArray = {headerId, itemId, designId, itemNumber, shutterPriceGroup}
+                    End If
+                    If designName = "Skyline Part Ocean" Then
+                        surchargeArray = {headerId, itemId, designId, itemNumber, shutterPriceGroup}
+                    End If
+                    If designName = "Door" Then
+                        surchargeArray = {headerId, itemId, designId, itemNumber, doorPriceGroup}
+                    End If
+                    If designName = "Window" Then
+                        surchargeArray = {headerId, itemId, designId, itemNumber, doorPriceGroup}
+                    End If
+                    CalculateSurcharge(surchargeArray)
+                End If
+
+                ' SECOND BLIND
+                If Not String.IsNullOrEmpty(priceProductGroupIdB) AndAlso priceProductGroupStatusB = "Active" Then
+                    itemNumber = 2
+
+                    Dim sellArray As Object() = {priceProductGroupIdB, priceGroupId, dropB, widthB, "Sell"}
+                    Dim buyArray As Object() = {priceProductGroupIdB, priceGroupId, dropB, widthB, "Buy"}
+                    Dim factoryArray As Object() = {priceProductGroupIdB, priceGroupId, dropB, widthB, "Factory"}
+
+                    Dim priceGroupCalculation As String = priceGroupId
+
+                    Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
+                    Dim dataPriceFactory As DataRow = GetGridPrice(factoryArray)
+
+                    Dim gridSellPrice As Decimal = 0D
+                    Dim gridBuyPrice As Decimal = 0D
+                    Dim gridFactoryPrice As Decimal = 0D
+
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridBuyMethod As String = String.Empty
+                    Dim gridFactoryMethod As String = String.Empty
+
+                    Dim gridSellConditional As String = String.Empty
+                    Dim gridBuyConditional As String = String.Empty
+                    Dim gridFactoryConditional As String = String.Empty
+
+                    If Not dataPriceSell Is Nothing Then
+                        gridSellMethod = dataPriceSell("Method").ToString()
+                        gridSellPrice = Convert.ToDecimal(dataPriceSell("Price"))
+                        gridSellConditional = dataPriceSell("Conditional").ToString()
+                    End If
+                    If Not dataPriceBuy Is Nothing Then
+                        gridBuyMethod = dataPriceBuy("Method").ToString()
+                        gridBuyPrice = Convert.ToDecimal(dataPriceBuy("Price"))
+                        gridBuyConditional = dataPriceBuy("Conditional").ToString()
+                    End If
+                    If Not dataPriceFactory Is Nothing Then
+                        gridFactoryMethod = dataPriceFactory("Method").ToString()
+                        gridFactoryPrice = Convert.ToDecimal(dataPriceFactory("Price"))
+                        gridFactoryConditional = dataPriceFactory("Conditional").ToString()
+                    End If
+
+                    Dim gridSellAdditional As Decimal = 0D
+                    Dim gridBuyAdditional As Decimal = 0D
+                    Dim gridFactoryAdditional As Decimal = 0D
+
+                    If Not String.IsNullOrEmpty(priceAdditionalB) Then
+                        Dim additionalArray As Object() = {priceAdditionalB, priceGroupId, 0, width, "Sell"}
+                        Dim addData As DataRow = GetGridPrice(additionalArray)
+                        If addData IsNot Nothing Then
+                            gridSellAdditional = addData("Price")
+                        End If
+                    End If
+                    If Not String.IsNullOrEmpty(priceAdditionalB) Then
+                        Dim additionalArray As Object() = {priceAdditionalB, priceGroupId, 0, width, "Buy"}
+                        Dim addData As DataRow = GetGridPrice(additionalArray)
+                        If addData IsNot Nothing Then
+                            gridBuyAdditional = addData("Price")
+                        End If
+                    End If
+                    If Not String.IsNullOrEmpty(priceAdditionalB) Then
+                        Dim additionalArray As Object() = {priceAdditionalB, priceGroupId, 0, width, "Factory"}
+                        Dim addData As DataRow = GetGridPrice(additionalArray)
+                        If addData IsNot Nothing Then
+                            gridFactoryAdditional = addData("Price")
+                        End If
+                    End If
+
+                    Dim costSell As Decimal = gridSellPrice
+                    Dim costBuy As Decimal = gridBuyPrice
+                    Dim costFactory As Decimal = gridFactoryPrice
+
+                    Dim costSellAdditional As Decimal = gridSellAdditional
+                    Dim costBuyAdditional As Decimal = gridBuyAdditional
+                    Dim costFactoryAdditional As Decimal = gridFactoryAdditional
+
+                    thisSell = costSell
+                    thisBuy = costBuy
+                    thisFactory = costFactory
+
+                    thisSellAdditional = costSellAdditional
+                    thisBuyAdditional = costBuyAdditional
+                    thisFactoryAdditional = costFactoryAdditional
+
+                    Dim markupData As DataTable = GetDataTable("SELECT * FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
+                    For Each markupRow As DataRow In markupData.Rows
+                        Dim type As String = markupRow("Type").ToString()
+                        Dim method As String = markupRow("Method").ToString()
+                        Dim dataId As String = markupRow("DataId").ToString()
+
+                        If (type = "Designs" AndAlso dataId <> designId) OrElse (type = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdB) Then Continue For
+
+                        For Each markupColumn As String In {"Markup1", "Markup2", "Markup3", "Markup4", "Markup5"}
+                            If Not markupRow.Table.Columns.Contains(markupColumn) Then Continue For
+                            If IsDBNull(markupRow(markupColumn)) OrElse String.IsNullOrWhiteSpace(markupRow(markupColumn).ToString()) Then Continue For
+
+                            Dim markup As Decimal = CDec(markupRow(markupColumn))
+                            If markup = 0 Then Continue For
+
+                            If method = "Percent" Then
+                                markup = Math.Round(markup / 100, 2)
+                            End If
+
+                            Dim markupValue As Decimal = markup
+                            If method = "Percent" Then
+                                markupValue = Math.Round(costSell * markup, 4)
+                            End If
+
+                            thisSell = Math.Round(costSell + markupValue, 4)
+
+                            If designName = "Roller Blind" AndAlso (type = "Designs" OrElse type = "PriceProductGroups") AndAlso (priceProductGroupNameB.Contains("Standard") OrElse priceProductGroupNameB.Contains("Gear Reduction") OrElse priceProductGroupNameB.Contains("Sunboss")) Then
+                                If gridSellConditional = "Excl. $7 Disc" Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim markupExcl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupExcl7 = Math.Round(costExcl7 * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 + markupExcl7 + 7, 4)
+                                Else
+                                    Dim markupIncl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupIncl7 = Math.Round(costSell * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costSell + markupIncl7, 4)
+                                End If
+
+                                If isWithoutGR Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim markupExl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupExl7 = Math.Round(costExcl7 * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 + markupExl7, 4)
+                                End If
+                            End If
+
+                            costSell = thisSell
+
+                            Dim markupAdditionalValue As Decimal = 0
+                            If method = "Percent" Then
+                                markupAdditionalValue = Math.Round(costSellAdditional * markup, 4)
+                            End If
+                            If method = "Value" Then
+                                markupAdditionalValue = markup
+                            End If
+
+                            thisSellAdditional = Math.Round(costSellAdditional + markupAdditionalValue, 4)
+                            costSellAdditional = thisSellAdditional
+                        Next
+                    Next
+
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 WHEN Type='PriceProductGroups' THEN 2 ELSE 3 END ASC")
+                    For Each discountRow As DataRow In discountData.Rows
+                        Dim type As String = discountRow("Type").ToString()
+                        Dim method As String = discountRow("Method").ToString()
+                        Dim dataId As String = discountRow("DataId").ToString()
+
+                        If (type = "Designs" AndAlso dataId <> designId) OrElse (type = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdB) OrElse (type = "RollerFabrics" AndAlso (designName <> "Roller Blind" OrElse dataId <> fabricIdB)) OrElse (type = "RollerFabricColours" AndAlso (designName <> "Roller Blind" OrElse dataId <> fabricColourIdB)) OrElse (type = "RollerChains" AndAlso (designName <> "Roller Blind" OrElse dataId <> chainIdB)) Then Continue For
+
+                        For Each discountColumn As String In {"Discount1", "Discount2", "Discount3", "Discount4", "Discount5"}
+                            If Not discountRow.Table.Columns.Contains(discountColumn) Then Continue For
+
+                            If IsDBNull(discountRow(discountColumn)) OrElse String.IsNullOrWhiteSpace(discountRow(discountColumn).ToString()) Then Continue For
+
+                            Dim discount As Decimal = CDec(discountRow(discountColumn))
+                            If discount = 0 Then Continue For
+
+                            If method = "Percent" Then
+                                discount = Math.Round(discount / 100, 2)
+                            End If
+
+                            Dim discountValue As Decimal = discount
+
+                            If method = "Percent" Then
+                                discountValue = Math.Round(costSell * discount, 4)
+                            End If
+
+                            thisSell = Math.Round(costSell - discountValue, 4)
+
+                            If designName = "Roller Blind" AndAlso (type = "Designs" OrElse type = "PriceProductGroups") AndAlso (priceProductGroupNameB.Contains("Standard") OrElse priceProductGroupNameB.Contains("Gear Reduction") OrElse priceProductGroupNameB.Contains("Sunboss")) Then
+                                If gridSellConditional = "Excl. $7 Disc" Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim discExcl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discExcl7 = Math.Round(costExcl7 * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 - discExcl7 + 7, 4)
+                                Else
+                                    Dim discIncl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discIncl7 = Math.Round(costSell * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costSell - discIncl7, 4)
+                                End If
+
+                                If isWithoutGR Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim discExl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discExl7 = Math.Round(costExcl7 * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 - discExl7, 4)
+                                End If
+                            End If
+
+                            costSell = thisSell
+
+                            Dim discountAdditionalValue As Decimal = 0
+
+                            If method = "Percent" Then
+                                discountAdditionalValue = Math.Round(costSellAdditional * discount, 4)
+                            End If
+
+                            If method = "Value" Then
+                                discountAdditionalValue = discount
+                            End If
+
+                            thisSellAdditional = Math.Round(costSellAdditional - discountAdditionalValue, 4)
+                            costSellAdditional = thisSellAdditional
+                        Next
+                    Next
+
+                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupCalculation, designId, blindId)
+                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupCalculation, designId, blindId)
+                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupCalculation, designId, blindId)
+
+                    Dim sellAdditionalCalculation As DataRow = GetPriceCalculationRule(gridSellAdditional, priceGroupCalculation, designId, blindId)
+                    Dim buyAdditionalCalculation As DataRow = GetPriceCalculationRule(gridBuyAdditional, priceGroupCalculation, designId, blindId)
+                    Dim factoryAdditionalCalculation As DataRow = GetPriceCalculationRule(gridFactoryAdditional, priceGroupCalculation, designId, blindId)
+
+                    thisCustomer = CalculateSell(sellCalculation, costSell, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB, cutLength)
+                    thisSell = CalculateSell(sellCalculation, costSell, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB, cutLength)
+                    thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB)
+                    thisFactory = CalculateBuy(factoryCalculation, costFactory, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB)
+
+                    thisCustomerAdditional = CalculateSell(sellAdditionalCalculation, costSellAdditional, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB, cutLength)
+                    thisSellAdditional = CalculateSell(sellAdditionalCalculation, costSellAdditional, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB, cutLength)
+                    thisBuyAdditional = CalculateBuy(buyAdditionalCalculation, costBuyAdditional, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB)
+                    thisFactoryAdditional = CalculateFactory(factoryAdditionalCalculation, costFactoryAdditional, CInt(widthB), CInt(dropB), squareMetreB, linearMetreB)
+
+                    costSell = thisSell
+                    costBuy = thisBuy
+                    costFactory = thisFactory
+
+                    costSellAdditional = thisSellAdditional
+                    costBuyAdditional = thisBuyAdditional
+                    costFactoryAdditional = thisFactoryAdditional
+
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each sellPromoRow As DataRow In sellPromoData.Rows
+                        Dim promoId As String = sellPromoRow("PromoId").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim compareId As String = String.Empty
+                            Select Case type
+                                Case "Designs"
+                                    compareId = designId
+                                Case "Blinds"
+                                    compareId = blindId
+                                Case "Products"
+                                    compareId = productId
+                                    If companyDetailId = "4" Then
+                                        compareId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'")
+                                    End If
+                                Case "RollerFabrics"
+                                    If designName = "Roller Blind" Then compareId = fabricIdB
+                                    If companyDetailId = "4" AndAlso designName = "Roller Blind" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdB & "' AND Type='Fabrics'")
+                                    End If
+                                Case "CurtainFabrics"
+                                    If designName = "Curtain" Then compareId = fabricIdB
+                                    If companyDetailId = "4" AndAlso designName = "Curtain" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdB & "' AND Type='Fabrics'")
+                                    End If
+                                Case "RollerFabricColours"
+                                    If designName = "Roller Blind" Then compareId = fabricColourIdB
+                                    If companyDetailId = "4" AndAlso designName = "Roller Blind" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdB & "' AND Type='FabricColours'")
+                                    End If
+                                Case "CurtainFabricColours"
+                                    If designName = "Curtain" Then compareId = fabricColourIdB
+                                    If companyDetailId = "4" AndAlso designName = "Curtain" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdB & "' AND Type='FabricColours'")
+                                    End If
+                                Case "FrameColours"
+                                    compareId = frameColour
+                            End Select
+
+                            If compareId <> dataId Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costSell * discount, 4)
+
+                            thisSell = Math.Round(costSell - discountValue, 4)
+                            costSell = thisSell
+                        Next
+                    Next
+
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT * FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each buyPromoRow As DataRow In buyPromoData.Rows
+                        Dim promoId As String = buyPromoRow("Id").ToString()
+                        Dim promoDataType As String = buyPromoRow("DataType").ToString()
+                        Dim promoDataId As String = buyPromoRow("DataId").ToString()
+
+                        If promoDataType = "Companys" AndAlso Not promoDataId = companyId Then
+                            Continue For
+                        End If
+                        If promoDataType = "Customers" AndAlso Not promoDataId = customerId Then
+                            Continue For
+                        End If
+
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim isMatch As Boolean = False
+                            Select Case type
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
+                                    End If
+                                Case "PriceProductGroups"
+                                    isMatch = (dataId = priceProductGroupIdB)
+                                Case "RollerFabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdB)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdB & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdB)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdB & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "RollerFabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdB)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdB & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdB)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdB & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costBuy * discount, 4)
+
+                            thisBuy = Math.Round(costBuy - discountValue, 4)
+                            costBuy = thisBuy
+                        Next
+                    Next
+
+                    Dim factoryPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Factory' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each factoryPromoRow As DataRow In factoryPromoData.Rows
+                        Dim promoId As String = factoryPromoRow("Id").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim isMatch As Boolean = False
+                            Select Case type
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
+                                    End If
+                                Case "RollerFabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdB)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdB & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdB)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdB & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "RollerFabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdB)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdB & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdB)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdB & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costFactory * discount, 4)
+
+                            thisFactory = Math.Round(costFactory - discountValue, 4)
+                            costFactory = thisFactory
+                        Next
+                    Next
+
+                    Dim costingDescription As String = String.Format("#2 {0}", priceProductGroupNameB)
+                    If designName = "Cellular Shades" Then
+                        costingDescription = priceProductGroupNameB
+                    End If
+
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomer, thisSell, thisBuy, thisFactory}
+                    OrderCostings(costingArray)
+
+                    If designName = "Curtain" AndAlso blindName = "Complete Set (Double)" Then
+                        costingDescription = String.Format("#2 {0}", priceAdditionalNameB)
+                        costingArray = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomerAdditional, thisSellAdditional, thisBuyAdditional, thisFactoryAdditional}
+                        OrderCostings(costingArray)
+                    End If
+
+                    Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroupId}
+                    CalculateSurcharge(surchargeArray)
+                End If
+
+                ' THIRD BLIND
+                If Not String.IsNullOrEmpty(priceProductGroupIdC) AndAlso priceProductGroupStatusC = "Active" Then
+                    itemNumber = 3
+
+                    Dim sellArray As Object() = {priceProductGroupIdC, priceGroupId, dropC, widthC, "Sell"}
+                    Dim buyArray As Object() = {priceProductGroupIdC, priceGroupId, dropC, widthC, "Buy"}
+                    Dim factoryArray As Object() = {priceProductGroupIdC, priceGroupId, dropC, widthC, "Factory"}
+
+                    Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
+                    Dim dataPriceFactory As DataRow = GetGridPrice(factoryArray)
+
+                    Dim gridSellPrice As Decimal = 0D
+                    Dim gridBuyPrice As Decimal = 0D
+                    Dim gridFactoryPrice As Decimal = 0D
+
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridBuyMethod As String = String.Empty
+                    Dim gridFactoryMethod As String = String.Empty
+
+                    Dim gridSellConditional As String = String.Empty
+                    Dim gridBuyConditional As String = String.Empty
+                    Dim gridFactoryConditional As String = String.Empty
+
+                    If Not dataPriceSell Is Nothing Then
+                        gridSellMethod = dataPriceSell("Method").ToString()
+                        gridSellPrice = Convert.ToDecimal(dataPriceSell("Price"))
+                        gridSellConditional = dataPriceSell("Conditional").ToString()
+                    End If
+                    If Not dataPriceBuy Is Nothing Then
+                        gridBuyMethod = dataPriceBuy("Method").ToString()
+                        gridBuyPrice = Convert.ToDecimal(dataPriceBuy("Price"))
+                        gridBuyConditional = dataPriceBuy("Conditional").ToString()
+                    End If
+                    If Not dataPriceFactory Is Nothing Then
+                        gridFactoryMethod = dataPriceFactory("Method").ToString()
+                        gridFactoryPrice = Convert.ToDecimal(dataPriceFactory("Price"))
+                        gridFactoryConditional = dataPriceFactory("Conditional").ToString()
+                    End If
+
+                    Dim costSell As Decimal = gridSellPrice
+                    Dim costBuy As Decimal = gridBuyPrice
+                    Dim costFactory As Decimal = gridFactoryPrice
+
+                    thisSell = costSell
+                    thisBuy = costBuy
+                    thisFactory = costFactory
+
+                    Dim markupData As DataTable = GetDataTable("SELECT * FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
+                    For Each markupRow As DataRow In markupData.Rows
+                        Dim type As String = markupRow("Type").ToString()
+                        Dim method As String = markupRow("Method").ToString()
+                        Dim dataId As String = markupRow("DataId").ToString()
+
+                        If (type = "Designs" AndAlso dataId <> designId) OrElse (type = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdC) Then Continue For
+
+                        For Each markupColumn As String In {"Markup1", "Markup2", "Markup3", "Markup4", "Markup5"}
+                            If Not markupRow.Table.Columns.Contains(markupColumn) Then Continue For
+                            If IsDBNull(markupRow(markupColumn)) OrElse String.IsNullOrWhiteSpace(markupRow(markupColumn).ToString()) Then Continue For
+
+                            Dim markup As Decimal = CDec(markupRow(markupColumn))
+                            If markup = 0 Then Continue For
+
+                            If method = "Percent" Then
+                                markup = Math.Round(markup / 100, 2)
+                            End If
+
+                            Dim markupValue As Decimal = markup
+                            If method = "Percent" Then
+                                markupValue = Math.Round(costSell * markup, 4)
+                            End If
+
+                            thisSell = Math.Round(costSell + markupValue, 4)
+
+                            If designName = "Roller Blind" AndAlso (type = "Designs" OrElse type = "PriceProductGroups") AndAlso (priceProductGroupNameC.Contains("Standard") OrElse priceProductGroupNameC.Contains("Gear Reduction") OrElse priceProductGroupNameC.Contains("Sunboss")) Then
+                                If gridSellConditional = "Excl. $7 Disc" Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim markupExcl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupExcl7 = Math.Round(costExcl7 * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 + markupExcl7 + 7, 4)
+                                Else
+                                    Dim markupIncl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupIncl7 = Math.Round(costSell * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costSell + markupIncl7, 4)
+                                End If
+
+                                If isWithoutGR Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim markupExl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupExl7 = Math.Round(costExcl7 * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 + markupExl7, 4)
+                                End If
+                            End If
+
+                            costSell = thisSell
+                        Next
+                    Next
+
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 WHEN Type='PriceProductGroups' THEN 2 ELSE 3 END ASC")
+                    For Each discountRow As DataRow In discountData.Rows
+                        Dim type As String = discountRow("Type").ToString()
+                        Dim method As String = discountRow("Method").ToString()
+                        Dim dataId As String = discountRow("DataId").ToString()
+
+                        If (type = "Designs" AndAlso dataId <> designId) OrElse (type = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdC) OrElse (type = "RollerFabrics" AndAlso (designName <> "Roller Blind" OrElse dataId <> fabricIdC)) OrElse (type = "RollerFabricColours" AndAlso (designName <> "Roller Blind" OrElse dataId <> fabricColourIdC)) OrElse (type = "RollerChains" AndAlso (designName <> "Roller Blind" OrElse dataId <> chainIdC)) Then Continue For
+
+                        For Each discountColumn As String In {"Discount1", "Discount2", "Discount3", "Discount4", "Discount5"}
+                            If Not discountRow.Table.Columns.Contains(discountColumn) Then Continue For
+
+                            If IsDBNull(discountRow(discountColumn)) OrElse String.IsNullOrWhiteSpace(discountRow(discountColumn).ToString()) Then Continue For
+
+                            Dim discount As Decimal = CDec(discountRow(discountColumn))
+                            If discount = 0 Then Continue For
+
+                            If method = "Percent" Then
+                                discount = Math.Round(discount / 100, 2)
+                            End If
+
+                            Dim discountValue As Decimal = discount
+
+                            If method = "Percent" Then
+                                discountValue = Math.Round(costSell * discount, 4)
+                            End If
+
+                            thisSell = Math.Round(costSell - discountValue, 4)
+
+                            If designName = "Roller Blind" AndAlso (type = "Designs" OrElse type = "PriceProductGroups") AndAlso (priceProductGroupNameC.Contains("Standard") OrElse priceProductGroupNameC.Contains("Gear Reduction") OrElse priceProductGroupNameC.Contains("Sunboss")) Then
+                                If gridSellConditional = "Excl. $7 Disc" Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim discExcl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discExcl7 = Math.Round(costExcl7 * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 - discExcl7 + 7, 4)
+                                Else
+                                    Dim discIncl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discIncl7 = Math.Round(costSell * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costSell - discIncl7, 4)
+                                End If
+
+                                If isWithoutGR Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim discExl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discExl7 = Math.Round(costExcl7 * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 - discExl7, 4)
+                                End If
+                            End If
+
+                            costSell = thisSell
+                        Next
+                    Next
+
+                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupId, designId, blindId)
+                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId, blindId)
+                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
+
+                    thisCustomer = CalculateSell(sellCalculation, costSell, CInt(widthC), CInt(dropC), squareMetreC, linearMetreC, cutLength)
+                    thisSell = CalculateSell(sellCalculation, costSell, CInt(widthC), CInt(dropC), squareMetreC, linearMetreC, cutLength)
+                    thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthC), CInt(dropC), squareMetreC, linearMetreC)
+                    thisFactory = CalculateFactory(factoryCalculation, costFactory, CInt(widthC), CInt(dropC), squareMetreC, linearMetreC)
+
+                    costSell = thisSell
+                    costBuy = thisBuy
+                    costFactory = thisFactory
+
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each sellPromoRow As DataRow In sellPromoData.Rows
+                        Dim promoId As String = sellPromoRow("PromoId").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim compareId As String = String.Empty
+                            Select Case type
+                                Case "Designs"
+                                    compareId = designId
+                                Case "Blinds"
+                                    compareId = blindId
+                                Case "Products"
+                                    compareId = productId
+                                    If companyDetailId = "4" Then
+                                        compareId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'")
+                                    End If
+                                Case "RollerFabrics"
+                                    If designName = "Roller Blind" Then compareId = fabricIdC
+                                    If companyDetailId = "4" AndAlso designName = "Roller Blind" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdC & "' AND Type='Fabrics'")
+                                    End If
+                                Case "CurtainFabrics"
+                                    If designName = "Curtain" Then compareId = fabricIdC
+                                    If companyDetailId = "4" AndAlso designName = "Curtain" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdC & "' AND Type='Fabrics'")
+                                    End If
+                                Case "RollerFabricColours"
+                                    If designName = "Roller Blind" Then compareId = fabricColourIdC
+                                    If companyDetailId = "4" AndAlso designName = "Roller Blind" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdC & "' AND Type='FabricColours'")
+                                    End If
+                                Case "CurtainFabricColours"
+                                    If designName = "Curtain" Then compareId = fabricColourIdC
+                                    If companyDetailId = "4" AndAlso designName = "Curtain" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdC & "' AND Type='FabricColours'")
+                                    End If
+                                Case "FrameColours"
+                                    compareId = frameColour
+                            End Select
+
+                            If compareId <> dataId Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costSell * discount, 4)
+
+                            thisSell = Math.Round(costSell - discountValue, 4)
+                            costSell = thisSell
+                        Next
+                    Next
+
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT * FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each buyPromoRow As DataRow In buyPromoData.Rows
+                        Dim promoId As String = buyPromoRow("Id").ToString()
+                        Dim promoDataType As String = buyPromoRow("DataType").ToString()
+                        Dim promoDataId As String = buyPromoRow("DataId").ToString()
+
+                        If promoDataType = "Companys" AndAlso Not promoDataId = companyId Then
+                            Continue For
+                        End If
+                        If promoDataType = "Customers" AndAlso Not promoDataId = customerId Then
+                            Continue For
+                        End If
+
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim isMatch As Boolean = False
+                            Select Case type
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
+                                    End If
+                                Case "PriceProductGroups"
+                                    isMatch = (dataId = priceProductGroupIdC)
+                                Case "RollerFabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdC)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdC & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdC)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdC & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "RollerFabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdC)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdC & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdC)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdC & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costBuy * discount, 4)
+
+                            thisBuy = Math.Round(costBuy - discountValue, 4)
+                            costBuy = thisBuy
+                        Next
+                    Next
+
+                    Dim factoryPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Factory' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each factoryPromoRow As DataRow In factoryPromoData.Rows
+                        Dim promoId As String = factoryPromoRow("Id").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim isMatch As Boolean = False
+                            Select Case type
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
+                                    End If
+                                Case "RollerFabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdC)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdC & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdC)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdC & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "RollerFabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdC)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdC & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdC)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdC & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costFactory * discount, 4)
+
+                            thisFactory = Math.Round(costFactory - discountValue, 4)
+                            costFactory = thisFactory
+                        Next
+                    Next
+
+                    Dim costingDescription As String = String.Format("#3 {0}", priceProductGroupNameC)
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomer, thisSell, thisBuy, thisFactory}
+                    Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroupId}
+
+                    OrderCostings(costingArray)
+                    CalculateSurcharge(surchargeArray)
+                End If
+
+                ' FOURTH BLIND
+                If Not String.IsNullOrEmpty(priceProductGroupIdD) AndAlso priceProductGroupStatusD = "Active" Then
+                    itemNumber = 4
+
+                    Dim sellArray As Object() = {priceProductGroupIdD, priceGroupId, dropD, widthD, "Sell"}
+                    Dim buyArray As Object() = {priceProductGroupIdD, priceGroupId, dropD, widthD, "Buy"}
+                    Dim factoryArray As Object() = {priceProductGroupIdD, priceGroupId, dropD, widthD, "Factory"}
+
+                    Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
+                    Dim dataPriceFactory As DataRow = GetGridPrice(factoryArray)
+
+                    Dim gridSellPrice As Decimal = 0D
+                    Dim gridBuyPrice As Decimal = 0D
+                    Dim gridFactoryPrice As Decimal = 0D
+
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridBuyMethod As String = String.Empty
+                    Dim gridFactoryMethod As String = String.Empty
+
+                    Dim gridSellConditional As String = String.Empty
+                    Dim gridBuyConditional As String = String.Empty
+                    Dim gridFactoryConditional As String = String.Empty
+
+                    If Not dataPriceSell Is Nothing Then
+                        gridSellMethod = dataPriceSell("Method").ToString()
+                        gridSellPrice = Convert.ToDecimal(dataPriceSell("Price"))
+                        gridSellConditional = dataPriceSell("Conditional").ToString()
+                    End If
+                    If Not dataPriceBuy Is Nothing Then
+                        gridBuyMethod = dataPriceBuy("Method").ToString()
+                        gridBuyPrice = Convert.ToDecimal(dataPriceBuy("Price"))
+                        gridBuyConditional = dataPriceBuy("Conditional").ToString()
+                    End If
+                    If Not dataPriceFactory Is Nothing Then
+                        gridFactoryMethod = dataPriceFactory("Method").ToString()
+                        gridFactoryPrice = Convert.ToDecimal(dataPriceFactory("Price"))
+                        gridFactoryConditional = dataPriceFactory("Conditional").ToString()
+                    End If
+
+                    Dim costSell As Decimal = gridSellPrice
+                    Dim costBuy As Decimal = gridBuyPrice
+                    Dim costFactory As Decimal = gridFactoryPrice
+
+                    thisSell = costSell
+                    thisBuy = costBuy
+                    thisFactory = costFactory
+
+                    Dim markupData As DataTable = GetDataTable("SELECT * FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
+                    For Each markupRow As DataRow In markupData.Rows
+                        Dim type As String = markupRow("Type").ToString()
+                        Dim method As String = markupRow("Method").ToString()
+                        Dim dataId As String = markupRow("DataId").ToString()
+
+                        If (type = "Designs" AndAlso dataId <> designId) OrElse (type = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdD) Then Continue For
+
+                        For Each markupColumn As String In {"Markup1", "Markup2", "Markup3", "Markup4", "Markup5"}
+                            If Not markupRow.Table.Columns.Contains(markupColumn) Then Continue For
+                            If IsDBNull(markupRow(markupColumn)) OrElse String.IsNullOrWhiteSpace(markupRow(markupColumn).ToString()) Then Continue For
+
+                            Dim markup As Decimal = CDec(markupRow(markupColumn))
+                            If markup = 0 Then Continue For
+
+                            If method = "Percent" Then
+                                markup = Math.Round(markup / 100, 2)
+                            End If
+
+                            Dim markupValue As Decimal = markup
+                            If method = "Percent" Then
+                                markupValue = Math.Round(costSell * markup, 4)
+                            End If
+
+                            thisSell = Math.Round(costSell + markupValue, 4)
+
+                            If designName = "Roller Blind" AndAlso (type = "Designs" OrElse type = "PriceProductGroups") AndAlso (priceProductGroupNameD.Contains("Standard") OrElse priceProductGroupNameD.Contains("Gear Reduction") OrElse priceProductGroupNameD.Contains("Sunboss")) Then
+                                If gridSellConditional = "Excl. $7 Disc" Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim markupExcl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupExcl7 = Math.Round(costExcl7 * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 + markupExcl7 + 7, 4)
+                                Else
+                                    Dim markupIncl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupIncl7 = Math.Round(costSell * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costSell + markupIncl7, 4)
+                                End If
+
+                                If isWithoutGR Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim markupExl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupExl7 = Math.Round(costExcl7 * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 + markupExl7, 4)
+                                End If
+                            End If
+
+                            costSell = thisSell
+                        Next
+                    Next
+
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 WHEN Type='PriceProductGroups' THEN 2 ELSE 3 END ASC")
+                    For Each discountRow As DataRow In discountData.Rows
+                        Dim type As String = discountRow("Type").ToString()
+                        Dim method As String = discountRow("Method").ToString()
+                        Dim dataId As String = discountRow("DataId").ToString()
+
+                        If (type = "Designs" AndAlso dataId <> designId) OrElse (type = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdD) OrElse (type = "RollerFabrics" AndAlso (designName <> "Roller Blind" OrElse dataId <> fabricIdD)) OrElse (type = "RollerFabricColours" AndAlso (designName <> "Roller Blind" OrElse dataId <> fabricColourIdD)) OrElse (type = "RollerChains" AndAlso (designName <> "Roller Blind" OrElse dataId <> chainIdD)) Then Continue For
+
+                        For Each discountColumn As String In {"Discount1", "Discount2", "Discount3", "Discount4", "Discount5"}
+                            If Not discountRow.Table.Columns.Contains(discountColumn) Then Continue For
+
+                            If IsDBNull(discountRow(discountColumn)) OrElse String.IsNullOrWhiteSpace(discountRow(discountColumn).ToString()) Then Continue For
+
+                            Dim discount As Decimal = CDec(discountRow(discountColumn))
+                            If discount = 0 Then Continue For
+
+                            If method = "Percent" Then
+                                discount = Math.Round(discount / 100, 2)
+                            End If
+
+                            Dim discountValue As Decimal = discount
+
+                            If method = "Percent" Then
+                                discountValue = Math.Round(costSell * discount, 4)
+                            End If
+
+                            thisSell = Math.Round(costSell - discountValue, 4)
+
+                            If designName = "Roller Blind" AndAlso (type = "Designs" OrElse type = "PriceProductGroups") AndAlso (priceProductGroupNameD.Contains("Standard") OrElse priceProductGroupNameD.Contains("Gear Reduction") OrElse priceProductGroupNameD.Contains("Sunboss")) Then
+                                If gridSellConditional = "Excl. $7 Disc" Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim discExcl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discExcl7 = Math.Round(costExcl7 * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 - discExcl7 + 7, 4)
+                                Else
+                                    Dim discIncl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discIncl7 = Math.Round(costSell * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costSell - discIncl7, 4)
+                                End If
+
+                                If isWithoutGR Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim discExl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discExl7 = Math.Round(costExcl7 * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 - discExl7, 4)
+                                End If
+                            End If
+
+                            costSell = thisSell
+                        Next
+                    Next
+
+                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupId, designId, blindId)
+                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId, blindId)
+                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
+
+                    thisCustomer = CalculateSell(sellCalculation, costSell, CInt(widthD), CInt(dropD), squareMetreD, linearMetreD, cutLength)
+                    thisSell = CalculateSell(sellCalculation, costSell, CInt(widthD), CInt(dropD), squareMetreD, linearMetreD, cutLength)
+                    thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthD), CInt(dropD), squareMetreD, linearMetreD)
+                    thisFactory = CalculateBuy(factoryCalculation, costFactory, CInt(widthD), CInt(dropD), squareMetreD, linearMetreD)
+
+                    costSell = thisSell
+                    costBuy = thisBuy
+                    costFactory = thisFactory
+
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each sellPromoRow As DataRow In sellPromoData.Rows
+                        Dim promoId As String = sellPromoRow("PromoId").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim compareId As String = String.Empty
+                            Select Case type
+                                Case "Designs"
+                                    compareId = designId
+                                Case "Blinds"
+                                    compareId = blindId
+                                Case "Products"
+                                    compareId = productId
+                                    If companyDetailId = "4" Then
+                                        compareId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'")
+                                    End If
+                                Case "RollerFabrics"
+                                    If designName = "Roller Blind" Then compareId = fabricIdD
+                                    If companyDetailId = "4" AndAlso designName = "Roller Blind" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdD & "' AND Type='Fabrics'")
+                                    End If
+                                Case "CurtainFabrics"
+                                    If designName = "Curtain" Then compareId = fabricIdD
+                                    If companyDetailId = "4" AndAlso designName = "Curtain" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdD & "' AND Type='Fabrics'")
+                                    End If
+                                Case "RollerFabricColours"
+                                    If designName = "Roller Blind" Then compareId = fabricColourIdD
+                                    If companyDetailId = "4" AndAlso designName = "Roller Blind" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdD & "' AND Type='FabricColours'")
+                                    End If
+                                Case "CurtainFabricColours"
+                                    If designName = "Curtain" Then compareId = fabricColourIdD
+                                    If companyDetailId = "4" AndAlso designName = "Curtain" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdD & "' AND Type='FabricColours'")
+                                    End If
+                                Case "FrameColours"
+                                    compareId = frameColour
+                            End Select
+
+                            If compareId <> dataId Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costSell * discount, 4)
+
+                            thisSell = Math.Round(costSell - discountValue, 4)
+                            costSell = thisSell
+                        Next
+                    Next
+
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT * FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each buyPromoRow As DataRow In buyPromoData.Rows
+                        Dim promoId As String = buyPromoRow("Id").ToString()
+                        Dim promoDataType As String = buyPromoRow("DataType").ToString()
+                        Dim promoDataId As String = buyPromoRow("DataId").ToString()
+
+                        If promoDataType = "Companys" AndAlso Not promoDataId = companyId Then
+                            Continue For
+                        End If
+                        If promoDataType = "Customers" AndAlso Not promoDataId = customerId Then
+                            Continue For
+                        End If
+
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim isMatch As Boolean = False
+                            Select Case type
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
+                                    End If
+                                Case "PriceProductGroups"
+                                    isMatch = (dataId = priceProductGroupIdD)
+                                Case "RollerFabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdD)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdD & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdD)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdD & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "RollerFabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdD)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdD & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdD)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdD & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costBuy * discount, 4)
+
+                            thisBuy = Math.Round(costBuy - discountValue, 4)
+                            costBuy = thisBuy
+                        Next
+                    Next
+
+                    Dim factoryPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Factory' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each factoryPromoRow As DataRow In factoryPromoData.Rows
+                        Dim promoId As String = factoryPromoRow("Id").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim isMatch As Boolean = False
+                            Select Case type
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
+                                    End If
+                                Case "RollerFabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdD)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdD & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdD)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdD & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "RollerFabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdD)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdD & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdD)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdD & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costFactory * discount, 4)
+
+                            thisFactory = Math.Round(costFactory - discountValue, 4)
+                            costFactory = thisFactory
+                        Next
+                    Next
+
+                    Dim costingDescription As String = String.Format("#4 {0}", priceProductGroupNameD)
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomer, thisSell, thisBuy, thisFactory}
+                    Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroupId}
+
+                    OrderCostings(costingArray)
+                    CalculateSurcharge(surchargeArray)
+                End If
+
+                'FIFTH BLIND
+                If Not String.IsNullOrEmpty(priceProductGroupIdE) AndAlso priceProductGroupStatusE = "Active" Then
+                    itemNumber = 5
+
+                    Dim sellArray As Object() = {priceProductGroupIdE, priceGroupId, dropE, widthE, "Sell"}
+                    Dim buyArray As Object() = {priceProductGroupIdE, priceGroupId, dropE, widthE, "Buy"}
+                    Dim factoryArray As Object() = {priceProductGroupIdE, priceGroupId, dropE, widthE, "Factory"}
+
+                    Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
+                    Dim dataPriceFactory As DataRow = GetGridPrice(factoryArray)
+
+                    Dim gridSellPrice As Decimal = 0D
+                    Dim gridBuyPrice As Decimal = 0D
+                    Dim gridFactoryPrice As Decimal = 0D
+
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridBuyMethod As String = String.Empty
+                    Dim gridFactoryMethod As String = String.Empty
+
+                    Dim gridSellConditional As String = String.Empty
+                    Dim gridBuyConditional As String = String.Empty
+                    Dim gridFactoryConditional As String = String.Empty
+
+                    If Not dataPriceSell Is Nothing Then
+                        gridSellMethod = dataPriceSell("Method").ToString()
+                        gridSellPrice = Convert.ToDecimal(dataPriceSell("Price"))
+                        gridSellConditional = dataPriceSell("Conditional").ToString()
+                    End If
+                    If Not dataPriceBuy Is Nothing Then
+                        gridBuyMethod = dataPriceBuy("Method").ToString()
+                        gridBuyPrice = Convert.ToDecimal(dataPriceBuy("Price"))
+                        gridBuyConditional = dataPriceBuy("Conditional").ToString()
+                    End If
+                    If Not dataPriceFactory Is Nothing Then
+                        gridFactoryMethod = dataPriceFactory("Method").ToString()
+                        gridFactoryPrice = Convert.ToDecimal(dataPriceFactory("Price"))
+                        gridFactoryConditional = dataPriceFactory("Conditional").ToString()
+                    End If
+
+                    Dim costSell As Decimal = gridSellPrice
+                    Dim costBuy As Decimal = gridBuyPrice
+                    Dim costFactory As Decimal = gridFactoryPrice
+
+                    thisSell = costSell
+                    thisBuy = costBuy
+                    thisFactory = costFactory
+
+                    Dim markupData As DataTable = GetDataTable("SELECT * FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
+                    For Each markupRow As DataRow In markupData.Rows
+                        Dim type As String = markupRow("Type").ToString()
+                        Dim method As String = markupRow("Method").ToString()
+                        Dim dataId As String = markupRow("DataId").ToString()
+
+                        If (type = "Designs" AndAlso dataId <> designId) OrElse (type = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdE) Then Continue For
+
+                        For Each markupColumn As String In {"Markup1", "Markup2", "Markup3", "Markup4", "Markup5"}
+                            If Not markupRow.Table.Columns.Contains(markupColumn) Then Continue For
+                            If IsDBNull(markupRow(markupColumn)) OrElse String.IsNullOrWhiteSpace(markupRow(markupColumn).ToString()) Then Continue For
+
+                            Dim markup As Decimal = CDec(markupRow(markupColumn))
+                            If markup = 0 Then Continue For
+
+                            If method = "Percent" Then
+                                markup = Math.Round(markup / 100, 2)
+                            End If
+
+                            Dim markupValue As Decimal = markup
+                            If method = "Percent" Then
+                                markupValue = Math.Round(costSell * markup, 4)
+                            End If
+
+                            thisSell = Math.Round(costSell + markupValue, 4)
+
+                            If designName = "Roller Blind" AndAlso (type = "Designs" OrElse type = "PriceProductGroups") AndAlso (priceProductGroupNameE.Contains("Standard") OrElse priceProductGroupNameE.Contains("Gear Reduction") OrElse priceProductGroupNameE.Contains("Sunboss")) Then
+                                If gridSellConditional = "Excl. $7 Disc" Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim markupExcl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupExcl7 = Math.Round(costExcl7 * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 + markupExcl7 + 7, 4)
+                                Else
+                                    Dim markupIncl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupIncl7 = Math.Round(costSell * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costSell + markupIncl7, 4)
+                                End If
+
+                                If isWithoutGR Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim markupExl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupExl7 = Math.Round(costExcl7 * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 + markupExl7, 4)
+                                End If
+                            End If
+
+                            costSell = thisSell
+                        Next
+                    Next
+
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 WHEN Type='PriceProductGroups' THEN 2 ELSE 3 END ASC")
+                    For Each discountRow As DataRow In discountData.Rows
+                        Dim type As String = discountRow("Type").ToString()
+                        Dim method As String = discountRow("Method").ToString()
+                        Dim dataId As String = discountRow("DataId").ToString()
+
+                        If (type = "Designs" AndAlso dataId <> designId) OrElse (type = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdE) OrElse (type = "RollerFabrics" AndAlso (designName <> "Roller Blind" OrElse dataId <> fabricIdE)) OrElse (type = "RollerFabricColours" AndAlso (designName <> "Roller Blind" OrElse dataId <> fabricColourIdE)) OrElse (type = "RollerChains" AndAlso (designName <> "Roller Blind" OrElse dataId <> chainIdE)) Then Continue For
+
+                        For Each discountColumn As String In {"Discount1", "Discount2", "Discount3", "Discount4", "Discount5"}
+                            If Not discountRow.Table.Columns.Contains(discountColumn) Then Continue For
+
+                            If IsDBNull(discountRow(discountColumn)) OrElse String.IsNullOrWhiteSpace(discountRow(discountColumn).ToString()) Then Continue For
+
+                            Dim discount As Decimal = CDec(discountRow(discountColumn))
+                            If discount = 0 Then Continue For
+
+                            If method = "Percent" Then
+                                discount = Math.Round(discount / 100, 2)
+                            End If
+
+                            Dim discountValue As Decimal = discount
+
+                            If method = "Percent" Then
+                                discountValue = Math.Round(costSell * discount, 4)
+                            End If
+
+                            thisSell = Math.Round(costSell - discountValue, 4)
+
+                            If designName = "Roller Blind" AndAlso (type = "Designs" OrElse type = "PriceProductGroups") AndAlso (priceProductGroupNameE.Contains("Standard") OrElse priceProductGroupNameE.Contains("Gear Reduction") OrElse priceProductGroupNameE.Contains("Sunboss")) Then
+                                If gridSellConditional = "Excl. $7 Disc" Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim discExcl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discExcl7 = Math.Round(costExcl7 * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 - discExcl7 + 7, 4)
+                                Else
+                                    Dim discIncl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discIncl7 = Math.Round(costSell * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costSell - discIncl7, 4)
+                                End If
+
+                                If isWithoutGR Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim discExl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discExl7 = Math.Round(costExcl7 * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 - discExl7, 4)
+                                End If
+                            End If
+
+                            costSell = thisSell
+                        Next
+                    Next
+
+                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupId, designId, blindId)
+                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId, blindId)
+                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
+
+                    thisCustomer = CalculateSell(sellCalculation, costSell, CInt(widthE), CInt(dropE), squareMetreE, linearMetreE, cutLength)
+                    thisSell = CalculateSell(sellCalculation, costSell, CInt(widthE), CInt(dropE), squareMetreE, linearMetreE, cutLength)
+                    thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthE), CInt(dropE), squareMetreE, linearMetreE)
+                    thisFactory = CalculateBuy(factoryCalculation, costFactory, CInt(widthE), CInt(dropE), squareMetreE, linearMetreE)
+
+                    costSell = thisSell
+                    costBuy = thisBuy
+                    costFactory = thisFactory
+
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each sellPromoRow As DataRow In sellPromoData.Rows
+                        Dim promoId As String = sellPromoRow("PromoId").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim compareId As String = String.Empty
+                            Select Case type
+                                Case "Designs"
+                                    compareId = designId
+                                Case "Blinds"
+                                    compareId = blindId
+                                Case "Products"
+                                    compareId = productId
+                                    If companyDetailId = "4" Then
+                                        compareId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'")
+                                    End If
+                                Case "RollerFabrics"
+                                    If designName = "Roller Blind" Then compareId = fabricIdE
+                                    If companyDetailId = "4" AndAlso designName = "Roller Blind" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdE & "' AND Type='Fabrics'")
+                                    End If
+                                Case "CurtainFabrics"
+                                    If designName = "Curtain" Then compareId = fabricIdE
+                                    If companyDetailId = "4" AndAlso designName = "Curtain" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdE & "' AND Type='Fabrics'")
+                                    End If
+                                Case "RollerFabricColours"
+                                    If designName = "Roller Blind" Then compareId = fabricColourIdE
+                                    If companyDetailId = "4" AndAlso designName = "Roller Blind" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdE & "' AND Type='FabricColours'")
+                                    End If
+                                Case "CurtainFabricColours"
+                                    If designName = "Curtain" Then compareId = fabricColourIdE
+                                    If companyDetailId = "4" AndAlso designName = "Curtain" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdE & "' AND Type='FabricColours'")
+                                    End If
+                                Case "FrameColours"
+                                    compareId = frameColour
+                            End Select
+
+                            If compareId <> dataId Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costSell * discount, 4)
+
+                            thisSell = Math.Round(costSell - discountValue, 4)
+                            costSell = thisSell
+                        Next
+                    Next
+
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT * FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each buyPromoRow As DataRow In buyPromoData.Rows
+                        Dim promoId As String = buyPromoRow("Id").ToString()
+                        Dim promoDataType As String = buyPromoRow("DataType").ToString()
+                        Dim promoDataId As String = buyPromoRow("DataId").ToString()
+
+                        If promoDataType = "Companys" AndAlso Not promoDataId = companyId Then
+                            Continue For
+                        End If
+                        If promoDataType = "Customers" AndAlso Not promoDataId = customerId Then
+                            Continue For
+                        End If
+
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim isMatch As Boolean = False
+                            Select Case type
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
+                                    End If
+                                Case "PriceProductGroups"
+                                    isMatch = (dataId = priceProductGroupIdE)
+                                Case "RollerFabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdE)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdE & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdE)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdE & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "RollerFabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdE)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdE & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdE)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdE & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costBuy * discount, 4)
+
+                            thisBuy = Math.Round(costBuy - discountValue, 4)
+                            costBuy = thisBuy
+                        Next
+                    Next
+
+                    Dim factoryPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Factory' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each factoryPromoRow As DataRow In factoryPromoData.Rows
+                        Dim promoId As String = factoryPromoRow("Id").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim isMatch As Boolean = False
+                            Select Case type
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
+                                    End If
+                                Case "RollerFabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdE)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdE & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdE)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdE & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "RollerFabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdE)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdE & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdE)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdE & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costFactory * discount, 4)
+
+                            thisFactory = Math.Round(costFactory - discountValue, 4)
+                            costFactory = thisFactory
+                        Next
+                    Next
+
+                    Dim costingDescription As String = String.Format("#5 {0}", priceProductGroupNameE)
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomer, thisSell, thisBuy, thisFactory}
+                    Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroupId}
+
+                    OrderCostings(costingArray)
+                    CalculateSurcharge(surchargeArray)
+                End If
+
+                ' SIXTH BLIND
+                If Not String.IsNullOrEmpty(priceProductGroupIdF) AndAlso priceProductGroupStatusF = "Active" Then
+                    itemNumber = 6
+
+                    Dim sellArray As Object() = {priceProductGroupIdF, priceGroupId, dropF, widthF, "Sell"}
+                    Dim buyArray As Object() = {priceProductGroupIdF, priceGroupId, dropF, widthF, "Buy"}
+                    Dim factoryArray As Object() = {priceProductGroupIdF, priceGroupId, dropF, widthF, "Factory"}
+
+                    Dim dataPriceSell As DataRow = GetGridPrice(sellArray)
+                    Dim dataPriceBuy As DataRow = GetGridPrice(buyArray)
+                    Dim dataPriceFactory As DataRow = GetGridPrice(factoryArray)
+
+                    Dim gridSellPrice As Decimal = 0D
+                    Dim gridBuyPrice As Decimal = 0D
+                    Dim gridFactoryPrice As Decimal = 0D
+
+                    Dim gridSellMethod As String = String.Empty
+                    Dim gridBuyMethod As String = String.Empty
+                    Dim gridFactoryMethod As String = String.Empty
+
+                    Dim gridSellConditional As String = String.Empty
+                    Dim gridBuyConditional As String = String.Empty
+                    Dim gridFactoryConditional As String = String.Empty
+
+                    If Not dataPriceSell Is Nothing Then
+                        gridSellMethod = dataPriceSell("Method").ToString()
+                        gridSellPrice = Convert.ToDecimal(dataPriceSell("Price"))
+                        gridSellConditional = dataPriceSell("Conditional").ToString()
+                    End If
+                    If Not dataPriceBuy Is Nothing Then
+                        gridBuyMethod = dataPriceBuy("Method").ToString()
+                        gridBuyPrice = Convert.ToDecimal(dataPriceBuy("Price"))
+                        gridBuyConditional = dataPriceBuy("Conditional").ToString()
+                    End If
+                    If Not dataPriceFactory Is Nothing Then
+                        gridFactoryMethod = dataPriceFactory("Method").ToString()
+                        gridFactoryPrice = Convert.ToDecimal(dataPriceFactory("Price"))
+                        gridFactoryConditional = dataPriceFactory("Conditional").ToString()
+                    End If
+
+                    Dim costSell As Decimal = gridSellPrice
+                    Dim costBuy As Decimal = gridBuyPrice
+                    Dim costFactory As Decimal = gridFactoryPrice
+
+                    thisSell = costSell
+                    thisBuy = costBuy
+                    thisFactory = costFactory
+
+                    Dim markupData As DataTable = GetDataTable("SELECT * FROM CustomerMarkups WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 ELSE 2 END ASC")
+                    For Each markupRow As DataRow In markupData.Rows
+                        Dim type As String = markupRow("Type").ToString()
+                        Dim method As String = markupRow("Method").ToString()
+                        Dim dataId As String = markupRow("DataId").ToString()
+
+                        If (type = "Designs" AndAlso dataId <> designId) OrElse (type = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdF) Then Continue For
+
+                        For Each markupColumn As String In {"Markup1", "Markup2", "Markup3", "Markup4", "Markup5"}
+                            If Not markupRow.Table.Columns.Contains(markupColumn) Then Continue For
+                            If IsDBNull(markupRow(markupColumn)) OrElse String.IsNullOrWhiteSpace(markupRow(markupColumn).ToString()) Then Continue For
+
+                            Dim markup As Decimal = CDec(markupRow(markupColumn))
+                            If markup = 0 Then Continue For
+
+                            If method = "Percent" Then
+                                markup = Math.Round(markup / 100, 2)
+                            End If
+
+                            Dim markupValue As Decimal = markup
+                            If method = "Percent" Then
+                                markupValue = Math.Round(costSell * markup, 4)
+                            End If
+
+                            thisSell = Math.Round(costSell + markupValue, 4)
+
+                            If designName = "Roller Blind" AndAlso (type = "Designs" OrElse type = "PriceProductGroups") AndAlso (priceProductGroupNameF.Contains("Standard") OrElse priceProductGroupNameF.Contains("Gear Reduction") OrElse priceProductGroupNameF.Contains("Sunboss")) Then
+                                If gridSellConditional = "Excl. $7 Disc" Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim markupExcl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupExcl7 = Math.Round(costExcl7 * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 + markupExcl7 + 7, 4)
+                                Else
+                                    Dim markupIncl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupIncl7 = Math.Round(costSell * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costSell + markupIncl7, 4)
+                                End If
+
+                                If isWithoutGR Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim markupExl7 As Decimal = markup
+
+                                    If method = "Percent" Then
+                                        markupExl7 = Math.Round(costExcl7 * markup, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 + markupExl7, 4)
+                                End If
+                            End If
+
+                            costSell = thisSell
+                        Next
+                    Next
+
+                    Dim discountData As DataTable = GetDataTable("SELECT * FROM CustomerDiscounts WHERE CustomerId='" & customerId & "' ORDER BY CASE WHEN Type='Designs' THEN 1 WHEN Type='PriceProductGroups' THEN 2 ELSE 3 END ASC")
+                    For Each discountRow As DataRow In discountData.Rows
+                        Dim type As String = discountRow("Type").ToString()
+                        Dim method As String = discountRow("Method").ToString()
+                        Dim dataId As String = discountRow("DataId").ToString()
+
+                        If (type = "Designs" AndAlso dataId <> designId) OrElse (type = "PriceProductGroups" AndAlso dataId <> priceProductGroupIdF) OrElse (type = "RollerFabrics" AndAlso (designName <> "Roller Blind" OrElse dataId <> fabricIdF)) OrElse (type = "RollerFabricColours" AndAlso (designName <> "Roller Blind" OrElse dataId <> fabricColourIdF)) OrElse (type = "RollerChains" AndAlso (designName <> "Roller Blind" OrElse dataId <> chainIdF)) Then Continue For
+
+                        For Each discountColumn As String In {"Discount1", "Discount2", "Discount3", "Discount4", "Discount5"}
+                            If Not discountRow.Table.Columns.Contains(discountColumn) Then Continue For
+
+                            If IsDBNull(discountRow(discountColumn)) OrElse String.IsNullOrWhiteSpace(discountRow(discountColumn).ToString()) Then Continue For
+
+                            Dim discount As Decimal = CDec(discountRow(discountColumn))
+                            If discount = 0 Then Continue For
+
+                            If method = "Percent" Then
+                                discount = Math.Round(discount / 100, 2)
+                            End If
+
+                            Dim discountValue As Decimal = discount
+
+                            If method = "Percent" Then
+                                discountValue = Math.Round(costSell * discount, 4)
+                            End If
+
+                            thisSell = Math.Round(costSell - discountValue, 4)
+
+                            If designName = "Roller Blind" AndAlso (type = "Designs" OrElse type = "PriceProductGroups") AndAlso (priceProductGroupNameF.Contains("Standard") OrElse priceProductGroupNameF.Contains("Gear Reduction") OrElse priceProductGroupNameF.Contains("Sunboss")) Then
+                                If gridSellConditional = "Excl. $7 Disc" Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim discExcl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discExcl7 = Math.Round(costExcl7 * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 - discExcl7 + 7, 4)
+                                Else
+                                    Dim discIncl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discIncl7 = Math.Round(costSell * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costSell - discIncl7, 4)
+                                End If
+
+                                If isWithoutGR Then
+                                    Dim costExcl7 As Decimal = costSell - 7
+                                    Dim discExl7 As Decimal = discount
+
+                                    If method = "Percent" Then
+                                        discExl7 = Math.Round(costExcl7 * discount, 4)
+                                    End If
+
+                                    thisSell = Math.Round(costExcl7 - discExl7, 4)
+                                End If
+                            End If
+
+                            costSell = thisSell
+                        Next
+                    Next
+
+                    Dim sellCalculation As DataRow = GetPriceCalculationRule(gridSellMethod, priceGroupId, designId, blindId)
+                    Dim buyCalculation As DataRow = GetPriceCalculationRule(gridBuyMethod, priceGroupId, designId, blindId)
+                    Dim factoryCalculation As DataRow = GetPriceCalculationRule(gridFactoryMethod, priceGroupId, designId, blindId)
+
+                    thisCustomer = CalculateSell(sellCalculation, costSell, CInt(widthF), CInt(dropF), squareMetreF, linearMetreF, cutLength)
+                    thisSell = CalculateSell(sellCalculation, costSell, CInt(widthF), CInt(dropF), squareMetreF, linearMetreF, cutLength)
+                    thisBuy = CalculateBuy(buyCalculation, costBuy, CInt(widthF), CInt(dropF), squareMetreF, linearMetreF)
+                    thisFactory = CalculateBuy(factoryCalculation, costFactory, CInt(widthF), CInt(dropF), squareMetreF, linearMetreF)
+
+                    costSell = thisSell
+                    costBuy = thisBuy
+                    costFactory = thisFactory
+
+                    Dim sellPromoData As DataTable = GetDataTable("SELECT CustomerPromos.PromoId FROM CustomerPromos LEFT JOIN Promos ON CustomerPromos.PromoId=Promos.Id WHERE CustomerPromos.CustomerId='" & customerId & "' AND Promos.Status='Active' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each sellPromoRow As DataRow In sellPromoData.Rows
+                        Dim promoId As String = sellPromoRow("PromoId").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim compareId As String = String.Empty
+                            Select Case type
+                                Case "Designs"
+                                    compareId = designId
+                                Case "Blinds"
+                                    compareId = blindId
+                                Case "Products"
+                                    compareId = productId
+                                    If companyDetailId = "4" Then
+                                        compareId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'")
+                                    End If
+                                Case "RollerFabrics"
+                                    If designName = "Roller Blind" Then compareId = fabricIdF
+                                    If companyDetailId = "4" AndAlso designName = "Roller Blind" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdF & "' AND Type='Fabrics'")
+                                    End If
+                                Case "CurtainFabrics"
+                                    If designName = "Curtain" Then compareId = fabricIdF
+                                    If companyDetailId = "4" AndAlso designName = "Curtain" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdF & "' AND Type='Fabrics'")
+                                    End If
+                                Case "RollerFabricColours"
+                                    If designName = "Roller Blind" Then compareId = fabricColourIdF
+                                    If companyDetailId = "4" AndAlso designName = "Roller Blind" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdF & "' AND Type='FabricColours'")
+                                    End If
+                                Case "CurtainFabricColours"
+                                    If designName = "Curtain" Then compareId = fabricColourIdF
+                                    If companyDetailId = "4" AndAlso designName = "Curtain" Then
+                                        compareId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdF & "' AND Type='FabricColours'")
+                                    End If
+                                Case "FrameColours"
+                                    compareId = frameColour
+                            End Select
+
+                            If compareId <> dataId Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costSell * discount, 4)
+
+                            thisSell = Math.Round(costSell - discountValue, 4)
+                            costSell = thisSell
+                        Next
+                    Next
+
+                    Dim buyPromoData As DataTable = GetDataTable("SELECT * FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each buyPromoRow As DataRow In buyPromoData.Rows
+                        Dim promoId As String = buyPromoRow("Id").ToString()
+                        Dim promoDataType As String = buyPromoRow("DataType").ToString()
+                        Dim promoDataId As String = buyPromoRow("DataId").ToString()
+
+                        If promoDataType = "Companys" AndAlso Not promoDataId = companyId Then
+                            Continue For
+                        End If
+                        If promoDataType = "Customers" AndAlso Not promoDataId = customerId Then
+                            Continue For
+                        End If
+
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim isMatch As Boolean = False
+                            Select Case type
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
+                                    End If
+                                Case "PriceProductGroups"
+                                    isMatch = (dataId = priceProductGroupIdF)
+                                Case "RollerFabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdF)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdF & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdF)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdF & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "RollerFabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdF)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdF & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdF)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdF & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costBuy * discount, 4)
+
+                            thisBuy = Math.Round(costBuy - discountValue, 4)
+                            costBuy = thisBuy
+                        Next
+                    Next
+
+                    Dim factoryPromoData As DataTable = GetDataTable("SELECT Id FROM Promos WHERE Status='Active' AND Type='Buy' AND CONVERT(DATE, Promos.StartDate)<=CONVERT(DATE, GETDATE()) AND CONVERT(DATE, Promos.EndDate)>=CONVERT(DATE, GETDATE())")
+                    For Each factoryPromoRow As DataRow In factoryPromoData.Rows
+                        Dim promoId As String = factoryPromoRow("Id").ToString()
+                        Dim promoDetailData As DataTable = GetDataTable("SELECT * FROM PromoDetails WHERE PromoId='" & promoId & "' AND Status='Active'")
+
+                        For Each detailRow As DataRow In promoDetailData.Rows
+                            Dim type As String = detailRow("Type").ToString()
+                            Dim method As String = detailRow("Method").ToString()
+                            Dim dataId As String = detailRow("DataId").ToString()
+                            Dim discount As Decimal = CDec(detailRow("Discount"))
+                            If method = "Percent" Then discount = Math.Round(CDec(detailRow("Discount")) / 100, 2)
+
+                            Dim isMatch As Boolean = False
+                            Select Case type
+                                Case "Designs"
+                                    isMatch = (dataId = designId)
+                                Case "Blinds"
+                                    isMatch = (dataId = blindId)
+                                Case "Products"
+                                    isMatch = (dataId = productId)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM ProductAlias WHERE SecondId='" & productId & "'"))
+                                    End If
+                                Case "RollerFabrics"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricIdF)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdF & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "CurtainFabrics"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricIdF)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricIdF & "' AND Type='Fabrics'"))
+                                    End If
+                                Case "RollerFabricColours"
+                                    isMatch = (designName = "Roller Blind" AndAlso dataId = fabricColourIdF)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdF & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "CurtainFabricColours"
+                                    isMatch = (designName = "Curtain" AndAlso dataId = fabricColourIdF)
+                                    If companyDetailId = "4" Then
+                                        isMatch = (dataId = GetItemData("SELECT FirstId FROM FabricAlias WHERE SecondId='" & fabricColourIdF & "' AND Type='FabricColours'"))
+                                    End If
+                                Case "FrameColours"
+                                    isMatch = (dataId = frameColour)
+                            End Select
+
+                            If Not isMatch Then Continue For
+
+                            Dim discountValue As Decimal = discount
+                            If method = "Percent" Then discountValue = Math.Round(costFactory * discount, 4)
+
+                            thisFactory = Math.Round(costFactory - discountValue, 4)
+                            costFactory = thisFactory
+                        Next
+                    Next
+
+                    Dim costingDescription As String = String.Format("#6 {0}", priceProductGroupNameF)
+                    Dim costingArray As Object() = {headerId, itemId, itemNumber, "Base", costingDescription, thisCustomer, thisSell, thisBuy, thisFactory}
+                    Dim surchargeArray As Object() = {headerId, itemId, designId, itemNumber, priceGroupId}
+
+                    OrderCostings(costingArray)
+                    CalculateSurcharge(surchargeArray)
+                End If
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Public Sub CalculateSurcharge(data As Object())
+        Try
+            Dim headerId As String = Convert.ToString(data(0))
+            Dim itemId As String = Convert.ToString(data(1))
+            Dim designId As String = Convert.ToString(data(2))
+            Dim blindNo As String = Convert.ToString(data(3))
+            Dim priceGroupId As String = Convert.ToString(data(4))
+
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@ItemId", If(String.IsNullOrWhiteSpace(itemId), CType(DBNull.Value, Object), CInt(itemId))),
+                New SqlParameter("@DesignId", If(String.IsNullOrWhiteSpace(designId), CType(DBNull.Value, Object), CInt(designId))),
+                New SqlParameter("@BlindNo", blindNo),
+                New SqlParameter("@PriceGroupId", If(String.IsNullOrWhiteSpace(priceGroupId), CType(DBNull.Value, Object), CInt(priceGroupId)))
+            }
+            Dim surchargeData As DataTable = GetDataTableSP("sp_OrderDetails_Surcharge_Get", params)
+
+            If surchargeData.Rows.Count > 0 Then
+                For i As Integer = 0 To surchargeData.Rows.Count - 1
+                    Dim name As String = surchargeData.Rows(i)("Name").ToString()
+                    Dim custCharge As String = surchargeData.Rows(i)("SellCharge").ToString()
+                    Dim sellCharge As String = surchargeData.Rows(i)("SellCharge").ToString()
+                    Dim buyCharge As String = surchargeData.Rows(i)("BuyCharge").ToString()
+                    Dim factoryCharge As String = surchargeData.Rows(i)("FactoryCharge").ToString()
+
+                    Dim dataCosting As Object() = {headerId, itemId, blindNo, "Surcharge", name, custCharge, sellCharge, buyCharge, factoryCharge}
+                    OrderCostings(dataCosting)
+                Next
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Public Sub CalculateSurcharge_ById(data As Object())
+        Try
+            Dim headerId As String = Convert.ToString(data(0))
+            Dim itemId As String = Convert.ToString(data(1))
+            Dim designId As String = Convert.ToString(data(2))
+            Dim blindNo As String = Convert.ToString(data(3))
+            Dim surchargeId As String = Convert.ToString(data(4))
+
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@PriceSurchargeId", surchargeId)
+            }
+            Dim surchargeData As DataTable = GetDataTableSP("sp_OrderDetails_Surcharge_GetById", params)
+
+            If surchargeData.Rows.Count > 0 Then
+                For i As Integer = 0 To surchargeData.Rows.Count - 1
+                    Dim name As String = surchargeData.Rows(i)("Name").ToString()
+                    Dim custCharge As String = surchargeData.Rows(i)("SellCharge").ToString()
+                    Dim sellCharge As String = surchargeData.Rows(i)("SellCharge").ToString()
+                    Dim buyCharge As String = surchargeData.Rows(i)("BuyCharge").ToString()
+                    Dim factoryCharge As String = surchargeData.Rows(i)("FactoryCharge").ToString()
+
+                    Dim dataCosting As Object() = {headerId, itemId, blindNo, "Surcharge", name, custCharge, sellCharge, buyCharge, factoryCharge}
+                    OrderCostings(dataCosting)
+                Next
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Public Sub OrderCostings(data As Object())
+        Try
+            If data.Length = 9 Then
+                Dim headerId As String = Convert.ToString(data(0))
+                Dim itemId As String = Convert.ToString(data(1))
+                Dim number As Integer = Convert.ToInt32(data(2))
+                Dim type As String = Convert.ToString(data(3))
+                Dim desc As String = Convert.ToString(data(4))
+                Dim custPrice As Decimal = Convert.ToDecimal(data(5))
+                Dim sellPrice As Decimal = Convert.ToDecimal(data(6))
+                Dim buyPrice As Decimal = Convert.ToDecimal(data(7))
+                Dim factoryPrice As Decimal = Convert.ToDecimal(data(8))
+
+                Using thisConn As SqlConnection = New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderCostings VALUES(NEWID(), @HeaderId, @ItemId, @Number, @Type, @Description, @CustomerPrice, @SellPrice, @BuyPrice, @FactoryPrice)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                        thisCmd.Parameters.AddWithValue("@ItemId", itemId)
+                        thisCmd.Parameters.AddWithValue("@Number", number)
+                        thisCmd.Parameters.AddWithValue("@Type", type)
+                        thisCmd.Parameters.AddWithValue("@Description", desc)
+                        thisCmd.Parameters.AddWithValue("@CustomerPrice", Math.Round(custPrice, 2))
+                        thisCmd.Parameters.AddWithValue("@SellPrice", Math.Round(sellPrice, 2))
+                        thisCmd.Parameters.AddWithValue("@BuyPrice", Math.Round(buyPrice, 2))
+                        thisCmd.Parameters.AddWithValue("@FactoryPrice", Math.Round(factoryPrice, 2))
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Public Sub OrderCostings_Note(data As Object())
+        Try
+            If data.Length = 9 Then
+                Dim headerId As String = Convert.ToString(data(0))
+                Dim itemId As String = Convert.ToString(data(1))
+                Dim number As Integer = Convert.ToInt32(data(2))
+                Dim type As String = Convert.ToString(data(3))
+                Dim desc As String = Convert.ToString(data(4))
+                Dim custPrice As Decimal = Convert.ToDecimal(data(5))
+                Dim sellPrice As Decimal = Convert.ToDecimal(data(6))
+                Dim buyPrice As Decimal = Convert.ToDecimal(data(7))
+                Dim factoryPrice As Decimal = Convert.ToDecimal(data(8))
+
+                Using thisConn As SqlConnection = New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE HeaderId=@HeaderId AND ItemId=@ItemId AND Type=@Type; INSERT INTO OrderCostings VALUES(NEWID(), @HeaderId, @ItemId, @Number, @Type, @Description, @CustomerPrice, @SellPrice, @BuyPrice, @FactoryPrice)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                        thisCmd.Parameters.AddWithValue("@ItemId", itemId)
+                        thisCmd.Parameters.AddWithValue("@Number", number)
+                        thisCmd.Parameters.AddWithValue("@Type", type)
+                        thisCmd.Parameters.AddWithValue("@Description", desc)
+                        thisCmd.Parameters.AddWithValue("@CustomerPrice", Math.Round(custPrice, 2))
+                        thisCmd.Parameters.AddWithValue("@SellPrice", Math.Round(sellPrice, 2))
+                        thisCmd.Parameters.AddWithValue("@BuyPrice", Math.Round(buyPrice, 2))
+                        thisCmd.Parameters.AddWithValue("@FactoryPrice", Math.Round(factoryPrice, 2))
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Public Sub Logs(data As Object())
+        Try
+            If data.Length = 4 Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("sp_Logs_Insert", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+                        thisCmd.Parameters.AddWithValue("@Type", Convert.ToString(data(0)))
+                        thisCmd.Parameters.AddWithValue("@DataId", Convert.ToString(data(1)))
+                        thisCmd.Parameters.AddWithValue("@ActionBy", Convert.ToString(data(2)))
+                        thisCmd.Parameters.AddWithValue("@Description", Convert.ToString(data(3)))
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Public Sub DeleteFilePrinting(orderId As String, fileName As String)
+        Try
+            Dim folderPath As String = HttpContext.Current.Server.MapPath(String.Format("~/File/Order/{0}", orderId))
+            Dim filePath As String = IO.Path.Combine(folderPath, fileName)
+
+            If IO.File.Exists(filePath) Then
+                IO.File.Delete(filePath)
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    ' REWORK
+    Public Function IsReworkOrder(orderId As String) As Boolean
+        Dim result As Boolean = False
+        Try
+            If Not String.IsNullOrEmpty(orderId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Dim query As String = "SELECT COUNT(*) FROM OrderReworks WHERE HeaderId=@HeaderId AND Status='Pending Approval' AND Active=1"
+                    Using thisCmd As New SqlCommand(query, thisConn)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", orderId)
+                        thisConn.Open()
+                        Dim count As Integer = Convert.ToInt32(thisCmd.ExecuteScalar())
+                        result = (count > 0)
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = False
+        End Try
+        Return result
+    End Function
+
+    Public Function IsReworkOrderUnsubmitted(orderId As String) As Boolean
+        Dim result As Boolean = False
+        Try
+            If Not String.IsNullOrEmpty(orderId) Then
+                Using thisConn As New SqlConnection(myConn)
+                    Dim query As String = "SELECT COUNT(*) FROM OrderReworks WHERE HeaderId=@HeaderId AND Status='Unsubmitted' AND Active=1"
+                    Using thisCmd As New SqlCommand(query, thisConn)
+                        thisCmd.Parameters.AddWithValue("@HeaderId", orderId)
+                        thisConn.Open()
+                        Dim count As Integer = Convert.ToInt32(thisCmd.ExecuteScalar())
+                        result = (count > 0)
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            result = False
+        End Try
+        Return result
+    End Function
+
+
+    ' SHUTTER
+    Public Function CountMultiLayout(input As String, substrings As String()) As Integer
+        Dim count As Integer = 0
+        Try
+            For Each substring In substrings
+                count += input.Split(substring).Length - 1
+            Next
+        Catch ex As Exception
+            count = 0
+        End Try
+        Return count
+    End Function
+
+    Public Function CheckStringLayoutD(layout As String) As Boolean
+        Try
+            If String.IsNullOrEmpty(layout) Then
+                Return False
+            End If
+
+            For i As Integer = 0 To layout.Length - 1
+                If layout(i) = "D"c Then
+                    Dim hasDashBefore As Boolean = (i > 0 AndAlso layout(i - 1) = "-"c)
+                    Dim hasDashAfter As Boolean = (i < layout.Length - 1 AndAlso layout(i + 1) = "-"c)
+
+                    If Not (hasDashBefore Or hasDashAfter) Then
+                        Return False
+                    End If
+                End If
+            Next
+
+            Return True
+        Catch ex As Exception
+            Return False
+        End Try
+    End Function
+
+    Public Function GetPanelQty(data As String()) As Integer
+        Dim result As Integer = 0
+
+        Dim blindName As String = data(0)
+        Dim panelQty As String = data(1)
+        Dim layout As String = data(2)
+        Dim horizontalHeight As String = data(3)
+
+        Dim countL As Integer = 0
+        Dim countR As Integer = 0
+        Dim countF As Integer = 0
+        Dim countM As Integer = 0
+        Dim countB As Integer = 0
+
+        countL = layout.Split("L").Length - 1
+        countR = layout.Split("R").Length - 1
+        countF = layout.Split("F").Length - 1
+        countM = layout.Split("M").Length - 1
+        If blindName = "Track Sliding" Then
+            countB = layout.Split("B").Length - 1
+        End If
+
+        Dim hitung As Integer = countL + countR + countF + countM + countB
+        If horizontalHeight > 0 Then
+            hitung = (countL + countR + countF + countM + countB) * 2
+        End If
+
+        If blindName = "Panel Only" Then
+            hitung = panelQty
+        End If
+
+        result = hitung
+
+        Return result
+    End Function
+
+    Public Function WidthDeductShutter(data As Object()) As Decimal
+        Dim result As Decimal = 0.00
+
+        Dim blindName As String = Convert.ToString(data(0))
+        Dim type As String = Convert.ToString(data(1))
+        Dim width As Integer = Convert.ToInt32(data(2))
+
+        If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
+            Dim mounting As String = Convert.ToString(data(3))
+            Dim layoutCode As String = Convert.ToString(data(4))
+            Dim frameType As String = Convert.ToString(data(5))
+            Dim frameLeft As String = Convert.ToString(data(6))
+            Dim frameRight As String = Convert.ToString(data(7))
+            Dim panelQty As Integer = Convert.ToInt32(data(8))
+
+            Dim hingeDeduction As Decimal = 2.5
+            Dim frameDeduction As Decimal = 0
+            Dim frameLDeduction As Decimal = 0
+            Dim frameRDeduction As Decimal = 0
+            Dim tPostDeduction As Decimal = 0
+            Dim bPostDeduction As Decimal = 0
+            Dim cPostDeduction As Decimal = 0
+            Dim csDeduction As Decimal = 0
+            Dim crDeduction As Decimal = 0
+            Dim ccDeduction As Decimal = 0
+
+            Dim jumlahT As Integer = layoutCode.Split("T").Length - 1
+            Dim jumlahB As Integer = layoutCode.Split("B").Length - 1
+            Dim jumlahC As Integer = layoutCode.Split("C").Length - 1
+            Dim jumlahD As Integer = layoutCode.Split("D").Length - 1
+
+            If mounting = "Inside" Then
+                crDeduction = -2
+                If frameType.Contains("Z Frame") Then
+                    crDeduction = -3.2
+                End If
+            End If
+
+            If frameType = "Beaded L 48mm" Then frameDeduction = 25.4
+            If frameType = "Insert L 50mm" Then frameDeduction = 22.2
+            If frameType = "Insert L 63mm" Then frameDeduction = 22.2
+            If frameType = "Small Bullnose Z Frame" Then frameDeduction = 19.6
+            If frameType = "Large Bullnose Z Frame" Then frameDeduction = 22.7
+            If frameType = "Colonial Z Frame" Then frameDeduction = 18.4
+
+            If Not frameLeft = "No" Then
+                frameLDeduction = frameDeduction
+            End If
+            If Not frameRight = "No" Then
+                frameRDeduction = frameDeduction
+            End If
+
+            If layoutCode.Contains("D") Then csDeduction = 3.5 / 2
+            If layoutCode.Contains("T") Then tPostDeduction = 25.4 / 2
+
+            If layoutCode.Contains("B") Then
+                If frameType = "Beaded L 48mm" Or frameType = "Insert L 50mm" Or frameType = "Insert L 63mm" Or frameType = "No Frame" Then
+                    bPostDeduction = 30 / 2
+                End If
+                If mounting = "Inside" And frameType = "Small Bullnose Z Frame" Then
+                    bPostDeduction = 38 / 2
+                End If
+                If mounting = "Inside" And frameType = "Large Bullnose Z Frame" Then
+                    bPostDeduction = 40 / 2
+                End If
+                If mounting = "Inside" And frameType = "Colonial Z Frame" Then
+                    bPostDeduction = 34 / 2
+                End If
+                If mounting = "Outside" And frameType = "Beaded L 48mm" Then
+                    bPostDeduction = 34.7 / 2
+                End If
+                If mounting = "Outside" And frameType = "Insert L 50mm" Then
+                    bPostDeduction = 34.7 / 2
+                End If
+                If mounting = "Outside" And frameType = "Insert L 63mm" Then
+                    bPostDeduction = 40.4 / 2
+                End If
+            End If
+
+            If layoutCode.Contains("C") Then
+                If mounting = "Inside" Then
+                    If frameType = "Beaded L 48mm" Or frameType = "Insert L 50mm" Or frameType = "Insert L 63mm" Or frameType = "No Frame" Then cPostDeduction = 30 / 2
+                    If frameType = "Small Bullnose Z Frame" Then cPostDeduction = 42 / 2
+                    If frameType = "Large Bullnose Z Frame" Then cPostDeduction = 44 / 2
+                    If frameType = "Colonial Z Frame" Then cPostDeduction = 36 / 2
+                End If
+                If mounting = "Outside" Then
+                    If frameType = "Beaded L 48mm" Then cPostDeduction = 62.5 / 2
+                    If frameType = "Insert L 50mm" Then cPostDeduction = 65 / 2
+                    If frameType = "Insert L 63mm" Then cPostDeduction = 78 / 2
+                End If
+            End If
+
+            If type = "All" Then
+                result = width - (hingeDeduction * panelQty) - ((frameLDeduction + frameRDeduction) * panelQty) - (tPostDeduction * jumlahT) - (bPostDeduction * jumlahB) - (cPostDeduction * jumlahC) - (csDeduction * jumlahD) - (crDeduction * panelQty) - (ccDeduction * panelQty)
+            End If
+
+            If type = "Gap" Then
+                result = width - (hingeDeduction * panelQty) - (frameLDeduction + frameRDeduction) - tPostDeduction - bPostDeduction - cPostDeduction - csDeduction - crDeduction - ccDeduction
+            End If
+        End If
+
+        If blindName = "Track Bi-fold" Then
+            Dim mounting As String = Convert.ToString(data(3))
+            Dim layoutCode As String = Convert.ToString(data(4))
+            Dim frameType As String = Convert.ToString(data(5))
+            Dim frameLeft As String = Convert.ToString(data(6))
+            Dim frameRight As String = Convert.ToString(data(7))
+            Dim panelQty As Integer = Convert.ToInt32(data(8))
+
+            Dim insideDeductions As Decimal = 0.00
+            Dim pivotDeductions As Decimal = 0.00
+            Dim closingDeductions As Decimal = 5
+            Dim frameLDeductions As Decimal = 0.00
+            Dim frameRDeductions As Decimal = 0.00
+            Dim hingedDeductions As Decimal = 0.00
+
+            Dim result1 As Integer = 0
+            Dim parts As String() = layoutCode.Split("/"c)
+            If parts.Length > 0 Then
+                result1 = CountMultiLayout(parts(0), New String() {"L", "R", "F"}) - 1
+            End If
+
+            Dim result2 As Integer = 0
+            If layoutCode.Contains("/") Then
+                Dim partss As String() = layoutCode.Split("/"c)
+                If partss.Length > 1 Then
+                    result2 = CountMultiLayout(partss(1), New String() {"L", "R", "F"}) - 1
+                End If
+            End If
+
+            hingedDeductions = (result1 + result2) * 5
+
+            If mounting = "Inside" Then insideDeductions = 2
+
+            Dim uniqueLetters As New HashSet(Of Char)
+            For Each c As Char In layoutCode.ToLower()
+                If Char.IsLetter(c) Then
+                    uniqueLetters.Add(c)
+                End If
+            Next
+
+            pivotDeductions = 5 * uniqueLetters.Count
+
+            If Not frameLeft = "No" Then frameLDeductions = 19
+            If Not frameRight = "No" Then frameRDeductions = 19
+
+            result = width - insideDeductions - pivotDeductions - closingDeductions - frameLDeductions - frameRDeductions - hingedDeductions
+        End If
+
+        If blindName = "Track Sliding" Or blindName = "Track Sliding Single Track" Then
+            Dim mounting As String = Convert.ToString(data(3))
+            Dim frameType As String = Convert.ToString(data(5))
+            Dim frameLeft As String = Convert.ToString(data(6))
+            Dim frameRight As String = Convert.ToString(data(7))
+            Dim panelQty As Integer = Convert.ToInt32(data(8))
+
+            Dim frameLDeductions As Decimal = 0
+            Dim frameRDeductions As Decimal = 0
+            Dim insideDeductions As Decimal = 0
+
+            If Not frameLeft = "No" Then frameLDeductions = 19 * panelQty
+            If Not frameRight = "No" Then frameRDeductions = 19 * panelQty
+            If mounting = "Inside" Then insideDeductions = 2
+
+            result = width - frameLDeductions - frameRDeductions - insideDeductions
+        End If
+
+        If blindName = "Fixed" Then
+            Dim mounting As String = Convert.ToString(data(3))
+            Dim layoutCode As String = Convert.ToString(data(4))
+            Dim frameType As String = Convert.ToString(data(5))
+            Dim frameLeft As String = Convert.ToString(data(6))
+            Dim frameRight As String = Convert.ToString(data(7))
+            Dim panelQty As Integer = Convert.ToInt32(data(8))
+
+            If frameType = "U Channel" Then
+                Dim clearanceLDeduction As Decimal = 1
+                Dim clearanceRDeduction As Decimal = 1
+
+                Dim frameLDeduction As Decimal = 0
+                Dim frameRDeduction As Decimal = 0
+
+
+                If frameLeft = "L Strip" Then clearanceLDeduction = 2
+                If frameRight = "L Strip" Then clearanceRDeduction = 2
+
+                If frameLeft = "L Strip" Then frameLDeduction = 7.25
+                If frameRight = "L Strip" Then frameRDeduction = 7.25
+
+                result = width - clearanceLDeduction - clearanceRDeduction - frameLDeduction - frameRDeduction
+            End If
+
+            If frameType = "19x19 Light Block" Then
+                Dim clearanceDeduction As Decimal = 5
+
+                result = width - clearanceDeduction
+            End If
+        End If
+        Return result
+    End Function
+
+    Public Function HeightDeductShutter(data As Object()) As Decimal
+        Dim result As Decimal = 0
+
+        Dim blindName As String = Convert.ToString(data(0))
+        Dim drop As Integer = Convert.ToInt32(data(1))
+        Dim mounting As String = Convert.ToString(data(2))
+        Dim frameType As String = Convert.ToString(data(3))
+        Dim frameTop As String = Convert.ToString(data(4))
+        Dim frameBottom As String = Convert.ToString(data(5))
+        Dim bottomTrackType As String = Convert.ToString(data(6))
+        Dim horizontalTPost As String = Convert.ToString(data(7))
+
+        If blindName = "Hinged" Or blindName = "Hinged Bi-fold" Then
+            Dim crDeductionTop As Decimal = 0
+            Dim crDeductionBottom As Decimal = 0
+
+            Dim cfDeductionTop As Decimal = 0
+            Dim cfDeductionBottom As Decimal = 0
+
+            Dim frameDeduction As Decimal = 0
+            Dim frameTDeduction As Decimal = 0
+            Dim frameBDeduction As Decimal = 0
+            Dim postDeduction As Decimal = 0
+
+            If mounting = "Inside" Then
+                If frameType = "Beaded L 48mm" Or frameType = "Insert L 50mm" Or frameType = "Insert L 63mm" Or frameType = "Flat L 48mm" Then
+                    If frameTop = "L Striker Plate" Then crDeductionTop = 2
+                    If frameBottom = "L Striker Plate" Then crDeductionBottom = 2
+                End If
+
+                If frameType.Contains("Z Frame") Then
+                    If frameTop = "L Striker Plate" Then crDeductionTop = 3.2
+                    If frameBottom = "L Striker Plate" Then crDeductionBottom = 3.2
+                End If
+            End If
+
+            If Not frameTop = "No" Then cfDeductionTop = 3
+            If Not frameBottom = "No" Then cfDeductionBottom = 3
+
+            If frameType = "Beaded L 48mm" Then frameDeduction = 25.4
+            If frameType = "Insert L 50mm" Then frameDeduction = 22.2
+            If frameType = "Insert L 63mm" Then frameDeduction = 22.2
+            If frameType = "Small Bullnose Z Frame" Then frameDeduction = 19.6
+            If frameType = "Large Bullnose Z Frame" Then frameDeduction = 22.7
+            If frameType = "Colonial Z Frame" Then frameDeduction = 18.4
+
+            If Not frameTop = "No" Then frameTDeduction = frameDeduction
+            If Not frameBottom = "No" Then frameBDeduction = frameDeduction
+
+            If frameTop = "L Striker Plate" Or frameTop.Contains("Sill Plate") Then
+                frameTDeduction = frameDeduction + 9.5
+            End If
+
+            If frameBottom = "L Striker Plate" Or frameBottom.Contains("Sill Plate") Then
+                frameBDeduction = frameDeduction + 9.5
+            End If
+
+            If horizontalTPost = "No Post" Then postDeduction = 3 / 2
+            If horizontalTPost = "Yes" Then postDeduction = 25.4 / 2
+
+            result = drop - crDeductionTop - crDeductionBottom - cfDeductionTop - cfDeductionBottom - frameTDeduction - frameBDeduction - postDeduction
+        End If
+
+        If blindName = "Track Bi-fold" Or blindName = "Track Sliding" Or blindName = "Track Sliding Single Track" Then
+            Dim crTopDeduction As Decimal = 0
+            Dim crBottomDeduction As Decimal = 0
+            Dim trDeduction As Decimal = 51
+            Dim mtDeduction As Decimal = 0
+            Dim utDeduction As Decimal = 0
+            Dim utfDeduction As Decimal = 0
+            Dim frameDeduction As Decimal = 0
+            Dim frameTDeduction As Decimal = 0
+            Dim frameBDeduction As Decimal = 0
+
+            If mounting = "Inside" Then crTopDeduction = 1
+            If bottomTrackType = "M Track" Then mtDeduction = 24
+            If bottomTrackType = "U Track" Then utDeduction = 33
+
+            If frameTop = "Yes" Then frameTDeduction = 1
+
+            If frameType = "100mm" Then frameDeduction = 19
+            If frameType = "160mm" Then frameDeduction = 19
+            If frameType = "200mm" Then frameDeduction = 19
+
+            If frameTop = "Yes" Then frameTDeduction = frameDeduction
+
+            result = drop - crTopDeduction - crBottomDeduction - trDeduction - mtDeduction - utDeduction - utfDeduction - frameTDeduction - frameBDeduction
+        End If
+
+        If blindName = "Fixed" Then
+            If frameType = "U Channel" Then
+                Dim topDeduction As Decimal = 0
+                Dim bottomDeduction As Decimal = 0
+
+                If frameTop = "Yes" Then topDeduction = 17.5
+                If frameBottom = "Yes" Then bottomDeduction = 17.5
+
+                result = drop - topDeduction - bottomDeduction
+            End If
+
+            If frameType = "19x19 Light Block" Then
+                result = drop - 6
+            End If
+        End If
+        Return result
+    End Function
+End Class

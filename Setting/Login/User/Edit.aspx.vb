@@ -1,0 +1,246 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class Setting_Login_User_Edit
+    Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/login/user", False)
+            Exit Sub
+        End If
+
+        If String.IsNullOrEmpty(Request.QueryString("loginid")) Then
+            Response.Redirect("~/setting/login/user", False)
+            Exit Sub
+        End If
+
+        If Session("LoginId") = Request.QueryString("loginid").ToString() Then
+            Response.Redirect("~/setting/login/user", False)
+            Exit Sub
+        End If
+
+        lblId.Text = Request.QueryString("loginid").ToString()
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            BindData(lblId.Text)
+        End If
+    End Sub
+
+    Protected Sub ddlRole_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindPage(ddlRole.SelectedValue)
+    End Sub
+
+    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            If ddlRole.SelectedValue = "" Then
+                MessageError(True, "ROLE IS REQUIRED !")
+                Exit Sub
+            End If
+            If ddlLevel.SelectedValue = "" Then
+                MessageError(True, "LEVEL IS REQUIRED !")
+                Exit Sub
+            End If
+            If txtEditUserName.Text = "" Then
+                MessageError(True, "USERNAME IS REQUIRED !")
+                Exit Sub
+            End If
+            If Not Regex.IsMatch(txtEditUserName.Text, "^[a-zA-Z0-9._-]+$") Then
+                MessageError(True, "INVALID USERNAME. ONLY LETTERS, NUMBERS, DOT (.), UNDERSCRORE (_) & HYPHEN (-) ARE ALLOWED !")
+                Exit Sub
+            End If
+            If lblUserName.Text <> txtEditUserName.Text Then
+                Dim checkUsername As String = settingClass.GetItemData("SELECT UserName FROM Logins WHERE UserName='" + txtEditUserName.Text + "'")
+                If txtEditUserName.Text = checkUsername Then
+                    MessageError(True, "USERNAME ALREADY EXIST !")
+                    Exit Sub
+                End If
+            End If
+
+            If msgError.InnerText = "" Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET CustomerId=@CustomerId, RoleId=@RoleId, LevelId=@LevelId, UserName=@UserName, FullName=@FullName, Email=@Email, Pricing=@Pricing WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", If(String.IsNullOrEmpty(ddlCustomer.SelectedValue), CType(DBNull.Value, Object), ddlCustomer.SelectedValue))
+                        thisCmd.Parameters.AddWithValue("@RoleId", ddlRole.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@LevelId", ddlLevel.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@UserName", txtEditUserName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Pricing", ddlPricing.SelectedValue)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim dataLog As Object() = {"Logins", lblId.Text, Session("LoginId").ToString(), "Login Updated"}
+                settingClass.Logs(dataLog)
+
+                Response.Redirect("~/setting/login/user", False)
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/setting/login/user", False)
+    End Sub
+
+    Protected Sub BindData(loginId As String)
+        Try
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@LoginId", loginId),
+                New SqlParameter("@SessionRoleName", Session("RoleName").ToString()),
+                New SqlParameter("@SessionLevelName", Session("LevelName").ToString())
+            }
+
+            Dim myData As DataRow = settingClass.GetDataRowSP("sp_Logins_ViewById", params)
+            If myData Is Nothing Then
+                Response.Redirect("~/setting/login/user", False)
+                Exit Sub
+            End If
+
+            BindRole()
+            BindLevel()
+            BindCustomer()
+
+            ddlRole.SelectedValue = myData("RoleId").ToString()
+            ddlLevel.SelectedValue = myData("LevelId").ToString()
+            ddlCustomer.SelectedValue = myData("CustomerId").ToString()
+            txtEditUserName.Text = myData("UserName").ToString()
+            lblUserName.Text = myData("UserName").ToString()
+            txtFullName.Text = myData("FullName").ToString()
+            txtEmail.Text = myData("Email").ToString()
+            ddlPricing.SelectedValue = Convert.ToInt32(myData("Pricing"))
+
+            BindPage(ddlRole.SelectedValue)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindRole()
+        ddlRole.Items.Clear()
+        Try
+            Dim roleName As String = Convert.ToString(Session("RoleName"))
+            Dim levelName As String = Convert.ToString(Session("LevelName"))
+
+            Dim excludeIds As New List(Of String)
+            Select Case roleName
+                Case "IT"
+                    excludeIds.Add("1")
+
+                    If levelName = "Member" Then
+                        excludeIds.Add("2")
+                    End If
+                Case "Factory Office"
+                    excludeIds.AddRange({"1", "2"})
+
+                    If levelName = "Member" Then
+                        excludeIds.Add("3")
+                    End If
+                Case "Developer"
+            End Select
+
+            Dim sql As String = "SELECT Id, Name FROM LoginRoles WHERE (Status='Active' OR Status='Inactive')"
+
+            If excludeIds.Count > 0 Then
+                sql &= " AND Id NOT IN ('" & String.Join("','", excludeIds) & "')"
+            End If
+            sql &= " ORDER BY Name ASC"
+
+            ddlRole.DataSource = settingClass.GetDataTable(sql)
+            ddlRole.DataTextField = "Name"
+            ddlRole.DataValueField = "Id"
+            ddlRole.DataBind()
+
+            If ddlRole.Items.Count > 1 Then
+                ddlRole.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlRole.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindLevel()
+        ddlLevel.Items.Clear()
+        Try
+            ddlLevel.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM LoginLevels WHERE Status='Active' OR Status='Inactive' ORDER BY Name ASC")
+            ddlLevel.DataTextField = "Name"
+            ddlLevel.DataValueField = "Id"
+            ddlLevel.DataBind()
+
+            If ddlLevel.Items.Count > 1 Then
+                ddlLevel.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlLevel.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindCustomer()
+        ddlCustomer.Items.Clear()
+        Try
+            ddlCustomer.DataSource = settingClass.GetDataTable("SELECT Id, Name FROM Customers ORDER BY Name ASC")
+            ddlCustomer.DataTextField = "Name"
+            ddlCustomer.DataValueField = "Id"
+            ddlCustomer.DataBind()
+
+            If ddlCustomer.Items.Count > 1 Then
+                ddlCustomer.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlCustomer.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindPage(roleId As String)
+        Try
+            divCustomer.Visible = False
+            If roleId = "4" OrElse roleId = "5" OrElse roleId = "8" OrElse roleId = "10" Then
+                divCustomer.Visible = True
+            End If
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class

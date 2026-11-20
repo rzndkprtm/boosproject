@@ -1,0 +1,377 @@
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Detail.aspx.vb" Inherits="Setting_Specification_Bottom_Detail" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Bottom Detail" %>
+
+<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <style>
+        .info-item { height: 100%; }
+        .info-label { font-size: 0.78rem; font-weight: 600; color: #6c757d; text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 7px; }
+        .info-value { font-size: 1rem; font-weight: 600; color: #212529; min-height: 24px; }
+        .info-description { background: #f8f9fa; border: 1px solid #edf0f2; border-radius: 6px; padding: 12px 14px; min-height: 45px; color: #495057; line-height: 1.5; }
+        .card { border-radius: 8px; }
+        .card-header { border-radius: 8px 8px 0 0 !important; }
+        .card-title { color: #212529; }
+        .card-footer .btn { min-width: 90px; }
+        @media (max-width: 767.98px) {
+            .card-header,
+            .card-body,
+            .card-footer { padding-left: 16px !important; padding-right: 16px !important; }
+            .card-footer .d-flex { justify-content: stretch !important; }
+            .card-footer .btn { flex: 1; }
+        }
+    </style>
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3><%: Page.Title %></h3>
+                    <p class="text-subtitle text-muted"></p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/specification">Specification</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/specification/bottom">Bottom</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-content">
+        <section class="row">
+            <div class="col-12">
+                <div class="row mb-2" runat="server" id="divError">
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            <span runat="server" id="msgError"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="row g-3">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom py-3 px-4">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5 class="card-title mt-2 mb-1 fw-semibold">Bottom Information</h5>
+                                <small class="text-muted">Bottom details and configuration</small>
+                            </div>
+                            <div class="text-muted small">
+                                <span class="me-1">ID:</span>
+                                <asp:Label runat="server" ID="lblId" CssClass="fw-semibold"></asp:Label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body px-4 py-4">
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="info-item">
+                                    <div class="info-label">Bottom Name</div>
+                                    <div class="info-value">
+                                        <asp:Label runat="server" ID="lblName"></asp:Label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="info-item">
+                                    <div class="info-label">Design Type</div>
+                                    <div class="info-value">
+                                        <asp:Label runat="server" ID="lblDesignType"></asp:Label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="info-item">
+                                    <div class="info-label">Company Detail</div>
+                                    <div class="info-value">
+                                        <asp:Label runat="server" ID="lblCompanyDetail"></asp:Label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <div class="info-item">
+                                    <div class="info-label">Status</div>
+                                    <div class="info-value">
+                                        <asp:Label runat="server" ID="lblStatus" CssClass="fw-semibold"></asp:Label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="info-item">
+                                    <div class="info-label">Description</div>
+                                    <div class="info-description">
+                                        <asp:Label runat="server" ID="lblDescription"></asp:Label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light border-top px-4 py-3">
+                        <div class="d-flex justify-content-end align-items-center flex-wrap gap-2">
+                            <asp:Button runat="server" ID="btnEdit" CssClass="btn btn-info" Text="Edit" OnClick="btnEdit_Click" />
+                            <a href="javascript:void(0);" runat="server" id="aDeleteBottom" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">Delete Bottom</a>
+                            <a href="javascript:void(0);" class="btn btn-secondary" onclick="showLog('Bottoms', '<%= lblId.Text %>')">Log</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                            <div>
+                                <h5 class="card-title mb-1 fw-semibold">List Colour</h5>
+                                <small class="text-muted">Manage available colours for this bottom</small>
+                            </div>
+                            <asp:Button runat="server" ID="btnAddColour" CssClass="btn btn-primary" Text="Add New" OnClick="btnAddColour_Click" />
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" AllowPaging="True" EmptyDataText="DATA NOT FOUND :)" PageSize="50" EmptyDataRowStyle-HorizontalAlign="Center" PagerSettings-Position="TopAndBottom" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
+                                <Columns>
+                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                        <ItemTemplate>
+                                            <%# Container.DataItemIndex + 1 %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:BoundField DataField="Id" HeaderText="ID" />
+                                    <asp:BoundField DataField="BoeId" HeaderText="BOE ID" />
+                                    <asp:BoundField DataField="Name" HeaderText="Name" />
+                                    <asp:BoundField DataField="Colour" HeaderText="Colour" />
+                                    <asp:BoundField DataField="Description" HeaderText="Description" />
+                                    <asp:BoundField DataField="Status" HeaderText="Status" />
+                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="180px">
+                                        <ItemTemplate>
+                                            <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                            <ul class="dropdown-menu">
+                                                <li runat="server" visible='<%# LoginAccess("Detail Colour") %>'>
+                                                    <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                </li>
+                                                <li runat="server" visible='<%# LoginAccess("Change Status Colour") %>'>
+                                                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalChangeStatusColour" onclick='<%# String.Format("return showChangeStatusColour(`{0}`, `{1}`, `{2}`);", Eval("Id").ToString(), Eval("Name").ToString(), Eval("Status").ToString()) %>'>Change Status</a>
+                                                </li>
+                                                <li>
+                                                    <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('BottomColours', '<%# Eval("Id") %>')">Log</a>
+                                                </li>
+                                            </ul>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                                <PagerStyle BackColor="DodgerBlue" ForeColor="White" HorizontalAlign="Center" />
+                                <PagerSettings PreviousPageText="Prev" NextPageText="Next" Mode="NumericFirstLast" />
+                                <AlternatingRowStyle BackColor="White" />
+                            </asp:GridView>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="modal modal-blur fade" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Bottom</h5>
+                </div>
+                <div class="modal-body text-center py-4">
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-left" id="modalProcessColour" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 runat="server" class="modal-title" id="titleProcessColour"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                            <label class="form-label">BOE ID</label>
+                            <asp:TextBox runat="server" ID="txtBoeId" CssClass="form-control" placeholder="BOE ID ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-8 form-group">
+                            <label class="form-label">Colour</label>
+                            <asp:TextBox runat="server" ID="txtColour" CssClass="form-control" placeholder="Colour ..." autocomplete="off"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Description</label>
+                            <asp:TextBox runat="server" TextMode="MultiLine" ID="txtDescription" Height="100px" CssClass="form-control" placeholder="Description ..." autocomplete="off" style="resize:none;"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row mb-2" runat="server" id="divStatus">
+                        <div class="col-12 col-sm-12 col-lg-4 form-group">
+                            <label class="form-label">Status</label>
+                            <asp:DropDownList runat="server" ID="ddlStatus" CssClass="form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row mb-2" runat="server" id="divErrorProcessColour">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorProcessColour"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnProcessColour" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcessColour_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-left" id="modalChangeStatusColour" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Change Status</h4>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtIdStatusColour" style="display:none;"></asp:TextBox>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Name</label>
+                            <asp:TextBox runat="server" ID="txtChangeName" CssClass="form-control" ReadOnly="true"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Old Status</label>
+                            <asp:DropDownList runat="server" ID="ddlOldStatusColour" CssClass="form-select" Enabled="false">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label">New Status</label>
+                            <asp:DropDownList runat="server" ID="ddlNewStatusColour" CssClass="form-select">
+                                <asp:ListItem Value="" Text=""></asp:ListItem>
+                                <asp:ListItem Value="In Stock" Text="In Stock"></asp:ListItem>
+                                <asp:ListItem Value="Limited Stock" Text="Limited Stock"></asp:ListItem>
+                                <asp:ListItem Value="Out of Stock" Text="Out of Stock"></asp:ListItem>
+                                <asp:ListItem Value="Discontinued" Text="Discontinued"></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnChangeStatusColour" CssClass="btn btn-primary" Text="Submit" OnClick="btnChangeStatusColour_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Changelog</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger d-none" id="logError"></div>
+                    <div class="table-responsive">
+                        <table class="table table-vcenter card-table" id="tblLogs">
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblIdColour"></asp:Label>
+        <asp:Label runat="server" ID="lblAction"></asp:Label>
+    </div>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const gv = document.getElementById('<%= gvList.ClientID %>');
+            if (!gv) return;
+
+            for (let i = 1; i < gv.rows.length; i++) {
+                const row = gv.rows[i];
+                row.style.cursor = 'pointer';
+
+                row.addEventListener('click', function (e) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
+                        return;
+                    }
+
+                    const btn = this.querySelector("a[id*='linkDetail']");
+                    if (btn) btn.click();
+                });
+            }
+        });
+        function showProcessColour() {
+            $("#modalProcessColour").modal("show");
+        }
+        function showChangeStatusColour(id, name, status) {
+            document.getElementById("<%=txtIdStatusColour.ClientID %>").value = id;
+            document.getElementById("<%=txtChangeName.ClientID %>").value = name;
+            document.getElementById("<%=ddlOldStatusColour.ClientID %>").value = status;
+        }
+        function showLog(type, dataId) {
+            $("#logError").addClass("d-none").html("");
+            $("#tblLogs tbody").html("");
+            $("#modalLog").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "/Setting/Method.aspx/GetLogs",
+                data: JSON.stringify({ type: type, dataId: dataId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {
+                    const logs = res.d;
+
+                    if (!logs || logs.length === 0) {
+                        $("#tblLogs tbody").html(
+                            `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+                    logs.forEach(r => {
+                        html += `<tr><td>${r.TextLog}</td></tr>`;
+                    });
+
+                    $("#tblLogs tbody").html(html);
+                },
+                error: function (err) {
+                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
+                }
+            });
+        }
+        ["modalDelete", "modalProcessColour", "modalChangeStatusColour", "modalLog"].forEach(function (id) {
+            document.getElementById(id).addEventListener("hide.bs.modal", function () {
+                document.activeElement.blur();
+                document.body.focus();
+            });
+        });
+        window.history.replaceState(null, null, window.location.href);
+    </script>
+</asp:Content>

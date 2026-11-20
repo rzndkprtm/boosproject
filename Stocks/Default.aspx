@@ -1,0 +1,530 @@
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="Stocks_Default" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Stocks" %>
+
+<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <style>
+        .grid-container { width: 100%; height: calc(100vh - 150px); overflow: auto; border: 1px solid #ddd; }
+        .grid-container table { width: 100%; border-collapse: collapse; table-layout: auto; min-height: 180%; }
+        .grid-container td, .grid-container th { white-space: nowrap; padding: 6px 10px; }
+        .grid-container th { position: sticky; top: 0; background: #f5f5f5; z-index: 3; }
+        .grid-container td:first-child, .grid-container th:first-child { position: sticky; left: 0; background: #fff; z-index: 2; white-space: normal; word-break: break-word; min-width: 220px; max-width: 320px; }
+        .grid-container th:first-child { z-index: 5; background: #f5f5f5; }
+        .grid-container tr:last-child td { position: sticky; bottom: 0; background: #f5f5f5; z-index: 3; }
+        .grid-container tr:last-child td:first-child { left: 0; z-index: 6; background: #f5f5f5; }
+        .stock-toolbar { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; padding:15px; margin-bottom:20px; background:#f8f9fa; border:1px solid #e9ecef; border-radius:10px; }
+        .stock-toolbar .btn { border-radius:7px; padding:9px 16px; font-weight:500; font-size:13px; }
+        .stock-toolbar .btn-generate { background:#435ebe; color:#fff; border:1px solid #435ebe; }
+        .stock-toolbar .btn-generate:hover { background:#364b98; border-color:#364b98; color:#fff; }
+        .stock-toolbar .dropdown-menu { border:1px solid #e9ecef; border-radius:8px; padding:6px; box-shadow:0 5px 20px rgba(0,0,0,.08); }
+        .stock-toolbar .dropdown-item { padding:9px 12px; border-radius:5px; font-size:13px; }
+        .stock-toolbar .dropdown-item:hover { background:#f0f2f5; }
+    </style>
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3><%: Page.Title %></h3>
+                    <p class="text-subtitle text-muted"></p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-content">
+        <section class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body pb-0">
+                        <div class="stock-toolbar" runat="server" id="divAction">
+                            <div>
+                                <div class="fw-bold">Stock Management</div>
+                                <small class="text-muted">Stock information</small>
+                            </div>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-grid"></i> Stock Category
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><h6 class="dropdown-header">Stock Categories</h6></li>
+                                        <li><a runat="server" class="dropdown-item" href="~/stocks/jpmd" target="_blank"><i class="bi bi-building me-2"></i>JPMD</a></li>
+                                        <li><a runat="server" class="dropdown-item" href="~/stocks/cws" target="_blank"><i class="bi bi-building me-2"></i>CWS</a></li>
+                                        <li><a runat="server" class="dropdown-item" href="~/stocks/accent" target="_blank"><i class="bi bi-building me-2"></i>Accent</a></li>
+                                        <li><a runat="server" class="dropdown-item" href="~/stocks/global" target="_blank"><i class="bi bi-building me-2"></i>Sunlight Global</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <asp:UpdatePanel ID="updateData" runat="server" UpdateMode="Conditional">
+                        <ContentTemplate>
+                            <div class="card-body">
+                                <div class="list-group list-group-horizontal-sm mb-1 text-center" id="dvTab" role="tablist">
+                                    <a class="list-group-item list-group-item-action active" id="listRoller" data-bs-toggle="list" href="#list-roller" role="tab">Roller</a>
+                                    <a class="list-group-item list-group-item-action" id="listSaphora" data-bs-toggle="list" href="#list-saphora" role="tab">Saphora</a>
+                                    <a class="list-group-item list-group-item-action" id="listCellular" data-bs-toggle="list" href="#list-cellular" role="tab">Cellular Shades</a>
+                                    <a class="list-group-item list-group-item-action" id="listDesignShades" data-bs-toggle="list" href="#list-designshades" role="tab">Design Shades</a>
+                                    <a class="list-group-item list-group-item-action" id="listCurtain" data-bs-toggle="list" href="#list-curtain" role="tab">Curtain</a>
+                                    <% If Convert.ToString(Session("CompanyId")) <> "2" Then %>
+                                    <a class="list-group-item list-group-item-action" id="listOutdoor" data-bs-toggle="list" href="#list-outdoor" role="tab">Outdoor</a>
+                                    <% End If %>
+                                    <a class="list-group-item list-group-item-action" id="listVenetian" data-bs-toggle="list" href="#list-venetian" role="tab">Venetian Aluminium</a>
+                                    <a class="list-group-item list-group-item-action" id="listFabricChart" data-bs-toggle="list" href="#list-fabricchart" role="tab">Fabric Chart</a>
+                                </div>
+                                <div class="tab-content text-justify">
+                                    <div class="tab-pane fade show active" id="list-roller" role="tabpanel" aria-labelledby="listRoller">
+                                        <div class="row mt-5" runat="server" id="divErrorRoller">
+                                            <div class="col-12">
+                                                <div class="alert alert-danger"><span runat="server" id="msgErrorRoller"></span></div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-5">
+                                            <div class="col-12 col-sm-12 col-lg-7">
+                                                <asp:Panel runat="server" DefaultButton="btnSearchRoller" Width="100%">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Fabric Type : </span>
+                                                        <asp:TextBox runat="server" ID="txtSearchRoller" CssClass="form-control" autocomplete="off"></asp:TextBox>
+                                                        <asp:Button runat="server" ID="btnSearchRoller" CssClass="btn btn-primary" Text="Search" OnClick="btnSearchRoller_Click" />
+                                                    </div>
+                                                </asp:Panel>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-5">
+                                            <div class="col-12">
+                                                <div class="accordion" id="accordionRoller">
+                                                    <asp:Repeater runat="server" ID="rptRoller" OnItemDataBound="rptRoller_ItemDataBound">
+                                                        <ItemTemplate>
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header" id="headingRoller_<%# Container.ItemIndex %>">
+                                                                    <button type="button" class="accordion-button <%# If(Container.ItemIndex = 0, "", "collapsed") %>" data-bs-toggle="collapse" data-bs-target="#collapseRoller_<%# Container.ItemIndex %>" aria-expanded="<%# If(Container.ItemIndex = 0, "true", "false") %>" aria-controls="collapseRoller_<%# Container.ItemIndex %>"><strong><%# Eval("Name") %></strong></button>
+                                                                </h2>
+                                                                <div id="collapseRoller_<%# Container.ItemIndex %>" class="accordion-collapse collapse <%# If(Container.ItemIndex = 0, "show", "") %>" aria-labelledby="headingRoller_<%# Container.ItemIndex %>" data-bs-parent="#accordionRoller">
+                                                                    <div class="accordion-body">
+                                                                        <asp:Repeater ID="rptRollerColour" runat="server">
+                                                                            <ItemTemplate>
+                                                                                <div class="border rounded p-3 mb-2">
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-3"><div class="text-muted small">Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Maximum Width</div><strong><%# Eval("Width") %></strong></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory", "{0:dd MMM yyyy}") %></strong></div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </ItemTemplate>
+                                                                        </asp:Repeater>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ItemTemplate>
+                                                    </asp:Repeater>
+                                                </div>
+                                                <asp:Panel ID="pnlNoDataRoller" runat="server" Visible="false" CssClass="text-center text-muted py-5">No fabric stock found.</asp:Panel>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="list-saphora" role="tabpanel" aria-labelledby="listSaphora">
+                                        <div class="row mt-5" runat="server" id="divErrorSaphora">
+                                            <div class="col-12">
+                                                <div class="alert alert-danger">
+                                                    <span runat="server" id="msgErrorSaphora"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-5">
+                                            <div class="col-12">
+                                                <div class="accordion" id="accordionSaphora">
+                                                    <asp:Repeater runat="server" ID="rptSaphora" OnItemDataBound="rptSaphora_ItemDataBound">
+                                                        <ItemTemplate>
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header" id="headingSaphora_<%# Container.ItemIndex %>">
+                                                                    <button type="button" class="accordion-button <%# If(Container.ItemIndex = 0, "", "collapsed") %>" data-bs-toggle="collapse" data-bs-target="#collapseSaphora_<%# Container.ItemIndex %>" aria-expanded="<%# If(Container.ItemIndex = 0, "true", "false") %>" aria-controls="collapseSaphora_<%# Container.ItemIndex %>"><strong><%# Eval("Name") %></strong></button>
+                                                                </h2>
+                                                                <div id="collapseSaphora_<%# Container.ItemIndex %>" class="accordion-collapse collapse <%# If(Container.ItemIndex = 0, "show", "") %>" aria-labelledby="headingSaphora_<%# Container.ItemIndex %>" data-bs-parent="#accordionSaphora">
+                                                                    <div class="accordion-body">
+                                                                        <asp:Repeater ID="rptSaphoraColour" runat="server">
+                                                                            <ItemTemplate>
+                                                                                <div class="border rounded p-3 mb-2">
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-3"><div class="text-muted small">Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory", "{0:dd MMM yyyy}") %></strong></div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </ItemTemplate>
+                                                                        </asp:Repeater>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ItemTemplate>
+                                                    </asp:Repeater>
+                                                </div>
+                                                <asp:Panel ID="pnlNoDataSaphora" runat="server" Visible="false" CssClass="text-center text-muted py-5">No fabric stock found.</asp:Panel>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="list-cellular" role="tabpanel" aria-labelledby="listCellular">
+                                        <div class="row mt-5" runat="server" id="divErrorCellular">
+                                            <div class="col-12">
+                                                <div class="alert alert-danger">
+                                                    <span runat="server" id="msgErrorCellular"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-5">
+                                            <div class="col-12">
+                                                <div class="accordion" id="accordionCellular">
+                                                    <asp:Repeater runat="server" ID="rptCellular" OnItemDataBound="rptCellular_ItemDataBound">
+                                                        <ItemTemplate>
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header" id="headingCellular_<%# Container.ItemIndex %>">
+                                                                    <button type="button" class="accordion-button <%# If(Container.ItemIndex = 0, "", "collapsed") %>" data-bs-toggle="collapse" data-bs-target="#collapseCellular_<%# Container.ItemIndex %>" aria-expanded="<%# If(Container.ItemIndex = 0, "true", "false") %>" aria-controls="collapseCellular_<%# Container.ItemIndex %>"><strong><%# Eval("Name") %></strong></button>
+                                                                </h2>
+                                                                <div id="collapseCellular_<%# Container.ItemIndex %>" class="accordion-collapse collapse <%# If(Container.ItemIndex = 0, "show", "") %>" aria-labelledby="headingCellular_<%# Container.ItemIndex %>" data-bs-parent="#accordionCellular">
+                                                                    <div class="accordion-body">
+                                                                        <asp:Repeater ID="rptCellularColour" runat="server">
+                                                                            <ItemTemplate>
+                                                                                <div class="border rounded p-3 mb-2">
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-3"><div class="text-muted small">Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Maximum Width</div><strong><%# Eval("Width") %></strong></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory", "{0:dd MMM yyyy}") %></strong></div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </ItemTemplate>
+                                                                        </asp:Repeater>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ItemTemplate>
+                                                    </asp:Repeater>
+                                                </div>
+                                                <asp:Panel ID="pnlNoDataCellular" runat="server" Visible="false" CssClass="text-center text-muted py-5">No fabric stock found.</asp:Panel>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="list-designshades" role="tabpanel" aria-labelledby="listDesignShades">
+                                        <div class="row mt-5" runat="server" id="divErrorDesignShades">
+                                            <div class="col-12">
+                                                <div class="alert alert-danger">
+                                                    <span runat="server" id="msgErrorDesignShades"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-5">
+                                            <div class="col-12">
+                                                <div class="accordion" id="accordionDesignShades">
+                                                    <asp:Repeater runat="server" ID="rptDesignShades" OnItemDataBound="rptDesignShades_ItemDataBound">
+                                                        <ItemTemplate>
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header" id="headingDesignShades_<%# Container.ItemIndex %>">
+                                                                    <button type="button" class="accordion-button <%# If(Container.ItemIndex = 0, "", "collapsed") %>" data-bs-toggle="collapse" data-bs-target="#collapseDesignShades_<%# Container.ItemIndex %>" aria-expanded="<%# If(Container.ItemIndex = 0, "true", "false") %>" aria-controls="collapseDesignShades_<%# Container.ItemIndex %>"><strong><%# Eval("Name") %></strong></button>
+                                                                </h2>
+                                                                <div id="collapseDesignShades_<%# Container.ItemIndex %>" class="accordion-collapse collapse <%# If(Container.ItemIndex = 0, "show", "") %>" aria-labelledby="headingDesignShades_<%# Container.ItemIndex %>" data-bs-parent="#accordionDesignShades">
+                                                                    <div class="accordion-body">
+                                                                        <asp:Repeater ID="rptDesignShadesColour" runat="server">
+                                                                            <ItemTemplate>
+                                                                                <div class="border rounded p-3 mb-2">
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-3"><div class="text-muted small">Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Maximum Width</div><strong><%# Eval("Width") %></strong></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory", "{0:dd MMM yyyy}") %></strong></div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </ItemTemplate>
+                                                                        </asp:Repeater>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ItemTemplate>
+                                                    </asp:Repeater>
+                                                </div>
+                                                <asp:Panel ID="pnlNoDataDesignShades" runat="server" Visible="false" CssClass="text-center text-muted py-5">No fabric stock found.</asp:Panel>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="list-curtain" role="tabpanel" aria-labelledby="listCurtain">
+                                        <div class="row mt-5" runat="server" id="divErrorCurtain">
+                                            <div class="col-12">
+                                                <div class="alert alert-danger">
+                                                    <span runat="server" id="msgErrorCurtain"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-5">
+                                            <div class="col-12 col-sm-12 col-lg-7">
+                                                <asp:Panel runat="server" DefaultButton="btnSearchCurtain" Width="100%">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Fabric Type : </span>
+                                                        <asp:TextBox runat="server" ID="txtSearchCurtain" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                                        <asp:Button runat="server" ID="btnSearchCurtain" CssClass="btn btn-primary" Text="Search" OnClick="btnSearchCurtain_Click" />
+                                                    </div>
+                                                </asp:Panel>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-12">
+                                                <div class="accordion" id="accordionCurtain">
+                                                    <asp:Repeater runat="server" ID="rptCurtain" OnItemDataBound="rptCurtain_ItemDataBound">
+                                                        <ItemTemplate>
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header" id="headingCurtain_<%# Container.ItemIndex %>">
+                                                                    <button type="button" class="accordion-button <%# If(Container.ItemIndex = 0, "", "collapsed") %>" data-bs-toggle="collapse" data-bs-target="#collapseCurtain_<%# Container.ItemIndex %>" aria-expanded="<%# If(Container.ItemIndex = 0, "true", "false") %>" aria-controls="collapseCurtain_<%# Container.ItemIndex %>"><strong><%# Eval("Name") %></strong></button>
+                                                                </h2>
+                                                                <div id="collapseCurtain_<%# Container.ItemIndex %>" class="accordion-collapse collapse <%# If(Container.ItemIndex = 0, "show", "") %>" aria-labelledby="headingCurtain_<%# Container.ItemIndex %>" data-bs-parent="#accordionCurtain">
+                                                                    <div class="accordion-body">
+                                                                        <asp:Repeater ID="rptCurtainColour" runat="server">
+                                                                            <ItemTemplate>
+                                                                                <div class="border rounded p-3 mb-2">
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-3"><div class="text-muted small">Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Maximum Width</div><strong><%# Eval("Width") %></strong></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory", "{0:dd MMM yyyy}") %></strong></div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </ItemTemplate>
+                                                                        </asp:Repeater>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ItemTemplate>
+                                                    </asp:Repeater>
+                                                </div>
+                                                <asp:Panel ID="pnlNoDataCurtain" runat="server" Visible="false" CssClass="text-center text-muted py-5">No fabric stock found.</asp:Panel>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="list-outdoor" role="tabpanel" aria-labelledby="listOutdoor">
+                                        <div class="row mt-5" runat="server" id="divErrorOutdoor">
+                                            <div class="col-12">
+                                                <div class="alert alert-danger">
+                                                    <span runat="server" id="msgErrorOutdoor"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-12">
+                                                <div class="accordion" id="accordionOutdoor">
+                                                    <asp:Repeater runat="server" ID="rptOutdoor" OnItemDataBound="rptOutdoor_ItemDataBound">
+                                                        <ItemTemplate>
+                                                            <div class="accordion-item">
+                                                                <h2 class="accordion-header" id="headingOutdoor_<%# Container.ItemIndex %>">
+                                                                    <button type="button" class="accordion-button <%# If(Container.ItemIndex = 0, "", "collapsed") %>" data-bs-toggle="collapse" data-bs-target="#collapseOutdoor_<%# Container.ItemIndex %>" aria-expanded="<%# If(Container.ItemIndex = 0, "true", "false") %>" aria-controls="collapseOutdoor_<%# Container.ItemIndex %>"><strong><%# Eval("Name") %></strong></button>
+                                                                </h2>
+                                                                <div id="collapseOutdoor_<%# Container.ItemIndex %>" class="accordion-collapse collapse <%# If(Container.ItemIndex = 0, "show", "") %>" aria-labelledby="headingOutdoor_<%# Container.ItemIndex %>" data-bs-parent="#accordionOutdoor">
+                                                                    <div class="accordion-body">
+                                                                        <asp:Repeater ID="rptOutdoorColour" runat="server">
+                                                                            <ItemTemplate>
+                                                                                <div class="border rounded p-3 mb-2">
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-3"><div class="text-muted small">Colour</div><strong><%# Eval("Colour").ToString.ToUpper() %></strong></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Status</div><span class="<%# GetStatusClass(Eval("Status")) %>"><%# Eval("Status") %></span></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Maximum Width</div><strong><%# Eval("Width") %></strong></div>
+                                                                                        <div class="col-md-2"><div class="text-muted small">Roll QTY</div><strong><%# Eval("RollQty") %></strong></div>
+                                                                                        <div class="col-md-3"><div class="text-muted small">ETA Factory</div><strong><%# Eval("ETAFactory", "{0:dd MMM yyyy}") %></strong></div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </ItemTemplate>
+                                                                        </asp:Repeater>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </ItemTemplate>
+                                                    </asp:Repeater>
+                                                </div>
+                                                <asp:Panel ID="pnlNoDataOutdoor" runat="server" Visible="false" CssClass="text-center text-muted py-5">No fabric stock found.</asp:Panel>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="list-venetian" role="tabpanel" aria-labelledby="listVenetian">
+                                        <div class="row mt-5" runat="server" id="divErrorVenetian">
+                                            <div class="col-12">
+                                                <div class="alert alert-danger">
+                                                    <span runat="server" id="msgErrorVenetian"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-5">
+                                            <div class="col-12">
+                                                <div class="table-responsive">
+                                                    <table class="table mb-0">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td style="background-color: darkgreen; color: white; text-align:center;">IN STOCK</td>
+                                                                <td style="background-color: yellow; color:black; text-align:center;">LIMITED STOCK</td>
+                                                                <td style="background-color: darkred; color: white; text-align:center;">OUT OF STOCK</td>
+                                                                <td style="background-color: gray; color: white; text-align:center;">DISCONTINUED</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-12">
+                                                <div class="table-responsive grid-container">
+                                                    <asp:GridView runat="server" ID="gvListVenetian" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowFooter="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListVenetian_RowDataBound">
+                                                        <RowStyle />
+                                                        <Columns>
+                                                            <asp:BoundField DataField="BlindName" HeaderText="" />
+                                                            <asp:BoundField DataField="Col1" HeaderText="Colour" />
+                                                            <asp:BoundField DataField="Col2" HeaderText="Colour" />
+                                                            <asp:BoundField DataField="Col3" HeaderText="Colour" />
+                                                            <asp:BoundField DataField="Col4" HeaderText="Colour" />
+                                                            <asp:BoundField DataField="Col5" HeaderText="Colour" />
+                                                            <asp:BoundField DataField="Col6" HeaderText="Colour" />
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="list-fabricchart" role="tabpanel" aria-labelledby="listFabricChart">
+                                        <div class="row mt-5" runat="server" id="divErrorFabricChart">
+                                            <div class="col-12">
+                                                <div class="alert alert-danger">
+                                                    <span runat="server" id="msgErrorFabricChart"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-5" runat="server">
+                                            <div class="col-12 col-sm-12 col-lg-7">
+                                                <asp:Panel runat="server" DefaultButton="btnFabricChart" Width="100%">
+                                                    <div class="input-group">
+                                                        <span class="input-group-text">Fabric Type : </span>
+                                                        <asp:TextBox runat="server" ID="txtSearchFabricChart" CssClass="form-control" placeholoder="" autocomplete="off"></asp:TextBox>
+                                                        <asp:Button runat="server" ID="btnFabricChart" CssClass="btn btn-primary" Text="Search" OnClick="btnFabricChart_Click" />
+                                                    </div>
+                                                </asp:Panel>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-12">
+                                                <div class="table-responsive grid-container">
+                                                    <asp:GridView runat="server" ID="gvListFabricChart" CssClass="table table-bordered table-hover" AutoGenerateColumns="false" ShowFooter="true" ShowHeaderWhenEmpty="true" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnRowDataBound="gvListFabricChart_RowDataBound">
+                                                        <RowStyle />
+                                                        <Columns>
+                                                            <asp:BoundField DataField="FabricName" HeaderText="Fabric Type" />
+                                                            <asp:BoundField DataField="Roller" HeaderText="Roller" />
+                                                            <asp:BoundField DataField="RomanClassic" HeaderText="Roman (Classic)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                            <asp:BoundField DataField="RomanPlantation" HeaderText="Roman (Plantation)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                            <asp:BoundField DataField="RomanSewless" HeaderText="Roman (Sewless)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                            <asp:BoundField DataField="PGPlain" HeaderText="PG (Plain)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                            <asp:BoundField DataField="PGPlantation" HeaderText="PG (Plantation)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                            <asp:BoundField DataField="PGSewless" HeaderText="PG (Sewless)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                            <asp:BoundField DataField="Vertical89mm" HeaderText="Vertical (89mm)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                            <asp:BoundField DataField="Vertical127mm" HeaderText="Vertical (127mm)" HeaderStyle-Wrap="true" FooterStyle-Wrap="true" />
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer" runat="server" id="divCompanyDetail">
+                                <div class="row">
+                                    <div class="col-12 col-sm-12 col-lg-4 d-flex justify-content-end">
+                                        <div class="input-group">
+                                            <span class="input-group-text">Company Detail</span>
+                                            <asp:DropDownList runat="server" ID="ddlCompanyDetail" CssClass="form-select" AutoPostBack="true" OnSelectedIndexChanged="ddlCompanyDetail_SelectedIndexChanged"></asp:DropDownList>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>                    
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="loadingOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,.5); z-index:99999;">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="spinner-border"></div>
+                    <div class="mt-2">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalWaiting" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <asp:HiddenField ID="selected_tab" runat="server" />
+    <script type="text/javascript">
+        function showLoading() {
+            $("#loadingOverlay").show();
+        }
+        function hideLoading() {
+            $("#loadingOverlay").hide();
+        }
+        function activateCurrentTab() {
+            var tabId = $("#<%= selected_tab.ClientID %>").val();
+            if (!tabId) {
+                tabId = "list-roller";
+            }
+            var $tab = $('#dvTab a[href="#' + tabId + '"]');
+            if ($tab.length) {
+                $tab.tab('show');
+            }
+        }
+        function pageInit() {
+            $(document).off("click.stocktab").on("click.stocktab", "#dvTab a", function () {
+                var tabId = $(this).attr("href").replace("#", "");
+                $("#<%= selected_tab.ClientID %>").val(tabId);
+            });
+            activateCurrentTab();
+        }
+        $(document).ready(function () {
+            pageInit();
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            prm.add_beginRequest(function () {
+                showLoading();
+            });
+            prm.add_endRequest(function () {
+                hideLoading();
+                pageInit();
+            });
+        });
+        function showWaiting(hideModal = null) {
+            $("#modalWaiting").modal("show");
+            setTimeout(function () {
+                $("#modalWaiting").modal("hide");
+                if (hideModal) {
+                    $(`#${hideModal}`).modal("hide");
+                }
+            }, 5000);
+
+            return true;
+        }
+        ["modalWaiting"].forEach(function (id) {
+            document.getElementById(id).addEventListener("hide.bs.modal", function () {
+                document.activeElement.blur();
+                document.body.focus();
+            });
+        });
+        window.history.replaceState(null, null, window.location.href);
+    </script>
+</asp:Content>

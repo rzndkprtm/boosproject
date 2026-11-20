@@ -1,0 +1,225 @@
+﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Alias.aspx.vb" Inherits="Setting_Specification_Fabric_Alias" MasterPageFile="~/Site.Master" MaintainScrollPositionOnPostback="true" Debug="true" Title="Fabric Alias" %>
+
+<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3><%: Page.Title %></h3>
+                    <p class="text-subtitle text-muted"></p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a runat="server" href="~/">Home</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting">Setting</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/specification">Specification</a></li>
+                            <li class="breadcrumb-item"><a runat="server" href="~/setting/specification/fabric">Fabric</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><%: Page.Title %></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-content">
+        <section class="row mb-3" runat="server" id="divError">
+            <div class="col-12">
+                <div class="alert alert-danger">
+                    <span runat="server" id="msgError"></span>
+                </div>
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-12 col-sm-12 col-lg-6 mb-2">
+                                <asp:Button runat="server" ID="btnAdd" CssClass="btn btn-primary" Text="Add Fabric" OnClick="btnAdd_Click" />
+                                <asp:Button runat="server" ID="btnAddColour" CssClass="btn btn-primary" Text="Add Fabric Colour" OnClick="btnAddColour_Click" />
+                            </div>
+                            <div class="col-12 col-sm-12 col-lg-6 d-flex justify-content-end">
+                                <asp:Panel runat="server" DefaultButton="btnSearch" Width="100%">
+                                    <div class="input-group">
+                                        <span class="input-group-text">Search : </span>
+                                        <asp:TextBox runat="server" ID="txtSearch" CssClass="form-control" autocomplete="off"></asp:TextBox>
+                                        <asp:Button runat="server" ID="btnSearch" CssClass="btn btn-primary" Text="Search" OnClick="btnSearch_Click" />
+                                    </div>
+                                </asp:Panel>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <asp:GridView runat="server" ID="gvList" CssClass="table table-bordered table-hover mb-0" AutoGenerateColumns="false" EmptyDataText="DATA NOT FOUND :)" EmptyDataRowStyle-HorizontalAlign="Center" OnPageIndexChanging="gvList_PageIndexChanging" OnRowCommand="gvList_RowCommand">
+                                <Columns>
+                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center">
+                                        <ItemTemplate>
+                                            <%# Container.DataItemIndex + 1 %>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:BoundField DataField="Id" HeaderText="ID" />
+                                    <asp:BoundField DataField="Type" HeaderText="Type" />
+                                    <asp:BoundField DataField="FirstName" HeaderText="Fabric Name" />
+                                    <asp:BoundField DataField="SecondName" HeaderText="Fabric Name (Alias)" />
+                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" ItemStyle-Width="200px">
+                                        <ItemTemplate>
+                                            <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Actions</button>
+                                            <ul class="dropdown-menu">
+                                                <li runat="server" visible='<%# LoginAccess("Detail") %>'>
+                                                    <asp:LinkButton runat="server" ID="linkDetail" CssClass="dropdown-item" Text="Detail / Edit" CommandName="Detail" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
+                                                </li>
+                                                <li runat="server" visible='<%# LoginAccess("Delete") %>'>
+                                                    <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                </li>
+                                                <li>
+                                                    <a href="javascript:void(0);" class="dropdown-item" onclick="showLog('FabricAlias', '<%# Eval("Id") %>')">Log</a>
+                                                </li>
+                                            </ul>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                </Columns>
+                            </asp:GridView>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="modal fade text-left" id="modalProcess" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 runat="server" class="modal-title" id="titleProcess"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">First ID</label>
+                            <asp:DropDownList runat="server" ID="ddlFirstId" CssClass="choices form-select"></asp:DropDownList>
+                        </div>
+                        <div class="col-12 col-sm-12 col-lg-6 form-group">
+                            <label class="form-label">Second ID</label>
+                            <asp:DropDownList runat="server" ID="ddlSecondId" CssClass="choices form-select"></asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="row" runat="server" id="divErrorProcess">
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <span runat="server" id="msgErrorProcess"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnProcess" CssClass="btn btn-primary" Text="Submit" OnClick="btnProcess_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade text-center" id="modalDelete" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Delete Alias</h5>
+                </div>
+                <div class="modal-body">
+                    <asp:TextBox runat="server" ID="txtDeleteId" style="display:none;"></asp:TextBox>
+                    Hi <b><%: Session("FullName") %></b>,<br />Are you sure you would like to do this?
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnDelete" CssClass="btn btn-danger" Text="Confirm" OnClick="btnDelete_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal modal-blur fade" id="modalLog" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Changelog</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger d-none" id="logError"></div>
+                    <div class="table-responsive">
+                        <table class="table table-vcenter card-table" id="tblLogs">
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div runat="server" visible="false">
+        <asp:Label runat="server" ID="lblId"></asp:Label>
+        <asp:Label runat="server" ID="lblType"></asp:Label>
+        <asp:Label runat="server" ID="lblAction"></asp:Label>
+    </div>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            const gv = document.getElementById('<%= gvList.ClientID %>');
+            if (!gv) return;
+            for (let i = 1; i < gv.rows.length; i++) {
+                const row = gv.rows[i];
+                row.style.cursor = 'pointer';
+                row.addEventListener('click', function (e) {
+                    if (e.target.closest("a") || e.target.closest("button") || e.target.closest("[data-bs-toggle]")) {
+                        return;
+                    }
+                    const btn = this.querySelector("a[id*='linkDetail']");
+                    if (btn) btn.click();
+                });
+            }
+        });
+        function showProcess() {
+            $("#modalProcess").modal("show");
+        }
+        function dataDelete(id) {
+            document.getElementById("<%=txtDeleteId.ClientID %>").value = id;
+        }
+        function showLog(type, dataId) {
+            $("#logError").addClass("d-none").html("");
+            $("#tblLogs tbody").html("");
+            $("#modalLog").modal("show");
+
+            $.ajax({
+                type: "POST",
+                url: "/Setting/Method.aspx/GetLogs",
+                data: JSON.stringify({ type: type, dataId: dataId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (res) {
+                    const logs = res.d;
+
+                    if (!logs || logs.length === 0) {
+                        $("#tblLogs tbody").html(
+                            `<tr><td class="text-center">DATA LOG NOT FOUND</td></tr>`
+                        );
+                        return;
+                    }
+
+                    let html = "";
+                    logs.forEach(r => {
+                        html += `<tr><td>${r.TextLog}</td></tr>`;
+                    });
+
+                    $("#tblLogs tbody").html(html);
+                },
+                error: function (err) {
+                    $("#logError").removeClass("d-none").html("FAILED TO LOAD LOG DATA");
+                }
+            });
+        }
+        ["modalProcess", "modalDelete", "modalLog"].forEach(function (id) {
+            document.getElementById(id).addEventListener("hide.bs.modal", function () {
+                document.activeElement.blur();
+                document.body.focus();
+            });
+        });
+        window.history.replaceState(null, null, window.location.href);
+    </script>
+</asp:Content>

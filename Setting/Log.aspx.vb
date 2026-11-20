@@ -1,0 +1,324 @@
+﻿Imports System.Data.SqlClient
+
+Partial Class Setting_Log
+    Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting", False)
+            Exit Sub
+        End If
+
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            BindData(txtSearch.Text)
+        End If
+    End Sub
+
+    Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+        gvList.PageIndex = 0
+
+        MessageError(False, String.Empty)
+        BindData(txtSearch.Text)
+    End Sub
+
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        If e.CommandName = "Page" Then
+            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindData(txtSearch.Text)
+        End If
+    End Sub
+
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        BuildPager()
+    End Sub
+
+    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
+
+        MessageError(False, String.Empty)
+        BindData(txtSearch.Text)
+    End Sub
+
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtDeleteId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Logs WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Response.Redirect("~/setting/log", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindData(searchText As String)
+        Try
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", If(String.IsNullOrEmpty(searchText), CType(DBNull.Value, Object), searchText.Trim()))
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_Logs_List", params)
+            gvList.DataBind()
+
+            gvList.Columns(5).Visible = LoginAccess("Delete") ' ID
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BuildPager()
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
+            navPager.Visible = False
+        End Try
+    End Sub
+
+    Protected Function GetDataName(type As String, dataId As String) As String
+        Try
+            If Not String.IsNullOrEmpty(type) AndAlso Not String.IsNullOrEmpty(dataId) Then
+                Dim thisQuery As String = String.Format("SELECT Name FROM {0} WHERE Id={1}", type, dataId)
+
+                ' GENERAL
+                If type = "Companys" Then
+                    thisQuery = "SELECT Name FROM Companys WHERE Id='" & dataId & "'"
+                End If
+                If type = "CompanyDetails" Then
+                    thisQuery = "SELECT Companys.Name + ' | ' + CompanyDetails.Name FROM CompanyDetails LEFT JOIN Companys ON CompanyDetails.CompanyId=Companys.Id WHERE CompanyDetails.Id='" & dataId & "'"
+                End If
+                If type = "Mailings" Then
+                    thisQuery = "SELECT Name FROM Mailings WHERE Id='" & dataId & "'"
+                End If
+                If type = "Newsletters" Then
+                    thisQuery = "SELECT Name FROM Newsletters WHERE Id='" & dataId & "'"
+                End If
+                If type = "Tutorials" Then
+                    thisQuery = "SELECT Title FROM Tutorials WHERE Id='" & dataId & "'"
+                End If
+                If type = "Notifications" Then
+                    thisQuery = "SELECT Title FROM Notifications WHERE Id='" & dataId & "'"
+                End If
+                If type = "AKZeros" Then
+                    thisQuery = "SELECT Name FROM AKZeros WHERE Id='" & dataId & "'"
+                End If
+                If type = "Xeros" Then
+                    thisQuery = "SELECT Name FROM Xeros WHERE Id='" & dataId & "'"
+                End If
+
+                ' LOGIN
+                If type = "Logins" Then
+                    thisQuery = "SELECT UserName FROM Logins WHERE Id='" & dataId & "'"
+                End If
+                If type = "LoginRoles" Then
+                    thisQuery = "SELECT Name FROM LoginRoles WHERE Id='" & dataId & "'"
+                End If
+                If type = "LoginLevels" Then
+                    thisQuery = "SELECT Name FROM LoginLevels WHERE Id='" & dataId & "'"
+                End If
+                If type = "LoginInstallers" Then
+                    thisQuery = "SELECT UserName FROM Logins WHERE Id='" & dataId & "'"
+                End If
+
+                ' CUSTOMER
+                If type = "Customers" Then
+                    thisQuery = "SELECT Name FROM Customers WHERE Id='" & dataId & "'"
+                End If
+                If type = "CustomerContacts" Then
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerContacts.Name FROM CustomerContacts LEFT JOIN Customers ON CustomerContacts.CustomerId=Customers.Id WHERE CustomerContacts.Id='" & dataId & "'"
+                End If
+                If type = "CustomerAddress" Then
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerAddress.Type FROM CustomerAddress LEFT JOIN Customers ON CustomerAddress.CustomerId=Customers.Id WHERE CustomerAddress.Id='" & dataId & "'"
+                End If
+                If type = "CustomerBusiness" Then
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerBusiness.ABNNumber FROM CustomerBusiness LEFT JOIN Customers ON CustomerBusiness.CustomerId=Customers.Id WHERE CustomerBusiness.Id='" & dataId & "'"
+                End If
+                If type = "CustomerMarkups" Then
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerMarkups.Type FROM CustomerMarkups LEFT JOIN Customers ON CustomerMarkups.CustomerId=Customers.Id WHERE CustomerMarkups.Id='" & dataId & "'"
+                End If
+                If type = "CustomerDiscounts" Then
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerDiscounts.Type FROM CustomerDiscounts LEFT JOIN Customers ON CustomerDiscounts.CustomerId=Customers.Id WHERE CustomerDiscounts.Id='" & dataId & "'"
+                End If
+                If type = "CustomerServices" Then
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerServices.Type FROM CustomerServices LEFT JOIN Customers ON CustomerServices.CustomerId=Customers.Id WHERE CustomerServices.Id='" & dataId & "'"
+                End If
+                If type = "CustomerCustomPricings" Then
+                    thisQuery = "SELECT Customers.Name + ' | ' + CustomerCustomPricings.Description FROM CustomerCustomPricings LEFT JOIN Customers ON CustomerCustomPricings.Id=Customers.Id WHERE CustomerCustomPricings.Id='" & dataId & "'"
+                End If
+                If type = "CustomerPromos" Then
+                    thisQuery = "SELECT Customers.Name FROM CustomerPromos LEFT JOIN Customers ON CustomerPromos.CustomerId=Customers.Id WHERE CustomerPromos.Id='" & dataId & "'"
+                End If
+                If type = "CustomerProductAccess" Then
+                    thisQuery = "SELECT Customers.Name FROM CustomerProductAccess LEFT JOIN Customers ON CustomerProductAccess.Id=Customers.Id WHERE CustomerProductAccess.Id='" & dataId & "'"
+                End If
+                If type = "CustomerQuotes" Then
+                    thisQuery = "SELECT Customers.Name FROM CustomerQuotes LEFT JOIN Customers ON CustomerQuotes.Id=Customers.Id WHERE CustomerQuotes.Id='" & dataId & "'"
+                End If
+
+                ' SPECIFICATION
+                If type = "Designs" Then
+                    thisQuery = "SELECT Name FROM Designs WHERE Id='" & dataId & "'"
+                End If
+                If type = "Blinds" Then
+                    thisQuery = "SELECT Designs.Name + ' | ' + Blinds.Name FROM Blinds LEFT JOIN Designs ON Blinds.DesignId=Designs.Id WHERE Blinds.Id='" & dataId & "'"
+                End If
+                If type = "Products" Then
+                    thisQuery = "SELECT Name FROM Products WHERE Id='" & dataId & "'"
+                End If
+                If type = "ProductTubes" Then
+                    thisQuery = "SELECT Name FROM ProductTubes WHERE Id='" & dataId & "'"
+                End If
+                If type = "ProductControls" Then
+                    thisQuery = "SELECT Name FROM ProductControls WHERE Id='" & dataId & "'"
+                End If
+                If type = "ProductColours" Then
+                    thisQuery = "SELECT Name FROM ProductColours WHERE Id='" & dataId & "'"
+                End If
+                If type = "Fabrics" Then
+                    thisQuery = "SELECT Name FROM Fabrics WHERE Id='" & dataId & "'"
+                End If
+                If type = "FabricColours" Then
+                    thisQuery = "SELECT Name FROM FabricColours WHERE Id='" & dataId & "'"
+                End If
+                If type = "FabricGroupLocals" Then
+                    thisQuery = "SELECT Name FROM Fabrics WHERE Id='" & dataId & "'"
+                End If
+                If type = "FabricAlias" Then
+                    thisQuery = "SELECT '[' + FA.Type + '] ' + COALESCE(FF.Name, FC1.Name) + ' = ' + COALESCE(SF.Name, FC2.Name) FROM FabricAlias FA LEFT JOIN Fabrics FF ON FA.FirstId=FF.Id AND FA.Type='Fabrics' LEFT JOIN Fabrics SF ON FA.SecondId=SF.Id AND FA.Type='Fabrics' LEFT JOIN FabricColours FC1 ON FA.FirstId=FC1.Id AND FA.Type='FabricColours' LEFT JOIN FabricColours FC2 ON FA.SecondId = FC2.Id AND FA.Type = 'FabricColours' WHERE FA.Id='1' ORDER BY FA.Id ASC"
+                End If
+                If type = "Chains" Then
+                    thisQuery = "SELECT Name FROM Chains WHERE Id='" & dataId & "'"
+                End If
+                If type = "Bottoms" Then
+                    thisQuery = "SELECT Name FROM Bottoms WHERE Id='" & dataId & "'"
+                End If
+                If type = "BottomColours" Then
+                    thisQuery = "SELECT Name FROM BottomColours WHERE Id='" & dataId & "'"
+                End If
+                If type = "Mountings" Then
+                    thisQuery = "SELECT Name FROM Mountings WHERE Id='" & dataId & "'"
+                End If
+
+                ' JOB
+                If type = "JobSheets" Then
+                    thisQuery = "SELECT Name FROM JobSheets WHERE Id='" & dataId & "'"
+                End If
+
+                ' PRICE
+                If type = "PriceGroups" Then
+                    thisQuery = "SELECT Name FROM PriceGroups WHERE Id='" & dataId & "'"
+                End If
+                If type = "PriceProductGroups" Then
+                    thisQuery = "SELECT Name FROM PriceProductGroups WHERE Id='" & dataId & "'"
+                End If
+                If type = "PriceProductGroupFormats" Then
+                    thisQuery = "SELECT Name FROM PriceProductGroupFormats WHERE Id='" & dataId & "'"
+                End If
+                If type = "PriceProductDiscounts" Then
+                    thisQuery = "SELECT Id FROM PriceProductDiscounts WHERE Id='" & dataId & "'"
+                End If
+                If type = "PriceBases" Then
+                    thisQuery = "SELECT Id FROM PriceBases WHERE Id='" & dataId & "'"
+                End If
+                If type = "PriceSurcharges" Then
+                    thisQuery = "SELECT Name FROM PriceSurcharges WHERE Id='" & dataId & "'"
+                End If
+                If type = "Promos" Then
+                    thisQuery = "SELECT Name FROM Promos WHERE Id='" & dataId & "'"
+                End If
+                If type = "PromoDetails" Then
+                    thisQuery = "SELECT Id FROM PromoDetails WHERE Id='" & dataId & "'"
+                End If
+                If type = "PriceServices" Then
+                    thisQuery = "SELECT Name FROM PriceServices WHERE Id='" & dataId & "'"
+                End If
+                If type = "PriceCalculations" Then
+                    thisQuery = "SELECT Name FROM PriceCalculations WHERE Id='" & dataId & "'"
+                End If
+
+                ' VALIDATION
+
+                ' ORDER
+                If type = "OrderHeaders" Then
+                    thisQuery = "SELECT OrderId FROM OrderHeaders WHERE Id='" & dataId & "'"
+                End If
+                If type = "OrderDetails" Then
+                    thisQuery = "SELECT 'ID : ' + ISNULL(CAST(OrderDetails.Id AS NVARCHAR(100)), '') + ', Room : ' + ISNULL(CAST(OrderDetails.Room AS NVARCHAR(100)), '') + ', Design Type : ' + ISNULL(Designs.Name, '') FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.Id='" & dataId & "'"
+                End If
+
+                If String.IsNullOrEmpty(thisQuery) Then
+                    Return String.Empty
+                End If
+
+                Dim dataName As String = settingClass.GetItemData(thisQuery)
+                Return dataName
+            End If
+            Return String.Empty
+        Catch ex As Exception
+            Return "Error"
+        End Try
+        Return String.Empty
+    End Function
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class

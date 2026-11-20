@@ -1,0 +1,556 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports System.Globalization
+Imports iTextSharp.text.pdf.AcroFields
+Imports MimeKit
+
+Partial Class Order_EditCosting
+    Inherits Page
+
+    Dim orderClass As New OrderClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
+    Dim dataLog As Object() = Nothing
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/order/detail", False)
+            Exit Sub
+        End If
+
+        If String.IsNullOrEmpty(Request.QueryString("boos")) Then
+            Response.Redirect("~/order", False)
+            Exit Sub
+        End If
+
+        lblId.Text = Request.QueryString("boos").ToString()
+        Dim queryRow As DataRow = orderClass.GetDataRow("SELECT QueryString FROM OrderActionContext WHERE Id='" & lblId.Text & "'")
+        If queryRow Is Nothing Then
+            Response.Redirect("~/order", False)
+            Exit Sub
+        End If
+
+        Dim httpUtility = Web.HttpUtility.ParseQueryString(queryRow(0).ToString())
+        lblHeaderId.Text = Convert.ToString(httpUtility("headerid"))
+        lblItemId.Text = Convert.ToString(httpUtility("itemid"))
+
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            BindData(lblHeaderId.Text, lblItemId.Text)
+        End If
+    End Sub
+
+    Protected Sub btnFinish_Click(sender As Object, e As EventArgs)
+        Response.Redirect(String.Format("~/order/detail?orderid={0}", lblHeaderId.Text), False)
+    End Sub
+
+    Protected Sub btnAddSurcharge_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            If ddlSurchargeId.SelectedValue = "Custom" Then
+                Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, ddlAddItem.SelectedValue, "Surcharge", txtAddDescription.Text, txtAddSellPrice.Text, txtAddSellPrice.Text, txtAddBuyPrice.Text, txtAddFactoryPrice.Text}
+                orderClass.OrderCostings(costingArray)
+                orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
+
+                dataLog = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Update Price"}
+                orderClass.Logs(dataLog)
+
+                Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
+                Exit Sub
+            End If
+
+            Dim surchargeArray As Object() = {lblHeaderId.Text, lblItemId.Text, lblDesignId.Text, ddlAddItem.SelectedValue, ddlSurchargeId.SelectedValue}
+            orderClass.CalculateSurcharge_ById(surchargeArray)
+            orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
+
+            Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
+            Exit Sub
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnAddDiscount_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim discount As Decimal = 0D
+            If Not Decimal.TryParse(txtDiscount.Text, discount) Then
+                MessageError(True, "PLEASE ENTER A VALID DISCOUNT VALUE!")
+                Exit Sub
+            End If
+
+            Dim discountType As String = ddlDiscountType.SelectedValue
+            Dim discountMethod As String = ddlDiscountMethod.SelectedValue
+            If discount < 0D Then
+                MessageError(True, "DISCOUNT CANNOT BE NEGATIVE!")
+                Exit Sub
+            End If
+            If discountMethod = "Percent" AndAlso discount > 100D Then
+                MessageError(True, "DISCOUNT PERCENTAGE MUST BE BETWEEN 0 AND 100!")
+                Exit Sub
+            End If
+            If discountType <> "All" AndAlso discountType <> "SellPrice" AndAlso discountType <> "BuyPrice" AndAlso discountType <> "FactoryPrice" Then
+                MessageError(True, "PLEASE SELECT A VALID DISCOUNT TYPE!")
+                Exit Sub
+            End If
+            If discountMethod <> "Percent" AndAlso discountMethod <> "Value" Then
+                MessageError(True, "PLEASE SELECT A VALID DISCOUNT METHOD!")
+                Exit Sub
+            End If
+
+            Dim thisTable As DataTable = orderClass.GetDataTable("SELECT Id, SellPrice, BuyPrice, FactoryPrice FROM OrderCostings WHERE ItemId='" & lblItemId.Text & "' AND Type='Base'")
+            If thisTable Is Nothing OrElse thisTable.Rows.Count = 0 Then Exit Sub
+
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+
+                Dim updateColumns As New List(Of String)
+                If discountType = "All" OrElse discountType = "SellPrice" Then
+                    updateColumns.Add("SellPrice=@SellPrice")
+                End If
+                If discountType = "All" OrElse discountType = "BuyPrice" Then
+                    updateColumns.Add("BuyPrice=@BuyPrice")
+                End If
+                If discountType = "All" OrElse discountType = "FactoryPrice" Then
+                    updateColumns.Add("FactoryPrice=@FactoryPrice")
+                End If
+
+                Dim sql As String = "UPDATE OrderCostings SET " & String.Join(", ", updateColumns) & " WHERE Id=@Id"
+                Using thisCmd As New SqlCommand(sql, thisConn)
+                    If discountType = "All" OrElse discountType = "SellPrice" Then
+                        thisCmd.Parameters.Add("@SellPrice", SqlDbType.Decimal).Precision = 18
+                        thisCmd.Parameters("@SellPrice").Scale = 2
+                    End If
+                    If discountType = "All" OrElse discountType = "BuyPrice" Then
+                        thisCmd.Parameters.Add("@BuyPrice", SqlDbType.Decimal).Precision = 18
+                        thisCmd.Parameters("@BuyPrice").Scale = 2
+                    End If
+                    If discountType = "All" OrElse discountType = "FactoryPrice" Then
+                        thisCmd.Parameters.Add("@FactoryPrice", SqlDbType.Decimal).Precision = 18
+                        thisCmd.Parameters("@FactoryPrice").Scale = 2
+                    End If
+                    thisCmd.Parameters.Add("@Id", SqlDbType.NVarChar, -1)
+
+                    For Each row As DataRow In thisTable.Rows
+                        If discountType = "All" OrElse discountType = "SellPrice" Then
+                            Dim basePrice As Decimal = If(IsDBNull(row("SellPrice")), 0D, Convert.ToDecimal(row("SellPrice")))
+                            Dim finalPrice As Decimal = If(discountMethod = "Percent", basePrice - (basePrice * discount / 100D), basePrice - discount)
+                            thisCmd.Parameters("@SellPrice").Value = Math.Max(0D, finalPrice)
+                        End If
+                        If discountType = "All" OrElse discountType = "BuyPrice" Then
+                            Dim basePrice As Decimal = If(IsDBNull(row("BuyPrice")), 0D, Convert.ToDecimal(row("BuyPrice")))
+                            Dim finalPrice As Decimal = If(discountMethod = "Percent", basePrice - (basePrice * discount / 100D), basePrice - discount)
+                            thisCmd.Parameters("@BuyPrice").Value = Math.Max(0D, finalPrice)
+                        End If
+                        If discountType = "All" OrElse discountType = "FactoryPrice" Then
+                            Dim basePrice As Decimal = If(IsDBNull(row("FactoryPrice")), 0D, Convert.ToDecimal(row("FactoryPrice")))
+                            Dim finalPrice As Decimal = If(discountMethod = "Percent", basePrice - (basePrice * discount / 100D), basePrice - discount)
+                            thisCmd.Parameters("@FactoryPrice").Value = Math.Max(0D, finalPrice)
+                        End If
+
+                        thisCmd.Parameters("@Id").Value = row("Id").ToString()
+
+                        thisCmd.ExecuteNonQuery()
+                    Next
+                End Using
+            End Using
+
+            If Not String.IsNullOrEmpty(txtDiscountNote.Text) Then
+                Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtDiscountNote.Text.Trim(), 0, 0, 0, 0}
+                orderClass.OrderCostings(costingArray)
+            End If
+
+            orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
+
+            Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnAddNote_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim costingArray As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Note", txtNote.Text.Trim(), 0, 0, 0, 0}
+            orderClass.OrderCostings(costingArray)
+            orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
+
+            dataLog = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Update Price | Add Note"}
+            orderClass.Logs(dataLog)
+
+            Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnReset_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            orderClass.ResetPriceDetail(lblHeaderId.Text, lblItemId.Text)
+            orderClass.CalculatePrice(lblHeaderId.Text, lblItemId.Text)
+            orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
+
+            Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnUpdate_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using tran As SqlTransaction = thisConn.BeginTransaction()
+                    Try
+                        Dim thisRow As GridViewRow = Nothing
+                        For Each row As GridViewRow In gvList.Rows
+                            If gvList.DataKeys(row.RowIndex).Value.ToString() = txtUpdateId.Text Then
+                                thisRow = row
+                                Exit For
+                            End If
+                        Next
+
+                        If thisRow Is Nothing Then Throw New Exception("Item not found.")
+
+                        Dim txtNewSellPrice As TextBox = CType(thisRow.FindControl("txtNewSellPrice"), TextBox)
+                        Dim newSell As Decimal = 0
+                        Decimal.TryParse(txtNewSellPrice.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newSell)
+
+                        Dim txtNewBuyPrice As TextBox = CType(thisRow.FindControl("txtNewBuyPrice"), TextBox)
+                        Dim newBuy As Decimal = 0
+                        Decimal.TryParse(txtNewBuyPrice.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newBuy)
+
+                        Dim txtNewFactoryPrice As TextBox = CType(thisRow.FindControl("txtNewFactoryPrice"), TextBox)
+                        Dim newFactory As Decimal = 0
+                        Decimal.TryParse(txtNewFactoryPrice.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newFactory)
+
+                        Using thisCmd As New SqlCommand("UPDATE OrderCostings SET SellPrice=@SellPrice, BuyPrice=@BuyPrice, FactoryPrice=@FactoryPrice WHERE Id=@Id", thisConn, tran)
+                            thisCmd.Parameters.AddWithValue("@Id", txtUpdateId.Text)
+                            thisCmd.Parameters.Add("@SellPrice", SqlDbType.Decimal).Value = newSell
+                            thisCmd.Parameters.Add("@BuyPrice", SqlDbType.Decimal).Value = newBuy
+                            thisCmd.Parameters.Add("@FactoryPrice", SqlDbType.Decimal).Value = newFactory
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+
+                        Using delFinal As New SqlCommand("DELETE FROM OrderCostings WHERE ItemId=@ItemId AND Type='Final'", thisConn, tran)
+                            delFinal.Parameters.Add("@ItemId", SqlDbType.Int).Value = lblItemId.Text
+                            delFinal.ExecuteNonQuery()
+                        End Using
+
+                        Dim customerPrice As Decimal = 0
+                        Dim sellPrice As Decimal = 0
+                        Dim buyPrice As Decimal = 0
+                        Dim factoryPrice As Decimal = 0
+
+                        Using cmdSum As New SqlCommand("SELECT ISNULL(SUM(CASE WHEN Type='Base' THEN CustomerPrice WHEN Type='Discount' THEN -CustomerPrice WHEN Type='Surcharge' THEN CustomerPrice ELSE 0 END),0) AS TotalCustomer, ISNULL(SUM(CASE WHEN Type='Base' THEN SellPrice WHEN Type='Discount' THEN -SellPrice WHEN Type='Surcharge' THEN SellPrice ELSE 0 END),0) AS TotalSell, ISNULL(SUM(CASE WHEN Type='Base' THEN BuyPrice WHEN Type='Discount' THEN -BuyPrice WHEN Type='Surcharge' THEN BuyPrice ELSE 0 END),0) AS TotalBuy, ISNULL(SUM(CASE WHEN Type='Base' THEN FactoryPrice WHEN Type='Discount' THEN -FactoryPrice WHEN Type='Surcharge' THEN FactoryPrice ELSE 0 END),0) AS TotalFactory FROM OrderCostings WHERE ItemId=@ItemId", thisConn, tran)
+                            cmdSum.Parameters.Add("@ItemId", SqlDbType.Int).Value = lblItemId.Text
+                            Using rd = cmdSum.ExecuteReader()
+                                If rd.Read() Then
+                                    customerPrice = Convert.ToDecimal(rd("TotalCustomer"))
+                                    sellPrice = Convert.ToDecimal(rd("TotalSell"))
+                                    buyPrice = Convert.ToDecimal(rd("TotalBuy"))
+                                    factoryPrice = Convert.ToDecimal(rd("TotalFactory"))
+                                End If
+                            End Using
+                        End Using
+
+                        Dim dataCosting As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Final", "Final Cost This Item", customerPrice, sellPrice, buyPrice, factoryPrice}
+
+                        orderClass.OrderCostings(dataCosting)
+
+                        dataLog = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Update Price"}
+                        orderClass.Logs(dataLog)
+
+                        tran.Commit()
+                    Catch
+                        tran.Rollback()
+                        Throw
+                    End Try
+                End Using
+            End Using
+
+            Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnUpdateAll_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim changedCount As Integer = 0
+            Dim customerPrice As Decimal = 0D
+            Dim sellPrice As Decimal = 0D
+            Dim buyPrice As Decimal = 0D
+            Dim factoryPrice As Decimal = 0D
+
+            Using thisConn As New SqlConnection(myConn)
+                thisConn.Open()
+                Using tran As SqlTransaction = thisConn.BeginTransaction()
+                    Try
+                        For Each row As GridViewRow In gvList.Rows
+                            If row.RowType <> DataControlRowType.DataRow Then Continue For
+
+                            Dim txtSell As TextBox = TryCast(row.FindControl("txtNewSellPrice"), TextBox)
+                            Dim txtBuy As TextBox = TryCast(row.FindControl("txtNewBuyPrice"), TextBox)
+                            Dim txtFactory As TextBox = TryCast(row.FindControl("txtNewFactoryPrice"), TextBox)
+
+                            If txtSell Is Nothing OrElse txtBuy Is Nothing OrElse txtFactory Is Nothing Then Continue For
+
+                            If Not txtSell.Visible OrElse Not txtBuy.Visible OrElse Not txtFactory.Visible Then Continue For
+
+                            Dim itemId As String = gvList.DataKeys(row.RowIndex).Value.ToString()
+
+                            Dim newSell As Decimal
+                            Dim newBuy As Decimal
+                            Dim newFactory As Decimal
+
+                            If Not Decimal.TryParse(txtSell.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newSell) Then
+                                Throw New Exception("Invalid Sell Price for item ID " & itemId)
+                            End If
+
+                            If Not Decimal.TryParse(txtBuy.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newBuy) Then
+                                Throw New Exception("Invalid Buy Price for item ID " & itemId)
+                            End If
+
+                            If Not Decimal.TryParse(txtFactory.Text, NumberStyles.Any, CultureInfo.CurrentCulture, newFactory) Then
+                                Throw New Exception("Invalid Factory Price for item ID " & itemId)
+                            End If
+
+                            Dim oldSell As Decimal
+                            Dim oldBuy As Decimal
+                            Dim oldFactory As Decimal
+
+                            Using cmdOld As New SqlCommand("SELECT SellPrice, BuyPrice, FactoryPrice FROM OrderCostings WHERE Id=@Id AND ItemId=@ItemId", thisConn, tran)
+                                cmdOld.Parameters.Add("@Id", SqlDbType.VarChar).Value = itemId
+                                cmdOld.Parameters.Add("@ItemId", SqlDbType.Int).Value = Convert.ToInt32(lblItemId.Text)
+
+                                Using rd As SqlDataReader = cmdOld.ExecuteReader()
+                                    If Not rd.Read() Then
+                                        Throw New Exception("Item not found: " & itemId)
+                                    End If
+
+                                    oldSell = If(IsDBNull(rd("SellPrice")), 0D, Convert.ToDecimal(rd("SellPrice")))
+                                    oldBuy = If(IsDBNull(rd("BuyPrice")), 0D, Convert.ToDecimal(rd("BuyPrice")))
+                                    oldFactory = If(IsDBNull(rd("FactoryPrice")), 0D, Convert.ToDecimal(rd("FactoryPrice")))
+                                End Using
+                            End Using
+
+                            If newSell = oldSell AndAlso newBuy = oldBuy AndAlso newFactory = oldFactory Then Continue For
+
+                            Using cmdUpdate As New SqlCommand("UPDATE OrderCostings SET SellPrice=@SellPrice, BuyPrice=@BuyPrice, FactoryPrice=@FactoryPrice WHERE Id=@Id AND ItemId=@ItemId", thisConn, tran)
+                                cmdUpdate.Parameters.Add("@Id", SqlDbType.VarChar).Value = itemId
+                                cmdUpdate.Parameters.Add("@ItemId", SqlDbType.Int).Value = Convert.ToInt32(lblItemId.Text)
+                                cmdUpdate.Parameters.Add("@SellPrice", SqlDbType.Decimal).Value = newSell
+                                cmdUpdate.Parameters.Add("@BuyPrice", SqlDbType.Decimal).Value = newBuy
+                                cmdUpdate.Parameters.Add("@FactoryPrice", SqlDbType.Decimal).Value = newFactory
+
+                                changedCount += cmdUpdate.ExecuteNonQuery()
+                            End Using
+                        Next
+
+                        If changedCount > 0 Then
+                            Using cmdDelete As New SqlCommand("DELETE FROM OrderCostings WHERE ItemId=@ItemId AND Type='Final'", thisConn, tran)
+                                cmdDelete.Parameters.Add("@ItemId", SqlDbType.Int).Value = Convert.ToInt32(lblItemId.Text)
+                                cmdDelete.ExecuteNonQuery()
+                            End Using
+
+                            Using cmdSum As New SqlCommand("SELECT ISNULL(SUM(CASE WHEN Type='Base' THEN CustomerPrice WHEN Type='Discount' THEN -CustomerPrice WHEN Type='Surcharge' THEN CustomerPrice ELSE 0 END),0) AS TotalCustomer, ISNULL(SUM(CASE WHEN Type='Base' THEN SellPrice WHEN Type='Discount' THEN -SellPrice WHEN Type='Surcharge' THEN SellPrice ELSE 0 END),0) AS TotalSell, ISNULL(SUM(CASE WHEN Type='Base' THEN BuyPrice WHEN Type='Discount' THEN -BuyPrice WHEN Type='Surcharge' THEN BuyPrice ELSE 0 END),0) AS TotalBuy, ISNULL(SUM(CASE WHEN Type='Base' THEN FactoryPrice WHEN Type='Discount' THEN -FactoryPrice WHEN Type='Surcharge' THEN FactoryPrice ELSE 0 END),0) AS TotalFactory FROM OrderCostings WHERE ItemId=@ItemId", thisConn, tran)
+                                cmdSum.Parameters.Add("@ItemId", SqlDbType.Int).Value = Convert.ToInt32(lblItemId.Text)
+
+                                Using rd As SqlDataReader = cmdSum.ExecuteReader()
+                                    If rd.Read() Then
+                                        customerPrice = Convert.ToDecimal(rd("TotalCustomer"))
+                                        sellPrice = Convert.ToDecimal(rd("TotalSell"))
+                                        buyPrice = Convert.ToDecimal(rd("TotalBuy"))
+                                        factoryPrice = Convert.ToDecimal(rd("TotalFactory"))
+                                    End If
+                                End Using
+                            End Using
+                        End If
+
+                        tran.Commit()
+
+                    Catch
+                        tran.Rollback()
+                        Throw
+                    End Try
+                End Using
+            End Using
+
+            If changedCount > 0 Then
+                Dim dataCosting As Object() = {lblHeaderId.Text, lblItemId.Text, 0, "Final", "Final Cost This Item", customerPrice, sellPrice, buyPrice, factoryPrice}
+                orderClass.OrderCostings(dataCosting)
+
+                dataLog = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Update Price | Update All"}
+                orderClass.Logs(dataLog)
+
+                orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
+            End If
+            Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnDelete_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtDeleteId.Text
+
+            Using thisConn As SqlConnection = New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM OrderCostings WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+            orderClass.FinalCostItem(lblHeaderId.Text, lblItemId.Text)
+
+            dataLog = {"OrderDetails", lblItemId.Text, Session("LoginId"), "Update Price"}
+            orderClass.Logs(dataLog)
+
+            Response.Redirect(String.Format("~/order/editcosting?boos={0}", lblId.Text), False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindData(headerId As String, itemId As String)
+        Try
+            Dim customerData As DataRow = orderClass.GetDataRow("SELECT Customers.CompanyId AS CompanyId, Customers.PriceGroupId AS PriceGroupId, Customers.ShutterPriceGroupId AS ShutterPriceGroupId, Customers.DoorPriceGroupId AS DoorPriceGroupId FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderHeaders.Id='" & headerId & "'")
+            If customerData Is Nothing Then
+                Response.Redirect("~/order/", False)
+                Exit Sub
+            End If
+            lblCompanyId.Text = customerData("CompanyId").ToString()
+
+            Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.TotalItems AS TotalItems, ISNULL(CONVERT(VARCHAR(200), OrderDetails.Room), '') + ' - ' + ISNULL(CONVERT(VARCHAR(200), Products.Name), '') AS OrderTitle, Products.DesignId AS DesignId, Designs.Type AS DesignType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id LEFT JOIN Designs ON Products.DesignId=Designs.Id WHERE OrderDetails.Id='" & itemId & "'")
+            If detailData Is Nothing Then
+                Response.Redirect("~/order/", False)
+                Exit Sub
+            End If
+
+            lblDesignId.Text = detailData("DesignId").ToString()
+            lblPriceGroupId.Text = customerData("PriceGroupId").ToString()
+            If detailData("DesignType").ToString() = "Shutters" Then
+                lblPriceGroupId.Text = customerData("ShutterPriceGroupId").ToString()
+            End If
+            If detailData("DesignType").ToString() = "Doors" Then
+                lblPriceGroupId.Text = customerData("DoorPriceGroupId").ToString()
+            End If
+
+            Dim totalItems As Integer = Convert.ToInt32(detailData("TotalItems"))
+
+            hTitle.InnerText = detailData("OrderTitle").ToString()
+            BindAddItem(totalItems)
+            BindSurcharge(lblDesignId.Text, lblPriceGroupId.Text)
+
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@ItemId", lblItemId.Text),
+                New SqlParameter("@CompanyId", lblCompanyId.Text)
+            }
+            gvList.DataSource = orderClass.GetDataTableSP("sp_OrderCostings_ListItemId", params)
+            gvList.DataBind()
+            gvList.Columns(1).Visible = False
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindAddItem(totalItems As Integer)
+        Try
+            ddlAddItem.Items.Clear()
+            For i As Integer = 1 To totalItems
+                ddlAddItem.Items.Add(New ListItem(i.ToString(), i.ToString()))
+            Next
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindSurcharge(designId As String, priceGroupId As String)
+        ddlSurchargeId.Items.Clear()
+        Try
+            ddlSurchargeId.DataSource = orderClass.GetDataTable("SELECT Id, Name FROM PriceSurcharges WHERE DesignId='" & designId & "' AND PriceGroupId='" & priceGroupId & "' AND Status='Active' ORDER BY Id ASC")
+            ddlSurchargeId.DataTextField = "Name"
+            ddlSurchargeId.DataValueField = "Id"
+            ddlSurchargeId.DataBind()
+
+            ddlSurchargeId.Items.Insert(0, New ListItem("Custom", "Custom"))
+        Catch ex As Exception
+            ddlSurchargeId.Items.Clear()
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Function BindCurrency() As String
+        Try
+            If lblCompanyId.Text = "3" Then Return "Rp"
+            Return "$"
+        Catch ex As Exception
+            Return "ERROR"
+        End Try
+    End Function
+
+    Protected Function BindDescription(designName As String, description As String, orderNote As String) As String
+        Try
+            If designName = "Service" AndAlso Not String.IsNullOrEmpty(orderNote) Then
+                Return description & "<br />" & orderNote
+            End If
+            Return description
+        Catch ex As Exception
+            Return "ERROR"
+        End Try
+    End Function
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class

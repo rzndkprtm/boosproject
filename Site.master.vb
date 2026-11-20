@@ -1,0 +1,392 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Public Class SiteMaster
+    Inherits MasterPage
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+
+    Protected Sub Page_Init(sender As Object, e As EventArgs)
+        '
+    End Sub
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Try
+            If IsHeartbeatRequest() Then Exit Sub
+            If IsAjaxRequest() Then Exit Sub
+
+            Dim sessionId As String = CheckSessions()
+
+            If Not IsPostBack Then
+                MyLoad(sessionId)
+                BindListNavigation()
+            End If
+        Catch ex As Exception
+            Session.Clear()
+            Response.Redirect("~/account/login", False)
+            Context.ApplicationInstance.CompleteRequest()
+        End Try
+    End Sub
+
+    Protected Sub linkLogout_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/account/logout", False)
+    End Sub
+
+    Protected Sub MyLoad(sessionId As String)
+        Try
+            Dim loginId As String = Convert.ToString(Session("LoginId"))
+
+            If String.IsNullOrEmpty(loginId) Then
+                HandleRedirectLogin()
+                Exit Sub
+            End If
+
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@LoginId", loginId)
+            }
+            Dim myData As DataRow = settingClass.GetDataRowSP("sp_Logins_Profile", params)
+            If myData Is Nothing Then
+                HandleRedirectLogin()
+                Exit Sub
+            End If
+
+            Session("CustomerId") = myData("CustomerId").ToString()
+            Session("CustomerLevel") = myData("CustomerLevel").ToString()
+            Session("RoleId") = myData("RoleId").ToString()
+            Session("LevelId") = myData("LevelId").ToString()
+            Session("FullName") = myData("FullName").ToString()
+            Session("PersonalEmail") = myData("Email").ToString()
+            Session("ResetLogin") = myData("ResetLogin")
+            Session("PriceAccess") = myData("PriceAccess").ToString()
+            Session("CompanyId") = myData("CompanyId").ToString()
+            Session("CompanyDetailId") = myData("CompanyDetailId").ToString()
+            Session("RoleName") = myData("RoleName").ToString()
+            Session("LevelName") = myData("LevelName").ToString()
+            Session("CompanyName") = myData("CompanyName").ToString()
+
+            Dim loginEmail As String = myData("Email").ToString()
+            Dim loginStatus As String = myData("Status").ToString()
+
+            Dim roleName As String = myData("RoleName").ToString()
+            Dim roleStatus As String = myData("RoleStatus").ToString()
+
+            Dim levelStatus As String = myData("LevelStatus").ToString()
+
+            Dim resetLogin As Integer = Convert.ToInt32(myData("ResetLogin"))
+
+            Dim companyStatus As String = myData("CompanyStatus").ToString()
+            Dim customerStatus As String = myData("CustomerStatus").ToString()
+
+            Dim path As String = Request.Url.AbsolutePath.ToLower()
+
+            Dim isPasswordPage As Boolean = path.StartsWith("/account/password")
+            Dim isAccountPage As Boolean = path.StartsWith("/account/")
+            Dim isNonActivePage As Boolean = path.StartsWith("/system/nonactive")
+            Dim isMaintenancePage As Boolean = path.StartsWith("/system/maintenance")
+
+            If loginStatus = "Inactive" AndAlso Not isNonActivePage Then
+                Response.Redirect("~/system/nonactive", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+            If loginStatus = "Blocked" AndAlso Not isNonActivePage Then
+                Response.Redirect("~/system/nonactive", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+
+            If roleStatus = "Inactive" AndAlso Not isNonActivePage Then
+                Response.Redirect("~/system/nonactive", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+            If roleStatus = "Deleted" AndAlso Not isNonActivePage Then
+                Response.Redirect("~/system/nonactive", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+
+            If levelStatus = "Inactive" AndAlso Not isNonActivePage Then
+                Response.Redirect("~/system/nonactive", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+            If levelStatus = "Deleted" AndAlso Not isNonActivePage Then
+                Response.Redirect("~/system/nonactive", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+
+            If customerStatus = "Inactive" AndAlso Not isNonActivePage Then
+                Response.Redirect("~/system/nonactive", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+
+            If customerStatus = "Deleted" AndAlso Not isNonActivePage Then
+                Response.Redirect("~/system/nonactive", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+
+            If companyStatus = "Inactive" AndAlso Not isMaintenancePage Then
+                Response.Redirect("~/system/maintenance", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+            If companyStatus = "Deleted" AndAlso Not isMaintenancePage Then
+                Response.Redirect("~/system/maintenance", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+
+            If resetLogin = 1 AndAlso Not isPasswordPage Then
+                Response.Redirect("~/account/password", False)
+                Context.ApplicationInstance.CompleteRequest()
+                Exit Sub
+            End If
+
+            If roleName = "Customer" Then
+                Dim currentPage As String = Request.AppRelativeCurrentExecutionFilePath.ToLower()
+
+                Dim allowPage As Boolean = currentPage = "~/account/default.aspx" OrElse currentPage.StartsWith("~/account/password")
+
+                If String.IsNullOrEmpty(loginEmail) AndAlso Not allowPage Then
+                    Response.Redirect("~/account/?uid=" & loginId, False)
+                    Context.ApplicationInstance.CompleteRequest()
+                    Exit Sub
+                End If
+            End If
+
+            imgLogo.ImageUrl = "~/Assets/images/logo/general.jpg?v=1.0.0"
+
+            Select Case Session("CompanyId").ToString()
+                Case "2"
+                    imgLogo.ImageUrl = "~/Assets/images/logo/jpmdirect.jpg?v=1.0.0"
+                Case "3"
+                    imgLogo.ImageUrl = "~/Assets/images/logo/bigblinds.png?v=1.0.0"
+                Case "4"
+                    imgLogo.ImageUrl = "~/Assets/images/logo/sunlight.jpg?v=1.0.0"
+            End Select
+
+            If Not isPasswordPage Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("sp_Logins_Update_LastLogin", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
+                        thisCmd.Parameters.Add("@Id", SqlDbType.Int).Value = loginId
+                        thisCmd.Parameters.Add("@SessionId", SqlDbType.VarChar).Value = sessionId.ToUpper()
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+            End If
+        Catch ex As Exception
+            HandleRedirectLogin()
+        End Try
+    End Sub
+
+    Protected Sub BindListNavigation()
+        Try
+            hlAddTicket.Visible = False
+            divSearch.Visible = False
+
+            liSchedule.Visible = False
+            liGuide.Visible = False
+            liTicket.Visible = False
+            liStocks.Visible = False
+            liSpecs.Visible = False
+            liJournal.Visible = False
+            liReport.Visible = False
+            liSales.Visible = False
+            liExport.Visible = False
+
+            liQuotation.Visible = False
+
+            liSetting.Visible = False
+            liDashboard.Visible = False
+            liGeneral.Visible = False
+            liLogin.Visible = False
+            liCustomer.Visible = False
+            liSpecification.Visible = False
+            liJob.Visible = False
+            liPrice.Visible = False
+            liDatabase.Visible = False
+            liManager.Visible = False
+            liValidation.Visible = False
+            liLog.Visible = False
+
+            If Session("RoleName") = "Developer" Then
+                divSearch.Visible = True
+
+                liSchedule.Visible = True
+                liGuide.Visible = True
+                liTicket.Visible = True
+                liStocks.Visible = True
+                liSpecs.Visible = True
+                liJournal.Visible = True
+                liReport.Visible = True
+                liSales.Visible = True
+                liExport.Visible = True
+
+                liSetting.Visible = True
+                liDashboard.Visible = True
+                liGeneral.Visible = True
+                liLogin.Visible = True
+                liCustomer.Visible = True
+                liSpecification.Visible = True
+                liJob.Visible = True
+                liPrice.Visible = True
+                liDatabase.Visible = True
+                liManager.Visible = True
+                liValidation.Visible = True
+                liLog.Visible = True
+            End If
+            If Session("RoleName") = "IT" Then
+                divSearch.Visible = False
+
+                liGuide.Visible = True
+                liTicket.Visible = True
+                liStocks.Visible = True
+                liSpecs.Visible = True
+                liJournal.Visible = True
+                liReport.Visible = True
+                liSales.Visible = True
+                liExport.Visible = True
+
+                liSetting.Visible = True
+                liDashboard.Visible = True
+                liGeneral.Visible = True
+                liLogin.Visible = True
+                liCustomer.Visible = True
+                liSpecification.Visible = True
+                liJob.Visible = True
+                liPrice.Visible = True
+                liDatabase.Visible = True
+                liManager.Visible = True
+                liValidation.Visible = True
+                liLog.Visible = True
+            End If
+            If Session("RoleName") = "Factory Office" Then
+                divSearch.Visible = False
+
+                liGuide.Visible = True
+                liTicket.Visible = True
+                liStocks.Visible = True
+                liSpecs.Visible = True
+                liJournal.Visible = True
+                liReport.Visible = True
+                liSales.Visible = True
+
+                If Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member" Then
+                    liSetting.Visible = True
+                    liDashboard.Visible = True
+                    liGeneral.Visible = True
+                    liLogin.Visible = True
+                    liCustomer.Visible = True
+                    liSpecification.Visible = True
+                    liJob.Visible = True
+                    liPrice.Visible = True
+                    liDatabase.Visible = True
+                    liManager.Visible = True
+                    liValidation.Visible = True
+                    liLog.Visible = True
+                End If
+            End If
+            If Session("RoleName") = "Sales" Then
+                liGuide.Visible = True
+                liTicket.Visible = True
+                liStocks.Visible = True
+                liSpecs.Visible = True
+                liJournal.Visible = True
+                liReport.Visible = True
+                liSetting.Visible = True
+                liCustomer.Visible = True
+                liPrice.Visible = True
+                If Session("LevelName") = "Leader" Then
+                    liSales.Visible = True
+                End If
+            End If
+            If Session("RoleName") = "Account" Then
+                liGuide.Visible = True
+                liTicket.Visible = True
+                liReport.Visible = True
+                liSales.Visible = True
+                liSetting.Visible = True
+                liCustomer.Visible = True
+                liPrice.Visible = True
+            End If
+            If Session("RoleName") = "Export" Then
+                liGuide.Visible = True
+                liTicket.Visible = True
+                liStocks.Visible = True
+                liReport.Visible = True
+            End If
+            If Session("RoleName") = "Data Entry" Then
+                liGuide.Visible = True
+                liTicket.Visible = True
+                liStocks.Visible = True
+                liStocks.Visible = True
+                liSpecs.Visible = True
+                liReport.Visible = True
+            End If
+            If Session("RoleName") = "Customer" Then
+                'hlAddTicket.Visible = True
+                liGuide.Visible = True
+                liTicket.Visible = True
+                liStocks.Visible = True
+                liSpecs.Visible = True
+                If Session("PriceAccess") = "Yes" Then
+                    liQuotation.Visible = True
+                End If
+            End If
+        Catch ex As Exception
+            HandleRedirectLogin()
+        End Try
+    End Sub
+
+    Protected Function CheckSessions() As String
+        Try
+            If Session("IsLoggedIn") Is Nothing OrElse Session("IsLoggedIn") = False Then
+                HandleRedirectLogin()
+                Return Nothing
+            End If
+
+            If Request.Cookies("deviceId") Is Nothing Then
+                HandleRedirectLogin()
+                Return Nothing
+            End If
+
+            Dim sessionId As String = Request.Cookies("deviceId").Value
+
+            Dim checkData As DataRow = settingClass.GetDataRow(
+            "SELECT 1 FROM Sessions WHERE Id='" & UCase(sessionId) &
+            "' AND LoginId='" & Session("LoginId") & "'")
+
+            If checkData Is Nothing Then
+                HandleRedirectLogin()
+                Return Nothing
+            End If
+
+            Return sessionId
+
+        Catch ex As Exception
+            HandleRedirectLogin()
+            Return Nothing
+        End Try
+    End Function
+
+    Protected Sub HandleRedirectLogin()
+        Session.Clear()
+        Response.Redirect("~/account/login", False)
+        Context.ApplicationInstance.CompleteRequest()
+    End Sub
+
+    Protected Function IsAjaxRequest() As Boolean
+        Return Request.Headers("X-Requested-With") = "XMLHttpRequest"
+    End Function
+
+    Protected Function IsHeartbeatRequest() As Boolean
+        Return Request.Url.AbsolutePath.ToLower().Contains("updatesession")
+    End Function
+End Class

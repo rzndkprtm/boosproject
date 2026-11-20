@@ -1,0 +1,171 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class Account_Default
+    Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
+    Dim dataLog As Object() = Nothing
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        If String.IsNullOrEmpty(Request.QueryString("uid")) Then
+            Response.Redirect("~/", False)
+            Exit Sub
+        End If
+
+        lblLoginId.Text = Request.QueryString("uid").ToString()
+        If Not Session("LoginId") = lblLoginId.Text Then
+            Response.Redirect("~/", False)
+            Exit Sub
+        End If
+
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            MessageError_Name(False, String.Empty)
+            MessageError_Email(False, String.Empty)
+            BindData(lblLoginId.Text)
+        End If
+    End Sub
+
+    Protected Sub btnName_Click(sender As Object, e As EventArgs)
+        MessageError_Name(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showName(); };"
+        Try
+            If msgErrorName.InnerText = "" Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Logins SET FullName=@FullName WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblLoginId.Text)
+                        thisCmd.Parameters.AddWithValue("@FullName", txtFullName.Text.Trim())
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                dataLog = {"Logins", lblLoginId.Text, Session("LoginId"), "Change Full Name"}
+                settingClass.Logs(dataLog)
+
+                url = String.Format("~/account?uid={0}", lblLoginId.Text)
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError_Name(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Name(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showName", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnEmail_Click(sender As Object, e As EventArgs)
+        MessageError_Email(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showEmail(); };"
+        Try
+            Dim email As String = txtUserEmail.Text.Trim()
+            Dim isValidEmail As Boolean = False
+            Try
+                Dim addr As New Net.Mail.MailAddress(email)
+                isValidEmail = (addr.Address = email)
+            Catch
+                isValidEmail = False
+            End Try
+
+            If Not isValidEmail Then
+                MessageError_Email(True, "PLEASE ENTER A VALID EMAIL ADDRESS !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showEmail", thisScript, True)
+                Exit Sub
+            End If
+
+            If msgErrorEmail.InnerText = "" Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As New SqlCommand("UPDATE Logins SET Email=@Email WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblLoginId.Text)
+                        thisCmd.Parameters.AddWithValue("@Email", email)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                dataLog = {"Logins", lblLoginId.Text, Session("LoginId"), "Change Email"}
+                settingClass.Logs(dataLog)
+
+                url = String.Format("~/account?uid={0}", lblLoginId.Text)
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError_Email(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Email(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showEmail", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub BindData(loginId As String)
+        Try
+            Dim loginData As DataRow = settingClass.GetDataRow("SELECT Logins.*, Customers.Name AS CustomerName, O.OperatorName FROM Logins LEFT JOIN Customers ON Logins.CustomerId = Customers.Id OUTER APPLY (SELECT STRING_AGG(L2.FullName, ', ') AS OperatorName FROM STRING_SPLIT(Customers.Operator, ',') S INNER JOIN Logins L2 ON TRY_CAST(S.value AS INT) = L2.Id) O WHERE Logins.Id = '" & loginId & "'")
+            If loginData Is Nothing Then
+                Response.Redirect("~/", False)
+                Exit Sub
+            End If
+
+            Dim customerId As String = loginData("CustomerId").ToString()
+            lblUserName.Text = loginData("UserName").ToString()
+            lblFullName.Text = loginData("FullName").ToString()
+            txtFullName.Text = loginData("FullName").ToString()
+            lblUserEmail.Text = loginData("Email").ToString()
+            txtUserEmail.Text = loginData("Email").ToString()
+            lblCustomerName.Text = loginData("CustomerName").ToString()
+            lblSales.Text = loginData("OperatorName").ToString()
+
+            gvContact.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerContacts WHERE CustomerId='" & loginData("CustomerId").ToString() & "' ORDER BY Id ASC")
+            gvContact.DataBind()
+
+            gvAddress.DataSource = settingClass.GetDataTable("SELECT * FROM CustomerAddress WHERE CustomerId='" & loginData("CustomerId").ToString() & "' ORDER BY Id ASC")
+            gvAddress.DataBind()
+
+            divCompany.Visible = False
+            If Session("RoleName") = "Customer" Then
+                divCompany.Visible = True
+            End If
+
+            If String.IsNullOrEmpty(txtUserEmail.Text) Then
+                Dim thisScript As String = "window.onload = function() { showInfo(); };"
+                ClientScript.RegisterStartupScript(Me.GetType(), "showEmail", thisScript, True)
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
+    Protected Function BindDetailAddress(addressId As String) As String
+        Dim result As String = String.Empty
+        If Not String.IsNullOrEmpty(addressId) Then
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT ISNULL(Address,'') + ', ' + ISNULL(Suburb,'') + ', ' + ISNULL(State,'') + ' ' + ISNULL(PostCode,'') AS FullAddress FROM CustomerAddress WHERE Id='" & addressId & "'")
+
+            If thisData IsNot Nothing Then
+                result = thisData("FullAddress").ToString()
+            End If
+        End If
+        Return result
+    End Function
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Name(visible As Boolean, message As String)
+        divErrorName.Visible = visible : msgErrorName.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Email(visible As Boolean, message As String)
+        divErrorEmail.Visible = visible : msgErrorEmail.InnerText = message
+    End Sub
+End Class

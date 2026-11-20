@@ -1,0 +1,314 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+Imports System.Drawing
+Imports System.Drawing.Drawing2D
+
+Partial Class Quotation
+    Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
+    Dim dataLog As Object() = Nothing
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/", False)
+            Exit Sub
+        End If
+
+        If String.IsNullOrEmpty(Request.QueryString("accountid")) Then
+            Response.Redirect("~/", False)
+            Exit Sub
+        End If
+
+        lblCustomerId.Text = Request.QueryString("accountid").ToString()
+        If Session("RoleName") = "Customer" AndAlso lblCustomerId.Text <> Session("CustomerId") Then
+            Response.Redirect("~/", False)
+            Exit Sub
+        End If
+
+        If Session("RoleName") = "Customer" AndAlso Not Session("PriceAccess") = "Yes" Then
+            Response.Redirect("~/", False)
+            Exit Sub
+        End If
+
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            MessageError_Logo(False, String.Empty)
+            MessageError_Address(False, String.Empty)
+            MessageError_Contact(False, String.Empty)
+            MessageError_Terms(False, String.Empty)
+
+            BindData(lblCustomerId.Text)
+        End If
+    End Sub
+
+    Protected Sub btnLogo_Click(sender As Object, e As EventArgs)
+        MessageError_Logo(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showLogo(); };"
+        Try
+            If Not fuLogo.HasFiles Then
+                MessageError_Logo(True, "Invalid file type. Only JPG, PNG, GIF are allowed.")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showLogo", thisScript, True)
+                Exit Sub
+            End If
+
+            Dim newLogo As String = String.Empty
+
+            Dim allowedExtensions As String() = {".jpg", ".jpeg", ".png"}
+            Dim ext As String = IO.Path.GetExtension(fuLogo.FileName.ToString()).ToLower()
+
+            If Not allowedExtensions.Contains(ext) Then
+                MessageError_Logo(True, "Invalid file type. Only JPG, PNG are allowed.")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showLogo", thisScript, True)
+                Exit Sub
+            End If
+
+            Dim width As Integer = 440
+            Dim height As Integer = 120
+
+            Dim inp_Stream As IO.Stream = fuLogo.PostedFile.InputStream
+
+            Using image = Drawing.Image.FromStream(inp_Stream)
+                Dim ratio As Double = Math.Min(CDbl(width) / image.Width, CDbl(height) / image.Height)
+                Dim newWidth As Integer = CInt(image.Width * ratio)
+                Dim newHeight As Integer = CInt(image.Height * ratio)
+
+                Dim myImg As New Bitmap(newWidth, newHeight)
+                Dim myImgGraph As Graphics = Graphics.FromImage(myImg)
+                myImgGraph.CompositingQuality = CompositingQuality.HighQuality
+                myImgGraph.SmoothingMode = SmoothingMode.HighQuality
+                myImgGraph.InterpolationMode = InterpolationMode.HighQualityBicubic
+
+                If Not String.IsNullOrEmpty(lblOldLogo.Text) AndAlso Not {"accent.png", "jpmdirect.jpg", "yourlogo.png"}.Contains(lblOldLogo.Text) Then
+                    Dim oldFilePath As String = Server.MapPath(String.Format("~/assets/images/logo/customers/{0}", lblOldLogo.Text))
+                    If IO.File.Exists(oldFilePath) Then
+                        IO.File.Delete(oldFilePath)
+                    End If
+                End If
+
+                Dim imgRectangle = New Rectangle(0, 0, newWidth, newHeight)
+                myImgGraph.DrawImage(image, imgRectangle)
+
+                newLogo = String.Format("{0}{1}{2}", Now.ToString("ddMMyyyyHHmmss"), lblCustomerId.Text, ext)
+                Dim path = IO.Path.Combine(Server.MapPath("~/assets/images/logo/customers"), newLogo)
+
+                myImg.Save(path, image.RawFormat)
+            End Using
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Logo=@Logo WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
+                    thisCmd.Parameters.AddWithValue("@Logo", newLogo)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            dataLog = {"CustomerQuotes", lblCustomerId.Text, Session("LoginId").ToString(), "Logo Quote Updated"}
+            settingClass.Logs(dataLog)
+
+            url = String.Format("~/quotation?accountid={0}", lblCustomerId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError_Logo(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Logo(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showLogo", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnAddress_Click(sender As Object, e As EventArgs)
+        MessageError_Address(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showAddress(); };"
+        Try
+            If msgErrorAddress.InnerText = "" Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Address=@Address, Suburb=@Suburb, State=@State, PostCode=@PostCode WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
+                        thisCmd.Parameters.AddWithValue("@Address", txtAddress.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Suburb", txtSuburb.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@State", txtState.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@PostCode", txtPostCode.Text.Trim())
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                dataLog = {"CustomerQuotes", lblCustomerId.Text, Session("LoginId").ToString(), "Address Quote Updated"}
+                settingClass.Logs(dataLog)
+
+                url = String.Format("~/quotation?accountid={0}", lblCustomerId.Text)
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError_Address(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Address(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showAddress", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnContact_Click(sender As Object, e As EventArgs)
+        MessageError_Contact(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showContact(); };"
+        Try
+            If msgErrorContact.InnerText = "" Then
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Email=@Email, Phone=@Phone WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
+                        thisCmd.Parameters.AddWithValue("@Email", txtEmail.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Phone", txtPhone.Text.Trim())
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                dataLog = {"CustomerQuotes", lblCustomerId.Text, Session("LoginId").ToString(), "Contact Quote Updated"}
+                settingClass.Logs(dataLog)
+
+                url = String.Format("~/quotation?accountid={0}", lblCustomerId.Text)
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError_Contact(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Contact(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showContact", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnTerms_Click(sender As Object, e As EventArgs)
+        MessageError_Terms(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showTerms(); };"
+        Try
+            If msgErrorTerms.InnerText = "" Then
+                Dim terms As String = txtTerms.Text.Trim()
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE CustomerQuotes SET Terms=@Terms WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblCustomerId.Text)
+                        thisCmd.Parameters.AddWithValue("@Terms", txtTerms.Text)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                dataLog = {"CustomerQuotes", lblCustomerId.Text, Session("LoginId").ToString(), "Terms & Conditions Quote Updated"}
+                settingClass.Logs(dataLog)
+
+                url = String.Format("~/quotation?accountid={0}", lblCustomerId.Text)
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError_Terms(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Terms(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showTerms", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub BindData(customerId As String)
+        Try
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM CustomerQuotes WHERE Id='" & customerId & "'")
+            If thisData Is Nothing Then
+                Response.Redirect("~/", False)
+                Exit Sub
+            End If
+
+            txtAddress.Text = thisData("Address").ToString
+            txtSuburb.Text = thisData("Suburb").ToString
+            txtState.Text = thisData("State").ToString
+            txtPostCode.Text = thisData("PostCode").ToString
+            txtEmail.Text = thisData("Email").ToString
+            txtPhone.Text = thisData("Phone").ToString
+
+            Dim termText As String = thisData("Terms").ToString()
+            termText = termText.Replace(vbCrLf, "<br>").Replace(vbLf, "<br>")
+            txtTerms.Text = thisData("Terms").ToString()
+
+            imgQuote.ImageUrl = String.Format("~/assets/images/logo/customers/{0}", thisData("Logo").ToString())
+            lblOldLogo.Text = thisData("Logo").ToString()
+
+            Dim companyId As String = settingClass.GetItemData("SELECT CompanyId FROM Customers WHERE Id='" & customerId & "'")
+
+            Dim address As String = String.Empty
+
+            address &= String.Format("- Address : {0}", thisData("Address").ToString())
+            address &= "<br />"
+            address &= String.Format("- Suburb : {0}", thisData("Suburb").ToString())
+            address &= "<br />"
+            address &= String.Format("- State : {0}", thisData("State").ToString())
+            address &= "<br />"
+            address &= String.Format("- Post Code : {0}", thisData("PostCode").ToString())
+
+            Dim email As String = thisData("Email").ToString()
+            Dim phone As String = thisData("Phone").ToString()
+
+            Dim contact As String = String.Empty
+            If Not String.IsNullOrEmpty(email) Then
+                contact &= String.Format("- Email : {0}", email)
+                contact &= "<br />"
+            End If
+            If Not String.IsNullOrEmpty(phone) Then
+                contact &= String.Format("- Phone : {0}", phone)
+            End If
+
+            pAddress.InnerHtml = address
+            pContact.InnerHtml = contact
+            pTerms.InnerHtml = termText
+
+            imgQuoteExample.ImageUrl = "~/assets/images/quotation/full.jpg"
+            imgQuoteExample2.ImageUrl = "~/assets/images/quotation/full.jpg"
+            If companyId = "3" Then
+                imgQuoteExample.ImageUrl = "~/assets/images/quotation/local.jpg"
+                imgQuoteExample2.ImageUrl = "~/assets/images/quotation/local.jpg"
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Logo(visible As Boolean, message As String)
+        divErrorLogo.Visible = visible : msgErrorLogo.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Address(visible As Boolean, message As String)
+        divErrorAddress.Visible = visible : msgErrorAddress.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Contact(visible As Boolean, message As String)
+        divErrorContact.Visible = visible : msgErrorContact.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Terms(visible As Boolean, message As String)
+        divErrorTerms.Visible = visible : msgErrorTerms.InnerText = message
+    End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class

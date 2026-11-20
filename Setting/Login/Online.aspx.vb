@@ -1,0 +1,173 @@
+﻿Imports System.Data.SqlClient
+
+Partial Class Setting_Login_Online
+    Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim dataLog As Object() = Nothing
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/login", False)
+            Exit Sub
+        End If
+
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            BindData(txtSearch.Text, ddlMinute.SelectedValue)
+        End If
+    End Sub
+
+    Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindData(txtSearch.Text, ddlMinute.SelectedValue)
+    End Sub
+
+    Protected Sub ddlMinute_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindData(txtSearch.Text, ddlMinute.SelectedValue)
+    End Sub
+
+    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
+        MessageError(False, String.Empty)
+        BindData(txtSearch.Text, ddlMinute.SelectedValue)
+    End Sub
+
+    Protected Sub rptPager_ItemCommand(sender As Object, e As RepeaterCommandEventArgs)
+        If e.CommandName = "Page" Then
+            gvList.PageIndex = Convert.ToInt32(e.CommandArgument)
+            BindData(txtSearch.Text, ddlMinute.SelectedValue)
+        End If
+    End Sub
+
+    Protected Sub gvList_DataBound(sender As Object, e As EventArgs)
+        BuildPager()
+    End Sub
+
+    Protected Sub timerRefresh_Tick(sender As Object, e As EventArgs)
+        Try
+            BindData(txtSearch.Text, ddlMinute.SelectedValue)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub btnDeleteSession_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim sessionId As String = txtDeleteId.Text
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("DELETE FROM Sessions WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", sessionId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Response.Redirect("~/setting/login/online", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub btnSendNotification_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim loginId As String = txtLoginIdNotification.Text
+
+            Dim roleId As String = settingClass.GetItemData("SELECT RoleId FROM Logins WHERE Id='" & loginId & "'")
+
+            Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Notifications ORDER BY Id DESC")
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Notifications VALUES (@Id, @RoleId, NULL, @LoginId, @Title, @Message, GETDATE(), DATEADD(DAY, 1, GETDATE()), 1)", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", thisId)
+                    thisCmd.Parameters.AddWithValue("@RoleId", roleId)
+                    thisCmd.Parameters.AddWithValue("@LoginId", loginId)
+                    thisCmd.Parameters.AddWithValue("@Title", txtTitle.Text.Trim())
+                    thisCmd.Parameters.AddWithValue("@Message", txtMessage.Text)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Response.Redirect("~/setting/login/online", False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindData(searchText As String, minuteText As String)
+        Try
+            Dim paramsItem As New List(Of SqlParameter) From {
+                New SqlParameter("@SearchText", searchText),
+                New SqlParameter("@Minutes", minuteText)
+            }
+            gvList.DataSource = settingClass.GetDataTableSP("sp_Logins_Online", paramsItem)
+            gvList.DataBind()
+            gvList.Columns(7).Visible = LoginAccess("Delete Session")
+
+            divMinute.Visible = LoginAccess("Sort Minute")
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BuildPager()
+        Try
+            If gvList.PageCount <= 1 Then
+                navPager.Visible = False
+                Return
+            End If
+
+            navPager.Visible = True
+
+            Dim currentPage As Integer = gvList.PageIndex
+            Dim totalPages As Integer = gvList.PageCount
+
+            Dim pages As New List(Of Object)
+
+            If currentPage > 0 Then
+                pages.Add(New With {.Text = "Previous", .PageIndex = currentPage - 1, .CssClass = ""})
+            End If
+
+            Dim startPage As Integer = Math.Max(0, currentPage - 2)
+            Dim endPage As Integer = Math.Min(totalPages - 1, currentPage + 2)
+
+            For i As Integer = startPage To endPage
+                pages.Add(New With {.Text = (i + 1).ToString(), .PageIndex = i, .CssClass = If(i = currentPage, "active", "")})
+            Next
+
+            If currentPage < totalPages - 1 Then
+                pages.Add(New With {.Text = "Next", .PageIndex = currentPage + 1, .CssClass = ""})
+            End If
+
+            rptPager.DataSource = pages
+            rptPager.DataBind()
+        Catch ex As Exception
+            navPager.Visible = False
+        End Try
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class

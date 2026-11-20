@@ -1,0 +1,80 @@
+﻿Imports System.Data
+
+Partial Class Setting_General_Newsletter_Preview
+    Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/general", False)
+            Exit Sub
+        End If
+
+        If String.IsNullOrEmpty(Request.QueryString("id")) Then
+            Response.Redirect("~/setting/general/newsletter", False)
+            Exit Sub
+        End If
+
+        lblId.Text = Request.QueryString("id").ToString()
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            BindData(lblId.Text)
+        End If
+    End Sub
+
+    Protected Sub BindData(newsletterId As String)
+        Try
+            Dim thisData As DataRow = settingClass.GetDataRow("SELECT * FROM Newsletters WHERE Id='" & newsletterId & "' AND (Status='Active' OR Status='Inactive')")
+
+            If thisData Is Nothing Then
+                Response.Redirect("~/setting/general/newsletter", False)
+                Exit Sub
+            End If
+
+            Dim newsletterType As String = thisData("Type").ToString().Trim()
+            Dim newsletterLink As String = thisData("Link").ToString().Trim()
+
+            imgNewsletter.Visible = False
+            litNewsletter.Visible = False
+
+            Select Case newsletterType.ToUpper()
+                Case "LINK"
+                    litNewsletter.Text = "<iframe src=""" & Server.HtmlEncode(newsletterLink) & """ style=""width:100%; height:85vh; border:0;"" loading=""lazy""></iframe>"
+                    litNewsletter.Visible = True
+
+                Case "UPLOAD"
+                    imgNewsletter.ImageUrl = newsletterLink
+                    imgNewsletter.Visible = True
+
+                Case Else
+                    MessageError(True, "Invalid newsletter type.")
+            End Select
+        Catch ex As Exception
+            MessageError(True, ex.ToString)
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class

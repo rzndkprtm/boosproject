@@ -1,0 +1,394 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class Order_Edit
+    Inherits Page
+
+    Dim orderClass As New OrderClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
+    Dim returnPage As String = String.Empty
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/order", False)
+            Exit Sub
+        End If
+
+        If String.IsNullOrEmpty(Request.QueryString("orderid")) Then
+            Response.Redirect("~/order/", False)
+            Exit Sub
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            returnPage = Request.QueryString("returnpage").ToString()
+        End If
+
+        lblHeaderId.Text = Request.QueryString("orderid").ToString()
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            BindDataHeader(lblHeaderId.Text)
+        End If
+    End Sub
+
+    Protected Sub ddlOrderDelivery_SelectedIndexChanged(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindComponentForm(ddlCustomer.SelectedValue, ddlOrderDelivery.SelectedValue)
+    End Sub
+
+    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            If ddlCustomer.SelectedValue = "" Then
+                MessageError(True, "CUSTOMER NAME IS REQUIRED !")
+                Exit Sub
+            End If
+            If txtOrderNumber.Text = "" Then
+                MessageError(True, "ORDER NUMBER IS REQUIRED !")
+                Exit Sub
+            End If
+            If InStr(txtOrderNumber.Text, ",") > 0 OrElse InStr(txtOrderNumber.Text, "'") > 0 OrElse InStr(txtOrderNumber.Text, ";") > 0 Then
+                MessageError(True, "PLEASE DON'T USE [ , ], [ ' ] AND [ ; ] !")
+                Exit Sub
+            End If
+            If Trim(txtOrderNumber.Text).Length > 30 Then
+                MessageError(True, "MAXIMUM 30 CHARACTERS FOR RETAILER ORDER NUMBER !")
+                Exit Sub
+            End If
+            If txtOrderName.Text = "" Then
+                MessageError(True, "ORDER NAME IS REQUIRED !")
+                Exit Sub
+            End If
+            If InStr(txtOrderName.Text, ",") > 0 OrElse InStr(txtOrderName.Text, "'") > 0 OrElse InStr(txtOrderName.Text, ";") > 0 Then
+                MessageError(True, "PLEASE DON'T USE [ , ], [ ' ] AND [ ; ] !")
+                Exit Sub
+            End If
+            If txtOrderNumber.Text <> lblOrderNo.Text Then
+                If txtOrderNumber.Text = orderClass.IsOrderExist(ddlCustomer.SelectedValue, txtOrderNumber.Text.Trim()) Then
+                    MessageError(True, "ORDER NUMBER ALREADY EXISTS !")
+                    Exit Sub
+                End If
+            End If
+
+            If ddlOrderDelivery.SelectedValue = "Special" Then
+                'If hfOrderContact.Value = "" Then
+                '    MessageError(True, "ORDER CONTACT (DELIVERY) IS REQUIRED !")
+                '    Exit Sub
+                'End If
+                If hfOrderAddress.Value = "" Then
+                    MessageError(True, "ORDER ADDRESS (DELIVERY) IS REQUIRED !")
+                    Exit Sub
+                End If
+            End If
+
+            If msgError.InnerText = "" Then
+                Dim orderFactory As String = String.Empty
+                If Not String.IsNullOrEmpty(lbOrderFactory.SelectedValue) Then
+                    orderFactory = String.Join(",", lbOrderFactory.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
+                If ddlOrderDelivery.SelectedValue = "Default" Then
+                    GetCustomerContactAddress(ddlCustomer.SelectedValue)
+                End If
+
+                Dim orderContact As String = hfOrderContact.Value.Trim()
+                Dim orderAddress As String = hfOrderAddress.Value.Trim()
+
+                Dim orderContainer As String = String.Empty
+                If Not String.IsNullOrEmpty(orderAddress) Then
+                    Dim state As String = String.Empty
+
+                    Dim states() As String = {"NSW", "QLD", "SA", "TAS", "NT", "ACT", "VIC", "WA"}
+                    For Each s As String In states
+                        If Regex.IsMatch(orderAddress, "\b" & s & "\b", RegexOptions.IgnoreCase) Then
+                            state = s
+                            Exit For
+                        End If
+                    Next
+                    Select Case state
+                        Case "NSW", "QLD", "NT", "ACT"
+                            orderContainer = "SYD"
+                        Case "VIC", "SA", "TAS", "WA"
+                            orderContainer = "MEL"
+                        Case Else
+                            orderContainer = String.Empty
+                    End Select
+                End If
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderHeaders SET OrderId=@OrderId, CustomerId=@CustomerId, OrderNumber=@OrderNumber, OrderName=@OrderName, OrderNote=@OrderNote, OrderType=@OrderType, OrderFactory=@OrderFactory, OrderDelivery=@OrderDelivery, OrderContact=@OrderContact, OrderAddress=@OrderAddress, OrderContainer=@OrderContainer WHERE Id=@Id", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", lblHeaderId.Text)
+                        thisCmd.Parameters.AddWithValue("@OrderId", txtOrderId.Text)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@OrderNumber", txtOrderNumber.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@OrderName", txtOrderName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@OrderNote", txtOrderNote.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@OrderType", ddlOrderType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@OrderDelivery", ddlOrderDelivery.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@OrderFactory", orderFactory)
+                        thisCmd.Parameters.AddWithValue("@OrderContact", orderContact)
+                        thisCmd.Parameters.AddWithValue("@OrderAddress", orderAddress)
+                        thisCmd.Parameters.AddWithValue("@OrderContainer", orderContainer)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim dataLog As Object() = {"OrderHeaders", lblHeaderId.Text, Session("LoginId").ToString(), "Order Updated"}
+                orderClass.Logs(dataLog)
+
+                url = "~/order/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                End If
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
+        url = "~/order/"
+        If returnPage = "detail" Then
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+        End If
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub BindDataHeader(headerId As String)
+        Try
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@HeaderId", CInt(headerId)),
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", If(Session("LevelName"), DBNull.Value)),
+                New SqlParameter("@CompanyId", If(Session("CompanyId"), DBNull.Value)),
+                New SqlParameter("@LoginId", If(Session("LoginId"), DBNull.Value)),
+                New SqlParameter("@CustomerId", If(Session("CustomerId"), DBNull.Value)),
+                New SqlParameter("@CustomerLevel", If(Session("CustomerLevel"), DBNull.Value))
+            }
+            Dim headerData As DataRow = orderClass.GetDataRowSP("sp_OrderHeaders_ViewById", params)
+            If headerData Is Nothing Then
+                url = "~/order/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                End If
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            Dim statusOrder As String = headerData("Status").ToString()
+            If Session("RoleName") = "Customer" AndAlso Not statusOrder = "Unsubmitted" Then
+                url = "~/order/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                End If
+                Response.Redirect(url, False)
+            End If
+
+            If Session("RoleName") = "IT" AndAlso (statusOrder = "Shipped Out" OrElse statusOrder = "Completed" OrElse statusOrder = "Canceled") Then
+                url = "~/order/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                End If
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            If Session("RoleName") = "Factory Office" AndAlso (statusOrder = "Shipped Out" OrElse statusOrder = "Completed" OrElse statusOrder = "Canceled") Then
+                url = "~/order/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                End If
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            If Session("RoleName") = "Account" AndAlso (statusOrder = "Unsubmitted" OrElse statusOrder = "In Production" OrElse statusOrder = "On Hold" OrElse statusOrder = "Shipped Out" OrElse statusOrder = "Completed" OrElse statusOrder = "Canceled") Then
+                url = "~/order/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                End If
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            If Session("RoleName") = "Sales" AndAlso Not statusOrder = "Unsubmitted" Then
+                url = "~/order/"
+                If returnPage = "detail" Then
+                    url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+                End If
+                Response.Redirect(url, False)
+                Exit Sub
+            End If
+
+            BindDataCustomer()
+
+            ddlCustomer.SelectedValue = headerData("CustomerId").ToString()
+            txtOrderNumber.Text = headerData("OrderNumber").ToString()
+            lblOrderNo.Text = headerData("OrderNumber").ToString()
+
+            txtOrderName.Text = headerData("OrderName").ToString()
+            txtOrderNote.Text = headerData("OrderNote").ToString()
+            txtOrderId.Text = headerData("OrderId").ToString()
+            ddlOrderType.SelectedValue = headerData("OrderType").ToString()
+            ddlOrderDelivery.SelectedValue = headerData("OrderDelivery").ToString()
+            ddlOrderContainer.SelectedValue = headerData("OrderContainer").ToString()
+            If Not headerData("OrderFactory").ToString() = "" Then
+                Dim factoryArray() As String = headerData("OrderFactory").ToString().Split(",")
+                For Each i In factoryArray
+                    If Not String.IsNullOrEmpty(i) Then
+                        Dim item = lbOrderFactory.Items.FindByValue(i)
+                        If item IsNot Nothing Then
+                            item.Selected = True
+                        End If
+                    End If
+                Next
+            End If
+            txtOrderContact.Text = headerData("OrderContact").ToString()
+            hfOrderContact.Value = headerData("OrderContact").ToString()
+            txtOrderAddress.Text = headerData("OrderAddress").ToString()
+            hfOrderAddress.Value = headerData("OrderAddress").ToString()
+
+            BindComponentForm(ddlCustomer.SelectedValue, ddlOrderDelivery.SelectedValue)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindDataCustomer()
+        ddlCustomer.Items.Clear()
+        Try
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@CustomerId", If(Session("CustomerId") Is Nothing, CType(DBNull.Value, Object), Session("CustomerId"))),
+                New SqlParameter("@LoginId", Session("LoginId"))
+            }
+
+            ddlCustomer.DataSource = orderClass.GetDataTableSP("sp_Customers_List_Dropdown_Order", params)
+            ddlCustomer.DataTextField = "Name"
+            ddlCustomer.DataValueField = "Id"
+            ddlCustomer.DataBind()
+
+            If ddlCustomer.Items.Count > 1 Then
+                ddlCustomer.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlCustomer.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindComponentForm(customerId As String, orderDelivery As String)
+        Try
+            divCustomer.Visible = False
+            divOrderId.Visible = False
+            divOrderType.Visible = False
+            divOrderFactory.Visible = False
+            divOrderDelivery.Visible = False
+            divOrderContact.Visible = False
+            divOrderAddress.Visible = False
+            divOrderContainer.Visible = False
+
+            Dim companyDetailName As String = String.Empty
+            If Not String.IsNullOrEmpty(customerId) Then
+                companyDetailName = orderClass.GetCompanyDetailNameByCustomer(ddlCustomer.SelectedValue)
+            End If
+
+            If Session("RoleName") = "Developer" Then
+                divOrderId.Visible = True
+                divOrderContainer.Visible = True
+            End If
+
+            If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Data Entry" Then
+                divCustomer.Visible = True
+                divOrderFactory.Visible = True
+                If companyDetailName = "JPMD BP" Then divOrderType.Visible = True
+            End If
+
+            If companyDetailName = "JPMD" OrElse companyDetailName = "CWS" OrElse companyDetailName = "SP" Then
+                divOrderDelivery.Visible = True
+                If orderDelivery = "Special" Then
+                    divOrderContact.Visible = True
+                    divOrderAddress.Visible = True
+                End If
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
+    Protected Sub GetCustomerContactAddress(customerId As String)
+        txtOrderAddress.Text = String.Empty
+        Try
+            If Not String.IsNullOrEmpty(customerId) Then
+                hfOrderContact.Value = String.Empty
+                hfOrderAddress.Value = String.Empty
+
+                Dim contactData As DataRow = orderClass.GetDataRow("SELECT * FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
+                If contactData IsNot Nothing Then
+                    Dim name As String = contactData("Name").ToString()
+                    Dim phone As String = contactData("Phone").ToString()
+                    Dim email As String = contactData("Email").ToString()
+
+                    txtOrderContact.Text = name & " | " & phone & " | " & email
+                    hfOrderContact.Value = name & " | " & phone & " | " & email
+                End If
+
+                Dim addressData As DataRow = orderClass.GetDataRow("SELECT * FROM CustomerAddress WHERE CustomerId='" & customerId & "' AND Type='Delivery' AND [Primary]=1")
+                If addressData IsNot Nothing Then
+                    Dim address As String = addressData("Address").ToString()
+                    Dim suburb As String = addressData("Suburb").ToString()
+                    Dim state As String = addressData("State").ToString()
+                    Dim postCode As String = addressData("PostCode").ToString()
+
+                    txtOrderAddress.Text = address & ", " & suburb & ", " & state & ", " & postCode
+                    hfOrderAddress.Value = address & ", " & suburb & ", " & state & ", " & postCode
+                End If
+            End If
+        Catch ex As Exception
+            txtOrderAddress.Text = String.Empty
+        End Try
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class

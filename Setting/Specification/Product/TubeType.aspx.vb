@@ -1,0 +1,218 @@
+﻿Imports System.Data
+Imports System.Data.SqlClient
+
+Partial Class Setting_Specification_Product_TubeType
+    Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/specification/product", False)
+            Exit Sub
+        End If
+
+        If Not IsPostBack Then
+            txtSearch.Text = Session("SearchTube")
+
+            MessageError(False, String.Empty)
+            BindData(txtSearch.Text)
+        End If
+    End Sub
+
+    Protected Sub btnAdd_Click(sender As Object, e As EventArgs)
+        MessageError_Process(False, String.Empty)
+        Session("SearchTube") = txtSearch.Text
+
+        Dim thisScript As String = "window.onload = function() { showProcess(); };"
+        Try
+            lblAction.Text = "Add"
+            titleProcess.InnerText = "Add Tube Type"
+
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+        Catch ex As Exception
+            MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub btnSearch_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        BindData(txtSearch.Text)
+    End Sub
+
+    Protected Sub gvList_PageIndexChanging(sender As Object, e As GridViewPageEventArgs)
+        gvList.PageIndex = e.NewPageIndex
+
+        MessageError(False, String.Empty)
+        BindData(txtSearch.Text)
+    End Sub
+
+    Protected Sub gvList_RowCommand(sender As Object, e As GridViewCommandEventArgs)
+        If Not String.IsNullOrEmpty(e.CommandArgument) Then
+            Session("SearchTube") = txtSearch.Text
+
+            Dim dataId As String = e.CommandArgument.ToString()
+            If e.CommandName = "Detail" Then
+                MessageError_Process(False, String.Empty)
+                Dim thisScript As String = "window.onload = function() { showProcess(); };"
+                Try
+                    lblId.Text = dataId
+                    lblAction.Text = "Edit"
+                    titleProcess.InnerText = "Edit Tube Type"
+
+                    Dim myData As DataRow = settingClass.GetDataRow("SELECT * FROM ProductTubes WHERE Id='" & lblId.Text & "'")
+
+                    If myData Is Nothing Then Exit Sub
+
+                    txtName.Text = myData("Name").ToString()
+                    txtAlias.Text = myData("Alias").ToString()
+                    txtDescription.Text = myData("Description").ToString()
+
+                    If Not myData("AppliesTo").ToString() = "" Then
+                        Dim applyArray() As String = myData("AppliesTo").ToString().Split(",")
+                        For Each i In applyArray
+                            If Not String.IsNullOrEmpty(i) Then
+                                Dim item = lbApplies.Items.FindByValue(i)
+                                If item IsNot Nothing Then
+                                    item.Selected = True
+                                End If
+                            End If
+                        Next
+                    End If
+
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                Catch ex As Exception
+                    MessageError_Process(True, ex.ToString())
+                    If Not Session("RoleName") = "Developer" Then
+                        MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                    End If
+                    ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                End Try
+            End If
+        End If
+    End Sub
+
+    Protected Sub btnProcess_Click(sender As Object, e As EventArgs)
+        MessageError_Process(False, String.Empty)
+        Dim thisScript As String = "window.onload = function() { showProcess(); };"
+        Try
+            If txtName.Text = "" Then
+                MessageError_Process(True, "NAME IS REQUIRED !")
+                ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+                Exit Sub
+            End If
+
+            If msgErrorProcess.InnerText = "" Then
+                Dim aliasName As String = txtAlias.Text.Trim()
+                If String.IsNullOrEmpty(txtAlias.Text) Then
+                    aliasName = txtName.Text.Trim()
+                End If
+
+                Dim applyTo As String = String.Empty
+                If Not lbApplies.SelectedValue = "" Then
+                    applyTo = String.Join(",", lbApplies.Items.Cast(Of ListItem)().Where(Function(i) i.Selected).Select(Function(i) i.Value))
+                End If
+
+                Dim descText As String = txtDescription.Text.Replace(vbCrLf, "").Replace(vbCr, "").Replace(vbLf, "")
+
+                If lblAction.Text = "Add" Then
+                    Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM ProductTubes ORDER BY Id DESC")
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO ProductTubes VALUES (@Id, @Name, @Alias, @AppliesTo, @Description)", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", thisId)
+                            thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Alias", aliasName)
+                            thisCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
+                            thisCmd.Parameters.AddWithValue("@Description", descText)
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    Dim dataLog As Object() = {"ProductTubes", thisId, Session("LoginId").ToString(), "Product Tube Created"}
+                    settingClass.Logs(dataLog)
+
+                    Session("SearchTube") = txtSearch.Text
+                    Response.Redirect("~/setting/specification/product/tubetype", False)
+                End If
+
+                If lblAction.Text = "Edit" Then
+                    Using thisConn As New SqlConnection(myConn)
+                        Using thisCmd As SqlCommand = New SqlCommand("UPDATE ProductTubes SET Name=@Name, Alias=@Alias, AppliesTo=@AppliesTo, Description=@Description WHERE Id=@Id", thisConn)
+                            thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
+                            thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                            thisCmd.Parameters.AddWithValue("@Alias", aliasName)
+                            thisCmd.Parameters.AddWithValue("@AppliesTo", applyTo)
+                            thisCmd.Parameters.AddWithValue("@Description", descText)
+                            thisConn.Open()
+                            thisCmd.ExecuteNonQuery()
+                        End Using
+                    End Using
+
+                    Dim dataLog As Object() = {"ProductTubes", lblId.Text, Session("LoginId").ToString(), "Product Tube Updated"}
+                    settingClass.Logs(dataLog)
+
+                    Session("SearchTube") = txtSearch.Text
+                    Response.Redirect("~/setting/specification/product/tubetype", False)
+                End If
+            End If
+        Catch ex As Exception
+            MessageError_Process(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError_Process(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+            ClientScript.RegisterStartupScript(Me.GetType(), "showProcess", thisScript, True)
+        End Try
+    End Sub
+
+    Protected Sub BindData(searchText As String)
+        Session("SearchTube") = String.Empty
+        Try
+            Dim search As String = String.Empty
+            If Not searchText = "" Then
+                search = "WHERE Id LIKE '%" & searchText & "%' OR Name LIKE '%" & searchText & "%' OR Alias LIKE '%" & searchText & "%' OR Description LIKE '%" & searchText & "%'"
+            End If
+
+            Dim thisString As String = String.Format("SELECT * FROM ProductTubes {0} ORDER BY Name ASC", search)
+
+            gvList.DataSource = settingClass.GetDataTable(thisString)
+            gvList.DataBind()
+            gvList.Columns(1).Visible = LoginAccess("Visible ID")
+
+            btnAdd.Visible = LoginAccess("Add")
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Process(visible As Boolean, message As String)
+        divErrorProcess.Visible = visible : msgErrorProcess.InnerText = message
+    End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class

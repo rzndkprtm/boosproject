@@ -1,0 +1,134 @@
+﻿Imports System.Data.SqlClient
+
+Partial Class Setting_Customer_Business_Add
+    Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/customer/business", False)
+            Exit Sub
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("custid")) Then
+            lblCustomerId.Text = Request.QueryString("custid").ToString()
+        End If
+
+        If Not String.IsNullOrEmpty(Request.QueryString("returnpage")) Then
+            lblReturnPage.Text = Request.QueryString("returnpage").ToString()
+        End If
+
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            BindCustomer(lblCustomerId.Text)
+        End If
+    End Sub
+
+    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            If ddlCustomer.SelectedValue = "" Then
+                MessageError(True, "ACCOUNT IS REQURIED !")
+                Exit Sub
+            End If
+            If txtName.Text = "" Then
+                MessageError(True, "REGISTERED NAME IS REQURIED !")
+                Exit Sub
+            End If
+            If txtNumber.Text = "" Then
+                MessageError(True, "ABN NUMBER IS REQURIED !")
+                Exit Sub
+            End If
+            If msgError.InnerText = "" Then
+                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerBusiness ORDER BY Id DESC")
+
+                Dim checkData As Integer = settingClass.GetItemData_Integer("SELECT COUNT(*) FROM CustomerBusiness WHERE CustomerId='" & ddlCustomer.SelectedValue & "'")
+                Dim primaryData As Integer = 0
+                If checkData = 0 Then primaryData = 1
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerBusiness VALUES (@Id, @CustomerId, @ABNNumber, @RegisteredName, @Primary)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@CustomerId", ddlCustomer.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@ABNNumber", txtNumber.Text)
+                        thisCmd.Parameters.AddWithValue("@RegisteredName", txtName.Text)
+                        thisCmd.Parameters.AddWithValue("@Primary", primaryData)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim dataLog As Object() = {"CustomerBusiness", thisId, Session("LoginId"), "Customer Business Created"}
+                settingClass.Logs(dataLog)
+
+                url = "~/setting/customer/business"
+                If lblReturnPage.Text = "detail" Then
+                    url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+                End If
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
+        url = "~/setting/customer/business"
+        If lblReturnPage.Text = "detail" Then
+            url = String.Format("~/setting/customer/detail?customerid={0}", ddlCustomer.SelectedValue)
+        End If
+        Response.Redirect(url, False)
+    End Sub
+
+    Protected Sub BindCustomer(customerId As String)
+        ddlCustomer.Items.Clear()
+        Try
+            Dim params As New List(Of SqlParameter) From {
+                New SqlParameter("@RoleName", Session("RoleName").ToString()),
+                New SqlParameter("@LevelName", Session("LevelName").ToString()),
+                New SqlParameter("@CompanyId", If(Session("CompanyId") Is Nothing, CType(DBNull.Value, Object), Session("CompanyId"))),
+                New SqlParameter("@CustomerId", If(customerId Is Nothing, CType(DBNull.Value, Object), customerId)),
+                New SqlParameter("@LoginId", Session("LoginId"))
+            }
+
+            ddlCustomer.DataSource = settingClass.GetDataTableSP("sp_Customers_List_Dropdown_Setting", params)
+            ddlCustomer.DataTextField = "Name"
+            ddlCustomer.DataValueField = "Id"
+            ddlCustomer.DataBind()
+
+            If ddlCustomer.Items.Count > 1 Then
+                ddlCustomer.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            ddlCustomer.Items.Clear()
+            If Session("RoleName") = "Developer" Then
+                MessageError(True, ex.ToString())
+            End If
+        End Try
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class

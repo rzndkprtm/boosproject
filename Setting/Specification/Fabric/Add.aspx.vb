@@ -1,0 +1,211 @@
+﻿Imports System.Data.SqlClient
+
+Partial Class Setting_Specification_Fabric_Add
+    Inherits Page
+
+    Dim settingClass As New SettingClass
+    Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
+    Dim url As String = String.Empty
+
+    Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim pageAccess As Boolean = LoginAccess("Load")
+        If pageAccess = False Then
+            Response.Redirect("~/setting/specification/fabric", False)
+            Exit Sub
+        End If
+
+        If Not IsPostBack Then
+            MessageError(False, String.Empty)
+            BindDesign()
+            BindCompanyDetail()
+        End If
+    End Sub
+
+    Protected Sub lbDesign_SelectedIndexChanged(sender As Object, e As EventArgs)
+        Dim designIds As New List(Of String)
+        For Each item As ListItem In lbDesign.Items
+            If item.Selected AndAlso Not String.IsNullOrEmpty(item.Value) Then
+                designIds.Add(item.Value)
+            End If
+        Next
+
+        If designIds.Count = 0 Then
+            lbTube.Items.Clear()
+            Exit Sub
+        End If
+
+        BindTube(designIds)
+    End Sub
+
+    Protected Sub btnSubmit_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            If txtName.Text = "" Then
+                MessageError(True, "FABRIC NAME IS REQUIRED !")
+                Exit Sub
+            End If
+
+            If msgError.InnerText = "" Then
+                Dim designType As String = String.Empty
+                If Not lbDesign.SelectedValue = "" Then
+                    Dim design As String = String.Empty
+                    For Each item As ListItem In lbDesign.Items
+                        If item.Selected Then
+                            design += item.Value & ","
+                        End If
+                    Next
+                    designType = design.Remove(design.Length - 1).ToString()
+                End If
+
+                Dim tubeType As String = String.Empty
+                If Not lbTube.SelectedValue = "" Then
+                    Dim tube As String = String.Empty
+                    For Each item As ListItem In lbTube.Items
+                        If item.Selected Then
+                            tube += item.Value & ","
+                        End If
+                    Next
+                    tubeType = tube.Remove(tube.Length - 1).ToString()
+                End If
+
+                Dim companyDetail As String = String.Empty
+                If Not lbCompanyDetail.SelectedValue = "" Then
+                    Dim company As String = String.Empty
+                    For Each item As ListItem In lbCompanyDetail.Items
+                        If item.Selected Then
+                            company += item.Value & ","
+                        End If
+                    Next
+                    companyDetail = company.Remove(company.Length - 1).ToString()
+                End If
+
+                Dim thisId As String = settingClass.CreateId("SELECT TOP 1 Id FROM Fabrics ORDER BY Id DESC")
+
+                Using thisConn As New SqlConnection(myConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Fabrics VALUES (@Id, @DesignId, @TubeId, @CompanyId, @Name, @Type, @Group, @NoRailRoad, @Status)", thisConn)
+                        thisCmd.Parameters.AddWithValue("@Id", thisId)
+                        thisCmd.Parameters.AddWithValue("@DesignId", designType)
+                        thisCmd.Parameters.AddWithValue("@TubeId", tubeType)
+                        thisCmd.Parameters.AddWithValue("@CompanyId", companyDetail)
+                        thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Group", ddlGroup.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@NoRailRoad", ddlNoRailRoad.SelectedValue)
+                        thisCmd.Parameters.AddWithValue("@Status", ddlStatus.SelectedValue)
+                        thisConn.Open()
+                        thisCmd.ExecuteNonQuery()
+                    End Using
+                End Using
+
+                Dim dataLog As Object() = {"Fabrics", thisId, Session("LoginId").ToString(), "Fabric Type Created"}
+                settingClass.Logs(dataLog)
+
+                url = String.Format("~/setting/specification/fabric/detail?fabricid={0}", thisId)
+                Response.Redirect(url, False)
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub btnCancel_Click(sender As Object, e As EventArgs)
+        Response.Redirect("~/setting/specification/fabric", False)
+    End Sub
+
+    Protected Sub BindDesign()
+        lbDesign.Items.Clear()
+        Try
+            lbDesign.DataSource = settingClass.GetDataTable("SELECT * FROM Designs CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS thisArray WHERE thisArray.VALUE='Fabrics' ORDER BY Name ASC")
+            lbDesign.DataTextField = "Name"
+            lbDesign.DataValueField = "Id"
+            lbDesign.DataBind()
+
+            If lbDesign.Items.Count > 0 Then
+                lbDesign.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindTube(designIds As List(Of String))
+        lbTube.Items.Clear()
+        Try
+            Dim conditions As New List(Of String)
+            For Each designId As String In designIds
+                Dim designName As String = settingClass.GetItemData("SELECT Name FROM Designs WHERE Id='" & designId.Replace("'", "''") & "'")
+
+                If InStr(designName, "Roman", CompareMethod.Text) > 0 Then
+                    conditions.Add("Alias LIKE '%(Roman)%'")
+                End If
+                If InStr(designName, "Panel Glide", CompareMethod.Text) > 0 Then
+                    conditions.Add("Alias LIKE '%(PG)%'")
+                End If
+                If InStr(designName, "Vertical", CompareMethod.Text) > 0 Then
+                    conditions.Add("Alias LIKE '%(Vertical)%'")
+                End If
+            Next
+
+            If conditions.Count = 0 Then Exit Sub
+
+            Dim query As String = "SELECT DISTINCT * FROM ProductTubes CROSS APPLY STRING_SPLIT(AppliesTo, ',') AS applyArray WHERE applyArray.VALUE='Fabrics' AND (" & String.Join(" OR ", conditions.Distinct()) & ") ORDER BY Name ASC"
+
+            lbTube.DataSource = settingClass.GetDataTable(query)
+            lbTube.DataTextField = "Alias"
+            lbTube.DataValueField = "Id"
+            lbTube.DataBind()
+
+            If lbTube.Items.Count > 0 Then
+                lbTube.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub BindCompanyDetail()
+        lbCompanyDetail.Items.Clear()
+        Try
+            lbCompanyDetail.DataSource = settingClass.GetDataTable("SELECT * FROM CompanyDetails WHERE Status='Active' ORDER BY Name ASC")
+            lbCompanyDetail.DataTextField = "Name"
+            lbCompanyDetail.DataValueField = "Id"
+            lbCompanyDetail.DataBind()
+
+            If lbCompanyDetail.Items.Count > 0 Then
+                lbCompanyDetail.Items.Insert(0, New ListItem("", ""))
+            End If
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+            End If
+        End Try
+    End Sub
+
+    Protected Sub MessageError(visible As Boolean, message As String)
+        divError.Visible = visible : msgError.InnerText = message
+    End Sub
+
+    Protected Function LoginAccess(action As String) As Boolean
+        Try
+            Dim roleId As String = Session("RoleId").ToString()
+            Dim levelId As String = Session("LevelId").ToString()
+            Dim accessClass As New AccessClass
+
+            Return accessClass.GetLoginAccess(roleId, levelId, Page.Title, action)
+        Catch ex As Exception
+            Response.Redirect("~/account/login", False)
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+            Return False
+        End Try
+    End Function
+End Class
