@@ -79,12 +79,6 @@
                         File Manager
                     </div>
                 </a>
-                <a href="/setting/validation" class="dashboard-card">
-                    <div class="dashboard-title">Validation</div>
-                    <div class="dashboard-desc">
-                        List, Create, Update, Delete
-                    </div>
-                </a>
                 <a href="/setting/log" class="dashboard-card">
                     <div class="dashboard-title">Log</div>
                     <div class="dashboard-desc">

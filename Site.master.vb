@@ -213,7 +213,6 @@ Partial Public Class SiteMaster
             liPrice.Visible = False
             liDatabase.Visible = False
             liManager.Visible = False
-            liValidation.Visible = False
             liLog.Visible = False
 
             If Session("RoleName") = "Developer" Then
@@ -239,7 +238,6 @@ Partial Public Class SiteMaster
                 liPrice.Visible = True
                 liDatabase.Visible = True
                 liManager.Visible = True
-                liValidation.Visible = True
                 liLog.Visible = True
             End If
             If Session("RoleName") = "IT" Then
@@ -264,7 +262,6 @@ Partial Public Class SiteMaster
                 liPrice.Visible = True
                 liDatabase.Visible = True
                 liManager.Visible = True
-                liValidation.Visible = True
                 liLog.Visible = True
             End If
             If Session("RoleName") = "Factory Office" Then
@@ -289,7 +286,6 @@ Partial Public Class SiteMaster
                     liPrice.Visible = True
                     liDatabase.Visible = True
                     liManager.Visible = True
-                    liValidation.Visible = True
                     liLog.Visible = True
                 End If
             End If

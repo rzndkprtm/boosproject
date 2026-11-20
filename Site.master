@@ -350,9 +350,6 @@
                                                 <li runat="server" id="liManager" class="submenu-item">
                                                     <a runat="server" href="~/setting/filemanager" class="subsubmenu-link">File Manager</a>
                                                 </li>
-                                                <li runat="server" id="liValidation" class="submenu-item">
-                                                    <a runat="server" href="~/setting/validation" class="subsubmenu-link">Validation</a>
-                                                </li>
                                                 <li runat="server" id="liExport" class="submenu-item">
                                                     <a runat="server" href="~/setting/export" class="subsubmenu-link">Export</a>
                                                 </li>
