@@ -2166,6 +2166,7 @@ Partial Class Order_Method
         End If
         If blindName = "Day & Night" OrElse blindName = "TDBU" Then
             data.controlposition = "Both Sides"
+
         End If
 
         If controlName = "Corded" Then
