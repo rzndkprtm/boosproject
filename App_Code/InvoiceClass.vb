@@ -576,6 +576,8 @@ Public Class InvoiceClass
                 End If
                 If designName = "Vertical" Then
                     Dim fabricColourName As String = GetFabricColourName(fabricColourId)
+                    fabricColourName = fabricColourName.Replace("127mm ", "").Replace("89mm ", "").Trim()
+
                     itemDescription = String.Format("{0} {1} {2} {3}", invoiceName, fabricColourName, size, squareMetreText)
                     If blindName = "Track Only" Then
                         itemDescription = String.Format("{0} ({1}) {2}", invoiceName, width, linearMetreText)
