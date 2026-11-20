@@ -295,7 +295,7 @@
                                 <a class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery">Detail Gallery</a>
                                 <br />
                                 <br />
-                                <a class="btn btn-sm btn-secondary" runat="server" href="~/file/document/newlayoutpg.pdf" target="_blank">View ALL Layout</a>
+                                <a class="btn btn-sm btn-secondary" runat="server" href="~/file/document/NEW_LAYOUT_PANEL_GLIDE_PORTRAIT_FIXED.pdf" target="_blank">View ALL Layout</a>
                             </div>
                         </div>
                     </div>
