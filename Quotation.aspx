@@ -11,149 +11,26 @@
         .quotation-layout .card-body { padding: 1.25rem; }
         .quotation-layout .list-group { gap: .75rem; }
         .quotation-layout .list-group-item { padding: 1rem 1.1rem; border: 1px solid #e8edf3; border-radius: 10px !important; background: #fff; color: #344054; transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease; }
-        .quotation-layout .list-group-item:hover,
-        .quotation-layout .list-group-item:focus {
-            z-index: 1;
-            border-color: #b9c9df;
-            background: #fbfcfe;
-            box-shadow: 0 4px 14px rgba(31, 45, 61, .07);
-            transform: translateY(-1px);
-            outline: none;
-        }
-        .quotation-layout .list-group-item h6 {
-            margin: 0;
-            color: #253247;
-            font-size: .9rem;
-            font-weight: 700;
-        }
-        .quotation-layout .list-group-item p {
-            margin-bottom: 0;
-            color: #697586;
-            font-size: .85rem;
-            line-height: 1.6;
-            overflow-wrap: anywhere;
-        }
-        .quotation-layout #imgQuote {
-            display: block;
-            max-width: 100%;
-            max-height: 150px;
-            margin-top: .85rem;
-            padding: .5rem;
-            object-fit: contain;
-            object-position: left center;
-            background: #f8fafc;
-            border: 1px solid #edf0f4;
-            border-radius: 8px;
-        }
-        .quotation-layout .gallery {
-            cursor: zoom-in;
-            margin: 0;
-        }
-        .quotation-layout #imgQuoteExample {
-            display: block;
-            width: 100%;
-            max-height: 620px;
-            object-fit: contain;
-            border: 1px solid #edf0f4;
-            border-radius: 10px;
-            background: #f8fafc;
-            cursor: zoom-in;
-        }
-        #modalLogo .modal-content,
-        #modalAddress .modal-content,
-        #modalContact .modal-content,
-        #modalTerms .modal-content,
-        #modalImage .modal-content {
-            border: 0;
-            border-radius: 14px;
-            box-shadow: 0 14px 45px rgba(16, 24, 40, .18);
-            overflow: hidden;
-        }
-        #modalLogo .modal-header,
-        #modalAddress .modal-header,
-        #modalContact .modal-header,
-        #modalTerms .modal-header,
-        #modalImage .modal-header {
-            padding: 1.15rem 1.35rem;
-            background: #f8fafc;
-            border-bottom: 1px solid #e9edf2;
-        }
-        #modalLogo .modal-title,
-        #modalAddress .modal-title,
-        #modalContact .modal-title,
-        #modalTerms .modal-title,
-        #modalImage .modal-title {
-            color: #253247;
-            font-size: 1rem;
-            font-weight: 700;
-        }
-        #modalLogo .modal-body,
-        #modalAddress .modal-body,
-        #modalContact .modal-body,
-        #modalTerms .modal-body,
-        #modalImage .modal-body {
-            padding: 1.35rem;
-        }
-        #modalLogo .modal-footer,
-        #modalAddress .modal-footer,
-        #modalContact .modal-footer,
-        #modalTerms .modal-footer,
-        #modalImage .modal-footer {
-            padding: 1rem 1.35rem;
-            background: #fbfcfd;
-            border-top: 1px solid #edf0f4;
-        }
-        #modalLogo .form-label,
-        #modalAddress .form-label,
-        #modalContact .form-label,
-        #modalTerms .form-label {
-            margin-bottom: .45rem;
-            color: #475467;
-            font-size: .84rem;
-            font-weight: 600;
-        }
-        #modalLogo .form-control,
-        #modalAddress .form-control,
-        #modalContact .form-control,
-        #modalTerms .form-control {
-            min-height: 42px;
-            border-color: #dce2ea;
-            border-radius: 8px;
-            box-shadow: none;
-        }
-        #modalLogo .form-control:focus,
-        #modalAddress .form-control:focus,
-        #modalContact .form-control:focus,
-        #modalTerms .form-control:focus {
-            border-color: #8ba9d0;
-            box-shadow: 0 0 0 .2rem rgba(59, 111, 174, .10);
-        }
-        #modalLogo .btn,
-        #modalAddress .btn,
-        #modalContact .btn,
-        #modalTerms .btn,
-        #modalImage .btn {
-            min-width: 88px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-        #divError .alert,
-        #divErrorLogo .alert,
-        #divErrorAddress .alert,
-        #divErrorContact .alert,
-        #divErrorTerms .alert {
-            border-radius: 9px;
-        }
+        .quotation-layout .list-group-item:hover, .quotation-layout .list-group-item:focus { z-index: 1; border-color: #b9c9df; background: #fbfcfe; box-shadow: 0 4px 14px rgba(31, 45, 61, .07); transform: translateY(-1px); outline: none; }
+        .quotation-layout .list-group-item h6 { margin: 0; color: #253247; font-size: .9rem; font-weight: 700; }
+        .quotation-layout .list-group-item p { margin-bottom: 0; color: #697586; font-size: .85rem; line-height: 1.6; overflow-wrap: anywhere; }
+        .quotation-layout #imgQuote { display: block; max-width: 100%; max-height: 150px; margin-top: .85rem; padding: .5rem; object-fit: contain; object-position: left center; background: #f8fafc; border: 1px solid #edf0f4; border-radius: 8px; }
+        .quotation-layout .gallery { cursor: zoom-in; margin: 0; }
+        .quotation-layout #imgQuoteExample { display: block; width: 100%; max-height: 620px; object-fit: contain; border: 1px solid #edf0f4; border-radius: 10px; background: #f8fafc; cursor: zoom-in; }
+        #modalLogo .modal-content, #modalAddress .modal-content, #modalContact .modal-content, #modalTerms .modal-content, #modalImage .modal-content { border: 0; border-radius: 14px; box-shadow: 0 14px 45px rgba(16, 24, 40, .18); overflow: hidden; }
+        #modalLogo .modal-header, #modalAddress .modal-header, #modalContact .modal-header, #modalTerms .modal-header, #modalImage .modal-header { padding: 1.15rem 1.35rem; background: #f8fafc; border-bottom: 1px solid #e9edf2; }
+        #modalLogo .modal-title, #modalAddress .modal-title, #modalContact .modal-title, #modalTerms .modal-title, #modalImage .modal-title { color: #253247; font-size: 1rem; font-weight: 700; }
+        #modalLogo .modal-body, #modalAddress .modal-body, #modalContact .modal-body, #modalTerms .modal-body, #modalImage .modal-body { padding: 1.35rem; }
+        #modalLogo .modal-footer, #modalAddress .modal-footer, #modalContact .modal-footer, #modalTerms .modal-footer, #modalImage .modal-footer { padding: 1rem 1.35rem; background: #fbfcfd; border-top: 1px solid #edf0f4; }
+        #modalLogo .form-label, #modalAddress .form-label, #modalContact .form-label, #modalTerms .form-label { margin-bottom: .45rem; color: #475467; font-size: .84rem; font-weight: 600; }
+        #modalLogo .form-control, #modalAddress .form-control, #modalContact .form-control, #modalTerms .form-control { min-height: 42px; border-color: #dce2ea; border-radius: 8px; box-shadow: none; }
+        #modalLogo .form-control:focus, #modalAddress .form-control:focus, #modalContact .form-control:focus, #modalTerms .form-control:focus { border-color: #8ba9d0; box-shadow: 0 0 0 .2rem rgba(59, 111, 174, .10); }
+        #modalLogo .btn, #modalAddress .btn, #modalContact .btn, #modalTerms .btn, #modalImage .btn { min-width: 88px; border-radius: 8px; font-weight: 600; }
+        #divError .alert, #divErrorLogo .alert, #divErrorAddress .alert, #divErrorContact .alert, #divErrorTerms .alert { border-radius: 9px; }
         @media (max-width: 767.98px) {
-            .quotation-layout .card-header {
-                padding: 1.1rem 1.1rem .9rem;
-            }
-            .quotation-layout .card-body {
-                padding: 1rem;
-            }
-            .quotation-layout #imgQuoteExample {
-                max-height: 420px;
-            }
+            .quotation-layout .card-header { padding: 1.1rem 1.1rem .9rem; }
+            .quotation-layout .card-body { padding: 1rem; }
+            .quotation-layout #imgQuoteExample { max-height: 420px; }
         }
     </style>
     <div class="page-heading">

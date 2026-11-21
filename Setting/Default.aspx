@@ -79,6 +79,12 @@
                         File Manager
                     </div>
                 </a>
+                <a href="/setting/export" class="dashboard-card">
+                    <div class="dashboard-title">Export (BOE XML)</div>
+                    <div class="dashboard-desc">
+                        Export (BOE XML)
+                    </div>
+                </a>
                 <a href="/setting/log" class="dashboard-card">
                     <div class="dashboard-title">Log</div>
                     <div class="dashboard-desc">

@@ -174,7 +174,7 @@ Partial Class Order_Rework_Default
         ddlOrderId.Items.Clear()
         Try
             If Not String.IsNullOrEmpty(customerId) Then
-                ddlOrderId.DataSource = orderClass.GetDataTable("SELECT Id, OrderId + ' (' + OrderNumber + ')' AS DataOrder FROM OrderHeaders WHERE CustomerId='" & customerId & "' AND (Status = 'Shipped Out' OR Status = 'Completed') AND Active=1")
+                ddlOrderId.DataSource = orderClass.GetDataTable("SELECT Id, OrderId + ' (' + OrderNumber + ')' AS DataOrder FROM OrderHeaders WHERE CustomerId='" & customerId & "' AND Status IN ('Shipped Out', 'Completed') AND Active=1 AND NOT EXISTS (SELECT 1 FROM OrderReworks WHERE OrderReworks.HeaderId = OrderHeaders.Id AND OrderReworks.Status = 'Pending Approval')")
                 ddlOrderId.DataTextField = "DataOrder"
                 ddlOrderId.DataValueField = "Id"
                 ddlOrderId.DataBind()

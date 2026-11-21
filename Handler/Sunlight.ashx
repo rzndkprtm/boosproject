@@ -168,16 +168,7 @@ Public Class Sunlight : Implements IHttpHandler
                     Dim fabricIdB As String = String.Empty
                     Dim fabricColourIdB As String = String.Empty
                     Dim fabricGroupB As String = String.Empty
-                    If blindName_Fix = "Dual Blinds" OrElse blindName_Fix = "Link 2 Blinds Dependent" OrElse blindName_Fix = "Link 2 Blinds Independent" Then
-                        Dim secondData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderDetails_Sunlight WHERE HeaderId='" & headerId & "' AND UniqueId='" & uniqueId & "' AND BlindNo='Blind 2'")
 
-                        fabricTypeB = secondData("FabricTypeB").ToString().Trim()
-                        fabricColourB = secondData("FabricColourB").ToString().Trim()
-
-                        fabricIdB = orderClass.GetItemData("SELECT Id FROM Fabrics WHERE Name='" & fabricTypeB & "'")
-                        fabricColourIdB = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricIdB & "' AND Colour='" & fabricColourB & "'")
-                        fabricGroupB = orderClass.GetFabricGroup(fabricIdB)
-                    End If
 
                     Dim fabricIdC As String = String.Empty
                     Dim fabricColourIdC As String = String.Empty
@@ -255,6 +246,17 @@ Public Class Sunlight : Implements IHttpHandler
                     Dim bottomIdF As String = String.Empty
                     Dim bottomColourIdF As String = String.Empty
                     Dim bottomFlatF As String = String.Empty
+
+                    If blindName_Fix = "Dual Blinds" OrElse blindName_Fix = "Link 2 Blinds Dependent" OrElse blindName_Fix = "Link 2 Blinds Independent" Then
+                        Dim secondData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderDetails_Sunlight WHERE HeaderId='" & headerId & "' AND UniqueId='" & uniqueId & "' AND BlindNo='Blind 2'")
+
+                        fabricTypeB = secondData("FabricTypeB").ToString().Trim()
+                        fabricColourB = secondData("FabricColourB").ToString().Trim()
+
+                        fabricIdB = orderClass.GetItemData("SELECT Id FROM Fabrics WHERE Name='" & fabricTypeB & "'")
+                        fabricColourIdB = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricIdB & "' AND Colour='" & fabricColourB & "'")
+                        fabricGroupB = orderClass.GetFabricGroup(fabricIdB)
+                    End If
 
 
 
@@ -1271,7 +1273,7 @@ Public Class Sunlight : Implements IHttpHandler
     End Sub
 
     Private Sub InsertOrderHeader(headerId As String, orderData As OrderData)
-        Dim sql As String = "INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, OrderFactory, OrderDelivery, OrderContact, OrderAddress, OrderContainer, Status, CreatedBy, CreatedDate, SubmittedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, 'Regular', 'BIG', 'Default', '', '', 'NSW', 'New Order', 1568, GETDATE(), GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);"
+        Dim sql As String = "INSERT INTO OrderHeaders (Id, OrderId, CustomerId, OrderNumber, OrderName, OrderNote, OrderType, OrderFactory, OrderDelivery, OrderContact, OrderAddress, OrderContainer, Status, CreatedBy, CreatedDate, SubmittedDate, Payment, Amount, Download, Active) VALUES (@Id, @OrderId, @CustomerId, @OrderNumber, @OrderName, @OrderNote, 'Regular', 'BIG', 'Default', '', '', 'NSW', 'New Order', 2, GETDATE(), GETDATE(), 0, 0, 'No', 1); INSERT INTO OrderQuotes VALUES (@Id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.00, 0.00, 0.00, 0.00);"
 
         Using thisConn As New SqlConnection(myConn)
             Using thisCmd As New SqlCommand(sql, thisConn)

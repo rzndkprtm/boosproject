@@ -571,7 +571,7 @@ Public Class SuratClass
                         itemDescription = String.Format("{0} {1} {2} {3}", productName, fabricColourName, size, squareMetreText)
                     End If
 
-                    If designName = "Skyline Shutter Express" OrElse designName = "Skyline Shutter Ocean" Then
+                    If designName = "Skyline Shutter Express" Then
                         itemDescription = String.Format("{0} {1} {2}", productName, size, squareMetreText)
                     End If
 
