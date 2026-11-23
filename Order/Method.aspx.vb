@@ -1,7 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Web.Services
-Imports System.Reflection
 
 Partial Class Order_Method
     Inherits Page
@@ -5723,7 +5722,7 @@ Partial Class Order_Method
             If String.IsNullOrEmpty(data.controlpositionc) Then Return "CONTROL POSITION FOR THRID BLIND IS REQUIRED !"
         End If
 
-        If blindName = "Link 3 Blinds Independent with Dependent" OrElse blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 2 Blinds Independent" OrElse blindName = "DB Link 2 Blinds Independent with Dependent" Then
+        If blindName = "Link 3 Blinds Independent with Dependent" OrElse blindName = "DB Link 2 Blinds Dependent" OrElse blindName = "DB Link 2 Blinds Independent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" Then
             If controlName = "Chain" Then
                 If Not String.IsNullOrEmpty(data.chaincolourc) Then
                     If String.IsNullOrEmpty(data.chainstopperc) Then Return "CHAIN STOPPER FOR THIRD BLIND IS REQUIRED !"
@@ -5788,12 +5787,10 @@ Partial Class Order_Method
         End If
 
         If blindName = "DB Link 3 Blinds Independent with Dependent" Then
-            If Not String.IsNullOrEmpty(data.controlpositiond) Then
-                If Not data.controlpositiond = data.controlposition Then
-                    Return "POSISI INDEPENDENT HARUS SAMA ANTARA 2 SISI ROLLER !"
-                End If
-            End If
             If String.IsNullOrEmpty(data.controlpositiond) Then Return "CONTROL POSITION FOR SECOND ROLLER IS REQUIRED !"
+            If Not String.IsNullOrEmpty(data.controlpositiond) Then
+                If Not data.controlpositiond = data.controlposition Then Return "THE INDEPENDENT POSITION MUST BE THE SAME ON BOTH SIDES OF THE ROLLER !"
+            End If
         End If
 
         If blindName = "DB Link 2 Blinds Independent" OrElse blindName = "DB Link 3 Blinds Dependent" OrElse blindName = "DB Link 3 Blinds Independent with Dependent" Then
@@ -6496,7 +6493,7 @@ Partial Class Order_Method
                     End If
                 End If
 
-                If data.controllengthb = String.Empty OrElse data.controllengthb = "Standard" Then
+                If data.controllengthb = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropb * 2 / 3)
                     If chainLengthB = "Static" Then
                         controllengthb = 500
@@ -6514,6 +6511,9 @@ Partial Class Order_Method
                             End If
                         End If
                     End If
+                End If
+                If data.controllengthb = "Custom" Then
+                    controllengthb = controllength
                 End If
             End If
 
@@ -6872,7 +6872,7 @@ Partial Class Order_Method
                     End If
                 End If
 
-                If data.controllengthb = String.Empty OrElse data.controllengthb = "Standard" Then
+                If data.controllengthb = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropb * 2 / 3)
                     If chainLengthB = "Static" Then
                         controllengthb = 500
@@ -6890,6 +6890,9 @@ Partial Class Order_Method
                             End If
                         End If
                     End If
+                End If
+                If data.controllengthb = "Custom" Then
+                    controllengthb = controllength
                 End If
             End If
 
@@ -7272,7 +7275,7 @@ Partial Class Order_Method
                     End If
                 End If
 
-                If data.controllengthc = "" OrElse data.controllengthc = "Standard" Then
+                If data.controllengthc = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropc * 2 / 3)
                     If chainLengthC = "Static" Then
                         controllengthc = 500
@@ -7290,6 +7293,10 @@ Partial Class Order_Method
                             End If
                         End If
                     End If
+                End If
+
+                If data.controllengthc = "Custom" Then
+                    controllengthc = controllength
                 End If
             End If
 
@@ -7473,7 +7480,7 @@ Partial Class Order_Method
                     End If
                 End If
 
-                If data.controllengthc = "" OrElse data.controllengthc = "Standard" Then
+                If data.controllengthc = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropc * 2 / 3)
                     If chainLengthC = "Static" Then
                         controllengthc = 500
@@ -7491,6 +7498,9 @@ Partial Class Order_Method
                             End If
                         End If
                     End If
+                End If
+                If data.controllengthc = "Custom" Then
+                    controllengthc = controllength
                 End If
             End If
 
@@ -7717,7 +7727,7 @@ Partial Class Order_Method
                     End If
                 End If
 
-                If data.controllengthb = "" OrElse data.controllengthb = "Standard" Then
+                If data.controllengthb = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropb * 2 / 3)
                     If chainLengthB = "Static" Then
                         controllengthb = 500
@@ -7775,6 +7785,16 @@ Partial Class Order_Method
                             End If
                         End If
                     End If
+                End If
+
+                If data.controllengthb = "custom" Then
+                    controllengthb = controllength
+                End If
+                If data.controllengthc = "custom" Then
+                    controllengthc = controllength
+                End If
+                If data.controllengthd = "custom" Then
+                    controllengthd = controllength
                 End If
             End If
 
@@ -8219,7 +8239,7 @@ Partial Class Order_Method
                 data.springassist = String.Empty
             End If
 
-            If controlName = "Chain" Then
+            If controlType = "Chain" Then
                 If String.IsNullOrEmpty(data.chaincolourc) Then
                     data.chaincolourc = data.chaincolour
                     data.chainstopperc = data.chainstopper
@@ -8274,8 +8294,7 @@ Partial Class Order_Method
                         End If
                     End If
                 End If
-
-                If data.controllengthc = "" OrElse data.controllengthc = "Standard" Then
+                If data.controllengthc = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropc * 2 / 3)
                     If chainLengthC = "Static" Then
                         controllengthc = 500
@@ -8294,8 +8313,7 @@ Partial Class Order_Method
                         End If
                     End If
                 End If
-
-                If data.controllengthd = "" OrElse data.controllengthd = "Standard" Then
+                If data.controllengthd = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropd * 2 / 3)
                     If chainLengthD = "Static" Then
                         controllengthd = 500
@@ -8314,8 +8332,7 @@ Partial Class Order_Method
                         End If
                     End If
                 End If
-
-                If data.controllengthf = "" OrElse data.controllengthf = "Standard" Then
+                If data.controllengthf = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropf * 2 / 3)
                     If chainLengthF = "Static" Then
                         controllengthf = 500
@@ -8333,6 +8350,16 @@ Partial Class Order_Method
                             End If
                         End If
                     End If
+                End If
+
+                If data.controllengthc = "Custom" Then
+                    controllengthc = controllength
+                End If
+                If data.controllengthd = "Custom" Then
+                    controllengthd = controllength
+                End If
+                If data.controllengthf = "Custom" Then
+                    controllengthf = controllength
                 End If
 
                 If controlName = "Somfy Altus 40 RTS 3/30" OrElse controlName = "Somfy LS40 3/30" OrElse controlName = "LSN40" OrElse controlName = "Battery Remote" OrElse controlName = "240V (Hardwired) Remote" Then

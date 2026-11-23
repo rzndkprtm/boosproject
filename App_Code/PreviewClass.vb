@@ -1533,6 +1533,28 @@ Public Class PreviewClass
 
                         If controlType = "Chain" Then
                             chainColour = chainName : remoteType = ""
+
+                            If blindName = "Link 2 Blinds Dependent" Then
+                                If itemBlind = "2" Then controlName = "N/A"
+                            End If
+                            If blindName = "Link 3 Blinds Dependent" Then
+                                If itemBlind = "2" Then controlName = "N/A"
+                                If itemBlind = "3" Then controlName = "N/A"
+                            End If
+                            If blindName = "DB Link 2 Blinds Dependent" Then
+                                If itemBlind = "2" Then controlName = "N/A"
+                                If itemBlind = "4" Then controlName = "N/A"
+                            End If
+                            If blindName = "DB Link 3 Blinds Dependent" Then
+                                If itemBlind = "2" Then controlName = "N/A"
+                                If itemBlind = "3" Then controlName = "N/A"
+                                If itemBlind = "5" Then controlName = "N/A"
+                                If itemBlind = "6" Then controlName = "N/A"
+                            End If
+                            If blindName = "DB Link 3 Blinds Independent with Dependent" Then
+                                If itemBlind = "2" Then controlName = "N/A"
+                                If itemBlind = "5" Then controlName = "N/A"
+                            End If
                         End If
                         If controlType = "Motorised" Then
                             chainColour = String.Empty
@@ -1554,6 +1576,10 @@ Public Class PreviewClass
                                 If itemBlind = "3" Then controlName = "N/A"
                                 If itemBlind = "5" Then controlName = "N/A"
                                 If itemBlind = "6" Then controlName = "N/A"
+                            End If
+                            If blindName = "DB Link 3 Blinds Independent with Dependent" Then
+                                If itemBlind = "2" Then controlName = "N/A"
+                                If itemBlind = "5" Then controlName = "N/A"
                             End If
                         End If
 

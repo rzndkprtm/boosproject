@@ -258,8 +258,6 @@ Public Class Sunlight : Implements IHttpHandler
                         fabricGroupB = orderClass.GetFabricGroup(fabricIdB)
                     End If
 
-
-
                     Dim mounting_Fix As String = "Opening Size " & mounting
                     Dim roll_Fix As String = rollDirection
                     If rollDirection = "Resever Roll" Then roll_Fix = "Reverse"
