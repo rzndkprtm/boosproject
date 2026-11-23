@@ -1304,9 +1304,6 @@ Partial Class Order_Upload
                                                 Exit For
                                             End If
 
-                                            MessageError(True, "SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & " " & tubeName & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
-                                            Exit For
-
                                             fabricId = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & " " & tubeName & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
                                             If String.IsNullOrEmpty(fabricId) Then
                                                 Dim thisAlert As String = String.Format("THE FABRIC TYPE FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
