@@ -842,17 +842,212 @@ Partial Class Order_Upload
                                             Exit For
                                         End If
 
-                                        If String.IsNullOrEmpty(wandColour) Then
-                                            MessageError(True, "WAND COLOUR IS REQUIRED !")
+                                        Dim productData As DataRow = orderClass.GetDataRow("SELECT Id, Status FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='" & tubeId & "' AND ColourType='" & colourId & "' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued')")
+                                        If productData Is Nothing Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
                                             Exit For
                                         End If
 
-                                        Dim productData As DataRow = orderClass.GetDataRow("SELECT Id, Status FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='" & tubeId & "' AND ColourType='" & colourId & "' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued')")
-                                        If productData Is Nothing Then
-
+                                        If productData("Status").ToString() = "Out of Stock" Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY OUT OF STOCK. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+                                        If productData("Status").ToString() = "Discontinued" Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY DISCONTINUED. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
                                         End If
 
+                                        Dim productId As String = productData("Id").ToString()
 
+                                        If String.IsNullOrEmpty(wandColour) Then
+                                            MessageError(True, "TRACK WAND COLOUR IS REQUIRED !")
+                                            Exit For
+                                        End If
+
+                                        If tubeName = "Plantation (PG)" AndAlso String.IsNullOrEmpty(batten) Then
+                                            MessageError(True, "FRONT BATTEN COLOUR IS REQUIRED !")
+                                            Exit For
+                                        End If
+
+                                        If String.IsNullOrEmpty(fabricType) Then
+                                            MessageError(True, "FABRIC TYPE IS REQUIRED !")
+                                            Exit For
+                                        End If
+
+                                        Dim fabricId As String = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
+                                        If String.IsNullOrEmpty(fabricId) Then
+                                            MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID ! [FABRIC TYPE] !")
+                                            Exit For
+                                        End If
+
+                                        If String.IsNullOrEmpty(fabricColour) Then
+                                            MessageError(True, "FABRIC COLOUR IS REQUIRED !")
+                                            Exit For
+                                        End If
+                                        Dim fabricColourData As String = orderClass.GetItemData("SELECT Id, Status FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued')")
+                                        If fabricColourData Is Nothing Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If fabricColourData("Status").ToString() = "Out of Stock" Then
+                                            Dim thisAlert As String = String.Format("THE FABRIC COLOUR YOU REQUESTED IS CURRENTLY OUT OF STOCK. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+                                        If fabricColourData("Status").ToString() = "Discontinued" Then
+                                            Dim thisAlert As String = String.Format("THE FABRIC COLOUR YOU REQUESTED IS CURRENTLY DISCONTINUED. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim fabricColourId As String = fabricColourData("Id").ToString()
+
+                                        If Not Integer.TryParse(widthText, width) Then
+                                            MessageError(True, "PLEASE CHECK YOUR WIDTH ORDER !")
+                                            Exit For
+                                        End If
+
+                                        If Not Integer.TryParse(dropText, drop) Then
+                                            MessageError(True, "PLEASE CHECK YOUR DROP ORDER !")
+                                            Exit For
+                                        End If
+
+                                        Dim wandLength As String = "Standard"
+                                        Dim wandLengthValue As Integer = Math.Ceiling(drop * 2 / 3)
+                                        If wandLengthValue > 1000 Then wandLengthValue = 1000
+
+                                        If Not String.IsNullOrEmpty(wandLengthText) AndAlso Not wandLengthText.ToLower().Contains("standard") AndAlso Not wandLengthText.ToLower().Contains("std") Then
+                                            wandLength = "Custom"
+                                            wandLengthText = wandLengthText.Replace("mm", "")
+                                            If Not Integer.TryParse(wandLengthText, wandLengthValue) OrElse wandLengthValue < 0 OrElse wandLengthValue > 1000 Then
+                                                MessageError(True, "PLEASE CHECK YOUR CORD LENGTH & MAXIMUM IS 1000MM !")
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If String.IsNullOrEmpty(layoutCode) Then
+                                            MessageError(True, "LAYOUT CODE IS REQUIRED !")
+                                            Exit For
+                                        End If
+
+                                        If String.IsNullOrEmpty(trackType) Then
+                                            MessageError(True, "NUMBER OF TRACKS IS REQUIRED !")
+                                            Exit For
+                                        End If
+
+                                        trackType = trackType.Replace("Track", "").Trim()
+
+                                        If String.IsNullOrEmpty(panelQty) Then
+                                            MessageError(True, "NUMBER OF PANELS IS REQUIRED !")
+                                            Exit For
+                                        End If
+
+                                        panelQty = panelQty.Replace("Panels", "").Trim()
+
+                                        Dim fixLayoutCode As String = String.Empty
+                                        If trackType = "2" AndAlso panelQty = "2" Then
+                                            If layoutCode = "2L" Then fixLayoutCode = "A"
+                                            If layoutCode = "2R" Then fixLayoutCode = "B"
+                                        End If
+                                        If trackType = "3" AndAlso panelQty = "3" Then
+                                            If layoutCode = "3L" Then fixLayoutCode = "C"
+                                            If layoutCode = "3R" Then fixLayoutCode = "D"
+                                        End If
+                                        If trackType = "3" AndAlso panelQty = "5" Then
+                                            If layoutCode = "3L - 2R" Then fixLayoutCode = "E"
+                                            If layoutCode = "2L - 3R" Then fixLayoutCode = "F"
+                                        End If
+                                        If trackType = "4" AndAlso panelQty = "4" Then
+                                            If layoutCode = "4L" Then fixLayoutCode = "G"
+                                            If layoutCode = "4R" Then fixLayoutCode = "H"
+                                        End If
+                                        If trackType = "4" AndAlso panelQty = "5" Then
+                                            If layoutCode = "3L - 2R" Then fixLayoutCode = "I"
+                                            If layoutCode = "2L - 3R" Then fixLayoutCode = "J"
+                                        End If
+                                        If trackType = "4" AndAlso panelQty = "6" Then
+                                            If layoutCode = "2L - 4R" Then fixLayoutCode = "K"
+                                            If layoutCode = "4L - 2R" Then fixLayoutCode = "L"
+                                        End If
+                                        If trackType = "4" AndAlso panelQty = "7" Then
+                                            If layoutCode = "4L - 3R" Then fixLayoutCode = "M"
+                                            If layoutCode = "3L - 4R" Then fixLayoutCode = "N"
+                                        End If
+                                        If trackType = "5" AndAlso panelQty = "5" Then
+                                            If layoutCode = "5L" Then fixLayoutCode = "O"
+                                            If layoutCode = "5R" Then fixLayoutCode = "P"
+                                        End If
+                                        If trackType = "5" AndAlso panelQty = "7" Then
+                                            If layoutCode = "5L - 2R" Then fixLayoutCode = "Q"
+                                            If layoutCode = "2L - 5R" Then fixLayoutCode = "R"
+                                        End If
+                                        If trackType = "5" AndAlso panelQty = "8" Then
+                                            If layoutCode = "3L - 5R" Then fixLayoutCode = "S"
+                                            If layoutCode = "5L - 3R" Then fixLayoutCode = "T"
+                                        End If
+                                        If trackType = "5" AndAlso panelQty = "9" Then
+                                            If layoutCode = "5L - 4R" Then fixLayoutCode = "U"
+                                            If layoutCode = "4L - 5R" Then fixLayoutCode = "V"
+                                        End If
+
+                                        Dim linearMetre As Decimal = width / 1000
+                                        Dim squareMetre As Decimal = width * drop / 1000000
+
+                                        If tubeName = "Plain  (PG)" OrElse tubeName = "Sewless  (PG)" Then
+                                            batten = String.Empty : battenb = String.Empty
+                                        End If
+
+                                        Dim groupFabric As String = orderClass.GetFabricGroup(fabricId)
+                                        Dim groupName As String = String.Format("Panel Glide - {0} - {1} - {2}", blindType, tubeName, groupFabric)
+
+                                        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, priceGroupId)
+
+                                        Dim itemId As String = orderClass.GetNewOrderItemId()
+
+                                        Using thisConn As New SqlConnection(myConn)
+                                            Using thisCmd As New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], WandColour, WandLength, WandLengthValue, LayoutCode, LayoutCodeCustom, TrackType, PanelQty, StackPosition, Batten, BattenB, LinearMetre, SquareMetre, TotalItems, Notes, Markup, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @WandColour, @WandLength, @WandLengthValue, @LayoutCode, @LayoutCodeCustom, @TrackType, @PanelQty, 'Front', @Batten, @BattenB, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
+                                                thisCmd.Parameters.AddWithValue("@Id", itemId)
+                                                thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                                                thisCmd.Parameters.AddWithValue("@ProductId", productId)
+                                                thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(fabricId), CType(DBNull.Value, Object), fabricId))
+                                                thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(fabricColourId), CType(DBNull.Value, Object), fabricColourId))
+                                                thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                                                thisCmd.Parameters.AddWithValue("@Qty", 1)
+                                                thisCmd.Parameters.AddWithValue("@Room", room)
+                                                thisCmd.Parameters.AddWithValue("@Mounting", String.Format("{0} {1}", sizeType, mounting))
+                                                thisCmd.Parameters.AddWithValue("@Width", width)
+                                                thisCmd.Parameters.AddWithValue("@Drop", drop)
+                                                thisCmd.Parameters.AddWithValue("@WandPosition", "Front")
+                                                thisCmd.Parameters.AddWithValue("@WandColour", wandColour)
+                                                thisCmd.Parameters.AddWithValue("@WandLength", wandLength)
+                                                thisCmd.Parameters.AddWithValue("@WandLengthValue", wandLengthValue)
+                                                thisCmd.Parameters.AddWithValue("@LayoutCode", fixLayoutCode)
+                                                thisCmd.Parameters.AddWithValue("@LayoutCodeCustom", String.Empty)
+                                                thisCmd.Parameters.AddWithValue("@TrackType", trackType)
+                                                thisCmd.Parameters.AddWithValue("@PanelQty", panelQty)
+                                                thisCmd.Parameters.AddWithValue("@Batten", batten)
+                                                thisCmd.Parameters.AddWithValue("@BattenB", battenb)
+                                                thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
+                                                thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
+                                                thisCmd.Parameters.AddWithValue("@Notes", notes)
+                                                thisCmd.Parameters.AddWithValue("@MarkUp", 0)
+
+                                                thisConn.Open()
+                                                thisCmd.ExecuteNonQuery()
+                                            End Using
+                                        End Using
+
+                                        orderClass.ResetPriceDetail(headerId, itemId)
+                                        orderClass.CalculatePrice(headerId, itemId)
+                                        orderClass.FinalCostItem(headerId, itemId)
+
+                                        dataLog = {"OrderDetails", itemId, Session("LoginId"), "Order Item Added"}
+                                        orderClass.Logs(dataLog)
                                     End If
                                     If designName_Fix = "Pelmet" Then
 
@@ -1109,7 +1304,10 @@ Partial Class Order_Upload
                                                 Exit For
                                             End If
 
-                                            fabricId = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
+                                            MessageError(True, "SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & " " & tubeName & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
+                                            Exit For
+
+                                            fabricId = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & " " & tubeName & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
                                             If String.IsNullOrEmpty(fabricId) Then
                                                 Dim thisAlert As String = String.Format("THE FABRIC TYPE FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
                                                 MessageError(True, thisAlert)
@@ -4033,17 +4231,10 @@ Partial Class Order_Upload
 
                         If Not msgError.InnerText = "" Then
                             Using thisConn As New SqlConnection(myConn)
-                                thisConn.Open()
-
-                                Using thisCmd As New SqlCommand("UPDATE OrderHeaders SET Active=0 WHERE Id=@Id",
+                                Using thisCmd As New SqlCommand("UPDATE OrderHeaders SET Active=0 WHERE Id=@Id; UPDATE OrderDetails SET Active=0 WHERE HeaderId=@Id",
                                 thisConn)
                                     thisCmd.Parameters.AddWithValue("@Id", headerId)
-                                    thisCmd.ExecuteNonQuery()
-                                End Using
-
-                                Using thisCmd As New SqlCommand("UPDATE OrderDetails SET Active=0 WHERE HeaderId=@Id",
-                                thisConn)
-                                    thisCmd.Parameters.AddWithValue("@Id", headerId)
+                                    thisConn.Open()
                                     thisCmd.ExecuteNonQuery()
                                 End Using
                             End Using

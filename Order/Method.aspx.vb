@@ -8003,7 +8003,7 @@ Partial Class Order_Method
                     End If
                 End If
 
-                If data.controllengthd = "" OrElse data.controllengthd = "Standard" Then
+                If data.controllengthd = "Standard" Then
                     Dim stdControlLength As Integer = Math.Ceiling(dropd * 2 / 3)
                     If chainLengthD = "Static" Then
                         controllengthd = 500
@@ -8021,6 +8021,9 @@ Partial Class Order_Method
                             End If
                         End If
                     End If
+                End If
+                If data.controllengthd = "Custom" Then
+                    controllengthd = controllength
                 End If
             End If
 

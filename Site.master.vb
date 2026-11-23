@@ -355,17 +355,13 @@ Partial Public Class SiteMaster
 
             Dim sessionId As String = Request.Cookies("deviceId").Value
 
-            Dim checkData As DataRow = settingClass.GetDataRow(
-            "SELECT 1 FROM Sessions WHERE Id='" & UCase(sessionId) &
-            "' AND LoginId='" & Session("LoginId") & "'")
-
+            Dim checkData As DataRow = settingClass.GetDataRow("SELECT 1 FROM Sessions WHERE Id='" & UCase(sessionId) & "' AND LoginId='" & Session("LoginId") & "'")
             If checkData Is Nothing Then
                 HandleRedirectLogin()
                 Return Nothing
             End If
 
             Return sessionId
-
         Catch ex As Exception
             HandleRedirectLogin()
             Return Nothing

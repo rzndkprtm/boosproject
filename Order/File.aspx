@@ -256,9 +256,7 @@
             var accumulatedPath = "";
 
             pathParts.forEach(function (part, index) {
-                accumulatedPath = accumulatedPath
-                    ? accumulatedPath + "/" + part
-                    : part;
+                accumulatedPath = accumulatedPath ? accumulatedPath + "/" + part : part;
 
                 var item = document.createElement("li");
                 item.className = "breadcrumb-item";
@@ -300,9 +298,7 @@
             if (files.length === 0) {
                 if (fileEmpty) {
                     fileEmpty.style.display = "";
-                    fileEmpty.textContent = currentSearch
-                        ? "No files or folders match your search."
-                        : "This folder is empty.";
+                    fileEmpty.textContent = currentSearch ? "No files or folders match your search." : "This folder is empty.";
                 }
 
                 if (fileCount) {
@@ -350,16 +346,12 @@
                 row.appendChild(nameCell);
 
                 var typeCell = document.createElement("td");
-                typeCell.textContent = file.IsDirectory
-                    ? "Folder"
-                    : (file.Extension || "File").replace(".", "").toUpperCase();
+                typeCell.textContent = file.IsDirectory ? "Folder" : (file.Extension || "File").replace(".", "").toUpperCase();
 
                 row.appendChild(typeCell);
 
                 var sizeCell = document.createElement("td");
-                sizeCell.textContent = file.IsDirectory
-                    ? "-"
-                    : formatBytes(file.Size || 0);
+                sizeCell.textContent = file.IsDirectory ? "-" : formatBytes(file.Size || 0);
 
                 row.appendChild(sizeCell);
 
@@ -418,9 +410,7 @@
                 var startItem = ((currentPage - 1) * pageSize) + 1;
                 var endItem = Math.min(currentPage * pageSize, totalItems);
 
-                fileCount.textContent =
-                    "Showing " + startItem + "-" + endItem +
-                    " of " + totalItems + " items";
+                fileCount.textContent = "Showing " + startItem + "-" + endItem + " of " + totalItems + " items";
             }
         }
         function renderPagination() {

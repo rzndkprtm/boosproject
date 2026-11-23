@@ -319,8 +319,8 @@ Partial Class Order_Rework_Detail
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Rejected' WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Rejected'. Description=@Description WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", txtRejectDescription.Text)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
