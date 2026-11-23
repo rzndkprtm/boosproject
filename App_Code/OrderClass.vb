@@ -3728,11 +3728,9 @@ Public Class OrderClass
                             costSell = thisSell
 
                             Dim discountAdditionalValue As Decimal = 0
-
                             If method = "Percent" Then
                                 discountAdditionalValue = Math.Round(costSellAdditional * discount, 4)
                             End If
-
                             If method = "Value" Then
                                 discountAdditionalValue = discount
                             End If

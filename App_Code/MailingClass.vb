@@ -1581,11 +1581,11 @@ Public Class MailingClass
         End Try
     End Sub
 
-    Public Sub ReworkApprove(reworkId As String)
+    Public Sub ReworkApproved(newHeaderId As String)
         Try
-            If String.IsNullOrEmpty(reworkId) Then Exit Sub
+            If String.IsNullOrEmpty(newHeaderId) Then Exit Sub
 
-            Dim orderData As DataRow = GetDataRow("SELECT OrderReworks.*, Logins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, OrderHeaders.OrderId AS OrderId, OrderHeaders.OrderNumber AS OrderNumber, OrderHeaders.OrderName AS OrderName, OrderHeaders.CustomerId AS CustomerId, OrderHeaders.OrderId FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN Logins ON OrderReworks.CreatedBy=Logins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id WHERE OrderReworks.Id='" & reworkId & "'")
+            Dim orderData As DataRow = GetDataRow("SELECT OrderHeaders.*, OrderReworks.HeaderId AS OriginalId, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Companys.Name AS CompanyName FROM OrderHeaders LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN OrderReworks ON OrderHeaders.Id = OrderReworks.HeaderIdNew LEFT JOIN Companys ON Customers.CompanyId=Companys.Id WHERE OrderHeaders.Id='" & newHeaderId & "'")
             If orderData Is Nothing Then Exit Sub
 
             Dim customerId As String = orderData("CustomerId").ToString()
@@ -1595,15 +1595,17 @@ Public Class MailingClass
             Dim orderNumber As String = orderData("OrderNumber").ToString()
             Dim orderName As String = orderData("OrderName").ToString()
 
-            Dim headerIdNew As String = orderData("HeaderIdNew").ToString()
+            Dim companyId As String = orderData("CompanyId").ToString()
+            Dim companyName As String = orderData("CompanyName").ToString()
 
-            Dim orderNewData As DataRow = GetDataRow("SELECT * FROM OrderHeaders WHERE Id='" & headerIdNew & "'")
-            Dim orderIdNew As String = orderNewData("OrderId").ToString()
-            Dim orderNumberNew As String = orderNewData("OrderNumber").ToString()
-            Dim orderNameNew As String = orderNewData("OrderName").ToString()
+            Dim originalId As String = orderData("OriginalId").ToString()
 
-            Dim companyId As String = orderNewData("CompanyId").ToString()
-            Dim companyName As String = GetItemData("SELECT Name FROM Companys WHERE Id='" & companyId & "'")
+            Dim originalData As DataRow = GetDataRow("SELECT * FROM OrderHeaders WHERE Id='" & originalId & "'")
+            If originalData Is Nothing Then Exit Sub
+
+            Dim orderIdOriginal As String = originalData("OrderId").ToString()
+            Dim orderNumberOriginal As String = originalData("OrderNumber").ToString()
+            Dim orderNameOriginal As String = originalData("OrderName").ToString()
 
             Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Rework Approved' AND Status='Active'")
             If mailData Is Nothing Then Exit Sub
@@ -1630,40 +1632,192 @@ Public Class MailingClass
 
             Dim mailBody As String = String.Empty
 
-            mailBody = "<span style='font-family: Cambria; font-size: 16px;'>"
+            mailBody = "<div style='font-family:Cambria; font-size:16px;'>"
             mailBody &= String.Format("Hi <b>{0}</b>,", customerName)
             mailBody &= "<br /><br />"
-            mailBody &= "The rework request you submitted has been approved for processing."
+            mailBody &= "The rework request you submitted has been successfully approved for processing."
             mailBody &= "<br /><br />"
-            mailBody &= "We have created a new job in the online ordering portal with the following details:"
-            mailBody &= "</span>"
+            mailBody &= "A new job has been created in our online ordering portal. Please find the details below for your reference."
+            mailBody &= "</div>"
 
-            mailBody &= "<br /><br />"
+            mailBody &= "<br />"
 
-            mailBody &= "<table cellpadding='5' cellspacing='0' style='font-family:Cambria; font-size:16px; border-collapse:collapse; border:1px solid #000;'>"
-            mailBody &= "<tr style='background-color:#f0f0f0;'>"
+            mailBody &= "<table cellpadding='8' cellspacing='0' style='font-family:Cambria; font-size:15px; border-collapse:collapse; border:1px solid #000; width:100%;'>"
+
+            mailBody &= "<tr style='background-color:#e9ecef;'>"
             mailBody &= "<td style='font-weight:bold; border:1px solid #000;'>Data</td>"
             mailBody &= "<td style='font-weight:bold; border:1px solid #000;'>Original Order</td>"
             mailBody &= "<td style='font-weight:bold; border:1px solid #000;'>New Order (Rework)</td>"
             mailBody &= "</tr>"
 
-            mailBody &= "<tr><td style='border:1px solid #000;'>Customer Name</td><td style='border:1px solid #000;'>" & customerName & "</td><td style='border:1px solid #000;'>" & customerName & "</td></tr>"
-            mailBody &= "<tr><td style='border:1px solid #000;'>Order ID</td><td style='border:1px solid #000;'>" & orderId & "</td><td style='border:1px solid #000;'>" & orderIdNew & "</td></tr>"
-            mailBody &= "<tr><td style='border:1px solid #000;'>Order Number</td><td style='border:1px solid #000;'>" & orderNumber & "</td><td style='border:1px solid #000;'>" & orderNumberNew & "</td></tr>"
-            mailBody &= "<tr><td style='border:1px solid #000;'>Order Name</td><td style='border:1px solid #000;'>" & orderName & "</td><td style='border:1px solid #000;'>" & orderNameNew & "</td></tr>"
+            mailBody &= "<tr>"
+            mailBody &= "<td style='border:1px solid #000;'>Customer Name</td>"
+            mailBody &= "<td style='border:1px solid #000;'>" & customerName & "</td>"
+            mailBody &= "<td style='border:1px solid #000;'>" & customerName & "</td>"
+            mailBody &= "</tr>"
+
+            mailBody &= "<tr>"
+            mailBody &= "<td style='border:1px solid #000;'>Order ID</td>"
+            mailBody &= "<td style='border:1px solid #000;'>" & orderIdOriginal & "</td>"
+            mailBody &= "<td style='border:1px solid #000;'>" & orderId & "</td>"
+            mailBody &= "</tr>"
+
+            mailBody &= "<tr>"
+            mailBody &= "<td style='border:1px solid #000;'>Order Number</td>"
+            mailBody &= "<td style='border:1px solid #000;'>" & orderNumberOriginal & "</td>"
+            mailBody &= "<td style='border:1px solid #000;'>" & orderNumber & "</td>"
+            mailBody &= "</tr>"
+
+            mailBody &= "<tr>"
+            mailBody &= "<td style='border:1px solid #000;'>Order Name</td>"
+            mailBody &= "<td style='border:1px solid #000;'>" & orderNameOriginal & "</td>"
+            mailBody &= "<td style='border:1px solid #000;'>" & orderName & "</td>"
+            mailBody &= "</tr>"
+
             mailBody &= "</table>"
 
             mailBody &= "<br /><br />"
 
-            mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
+            mailBody &= "<div style='font-family:Cambria; font-size:16px;'>"
+            mailBody &= "Kind Regards,"
+            mailBody &= "</div>"
+
             mailBody &= "<br /><br /><br />"
+
             If companyId = "2" Then
-                mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Customer Service</span>"
+                mailBody &= "<span style='font-family:Cambria; font-size:16px;'>Customer Service</span>"
                 mailBody &= "<br />"
-                mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>" & companyName & "</span>"
+                mailBody &= "<span style='font-family:Cambria; font-size:16px; font-weight:bold;'>" & companyName & "</span>"
             End If
+
             If companyId = "3" Then
-                mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>Reza Andika Pratama</span>"
+                mailBody &= "<span style='font-family:Cambria; font-size:16px; font-weight:bold;'>Reza Andika Pratama</span>"
+            End If
+
+            Dim myMail As New MailMessage
+
+            myMail.Subject = String.Format("{0} Original Order {1}", mailSubject, orderId)
+            myMail.From = New MailAddress(mailServer, mailAlias)
+
+            If customerMail.Rows.Count > 0 Then
+                For i As Integer = 0 To customerMail.Rows.Count - 1
+                    Dim thisEmail As String = customerMail.Rows(i)("Email").ToString()
+                    myMail.To.Add(thisEmail)
+                Next
+            End If
+
+            If Not mailCc = "" Then
+                Dim thisArray() As String = mailCc.Split(";")
+                Dim thisMail As String = String.Empty
+                For Each thisMail In thisArray
+                    myMail.CC.Add(thisMail)
+                Next
+            End If
+
+            If Not mailBcc = "" Then
+                Dim thisArray() As String = mailBcc.Split(";")
+                Dim thisMail As String = String.Empty
+                For Each thisMail In thisArray
+                    myMail.Bcc.Add(thisMail)
+                Next
+            End If
+
+            myMail.Body = mailBody
+            myMail.IsBodyHtml = True
+            Dim smtpClient As New SmtpClient()
+            smtpClient.Host = mailHost
+            smtpClient.Port = mailPort
+            smtpClient.EnableSsl = mailEnableSSL
+            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
+            smtpClient.Timeout = 120000
+
+            If mailNetworkCredentials Then
+                smtpClient.UseDefaultCredentials = False
+                smtpClient.Credentials = New NetworkCredential(mailAccount, mailPassword)
+            Else
+                smtpClient.UseDefaultCredentials = mailDefaultCredentials
+            End If
+            smtpClient.Send(myMail)
+        Catch ex As Exception
+        End Try
+    End Sub
+
+    Public Sub ReworkRejected(reworkId As String)
+        Try
+            If String.IsNullOrEmpty(reworkId) Then Exit Sub
+
+            Dim orderData As DataRow = GetDataRow("SELECT OrderReworks.*, OrderHeaders.OrderId, OrderHeaders.OrderNumber, OrderHeaders.OrderName, OrderHeaders.CustomerId AS CustomerId, Logins.FullName AS CreatedFullName, Customers.Name AS CustomerName, Customers.CompanyId AS CompanyId, Companys.Name AS CompanyName FROM OrderReworks LEFT JOIN OrderHeaders ON OrderReworks.HeaderId=OrderHeaders.Id LEFT JOIN Logins ON OrderReworks.CreatedBy=Logins.Id LEFT JOIN Customers ON OrderHeaders.CustomerId=Customers.Id LEFT JOIN Companys ON Customers.CompanyId=Companys.Id WHERE OrderReworks.Id='" & reworkId & "'")
+            If orderData Is Nothing Then Exit Sub
+
+            Dim customerId As String = orderData("CustomerId").ToString()
+            Dim customerName As String = orderData("CustomerName").ToString()
+
+            Dim orderId As String = orderData("OrderId").ToString()
+            Dim orderNumber As String = orderData("OrderNumber").ToString()
+            Dim orderName As String = orderData("OrderName").ToString()
+
+            Dim companyId As String = orderData("CompanyId").ToString()
+            Dim companyName As String = orderData("CompanyName").ToString()
+
+            Dim mailData As DataRow = GetDataRow("SELECT * FROM Mailings WHERE CompanyId='" & companyId & "' AND Name='Rework Rejected' AND Status='Active'")
+            If mailData Is Nothing Then Exit Sub
+
+            Dim mailServer As String = mailData("Server").ToString()
+            Dim mailHost As String = mailData("Host").ToString()
+            Dim mailPort As Integer = mailData("Port")
+
+            Dim mailAccount As String = mailData("Account").ToString()
+            Dim mailPassword As String = mailData("Password").ToString()
+            Dim mailAlias As String = mailData("Alias").ToString()
+            Dim mailSubject As String = mailData("Subject").ToString()
+
+            Dim mailTo As String = mailData("To").ToString()
+            Dim mailCc As String = mailData("Cc").ToString()
+            Dim mailBcc As String = mailData("Bcc").ToString()
+
+            Dim mailNetworkCredentials As Boolean = mailData("NetworkCredentials")
+            Dim mailDefaultCredentials As Boolean = mailData("DefaultCredentials")
+            Dim mailEnableSSL As Boolean = mailData("EnableSSL")
+
+            Dim customerMail As DataTable = GetDataTable("SELECT Email FROM CustomerContacts CROSS APPLY STRING_SPLIT(Tags, ',') AS thisArray WHERE CustomerId='" & customerId & "' AND thisArray.VALUE='Confirming'")
+            If customerMail.Rows.Count = 0 Then Exit Sub
+
+            Dim mailBody As String = String.Empty
+
+            mailBody = "<div style='font-family:Cambria; font-size:16px;'>"
+            mailBody &= String.Format("Hi <b>{0}</b>,", customerName)
+            mailBody &= "<br /><br />"
+            mailBody &= "We regret to inform you that your rework request has been rejected."
+            mailBody &= "<br /><br />"
+            mailBody &= "Please find the original order details below for your reference."
+            mailBody &= "</div>"
+
+            mailBody &= "<br />"
+
+            mailBody &= "<table cellpadding='8' cellspacing='0' style='font-family:Cambria; font-size:15px; border-collapse:collapse; border:1px solid #000; width:100%;'>"
+            mailBody &= "<tr style='background-color:#e9ecef;'><td colspan='2' style='font-weight:bold; border:1px solid #000;'>Original Order Details</td></tr>"
+            mailBody &= "<tr><td style='border:1px solid #000; width:35%;'>Customer Name</td><td style='border:1px solid #000;'>" & customerName & "</td></tr>"
+            mailBody &= "<tr><td style='border:1px solid #000;'>Order ID</td><td style='border:1px solid #000;'>" & orderId & "</td></tr>"
+            mailBody &= "<tr><td style='border:1px solid #000;'>Order Number</td><td style='border:1px solid #000;'>" & orderNumber & "</td></tr>"
+            mailBody &= "<tr><td style='border:1px solid #000;'>Order Name</td><td style='border:1px solid #000;'>" & orderName & "</td></tr>"
+            mailBody &= "</table>"
+
+            mailBody &= "<br /><br />"
+            mailBody &= "<div style='font-family:Cambria; font-size:16px;'>"
+            mailBody &= "If you require further clarification, please contact our team."
+            mailBody &= "<br /><br />"
+            mailBody &= "Kind Regards,"
+            mailBody &= "</div>"
+
+            mailBody &= "<br /><br /><br />"
+
+            If companyId = "2" Then
+                mailBody &= "<span style='font-family:Cambria; font-size:16px;'>Customer Service</span><br />"
+                mailBody &= "<span style='font-family:Cambria; font-size:16px; font-weight:bold;'>" & companyName & "</span>"
+            End If
+
+            If companyId = "3" Then
+                mailBody &= "<span style='font-family:Cambria; font-size:16px; font-weight:bold;'>Reza Andika Pratama</span>"
             End If
 
             Dim myMail As New MailMessage

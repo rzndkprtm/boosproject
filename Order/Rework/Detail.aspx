@@ -296,7 +296,7 @@
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
-                    <asp:Button runat="server" ID="btnRejectRework" CssClass="btn btn-danger" Text="Confirm" OnClick="btnRejectRework_Click" OnClientClick="return showWaiting();" />
+                    <asp:Button runat="server" ID="btnRejectRework" CssClass="btn btn-danger" Text="Submit" OnClick="btnRejectRework_Click" OnClientClick="return showWaiting();" />
                 </div>
             </div>
         </div>

@@ -125,8 +125,6 @@ Partial Class Order_Rework_Detail
     Protected Sub btnApproveRework_Click(sender As Object, e As EventArgs)
         MessageError(False, String.Empty)
         Try
-            Dim newHeaderId As String = orderClass.GetNewOrderHeaderId()
-
             Dim cashSale As Boolean = orderClass.GetCustomerCashSale(lblCustomerId.Text)
 
             Dim status As String = "New Order"
@@ -163,6 +161,7 @@ Partial Class Order_Rework_Detail
                 End If
             End If
 
+            Dim newHeaderId As String = orderClass.GetNewOrderHeaderId()
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Approved', HeaderIdNew=@HeaderIdNew WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
@@ -296,11 +295,11 @@ Partial Class Order_Rework_Detail
             orderClass.UpdateOrderFactory(newHeaderId)
 
             Dim mailingClass As New MailingClass
-            mailingClass.ReworkApprove(lblReworkId.Text)
+            mailingClass.ReworkApproved(newHeaderId)
 
-            If cashSale = True Then
-                mailingClass.NewOrder_Proforma(newHeaderId)
-            End If
+            'If cashSale = True Then
+            '    mailingClass.NewOrder_Proforma(newHeaderId)
+            'End If
 
             url = String.Format("~/order/detail?orderid={0}", newHeaderId)
             Response.Redirect(url, False)
@@ -308,9 +307,6 @@ Partial Class Order_Rework_Detail
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
                 MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
-                If Session("RoleName") = "Customer" Then
-                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
-                End If
             End If
         End Try
     End Sub
@@ -319,12 +315,16 @@ Partial Class Order_Rework_Detail
         MessageError(False, String.Empty)
         Try
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Rejected'. Description=@Description WHERE Id=@Id", thisConn)
-                    thisCmd.Parameters.AddWithValue("@Id", txtRejectDescription.Text)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderReworks SET Status='Rejected', Description=@Description WHERE Id=@Id", thisConn)
+                    thisCmd.Parameters.AddWithValue("@Id", lblReworkId.Text)
+                    thisCmd.Parameters.AddWithValue("@Description", txtRejectDescription.Text)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
+
+            Dim mailingClass As New MailingClass
+            mailingClass.ReworkRejected(lblReworkId.Text)
 
             url = String.Format("~/order/rework/detail?reworkid={0}", lblReworkId.Text)
             Response.Redirect(url, False)
