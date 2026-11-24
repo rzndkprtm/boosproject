@@ -223,6 +223,8 @@ Public Class Sunlight : Implements IHttpHandler
 
                     Dim chainIdB As String = String.Empty
                     Dim chainStopperB As String = String.Empty
+                    Dim controlLengthB_Fix As String = String.Empty
+                    Dim controlLengthValueB_Fix As Integer = 0
 
                     Dim chainIdC As String = String.Empty
                     Dim chainStopperC As String = String.Empty
@@ -280,18 +282,10 @@ Public Class Sunlight : Implements IHttpHandler
                     Dim bottomColourIdF As String = String.Empty
                     Dim bottomFlatF As String = String.Empty
 
-                    If blindName_Fix = "Dual Blinds" OrElse blindName_Fix = "Link 2 Blinds Dependent" OrElse blindName_Fix = "Link 2 Blinds Independent" Then
-                        Dim secondData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderDetail_Globals WHERE HeaderId='" & headerId & "' AND UniqueId='" & uniqueId & "' AND BlindNo='Blind 2'")
-
-                        fabricTypeB = secondData("FabricTypeB").ToString().Trim()
-                        fabricColourB = secondData("FabricColourB").ToString().Trim()
-
-                        fabricIdB = orderClass.GetItemData("SELECT Id FROM Fabrics WHERE Name='" & fabricTypeB & "'")
-                        fabricColourIdB = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricIdB & "' AND Colour='" & fabricColourB & "'")
-                        fabricGroupB = orderClass.GetFabricGroup(fabricIdB)
-                    End If
-
+                    Dim controlPositionB As String = String.Empty
                     Dim roll_Fix As String = rollDirection
+                    Dim rollB_Fix As String = String.Empty
+
                     If rollDirection = "Reverse Roll" Then roll_Fix = "Reverse"
 
                     Dim priceProductGroup As String = String.Empty
@@ -304,8 +298,101 @@ Public Class Sunlight : Implements IHttpHandler
                     Dim priceName As String = String.Format("{0} - {1} - {2}", designName_Fix, "Gear Reduction", fabricGroup)
                     priceProductGroup = orderClass.GetPriceProductGroupId(priceName, designId, "14")
 
+                    Dim widthB As Integer = 0
+                    Dim dropB As Integer = 0
+
                     Dim linearMetre As Decimal = width / 1000
+                    Dim linearMetreB As Decimal = 0
                     Dim squareMetre As Decimal = width * drop / 1000000
+                    Dim squareMetreB As Decimal = 0
+
+                    Dim totalItems As Integer = 1
+
+                    If blindName_Fix = "Dual Blinds" OrElse blindName_Fix = "Link 2 Blinds Dependent" OrElse blindName_Fix = "Link 2 Blinds Independent" Then
+                        Dim secondData As DataRow = orderClass.GetDataRow("SELECT FabricType, FabricColour, RollDirection, ControlPosition, Width, [Drop], Trim, BottomType, BottomColour, ControlType, ChainColour, ChainLength FROM OrderDetail_Globals WHERE HeaderId='" & headerId & "' AND UniqueId='" & uniqueId & "' AND BlindNo='Blind 2'")
+
+                        widthB = If(IsDBNull(secondData("Width")), 0, Convert.ToInt32(secondData("Width")))
+                        dropB = If(IsDBNull(secondData("Drop")), 0, Convert.ToInt32(secondData("Drop")))
+
+                        controlType = secondData("ControlType").ToString()
+                        chainColour = secondData("ChainColour").ToString()
+                        chainLength = If(IsDBNull(secondData("ChainLength")), 0, Convert.ToInt32(secondData("ChainLength")))
+                        controlName_Fix = controlType
+
+                        If controlName_Fix = "Chain" Then
+                            If chainColour = "Birch White" Then chainColour = "Ivory"
+                            If chainColour = "Chrome" Then chainColour = "Nickel Plated"
+
+                            chainName = String.Format("Cont Plastic {0}", chainColour)
+                            If chainName = "Chrome" OrElse chainName = "Stainless Steel" Then
+                                chainName = String.Format("Cont {0}", chainColour)
+                            End If
+
+                            chainIdB = orderClass.GetItemData("SELECT Id FROM Chains WHERE Name='" & chainName & "'")
+                            chainStopperB = "No Stopper"
+                            If chainLength = 0 Then
+                                controlLengthB_Fix = "Standard"
+                                Dim stdControlLength As Integer = Math.Ceiling(dropB * 2 / 3)
+
+                                controlLengthValueB_Fix = 500
+                                If stdControlLength > 500 Then controlLengthValueB_Fix = 750
+                                If stdControlLength > 750 Then controlLengthValueB_Fix = 1000
+                                If stdControlLength > 1000 Then controlLengthValueB_Fix = 1200
+                                If stdControlLength > 1200 Then controlLengthValueB_Fix = 1500
+
+                                If chainName = "Nickel Plated" OrElse chainName = "Stainless Steel" Then
+                                    controlLengthValueB_Fix = Math.Ceiling((dropB * 3 / 4) + 80)
+                                End If
+                            End If
+                            If chainLength > 0 Then
+                                controlLengthB_Fix = "Custom"
+                                controlLengthValueB_Fix = chainLength
+                            End If
+                        End If
+
+                        fabricTypeB = secondData("FabricType").ToString()
+                        fabricColourB = secondData("FabricColour").ToString()
+
+                        fabricIdB = orderClass.GetItemData("SELECT Id FROM Fabrics WHERE Name='" & fabricTypeB & "'")
+                        fabricColourIdB = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricIdB & "' AND Colour='" & fabricColourB & "'")
+                        fabricGroupB = orderClass.GetFabricGroup(fabricIdB)
+
+                        controlPositionB = secondData("ControlPosition").ToString()
+                        rollB_Fix = secondData("RollDirection").ToString()
+                        If secondData("RollDirection").ToString() = "Reverse Roll" Then rollB_Fix = "Reverse"
+
+                        trim = secondData("Trim").ToString()
+                        bottomType = secondData("BottomType").ToString()
+                        bottomColour = secondData("BottomColour").ToString()
+
+                        If trim = "Plain" Then
+                            bottomName = "Trim"
+                        End If
+                        If trim = "Bottom Rail" Then
+                            If bottomType = "Oval" Then bottomName = "Oval"
+                            If bottomType = "Round 20mm" Then bottomName = "Round"
+                            If bottomType = "Flat Back Covered" Then bottomName = "Flat"
+                            If bottomType = "Flat Front Covered" Then bottomName = "Flat"
+                            If bottomType = "Flat Front Covered With Mohair" Then bottomName = "Flat Mohair"
+                        End If
+                        If trim = "Decorative – Fancy Trim" Then
+                            bottomName = "Trim"
+                        End If
+
+                        bottomIdB = orderClass.GetItemData("SELECT Id FROM Bottoms WHERE Name='" & bottomName & "'")
+                        bottomColourIdB = orderClass.GetItemData("SELECT Id FROM BottomColours WHERE BottomId='" & bottomIdB & "' AND Colour='" & bottomColour & "'")
+                        If bottomType = "Flat Back Covered" Then bottomFlatB = "Fabric on Back"
+                        If bottomType = "Flat Front Covered" Then bottomFlatB = "Fabric on Front"
+                        If bottomType = "Flat Front Covered With Mohair" Then bottomFlatB = "Fabric on Front"
+
+                        linearMetreB = widthB / 1000
+                        squareMetreB = widthB * dropB / 1000000
+
+                        totalItems = 2
+
+                        priceName = String.Format("{0} - {1} - {2}", designName_Fix, "Gear Reduction", fabricGroupB)
+                        priceProductGroupB = orderClass.GetPriceProductGroupId(priceName, designId, "14")
+                    End If
 
                     For i As Integer = 1 To qty
                         Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -365,42 +452,42 @@ Public Class Sunlight : Implements IHttpHandler
                                 thisCmd.Parameters.AddWithValue("@Mounting", mounting)
 
                                 thisCmd.Parameters.AddWithValue("@Width", width)
-                                thisCmd.Parameters.AddWithValue("@WidthB", 0)
+                                thisCmd.Parameters.AddWithValue("@WidthB", widthB)
                                 thisCmd.Parameters.AddWithValue("@WidthC", 0)
                                 thisCmd.Parameters.AddWithValue("@WidthD", 0)
                                 thisCmd.Parameters.AddWithValue("@WidthE", 0)
                                 thisCmd.Parameters.AddWithValue("@WidthF", 0)
 
                                 thisCmd.Parameters.AddWithValue("@Drop", drop)
-                                thisCmd.Parameters.AddWithValue("@DropB", 0)
+                                thisCmd.Parameters.AddWithValue("@DropB", dropB)
                                 thisCmd.Parameters.AddWithValue("@DropC", 0)
                                 thisCmd.Parameters.AddWithValue("@DropD", 0)
                                 thisCmd.Parameters.AddWithValue("@DropE", 0)
                                 thisCmd.Parameters.AddWithValue("@DropF", 0)
 
                                 thisCmd.Parameters.AddWithValue("@Roll", roll_Fix)
-                                thisCmd.Parameters.AddWithValue("@RollB", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@RollB", rollB_Fix)
                                 thisCmd.Parameters.AddWithValue("@RollC", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@RollD", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@RollE", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@RollF", String.Empty)
 
                                 thisCmd.Parameters.AddWithValue("@ControlPosition", controlPosition)
-                                thisCmd.Parameters.AddWithValue("@ControlPositionB", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@ControlPositionB", controlPositionB)
                                 thisCmd.Parameters.AddWithValue("@ControlPositionC", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@ControlPositionD", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@ControlPositionE", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@ControlPositionF", String.Empty)
 
                                 thisCmd.Parameters.AddWithValue("@ControlLength", controlLength_Fix)
-                                thisCmd.Parameters.AddWithValue("@ControlLengthB", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@ControlLengthB", controlLengthB_Fix)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthC", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthD", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthE", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthF", String.Empty)
 
                                 thisCmd.Parameters.AddWithValue("@ControlLengthValue", controlLengthValue_Fix)
-                                thisCmd.Parameters.AddWithValue("@ControlLengthValueB", 0)
+                                thisCmd.Parameters.AddWithValue("@ControlLengthValueB", controlLengthValueB_Fix)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthValueC", 0)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthValueD", 0)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthValueE", 0)
@@ -431,14 +518,14 @@ Public Class Sunlight : Implements IHttpHandler
                                 thisCmd.Parameters.AddWithValue("@Supply", String.Empty)
 
                                 thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
-                                thisCmd.Parameters.AddWithValue("@LinearMetreB", 0)
+                                thisCmd.Parameters.AddWithValue("@LinearMetreB", linearMetreB)
                                 thisCmd.Parameters.AddWithValue("@LinearMetreC", 0)
                                 thisCmd.Parameters.AddWithValue("@LinearMetreD", 0)
                                 thisCmd.Parameters.AddWithValue("@LinearMetreE", 0)
                                 thisCmd.Parameters.AddWithValue("@LinearMetreF", 0)
 
                                 thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
-                                thisCmd.Parameters.AddWithValue("@SquareMetreB", 0)
+                                thisCmd.Parameters.AddWithValue("@SquareMetreB", squareMetreB)
                                 thisCmd.Parameters.AddWithValue("@SquareMetreC", 0)
                                 thisCmd.Parameters.AddWithValue("@SquareMetreD", 0)
                                 thisCmd.Parameters.AddWithValue("@SquareMetreE", 0)
@@ -453,7 +540,7 @@ Public Class Sunlight : Implements IHttpHandler
                                 thisCmd.Parameters.AddWithValue("@PrintingG", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@PrintingH", String.Empty)
 
-                                thisCmd.Parameters.AddWithValue("@TotalItems", 1)
+                                thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                                 thisCmd.Parameters.AddWithValue("@Notes", notes)
                                 thisCmd.Parameters.AddWithValue("@MarkUp", 0)
 
