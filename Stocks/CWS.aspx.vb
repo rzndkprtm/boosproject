@@ -8,346 +8,243 @@ Partial Class Stocks_CWS
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Not IsPostBack Then
-            BindRoller(txtSearchRoller.Text)
-            BindDesignShades()
-            BindCurtain(txtSearchCurtain.Text)
-            BindVertical(txtSearchVertical.Text)
-            BindSaphora()
-            BindVenetian()
-            BindCellularShades()
-            BindFabricChart(txtSearchFabricChart.Text)
+            BindRoller(txtSearchRoller.Text, "4")
+            BindVertical(txtSearchVertical.Text, "4")
+            BindSaphora("4")
+            BindCellularShades("4")
+            BindDesignShades("4")
+            BindCurtain(txtSearchCurtain.Text, "4")
+            BindVenetian("4")
+
+            BindFabricChart(txtSearchFabricChart.Text, "4")
         End If
     End Sub
 
-    Protected Sub BindRoller(searchText As String)
-        MessageError_Roller(False, String.Empty)
-        Try
-            Dim paramsItem As New List(Of SqlParameter) From {
-                New SqlParameter("@DesignId", "12"),
-                New SqlParameter("@CompanyDetailId", 4),
-                New SqlParameter("@SearchText", searchText),
-                New SqlParameter("@Type", "ROLLER")
-            }
-            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
-
-            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
-                rptRoller.DataSource = Nothing
-                rptRoller.DataBind()
-                pnlNoDataRoller.Visible = True
-                Return
-            End If
-
-            pnlNoDataRoller.Visible = False
-
-            rptRoller.DataSource = dt
-            rptRoller.DataBind()
-        Catch ex As Exception
-            MessageError_Roller(True, ex.Message)
-        End Try
-    End Sub
-
-    Protected Sub rptRoller_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
-        Try
-            If e.Item.ItemType <> ListItemType.Item AndAlso e.Item.ItemType <> ListItemType.AlternatingItem Then
-                Return
-            End If
-
-            Dim fabricId As Integer = Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "Id"))
-
-            Dim rptRollerColour As Repeater = CType(e.Item.FindControl("rptRollerColour"), Repeater)
-
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompany.VALUE='4' ORDER BY Colour")
-
-            rptRollerColour.DataSource = dt
-            rptRollerColour.DataBind()
-        Catch ex As Exception
-            MessageError_Roller(True, ex.Message)
-        End Try
-    End Sub
-
     Protected Sub btnSearchRoller_Click(sender As Object, e As EventArgs)
-        BindRoller(txtSearchRoller.Text)
-    End Sub
-
-    Protected Sub MessageError_Roller(visible As Boolean, message As String)
-        divErrorRoller.Visible = visible : msgErrorRoller.InnerText = message
-    End Sub
-
-    Protected Sub BindVertical(searchText As String)
-        MessageError_Vertical(False, String.Empty)
-        Try
-            Dim paramsItem As New List(Of SqlParameter) From {
-                New SqlParameter("@DesignId", "11"),
-                New SqlParameter("@CompanyDetailId", 4),
-                New SqlParameter("@SearchText", searchText),
-                New SqlParameter("@Type", "VERTICAL")
-            }
-            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
-
-            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
-                rptVertical.DataSource = Nothing
-                rptVertical.DataBind()
-                pnlNoDataVertical.Visible = True
-                Return
-            End If
-
-            pnlNoDataVertical.Visible = False
-
-            rptVertical.DataSource = dt
-            rptVertical.DataBind()
-        Catch ex As Exception
-            MessageError_Vertical(True, ex.ToString())
-        End Try
-    End Sub
-
-    Protected Sub rptVertical_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
-        Try
-            If e.Item.ItemType <> ListItemType.Item AndAlso e.Item.ItemType <> ListItemType.AlternatingItem Then
-                Return
-            End If
-
-            Dim fabricId As Integer = Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "Id"))
-
-            Dim rptVerticalColour As Repeater = CType(e.Item.FindControl("rptVerticalColour"), Repeater)
-
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompany.VALUE='4' ORDER BY Name")
-
-            rptVerticalColour.DataSource = dt
-            rptVerticalColour.DataBind()
-        Catch ex As Exception
-            MessageError_Vertical(True, ex.Message)
-        End Try
-    End Sub
-
-    Protected Sub MessageError_Vertical(visible As Boolean, message As String)
-        divErrorVertical.Visible = visible : msgErrorVertical.InnerText = message
+        BindRoller(txtSearchRoller.Text, "4")
     End Sub
 
     Protected Sub btnSearchVertical_Click(sender As Object, e As EventArgs)
-        BindVertical(txtSearchVertical.Text)
-    End Sub
-
-    Protected Sub BindSaphora()
-        MessageError_Saphora(False, String.Empty)
-        Try
-            Dim paramsItem As New List(Of SqlParameter) From {
-                New SqlParameter("@DesignId", "19"),
-                New SqlParameter("@CompanyDetailId", 4),
-                New SqlParameter("@SearchText", String.Empty),
-                New SqlParameter("@Type", "SAPHORA")
-            }
-            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
-
-            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
-                rptSaphora.DataSource = Nothing
-                rptSaphora.DataBind()
-                pnlNoDataSaphora.Visible = True
-                Return
-            End If
-
-            pnlNoDataSaphora.Visible = False
-
-            rptSaphora.DataSource = dt
-            rptSaphora.DataBind()
-        Catch ex As Exception
-            MessageError_Saphora(True, ex.ToString())
-        End Try
-    End Sub
-
-    Protected Sub rptSaphora_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
-        Try
-            If e.Item.ItemType <> ListItemType.Item AndAlso e.Item.ItemType <> ListItemType.AlternatingItem Then
-                Return
-            End If
-
-            Dim fabricId As Integer = Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "Id"))
-
-            Dim rptSaphoraColour As Repeater = CType(e.Item.FindControl("rptSaphoraColour"), Repeater)
-
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompany.VALUE='4' ORDER BY Name")
-
-            rptSaphoraColour.DataSource = dt
-            rptSaphoraColour.DataBind()
-        Catch ex As Exception
-            MessageError_Saphora(True, ex.Message)
-        End Try
-    End Sub
-
-    Protected Sub MessageError_Saphora(visible As Boolean, message As String)
-        divErrorSaphora.Visible = visible : msgErrorSaphora.InnerText = message
-    End Sub
-
-    Protected Sub BindCellularShades()
-        MessageError_Cellular(False, String.Empty)
-        Try
-            Dim paramsItem As New List(Of SqlParameter) From {
-                New SqlParameter("@DesignId", "2"),
-                New SqlParameter("@CompanyDetailId", 4),
-                New SqlParameter("@SearchText", String.Empty),
-                New SqlParameter("@Type", "CELLULAR SHADES")
-            }
-            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
-
-            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
-                rptCellular.DataSource = Nothing
-                rptCellular.DataBind()
-                pnlNoDataCellular.Visible = True
-                Return
-            End If
-
-            pnlNoDataCellular.Visible = False
-
-            rptCellular.DataSource = dt
-            rptCellular.DataBind()
-        Catch ex As Exception
-            MessageError_Cellular(True, ex.ToString())
-        End Try
-    End Sub
-
-    Protected Sub rptCellular_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
-        Try
-            If e.Item.ItemType <> ListItemType.Item AndAlso e.Item.ItemType <> ListItemType.AlternatingItem Then
-                Return
-            End If
-
-            Dim fabricId As Integer = Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "Id"))
-
-            Dim rptCellularColour As Repeater = CType(e.Item.FindControl("rptCellularColour"), Repeater)
-
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompany.VALUE='4' ORDER BY Name")
-
-            rptCellularColour.DataSource = dt
-            rptCellularColour.DataBind()
-        Catch ex As Exception
-            MessageError_Cellular(True, ex.Message)
-        End Try
-    End Sub
-
-    Protected Sub MessageError_Cellular(visible As Boolean, message As String)
-        divErrorCellular.Visible = visible : msgErrorCellular.InnerText = message
-    End Sub
-
-    Protected Sub BindDesignShades()
-        MessageError_DesignShades(False, String.Empty)
-        Try
-            Dim paramsItem As New List(Of SqlParameter) From {
-                New SqlParameter("@DesignId", "4"),
-                New SqlParameter("@CompanyDetailId", 4),
-                New SqlParameter("@SearchText", String.Empty),
-                New SqlParameter("@Type", "DESIGN SHADES")
-            }
-            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
-
-            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
-                rptDesignShades.DataSource = Nothing
-                rptDesignShades.DataBind()
-                pnlNoDataDesignShades.Visible = True
-                Return
-            End If
-
-            pnlNoDataDesignShades.Visible = False
-
-            rptDesignShades.DataSource = dt
-            rptDesignShades.DataBind()
-        Catch ex As Exception
-            MessageError_DesignShades(True, ex.Message)
-        End Try
-    End Sub
-
-    Protected Sub rptDesignShades_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
-        Try
-            If e.Item.ItemType <> ListItemType.Item AndAlso e.Item.ItemType <> ListItemType.AlternatingItem Then
-                Return
-            End If
-
-            Dim fabricId As Integer = Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "Id"))
-
-            Dim rptDesignShadesColour As Repeater = CType(e.Item.FindControl("rptDesignShadesColour"), Repeater)
-
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND Factory='Express' AND SubCompany.VALUE='4' ORDER BY Name")
-
-            rptDesignShadesColour.DataSource = dt
-            rptDesignShadesColour.DataBind()
-        Catch ex As Exception
-            MessageError_Roller(True, ex.Message)
-        End Try
-    End Sub
-
-    Protected Sub MessageError_DesignShades(visible As Boolean, message As String)
-        divErrorDesignShades.Visible = visible : msgErrorDesignShades.InnerText = message
-    End Sub
-
-    Protected Sub BindCurtain(searchText As String)
-        MessageError_Curtain(False, String.Empty)
-        Try
-            Dim paramsItem As New List(Of SqlParameter) From {
-                New SqlParameter("@DesignId", "3"),
-                New SqlParameter("@CompanyDetailId", 4),
-                New SqlParameter("@SearchText", searchText),
-                New SqlParameter("@Type", "CURTAIN")
-            }
-            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
-
-            If dt Is Nothing OrElse dt.Rows.Count = 0 Then
-                rptCurtain.DataSource = Nothing
-                rptCurtain.DataBind()
-                pnlNoDataCurtain.Visible = True
-                Return
-            End If
-
-            pnlNoDataCurtain.Visible = False
-
-            rptCurtain.DataSource = dt
-            rptCurtain.DataBind()
-        Catch ex As Exception
-            MessageError_Curtain(True, ex.ToString())
-        End Try
-    End Sub
-
-    Protected Sub MessageError_Curtain(visible As Boolean, message As String)
-        divErrorCurtain.Visible = visible : msgErrorCurtain.InnerText = message
+        BindVertical(txtSearchVertical.Text, "4")
     End Sub
 
     Protected Sub btnSearchCurtain_Click(sender As Object, e As EventArgs)
-        BindCurtain(txtSearchCurtain.Text)
+        BindCurtain(txtSearchCurtain.Text, "4")
     End Sub
 
-    Protected Sub rptCurtain_ItemDataBound(sender As Object, e As RepeaterItemEventArgs)
-        Try
-            If e.Item.ItemType <> ListItemType.Item AndAlso e.Item.ItemType <> ListItemType.AlternatingItem Then
-                Return
+    Protected Sub btnFabricChart_Click(sender As Object, e As EventArgs)
+        BindFabricChart(txtSearchFabricChart.Text, "4")
+    End Sub
+
+    Protected Sub gvRoller_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType <> DataControlRowType.DataRow Then Return
+
+        For i As Integer = 1 To 6
+            Dim colour As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i))
+            Dim status As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i & "Status"))
+            Dim description As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i & "Description"))
+
+            Dim cell As TableCell = e.Row.Cells(i)
+
+            If String.IsNullOrWhiteSpace(colour) Then
+                cell.CssClass = "stock-empty"
+                cell.Text = "-"
+                Continue For
             End If
 
-            Dim fabricId As Integer = Convert.ToInt32(DataBinder.Eval(e.Item.DataItem, "Id"))
+            cell.Text = "<div class='stock-colour'>" & Server.HtmlEncode(colour.ToUpper()) & "</div><div class='stock-info'>" & description & "</div>"
 
-            Dim rptCurtainColour As Repeater = CType(e.Item.FindControl("rptCurtainColour"), Repeater)
-
-            Dim dt As DataTable = stockClass.GetDataTable("SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(10), ETAFactory, 103) END AS ETAFactory FROM FabricColours CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS SubCompany WHERE FabricId=" & fabricId & " AND SubCompany.VALUE='4' ORDER BY Name")
-
-            rptCurtainColour.DataSource = dt
-            rptCurtainColour.DataBind()
-        Catch ex As Exception
-            MessageError_Curtain(True, ex.Message)
-        End Try
+            Select Case status.Trim().ToUpper()
+                Case "IN STOCK"
+                    cell.BackColor = Drawing.Color.DarkGreen
+                    cell.ForeColor = Drawing.Color.White
+                Case "LIMITED STOCK"
+                    cell.BackColor = Drawing.Color.Yellow
+                    cell.ForeColor = Drawing.Color.Black
+                Case "OUT OF STOCK"
+                    cell.BackColor = Drawing.Color.DarkRed
+                    cell.ForeColor = Drawing.Color.White
+                Case "DISCONTINUED"
+                    cell.BackColor = Drawing.Color.Gray
+                    cell.ForeColor = Drawing.Color.White
+            End Select
+        Next
     End Sub
 
-    Protected Sub BindVenetian()
-        MessageError_Venetian(False, String.Empty)
-        Try
-            Dim paramsItem As New List(Of SqlParameter) From {
-                New SqlParameter("@CompanyDetailId", "4")
-            }
-            gvListVenetian.DataSource = stockClass.GetDataTableSP("sp_Stock_Venetian", paramsItem)
-            gvListVenetian.DataBind()
-        Catch ex As Exception
-            MessageError_Venetian(True, ex.ToString())
-        End Try
+    Protected Sub gvVertical_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType <> DataControlRowType.DataRow Then Return
+
+        For i As Integer = 1 To 6
+            Dim colour As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i))
+            Dim status As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i & "Status"))
+            Dim description As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i & "Description"))
+
+            Dim cell As TableCell = e.Row.Cells(i)
+
+            If String.IsNullOrWhiteSpace(colour) Then
+                cell.CssClass = "stock-empty"
+                cell.Text = "-"
+                Continue For
+            End If
+
+            cell.Text = "<div class='stock-colour'>" & Server.HtmlEncode(colour.ToUpper()) & "</div><div class='stock-info'>" & description & "</div>"
+
+            Select Case status.Trim().ToUpper()
+                Case "IN STOCK"
+                    cell.BackColor = Drawing.Color.DarkGreen
+                    cell.ForeColor = Drawing.Color.White
+                Case "LIMITED STOCK"
+                    cell.BackColor = Drawing.Color.Yellow
+                    cell.ForeColor = Drawing.Color.Black
+                Case "OUT OF STOCK"
+                    cell.BackColor = Drawing.Color.DarkRed
+                    cell.ForeColor = Drawing.Color.White
+                Case "DISCONTINUED"
+                    cell.BackColor = Drawing.Color.Gray
+                    cell.ForeColor = Drawing.Color.White
+            End Select
+        Next
     End Sub
 
-    Protected Sub MessageError_Venetian(visible As Boolean, message As String)
-        divErrorVenetian.Visible = visible : msgErrorVenetian.InnerText = message
+    Protected Sub gvSaphora_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType <> DataControlRowType.DataRow Then Return
+
+        For i As Integer = 1 To 6
+            Dim colour As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i))
+            Dim status As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i & "Status"))
+            Dim description As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i & "Description"))
+
+            Dim cell As TableCell = e.Row.Cells(i)
+
+            If String.IsNullOrWhiteSpace(colour) Then
+                cell.CssClass = "stock-empty"
+                cell.Text = "-"
+                Continue For
+            End If
+
+            cell.Text = "<div class='stock-colour'>" & Server.HtmlEncode(colour.ToUpper()) & "</div><div class='stock-info'>" & description & "</div>"
+
+            Select Case status.Trim().ToUpper()
+                Case "IN STOCK"
+                    cell.BackColor = Drawing.Color.DarkGreen
+                    cell.ForeColor = Drawing.Color.White
+                Case "LIMITED STOCK"
+                    cell.BackColor = Drawing.Color.Yellow
+                    cell.ForeColor = Drawing.Color.Black
+                Case "OUT OF STOCK"
+                    cell.BackColor = Drawing.Color.DarkRed
+                    cell.ForeColor = Drawing.Color.White
+                Case "DISCONTINUED"
+                    cell.BackColor = Drawing.Color.Gray
+                    cell.ForeColor = Drawing.Color.White
+            End Select
+        Next
     End Sub
 
+    Protected Sub gvCellular_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType <> DataControlRowType.DataRow Then Return
+
+        For i As Integer = 1 To 6
+            Dim colour As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i))
+            Dim status As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i & "Status"))
+            Dim description As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i & "Description"))
+
+            Dim cell As TableCell = e.Row.Cells(i)
+
+            If String.IsNullOrWhiteSpace(colour) Then
+                cell.CssClass = "stock-empty"
+                cell.Text = "-"
+                Continue For
+            End If
+
+            cell.Text = "<div class='stock-colour'>" & Server.HtmlEncode(colour.ToUpper()) & "</div><div class='stock-info'>" & description & "</div>"
+
+            Select Case status.Trim().ToUpper()
+                Case "IN STOCK"
+                    cell.BackColor = Drawing.Color.DarkGreen
+                    cell.ForeColor = Drawing.Color.White
+                Case "LIMITED STOCK"
+                    cell.BackColor = Drawing.Color.Yellow
+                    cell.ForeColor = Drawing.Color.Black
+                Case "OUT OF STOCK"
+                    cell.BackColor = Drawing.Color.DarkRed
+                    cell.ForeColor = Drawing.Color.White
+                Case "DISCONTINUED"
+                    cell.BackColor = Drawing.Color.Gray
+                    cell.ForeColor = Drawing.Color.White
+            End Select
+        Next
+    End Sub
+
+    Protected Sub gvDesignShades_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType <> DataControlRowType.DataRow Then Return
+
+        For i As Integer = 1 To 6
+            Dim colour As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i))
+            Dim status As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i & "Status"))
+            Dim description As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i & "Description"))
+
+            Dim cell As TableCell = e.Row.Cells(i)
+
+            If String.IsNullOrWhiteSpace(colour) Then
+                cell.CssClass = "stock-empty"
+                cell.Text = "-"
+                Continue For
+            End If
+
+            cell.Text = "<div class='stock-colour'>" & Server.HtmlEncode(colour.ToUpper()) & "</div><div class='stock-info'>" & description & "</div>"
+
+            Select Case status.Trim().ToUpper()
+                Case "IN STOCK"
+                    cell.BackColor = Drawing.Color.DarkGreen
+                    cell.ForeColor = Drawing.Color.White
+                Case "LIMITED STOCK"
+                    cell.BackColor = Drawing.Color.Yellow
+                    cell.ForeColor = Drawing.Color.Black
+                Case "OUT OF STOCK"
+                    cell.BackColor = Drawing.Color.DarkRed
+                    cell.ForeColor = Drawing.Color.White
+                Case "DISCONTINUED"
+                    cell.BackColor = Drawing.Color.Gray
+                    cell.ForeColor = Drawing.Color.White
+            End Select
+        Next
+    End Sub
+
+    Protected Sub gvCurtain_RowDataBound(sender As Object, e As GridViewRowEventArgs)
+        If e.Row.RowType <> DataControlRowType.DataRow Then Return
+
+        For i As Integer = 1 To 6
+            Dim colour As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i))
+            Dim status As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i & "Status"))
+            Dim description As String = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Col" & i & "Description"))
+
+            Dim cell As TableCell = e.Row.Cells(i)
+
+            If String.IsNullOrWhiteSpace(colour) Then
+                cell.CssClass = "stock-empty"
+                cell.Text = "-"
+                Continue For
+            End If
+
+            cell.Text = "<div class='stock-colour'>" & Server.HtmlEncode(colour.ToUpper()) & "</div><div class='stock-info'>" & description & "</div>"
+
+            Select Case status.Trim().ToUpper()
+                Case "IN STOCK"
+                    cell.BackColor = Drawing.Color.DarkGreen
+                    cell.ForeColor = Drawing.Color.White
+                Case "LIMITED STOCK"
+                    cell.BackColor = Drawing.Color.Yellow
+                    cell.ForeColor = Drawing.Color.Black
+                Case "OUT OF STOCK"
+                    cell.BackColor = Drawing.Color.DarkRed
+                    cell.ForeColor = Drawing.Color.White
+                Case "DISCONTINUED"
+                    cell.BackColor = Drawing.Color.Gray
+                    cell.ForeColor = Drawing.Color.White
+            End Select
+        Next
+    End Sub
     Protected Sub gvListVenetian_RowDataBound(sender As Object, e As GridViewRowEventArgs)
         If e.Row.RowType = DataControlRowType.DataRow Then
             For i As Integer = 1 To 6
@@ -402,10 +299,6 @@ Partial Class Stocks_CWS
         End If
     End Sub
 
-    Protected Sub btnFabricChart_Click(sender As Object, e As EventArgs)
-        BindFabricChart(txtSearchFabricChart.Text)
-    End Sub
-
     Protected Sub gvListFabricChart_RowDataBound(sender As Object, e As GridViewRowEventArgs)
         If e.Row.RowType = DataControlRowType.DataRow Then
             For i As Integer = 1 To e.Row.Cells.Count - 1
@@ -431,12 +324,183 @@ Partial Class Stocks_CWS
         End If
     End Sub
 
-    Protected Sub BindFabricChart(searchText As String)
+    Protected Sub gvRoller_PreRender(sender As Object, e As EventArgs) Handles gvRoller.PreRender
+        If gvRoller.Rows.Count > 0 Then
+            gvRoller.UseAccessibleHeader = True
+            gvRoller.HeaderRow.TableSection = TableRowSection.TableHeader
+        End If
+    End Sub
+
+    Protected Sub gvVertical_PreRender(sender As Object, e As EventArgs) Handles gvVertical.PreRender
+        If gvVertical.Rows.Count > 0 Then
+            gvVertical.UseAccessibleHeader = True
+            gvVertical.HeaderRow.TableSection = TableRowSection.TableHeader
+        End If
+    End Sub
+
+    Protected Sub gvSaphora_PreRender(sender As Object, e As EventArgs) Handles gvSaphora.PreRender
+        If gvSaphora.Rows.Count > 0 Then
+            gvSaphora.UseAccessibleHeader = True
+            gvSaphora.HeaderRow.TableSection = TableRowSection.TableHeader
+        End If
+    End Sub
+
+    Protected Sub gvCellular_PreRender(sender As Object, e As EventArgs)
+        If gvCellular.Rows.Count > 0 Then
+            gvCellular.UseAccessibleHeader = True
+            gvCellular.HeaderRow.TableSection = TableRowSection.TableHeader
+        End If
+    End Sub
+
+    Protected Sub gvDesignShades_PreRender(sender As Object, e As EventArgs)
+        If gvDesignShades.Rows.Count > 0 Then
+            gvDesignShades.UseAccessibleHeader = True
+            gvDesignShades.HeaderRow.TableSection = TableRowSection.TableHeader
+        End If
+    End Sub
+
+    Protected Sub gvCurtain_PreRender(sender As Object, e As EventArgs)
+        If gvCurtain.Rows.Count > 0 Then
+            gvCurtain.UseAccessibleHeader = True
+            gvCurtain.HeaderRow.TableSection = TableRowSection.TableHeader
+        End If
+    End Sub
+
+    Protected Sub gvListVenetian_PreRender(sender As Object, e As EventArgs)
+        If gvListVenetian.Rows.Count > 0 Then
+            gvListVenetian.UseAccessibleHeader = True
+            gvListVenetian.HeaderRow.TableSection = TableRowSection.TableHeader
+        End If
+    End Sub
+
+    Protected Sub BindRoller(searchText As String, companyDetail As String)
+        MessageError_Roller(False, String.Empty)
+        Try
+            Dim paramsItem As New List(Of SqlParameter) From {
+                New SqlParameter("@DesignId", "12"),
+                New SqlParameter("@CompanyDetailId", companyDetail),
+                New SqlParameter("@SearchText", searchText),
+                New SqlParameter("@Type", "ROLLER")
+            }
+            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
+
+            gvRoller.DataSource = GetRollerGridData(dt, companyDetail)
+            gvRoller.DataBind()
+        Catch ex As Exception
+            MessageError_Roller(True, ex.Message)
+        End Try
+    End Sub
+
+    Protected Sub BindVertical(searchText As String, companyDetail As String)
+        MessageError_Vertical(False, String.Empty)
+        Try
+            Dim paramsItem As New List(Of SqlParameter) From {
+                New SqlParameter("@DesignId", "11"),
+                New SqlParameter("@CompanyDetailId", companyDetail),
+                New SqlParameter("@SearchText", searchText),
+                New SqlParameter("@Type", "VERTICAL")
+            }
+
+            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
+
+            gvVertical.DataSource = GetVerticalGridData(dt, companyDetail)
+            gvVertical.DataBind()
+        Catch ex As Exception
+            MessageError_Vertical(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindSaphora(companyDetail As String)
+        MessageError_Saphora(False, String.Empty)
+        Try
+            Dim paramsItem As New List(Of SqlParameter) From {
+                New SqlParameter("@DesignId", "19"),
+                New SqlParameter("@CompanyDetailId", companyDetail),
+                New SqlParameter("@SearchText", String.Empty),
+                New SqlParameter("@Type", "SAPHORA")
+            }
+            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
+
+            gvSaphora.DataSource = GetSaphoraGridData(dt, companyDetail)
+            gvSaphora.DataBind()
+        Catch ex As Exception
+            MessageError_Saphora(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindCellularShades(companyDetail As String)
+        MessageError_Cellular(False, String.Empty)
+        Try
+            Dim paramsItem As New List(Of SqlParameter) From {
+                New SqlParameter("@DesignId", "2"),
+                New SqlParameter("@CompanyDetailId", companyDetail),
+                New SqlParameter("@SearchText", String.Empty),
+                New SqlParameter("@Type", "CELLULAR SHADES")
+            }
+            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
+
+            gvCellular.DataSource = GetCellularGridData(dt, companyDetail)
+            gvCellular.DataBind()
+        Catch ex As Exception
+            MessageError_Cellular(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindDesignShades(companyDetail As String)
+        MessageError_DesignShades(False, String.Empty)
+        Try
+            Dim paramsItem As New List(Of SqlParameter) From {
+                New SqlParameter("@DesignId", "4"),
+                New SqlParameter("@CompanyDetailId", companyDetail),
+                New SqlParameter("@SearchText", String.Empty),
+                New SqlParameter("@Type", "DESIGN SHADES")
+            }
+            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
+
+            gvDesignShades.DataSource = GetDesignShadesGridData(dt, companyDetail)
+            gvDesignShades.DataBind()
+        Catch ex As Exception
+            MessageError_DesignShades(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindCurtain(searchText As String, companyDetail As String)
+        MessageError_Curtain(False, String.Empty)
+        Try
+            Dim paramsItem As New List(Of SqlParameter) From {
+                New SqlParameter("@DesignId", "3"),
+                New SqlParameter("@CompanyDetailId", companyDetail),
+                New SqlParameter("@SearchText", searchText),
+                New SqlParameter("@Type", "CURTAIN")
+            }
+            Dim dt As DataTable = stockClass.GetDataTableSP("sp_Stock_Fabric", paramsItem)
+
+            gvCurtain.DataSource = GetCurtainGridData(dt, companyDetail)
+            gvCurtain.DataBind()
+        Catch ex As Exception
+            MessageError_Curtain(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindVenetian(companyDetail As String)
+        MessageError_Venetian(False, String.Empty)
+        Try
+            Dim paramsItem As New List(Of SqlParameter) From {
+                New SqlParameter("@CompanyDetailId", companyDetail)
+            }
+            gvListVenetian.DataSource = stockClass.GetDataTableSP("sp_Stock_Venetian", paramsItem)
+            gvListVenetian.DataBind()
+        Catch ex As Exception
+            MessageError_Venetian(True, ex.ToString())
+        End Try
+    End Sub
+
+    Protected Sub BindFabricChart(searchText As String, companyDetail As String)
         MessageError_FabricChart(False, String.Empty)
         Try
             Dim paramsItem As New List(Of SqlParameter) From {
                 New SqlParameter("@SearchText", searchText),
-                New SqlParameter("@CompanyDetailId", "4")
+                New SqlParameter("@CompanyDetailId", companyDetail)
             }
             gvListFabricChart.DataSource = stockClass.GetDataTableSP("sp_Stock_Fabric_Chart", paramsItem)
             gvListFabricChart.DataBind()
@@ -445,25 +509,511 @@ Partial Class Stocks_CWS
         End Try
     End Sub
 
+    Private Function GetRollerGridData(fabricData As DataTable, companyDetail As String) As DataTable
+        Dim result As New DataTable()
+        Try
+            result.Columns.Add("Name", GetType(String))
+
+            For i As Integer = 1 To 6
+                result.Columns.Add("Col" & i, GetType(String))
+                result.Columns.Add("Col" & i & "Status", GetType(String))
+                result.Columns.Add("Col" & i & "Description", GetType(String))
+            Next
+
+            If fabricData Is Nothing OrElse fabricData.Rows.Count = 0 Then
+                Return result
+            End If
+
+            For Each fabric As DataRow In fabricData.Rows
+                Dim fabricId As Integer = Convert.ToInt32(fabric("Id"))
+                Dim fabricName As String = Convert.ToString(fabric("Name"))
+
+                Dim query As String = "SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' AND (Status='In Stock' OR Status='Out of Stock' OR Status='Limited Stock' OR Status='Discontinued')"
+
+                If Not String.IsNullOrEmpty(companyDetail) Then
+                    query &= " AND EXISTS (SELECT 1 FROM STRING_SPLIT(CompanyDetailId, ',') AS C WHERE C.VALUE='" & companyDetail.Replace("'", "''") & "')"
+                End If
+
+                query &= " ORDER BY Colour"
+
+                Dim colourData As DataTable = stockClass.GetDataTable(query)
+
+                If colourData Is Nothing OrElse colourData.Rows.Count = 0 Then
+                    Dim emptyRow As DataRow = result.NewRow()
+                    emptyRow("Name") = fabricName
+                    result.Rows.Add(emptyRow)
+                    Continue For
+                End If
+
+                Dim index As Integer = 0
+                Dim currentRow As DataRow = Nothing
+
+                For Each colour As DataRow In colourData.Rows
+                    If index Mod 6 = 0 Then
+                        currentRow = result.NewRow()
+                        currentRow("Name") = fabricName
+                    End If
+
+                    Dim colIndex As Integer = (index Mod 6) + 1
+
+                    currentRow("Col" & colIndex) = Convert.ToString(colour("Colour"))
+                    currentRow("Col" & colIndex & "Status") = Convert.ToString(colour("Status"))
+
+                    Dim description As String = String.Empty
+
+                    If Convert.ToString(colour("Status")) <> "Discontinued" Then
+                        If Not IsDBNull(colour("Width")) AndAlso Not String.IsNullOrEmpty(Convert.ToString(colour("Width")).Trim()) Then
+                            description = "MAX : " & Convert.ToString(colour("Width")) & " MM"
+                        End If
+
+                        If Not IsDBNull(colour("RollQty")) AndAlso Not String.IsNullOrEmpty(Convert.ToString(colour("RollQty")).Trim()) Then
+                            description &= If(description <> "", "<br/>", "") & "ROLL : " & Convert.ToString(colour("RollQty")) & " QTY"
+                        End If
+
+                        If Not IsDBNull(colour("ETAFactory")) AndAlso Not String.IsNullOrEmpty(Convert.ToString(colour("ETAFactory")).Trim()) Then
+                            description &= If(description <> "", "<br/>", "") & "ETA : " & Convert.ToString(colour("ETAFactory"))
+                        End If
+                    End If
+
+                    currentRow("Col" & colIndex & "Description") = description
+
+                    If index Mod 6 = 5 OrElse index = colourData.Rows.Count - 1 Then
+                        result.Rows.Add(currentRow)
+                    End If
+
+                    index += 1
+                Next
+            Next
+        Catch
+            Throw
+        End Try
+        Return result
+    End Function
+
+    Protected Function GetVerticalGridData(fabricData As DataTable, companyDetail As String) As DataTable
+        Dim result As New DataTable()
+        Try
+            result.Columns.Add("Name", GetType(String))
+
+            For i As Integer = 1 To 6
+                result.Columns.Add("Col" & i, GetType(String))
+                result.Columns.Add("Col" & i & "Status", GetType(String))
+                result.Columns.Add("Col" & i & "Description", GetType(String))
+            Next
+
+            If fabricData Is Nothing OrElse fabricData.Rows.Count = 0 Then
+                Return result
+            End If
+
+            For Each fabric As DataRow In fabricData.Rows
+                Dim fabricId As Integer = Convert.ToInt32(fabric("Id"))
+                Dim fabricName As String = Convert.ToString(fabric("Name"))
+
+                Dim query As String = "SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' AND (Status='In Stock' OR Status='Out of Stock' OR Status='Limited Stock' OR Status='Discontinued')"
+
+                If Not String.IsNullOrEmpty(companyDetail) Then
+                    query &= " AND EXISTS (SELECT 1 FROM STRING_SPLIT(CompanyDetailId, ',') AS C WHERE C.VALUE='" & companyDetail.Replace("'", "''") & "')"
+                End If
+
+                query &= " ORDER BY Colour"
+
+                Dim colourData As DataTable = stockClass.GetDataTable(query)
+
+                If colourData Is Nothing OrElse colourData.Rows.Count = 0 Then
+                    Dim emptyRow As DataRow = result.NewRow()
+                    emptyRow("Name") = fabricName
+                    result.Rows.Add(emptyRow)
+                    Continue For
+                End If
+
+                Dim index As Integer = 0
+                Dim currentRow As DataRow = Nothing
+
+                For Each colour As DataRow In colourData.Rows
+                    If index Mod 6 = 0 Then
+                        currentRow = result.NewRow()
+                        currentRow("Name") = fabricName
+                    End If
+
+                    Dim colIndex As Integer = (index Mod 6) + 1
+
+                    currentRow("Col" & colIndex) = Convert.ToString(colour("Colour"))
+                    currentRow("Col" & colIndex & "Status") = Convert.ToString(colour("Status"))
+
+                    Dim description As String = ""
+
+                    If Not IsDBNull(colour("RollQty")) AndAlso Convert.ToString(colour("RollQty")) <> "" Then
+                        description &= If(description <> "", "<br/>", "") & "Roll QTY: " & Convert.ToString(colour("RollQty"))
+                    End If
+
+                    If Not IsDBNull(colour("ETAFactory")) AndAlso Convert.ToString(colour("ETAFactory")) <> "" Then
+                        description &= If(description <> "", "<br/>", "") & "ETA Factory: " & Convert.ToString(colour("ETAFactory"))
+                    End If
+
+                    currentRow("Col" & colIndex & "Description") = description
+
+                    If index Mod 6 = 5 OrElse index = colourData.Rows.Count - 1 Then
+                        result.Rows.Add(currentRow)
+                    End If
+
+                    index += 1
+                Next
+            Next
+        Catch
+            Throw
+        End Try
+        Return result
+    End Function
+
+    Protected Function GetSaphoraGridData(fabricData As DataTable, companyDetail As String) As DataTable
+        Dim result As New DataTable()
+        Try
+            result.Columns.Add("Name", GetType(String))
+
+            For i As Integer = 1 To 6
+                result.Columns.Add("Col" & i, GetType(String))
+                result.Columns.Add("Col" & i & "Status", GetType(String))
+                result.Columns.Add("Col" & i & "Description", GetType(String))
+            Next
+
+            If fabricData Is Nothing OrElse fabricData.Rows.Count = 0 Then
+                Return result
+            End If
+
+            For Each fabric As DataRow In fabricData.Rows
+                Dim fabricId As Integer = Convert.ToInt32(fabric("Id"))
+                Dim fabricName As String = Convert.ToString(fabric("Name"))
+
+                Dim query As String = "SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' AND (Status='In Stock' OR Status='Out of Stock' OR Status='Limited Stock' OR Status='Discontinued')"
+
+                If Not String.IsNullOrEmpty(companyDetail) Then
+                    query &= " AND EXISTS (SELECT 1 FROM STRING_SPLIT(CompanyDetailId, ',') AS C WHERE C.VALUE='" & companyDetail.Replace("'", "''") & "')"
+                End If
+
+                query &= " ORDER BY Colour"
+
+                Dim colourData As DataTable = stockClass.GetDataTable(query)
+
+                If colourData Is Nothing OrElse colourData.Rows.Count = 0 Then
+                    Dim emptyRow As DataRow = result.NewRow()
+                    emptyRow("Name") = fabricName
+                    result.Rows.Add(emptyRow)
+                    Continue For
+                End If
+
+                Dim index As Integer = 0
+                Dim currentRow As DataRow = Nothing
+
+                For Each colour As DataRow In colourData.Rows
+                    If index Mod 6 = 0 Then
+                        currentRow = result.NewRow()
+                        currentRow("Name") = fabricName
+                    End If
+
+                    Dim colIndex As Integer = (index Mod 6) + 1
+
+                    currentRow("Col" & colIndex) = Convert.ToString(colour("Colour"))
+                    currentRow("Col" & colIndex & "Status") = Convert.ToString(colour("Status"))
+
+                    Dim description As String = String.Empty
+
+                    If Convert.ToString(colour("Status")) <> "Discontinued" Then
+                        If Not IsDBNull(colour("Width")) AndAlso Not String.IsNullOrEmpty(Convert.ToString(colour("Width")).Trim()) Then
+                            description = "MAX : " & Convert.ToString(colour("Width")) & " MM"
+                        End If
+
+                        If Not IsDBNull(colour("RollQty")) AndAlso Not String.IsNullOrEmpty(Convert.ToString(colour("RollQty")).Trim()) Then
+                            description &= If(description <> "", "<br/>", "") & "ROLL : " & Convert.ToString(colour("RollQty")) & " QTY"
+                        End If
+
+                        If Not IsDBNull(colour("ETAFactory")) AndAlso Not String.IsNullOrEmpty(Convert.ToString(colour("ETAFactory")).Trim()) Then
+                            description &= If(description <> "", "<br/>", "") & "ETA : " & Convert.ToString(colour("ETAFactory"))
+                        End If
+                    End If
+
+                    currentRow("Col" & colIndex & "Description") = description
+
+                    If index Mod 6 = 5 OrElse index = colourData.Rows.Count - 1 Then
+                        result.Rows.Add(currentRow)
+                    End If
+
+                    index += 1
+                Next
+            Next
+        Catch
+            Throw
+        End Try
+        Return result
+    End Function
+
+    Private Function GetCellularGridData(fabricData As DataTable, companyDetail As String) As DataTable
+        Dim result As New DataTable()
+        Try
+            result.Columns.Add("Name", GetType(String))
+
+            For i As Integer = 1 To 6
+                result.Columns.Add("Col" & i, GetType(String))
+                result.Columns.Add("Col" & i & "Status", GetType(String))
+                result.Columns.Add("Col" & i & "Description", GetType(String))
+            Next
+
+            If fabricData Is Nothing OrElse fabricData.Rows.Count = 0 Then
+                Return result
+            End If
+
+            For Each fabric As DataRow In fabricData.Rows
+                Dim fabricId As Integer = Convert.ToInt32(fabric("Id"))
+                Dim fabricName As String = Convert.ToString(fabric("Name"))
+
+                Dim query As String = "SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' AND (Status='In Stock' OR Status='Out of Stock' OR Status='Limited Stock' OR Status='Discontinued')"
+
+                If Not String.IsNullOrEmpty(companyDetail) Then
+                    query &= " AND EXISTS (SELECT 1 FROM STRING_SPLIT(CompanyDetailId, ',') AS C WHERE C.VALUE='" & companyDetail.Replace("'", "''") & "')"
+                End If
+
+                query &= " ORDER BY Colour"
+
+                Dim colourData As DataTable = stockClass.GetDataTable(query)
+
+                If colourData Is Nothing OrElse colourData.Rows.Count = 0 Then
+                    Dim emptyRow As DataRow = result.NewRow()
+                    emptyRow("Name") = fabricName
+                    result.Rows.Add(emptyRow)
+                    Continue For
+                End If
+
+                Dim index As Integer = 0
+                Dim currentRow As DataRow = Nothing
+
+                For Each colour As DataRow In colourData.Rows
+                    If index Mod 6 = 0 Then
+                        currentRow = result.NewRow()
+                        currentRow("Name") = fabricName
+                    End If
+
+                    Dim colIndex As Integer = (index Mod 6) + 1
+
+                    currentRow("Col" & colIndex) = Convert.ToString(colour("Colour"))
+                    currentRow("Col" & colIndex & "Status") = Convert.ToString(colour("Status"))
+
+                    Dim description As String = String.Empty
+
+                    If Convert.ToString(colour("Status")) <> "Discontinued" Then
+                        If Not IsDBNull(colour("RollQty")) AndAlso Not String.IsNullOrEmpty(Convert.ToString(colour("RollQty")).Trim()) Then
+                            description &= If(description <> "", "<br/>", "") & "ROLL : " & Convert.ToString(colour("RollQty")) & " QTY"
+                        End If
+
+                        If Not IsDBNull(colour("ETAFactory")) AndAlso Not String.IsNullOrEmpty(Convert.ToString(colour("ETAFactory")).Trim()) Then
+                            description &= If(description <> "", "<br/>", "") & "ETA : " & Convert.ToString(colour("ETAFactory"))
+                        End If
+                    End If
+
+                    currentRow("Col" & colIndex & "Description") = description
+
+                    If index Mod 6 = 5 OrElse index = colourData.Rows.Count - 1 Then
+                        result.Rows.Add(currentRow)
+                    End If
+
+                    index += 1
+                Next
+            Next
+        Catch
+            Throw
+        End Try
+        Return result
+    End Function
+
+    Private Function GetDesignShadesGridData(fabricData As DataTable, companyDetail As String) As DataTable
+        Dim result As New DataTable()
+        Try
+            result.Columns.Add("Name", GetType(String))
+
+            For i As Integer = 1 To 6
+                result.Columns.Add("Col" & i, GetType(String))
+                result.Columns.Add("Col" & i & "Status", GetType(String))
+                result.Columns.Add("Col" & i & "Description", GetType(String))
+            Next
+
+            If fabricData Is Nothing OrElse fabricData.Rows.Count = 0 Then
+                Return result
+            End If
+
+            For Each fabric As DataRow In fabricData.Rows
+                Dim fabricId As Integer = Convert.ToInt32(fabric("Id"))
+                Dim fabricName As String = Convert.ToString(fabric("Name"))
+
+                Dim query As String = "SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' AND (Status='In Stock' OR Status='Out of Stock' OR Status='Limited Stock' OR Status='Discontinued')"
+
+                If Not String.IsNullOrEmpty(companyDetail) Then
+                    query &= " AND EXISTS (SELECT 1 FROM STRING_SPLIT(CompanyDetailId, ',') AS C WHERE C.VALUE='" & companyDetail.Replace("'", "''") & "')"
+                End If
+
+                query &= " ORDER BY Colour"
+
+                Dim colourData As DataTable = stockClass.GetDataTable(query)
+
+                If colourData Is Nothing OrElse colourData.Rows.Count = 0 Then
+                    Dim emptyRow As DataRow = result.NewRow()
+                    emptyRow("Name") = fabricName
+                    result.Rows.Add(emptyRow)
+                    Continue For
+                End If
+
+                Dim index As Integer = 0
+                Dim currentRow As DataRow = Nothing
+
+                For Each colour As DataRow In colourData.Rows
+                    If index Mod 6 = 0 Then
+                        currentRow = result.NewRow()
+                        currentRow("Name") = fabricName
+                    End If
+
+                    Dim colIndex As Integer = (index Mod 6) + 1
+
+                    currentRow("Col" & colIndex) = Convert.ToString(colour("Colour"))
+                    currentRow("Col" & colIndex & "Status") = Convert.ToString(colour("Status"))
+
+                    Dim description As String = String.Empty
+
+                    If Convert.ToString(colour("Status")) <> "Discontinued" Then
+                        If Not IsDBNull(colour("Width")) AndAlso Not String.IsNullOrEmpty(Convert.ToString(colour("Width")).Trim()) Then
+                            description = "MAX : " & Convert.ToString(colour("Width")) & " MM"
+                        End If
+
+                        If Not IsDBNull(colour("RollQty")) AndAlso Not String.IsNullOrEmpty(Convert.ToString(colour("RollQty")).Trim()) Then
+                            description &= If(description <> "", "<br/>", "") & "ROLL : " & Convert.ToString(colour("RollQty")) & " QTY"
+                        End If
+
+                        If Not IsDBNull(colour("ETAFactory")) AndAlso Not String.IsNullOrEmpty(Convert.ToString(colour("ETAFactory")).Trim()) Then
+                            description &= If(description <> "", "<br/>", "") & "ETA : " & Convert.ToString(colour("ETAFactory"))
+                        End If
+                    End If
+
+                    currentRow("Col" & colIndex & "Description") = description
+
+                    If index Mod 6 = 5 OrElse index = colourData.Rows.Count - 1 Then
+                        result.Rows.Add(currentRow)
+                    End If
+
+                    index += 1
+                Next
+            Next
+        Catch
+            Throw
+        End Try
+        Return result
+    End Function
+
+    Private Function GetCurtainGridData(fabricData As DataTable, companyDetail As String) As DataTable
+        Dim result As New DataTable()
+        Try
+            result.Columns.Add("Name", GetType(String))
+
+            For i As Integer = 1 To 6
+                result.Columns.Add("Col" & i, GetType(String))
+                result.Columns.Add("Col" & i & "Status", GetType(String))
+                result.Columns.Add("Col" & i & "Description", GetType(String))
+            Next
+
+            If fabricData Is Nothing OrElse fabricData.Rows.Count = 0 Then
+                Return result
+            End If
+
+            For Each fabric As DataRow In fabricData.Rows
+                Dim fabricId As Integer = Convert.ToInt32(fabric("Id"))
+                Dim fabricName As String = Convert.ToString(fabric("Name"))
+
+                Dim query As String = "SELECT Id, Colour, Status, Width, CASE WHEN RollQty IS NULL THEN '' ELSE CONVERT(VARCHAR(50), RollQty) + ' Roll' END AS RollQty, CASE WHEN ETAFactory IS NULL THEN '' ELSE CONVERT(VARCHAR(11), ETAFactory, 106) END AS ETAFactory FROM FabricColours WHERE FabricId=" & fabricId & " AND Factory='Express' AND (Status='In Stock' OR Status='Out of Stock' OR Status='Limited Stock' OR Status='Discontinued')"
+
+                If Not String.IsNullOrEmpty(companyDetail) Then
+                    query &= " AND EXISTS (SELECT 1 FROM STRING_SPLIT(CompanyDetailId, ',') AS C WHERE C.VALUE='" & companyDetail.Replace("'", "''") & "')"
+                End If
+
+                query &= " ORDER BY Colour"
+
+                Dim colourData As DataTable = stockClass.GetDataTable(query)
+
+                If colourData Is Nothing OrElse colourData.Rows.Count = 0 Then
+                    Dim emptyRow As DataRow = result.NewRow()
+                    emptyRow("Name") = fabricName
+                    result.Rows.Add(emptyRow)
+                    Continue For
+                End If
+
+                Dim index As Integer = 0
+                Dim currentRow As DataRow = Nothing
+
+                For Each colour As DataRow In colourData.Rows
+                    If index Mod 6 = 0 Then
+                        currentRow = result.NewRow()
+                        currentRow("Name") = fabricName
+                    End If
+
+                    Dim colIndex As Integer = (index Mod 6) + 1
+
+                    currentRow("Col" & colIndex) = Convert.ToString(colour("Colour"))
+                    currentRow("Col" & colIndex & "Status") = Convert.ToString(colour("Status"))
+
+                    Dim description As String = String.Empty
+
+                    If Convert.ToString(colour("Status")) <> "Discontinued" Then
+                        If Not IsDBNull(colour("Width")) AndAlso Not String.IsNullOrEmpty(Convert.ToString(colour("Width")).Trim()) Then
+                            description = "MAX : " & Convert.ToString(colour("Width")) & " MM"
+                        End If
+
+                        If Not IsDBNull(colour("RollQty")) AndAlso Not String.IsNullOrEmpty(Convert.ToString(colour("RollQty")).Trim()) Then
+                            description &= If(description <> "", "<br/>", "") & "ROLL : " & Convert.ToString(colour("RollQty")) & " QTY"
+                        End If
+
+                        If Not IsDBNull(colour("ETAFactory")) AndAlso Not String.IsNullOrEmpty(Convert.ToString(colour("ETAFactory")).Trim()) Then
+                            description &= If(description <> "", "<br/>", "") & "ETA : " & Convert.ToString(colour("ETAFactory"))
+                        End If
+                    End If
+
+                    currentRow("Col" & colIndex & "Description") = description
+
+                    If index Mod 6 = 5 OrElse index = colourData.Rows.Count - 1 Then
+                        result.Rows.Add(currentRow)
+                    End If
+
+                    index += 1
+                Next
+            Next
+        Catch
+            Throw
+        End Try
+        Return result
+    End Function
+
+    Protected Sub MessageError_Roller(visible As Boolean, message As String)
+        divErrorRoller.Visible = visible : msgErrorRoller.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Vertical(visible As Boolean, message As String)
+        divErrorVertical.Visible = visible : msgErrorVertical.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Saphora(visible As Boolean, message As String)
+        divErrorSaphora.Visible = visible : msgErrorSaphora.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Cellular(visible As Boolean, message As String)
+        divErrorCellular.Visible = visible : msgErrorCellular.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_DesignShades(visible As Boolean, message As String)
+        divErrorDesignShades.Visible = visible : msgErrorDesignShades.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Curtain(visible As Boolean, message As String)
+        divErrorCurtain.Visible = visible : msgErrorCurtain.InnerText = message
+    End Sub
+
+    Protected Sub MessageError_Venetian(visible As Boolean, message As String)
+        divErrorVenetian.Visible = visible : msgErrorVenetian.InnerText = message
+    End Sub
+
     Protected Sub MessageError_FabricChart(visible As Boolean, message As String)
         divErrorFabricChart.Visible = visible : msgErrorFabricChart.InnerText = message
     End Sub
-
-    Protected Function GetStatusClass(status As Object) As String
-        If status Is Nothing OrElse status Is DBNull.Value Then
-            Return "badge bg-secondary"
-        End If
-        Select Case status.ToString().Trim()
-            Case "In Stock"
-                Return "badge bg-success"
-            Case "Out of Stock"
-                Return "badge bg-danger"
-            Case "Limited Stock"
-                Return "badge bg-warning text-dark"
-            Case "Discontinued"
-                Return "badge bg-secondary"
-            Case Else
-                Return "badge bg-secondary"
-        End Select
-    End Function
 End Class

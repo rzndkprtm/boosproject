@@ -1050,7 +1050,25 @@ Partial Class Order_Upload
                                         orderClass.Logs(dataLog)
                                     End If
                                     If designName_Fix = "Pelmet" Then
+                                        Dim itemNumber As String = row - 3
 
+                                        Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 3).Text), 0, CInt(sheetDetail.Cells(row, 3).Text))
+                                        Dim room As String = (sheetDetail.Cells(row, 4).Text & "").Trim()
+                                        Dim mounting As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
+                                        Dim colour As String = (sheetDetail.Cells(row, 6).Text & "").Trim()
+                                        Dim controlPosition As String = (sheetDetail.Cells(row, 7).Text & "").Trim()
+                                        Dim tilterPosition As String = (sheetDetail.Cells(row, 8).Text & "").Trim()
+
+                                        Dim widthText As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
+                                        Dim width As Integer
+
+                                        Dim dropText As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
+                                        Dim drop As Integer
+
+                                        Dim cordLengthText As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
+                                        Dim wandLengthText As String = (sheetDetail.Cells(row, 12).Text & "").Trim()
+                                        Dim supply As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
+                                        Dim notes As String = (sheetDetail.Cells(row, 19).Text & "").Trim()
                                     End If
                                     If designName_Fix = "Roller Blind" Then
 

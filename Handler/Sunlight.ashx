@@ -65,7 +65,7 @@ Public Class Sunlight : Implements IHttpHandler
             Dim lookupResults As New List(Of Object)
 
             'PINDAHKAN DARI ORDERDETAILS_SUNLIGHT KE ORDERDETAILS
-            Dim itemData As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetails_Sunlight WHERE HeaderId='" & headerId & "' AND BlindNo='Blind 1' ORDER BY Id ASC")
+            Dim itemData As DataTable = orderClass.GetDataTable("SELECT * FROM OrderDetail_Globals WHERE HeaderId='" & headerId & "' AND BlindNo='Blind 1' ORDER BY Id ASC")
             For iItem As Integer = 0 To itemData.Rows.Count - 1
                 Dim detailId As String = itemData.Rows(iItem)("Id").ToString()
                 Dim kitName As String = itemData.Rows(iItem)("KitName").ToString()
@@ -79,6 +79,7 @@ Public Class Sunlight : Implements IHttpHandler
                 Dim fabricTypeB As String = itemData.Rows(iItem)("FabricTypeB").ToString().Trim()
                 Dim fabricColour As String = itemData.Rows(iItem)("FabricColour").ToString().Trim()
                 Dim fabricColourB As String = itemData.Rows(iItem)("FabricColourB").ToString().Trim()
+                Dim trim As String = itemData.Rows(iItem)("Trim").ToString()
                 Dim bottomType As String = itemData.Rows(iItem)("BottomType").ToString()
                 Dim bottomColour As String = itemData.Rows(iItem)("BottomColour").ToString()
                 Dim uniqueId As String = itemData.Rows(iItem)("UniqueId").ToString()
@@ -169,7 +170,6 @@ Public Class Sunlight : Implements IHttpHandler
                     Dim fabricColourIdB As String = String.Empty
                     Dim fabricGroupB As String = String.Empty
 
-
                     Dim fabricIdC As String = String.Empty
                     Dim fabricColourIdC As String = String.Empty
                     Dim fabricGroupC As String = String.Empty
@@ -186,8 +186,8 @@ Public Class Sunlight : Implements IHttpHandler
                     Dim fabricColourIdF As String = String.Empty
                     Dim fabricGroupF As String = String.Empty
 
-                    If chainColour.Contains("Birch White") Then chainColour = "Ivory"
-                    chainColour = chainColour.Replace("(", "").Replace(")", "")
+                    If chainColour = "Birch White" Then chainColour = "Ivory"
+                    If chainColour = "Chrome" Then chainColour = "Nickel Plated"
 
                     Dim chainName As String = String.Format("Cont Plastic {0}", chainColour)
                     If chainName = "Chrome" OrElse chainName = "Stainless Steel" Then
@@ -196,9 +196,29 @@ Public Class Sunlight : Implements IHttpHandler
 
                     Dim chainId As String = String.Empty
                     Dim chainStopper As String = String.Empty
+                    Dim controlLength_Fix As String = String.Empty
+                    Dim controlLengthValue_Fix As Integer = 0
                     If controlName_Fix = "Chain" Then
                         chainId = orderClass.GetItemData("SELECT Id FROM Chains WHERE Name='" & chainName & "'")
                         chainStopper = "No Stopper"
+                        If chainLength = 0 Then
+                            controlLength_Fix = "Standard"
+                            Dim stdControlLength As Integer = Math.Ceiling(drop * 2 / 3)
+
+                            controlLengthValue_Fix = 500
+                            If stdControlLength > 500 Then controlLengthValue_Fix = 750
+                            If stdControlLength > 750 Then controlLengthValue_Fix = 1000
+                            If stdControlLength > 1000 Then controlLengthValue_Fix = 1200
+                            If stdControlLength > 1200 Then controlLengthValue_Fix = 1500
+
+                            If chainName = "Nickel Plated" OrElse chainName = "Stainless Steel" Then
+                                controlLengthValue_Fix = Math.Ceiling((drop * 3 / 4) + 80)
+                            End If
+                        End If
+                        If chainLength > 0 Then
+                            controlLength_Fix = "Custom"
+                            controlLengthValue_Fix = chainLength
+                        End If
                     End If
 
                     Dim chainIdB As String = String.Empty
@@ -216,16 +236,29 @@ Public Class Sunlight : Implements IHttpHandler
                     Dim chainIdF As String = String.Empty
                     Dim chainStopperF As String = String.Empty
 
-                    Dim bottomName As String = bottomType
-                    If bottomType = "Round 20mm" Then bottomName = "Round"
-                    If bottomType = "Flat Back Covered" OrElse bottomType = "Flat Front Covered" Then bottomName = "Flat"
-                    If bottomType = "Flat Front Covered With Mohair" Then bottomName = "Flat Mohair"
+                    Dim bottomName As String = String.Empty
+                    Dim bottomColourName As String = String.Empty
+
+                    If trim = "Plain" Then
+                        bottomName = "Trim"
+                    End If
+                    If trim = "Bottom Rail" Then
+                        If bottomType = "Oval" Then bottomName = "Oval"
+                        If bottomType = "Round 20mm" Then bottomName = "Round"
+                        If bottomType = "Flat Back Covered" Then bottomName = "Flat"
+                        If bottomType = "Flat Front Covered" Then bottomName = "Flat"
+                        If bottomType = "Flat Front Covered With Mohair" Then bottomName = "Flat Mohair"
+                    End If
+                    If trim = "Decorative – Fancy Trim" Then
+                        bottomName = "Trim"
+                    End If
 
                     Dim bottomId As String = orderClass.GetItemData("SELECT Id FROM Bottoms WHERE Name='" & bottomName & "'")
                     Dim bottomColourId As String = orderClass.GetItemData("SELECT Id FROM BottomColours WHERE BottomId='" & bottomId & "' AND Colour='" & bottomColour & "'")
                     Dim bottomFlat As String = String.Empty
                     If bottomType = "Flat Back Covered" Then bottomFlat = "Fabric on Back"
                     If bottomType = "Flat Front Covered" Then bottomFlat = "Fabric on Front"
+                    If bottomType = "Flat Front Covered With Mohair" Then bottomFlat = "Fabric on Front"
 
                     Dim bottomIdB As String = String.Empty
                     Dim bottomColourIdB As String = String.Empty
@@ -248,7 +281,7 @@ Public Class Sunlight : Implements IHttpHandler
                     Dim bottomFlatF As String = String.Empty
 
                     If blindName_Fix = "Dual Blinds" OrElse blindName_Fix = "Link 2 Blinds Dependent" OrElse blindName_Fix = "Link 2 Blinds Independent" Then
-                        Dim secondData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderDetails_Sunlight WHERE HeaderId='" & headerId & "' AND UniqueId='" & uniqueId & "' AND BlindNo='Blind 2'")
+                        Dim secondData As DataRow = orderClass.GetDataRow("SELECT * FROM OrderDetail_Globals WHERE HeaderId='" & headerId & "' AND UniqueId='" & uniqueId & "' AND BlindNo='Blind 2'")
 
                         fabricTypeB = secondData("FabricTypeB").ToString().Trim()
                         fabricColourB = secondData("FabricColourB").ToString().Trim()
@@ -258,9 +291,8 @@ Public Class Sunlight : Implements IHttpHandler
                         fabricGroupB = orderClass.GetFabricGroup(fabricIdB)
                     End If
 
-                    Dim mounting_Fix As String = "Opening Size " & mounting
                     Dim roll_Fix As String = rollDirection
-                    If rollDirection = "Resever Roll" Then roll_Fix = "Reverse"
+                    If rollDirection = "Reverse Roll" Then roll_Fix = "Reverse"
 
                     Dim priceProductGroup As String = String.Empty
                     Dim priceProductGroupB As String = String.Empty
@@ -269,7 +301,7 @@ Public Class Sunlight : Implements IHttpHandler
                     Dim priceProductGroupE As String = String.Empty
                     Dim priceProductGroupF As String = String.Empty
 
-                    Dim priceName As String = String.Format("{0} - {1} - {2}", designName, "Gear Reduction", fabricGroup)
+                    Dim priceName As String = String.Format("{0} - {1} - {2}", designName_Fix, "Gear Reduction", fabricGroup)
                     priceProductGroup = orderClass.GetPriceProductGroupId(priceName, designId, "14")
 
                     Dim linearMetre As Decimal = width / 1000
@@ -330,7 +362,7 @@ Public Class Sunlight : Implements IHttpHandler
 
                                 thisCmd.Parameters.AddWithValue("@Qty", 1)
                                 thisCmd.Parameters.AddWithValue("@Room", room)
-                                thisCmd.Parameters.AddWithValue("@Mounting", mounting_Fix)
+                                thisCmd.Parameters.AddWithValue("@Mounting", mounting)
 
                                 thisCmd.Parameters.AddWithValue("@Width", width)
                                 thisCmd.Parameters.AddWithValue("@WidthB", 0)
@@ -360,14 +392,14 @@ Public Class Sunlight : Implements IHttpHandler
                                 thisCmd.Parameters.AddWithValue("@ControlPositionE", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@ControlPositionF", String.Empty)
 
-                                thisCmd.Parameters.AddWithValue("@ControlLength", "Custom")
+                                thisCmd.Parameters.AddWithValue("@ControlLength", controlLength_Fix)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthB", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthC", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthD", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthE", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthF", String.Empty)
 
-                                thisCmd.Parameters.AddWithValue("@ControlLengthValue", chainLength)
+                                thisCmd.Parameters.AddWithValue("@ControlLengthValue", controlLengthValue_Fix)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthValueB", 0)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthValueC", 0)
                                 thisCmd.Parameters.AddWithValue("@ControlLengthValueD", 0)
@@ -390,7 +422,7 @@ Public Class Sunlight : Implements IHttpHandler
 
                                 thisCmd.Parameters.AddWithValue("@TopTrack", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@BracketSize", CType(DBNull.Value, Object))
-                                thisCmd.Parameters.AddWithValue("@BracketExtension", String.Empty)
+                                thisCmd.Parameters.AddWithValue("@BracketExtension", extensionBracket)
                                 thisCmd.Parameters.AddWithValue("@SpringAssist", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@Adjusting", String.Empty)
                                 thisCmd.Parameters.AddWithValue("@DryContact", String.Empty)
@@ -1288,7 +1320,7 @@ Public Class Sunlight : Implements IHttpHandler
     End Sub
 
     Private Sub InsertOrderDetail(headerId As String, detail As Dictionary(Of String, Object))
-        Dim allowedColumns As String() = {"KitName", "BracketType", "TubeType", "ControlType", "ColourType", "DesignName", "BlindName", "FabricInsert", "FabricType", "FabricTypeB", "FabricColour", "FabricColourB", "UniqueId", "BlindNo", "Qty", "BlindQuantity", "Room", "Mounting", "Width", "Drop", "Layout", "NumOfPanel", "StackPosition", "TwoOnOneHeadreal", "ControlPosition", "ControlLength", "ControlLift", "ControlTilt", "TilterPosition", "RollDirection", "ChainLength", "ChainLengthText", "MaterialChain", "ChainColour", "BottomType", "BottomColour", "TrackType", "TrackColour", "NumOfWand", "WandPosition", "WandColour", "WandLength", "WandLengthText", "CordColour", "CordLength", "AcornPlasticColour", "Batten", "BattenColour", "ExtensionBracket", "BracketOption", "BracketColour", "CoverValance", "Fitting", "Sloping", "Cleat", "BottomJoining", "BottomHoldDown", "PelmetType", "PelmetWidth", "PelmetReturnLeft", "PelmetReturnRight", "CutOut_LeftTop", "CutOut_RightTop", "CutOut_LeftBottom", "CutOut_RightBottom", "LHSWidth_Top", "LHSHeight_Top", "RHSWidth_Top", "RHSHeight_Top", "LHSWidth_Bottom", "LHSHeight_Bottom", "RHSWidth_Bottom", "RHSHeight_Bottom", "Notes"}
+        Dim allowedColumns As String() = {"KitName", "BracketType", "TubeType", "ControlType", "ColourType", "DesignName", "BlindName", "FabricInsert", "FabricType", "FabricTypeB", "FabricColour", "FabricColourB", "UniqueId", "BlindNo", "Qty", "BlindQuantity", "Room", "Mounting", "Width", "Drop", "Layout", "NumOfPanel", "StackPosition", "TwoOnOneHeadreal", "ControlPosition", "ControlLength", "ControlLift", "ControlTilt", "TilterPosition", "RollDirection", "ChainLength", "ChainLengthText", "MaterialChain", "ChainColour", "Trim", "BottomType", "BottomColour", "TrackType", "TrackColour", "NumOfWand", "WandPosition", "WandColour", "WandLength", "WandLengthText", "CordColour", "CordLength", "AcornPlasticColour", "Batten", "BattenColour", "ExtensionBracket", "BracketOption", "BracketColour", "CoverValance", "Fitting", "Sloping", "Cleat", "BottomJoining", "BottomHoldDown", "PelmetType", "PelmetWidth", "PelmetReturnLeft", "PelmetReturnRight", "CutOut_LeftTop", "CutOut_RightTop", "CutOut_LeftBottom", "CutOut_RightBottom", "LHSWidth_Top", "LHSHeight_Top", "RHSWidth_Top", "RHSHeight_Top", "LHSWidth_Bottom", "LHSHeight_Bottom", "RHSWidth_Bottom", "RHSHeight_Bottom", "Notes"}
 
         Dim columns As New List(Of String)
         Dim parameters As New List(Of String)
@@ -1322,7 +1354,7 @@ Public Class Sunlight : Implements IHttpHandler
                     Throw New Exception("Order detail has no valid fields.")
                 End If
 
-                thisCmd.CommandText = "INSERT INTO OrderDetails_Sunlight (" & String.Join(", ", columns) & ") VALUES (" & String.Join(", ", parameters) & ")"
+                thisCmd.CommandText = "INSERT INTO OrderDetail_Globals (" & String.Join(", ", columns) & ") VALUES (" & String.Join(", ", parameters) & ")"
 
                 thisConn.Open()
                 thisCmd.ExecuteNonQuery()
