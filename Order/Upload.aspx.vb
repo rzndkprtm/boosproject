@@ -2358,7 +2358,7 @@ Partial Class Order_Upload
                                             If Not String.IsNullOrEmpty(controlLengthText) AndAlso Not controlLengthText.ToLower().Contains("standard") AndAlso Not controlLengthText.ToLower().Contains("std") Then
                                                 controlLength = "Custom"
                                                 controlLengthText = controlLengthText.Replace("mm", "")
-                                                If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 OrElse controlLengthValue > 1000 Then
+                                                If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
                                                     MessageError(True, "PLEASE CHECK YOUR CHAIN LENGTH !")
                                                     Exit For
                                                 End If
