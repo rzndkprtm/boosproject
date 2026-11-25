@@ -81,6 +81,9 @@
                                                         <li runat="server" visible='<%# If(Eval("Status"), "").ToString() = "Active" AndAlso LoginAccess("Detail") %>'>
                                                             <a class="dropdown-item" id="aDetail" href='<%# Page.ResolveUrl("~/schedule/detail?scheduleid=" & Eval("Id")) %>'>Detail</a>
                                                         </li>
+                                                        <li runat="server" visible='<%# (If(Eval("Status"), "").ToString() = "Active" OrElse If(Eval("Status"), "").ToString() = "Inactive") AndAlso LoginAccess("Delete") %>'>
+                                                            <a href="javascript:void(0);" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick='<%# String.Format("return dataDelete(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
+                                                        </li>
                                                         <li runat="server" visible='<%# If(Eval("Status"), "").ToString() = "Active" AndAlso LoginAccess("Edit") %>'>
                                                             <a class="dropdown-item" id="aEdit" href='<%# Page.ResolveUrl("~/schedule/edit?scheduleid=" & Eval("Id")) %>'>Edit</a>
                                                         </li>

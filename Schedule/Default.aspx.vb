@@ -59,14 +59,14 @@ Partial Class Schedule_Default
             Dim companyId As String = txtDeleteId.Text
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("UPDATE Logins SET Status='Deleted', UserName=CASE WHEN UserName LIKE '%(DELETED)%' THEN UserName ELSE UserName + ' (DELETED)' END, FullName=CASE WHEN FullName LIKE '%(DELETED)%' THEN FullName ELSE FullName + ' (DELETED)' END WHERE Id=@Id; DELETE FROM Sessions WHERE LoginId=@Id", thisConn)
+                Using thisCmd As New SqlCommand("UPDATE ShipmentSchedules SET Status='Deleted' WHERE Id=@Id", thisConn)
                     thisCmd.Parameters.AddWithValue("@Id", companyId)
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            dataLog = {"Companys", companyId, Session("LoginId").ToString(), "Company Deleted"}
+            dataLog = {"ShipmentSchedules", companyId, Session("LoginId").ToString(), "Shipment Schedule Deleted"}
             settingClass.Logs(dataLog)
 
             Session("SearchSchedule") = txtSearch.Text

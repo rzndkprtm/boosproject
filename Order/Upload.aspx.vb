@@ -170,14 +170,32 @@ Partial Class Order_Upload
                                        "")
 
                                     Dim designName_Fix As String = String.Empty
-                                    'If designType = "Venetian" Then
-                                    '    Dim blindType As String = (sheetDetail.Cells(row, 2).Text & "").Trim()
+                                    If designType = "Venetian" Then
+                                        Dim blindType As String = (sheetDetail.Cells(row, 2).Text & "").Trim()
 
-                                    '    designName_Fix = "Venetian Blind"
-                                    '    If blindType = "Aluminium Venetian" Then
-                                    '        designName_Fix = "Aluminium Blind"
-                                    '    End If
-                                    'End If
+                                        designName_Fix = "Venetian Blind"
+                                        If blindType = "Aluminium Venetian" Then
+                                            designName_Fix = "Aluminium Blind"
+                                        End If
+                                    End If
+                                    If designType = "Cellular Shades" Then
+                                        designName_Fix = "Cellular Shades"
+                                    End If
+                                    If designType = "Panel Glide" Then
+                                        designName_Fix = "Panel Glide"
+                                    End If
+                                    If designType = "Pelmet" Then
+                                        designName_Fix = "Pelmet"
+                                    End If
+                                    If designType = "Roller" Then
+                                        designName_Fix = "Roller Blind"
+                                    End If
+                                    If designType = "Roman" Then
+                                        designName_Fix = "Roman Blind"
+                                    End If
+                                    If designType = "Vertical" Then
+                                        designName_Fix = "Vertical"
+                                    End If
 
                                     If designName_Fix = "Aluminium Blind" Then
                                         Dim itemNumber As String = row - 3
@@ -250,14 +268,14 @@ Partial Class Order_Upload
 
                                         Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & colour & "'")
                                         If String.IsNullOrEmpty(colourId) Then
-                                            Dim thisAlert As String = String.Format("THE COLOUR YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                            Dim thisAlert As String = String.Format("THE COLOUR YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
 
                                         Dim productData As DataRow = orderClass.GetDataRow("SELECT Id, Status FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.value='" & companyDetailId & "' AND TubeType='9' AND ControlType='17' AND ColourType='" & colourId & "' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued')")
                                         If productData Is Nothing Then
-                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
@@ -392,6 +410,8 @@ Partial Class Order_Upload
                                             End If
                                         End If
 
+                                        mounting = "Opening Size " & mounting
+
                                         Dim linearMetre As Decimal = width / 10000
                                         Dim squareMetre As Decimal = width * drop / 1000000
 
@@ -516,7 +536,7 @@ Partial Class Order_Upload
 
                                         Dim productData As DataRow = orderClass.GetDataRow("SELECT Id, Status FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.value='" & companyDetailId & "' AND TubeType='9' AND ControlType='" & controlId & "' AND ColourType='56' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued')")
                                         If productData Is Nothing Then
-                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
@@ -539,6 +559,8 @@ Partial Class Order_Upload
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
+
+                                        If String.IsNullOrEmpty(room) Then room = "Item " & itemNumber
 
                                         Dim validMounting As String() = {"Face Fit", "Reveal Fit", "Opening Size Face Fit", "Opening Size Reveal Fit", "Make Size Face Fit", "Make Size Reveal Fit"}
                                         If Not validMounting.Contains(mounting) Then
@@ -732,7 +754,7 @@ Partial Class Order_Upload
                                                     thisCmd.Parameters.AddWithValue("@Room", room)
                                                     thisCmd.Parameters.AddWithValue("@FabricId", fabricId)
                                                     thisCmd.Parameters.AddWithValue("@FabricColourId", fabricColourId)
-                                                    thisCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(fabricIdB), CType(DBNull.Value, Object), fabricId))
+                                                    thisCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(fabricIdB), CType(DBNull.Value, Object), fabricIdB))
                                                     thisCmd.Parameters.AddWithValue("@FabricColourIdB", If(String.IsNullOrEmpty(fabricColourIdB), CType(DBNull.Value, Object), fabricColourIdB))
                                                     thisCmd.Parameters.AddWithValue("@ChainId", CType(DBNull.Value, Object))
                                                     thisCmd.Parameters.AddWithValue("@Mounting", mounting)
@@ -825,7 +847,9 @@ Partial Class Order_Upload
                                         End If
 
                                         Dim tubeName As String = panelStyle
+                                        If panelStyle = "Plain" Then tubeName = "Plain (PG)"
                                         If panelStyle = "Classic" Then tubeName = "Plain (PG)"
+                                        If panelStyle = "Plantation" Then tubeName = "Plantation (PG)"
                                         If panelStyle = "Timber" Then tubeName = "Plantation (PG)"
                                         If panelStyle = "Sewless" Then tubeName = "Sewless (PG)"
                                         If panelStyle = "Aluminium" Then tubeName = "Sewless (PG)"
@@ -887,7 +911,7 @@ Partial Class Order_Upload
                                             MessageError(True, "FABRIC COLOUR IS REQUIRED !")
                                             Exit For
                                         End If
-                                        Dim fabricColourData As String = orderClass.GetItemData("SELECT Id, Status FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued')")
+                                        Dim fabricColourData As DataRow = orderClass.GetDataRow("SELECT Id, Status FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued')")
                                         If fabricColourData Is Nothing Then
                                             Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
                                             MessageError(True, thisAlert)
@@ -925,7 +949,7 @@ Partial Class Order_Upload
                                             wandLength = "Custom"
                                             wandLengthText = wandLengthText.Replace("mm", "")
                                             If Not Integer.TryParse(wandLengthText, wandLengthValue) OrElse wandLengthValue < 0 OrElse wandLengthValue > 1000 Then
-                                                MessageError(True, "PLEASE CHECK YOUR CORD LENGTH & MAXIMUM IS 1000MM !")
+                                                MessageError(True, "PLEASE CHECK YOUR WAND LENGTH & MAXIMUM IS 1000MM !")
                                                 Exit For
                                             End If
                                         End If
@@ -1002,15 +1026,28 @@ Partial Class Order_Upload
                                             batten = String.Empty : battenb = String.Empty
                                         End If
 
+                                        If batten = "Snow" Then batten = "White"
+                                        If batten = "Ivory" Then batten = "Alabaster"
+                                        If batten = "Pine" Then batten = "Natural"
+                                        If batten = "Tawny" Then batten = "Baltic"
+                                        If batten = "Mocha" Then batten = "Teak"
+                                        If batten = "Garnet" Then batten = "Cherry"
+                                        If batten = "Earth" Then batten = "Brown"
+                                        If batten = "Midnight" Then batten = "Black"
+
+                                        Dim mounting_Fix As String = sizeType & " " & mounting
+
                                         Dim groupFabric As String = orderClass.GetFabricGroup(fabricId)
-                                        Dim groupName As String = String.Format("Panel Glide - {0} - {1} - {2}", blindType, tubeName, groupFabric)
+                                        Dim groupName As String = String.Format("Panel Glide - {0} - {1}", tubeName.Replace("(PG)", "").Trim(), groupFabric)
 
                                         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, priceGroupId)
 
                                         Dim itemId As String = orderClass.GetNewOrderItemId()
 
                                         Using thisConn As New SqlConnection(myConn)
-                                            Using thisCmd As New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], WandColour, WandLength, WandLengthValue, LayoutCode, LayoutCodeCustom, TrackType, PanelQty, StackPosition, Batten, BattenB, LinearMetre, SquareMetre, TotalItems, Notes, Markup, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @WandColour, @WandLength, @WandLengthValue, @LayoutCode, @LayoutCodeCustom, @TrackType, @PanelQty, 'Front', @Batten, @BattenB, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
+                                            Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_PG", thisConn)
+                                                thisCmd.CommandType = CommandType.StoredProcedure
+
                                                 thisCmd.Parameters.AddWithValue("@Id", itemId)
                                                 thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
                                                 thisCmd.Parameters.AddWithValue("@ProductId", productId)
@@ -1019,19 +1056,17 @@ Partial Class Order_Upload
                                                 thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                                                 thisCmd.Parameters.AddWithValue("@Qty", 1)
                                                 thisCmd.Parameters.AddWithValue("@Room", room)
-                                                thisCmd.Parameters.AddWithValue("@Mounting", String.Format("{0} {1}", sizeType, mounting))
+                                                thisCmd.Parameters.AddWithValue("@Mounting", mounting_Fix)
                                                 thisCmd.Parameters.AddWithValue("@Width", width)
                                                 thisCmd.Parameters.AddWithValue("@Drop", drop)
-                                                thisCmd.Parameters.AddWithValue("@WandPosition", "Front")
+                                                thisCmd.Parameters.AddWithValue("@StackPosition", "Front")
                                                 thisCmd.Parameters.AddWithValue("@WandColour", wandColour)
                                                 thisCmd.Parameters.AddWithValue("@WandLength", wandLength)
                                                 thisCmd.Parameters.AddWithValue("@WandLengthValue", wandLengthValue)
                                                 thisCmd.Parameters.AddWithValue("@LayoutCode", fixLayoutCode)
-                                                thisCmd.Parameters.AddWithValue("@LayoutCodeCustom", String.Empty)
                                                 thisCmd.Parameters.AddWithValue("@TrackType", trackType)
-                                                thisCmd.Parameters.AddWithValue("@PanelQty", panelQty)
+                                                thisCmd.Parameters.AddWithValue("@PanelQty", If(String.IsNullOrEmpty(panelQty), CType(DBNull.Value, Object), panelQty))
                                                 thisCmd.Parameters.AddWithValue("@Batten", batten)
-                                                thisCmd.Parameters.AddWithValue("@BattenB", battenb)
                                                 thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                                                 thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                                                 thisCmd.Parameters.AddWithValue("@Notes", notes)
@@ -1052,1754 +1087,60 @@ Partial Class Order_Upload
                                     If designName_Fix = "Pelmet" Then
                                         Dim itemNumber As String = row - 3
 
-                                        Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 3).Text), 0, CInt(sheetDetail.Cells(row, 3).Text))
-                                        Dim room As String = (sheetDetail.Cells(row, 4).Text & "").Trim()
-                                        Dim mounting As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
-                                        Dim colour As String = (sheetDetail.Cells(row, 6).Text & "").Trim()
-                                        Dim controlPosition As String = (sheetDetail.Cells(row, 7).Text & "").Trim()
-                                        Dim tilterPosition As String = (sheetDetail.Cells(row, 8).Text & "").Trim()
-
-                                        Dim widthText As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
-                                        Dim width As Integer
-
-                                        Dim dropText As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
-                                        Dim drop As Integer
-
-                                        Dim cordLengthText As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
-                                        Dim wandLengthText As String = (sheetDetail.Cells(row, 12).Text & "").Trim()
-                                        Dim supply As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
-                                        Dim notes As String = (sheetDetail.Cells(row, 19).Text & "").Trim()
-                                    End If
-                                    If designName_Fix = "Roller Blind" Then
-
-                                    End If
-                                    If designName_Fix = "Roman Blind" Then
-
-                                    End If
-                                    If designName_Fix = "Venetian Blind" Then
-
-                                    End If
-                                    If designName_Fix = "Vertical" Then
-
-                                    End If
-
-                                    If designType = "Pelmet" Then
-                                        Dim itemNumber As String = row - 3
-                                        Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designType & "'")
-
                                         Dim blindType As String = If(sheetDetail.Cells(row, 2).Text IsNot Nothing, sheetDetail.Cells(row, 2).Text, "")
-                                        Dim tubeType As String = (sheetDetail.Cells(row, 3).Text & "").Trim()
+                                        Dim pelmetType As String = If(sheetDetail.Cells(row, 3).Text IsNot Nothing, sheetDetail.Cells(row, 3).Text, "")
                                         Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 4).Text), 0, CInt(sheetDetail.Cells(row, 4).Text))
                                         Dim room As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
                                         Dim mounting As String = (sheetDetail.Cells(row, 6).Text & "").Trim()
                                         Dim fabricType As String = (sheetDetail.Cells(row, 7).Text & "").Trim()
                                         Dim fabricColour As String = (sheetDetail.Cells(row, 8).Text & "").Trim()
-                                        Dim battenColour As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
-                                        Dim layoutCode As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
+                                        Dim batten As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
+                                        Dim layout As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
+
                                         Dim widthText As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
-                                        Dim width As Integer = 0
-
-                                        Dim widthTextB As String = (sheetDetail.Cells(row, 12).Text & "").Trim()
-                                        Dim widthB As Integer = 0
-
-                                        Dim widthTextC As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
-                                        Dim widthC As Integer = 0
+                                        Dim width As Integer
 
                                         Dim returnPosition As String = (sheetDetail.Cells(row, 14).Text & "").Trim()
-
-                                        Dim retLeftText As String = (sheetDetail.Cells(row, 15).Text & "").Trim()
-                                        Dim retLeft As Integer = 0
-
-                                        Dim retRightText As String = (sheetDetail.Cells(row, 16).Text & "").Trim()
-                                        Dim retRight As Integer = 0
-
-                                        Dim supply As String = (sheetDetail.Cells(row, 17).Text & "").Trim()
-                                        Dim notes As String = (sheetDetail.Cells(row, 18).Text & "").Trim()
-                                    End If
-
-                                    If designType = "Vertical" Then
-                                        Dim itemNumber As String = row - 3
-
-                                        Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designType & "'")
-
-                                        Dim blindType As String = If(sheetDetail.Cells(row, 2).Text IsNot Nothing, sheetDetail.Cells(row, 2).Text, "")
-                                        Dim tubeType As String = (sheetDetail.Cells(row, 3).Text & "").Trim()
-                                        Dim controlType As String = (sheetDetail.Cells(row, 4).Text & "").Trim()
-                                        Dim colourType As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
-                                        Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 6).Text), 0, CInt(sheetDetail.Cells(row, 6).Text))
-
-                                        Dim qtyBladeText As String = (sheetDetail.Cells(row, 7).Text & "").Trim()
-                                        Dim qtyBlade As Integer
-
-                                        Dim room As String = (sheetDetail.Cells(row, 8).Text & "").Trim()
-                                        Dim sizeType As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
-                                        Dim mounting As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
-
-                                        Dim widthText As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
-                                        Dim width As Integer
-
-                                        Dim dropText As String = (sheetDetail.Cells(row, 12).Text & "").Trim()
-                                        Dim drop As Integer
-
-                                        Dim fabricInsert As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
-                                        Dim fabricType As String = (sheetDetail.Cells(row, 14).Text & "").Trim()
-                                        Dim fabricColour As String = (sheetDetail.Cells(row, 15).Text & "").Trim()
-                                        Dim stackPosition As String = (sheetDetail.Cells(row, 16).Text & "").Trim()
-                                        Dim controlPosition As String = (sheetDetail.Cells(row, 17).Text & "").Trim()
-                                        Dim controlColour As String = (sheetDetail.Cells(row, 18).Text & "").Trim()
-                                        Dim controlLengthText As String = (sheetDetail.Cells(row, 19).Text & "").Trim()
-                                        Dim bottomJoining As String = (sheetDetail.Cells(row, 20).Text & "").Trim()
-                                        Dim bracketExtension As String = (sheetDetail.Cells(row, 21).Text & "").Trim()
-                                        Dim sloping As String = (sheetDetail.Cells(row, 22).Text & "").Trim()
-                                        Dim notes As String = (sheetDetail.Cells(row, 23).Text & "").Trim()
-
-                                        Dim fabricId As String = String.Empty
-                                        Dim fabricColourId As String = String.Empty
-
-                                        Dim chainId As String = String.Empty
-                                        Dim controlLength As String = String.Empty
-                                        Dim controlLengthValue As Integer = 0
-                                        Dim wandLengthValue As Integer = 0
-
-                                        If String.IsNullOrEmpty(designId) Then
-                                            Dim thisAlert As String = String.Format("THE PRODUCT IN ITEM {0} IS NOT REGISTERED. PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND Name='" & blindType & "' AND CompanyArray.VALUE='" & companyDetailId & "'")
-                                        If String.IsNullOrEmpty(blindId) Then
-                                            Dim thisAlert As String = String.Format("THE ORDER TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN. !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim tubeName As String = tubeType
-                                        If tubeType = "Wide Blade (127mm)" Then tubeName = "127mm"
-                                        If tubeType = "Narrow Blade (89mm)" Then tubeName = "89mm"
-                                        Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Alias='" & tubeName & " (Vertical)" & "'")
-                                        If String.IsNullOrEmpty(tubeId) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE SLAT SIZE FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Slat Only" Then controlType = "N/A"
-                                        Dim controlId As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='" & controlType & "'")
-                                        If String.IsNullOrEmpty(controlId) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK YOUR CONTROL TYPE FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Slat Only" Then colourType = "N/A"
-                                        Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & colourType & "'")
-                                        If String.IsNullOrEmpty(colourType) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK YOUR HEADRAIL COLOUR FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.VALUE='" & companyDetailId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='" & colourId & "' AND (Status='In Stock' OR Status='Limited Stock')")
-                                        If String.IsNullOrEmpty(productId) Then
-                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If qty <> "1" Then
-                                            Dim thisAlert As String = String.Format("THE ORDER QTY MUS BE 1 PER ITEM LINE. PLEASE CHECK ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Slat Only" OrElse blindType = "Track Only" Then
-                                            If String.IsNullOrEmpty(qtyBlade) Then
-                                                Dim thisAlert As String = String.Format("QTY BLADE FOR ITEM {0} IS REQUIRED !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                            If Not Integer.TryParse(qtyBladeText, qtyBlade) Then
-                                                Dim thisAlert As String = String.Format("QTY BLADE FOR ITEM {0} MUST BE IN NUMERIC FORMAT !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If String.IsNullOrEmpty(room) Then
-                                            Dim thisAlert As String = String.Format("ROOM / LOCATION IS REQUIRED FOR ITEM {0}", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
-                                            If String.IsNullOrEmpty(sizeType) Then
-                                                Dim thisAlert As String = String.Format("SIZE TYPE IS REQUIRED FOR ITEM {0}", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            Dim validSizeType As String() = {"Opening Size", "Make Size"}
-                                            If Not validSizeType.Contains(sizeType) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE SIZE TYPE FOR ITEM {0}", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            If String.IsNullOrEmpty(mounting) Then
-                                                Dim thisAlert As String = String.Format("MOUNTING IS REQUIRED FOR ITEM {0}", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
-                                            Dim validMounting As String() = {"Face Fit", "Reveal Fit"}
-                                            If Not validMounting.Contains(mounting) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE MOUNTING FOR ITEM {0}", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
-                                            If Not Integer.TryParse(widthText, width) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH FOR ITEM {0}", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                            If width < 300 OrElse width > 6000 Then
-                                                MessageError(True, "WIDTH MUST BE BETWEEN 300MM - 6000MM !")
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If blindType = "Slat Only" AndAlso Not String.IsNullOrEmpty(widthText) Then
-                                            Dim thisAlert As String = String.Format("WIDTH IS NOT REQUIRED FOR THIS TYPE. PLEASE CHECK ITEM {0}", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Complete Set" OrElse blindType = "Slat Only" Then
-                                            If Not Integer.TryParse(dropText, drop) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP FOR ITEM {0}", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                            If drop < 300 OrElse drop > 3050 Then
-                                                MessageError(True, "DROP MUST BE BETWEEN 300MM - 3050MM !")
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If blindType = "Track Only" AndAlso Not String.IsNullOrEmpty(dropText) Then
-                                            Dim thisAlert As String = String.Format("DROP IS NOT REQUIRED FOR THIS TYPE. PLEASE CHECK ITEM {0}", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
-                                            If Not String.IsNullOrEmpty(fabricInsert) Then
-                                                Dim validFabricInsert As String() = {"No", "Yes"}
-                                                If Not validFabricInsert.Contains(fabricInsert) Then
-                                                    Dim thisAlert As String = String.Format("PLEASE CHECK THE FABRIC INSERT FOR ITEM {0}", itemNumber)
-                                                    MessageError(True, thisAlert)
-                                                    Exit For
-                                                End If
-                                            End If
-                                        End If
-
-                                        If blindType = "Slat Only" AndAlso Not String.IsNullOrEmpty(fabricInsert) Then
-                                            Dim thisAlert As String = String.Format("FABRIC INSERT IS NOT REQUIRED FOR THIS TYPE. PLEASE CHECK ITEM {0}", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Complete Set" OrElse blindType = "Slat Only" OrElse (blindType = "Track Only" AndAlso fabricInsert = "Yes") Then
-                                            If String.IsNullOrEmpty(fabricType) Then
-                                                Dim thisAlert As String = String.Format("FABRIC TYPE IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            fabricId = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & " " & tubeName & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
-                                            If String.IsNullOrEmpty(fabricId) Then
-                                                Dim thisAlert As String = String.Format("THE FABRIC TYPE FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            If String.IsNullOrEmpty(fabricColour) Then
-                                                Dim thisAlert As String = String.Format("FABRIC COLOUR IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            fabricColourId = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "' AND (Status='In Stock' OR Status='Limited Stock')")
-                                            If String.IsNullOrEmpty(fabricColourId) Then
-                                                Dim thisAlert As String = String.Format("THE FABRIC COLOUR FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If blindType = "Track Only" AndAlso Not String.IsNullOrEmpty(fabricType) Then
-                                            Dim thisAlert As String = String.Format("A FABRIC INSERT IS REQUIRED FOR ITEM {0}, AS YOU HAVE SELECTED A FABRIC TYPE WITHOUT SPECIFYING A FABRIC INSERT.", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
-                                            Dim validStack As String() = {"Left", "Right", "Centre", "Split"}
-                                            If Not validStack.Contains(stackPosition) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK YOUR STACK POSITION FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If blindType = "Slat Only" AndAlso Not String.IsNullOrEmpty(stackPosition) Then
-                                            Dim thisAlert As String = String.Format("STACK POSITION IS NOT REQUIRED FOR ITEM {0}", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If controlType = "Chain" Then
-                                            If String.IsNullOrEmpty(controlPosition) Then
-                                                Dim thisAlert As String = String.Format("CONTROL POSITION IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            Dim validControlPosition As String() = {"Left", "Right"}
-                                            If Not validControlPosition.Contains(controlPosition) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK YOUR CONTROL POSITION FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-                                        If controlType = "Wand" OrElse controlType = "N/A" Then
-                                            If Not String.IsNullOrEmpty(controlPosition) Then
-                                                Dim thisAlert As String = String.Format("CONTROL POSITION IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If String.IsNullOrEmpty(controlColour) Then
-                                            If controlType = "Chain" Then controlColour = "Chromed Metal"
-                                            If controlType = "Wand" Then controlColour = colourType
-                                        End If
-
-                                        If controlType = "N/A" AndAlso Not String.IsNullOrEmpty(controlColour) Then
-                                            Dim thisAlert As String = String.Format("CONTROL COLOUR IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Complete Set" Then
-                                            controlLength = "Standard"
-                                            controlLengthValue = Math.Ceiling(drop * 2 / 3)
-                                            If controlType = "Wand" Then
-                                                If controlLengthValue > 1000 Then controlLengthValue = 1000
-                                            End If
-
-                                            If Not String.IsNullOrEmpty(controlLengthText) AndAlso Not controlLengthText.ToLower().Contains("standard") AndAlso Not controlLengthText.ToLower().Contains("std") Then
-                                                controlLength = "Custom"
-                                                controlLengthText = controlLengthText.Replace("mm", "")
-
-                                                If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
-                                                    Dim thisAlert As String = String.Format("PLEASE CHECK YOUR CONTROL LENGTH FOR ITEM {0} !", itemNumber)
-                                                    MessageError(True, thisAlert)
-                                                    Exit For
-                                                End If
-
-                                                If controlType = "Wand" AndAlso controlLengthValue > 1000 Then
-                                                    Dim thisAlert As String = String.Format("MAXIMUM CONTROL / WAND LENGTH IS 1000MM FOR ITEM {0}", itemNumber)
-                                                    MessageError(True, thisAlert)
-                                                    Exit For
-                                                End If
-                                            End If
-                                        End If
-
-                                        If blindType = "Track Only" Then
-                                            controlLength = "Custom"
-                                            controlLengthText = controlLengthText.Replace("mm", "")
-
-                                            If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
-                                                MessageError(True, "PLEASE CHECK YOUR CONTROL LENGTH !")
-                                                Exit For
-                                            End If
-
-                                            If controlType = "Wand" AndAlso controlLengthValue > 1000 Then
-                                                Dim thisAlert As String = String.Format("MAXIMUM CONTROL / WAND LENGTH IS 1000MM FOR ITEM {0}", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If blindType = "Slat Only" Then
-                                            If Not String.IsNullOrEmpty(controlLengthText) Then
-                                                Dim thisAlert As String = String.Format("CONTROL LENGTH IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If blindType = "Complete Set" OrElse blindType = "Slat Only" Then
-                                            If String.IsNullOrEmpty(bottomJoining) Then
-                                                MessageError(True, "BOTTOM JOINING IS REQUIRED !")
-                                                Exit For
-                                            End If
-
-                                            If bottomJoining = "Chain" Then bottomJoining = "With Chain"
-                                            Dim validBottomJoining As String() = {"Chainless", "Sewn", "Sewn In", "With Chain"}
-                                            If Not validBottomJoining.Contains(bottomJoining) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE BOTTOM JOINING FOR ITEM {0}", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If blindType = "Track Only" AndAlso Not String.IsNullOrEmpty(bottomJoining) Then
-                                            Dim thisAlert As String = String.Format("BOTTOM JOINING IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
-                                            If String.IsNullOrEmpty(bracketExtension) Then
-                                                Dim thisAlert As String = String.Format("BRACKET EXTENSION IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                            Dim validExtension As String() = {"Standard Bracket", "Extension Bracket"}
-                                            If Not validExtension.Contains(bracketExtension) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE BRACKET EXTENSION FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If blindType = "Slat Only" AndAlso Not String.IsNullOrEmpty(bracketExtension) Then
-                                            Dim thisAlert As String = String.Format("BRACKET EXTENSION IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Complete Set" AndAlso Not String.IsNullOrEmpty(sloping) Then
-                                            Dim validSloping As String() = {"No", "Yes"}
-                                            If Not validSloping.Contains(sloping) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE SLOPING FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If msgError.InnerText = "" Then
-                                            Dim totalItems As Integer = 1
-
-                                            If blindType = "Track Only" Then drop = 0
-
-                                            If controlType = "Chain" Then
-                                                chainId = orderClass.GetItemData("SELECT Id FROM Chains WHERE Name='" & controlColour & "'")
-                                                controlColour = String.Empty
-                                            End If
-
-                                            If bracketExtension = "Standard Bracket" Then bracketExtension = String.Empty
-                                            If bracketExtension = "Extension Bracket" Then bracketExtension = "Yes"
-
-                                            wandLengthValue = 0
-                                            If controlType = "Wand" Then wandLengthValue = controlLengthValue
-
-                                            If controlType = "Wand" Then
-                                                If stackPosition = "Left" Then controlPosition = "Right"
-                                                If stackPosition = "Right" Then controlPosition = "Left"
-                                                If stackPosition = "Centre" Then controlPosition = "Right and Left"
-                                                If stackPosition = "Split" Then controlPosition = "Middle"
-                                            End If
-                                            If Not fabricInsert = "Yes" Then fabricInsert = String.Empty
-                                            If bottomJoining = "Sewn" Then bottomJoining = "Sewn In"
-
-                                            If blindType = "Slat Only" Then
-                                                If tubeName = "127mm" Then width = qtyBlade * 115 : If qtyBlade < 6 Then width = 472
-                                                If tubeName = "89mm" Then width = qtyBlade * 79 : If qtyBlade < 5 Then width = 591
-                                            End If
-
-                                            Dim linearMetre As Decimal = width / 1000
-                                            Dim squareMetre As Decimal = width * drop / 1000000
-
-                                            Dim groupName As String = String.Format("Vertical - {0} - {1}", blindType, tubeName)
-                                            Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, priceGroupId)
-
-                                            Dim itemId As String = orderClass.GetNewOrderItemId()
-
-                                            Using thisConn As SqlConnection = New SqlConnection(myConn)
-                                                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, ChainId, PriceProductGroupId, Qty, QtyBlade, Room, Mounting, Width, [Drop], StackPosition, ControlPosition, ControlLength, ControlLengthValue, WandColour, WandLengthValue, FabricInsert, BottomJoining, BracketExtension, Sloping, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @ChainId, @PriceProductGroupId, @Qty, @QtyBlade, @Room, @Mounting, @Width, @Drop, @StackPosition, @ControlPosition, @ControlLength, @ControlLengthValue, @WandColour, @WandLengthValue, @FabricInsert, @BottomJoining, @BracketExtension, @Sloping, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
-                                                    thisCmd.Parameters.AddWithValue("@Id", itemId)
-                                                    thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
-                                                    thisCmd.Parameters.AddWithValue("@ProductId", productId)
-                                                    thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(fabricId), CType(DBNull.Value, Object), fabricId))
-                                                    thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(fabricColourId), CType(DBNull.Value, Object), fabricColourId))
-                                                    thisCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(chainId), CType(DBNull.Value, Object), chainId))
-                                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                                                    thisCmd.Parameters.AddWithValue("@Qty", "1")
-                                                    thisCmd.Parameters.AddWithValue("@QtyBlade", qtyBlade)
-                                                    thisCmd.Parameters.AddWithValue("@Room", room)
-                                                    thisCmd.Parameters.AddWithValue("@Mounting", sizeType & " " & mounting)
-                                                    thisCmd.Parameters.AddWithValue("@Width", width)
-                                                    thisCmd.Parameters.AddWithValue("@Drop", drop)
-                                                    thisCmd.Parameters.AddWithValue("@FabricInsert", fabricInsert)
-                                                    thisCmd.Parameters.AddWithValue("@StackPosition", stackPosition)
-                                                    thisCmd.Parameters.AddWithValue("@ControlPosition", controlPosition)
-                                                    thisCmd.Parameters.AddWithValue("@ControlLength", controlLength)
-                                                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", controlLengthValue)
-                                                    thisCmd.Parameters.AddWithValue("@WandColour", controlColour)
-                                                    thisCmd.Parameters.AddWithValue("@WandLengthValue", wandLengthValue)
-                                                    thisCmd.Parameters.AddWithValue("@BottomJoining", bottomJoining)
-                                                    thisCmd.Parameters.AddWithValue("@BracketExtension", bracketExtension)
-                                                    thisCmd.Parameters.AddWithValue("@Sloping", sloping)
-                                                    thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
-                                                    thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
-                                                    thisCmd.Parameters.AddWithValue("@Notes", notes)
-                                                    thisCmd.Parameters.AddWithValue("@MarkUp", "0")
-
-                                                    thisConn.Open()
-                                                    thisCmd.ExecuteNonQuery()
-                                                End Using
-                                            End Using
-
-                                            orderClass.ResetPriceDetail(headerId, itemId)
-                                            orderClass.CalculatePrice(headerId, itemId)
-                                            orderClass.FinalCostItem(headerId, itemId)
-
-                                            dataLog = {"OrderDetails", itemId, Session("LoginId").ToString(), "Order Item Added"}
-                                            orderClass.Logs(dataLog)
-                                        End If
-                                    End If
-
-                                    If designType = "Saphora Drape" Then
-                                        Dim itemNumber As String = row - 3
-
-                                        Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designType & "'")
-
-                                        Dim blindType As String = If(sheetDetail.Cells(row, 2).Text IsNot Nothing, sheetDetail.Cells(row, 2).Text, "")
-                                        Dim tubeType As String = (sheetDetail.Cells(row, 3).Text & "").Trim()
-                                        Dim controlType As String = (sheetDetail.Cells(row, 4).Text & "").Trim()
-                                        Dim colourType As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
-                                        Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 6).Text), 0, CInt(sheetDetail.Cells(row, 6).Text))
-                                        Dim qtyBlade As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 7).Text), 0, CInt(sheetDetail.Cells(row, 7).Text))
-                                        Dim room As String = (sheetDetail.Cells(row, 8).Text & "").Trim()
-                                        Dim sizeType As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
-                                        Dim mounting As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
-
-                                        Dim widthText As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
-                                        Dim width As Integer
-
-                                        Dim dropText As String = (sheetDetail.Cells(row, 12).Text & "").Trim()
-                                        Dim drop As Integer
-
-                                        Dim fabricInsert As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
-                                        Dim fabricType As String = (sheetDetail.Cells(row, 14).Text & "").Trim()
-                                        Dim fabricColour As String = (sheetDetail.Cells(row, 15).Text & "").Trim()
-                                        Dim stackPosition As String = (sheetDetail.Cells(row, 16).Text & "").Trim()
-                                        Dim controlPosition As String = (sheetDetail.Cells(row, 17).Text & "").Trim()
-                                        Dim controlColour As String = (sheetDetail.Cells(row, 18).Text & "").Trim()
-                                        Dim controlLengthText As String = (sheetDetail.Cells(row, 19).Text & "").Trim()
-                                        Dim bottomJoining As String = (sheetDetail.Cells(row, 20).Text & "").Trim()
-                                        Dim bracketExtension As String = (sheetDetail.Cells(row, 21).Text & "").Trim()
-                                        Dim sloping As String = (sheetDetail.Cells(row, 22).Text & "").Trim()
-                                        Dim notes As String = (sheetDetail.Cells(row, 23).Text & "").Trim()
-
-                                        Dim fabricId As String = String.Empty
-                                        Dim fabricColourId As String = String.Empty
-
-                                        Dim chainId As String = String.Empty
-                                        Dim controlLength As String = String.Empty
-                                        Dim controlLengthValue As Integer = 0
-                                        Dim wandLengthValue As Integer = 0
-
-                                        If String.IsNullOrEmpty(designId) Then
-                                            Dim thisAlert As String = String.Format("THE PRODUCT IN ITEM {0} IS NOT REGISTERED. PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND Name='" & blindType & "' AND CompanyArray.VALUE='" & companyDetailId & "'")
-                                        If String.IsNullOrEmpty(blindId) Then
-                                            Dim thisAlert As String = String.Format("THE ORDER TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN. !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Name='" & tubeType & "'")
-                                        If String.IsNullOrEmpty(tubeId) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE SLAT SIZE FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Fabric Only" Then controlType = "N/A"
-                                        Dim controlId As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='" & controlType & "'")
-                                        If String.IsNullOrEmpty(controlId) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK YOUR CONTROL TYPE  FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Fabric Only" Then colourType = "N/A"
-                                        Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & colourType & "'")
-                                        If String.IsNullOrEmpty(colourType) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK YOUR HEADRAIL COLOUR FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.VALUE='" & companyDetailId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='" & colourId & "' AND (Status='In Stock' OR Status='Limited Stock')")
-                                        If String.IsNullOrEmpty(productId) Then
-                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If qty <> 1 Then
-                                            Dim thisAlert As String = String.Format("THE ORDER QTY MUS BE 1 PER ITEM LINE. PLEASE CHECK ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Complete Set" Then
-                                            Dim validSizeType As String() = {"Opening Size", "Make Size"}
-                                            If Not validSizeType.Contains(sizeType) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE SIZE TYPE FOR ITEM {0}", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            Dim validMounting As String() = {"Face Fit", "Reveal Fit"}
-                                            If Not validMounting.Contains(mounting) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE MOUNTING FOR ITEM {0}", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If Not Integer.TryParse(widthText, width) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH FOR ITEM {0}", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-                                        If width < 300 OrElse width > 6000 Then
-                                            MessageError(True, "WIDTH MUST BE BETWEEN 300MM - 6000MM !")
-                                            Exit For
-                                        End If
-
-                                        If Not Integer.TryParse(dropText, drop) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP FOR ITEM {0}", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-                                        If drop < 300 OrElse drop > 3050 Then
-                                            MessageError(True, "DROP MUST BE BETWEEN 300MM - 3050MM !")
-                                            Exit For
-                                        End If
-
-                                        If String.IsNullOrEmpty(fabricType) Then
-                                            Dim thisAlert As String = String.Format("FABRIC TYPE FOR ITEM {0} IS REQUIRED !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        fabricId = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
-                                        If String.IsNullOrEmpty(fabricId) Then
-                                            Dim thisAlert As String = String.Format("THE FABRIC TYPE FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If String.IsNullOrEmpty(fabricColour) Then
-                                            Dim thisAlert As String = String.Format("FABRIC COLOUR FOR ITEM {0} IS REQUIRED !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        fabricColourId = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "' AND (Status='In Stock' OR Status='Limited Stock')")
-                                        If String.IsNullOrEmpty(fabricColourId) Then
-                                            Dim thisAlert As String = String.Format("THE FABRIC COLOUR FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Complete Set" Then
-                                            Dim validStack As String() = {"Left", "Right", "Centre", "Split"}
-                                            If Not validStack.Contains(stackPosition) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK YOUR STACK POSITION FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If blindType = "Fabric Only" AndAlso Not String.IsNullOrEmpty(stackPosition) Then
-                                            Dim thisAlert As String = String.Format("STACK POSITION IS NOT REQUIRED FOR ITEM {0}", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If controlType = "Wand" OrElse controlType = "N/A" Then
-                                            If Not String.IsNullOrEmpty(controlPosition) Then
-                                                Dim thisAlert As String = String.Format("CONTROL POSITION IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If String.IsNullOrEmpty(controlColour) Then
-                                            If controlType = "Chain" Then controlColour = "Chromed Metal"
-                                            If controlType = "Wand" Then controlColour = colourType
-                                        End If
-
-                                        If controlType = "N/A" AndAlso Not String.IsNullOrEmpty(controlColour) Then
-                                            Dim thisAlert As String = String.Format("CONTROL COLOUR IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Complete Set" Then
-                                            controlLength = "Standard"
-                                            controlLengthValue = Math.Ceiling(drop * 2 / 3)
-                                            If controlType = "Wand" Then
-                                                If controlLengthValue > 1000 Then controlLengthValue = 1000
-                                            End If
-
-                                            If Not String.IsNullOrEmpty(controlLengthText) AndAlso Not controlLengthText.ToLower().Contains("standard") AndAlso Not controlLengthText.ToLower().Contains("std") Then
-                                                controlLength = "Custom"
-                                                controlLengthText = controlLengthText.Replace("mm", "")
-
-                                                If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
-                                                    Dim thisAlert As String = String.Format("PLEASE CHECK YOUR CONTROL LENGTH FOR ITEM {0} !", itemNumber)
-                                                    MessageError(True, thisAlert)
-                                                    Exit For
-                                                End If
-
-                                                If controlType = "Wand" AndAlso controlLengthValue > 1000 Then
-                                                    Dim thisAlert As String = String.Format("MAXIMUM CONTROL / WAND LENGTH IS 1000MM FOR ITEM {0}", itemNumber)
-                                                    MessageError(True, thisAlert)
-                                                    Exit For
-                                                End If
-                                            End If
-                                        End If
-
-                                        If blindType = "Fabric Only" Then
-                                            If Not String.IsNullOrEmpty(controlLengthText) Then
-                                                Dim thisAlert As String = String.Format("CONTROL LENGTH IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If blindType = "Complete Set" Then
-                                            If String.IsNullOrEmpty(bracketExtension) Then
-                                                Dim thisAlert As String = String.Format("BRACKET EXTENSION IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                            Dim validExtension As String() = {"Standard Bracket", "Extension Bracket"}
-                                            If Not validExtension.Contains(bracketExtension) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE BRACKET EXTENSION FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If blindType = "Fabric Only" AndAlso Not String.IsNullOrEmpty(bracketExtension) Then
-                                            Dim thisAlert As String = String.Format("BRACKET EXTENSION IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If msgError.InnerText = "" Then
-                                            Dim totalItems As Integer = 1
-
-                                            If bracketExtension = "Standard Bracket" Then bracketExtension = String.Empty
-                                            If bracketExtension = "Extension Bracket" Then bracketExtension = "Yes"
-
-                                            wandLengthValue = 0
-                                            If controlType = "Wand" Then wandLengthValue = controlLengthValue
-
-                                            If controlType = "Wand" Then
-                                                If stackPosition = "Left" Then controlPosition = "Right"
-                                                If stackPosition = "Right" Then controlPosition = "Left"
-                                                If stackPosition = "Centre" Then controlPosition = "Right and Left"
-                                                If stackPosition = "Split" Then controlPosition = "Middle"
-                                            End If
-
-                                            Dim linearMetre As Decimal = width / 1000
-                                            Dim squareMetre As Decimal = width * drop / 1000000
-
-                                            Dim groupName As String = String.Format("Saphora Drape - {0}", blindType, blindType)
-                                            Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, priceGroupId)
-
-                                            Dim itemId As String = orderClass.GetNewOrderItemId()
-
-                                            Using thisConn As SqlConnection = New SqlConnection(myConn)
-                                                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, ChainId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], StackPosition, ControlPosition, ControlLength, ControlLengthValue, WandColour, WandLengthValue, BracketExtension, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @ChainId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @StackPosition, @ControlPosition, @ControlLength, @ControlLengthValue, @WandColour, @WandLengthValue, @BracketExtension, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
-                                                    thisCmd.Parameters.AddWithValue("@Id", itemId)
-                                                    thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
-                                                    thisCmd.Parameters.AddWithValue("@ProductId", productId)
-                                                    thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(fabricId), CType(DBNull.Value, Object), fabricId))
-                                                    thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(fabricColourId), CType(DBNull.Value, Object), fabricColourId))
-                                                    thisCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(chainId), CType(DBNull.Value, Object), chainId))
-                                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                                                    thisCmd.Parameters.AddWithValue("@Qty", "1")
-                                                    thisCmd.Parameters.AddWithValue("@Room", room)
-                                                    thisCmd.Parameters.AddWithValue("@Mounting", sizeType & " " & mounting)
-                                                    thisCmd.Parameters.AddWithValue("@Width", width)
-                                                    thisCmd.Parameters.AddWithValue("@Drop", drop)
-                                                    thisCmd.Parameters.AddWithValue("@StackPosition", stackPosition)
-                                                    thisCmd.Parameters.AddWithValue("@ControlPosition", controlPosition)
-                                                    thisCmd.Parameters.AddWithValue("@ControlLength", controlLength)
-                                                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", controlLengthValue)
-                                                    thisCmd.Parameters.AddWithValue("@WandColour", controlColour)
-                                                    thisCmd.Parameters.AddWithValue("@WandLengthValue", wandLengthValue)
-                                                    thisCmd.Parameters.AddWithValue("@BracketExtension", bracketExtension)
-                                                    thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
-                                                    thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
-                                                    thisCmd.Parameters.AddWithValue("@Notes", notes)
-                                                    thisCmd.Parameters.AddWithValue("@MarkUp", "0")
-
-                                                    thisConn.Open()
-                                                    thisCmd.ExecuteNonQuery()
-                                                End Using
-                                            End Using
-
-                                            orderClass.ResetPriceDetail(headerId, itemId)
-                                            orderClass.CalculatePrice(headerId, itemId)
-                                            orderClass.FinalCostItem(headerId, itemId)
-
-                                            dataLog = {"OrderDetails", itemId, Session("LoginId").ToString(), "Order Item Added"}
-                                            orderClass.Logs(dataLog)
-                                        End If
-                                    End If
-
-                                    If designType = "Cellular Shades" Then
-                                        Dim itemNumber As String = row - 3
-
-                                        Dim blindType As String = If(sheetDetail.Cells(row, 2).Text IsNot Nothing, sheetDetail.Cells(row, 2).Text, "")
-                                        Dim controlType As String = (sheetDetail.Cells(row, 3).Text & "").Trim()
-                                        Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 4).Text), 0, CInt(sheetDetail.Cells(row, 4).Text))
-                                        Dim room As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
-                                        Dim mounting As String = (sheetDetail.Cells(row, 6).Text & "").Trim()
-
-                                        Dim widthText As String = (sheetDetail.Cells(row, 7).Text & "").Trim()
-                                        Dim width As Integer
-
-                                        Dim dropText As String = (sheetDetail.Cells(row, 8).Text & "").Trim()
-                                        Dim drop As Integer
-
-                                        Dim fabricType As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
-                                        Dim fabricColour As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
-                                        Dim fabricTypeB As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
-                                        Dim fabricColourB As String = (sheetDetail.Cells(row, 12).Text & "").Trim()
-                                        Dim controlPosition As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
-                                        Dim cordLengthText As String = (sheetDetail.Cells(row, 14).Text & "").Trim()
-                                        Dim supply As String = (sheetDetail.Cells(row, 15).Text & "").Trim()
-                                        Dim notes As String = (sheetDetail.Cells(row, 16).Text & "").Trim()
-
-                                        Dim widthB As Integer = 0
-                                        Dim dropB As Integer = 0
-                                        Dim controlLength As String = String.Empty
-                                        Dim controlLengthValue As Integer = 0
-
-                                        Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designType & "'")
-                                        If String.IsNullOrEmpty(designId) Then
-                                            Dim thisAlert As String = String.Format("THE PRODUCT IN ITEM {0} IS NOT REGISTERED. PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If blindType = "Top Down Bottom Up" Then blindType = "TDBU"
-                                        Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND Name='" & blindType & "' AND companyArray.value='" & companyDetailId & "' AND Active=1")
-                                        If String.IsNullOrEmpty(blindId) Then
-                                            Dim thisAlert As String = String.Format("THE ORDER TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN. !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim tubeName As String = "N/A"
-                                        Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Name='" & tubeName & "'")
-
-                                        Dim controlId As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='" & controlType & "'")
-                                        If String.IsNullOrEmpty(controlId) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK YOUR CONTROL TYPE FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.value='" & companyDetailId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='56' AND (Status='In Stock' OR Status='Limited Stock')")
-                                        If String.IsNullOrEmpty(productId) Then
-                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If qty <> 1 Then
-                                            Dim thisAlert As String = String.Format("THE ORDER QTY MUS BE 1 PER ITEM LINE. PLEASE CHECK ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim validMounting As String() = {"Face Fit", "Reveal Fit", "Opening Size Face Fit", "Opening Size Reveal Fit", "Make Size Face Fit", "Make Size Reveal Fit"}
-                                        If Not validMounting.Contains(mounting) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE MOUNTING FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If String.IsNullOrEmpty(widthText) Then
-                                            Dim thisAlert As String = String.Format("WIDTH IS REQUIRED FOR ITEM {0}", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-                                        If Not Integer.TryParse(widthText, width) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If String.IsNullOrEmpty(dropText) Then
-                                            Dim thisAlert As String = String.Format("DROP IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-                                        If Not Integer.TryParse(dropText, drop) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If String.IsNullOrEmpty(fabricType) Then
-                                            Dim thisAlert As String = String.Format("FABRIC TYPE IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim fabricId As String = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
-                                        If String.IsNullOrEmpty(fabricId) Then
-                                            Dim thisAlert As String = String.Format("THE FABRIC TYPE FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If String.IsNullOrEmpty(fabricColour) Then
-                                            Dim thisAlert As String = String.Format("FABRIC COLOUR IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim fabricColourId As String = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "' AND (Status='In Stock' OR Status='Limited Stock')")
-                                        If String.IsNullOrEmpty(fabricColourId) Then
-                                            Dim thisAlert As String = String.Format("THE FABRIC COLOUR FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim fabricIdB As String = String.Empty
-                                        Dim fabricColourIdB As String = String.Empty
-
-                                        If blindType = "Day & Night" Then
-                                            If String.IsNullOrEmpty(fabricTypeB) Then
-                                                Dim thisAlert As String = String.Format("SECOND FABRIC TYPE IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            fabricIdB = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricTypeB & "' AND designArray.VALUE='" & designId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
-                                            If String.IsNullOrEmpty(fabricIdB) Then
-                                                Dim thisAlert As String = String.Format("THE SECOND FABRIC TYPE FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            fabricColourIdB = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricIdB & "' AND Colour='" & fabricColourB & "' AND (Status='In Stock' OR Status='Limited Stock')")
-                                            If String.IsNullOrEmpty(fabricColourIdB) Then
-                                                Dim thisAlert As String = String.Format("THE SECOND FABRIC COLOUR FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If controlType = "Corded" Then
-                                            If String.IsNullOrEmpty(controlPosition) Then
-                                                Dim thisAlert As String = String.Format("CORD POSITION IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            Dim validControlPosition As String() = {"Left", "Right"}
-                                            If blindType = "Day & Night" OrElse blindType = "TDBU" Then
-                                                validControlPosition = {"Both Sides", "Cords Both Sides"}
-                                            End If
-                                            If Not validControlPosition.Contains(controlPosition) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE CONTROL POSITION FOR ITEM {0}", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            controlLength = "Standard"
-                                            controlLengthValue = Math.Ceiling(drop * 2 / 3)
-
-                                            If Not String.IsNullOrEmpty(cordLengthText) AndAlso Not cordLengthText.ToLower().Contains("standard") AndAlso Not cordLengthText.ToLower().Contains("std") Then
-                                                controlLength = "Custom"
-                                                cordLengthText = cordLengthText.Replace("mm", "")
-                                                If Not Integer.TryParse(cordLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
-                                                    MessageError(True, "PLEASE CHECK YOUR CORD LENGTH !")
-                                                    Exit For
-                                                End If
-                                            End If
-                                        End If
-
-                                        If controlType = "Cordless" Then
-                                            'If Not String.IsNullOrEmpty(controlPosition) Then
-                                            '    Dim thisAlert As String = String.Format("CORD POSITION IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
-                                            '    MessageError(True, thisAlert)
-                                            '    Exit For
-                                            'End If
-
-                                            'If Not String.IsNullOrEmpty(cordLengthText) Then
-                                            '    Dim thisAlert As String = String.Format("CORD LENGTH IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
-                                            '    MessageError(True, thisAlert)
-                                            '    Exit For
-                                            'End If
-                                        End If
-
-                                        If Not String.IsNullOrEmpty(supply) Then
-                                            Dim validSupply As String() = {"No", "Yes"}
-                                            If Not validSupply.Contains(supply) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE HOLD DOWN CLIP FOR ITEM {0}", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If msgError.InnerText = "" Then
-                                            Dim totalItems As Integer = 1
-
-                                            If mounting = "Face Fit" OrElse mounting = "Reveal Fit" Then
-                                                mounting = String.Format("Opening Size {0}", mounting)
-                                            End If
-
-                                            Dim linearMetre As Decimal = width / 1000
-                                            Dim linearMetreB As Decimal = 0D
-
-                                            Dim squareMetre As Decimal = width * drop / 1000000
-                                            Dim squareMetreB As Decimal = 0
-
-                                            If blindType = "Day & Night" OrElse blindType = "Top Down Bottom Up" Then
-                                                controlPosition = "Both Sides"
-                                            End If
-
-                                            If controlType = "Cordless" Then
-                                                controlPosition = String.Empty
-                                                controlLength = String.Empty : controlLengthValue = 0
-                                            End If
-
-                                            Dim fabricGroup As String = orderClass.GetFabricGroup(fabricId)
-
-                                            Dim factory As String = orderClass.GetFabricFactory(fabricColourId)
-
-                                            Dim groupName As String = String.Format("{0} - {1} - {2} - {3} - {4}", designType, blindType, controlType, fabricGroup, factory)
-                                            Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, priceGroupId)
-
-                                            If blindType = "Day & Night" Then
-                                                widthB = width : dropB = drop
-
-                                                linearMetreB = width / 1000
-                                                squareMetreB = widthB * dropB / 1000000
-
-                                                groupName = String.Format("{0} - {1} - {2} - {3}", designType, blindType, controlType, factory)
-                                                priceProductGroup = orderClass.GetPriceProductGroupId(groupName, designId, priceGroupId)
-                                            End If
-
-                                            Dim itemId As String = orderClass.GetNewOrderItemId()
-
-                                            Using thisConn As SqlConnection = New SqlConnection(myConn)
-                                                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricIdB, FabricColourId, FabricColourIdB, PriceProductGroupId, Qty, Room, Mounting, Width, WidthB, [Drop], DropB, ControlPosition, ControlLength, ControlLengthValue, Supply, LinearMetre, LinearMetreB, SquareMetre, SquareMetreB, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricIdB, @FabricColourId, @FabricColourIdB, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @WidthB, @Drop, @DropB, @ControlPosition, @ControlLength, @ControlLengthValue, @Supply, @LinearMetre, @LinearMetreB, @SquareMetre, @SquareMetreB, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
-                                                    thisCmd.Parameters.AddWithValue("@Id", itemId)
-                                                    thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
-                                                    thisCmd.Parameters.AddWithValue("@ProductId", productId)
-                                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                                                    thisCmd.Parameters.AddWithValue("@Qty", "1")
-                                                    thisCmd.Parameters.AddWithValue("@Room", room)
-                                                    thisCmd.Parameters.AddWithValue("@FabricId", fabricId)
-                                                    thisCmd.Parameters.AddWithValue("@FabricColourId", fabricColourId)
-                                                    thisCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(fabricIdB), CType(DBNull.Value, Object), fabricIdB))
-                                                    thisCmd.Parameters.AddWithValue("@FabricColourIdB", If(String.IsNullOrEmpty(fabricColourIdB), CType(DBNull.Value, Object), fabricColourIdB))
-                                                    thisCmd.Parameters.AddWithValue("@Mounting", mounting)
-                                                    thisCmd.Parameters.AddWithValue("@ControlPosition", controlPosition)
-                                                    thisCmd.Parameters.AddWithValue("@Width", width)
-                                                    thisCmd.Parameters.AddWithValue("@WidthB", widthB)
-                                                    thisCmd.Parameters.AddWithValue("@Drop", drop)
-                                                    thisCmd.Parameters.AddWithValue("@DropB", dropB)
-                                                    thisCmd.Parameters.AddWithValue("@ControlLength", controlLength)
-                                                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", controlLengthValue)
-                                                    thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
-                                                    thisCmd.Parameters.AddWithValue("@LinearMetreB", linearMetreB)
-                                                    thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
-                                                    thisCmd.Parameters.AddWithValue("@SquareMetreB", squareMetreB)
-                                                    thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
-                                                    thisCmd.Parameters.AddWithValue("@Supply", supply)
-                                                    thisCmd.Parameters.AddWithValue("@Notes", notes)
-                                                    thisCmd.Parameters.AddWithValue("@MarkUp", 0)
-
-                                                    thisConn.Open()
-                                                    thisCmd.ExecuteNonQuery()
-                                                End Using
-                                            End Using
-
-                                            orderClass.ResetPriceDetail(headerId, itemId)
-                                            orderClass.CalculatePrice(headerId, itemId)
-                                            orderClass.FinalCostItem(headerId, itemId)
-
-                                            dataLog = {"OrderDetails", itemId, Session("LoginId"), "Order Item Added"}
-                                            orderClass.Logs(dataLog)
-                                        End If
-                                    End If
-
-                                    If designType = "Roman" Then
-                                        Dim itemNumber As String = row - 3
-
-                                        Dim blindType As String = If(sheetDetail.Cells(row, 2).Text IsNot Nothing, sheetDetail.Cells(row, 2).Text, "")
-                                        Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 3).Text), 0, CInt(sheetDetail.Cells(row, 3).Text))
-                                        Dim room As String = (sheetDetail.Cells(row, 4).Text & "").Trim()
-                                        Dim mounting As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
-                                        Dim romanType As String = (sheetDetail.Cells(row, 6).Text & "").Trim()
-                                        Dim batten As String = (sheetDetail.Cells(row, 7).Text & "").Trim()
-                                        Dim battenColour As String = String.Empty
-                                        Dim fabricType As String = (sheetDetail.Cells(row, 8).Text & "").Trim()
-                                        Dim fabricColour As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
-
-                                        Dim widthText As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
-                                        Dim width As Integer
-
-                                        Dim dropText As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
-                                        Dim drop As Integer
-
-                                        Dim controlPosition As String = (sheetDetail.Cells(row, 12).Text & "").Trim()
-                                        Dim controlType As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
-                                        Dim controlColour As String = (sheetDetail.Cells(row, 14).Text & "").Trim()
-                                        Dim remoteMotor As String = (sheetDetail.Cells(row, 15).Text & "").Trim()
-                                        Dim controlLengthText As String = (sheetDetail.Cells(row, 16).Text & "").Trim()
-                                        Dim valanceOption As String = (sheetDetail.Cells(row, 17).Text & "").Trim()
+                                        Dim returnLeft As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 15).Text), 0, CInt(sheetDetail.Cells(row, 15).Text))
+                                        Dim returnRight As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 16).Text), 0, CInt(sheetDetail.Cells(row, 16).Text))
+                                        Dim dustCover As String = (sheetDetail.Cells(row, 17).Text & "").Trim()
                                         Dim notes As String = (sheetDetail.Cells(row, 18).Text & "").Trim()
 
-                                        Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='Roman Blind'")
+                                        Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designName_Fix & "'")
                                         If String.IsNullOrEmpty(designId) Then
                                             Dim thisAlert As String = String.Format("THE PRODUCT IN ITEM {0} IS NOT REGISTERED. PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !", itemNumber)
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
 
-                                        Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND Name='Roman Blind' AND companyArray.value='" & companyDetailId & "' AND Active=1")
+                                        Dim blindName_Fix As String = "Pelmet " & pelmetType
+
+                                        Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND Name='" & blindName_Fix & "' AND CompanyArray.VALUE='" & companyDetailId & "'")
                                         If String.IsNullOrEmpty(blindId) Then
                                             Dim thisAlert As String = String.Format("THE ORDER TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN. !", itemNumber)
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
 
-                                        If qty <> 1 Then
-                                            Dim thisAlert As String = String.Format("THE ORDER QTY MUS BE 1 PER ITEM LINE. PLEASE CHECK ITEM {0} !", itemNumber)
+                                        Dim productData As DataRow = orderClass.GetDataRow("SELECT Id, Status FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.value='" & companyDetailId & "' AND TubeType='9' AND ControlType='17' AND ColourType='56' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued')")
+                                        If productData Is Nothing Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
 
-                                        If String.IsNullOrEmpty(room) Then
-                                            MessageError(True, "ROOM / LOCATION IS REQUIRED !")
+                                        If productData("Status").ToString() = "Out of Stock" Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY OUT OF STOCK. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
                                             Exit For
                                         End If
-
-                                        If String.IsNullOrEmpty(mounting) Then
-                                            Dim thisAlert As String = String.Format("MOUNTING IS REQUIRED FOR ITEM {0}", itemNumber)
+                                        If productData("Status").ToString() = "Discontinued" Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY DISCONTINUED. ITEM {0} !", itemNumber)
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
 
-                                        If mounting <> "Face Fit" Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE MOUNTING FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim tubeName As String = romanType & " (Roman)"
-                                        Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Alias='" & tubeName & "'")
-                                        If String.IsNullOrEmpty(tubeId) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK THEN ROMAN TYPE FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If tubeName = "Plantation" AndAlso String.IsNullOrEmpty(batten) Then
-                                            Dim thisAlert As String = String.Format("BATTEN COLOUR IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If tubeName = "Classic" OrElse tubeName = "Sewless" Then
-                                            If Not String.IsNullOrEmpty(batten) Then
-                                                Dim thisAlert As String = String.Format("BATTEN COLOUR IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If String.IsNullOrEmpty(fabricType) Then
-                                            Dim thisAlert As String = String.Format("FABRIC TYPE FOR ITEM {0} IS REQUIRED !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-                                        Dim fabricId As String = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
-                                        If String.IsNullOrEmpty(fabricId) Then
-                                            Dim thisAlert As String = String.Format("THE FABRIC TYPE FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If String.IsNullOrEmpty(fabricColour) Then
-                                            Dim thisAlert As String = String.Format("FABRIC COLOUR FOR ITEM {0} IS REQUIRED !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim fabricColourId As String = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "' AND (Status='In Stock' OR Status='Limited Stock')")
-                                        If String.IsNullOrEmpty(fabricColourId) Then
-                                            Dim thisAlert As String = String.Format("THE FABRIC COLOUR FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If String.IsNullOrEmpty(widthText) Then
-                                            Dim thisAlert As String = String.Format("WIDTH IS REQUIRED FOR ITEM {0}", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-                                        If Not Integer.TryParse(widthText, width) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If String.IsNullOrEmpty(dropText) Then
-                                            Dim thisAlert As String = String.Format("DROP IS REQUIRED FOR ITEM {0}", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-                                        If Not Integer.TryParse(dropText, drop) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If String.IsNullOrEmpty(controlPosition) Then
-                                            Dim thisAlert As String = String.Format("CONTROL POSITION IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If String.IsNullOrEmpty(controlType) Then
-                                            Dim thisAlert As String = String.Format("MECHANISM TYPE IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim controlName As String = controlType
-                                        If controlType = "Cord" Then controlName = "Reg Cord Lock"
-                                        If controlType = "Cord Lock" Then controlName = "Reg Cord Lock"
-                                        Dim controlId As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='" & controlName & "'")
-                                        If String.IsNullOrEmpty(controlId) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE MECHANISM TYPE FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='56' AND (Status='In Stock' OR Status='Limited Stock')")
-                                        If String.IsNullOrEmpty(productId) Then
-                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If controlType = "Chain" AndAlso String.IsNullOrEmpty(controlColour) Then
-                                            MessageError(True, "MECHANISM / CHAIN COLOUR IS REQUIRED !")
-                                            Exit For
-                                        End If
-
-                                        Dim chainId As String = String.Empty
-                                        Dim chainName As String = String.Empty
-                                        If controlType = "Chain" OrElse controlType = "Motorised" Then
-                                            chainName = String.Format("Cont Plastic {0}", controlColour)
-                                            If controlColour = "Stainless Steel" Then chainName = String.Format("Cont {0}", controlColour)
-                                            If controlType = "Motorised" Then chainName = "No Remote"
-
-                                            chainId = orderClass.GetItemData("SELECT Id FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & chainName & "' AND designArray.VALUE='" & designId & "' AND controlArray.VALUE='" & controlId & "' AND companyArray.VALUE='" & companyDetailId & "' AND (Status='In Stock' OR Status='Limited Stock')")
-                                            If String.IsNullOrEmpty(chainId) Then
-                                                MessageError(True, "PLEASE CHECK YOUR CHAIN COLOUR / MOTOR REMOTE DATA !")
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If controlType = "Reg Cord Lock" Then controlColour = "White"
-
-                                        Dim controlLength As String = String.Empty
-                                        Dim controlLengthValue As Integer = 0
-                                        If controlType = "Cord" Then
-                                            controlLength = "Standard"
-                                            controlLengthValue = Math.Ceiling(drop * 2 / 3)
-
-                                            If Not String.IsNullOrEmpty(controlLengthText) AndAlso Not controlLengthText.ToLower().Contains("standard") AndAlso Not controlLengthText.ToLower().Contains("std") Then
-                                                controlLength = "Custom"
-                                                controlLengthText = controlLengthText.Replace("mm", "")
-                                                If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 OrElse controlLengthValue > 1000 Then
-                                                    MessageError(True, "PLEASE CHECK YOUR CORD LENGTH !")
-                                                    Exit For
-                                                End If
-                                            End If
-                                        End If
-
-                                        If controlType = "Chain" Then
-                                            controlLength = "Standard"
-                                            controlLengthValue = 500
-                                            Dim thisFormula As Integer = Math.Ceiling(drop * 2 / 3)
-                                            If thisFormula > 500 Then controlLengthValue = 750
-                                            If thisFormula > 750 Then controlLengthValue = 1000
-                                            If thisFormula > 1000 Then controlLengthValue = 1200
-                                            If thisFormula > 1200 Then controlLengthValue = 1500
-
-                                            If Not String.IsNullOrEmpty(controlLengthText) AndAlso Not controlLengthText.ToLower().Contains("standard") AndAlso Not controlLengthText.ToLower().Contains("std") Then
-                                                controlLength = "Custom"
-                                                controlLengthText = controlLengthText.Replace("mm", "")
-                                                If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
-                                                    MessageError(True, "PLEASE CHECK YOUR CHAIN LENGTH !")
-                                                    Exit For
-                                                End If
-                                            End If
-                                        End If
-
-                                        If controlType = "Chain" Then valanceOption = "Retrousse"
-                                        If String.IsNullOrEmpty(valanceOption) Then
-                                            MessageError(True, "VALANCE OPTION IS REQUIRED !")
-                                            Exit For
-                                        End If
-
-                                        Dim validValanceOption As String() = {"Facade", "Retrousse"}
-                                        If Not validValanceOption.Contains(valanceOption) Then
-                                            MessageError(True, "PLEASE CHECK YOUR VALANCE OPTION !")
-                                            Exit For
-                                        End If
-
-                                        If controlType = "Chain" AndAlso Not valanceOption = "Retrousse" Then
-                                            MessageError(True, "VALANCE OPTION MUST BE RETROUSSE !")
-                                            Exit For
-                                        End If
-
-                                        If msgError.InnerText = "" Then
-                                            If batten = "Snow" Then battenColour = "White"
-                                            If batten = "Ivory" Then battenColour = "Alabaster"
-                                            If batten = "Pine" Then battenColour = "Natural"
-                                            If batten = "Tawny" Then battenColour = "Baltic"
-                                            If batten = "Mocha" Then battenColour = "Teak"
-                                            If batten = "Garnet" Then battenColour = "Cherry"
-                                            If batten = "Earth" Then battenColour = "Brown"
-                                            If batten = "Midnight" Then battenColour = "Black"
-                                        End If
-
-                                        If valanceOption = "Retrousse" Then valanceOption = "No Cover Valance and Cord at Back"
-
-                                        Dim linearMetre As Decimal = width / 1000
-                                        Dim squareMetre As Decimal = width * drop / 1000000
-
-                                        Dim groupFabric As String = orderClass.GetFabricGroup(fabricId)
-                                        Dim groupName As String = String.Format("Roman Blind - {0} - {1}", romanType, groupFabric)
-                                        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, priceGroupId)
-
-                                        Dim itemId As String = orderClass.GetNewOrderItemId()
-
-                                        Using thisConn As SqlConnection = New SqlConnection(myConn)
-                                            Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, ChainId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], ControlPosition, ControlColour, ControlLength, ControlLengthValue, ValanceOption, Batten, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @ChainId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @ControlPosition, @ControlColour, @ControlLength, @ControlLengthValue, @ValanceOption, @Batten, @LinearMetre, @SquareMetre, 1, @Notes, 0, 1)", thisConn)
-                                                thisCmd.Parameters.AddWithValue("@Id", itemId)
-                                                thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
-                                                thisCmd.Parameters.AddWithValue("@ProductId", productId)
-                                                thisCmd.Parameters.AddWithValue("@FabricId", fabricId)
-                                                thisCmd.Parameters.AddWithValue("@FabricColourId", fabricColourId)
-                                                thisCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(chainId), CType(DBNull.Value, Object), chainId))
-                                                thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                                                thisCmd.Parameters.AddWithValue("@Qty", "1")
-                                                thisCmd.Parameters.AddWithValue("@Room", room)
-                                                thisCmd.Parameters.AddWithValue("@Mounting", mounting)
-                                                thisCmd.Parameters.AddWithValue("@Width", width)
-                                                thisCmd.Parameters.AddWithValue("@Drop", drop)
-                                                thisCmd.Parameters.AddWithValue("@ControlPosition", controlPosition)
-                                                thisCmd.Parameters.AddWithValue("@ControlColour", controlColour)
-                                                thisCmd.Parameters.AddWithValue("@ControlLength", controlLength)
-                                                thisCmd.Parameters.AddWithValue("@ControlLengthValue", controlLengthValue)
-                                                thisCmd.Parameters.AddWithValue("@ValanceOption", valanceOption)
-                                                thisCmd.Parameters.AddWithValue("@Batten", batten)
-                                                thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
-                                                thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
-                                                thisCmd.Parameters.AddWithValue("@Notes", notes)
-
-                                                thisConn.Open()
-                                                thisCmd.ExecuteNonQuery()
-                                            End Using
-                                        End Using
-
-                                        orderClass.ResetPriceDetail(headerId, itemId)
-                                        orderClass.CalculatePrice(headerId, itemId)
-                                        orderClass.FinalCostItem(headerId, itemId)
-
-                                        dataLog = {"OrderDetails", itemId, Session("LoginId").ToString(), "Order Item Added"}
-                                        orderClass.Logs(dataLog)
-                                    End If
-
-                                    If designType = "Panel Glide" Then
-                                        Dim itemNumber As String = row - 3
-
-                                        Dim blindType As String = If(sheetDetail.Cells(row, 2).Text IsNot Nothing, sheetDetail.Cells(row, 2).Text, "")
-                                        Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 3).Text), 0, CInt(sheetDetail.Cells(row, 3).Text))
-                                        Dim room As String = (sheetDetail.Cells(row, 4).Text & "").Trim()
-                                        Dim sizeType As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
-                                        Dim mounting As String = (sheetDetail.Cells(row, 6).Text & "").Trim()
-                                        Dim panelStyle As String = (sheetDetail.Cells(row, 7).Text & "").Trim()
-                                        Dim trackColour As String = (sheetDetail.Cells(row, 8).Text & "").Trim()
-                                        Dim wandColour As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
-                                        Dim batten As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
-                                        Dim battenb As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
-                                        Dim fabricType As String = (sheetDetail.Cells(row, 12).Text & "").Trim()
-                                        Dim fabricColour As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
-
-                                        Dim widthText As String = (sheetDetail.Cells(row, 14).Text & "").Trim()
-                                        Dim width As Integer
-
-                                        Dim dropText As String = (sheetDetail.Cells(row, 15).Text & "").Trim()
-                                        Dim drop As Integer
-
-                                        Dim wandLengthText As String = (sheetDetail.Cells(row, 16).Text & "").Trim()
-                                        Dim layoutCode As String = (sheetDetail.Cells(row, 17).Text & "").Trim()
-                                        Dim trackType As String = (sheetDetail.Cells(row, 18).Text & "").Trim()
-                                        Dim panelQty As String = (sheetDetail.Cells(row, 19).Text & "").Trim()
-                                        Dim notes As String = (sheetDetail.Cells(row, 20).Text & "").Trim()
-
-                                        Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='Panel Glide'")
-                                        If String.IsNullOrEmpty(designId) Then
-                                            MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID")
-                                            Exit For
-                                        End If
-
-                                        Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND Name='" & blindType & "' AND companyArray.value='" & companyDetailId & "' AND Active=1")
-                                        If String.IsNullOrEmpty(blindId) Then
-                                            MessageError(True, "YOUR ORDER TYPE NOT REGISTERED YET !")
-                                            Exit For
-                                        End If
-
-                                        If qty <> 1 Then
-                                            MessageError(True, "QTY ORDER MUST BE 1 !")
-                                            Exit For
-                                        End If
-
-                                        If String.IsNullOrEmpty(room) Then
-                                            MessageError(True, "ROOM / LOCATION IS REQUIRED !")
-                                            Exit For
-                                        End If
-
-                                        Dim validSizeType As String() = {"Opening Size", "Make Size"}
-                                        If Not validSizeType.Contains(sizeType) Then
-                                            MessageError(True, "PLEASE CHECK YOUR SIZE TYPE !")
-                                            Exit For
-                                        End If
-
-                                        Dim validMounting As String() = {"Face Fit", "Reveal Fit"}
-                                        If Not validMounting.Contains(mounting) Then
-                                            MessageError(True, "PLEASE CHECK YOUR MOUNTING DATA !")
-                                            Exit For
-                                        End If
-
-                                        Dim tubeName As String = panelStyle
-                                        If panelStyle = "Classic" Then tubeName = "Plain (PG)"
-                                        If panelStyle = "Aluminium" Then tubeName = "Sewless (PG)"
-                                        If panelStyle = "Timber" Then tubeName = "Plantation (PG)"
-                                        If panelStyle = "Sewless" Then tubeName = "Sewless (PG)"
-
-                                        Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Alias='" & tubeName & "'")
-                                        If String.IsNullOrEmpty(tubeId) Then
-                                            MessageError(True, "PLEASE CHECK YOUR PANEL STYLE !")
-                                            Exit For
-                                        End If
-
-                                        Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & trackColour & "'")
-                                        If String.IsNullOrEmpty(colourId) Then
-                                            MessageError(True, "PLEASE CHECK YOUR TRACK COLOUR !")
-                                            Exit For
-                                        End If
-
-                                        Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='" & tubeId & "' AND ColourType='" & colourId & "' AND (Status='In Stock' OR Status='Limited Stock')")
-
-                                        If String.IsNullOrEmpty(wandColour) Then
-                                            MessageError(True, "WAND COLOUR IS REQUIRED !")
-                                            Exit For
-                                        End If
-
-                                        If tubeName = "Plantation (PG)" AndAlso String.IsNullOrEmpty(batten) Then
-                                            MessageError(True, "FRONT BATTEN COLOUR IS REQUIRED !")
-                                            Exit For
-                                        End If
-
-                                        'If tubeName = "Plantation" OrElse tubeName = "Sewless" Then
-                                        '    If String.IsNullOrEmpty(battenb) Then
-                                        '        MessageError(True, "BACK BATTEN COLOUR IS REQUIRED !")
-                                        '        Exit For
-                                        '    End If
-                                        'End If
-
-                                        If String.IsNullOrEmpty(fabricType) Then
-                                            MessageError(True, "FABRIC TYPE IS REQUIRED !")
-                                            Exit For
-                                        End If
-
-                                        Dim fabricId As String = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
-                                        If String.IsNullOrEmpty(fabricId) Then
-                                            MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID ! [FABRIC TYPE]")
-                                            Exit For
-                                        End If
-
-                                        If String.IsNullOrEmpty(fabricColour) Then
-                                            MessageError(True, "FABRIC COLOUR IS REQUIRED !")
-                                            Exit For
-                                        End If
-
-                                        Dim fabricColourId As String = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "' AND (Status='In Stock' OR Status='Limited Stock')")
-                                        If String.IsNullOrEmpty(fabricColourId) Then
-                                            MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID ! [FABRIC COLOUR]")
-                                            Exit For
-                                        End If
-
-                                        If Not Integer.TryParse(widthText, width) Then
-                                            MessageError(True, "PLEASE CHECK YOUR WIDTH ORDER !")
-                                            Exit For
-                                        End If
-
-                                        If Not Integer.TryParse(dropText, drop) Then
-                                            MessageError(True, "PLEASE CHECK YOUR DROP ORDER !")
-                                            Exit For
-                                        End If
-
-                                        Dim wandLength As String = "Standard"
-                                        Dim wandLengthValue As Integer = Math.Ceiling(drop * 2 / 3)
-                                        If wandLengthValue > 1000 Then wandLengthValue = 1000
-
-                                        If Not String.IsNullOrEmpty(wandLengthText) AndAlso Not wandLengthText.ToLower().Contains("standard") AndAlso Not wandLengthText.ToLower().Contains("std") Then
-                                            wandLength = "Custom"
-                                            wandLengthText = wandLengthText.Replace("mm", "")
-                                            If Not Integer.TryParse(wandLengthText, wandLengthValue) OrElse wandLengthValue < 0 OrElse wandLengthValue > 1000 Then
-                                                MessageError(True, "PLEASE CHECK YOUR CORD LENGTH & MAXIMUM IS 1000MM !")
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If String.IsNullOrEmpty(layoutCode) Then
-                                            MessageError(True, "LAYOUT CODE IS REQUIRED !")
-                                            Exit For
-                                        End If
-
-                                        If String.IsNullOrEmpty(trackType) Then
-                                            MessageError(True, "NUMBER OF TRACKS IS REQUIRED !")
-                                            Exit For
-                                        End If
-
-                                        trackType = trackType.Replace("Track", "").Trim()
-
-                                        If String.IsNullOrEmpty(panelQty) Then
-                                            MessageError(True, "NUMBER OF PANELS IS REQUIRED !")
-                                            Exit For
-                                        End If
-
-                                        panelQty = panelQty.Replace("Panels", "").Trim()
-
-                                        Dim fixLayoutCode As String = String.Empty
-                                        If trackType = "2" AndAlso panelQty = "2" Then
-                                            If layoutCode = "2L" Then fixLayoutCode = "A"
-                                            If layoutCode = "2R" Then fixLayoutCode = "B"
-                                        End If
-                                        If trackType = "3" AndAlso panelQty = "3" Then
-                                            If layoutCode = "3L" Then fixLayoutCode = "C"
-                                            If layoutCode = "3R" Then fixLayoutCode = "D"
-                                        End If
-                                        If trackType = "3" AndAlso panelQty = "5" Then
-                                            If layoutCode = "3L - 2R" Then fixLayoutCode = "E"
-                                            If layoutCode = "2L - 3R" Then fixLayoutCode = "F"
-                                        End If
-                                        If trackType = "4" AndAlso panelQty = "4" Then
-                                            If layoutCode = "4L" Then fixLayoutCode = "G"
-                                            If layoutCode = "4R" Then fixLayoutCode = "H"
-                                        End If
-                                        If trackType = "4" AndAlso panelQty = "5" Then
-                                            If layoutCode = "3L - 2R" Then fixLayoutCode = "I"
-                                            If layoutCode = "2L - 3R" Then fixLayoutCode = "J"
-                                        End If
-                                        If trackType = "4" AndAlso panelQty = "6" Then
-                                            If layoutCode = "2L - 4R" Then fixLayoutCode = "K"
-                                            If layoutCode = "4L - 2R" Then fixLayoutCode = "L"
-                                        End If
-                                        If trackType = "4" AndAlso panelQty = "7" Then
-                                            If layoutCode = "4L - 3R" Then fixLayoutCode = "M"
-                                            If layoutCode = "3L - 4R" Then fixLayoutCode = "N"
-                                        End If
-                                        If trackType = "5" AndAlso panelQty = "5" Then
-                                            If layoutCode = "5L" Then fixLayoutCode = "O"
-                                            If layoutCode = "5R" Then fixLayoutCode = "P"
-                                        End If
-                                        If trackType = "5" AndAlso panelQty = "7" Then
-                                            If layoutCode = "5L - 2R" Then fixLayoutCode = "Q"
-                                            If layoutCode = "2L - 5R" Then fixLayoutCode = "R"
-                                        End If
-                                        If trackType = "5" AndAlso panelQty = "8" Then
-                                            If layoutCode = "3L - 5R" Then fixLayoutCode = "S"
-                                            If layoutCode = "5L - 3R" Then fixLayoutCode = "T"
-                                        End If
-                                        If trackType = "5" AndAlso panelQty = "9" Then
-                                            If layoutCode = "5L - 4R" Then fixLayoutCode = "U"
-                                            If layoutCode = "4L - 5R" Then fixLayoutCode = "V"
-                                        End If
-
-                                        Dim linearMetre As Decimal = width / 1000
-                                        Dim squareMetre As Decimal = width * drop / 1000000
-
-                                        If tubeName = "Plain  (PG)" OrElse tubeName = "Sewless  (PG)" Then
-                                            batten = String.Empty : battenb = String.Empty
-                                        End If
-
-                                        Dim groupFabric As String = orderClass.GetFabricGroup(fabricId)
-                                        Dim groupName As String = String.Format("Panel Glide - {0} - {1} - {2}", blindType, tubeName, groupFabric)
-
-                                        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, priceGroupId)
-
-                                        Dim itemId As String = orderClass.GetNewOrderItemId()
-
-                                        Using thisConn As New SqlConnection(myConn)
-                                            Using thisCmd As New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], WandColour, WandLength, WandLengthValue, LayoutCode, LayoutCodeCustom, TrackType, PanelQty, StackPosition, Batten, BattenB, LinearMetre, SquareMetre, TotalItems, Notes, Markup, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @WandColour, @WandLength, @WandLengthValue, @LayoutCode, @LayoutCodeCustom, @TrackType, @PanelQty, 'Front', @Batten, @BattenB, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
-                                                thisCmd.Parameters.AddWithValue("@Id", itemId)
-                                                thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
-                                                thisCmd.Parameters.AddWithValue("@ProductId", productId)
-                                                thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(fabricId), CType(DBNull.Value, Object), fabricId))
-                                                thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(fabricColourId), CType(DBNull.Value, Object), fabricColourId))
-                                                thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
-                                                thisCmd.Parameters.AddWithValue("@Qty", 1)
-                                                thisCmd.Parameters.AddWithValue("@Room", room)
-                                                thisCmd.Parameters.AddWithValue("@Mounting", String.Format("{0} {1}", sizeType, mounting))
-                                                thisCmd.Parameters.AddWithValue("@Width", width)
-                                                thisCmd.Parameters.AddWithValue("@Drop", drop)
-                                                thisCmd.Parameters.AddWithValue("@WandPosition", "Front")
-                                                thisCmd.Parameters.AddWithValue("@WandColour", wandColour)
-                                                thisCmd.Parameters.AddWithValue("@WandLength", wandLength)
-                                                thisCmd.Parameters.AddWithValue("@WandLengthValue", wandLengthValue)
-                                                thisCmd.Parameters.AddWithValue("@LayoutCode", fixLayoutCode)
-                                                thisCmd.Parameters.AddWithValue("@LayoutCodeCustom", String.Empty)
-                                                thisCmd.Parameters.AddWithValue("@TrackType", trackType)
-                                                thisCmd.Parameters.AddWithValue("@PanelQty", panelQty)
-                                                thisCmd.Parameters.AddWithValue("@Batten", batten)
-                                                thisCmd.Parameters.AddWithValue("@BattenB", battenb)
-                                                thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
-                                                thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
-                                                thisCmd.Parameters.AddWithValue("@Notes", notes)
-                                                thisCmd.Parameters.AddWithValue("@MarkUp", 0)
-
-                                                thisConn.Open()
-                                                thisCmd.ExecuteNonQuery()
-                                            End Using
-                                        End Using
-
-                                        orderClass.ResetPriceDetail(headerId, itemId)
-                                        orderClass.CalculatePrice(headerId, itemId)
-                                        orderClass.FinalCostItem(headerId, itemId)
-
-                                        dataLog = {"OrderDetails", itemId, Session("LoginId"), "Order Item Added"}
-                                        orderClass.Logs(dataLog)
-                                    End If
-
-                                    If designType = "Venetian" Then
-                                        Dim itemNumber As String = row - 3
-                                        Dim blindType As String = (sheetDetail.Cells(row, 2).Text & "").Trim()
-
-                                        Dim designName As String = String.Empty
-                                        Dim blindName As String = String.Empty
-                                        If blindType = "Aluminium Venetian" OrElse blindType = "Aluminium" Then
-                                            designName = "Aluminium Blind" : blindName = "0.21mm"
-                                        End If
-                                        If blindType = "Basswood Venetian 50mm" OrElse blindType = "Basswood 50mm" Then
-                                            designName = "Venetian Blind" : blindName = "Basswood 50mm"
-                                        End If
-                                        If blindType = "Basswood Venetian 63mm" OrElse blindType = "Basswood 63mm" Then
-                                            designName = "Venetian Blind" : blindName = "Basswood 63mm"
-                                        End If
-                                        If blindType = "Econo 50mm" Then
-                                            designName = "Venetian Blind" : blindName = "Econo 50mm"
-                                        End If
-                                        If blindType = "Econo 63mm" Then
-                                            designName = "Venetian Blind" : blindName = "Econo 63mm"
-                                        End If
-                                        If blindType = "Ultraslat Venetian 50mm" Then
-                                            designName = "Venetian Blind" : blindName = "Ultraslat 50mm"
-                                        End If
-                                        If blindType = "Ultraslat Venetian 63mm" Then
-                                            designName = "Venetian Blind" : blindName = "Ultraslat 63mm"
-                                        End If
-
-                                        Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designName & "'")
-                                        If String.IsNullOrEmpty(designId) Then
-                                            Dim thisAlert As String = String.Format("THE PRODUCT IN ITEM {0} IS NOT REGISTERED. PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND Name='" & blindName & "' AND CompanyArray.VALUE='" & companyDetailId & "'")
-                                        If String.IsNullOrEmpty(blindId) Then
-                                            Dim thisAlert As String = String.Format("THE ORDER TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN. !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        Dim subType As String = "Single"
-                                        Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 3).Text), 0, CInt(sheetDetail.Cells(row, 3).Text))
-                                        Dim room As String = (sheetDetail.Cells(row, 4).Text & "").Trim()
-                                        Dim mounting As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
-                                        Dim colour As String = (sheetDetail.Cells(row, 6).Text & "").Trim()
-                                        Dim controlPosition As String = (sheetDetail.Cells(row, 7).Text & "").Trim()
-                                        Dim tilterPosition As String = (sheetDetail.Cells(row, 8).Text & "").Trim()
-
-                                        Dim widthText As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
-                                        Dim width As Integer
-
-                                        Dim dropText As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
-                                        Dim drop As Integer
-
-                                        Dim cordLengthText As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
-                                        Dim wandLengthText As String = (sheetDetail.Cells(row, 12).Text & "").Trim()
-                                        Dim supply As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
-                                        Dim tassel As String = (sheetDetail.Cells(row, 14).Text & "").Trim()
-                                        Dim valanceType As String = (sheetDetail.Cells(row, 15).Text & "").Trim()
-                                        Dim valanceSizeText As String = (sheetDetail.Cells(row, 16).Text & "").Trim()
-                                        Dim returnPosition As String = (sheetDetail.Cells(row, 17).Text & "").Trim()
-                                        Dim returnLengthText As String = (sheetDetail.Cells(row, 18).Text & "").Trim()
-                                        Dim notes As String = (sheetDetail.Cells(row, 19).Text & "").Trim()
-
-                                        Dim controlLength As String = String.Empty
-                                        Dim controlLengthValue As Integer = 0
-
-                                        Dim wandLength As String = String.Empty
-                                        Dim wandLengthValue As Integer = 0
-
-                                        Dim valanceSize As String = String.Empty
-                                        Dim valanceSizeValue As Integer = 0
-
-                                        Dim returnLength As String = String.Empty
-                                        Dim returnLengthValue As Integer = 0
+                                        Dim productId As String = productData("Id").ToString()
 
                                         If qty <> 1 Then
                                             Dim thisAlert As String = String.Format("THE ORDER QTY MUS BE 1 PER ITEM LINE. PLEASE CHECK ITEM {0} !", itemNumber)
@@ -2818,59 +1159,61 @@ Partial Class Order_Upload
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
-                                        Dim validMounting As String() = {"Face Fit", "Reveal Fit", "Make Size Face Fit", "Make Size Reveal Fit", "Opening Size Face Fit", "Opening Size Reveal Fit"}
+                                        Dim validMounting As String() = {"Face Fit", "Reveal Fit"}
                                         If Not validMounting.Contains(mounting) Then
                                             Dim thisAlert As String = String.Format("PLEASE CHECK THE MOUNTING FOR ITEM {0} !", itemNumber)
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
 
-                                        Dim finalMounting As String = mounting
-                                        If ddlCustomer.SelectedValue = "127" Then finalMounting = String.Format("Opening Size {0}", mounting)
-
-                                        If String.IsNullOrEmpty(colour) Then
-                                            Dim thisAlert As String = String.Format("COLOUR IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                        If String.IsNullOrEmpty(fabricType) Then
+                                            Dim thisAlert As String = String.Format("FABRIC TYPE FOR ITEM {0} IS REQUIRED !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+                                        Dim fabricId As String = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
+                                        If String.IsNullOrEmpty(fabricId) Then
+                                            Dim thisAlert As String = String.Format("THE FABRIC TYPE FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
 
-                                        Dim tubeId As String = "9" : Dim controlId As String = "17"
-                                        Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & colour & "'")
-                                        If String.IsNullOrEmpty(colourId) Then
-                                            Dim thisAlert As String = String.Format("THE COLOUR YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                        If String.IsNullOrEmpty(fabricColour) Then
+                                            Dim thisAlert As String = String.Format("FABRIC COLOUR FOR ITEM {0} IS REQUIRED !", itemNumber)
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
 
-                                        Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.value='" & companyDetailId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='" & colourId & "' AND (Status='In Stock' OR Status='Limited Stock')")
-                                        If String.IsNullOrEmpty(productId) Then
-                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                        Dim fabricColourData As DataRow = orderClass.GetDataRow("SELECT Id, Status FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued')")
+                                        If fabricColourData Is Nothing Then
+                                            Dim thisAlert As String = String.Format("THE FABRIC COLOUR FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
 
-                                        If String.IsNullOrEmpty(controlPosition) Then
-                                            Dim thisAlert As String = String.Format("CONTROL POSITION IS REQUIRED FOR ITEM {0}", itemNumber)
+                                        If fabricColourData("Status").ToString() = "Out of Stock" Then
+                                            Dim thisAlert As String = String.Format("THE FABRIC COLOUR YOU REQUESTED IS CURRENTLY OUT OF STOCK. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+                                        If fabricColourData("Status").ToString() = "Discontinued" Then
+                                            Dim thisAlert As String = String.Format("THE FABRIC COLOUR YOU REQUESTED IS CURRENTLY DISCONTINUED. ITEM {0} !", itemNumber)
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
 
-                                        Dim validCP As String() = {"Left", "Right", "No Control", "N/A"}
-                                        If Not validCP.Contains(controlPosition) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK YOUR CONTROL POSITION VALUE FOR ITEM {0} !", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
+                                        Dim fabricColourId As String = fabricColourData("Id").ToString()
 
-                                        If String.IsNullOrEmpty(tilterPosition) Then
-                                            Dim thisAlert As String = String.Format("TILTER POSITION IS REQUIRED FOR ITEM {0}", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
+                                        If Not String.IsNullOrEmpty(batten) Then
+                                            Dim validBatten As String() = {"Snow", "Ivory", "Pine", "Tawny", "Mocha", "Garnet", "Earth", "Midnight"}
+                                            If Not validBatten.Contains(batten) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE BATTEN COLOUR FOR ITEM {0} !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
                                         End If
-
-                                        Dim validTP As String() = {"Left", "Right", "Center", "Centre"}
-                                        If Not validTP.Contains(tilterPosition) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK YOUR TILTER POSITION VALUE FOR ITEM {0} !", itemNumber)
+                                        If String.IsNullOrEmpty(layout) Then
+                                            Dim thisAlert As String = String.Format("LAYOUT IS REQUIRED FOR ITEM {0}", itemNumber)
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
@@ -2880,317 +1223,144 @@ Partial Class Order_Upload
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
-
                                         If Not Integer.TryParse(widthText, width) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH FOR ITEM {0}", itemNumber)
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+                                        If width > 9999 Then
+                                            Dim thisAlert As String = String.Format("MAXIMUM WIDTH IS 9999MM FOR ITEM {0} !", itemNumber)
                                             MessageError(True, thisAlert)
                                             Exit For
                                         End If
 
-                                        If designName = "Aluminium Blind" Then
-                                            If width < 200 Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH FOR ITEM {0} & MINIMUM WIDTH IS 200MM !", itemNumber)
+                                        If mounting = "Face Fit" Then
+                                            If String.IsNullOrEmpty(returnPosition) Then
+                                                Dim thisAlert As String = String.Format("RETURN POSITION FACE FIT MOUNTING IS REQUIRED FOR ITEM {0} !", itemNumber)
                                                 MessageError(True, thisAlert)
                                                 Exit For
                                             End If
 
-                                            If width > 3010 Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH FOR ITEM {0} & MAXIMUM WIDTH IS 3010MM !", itemNumber)
+                                            Dim validReturn As String() = {"Returns Both Sides", "Return Left Side", "Return Right Side"}
+                                            If Not validReturn.Contains(returnPosition) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE RETURN POSITION FOR ITEM {0} !", itemNumber)
                                                 MessageError(True, thisAlert)
                                                 Exit For
                                             End If
 
-                                            If width > 250 AndAlso width <= 299 AndAlso controlPosition = tilterPosition Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE CONTROL & TILTER POSITION FOR ITEM {0} & PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            If width < 250 Then
-                                                If controlPosition <> "No Control" Then
-                                                    Dim thisAlert As String = String.Format("YOUR WIDTH FOR ITEM {0} UNDER 250MM. PLEASE CHANGE PULL CORD POSITION TO NO CONTROL !", itemNumber)
-                                                    MessageError(True, thisAlert)
-                                                    Exit For
-                                                End If
-
-                                                If tilterPosition <> "Center" OrElse tilterPosition <> "Centre" Then
-                                                    Dim thisAlert As String = String.Format("YOUR WIDTH FOR ITEM {0} UNDER 250MM. PLEASE CHANGE TILTER POSITION TO CENTRE !", itemNumber)
+                                            If returnPosition = "Returns Both Sides" OrElse returnPosition = "Return Left Side" Then
+                                                If returnLeft <= 0 Then
+                                                    Dim thisAlert As String = String.Format("RETURN LENGTH FOR LEFT IS REQUIRED FOR ITEM {0} !", itemNumber)
                                                     MessageError(True, thisAlert)
                                                     Exit For
                                                 End If
                                             End If
-                                        End If
-
-                                        If designName = "Venetian Blind" Then
-                                            If width < 250 Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH ORDER FOR ITEM {0} & MINIMUM WIDTH IS 250MM !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            If width > 2710 Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH ORDER FOR ITEM {0} & MAXIMUM WIDTH IS 2710MM !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            If width > 300 AndAlso width <= 400 AndAlso controlPosition = tilterPosition Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE CONTROL & TILTER POSITION FOR ITEM {0} & PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            If width < 300 Then
-                                                If controlPosition <> "No Control" Then
-                                                    Dim thisAlert As String = String.Format("YOUR WIDTH FOR ITEM {0} UNDER 250MM. PLEASE CHANGE PULL CORD POSITION TO NO CONTROL !", itemNumber)
-                                                    MessageError(True, thisAlert)
-                                                    Exit For
-                                                End If
-
-                                                If tilterPosition <> "Center" AndAlso tilterPosition <> "Centre" Then
-                                                    Dim thisAlert As String = String.Format("YOUR WIDTH FOR ITEM {0} UNDER 250MM. PLEASE CHANGE TILTER POSITION TO CENTRE !", itemNumber)
+                                            If returnPosition = "Returns Both Sides" OrElse returnPosition = "Return Right Side" Then
+                                                If returnRight <= 0 Then
+                                                    Dim thisAlert As String = String.Format("RETURN LENGTH FOR RIGHT IS REQUIRED FOR ITEM {0} !", itemNumber)
                                                     MessageError(True, thisAlert)
                                                     Exit For
                                                 End If
                                             End If
-                                        End If
-
-                                        If String.IsNullOrEmpty(dropText) Then
-                                            Dim thisAlert As String = String.Format("DROP IS REQUIRED FOR ITEM {0}", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If Not Integer.TryParse(dropText, drop) Then
-                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP FOR ITEM {0}", itemNumber)
-                                            MessageError(True, thisAlert)
-                                            Exit For
-                                        End If
-
-                                        If designName = "Aluminium Blind" Then
-                                            If drop < 250 Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP FOR ITEM {0} & MINIMUM DROP IS 250MM !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            If drop > 3200 Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP FOR ITEM {0} & MAXIMUM DROP IS 3200MM !", itemNumber)
+                                            If dustCover <> "Yes" Then
+                                                Dim thisAlert As String = String.Format("DUST COVER IS REQUIRED FOR ITEM {0} !", itemNumber)
                                                 MessageError(True, thisAlert)
                                                 Exit For
                                             End If
                                         End If
 
-                                        If designName = "Venetian Blind" Then
-                                            If drop < 200 Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP ORDER FOR ITEM {0} & MINIMUM DROP IS 200MM !", itemNumber)
+                                        If mounting = "Reveal Fit" Then
+                                            Dim validReturn As String() = {"Dustcover", "Fascia Only"}
+                                            If Not validReturn.Contains(returnPosition) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE RETURN POSITION FOR ITEM {0} !", itemNumber)
                                                 MessageError(True, thisAlert)
                                                 Exit For
                                             End If
 
-                                            If drop > 3200 Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP ORDER FOR ITEM {0} & MAXIMUM DROP IS 3200MM !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                        End If
-
-                                        If designName = "Venetian Blind" Then
-                                            controlLength = "Standard"
-                                            controlLengthValue = Math.Ceiling(drop * 2 / 3)
-                                            If controlLengthValue < 550 Then controlLengthValue = 550
-
-                                            If Not String.IsNullOrEmpty(cordLengthText) AndAlso Not cordLengthText.ToLower().Contains("standard") AndAlso Not cordLengthText.ToLower().Contains("std") Then
-                                                controlLength = "Custom"
-                                                cordLengthText = cordLengthText.Replace("mm", "")
-                                                If Not Integer.TryParse(cordLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
-                                                    Dim thisAlert As String = String.Format("PLEASE CHECK THE CORD LENGTH FOR ITEM {0}", itemNumber)
-                                                    MessageError(True, thisAlert)
-                                                    Exit For
-                                                End If
-                                            End If
-                                        End If
-
-                                        If designName = "Aluminium Blind" Then
-                                            controlLength = "Standard"
-                                            controlLengthValue = Math.Ceiling(drop * 2 / 3)
-                                            If controlLengthValue < 450 Then controlLengthValue = 450
-
-                                            If Not String.IsNullOrEmpty(cordLengthText) AndAlso Not cordLengthText.ToLower().Contains("standard") AndAlso Not cordLengthText.ToLower().Contains("std") Then
-                                                controlLength = "Custom"
-                                                cordLengthText = cordLengthText.Replace("mm", "")
-                                                If Not Integer.TryParse(cordLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
-                                                    Dim thisAlert As String = String.Format("PLEASE CHECK THE CORD LENGTH FOR ITEM {0}", itemNumber)
-                                                    MessageError(True, thisAlert)
-                                                    Exit For
-                                                End If
-                                            End If
-
-                                            wandLength = "Standard"
-                                            wandLengthValue = Math.Ceiling(drop * 2 / 3)
-                                            If wandLengthValue < 450 Then wandLengthValue = 450
-
-                                            If Not String.IsNullOrEmpty(wandLengthText) AndAlso Not wandLengthText.ToLower().Contains("standard") AndAlso Not wandLengthText.ToLower().Contains("std") Then
-                                                wandLength = "Custom"
-                                                wandLengthText = wandLengthText.Replace("mm", "")
-                                                If Not Integer.TryParse(wandLengthText, wandLengthValue) OrElse wandLengthValue < 0 Then
-                                                    Dim thisAlert As String = String.Format("PLEASE CHECK THE WAND LENGTH FOR ITEM {0}", itemNumber)
-                                                    MessageError(True, thisAlert)
-                                                    Exit For
-                                                End If
-                                            End If
-                                        End If
-
-                                        If Not String.IsNullOrEmpty(supply) Then
-                                            Dim validSupply As String() = {"No", "Yes"}
-                                            If Not validSupply.Contains(supply) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE HOLD DOWN CLIP FOR ITEM {0} !", itemNumber)
+                                            Dim validDust As String() = {"Dustcover", "Fascia Only"}
+                                            If Not validDust.Contains(dustCover) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE DUST COVER FOR ITEM {0} !", itemNumber)
                                                 MessageError(True, thisAlert)
                                                 Exit For
                                             End If
                                         End If
 
-                                        If designName = "Venetian Blind" Then
-                                            If String.IsNullOrEmpty(tassel) Then
-                                                Dim thisAlert As String = String.Format("METAL TASSEL OPTION IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-                                            Dim validTassel As String() = {"Plastic", "Gold", "Antique Brass"}
-                                            If Not validTassel.Contains(tassel) Then
-                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE METAL TASSEL OPTION FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            If String.IsNullOrEmpty(valanceType) Then
-                                                Dim thisAlert As String = String.Format("VALANCE TYPE IS REQUIRED FOR ITEM {0} !", itemNumber)
-                                                MessageError(True, thisAlert)
-                                                Exit For
-                                            End If
-
-                                            If blindName = "Basswood 50mm" OrElse blindName = "Basswood 63mm" Then
-                                                If valanceType <> "75mm Valance" Then
-                                                    Dim thisAlert As String = String.Format("PLEASE CHECK THE VALANCE TYPE FOR ITEM {0} !", itemNumber)
-                                                    MessageError(True, thisAlert)
-                                                    Exit For
-                                                End If
-                                            End If
-
-                                            If blindName = "Econo 50mm" OrElse blindName = "Econo 63mm" OrElse blindName = "Ultraslat 50mm" OrElse blindName = "Ultraslat 63mm" Then
-                                                If valanceType <> "76mm Valance" Then
-                                                    Dim thisAlert As String = String.Format("PLEASE CHECK THE VALANCE TYPE FOR ITEM {0} !", itemNumber)
-                                                    MessageError(True, thisAlert)
-                                                    Exit For
-                                                End If
-                                            End If
-
-                                            valanceSize = "Standard"
-                                            If finalMounting = "Opening Size Reveal Fit" Then valanceSizeValue = width - 1
-                                            If finalMounting = "Make Size Reveal Fit" Then valanceSizeValue = width + 9
-                                            If finalMounting = "Opening Size Face Fit" Then valanceSizeValue = width + 20
-                                            If finalMounting = "Make Size Face Fit" Then valanceSizeValue = width + 20
-
-                                            If Not String.IsNullOrEmpty(valanceSizeText) AndAlso Not valanceSizeText.ToLower().Contains("standard") AndAlso Not valanceSizeText.ToLower().Contains("std") Then
-                                                valanceSize = "Custom"
-                                                valanceSizeText = valanceSizeText.Replace("mm", "")
-                                                If Not Integer.TryParse(valanceSizeText, valanceSizeValue) OrElse valanceSizeValue < 0 Then
-                                                    Dim thisAlert As String = String.Format("PLEASE CHECK THE VALANCE SIZE VALUE FOR ITEM {0} !", itemNumber)
-                                                    MessageError(True, thisAlert)
-                                                    Exit For
-                                                End If
-                                            End If
-
-                                            If String.IsNullOrEmpty(returnPosition) Then returnPosition = "None"
-                                            If Not String.IsNullOrEmpty(returnPosition) Then
-                                                Dim validRP As String() = {"None", "Left", "Right", "Both Sides"}
-                                                If Not validRP.Contains(returnPosition) Then
-                                                    Dim thisAlert As String = String.Format("PLEASE CHECK THE VALANCE RETURN POSITION FOR ITEM {0} !", itemNumber)
-                                                    MessageError(True, thisAlert)
-                                                    Exit For
-                                                End If
-
-                                                If returnPosition <> "None" Then
-                                                    returnLength = "Standard"
-                                                    If finalMounting = "Opening Size Face Fit" OrElse finalMounting = "Make Size Face Fit" Then
-                                                        returnLengthValue = 70
-                                                        If blindName = "Econo 50" OrElse blindName = "Econo 63mm" OrElse blindName = "Ultraslat 50mm" OrElse blindName = "Ultraslat 63mm" Then
-                                                            returnLengthValue = 77
-                                                        End If
-                                                    End If
-                                                    If finalMounting = "Opening Size Reveal Fit" OrElse finalMounting = "Make Size Reveal Fit" Then
-                                                        returnLengthValue = 20
-                                                    End If
-
-                                                    If Not String.IsNullOrEmpty(returnLengthText) AndAlso Not returnLengthText.ToLower().Contains("standard") AndAlso Not returnLengthText.ToLower().Contains("std") Then
-                                                        returnLength = "Custom"
-                                                        returnLengthText = returnLengthText.Replace("mm", "")
-
-                                                        If Not Integer.TryParse(returnLengthText, returnLengthValue) OrElse returnLengthValue < 0 Then
-                                                            Dim thisAlert As String = String.Format("PLEASE CHECK YOUR VALANCE RETURN LENGTH !", itemNumber)
-                                                            MessageError(True, thisAlert)
-                                                            Exit For
-                                                        End If
-                                                    End If
-                                                End If
-                                            End If
-
-
-                                        End If
+                                        If dustCover = "Dustcover" Then dustCover = "Yes"
+                                        If dustCover = "Fascia Only" Then dustCover = ""
 
                                         If msgError.InnerText = "" Then
-                                            Dim itemId As String = orderClass.GetNewOrderItemId()
+                                            If batten = "Snow" Then batten = "White"
+                                            If batten = "Ivory" Then batten = "Alabaster"
+                                            If batten = "Pine" Then batten = "Natural"
+                                            If batten = "Tawny" Then batten = "Baltic"
+                                            If batten = "Mocha" Then batten = "Teak"
+                                            If batten = "Garnet" Then batten = "Cherry"
+                                            If batten = "Earth" Then batten = "Brown"
+                                            If batten = "Midnight" Then batten = "Black"
 
-                                            If returnPosition = "None" Then returnPosition = String.Empty
+                                            Dim linearMetre As Decimal = width / 1000
 
-                                            Dim groupName As String = blindName
-                                            If blindName = "Ultraslat 50mm" Then groupName = "Econo 50mm"
-                                            If blindName = "Ultraslat 63mm" Then groupName = "Econo 63mm"
+                                            Dim drop As Integer = 0
+                                            If blindName_Fix = "Pelmet 140mm" Then drop = 140
+                                            If blindName_Fix = "Pelmet 200mm" Then drop = 200
 
-                                            Dim productgroupName As String = String.Format("{0} - {1}", designName, groupName)
-                                            If designName = "Aluminium Blind" Then
-                                                productgroupName = designName & " - 0.21mm"
+                                            Dim returnPosition_Fix As String = String.Empty
+                                            If returnPosition = "Returns Both Sides" Then
+                                                returnPosition_Fix = "Both Sides"
+                                            End If
+                                            If returnPosition = "Return Left Side" Then
+                                                returnPosition_Fix = "Left"
+                                            End If
+                                            If returnPosition = "Return Right Side" Then
+                                                returnPosition_Fix = "Right"
+                                            End If
+                                            If returnPosition = "Fascia Only" Then
+                                                returnPosition_Fix = ""
+                                                returnLeft = 0
+                                                returnRight = 0
+                                            End If
+                                            If returnPosition = "Dustcover" Then
+                                                If returnLeft > 0 Then returnPosition = "Left"
+                                                If returnRight > 0 Then returnPosition = "Right"
+                                                If returnLeft > 0 AndAlso returnRight > 0 Then returnPosition = "Both Sides"
                                             End If
 
-                                            Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productgroupName, designId, priceGroupId)
+                                            Dim priceProductGroupName As String = String.Format("{0} - Without Battens", designName_Fix)
+                                            If Not String.IsNullOrEmpty(batten) Then
+                                                priceProductGroupName = String.Format("{0} - With 2 Battens", designName_Fix)
+                                            End If
+                                            Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, designId, priceGroupId)
 
-                                            Dim linearMetre As Decimal = width / 10000
-                                            Dim squareMetre As Decimal = width * drop / 1000000
+                                            Dim itemId As String = orderClass.GetNewOrderItemId()
 
-                                            Using thisConn As SqlConnection = New SqlConnection(myConn)
-                                                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails (Id, HeaderId, ProductId, PriceProductGroupId, SubType, Qty, Room, Mounting, ControlPosition, TilterPosition, Width, [Drop], Supply, Tassel, ControlLength, ControlLengthValue, WandLength, WandLengthValue, ValanceType, ValanceSize, ValanceSizeValue, ReturnPosition, ReturnLength, ReturnLengthValue, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES (@Id, @HeaderId, @ProductId, @PriceProductGroupId, @SubType, 1, @Room, @Mounting, @ControlPosition, @TilterPosition, @Width, @Drop, @Supply, @Tassel, @ControlLength, @ControlLengthValue, @WandLength, @WandLengthValue, @ValanceType, @ValanceSize, @ValanceSizeValue, @ReturnPosition, @ReturnLength, @ReturnLengthValue, @LinearMetre, @SquareMetre, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                                            Using thisConn As New SqlConnection(myConn)
+                                                Using thisCmd As New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, PriceProductGroupIdB, PriceProductGroupIdC, Qty, Room, Mounting, Width, WidthB, WidthC, [Drop], DropB, DropC, LayoutCode, Batten, ReturnPosition, ReturnLengthValue, ReturnLengthValueB, Supply, LinearMetre, LinearMetreB, LinearMetreC, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @PriceProductGroupIdB, @PriceProductGroupIdC, @Qty, @Room, @Mounting, @Width, @WidthB, @WidthC, @Drop, @DropB, @DropC, @LayoutCode, @Batten, @ReturnPosition, @ReturnLengthValue, @ReturnLengthValueB, @Supply, @LinearMetre, @LinearMetreB, @LinearMetreC, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
                                                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                                                     thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
                                                     thisCmd.Parameters.AddWithValue("@ProductId", productId)
+                                                    thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(fabricId), CType(DBNull.Value, Object), fabricId))
+                                                    thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(fabricColourId), CType(DBNull.Value, Object), fabricColourId))
                                                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupIdB", CType(DBNull.Value, Object))
+                                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupIdC", CType(DBNull.Value, Object))
+                                                    thisCmd.Parameters.AddWithValue("@Qty", 1)
                                                     thisCmd.Parameters.AddWithValue("@Room", room)
-                                                    thisCmd.Parameters.AddWithValue("@Mounting", finalMounting)
-                                                    thisCmd.Parameters.AddWithValue("@SubType", subType)
-                                                    thisCmd.Parameters.AddWithValue("@ControlPosition", controlPosition)
-                                                    thisCmd.Parameters.AddWithValue("@TilterPosition", tilterPosition)
+                                                    thisCmd.Parameters.AddWithValue("@Mounting", mounting)
                                                     thisCmd.Parameters.AddWithValue("@Width", width)
+                                                    thisCmd.Parameters.AddWithValue("@WidthB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@WidthC", 0)
                                                     thisCmd.Parameters.AddWithValue("@Drop", drop)
-
-                                                    thisCmd.Parameters.AddWithValue("@ControlLength", controlLength)
-                                                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", controlLengthValue)
-
-                                                    thisCmd.Parameters.AddWithValue("@WandLength", wandLength)
-                                                    thisCmd.Parameters.AddWithValue("@WandLengthValue", wandLengthValue)
-
-                                                    thisCmd.Parameters.AddWithValue("@ValanceType", valanceType)
-                                                    thisCmd.Parameters.AddWithValue("@ValanceSize", valanceSize)
-                                                    thisCmd.Parameters.AddWithValue("@ValanceSizeValue", valanceSizeValue)
-
-                                                    thisCmd.Parameters.AddWithValue("@ReturnPosition", returnPosition)
-                                                    thisCmd.Parameters.AddWithValue("@ReturnLength", returnLength)
-                                                    thisCmd.Parameters.AddWithValue("@ReturnLengthValue", returnLengthValue)
-
+                                                    thisCmd.Parameters.AddWithValue("@DropB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@DropC", 0)
+                                                    thisCmd.Parameters.AddWithValue("@LayoutCode", layout)
+                                                    thisCmd.Parameters.AddWithValue("@ReturnPosition", returnPosition_Fix)
+                                                    thisCmd.Parameters.AddWithValue("@ReturnLengthValue", returnLeft)
+                                                    thisCmd.Parameters.AddWithValue("@ReturnLengthValueB", returnRight)
+                                                    thisCmd.Parameters.AddWithValue("@Batten", batten)
+                                                    thisCmd.Parameters.AddWithValue("@Supply", dustCover)
                                                     thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
-
-                                                    thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
-
-                                                    thisCmd.Parameters.AddWithValue("@Tassel", tassel)
-                                                    thisCmd.Parameters.AddWithValue("@Supply", supply)
+                                                    thisCmd.Parameters.AddWithValue("@LinearMetreB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@LinearMetreC", 0)
                                                     thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                                                     thisCmd.Parameters.AddWithValue("@Notes", notes)
                                                     thisCmd.Parameters.AddWithValue("@MarkUp", 0)
@@ -3204,12 +1374,11 @@ Partial Class Order_Upload
                                             orderClass.CalculatePrice(headerId, itemId)
                                             orderClass.FinalCostItem(headerId, itemId)
 
-                                            dataLog = {"OrderDetails", itemId, Session("LoginId").ToString(), "Order Item Added"}
+                                            dataLog = {"OrderDetails", itemId, Session("LoginId"), "Order Item Added"}
                                             orderClass.Logs(dataLog)
                                         End If
                                     End If
-
-                                    If designType = "Roller" Then
+                                    If designName_Fix = "Roller Blind" Then
                                         Dim itemNumber As String = row - 3
                                         Dim blindType As String = If(sheetDetail.Cells(row, 2).Text IsNot Nothing, sheetDetail.Cells(row, 2).Text, "")
 
@@ -3524,9 +1693,6 @@ Partial Class Order_Upload
                                         If controlType = "Motorized" OrElse controlType = "Motorised" Then
                                             controlType = chainColour
                                             If controlType = "Battery Wand" Then controlType = "Battery Remote"
-                                            If controlType = "240V (Hardwired) Matter Enabled / Remote" Then controlType = "240V (Hardwired) Remote"
-                                            If controlType = "240V (Hardwired) Wired Control (4 Core)" Then controlType = "240V (Hardwired) Remote"
-                                            If controlType = "Battery Matter Enabled / Remote" OrElse controlType = "Battery Wand (USB)" Then controlType = "Battery Remote"
                                             chainName = "No Remote"
                                         End If
 
@@ -4238,6 +2404,1244 @@ Partial Class Order_Upload
                                             orderClass.Logs(dataLog)
                                         End If
                                     End If
+                                    If designName_Fix = "Roman Blind" Then
+                                        Dim itemNumber As String = row - 3
+
+                                        Dim blindType As String = If(sheetDetail.Cells(row, 2).Text IsNot Nothing, sheetDetail.Cells(row, 2).Text, "")
+                                        Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 3).Text), 0, CInt(sheetDetail.Cells(row, 3).Text))
+                                        Dim room As String = (sheetDetail.Cells(row, 4).Text & "").Trim()
+                                        Dim mounting As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
+                                        Dim romanType As String = (sheetDetail.Cells(row, 6).Text & "").Trim()
+                                        Dim batten As String = (sheetDetail.Cells(row, 7).Text & "").Trim()
+                                        Dim battenColour As String = String.Empty
+                                        Dim fabricType As String = (sheetDetail.Cells(row, 8).Text & "").Trim()
+                                        Dim fabricColour As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
+
+                                        Dim widthText As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
+                                        Dim width As Integer
+
+                                        Dim dropText As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
+                                        Dim drop As Integer
+
+                                        Dim controlPosition As String = (sheetDetail.Cells(row, 12).Text & "").Trim()
+                                        Dim controlType As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
+                                        Dim controlColour As String = (sheetDetail.Cells(row, 14).Text & "").Trim()
+                                        Dim remoteMotor As String = (sheetDetail.Cells(row, 15).Text & "").Trim()
+                                        Dim controlLengthText As String = (sheetDetail.Cells(row, 16).Text & "").Trim()
+                                        Dim valanceOption As String = (sheetDetail.Cells(row, 17).Text & "").Trim()
+                                        Dim notes As String = (sheetDetail.Cells(row, 18).Text & "").Trim()
+
+                                        Dim blindName_Fix As String = "Roman Blind"
+
+                                        Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designName_Fix & "'")
+                                        If String.IsNullOrEmpty(designId) Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT IN ITEM {0} IS NOT REGISTERED. PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND Name='" & blindName_Fix & "' AND companyArray.value='" & companyDetailId & "' AND Active=1")
+                                        If String.IsNullOrEmpty(blindId) Then
+                                            Dim thisAlert As String = String.Format("THE ORDER TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN. !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If qty <> 1 Then
+                                            Dim thisAlert As String = String.Format("THE ORDER QTY MUS BE 1 PER ITEM LINE. PLEASE CHECK ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If String.IsNullOrEmpty(room) Then room = "Item " & itemNumber
+
+                                        If String.IsNullOrEmpty(mounting) Then
+                                            Dim thisAlert As String = String.Format("MOUNTING IS REQUIRED FOR ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If mounting <> "Face Fit" Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE MOUNTING FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim tubeName As String = romanType & " (Roman)"
+                                        If romanType = "Timber" Then tubeName = "Plantation (Roman)"
+                                        If romanType = "Sewless" Then tubeName = "Sewless (Roman)"
+                                        If romanType = "Aluminium" Then tubeName = "Sewless (Roman)"
+
+                                        Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Alias='" & tubeName & "'")
+                                        If String.IsNullOrEmpty(tubeId) Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THEN ROMAN TYPE FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If tubeName = "Plantation (Roman)" AndAlso String.IsNullOrEmpty(batten) Then
+                                            Dim thisAlert As String = String.Format("BATTEN COLOUR IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If tubeName = "Classic (Roman)" OrElse tubeName = "Sewless (Roman)" Then
+                                            If Not String.IsNullOrEmpty(batten) Then
+                                                Dim thisAlert As String = String.Format("BATTEN COLOUR IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If String.IsNullOrEmpty(fabricType) Then
+                                            Dim thisAlert As String = String.Format("FABRIC TYPE FOR ITEM {0} IS REQUIRED !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+                                        Dim fabricId As String = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
+                                        If String.IsNullOrEmpty(fabricId) Then
+                                            Dim thisAlert As String = String.Format("THE FABRIC TYPE FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If String.IsNullOrEmpty(fabricColour) Then
+                                            Dim thisAlert As String = String.Format("FABRIC COLOUR FOR ITEM {0} IS REQUIRED !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim fabricColourData As DataRow = orderClass.GetDataRow("SELECT Id, Status FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued')")
+                                        If fabricColourData Is Nothing Then
+                                            Dim thisAlert As String = String.Format("THE FABRIC COLOUR FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If fabricColourData("Status").ToString() = "Out of Stock" Then
+                                            Dim thisAlert As String = String.Format("THE FABRIC COLOUR YOU REQUESTED IS CURRENTLY OUT OF STOCK. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+                                        If fabricColourData("Status").ToString() = "Discontinued" Then
+                                            Dim thisAlert As String = String.Format("THE FABRIC COLOUR YOU REQUESTED IS CURRENTLY DISCONTINUED. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim fabricColourId As String = fabricColourData("Id").ToString()
+
+                                        If String.IsNullOrEmpty(widthText) Then
+                                            Dim thisAlert As String = String.Format("WIDTH IS REQUIRED FOR ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+                                        If Not Integer.TryParse(widthText, width) Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If String.IsNullOrEmpty(dropText) Then
+                                            Dim thisAlert As String = String.Format("DROP IS REQUIRED FOR ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+                                        If Not Integer.TryParse(dropText, drop) Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If String.IsNullOrEmpty(controlPosition) Then
+                                            Dim thisAlert As String = String.Format("CONTROL POSITION IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If String.IsNullOrEmpty(controlType) Then
+                                            Dim thisAlert As String = String.Format("MECHANISM TYPE IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim controlName As String = controlType
+                                        If controlType = "Cord" Then controlName = "Reg Cord Lock"
+                                        If controlType = "Cord Lock" Then controlName = "Reg Cord Lock"
+                                        Dim controlId As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='" & controlName & "'")
+                                        If String.IsNullOrEmpty(controlId) Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE MECHANISM TYPE FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim productData As DataRow = orderClass.GetDataRow("SELECT Id, Status FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='56' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued')")
+                                        If productData Is Nothing Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If productData("Status").ToString() = "Out of Stock" Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY OUT OF STOCK. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+                                        If productData("Status").ToString() = "Discontinued" Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY DISCONTINUED. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim productId As String = productData("Id").ToString()
+
+                                        Dim chainId As String = String.Empty
+                                        Dim chainName As String = String.Empty
+                                        If controlType = "Chain" OrElse controlType = "Motorised" Then
+                                            chainName = String.Format("Cont Plastic {0}", controlColour)
+                                            If controlColour = "Stainless Steel" Then chainName = String.Format("Cont {0}", controlColour)
+                                            If controlType = "Motorised" Then chainName = "No Remote"
+
+                                            chainId = orderClass.GetItemData("SELECT Id FROM Chains CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(ControlTypeId, ',') AS controlArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & chainName & "' AND designArray.VALUE='" & designId & "' AND controlArray.VALUE='" & controlId & "' AND companyArray.VALUE='" & companyDetailId & "' AND (Status='In Stock' OR Status='Limited Stock')")
+                                            If String.IsNullOrEmpty(chainId) Then
+                                                MessageError(True, "PLEASE CHECK YOUR CHAIN COLOUR / MOTOR REMOTE DATA !")
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If controlType = "Reg Cord Lock" Then controlColour = "White"
+                                        Dim controlLength As String = String.Empty
+                                        Dim controlLengthValue As Integer = 0
+                                        If controlType = "Cord" Then
+                                            controlLength = "Standard"
+                                            controlLengthValue = Math.Ceiling(drop * 2 / 3)
+
+                                            If Not String.IsNullOrEmpty(controlLengthText) AndAlso Not controlLengthText.ToLower().Contains("standard") AndAlso Not controlLengthText.ToLower().Contains("std") Then
+                                                controlLength = "Custom"
+                                                controlLengthText = controlLengthText.Replace("mm", "")
+                                                If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 OrElse controlLengthValue > 1000 Then
+                                                    MessageError(True, "PLEASE CHECK YOUR CORD LENGTH !")
+                                                    Exit For
+                                                End If
+                                            End If
+                                        End If
+
+                                        If controlType = "Chain" Then
+                                            controlLength = "Standard"
+                                            controlLengthValue = 500
+                                            Dim thisFormula As Integer = Math.Ceiling(drop * 2 / 3)
+                                            If thisFormula > 500 Then controlLengthValue = 750
+                                            If thisFormula > 750 Then controlLengthValue = 1000
+                                            If thisFormula > 1000 Then controlLengthValue = 1200
+                                            If thisFormula > 1200 Then controlLengthValue = 1500
+
+                                            If Not String.IsNullOrEmpty(controlLengthText) AndAlso Not controlLengthText.ToLower().Contains("standard") AndAlso Not controlLengthText.ToLower().Contains("std") Then
+                                                controlLength = "Custom"
+                                                controlLengthText = controlLengthText.Replace("mm", "")
+                                                If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
+                                                    MessageError(True, "PLEASE CHECK YOUR CHAIN LENGTH !")
+                                                    Exit For
+                                                End If
+                                            End If
+                                        End If
+
+                                        If controlType = "Chain" Then valanceOption = "Retrousse"
+                                        If String.IsNullOrEmpty(valanceOption) Then
+                                            MessageError(True, "VALANCE OPTION IS REQUIRED !")
+                                            Exit For
+                                        End If
+
+                                        Dim validValanceOption As String() = {"Facade", "Retrousse"}
+                                        If Not validValanceOption.Contains(valanceOption) Then
+                                            MessageError(True, "PLEASE CHECK YOUR VALANCE OPTION !")
+                                            Exit For
+                                        End If
+
+                                        If controlType = "Chain" AndAlso Not valanceOption = "Retrousse" Then
+                                            MessageError(True, "VALANCE OPTION MUST BE RETROUSSE !")
+                                            Exit For
+                                        End If
+
+                                        If msgError.InnerText = "" Then
+                                            If batten = "Snow" Then battenColour = "White"
+                                            If batten = "Ivory" Then battenColour = "Alabaster"
+                                            If batten = "Pine" Then battenColour = "Natural"
+                                            If batten = "Tawny" Then battenColour = "Baltic"
+                                            If batten = "Mocha" Then battenColour = "Teak"
+                                            If batten = "Garnet" Then battenColour = "Cherry"
+                                            If batten = "Earth" Then battenColour = "Brown"
+                                            If batten = "Midnight" Then battenColour = "Black"
+
+                                            If controlType = "Chain" Then
+                                                If valanceOption = "Retrousse" Then valanceOption = "No Cover Valance"
+                                            End If
+                                            If controlType = "Cord" Then
+                                                If valanceOption = "Retrousse" Then valanceOption = "No Cover Valance and Cord at Back"
+                                                If valanceOption = "Facade" Then valanceOption = "Cover Valance and Cord at Front"
+                                            End If
+
+                                            Dim linearMetre As Decimal = width / 1000
+                                            Dim squareMetre As Decimal = width * drop / 1000000
+
+                                            Dim groupFabric As String = orderClass.GetFabricGroup(fabricId)
+                                            Dim groupName As String = String.Format("Roman Blind - {0} - {1}", tubeName.Replace("(Roman)", "").Trim(), groupFabric)
+                                            Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, priceGroupId)
+
+                                            Dim itemId As String = orderClass.GetNewOrderItemId()
+
+                                            Using thisConn As SqlConnection = New SqlConnection(myConn)
+                                                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, ChainId, PriceProductGroupId, Qty, Room, Mounting, Width, [Drop], ControlPosition, ControlColour, ControlLength, ControlLengthValue, ValanceOption, Batten, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @ChainId, @PriceProductGroupId, @Qty, @Room, @Mounting, @Width, @Drop, @ControlPosition, @ControlColour, @ControlLength, @ControlLengthValue, @ValanceOption, @Batten, @LinearMetre, @SquareMetre, 1, @Notes, 0, 1)", thisConn)
+                                                    thisCmd.Parameters.AddWithValue("@Id", itemId)
+                                                    thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                                                    thisCmd.Parameters.AddWithValue("@ProductId", productId)
+                                                    thisCmd.Parameters.AddWithValue("@FabricId", fabricId)
+                                                    thisCmd.Parameters.AddWithValue("@FabricColourId", fabricColourId)
+                                                    thisCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(chainId), CType(DBNull.Value, Object), chainId))
+                                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                                                    thisCmd.Parameters.AddWithValue("@Qty", "1")
+                                                    thisCmd.Parameters.AddWithValue("@Room", room)
+                                                    thisCmd.Parameters.AddWithValue("@Mounting", mounting)
+                                                    thisCmd.Parameters.AddWithValue("@Width", width)
+                                                    thisCmd.Parameters.AddWithValue("@Drop", drop)
+                                                    thisCmd.Parameters.AddWithValue("@ControlPosition", controlPosition)
+                                                    thisCmd.Parameters.AddWithValue("@ControlColour", controlColour)
+                                                    thisCmd.Parameters.AddWithValue("@ControlLength", controlLength)
+                                                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", controlLengthValue)
+                                                    thisCmd.Parameters.AddWithValue("@ValanceOption", valanceOption)
+                                                    thisCmd.Parameters.AddWithValue("@Batten", batten)
+                                                    thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
+                                                    thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
+                                                    thisCmd.Parameters.AddWithValue("@Notes", notes)
+
+                                                    thisConn.Open()
+                                                    thisCmd.ExecuteNonQuery()
+                                                End Using
+                                            End Using
+
+                                            orderClass.ResetPriceDetail(headerId, itemId)
+                                            orderClass.CalculatePrice(headerId, itemId)
+                                            orderClass.FinalCostItem(headerId, itemId)
+
+                                            dataLog = {"OrderDetails", itemId, Session("LoginId").ToString(), "Order Item Added"}
+                                            orderClass.Logs(dataLog)
+                                        End If
+                                    End If
+                                    If designName_Fix = "Venetian Blind" Then
+                                        Dim itemNumber As String = row - 3
+
+                                        Dim blindType As String = (sheetDetail.Cells(row, 2).Text & "").Trim()
+
+                                        Dim subType As String = "Single"
+                                        Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 3).Text), 0, CInt(sheetDetail.Cells(row, 3).Text))
+                                        Dim room As String = (sheetDetail.Cells(row, 4).Text & "").Trim()
+                                        Dim mounting As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
+                                        Dim colour As String = (sheetDetail.Cells(row, 6).Text & "").Trim()
+                                        Dim controlPosition As String = (sheetDetail.Cells(row, 7).Text & "").Trim()
+                                        Dim tilterPosition As String = (sheetDetail.Cells(row, 8).Text & "").Trim()
+
+                                        Dim widthText As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
+                                        Dim width As Integer
+
+                                        Dim dropText As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
+                                        Dim drop As Integer
+
+                                        Dim cordLengthText As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
+                                        Dim wandLengthText As String = (sheetDetail.Cells(row, 12).Text & "").Trim()
+                                        Dim supply As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
+                                        Dim tassel As String = (sheetDetail.Cells(row, 14).Text & "").Trim()
+                                        Dim valanceType As String = (sheetDetail.Cells(row, 15).Text & "").Trim()
+                                        Dim valanceSizeText As String = (sheetDetail.Cells(row, 16).Text & "").Trim()
+                                        Dim returnPosition As String = (sheetDetail.Cells(row, 17).Text & "").Trim()
+                                        Dim returnLengthText As String = (sheetDetail.Cells(row, 18).Text & "").Trim()
+                                        Dim notes As String = (sheetDetail.Cells(row, 19).Text & "").Trim()
+
+                                        Dim controlLength As String = String.Empty
+                                        Dim controlLengthValue As Integer = 0
+
+                                        Dim wandLength As String = String.Empty
+                                        Dim wandLengthValue As Integer = 0
+
+                                        Dim valanceSize As String = String.Empty
+                                        Dim valanceSizeValue As Integer = 0
+
+                                        Dim returnLength As String = String.Empty
+                                        Dim returnLengthValue As Integer = 0
+
+                                        Dim blindName_Fix As String = String.Empty
+
+                                        If blindType = "Basswood Venetian 50mm" OrElse blindType = "Basswood 50mm" Then
+                                            blindName_Fix = "Basswood 50mm"
+                                        End If
+                                        If blindType = "Basswood Venetian 63mm" OrElse blindType = "Basswood 63mm" Then
+                                            blindName_Fix = "Basswood 63mm"
+                                        End If
+                                        If blindType = "Econo 50mm" Then
+                                            blindName_Fix = "Econo 50mm"
+                                        End If
+                                        If blindType = "Econo 63mm" Then
+                                            blindName_Fix = "Econo 63mm"
+                                        End If
+                                        If blindType = "Ultraslat Venetian 50mm" Then
+                                            blindName_Fix = "Ultraslat 50mm"
+                                        End If
+                                        If blindType = "Ultraslat Venetian 63mm" Then
+                                            blindName_Fix = "Ultraslat 63mm"
+                                        End If
+
+                                        Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designName_Fix & "'")
+                                        If String.IsNullOrEmpty(designId) Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT IN ITEM {0} IS NOT REGISTERED. PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND Name='" & blindName_Fix & "' AND CompanyArray.VALUE='" & companyDetailId & "'")
+                                        If String.IsNullOrEmpty(blindId) Then
+                                            Dim thisAlert As String = String.Format("THE ORDER TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN. !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If qty <> 1 Then
+                                            Dim thisAlert As String = String.Format("THE ORDER QTY MUS BE 1 PER ITEM LINE. PLEASE CHECK ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If String.IsNullOrEmpty(room) Then
+                                            room = "Item " & itemNumber
+                                        End If
+
+                                        If String.IsNullOrEmpty(mounting) Then
+                                            Dim thisAlert As String = String.Format("MOUNTING IS REQUIRED FOR ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+                                        Dim validMounting As String() = {"Face Fit", "Reveal Fit", "Make Size Face Fit", "Make Size Reveal Fit", "Opening Size Face Fit", "Opening Size Reveal Fit"}
+                                        If Not validMounting.Contains(mounting) Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE MOUNTING FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim finalMounting As String = mounting
+                                        If ddlCustomer.SelectedValue = "127" Then finalMounting = String.Format("Opening Size {0}", mounting)
+
+                                        If String.IsNullOrEmpty(colour) Then
+                                            Dim thisAlert As String = String.Format("COLOUR IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & colour & "'")
+                                        If String.IsNullOrEmpty(colourId) Then
+                                            Dim thisAlert As String = String.Format("THE COLOUR YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim productData As DataRow = orderClass.GetDataRow("SELECT Id, Status FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.value='" & companyDetailId & "' AND TubeType='9' AND ControlType='17' AND ColourType='" & colourId & "' AND (Status='In Stock' OR Status='Limited Stock' OR Status='Out of Stock' OR Status='Discontinued')")
+                                        If productData Is Nothing Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If productData("Status").ToString() = "Out of Stock" Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY OUT OF STOCK. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+                                        If productData("Status").ToString() = "Discontinued" Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY DISCONTINUED. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim productId As String = productData("Id").ToString()
+
+                                        If String.IsNullOrEmpty(controlPosition) Then
+                                            Dim thisAlert As String = String.Format("CONTROL POSITION IS REQUIRED FOR ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim validCP As String() = {"Left", "Right", "No Control", "N/A"}
+                                        If Not validCP.Contains(controlPosition) Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK YOUR CONTROL POSITION VALUE FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If String.IsNullOrEmpty(tilterPosition) Then
+                                            Dim thisAlert As String = String.Format("TILTER POSITION IS REQUIRED FOR ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim validTP As String() = {"Left", "Right", "Center", "Centre"}
+                                        If Not validTP.Contains(tilterPosition) Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK YOUR TILTER POSITION VALUE FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If String.IsNullOrEmpty(widthText) Then
+                                            Dim thisAlert As String = String.Format("WIDTH IS REQUIRED FOR ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If Not Integer.TryParse(widthText, width) Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH FOR ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If width < 250 Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH ORDER FOR ITEM {0} & MINIMUM WIDTH IS 250MM !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If width > 2710 Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH ORDER FOR ITEM {0} & MAXIMUM WIDTH IS 2710MM !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If width > 300 AndAlso width <= 400 AndAlso controlPosition = tilterPosition Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE CONTROL & TILTER POSITION FOR ITEM {0} & PLEASE USE OPPOSITE CONTROL AND TILTER POSITIONS !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If width < 300 Then
+                                            If controlPosition <> "No Control" Then
+                                                Dim thisAlert As String = String.Format("YOUR WIDTH FOR ITEM {0} UNDER 250MM. PLEASE CHANGE PULL CORD POSITION TO NO CONTROL !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+
+                                            If tilterPosition <> "Center" AndAlso tilterPosition <> "Centre" Then
+                                                Dim thisAlert As String = String.Format("YOUR WIDTH FOR ITEM {0} UNDER 250MM. PLEASE CHANGE TILTER POSITION TO CENTRE !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If String.IsNullOrEmpty(dropText) Then
+                                            Dim thisAlert As String = String.Format("DROP IS REQUIRED FOR ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If Not Integer.TryParse(dropText, drop) Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP FOR ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If drop < 200 Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP ORDER FOR ITEM {0} & MINIMUM DROP IS 200MM !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If drop > 3200 Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP ORDER FOR ITEM {0} & MAXIMUM DROP IS 3200MM !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        controlLength = "Standard"
+                                        controlLengthValue = Math.Ceiling(drop * 2 / 3)
+                                        If controlLengthValue < 550 Then controlLengthValue = 550
+
+                                        If Not String.IsNullOrEmpty(cordLengthText) AndAlso Not cordLengthText.ToLower().Contains("standard") AndAlso Not cordLengthText.ToLower().Contains("std") Then
+                                            controlLength = "Custom"
+                                            cordLengthText = cordLengthText.Replace("mm", "")
+                                            If Not Integer.TryParse(cordLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE CORD LENGTH FOR ITEM {0}", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If Not String.IsNullOrEmpty(supply) Then
+                                            Dim validSupply As String() = {"No", "Yes"}
+                                            If Not validSupply.Contains(supply) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE HOLD DOWN CLIP FOR ITEM {0} !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If String.IsNullOrEmpty(tassel) Then
+                                            Dim thisAlert As String = String.Format("METAL TASSEL OPTION IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+                                        Dim validTassel As String() = {"Plastic", "Gold", "Antique Brass"}
+                                        If Not validTassel.Contains(tassel) Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE METAL TASSEL OPTION FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If String.IsNullOrEmpty(valanceType) Then
+                                            Dim thisAlert As String = String.Format("VALANCE TYPE IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If blindName_Fix = "Basswood 50mm" OrElse blindName_Fix = "Basswood 63mm" Then
+                                            If valanceType <> "75mm Valance" Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE VALANCE TYPE FOR ITEM {0} !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If blindName_Fix = "Econo 50mm" OrElse blindName_Fix = "Econo 63mm" OrElse blindName_Fix = "Ultraslat 50mm" OrElse blindName_Fix = "Ultraslat 63mm" Then
+                                            If valanceType <> "76mm Valance" Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE VALANCE TYPE FOR ITEM {0} !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        valanceSize = "Standard"
+                                        If finalMounting = "Opening Size Reveal Fit" Then valanceSizeValue = width - 1
+                                        If finalMounting = "Make Size Reveal Fit" Then valanceSizeValue = width + 9
+                                        If finalMounting = "Opening Size Face Fit" Then valanceSizeValue = width + 20
+                                        If finalMounting = "Make Size Face Fit" Then valanceSizeValue = width + 20
+
+                                        If Not String.IsNullOrEmpty(valanceSizeText) AndAlso Not valanceSizeText.ToLower().Contains("standard") AndAlso Not valanceSizeText.ToLower().Contains("std") Then
+                                            valanceSize = "Custom"
+                                            valanceSizeText = valanceSizeText.Replace("mm", "")
+                                            If Not Integer.TryParse(valanceSizeText, valanceSizeValue) OrElse valanceSizeValue < 0 Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE VALANCE SIZE VALUE FOR ITEM {0} !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If String.IsNullOrEmpty(returnPosition) Then returnPosition = "None"
+                                        If Not String.IsNullOrEmpty(returnPosition) Then
+                                            Dim validRP As String() = {"None", "Left", "Right", "Both Sides"}
+                                            If Not validRP.Contains(returnPosition) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE VALANCE RETURN POSITION FOR ITEM {0} !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+
+                                            If returnPosition <> "None" Then
+                                                returnLength = "Standard"
+                                                If finalMounting = "Opening Size Face Fit" OrElse finalMounting = "Make Size Face Fit" Then
+                                                    returnLengthValue = 70
+                                                    If blindName_Fix = "Econo 50" OrElse blindName_Fix = "Econo 63mm" OrElse blindName_Fix = "Ultraslat 50mm" OrElse blindName_Fix = "Ultraslat 63mm" Then
+                                                        returnLengthValue = 77
+                                                    End If
+                                                End If
+                                                If finalMounting = "Opening Size Reveal Fit" OrElse finalMounting = "Make Size Reveal Fit" Then
+                                                    returnLengthValue = 20
+                                                End If
+
+                                                If Not String.IsNullOrEmpty(returnLengthText) AndAlso Not returnLengthText.ToLower().Contains("standard") AndAlso Not returnLengthText.ToLower().Contains("std") Then
+                                                    returnLength = "Custom"
+                                                    returnLengthText = returnLengthText.Replace("mm", "")
+
+                                                    If Not Integer.TryParse(returnLengthText, returnLengthValue) OrElse returnLengthValue < 0 Then
+                                                        Dim thisAlert As String = String.Format("PLEASE CHECK YOUR VALANCE RETURN LENGTH !", itemNumber)
+                                                        MessageError(True, thisAlert)
+                                                        Exit For
+                                                    End If
+                                                End If
+                                            End If
+                                        End If
+
+                                        If msgError.InnerText = "" Then
+                                            Dim itemId As String = orderClass.GetNewOrderItemId()
+
+                                            Dim mounting_Fix As String = "Opening Size " & mounting
+
+                                            If returnPosition = "None" Then returnPosition = String.Empty
+
+                                            Dim groupName As String = blindName_Fix
+                                            If blindName_Fix = "Ultraslat 50mm" Then groupName = "Econo 50mm"
+                                            If blindName_Fix = "Ultraslat 63mm" Then groupName = "Econo 63mm"
+
+                                            Dim productgroupName As String = String.Format("{0} - {1}", designName_Fix, groupName)
+
+                                            Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(productgroupName, designId, priceGroupId)
+
+                                            Dim linearMetre As Decimal = width / 10000
+                                            Dim squareMetre As Decimal = width * drop / 1000000
+
+                                            Using thisConn As SqlConnection = New SqlConnection(myConn)
+                                                Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Venetian", thisConn)
+                                                    thisCmd.CommandType = CommandType.StoredProcedure
+
+                                                    thisCmd.Parameters.AddWithValue("@Id", itemId)
+                                                    thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                                                    thisCmd.Parameters.AddWithValue("@ProductId", productId)
+                                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupIdB", CType(DBNull.Value, Object))
+                                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupIdC", CType(DBNull.Value, Object))
+                                                    thisCmd.Parameters.AddWithValue("@Room", room)
+                                                    thisCmd.Parameters.AddWithValue("@Mounting", mounting_Fix)
+                                                    thisCmd.Parameters.AddWithValue("@SubType", subType)
+
+                                                    thisCmd.Parameters.AddWithValue("@ControlPosition", controlPosition)
+                                                    thisCmd.Parameters.AddWithValue("@ControlPositionB", String.Empty)
+                                                    thisCmd.Parameters.AddWithValue("@ControlPositionC", String.Empty)
+
+                                                    thisCmd.Parameters.AddWithValue("@TilterPosition", tilterPosition)
+                                                    thisCmd.Parameters.AddWithValue("@TilterPositionB", String.Empty)
+                                                    thisCmd.Parameters.AddWithValue("@TilterPositionC", String.Empty)
+
+                                                    thisCmd.Parameters.AddWithValue("@Width", width)
+                                                    thisCmd.Parameters.AddWithValue("@WidthB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@WidthC", 0)
+                                                    thisCmd.Parameters.AddWithValue("@Drop", drop)
+                                                    thisCmd.Parameters.AddWithValue("@DropB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@DropC", 0)
+
+                                                    thisCmd.Parameters.AddWithValue("@ControlLength", controlLength)
+                                                    thisCmd.Parameters.AddWithValue("@ControlLengthB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@ControlLengthC", 0)
+                                                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", controlLengthValue)
+                                                    thisCmd.Parameters.AddWithValue("@ControlLengthValueB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@ControlLengthValueC", 0)
+                                                    thisCmd.Parameters.AddWithValue("@WandLengthValue", 0)
+
+                                                    thisCmd.Parameters.AddWithValue("@ValanceType", valanceType)
+                                                    thisCmd.Parameters.AddWithValue("@ValanceSize", valanceSize)
+                                                    thisCmd.Parameters.AddWithValue("@ValanceSizeValue", valanceSizeValue)
+
+                                                    thisCmd.Parameters.AddWithValue("@ReturnPosition", returnPosition)
+                                                    thisCmd.Parameters.AddWithValue("@ReturnLength", returnLength)
+                                                    thisCmd.Parameters.AddWithValue("@ReturnLengthValue", returnLengthValue)
+
+                                                    thisCmd.Parameters.AddWithValue("@CutOut", String.Empty)
+                                                    thisCmd.Parameters.AddWithValue("@CutTopLeftWidth", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutTopLeftHeight", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutTopRightWidth", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutTopRightHeight", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutBottomLeftWidth", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutBottomLeftHeight", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutBottomRightWidth", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutBottomRightHeight", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutOutB", String.Empty)
+                                                    thisCmd.Parameters.AddWithValue("@CutTopLeftWidthB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutTopLeftHeightB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutTopRightWidthB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutTopRightHeightB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutBottomLeftWidthB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutBottomLeftHeightB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutBottomRightWidthB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutBottomRightHeightB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutOutC", String.Empty)
+                                                    thisCmd.Parameters.AddWithValue("@CutTopLeftWidthC", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutTopLeftHeightC", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutTopRightWidthC", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutTopRightHeightC", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutBottomLeftWidthC", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutBottomLeftHeightC", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutBottomRightWidthC", 0)
+                                                    thisCmd.Parameters.AddWithValue("@CutBottomRightHeightC", 0)
+
+                                                    thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
+                                                    thisCmd.Parameters.AddWithValue("@LinearMetreB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@LinearMetreC", 0)
+
+                                                    thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
+                                                    thisCmd.Parameters.AddWithValue("@SquareMetreB", 0)
+                                                    thisCmd.Parameters.AddWithValue("@SquareMetreC", 0)
+
+                                                    thisCmd.Parameters.AddWithValue("@Tassel", tassel)
+                                                    thisCmd.Parameters.AddWithValue("@Supply", supply)
+                                                    thisCmd.Parameters.AddWithValue("@TotalItems", 1)
+                                                    thisCmd.Parameters.AddWithValue("@Notes", notes)
+                                                    thisCmd.Parameters.AddWithValue("@MarkUp", 0)
+
+                                                    thisConn.Open()
+                                                    thisCmd.ExecuteNonQuery()
+                                                End Using
+                                            End Using
+
+                                            orderClass.ResetPriceDetail(headerId, itemId)
+                                            orderClass.CalculatePrice(headerId, itemId)
+                                            orderClass.FinalCostItem(headerId, itemId)
+
+                                            dataLog = {"OrderDetails", itemId, Session("LoginId").ToString(), "Order Item Added"}
+                                            orderClass.Logs(dataLog)
+                                        End If
+                                    End If
+                                    If designName_Fix = "Vertical" Then
+                                        Dim itemNumber As String = row - 3
+
+                                        Dim designId As String = orderClass.GetItemData("SELECT Id FROM Designs WHERE Name='" & designType & "'")
+
+                                        Dim blindType As String = If(sheetDetail.Cells(row, 2).Text IsNot Nothing, sheetDetail.Cells(row, 2).Text, "")
+                                        Dim tubeType As String = (sheetDetail.Cells(row, 3).Text & "").Trim()
+                                        Dim controlType As String = (sheetDetail.Cells(row, 4).Text & "").Trim()
+                                        Dim colourType As String = (sheetDetail.Cells(row, 5).Text & "").Trim()
+                                        Dim qty As Integer = If(String.IsNullOrWhiteSpace(sheetDetail.Cells(row, 6).Text), 0, CInt(sheetDetail.Cells(row, 6).Text))
+
+                                        Dim qtyBladeText As String = (sheetDetail.Cells(row, 7).Text & "").Trim()
+                                        Dim qtyBlade As Integer
+
+                                        Dim room As String = (sheetDetail.Cells(row, 8).Text & "").Trim()
+                                        Dim sizeType As String = (sheetDetail.Cells(row, 9).Text & "").Trim()
+                                        Dim mounting As String = (sheetDetail.Cells(row, 10).Text & "").Trim()
+
+                                        Dim widthText As String = (sheetDetail.Cells(row, 11).Text & "").Trim()
+                                        Dim width As Integer
+
+                                        Dim dropText As String = (sheetDetail.Cells(row, 12).Text & "").Trim()
+                                        Dim drop As Integer
+
+                                        Dim fabricInsert As String = (sheetDetail.Cells(row, 13).Text & "").Trim()
+                                        Dim fabricType As String = (sheetDetail.Cells(row, 14).Text & "").Trim()
+                                        Dim fabricColour As String = (sheetDetail.Cells(row, 15).Text & "").Trim()
+                                        Dim stackPosition As String = (sheetDetail.Cells(row, 16).Text & "").Trim()
+                                        Dim controlPosition As String = (sheetDetail.Cells(row, 17).Text & "").Trim()
+                                        Dim controlColour As String = (sheetDetail.Cells(row, 18).Text & "").Trim()
+                                        Dim controlLengthText As String = (sheetDetail.Cells(row, 19).Text & "").Trim()
+                                        Dim bottomJoining As String = (sheetDetail.Cells(row, 20).Text & "").Trim()
+                                        Dim bracketExtension As String = (sheetDetail.Cells(row, 21).Text & "").Trim()
+                                        Dim sloping As String = (sheetDetail.Cells(row, 22).Text & "").Trim()
+                                        Dim notes As String = (sheetDetail.Cells(row, 23).Text & "").Trim()
+
+                                        Dim fabricId As String = String.Empty
+                                        Dim fabricColourId As String = String.Empty
+
+                                        Dim chainId As String = String.Empty
+                                        Dim controlLength As String = String.Empty
+                                        Dim controlLengthValue As Integer = 0
+                                        Dim wandLengthValue As Integer = 0
+
+                                        If String.IsNullOrEmpty(designId) Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT IN ITEM {0} IS NOT REGISTERED. PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim blindId As String = orderClass.GetItemData("SELECT Id FROM Blinds CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND Name='" & blindType & "' AND CompanyArray.VALUE='" & companyDetailId & "'")
+                                        If String.IsNullOrEmpty(blindId) Then
+                                            Dim thisAlert As String = String.Format("THE ORDER TYPE IN ITEM {0} IS NOT REGISTERED. PLEASE CHECK AGAIN. !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim tubeName As String = tubeType
+                                        If tubeType = "Wide Blade (127mm)" Then tubeName = "127mm"
+                                        If tubeType = "Narrow Blade (89mm)" Then tubeName = "89mm"
+                                        Dim tubeId As String = orderClass.GetItemData("SELECT Id FROM ProductTubes WHERE Alias='" & tubeName & " (Vertical)" & "'")
+                                        If String.IsNullOrEmpty(tubeId) Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK THE SLAT SIZE FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If blindType = "Slat Only" Then controlType = "N/A"
+                                        Dim controlId As String = orderClass.GetItemData("SELECT Id FROM ProductControls WHERE Name='" & controlType & "'")
+                                        If String.IsNullOrEmpty(controlId) Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK YOUR CONTROL TYPE FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If blindType = "Slat Only" Then colourType = "N/A"
+                                        Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & colourType & "'")
+                                        If String.IsNullOrEmpty(colourType) Then
+                                            Dim thisAlert As String = String.Format("PLEASE CHECK YOUR HEADRAIL COLOUR FOR ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.VALUE='" & companyDetailId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='" & colourId & "' AND (Status='In Stock' OR Status='Limited Stock')")
+                                        If String.IsNullOrEmpty(productId) Then
+                                            Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If qty <> "1" Then
+                                            Dim thisAlert As String = String.Format("THE ORDER QTY MUS BE 1 PER ITEM LINE. PLEASE CHECK ITEM {0} !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If blindType = "Slat Only" OrElse blindType = "Track Only" Then
+                                            If String.IsNullOrEmpty(qtyBlade) Then
+                                                Dim thisAlert As String = String.Format("QTY BLADE FOR ITEM {0} IS REQUIRED !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                            If Not Integer.TryParse(qtyBladeText, qtyBlade) Then
+                                                Dim thisAlert As String = String.Format("QTY BLADE FOR ITEM {0} MUST BE IN NUMERIC FORMAT !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If String.IsNullOrEmpty(room) Then
+                                            Dim thisAlert As String = String.Format("ROOM / LOCATION IS REQUIRED FOR ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
+                                            If String.IsNullOrEmpty(sizeType) Then
+                                                Dim thisAlert As String = String.Format("SIZE TYPE IS REQUIRED FOR ITEM {0}", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+
+                                            Dim validSizeType As String() = {"Opening Size", "Make Size"}
+                                            If Not validSizeType.Contains(sizeType) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE SIZE TYPE FOR ITEM {0}", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+
+                                            If String.IsNullOrEmpty(mounting) Then
+                                                Dim thisAlert As String = String.Format("MOUNTING IS REQUIRED FOR ITEM {0}", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
+                                            Dim validMounting As String() = {"Face Fit", "Reveal Fit"}
+                                            If Not validMounting.Contains(mounting) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE MOUNTING FOR ITEM {0}", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
+                                            If Not Integer.TryParse(widthText, width) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE WIDTH FOR ITEM {0}", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                            If width < 300 OrElse width > 6000 Then
+                                                MessageError(True, "WIDTH MUST BE BETWEEN 300MM - 6000MM !")
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If blindType = "Slat Only" AndAlso Not String.IsNullOrEmpty(widthText) Then
+                                            Dim thisAlert As String = String.Format("WIDTH IS NOT REQUIRED FOR THIS TYPE. PLEASE CHECK ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If blindType = "Complete Set" OrElse blindType = "Slat Only" Then
+                                            If Not Integer.TryParse(dropText, drop) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE DROP FOR ITEM {0}", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                            If drop < 300 OrElse drop > 3050 Then
+                                                MessageError(True, "DROP MUST BE BETWEEN 300MM - 3050MM !")
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If blindType = "Track Only" AndAlso Not String.IsNullOrEmpty(dropText) Then
+                                            Dim thisAlert As String = String.Format("DROP IS NOT REQUIRED FOR THIS TYPE. PLEASE CHECK ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
+                                            If Not String.IsNullOrEmpty(fabricInsert) Then
+                                                Dim validFabricInsert As String() = {"No", "Yes"}
+                                                If Not validFabricInsert.Contains(fabricInsert) Then
+                                                    Dim thisAlert As String = String.Format("PLEASE CHECK THE FABRIC INSERT FOR ITEM {0}", itemNumber)
+                                                    MessageError(True, thisAlert)
+                                                    Exit For
+                                                End If
+                                            End If
+                                        End If
+
+                                        If blindType = "Slat Only" AndAlso Not String.IsNullOrEmpty(fabricInsert) Then
+                                            Dim thisAlert As String = String.Format("FABRIC INSERT IS NOT REQUIRED FOR THIS TYPE. PLEASE CHECK ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If blindType = "Complete Set" OrElse blindType = "Slat Only" OrElse (blindType = "Track Only" AndAlso fabricInsert = "Yes") Then
+                                            If String.IsNullOrEmpty(fabricType) Then
+                                                Dim thisAlert As String = String.Format("FABRIC TYPE IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+
+                                            If fabricType = "Essentials" Then fabricType = fabricType & " " & tubeName
+                                            If fabricType = "Essence Blockout" Then fabricType = fabricType & " " & tubeName
+
+                                            fabricId = orderClass.GetItemData("SELECT Id FROM Fabrics CROSS APPLY STRING_SPLIT(DesignId, ',') AS designArray CROSS APPLY STRING_SPLIT(TubeId, ',') AS tubeArray CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE Name='" & fabricType & "' AND designArray.VALUE='" & designId & "' AND tubeArray.VALUE='" & tubeId & "' AND companyArray.VALUE='" & companyDetailId & "' AND Status='Active'")
+                                            If String.IsNullOrEmpty(fabricId) Then
+                                                Dim thisAlert As String = String.Format("THE FABRIC TYPE FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+
+                                            If String.IsNullOrEmpty(fabricColour) Then
+                                                Dim thisAlert As String = String.Format("FABRIC COLOUR IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+
+                                            fabricColourId = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricId & "' AND Colour='" & fabricColour & "' AND (Status='In Stock' OR Status='Limited Stock')")
+                                            If String.IsNullOrEmpty(fabricColourId) Then
+                                                Dim thisAlert As String = String.Format("THE FABRIC COLOUR FOR ITEM {0} IS CURRENTLY UNAVAILABLE !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If blindType = "Track Only" AndAlso Not String.IsNullOrEmpty(fabricType) Then
+                                            Dim thisAlert As String = String.Format("A FABRIC INSERT IS REQUIRED FOR ITEM {0}, AS YOU HAVE SELECTED A FABRIC TYPE WITHOUT SPECIFYING A FABRIC INSERT.", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
+                                            Dim validStack As String() = {"Left", "Right", "Centre", "Split"}
+                                            If Not validStack.Contains(stackPosition) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK YOUR STACK POSITION FOR ITEM {0} !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If blindType = "Slat Only" AndAlso Not String.IsNullOrEmpty(stackPosition) Then
+                                            Dim thisAlert As String = String.Format("STACK POSITION IS NOT REQUIRED FOR ITEM {0}", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If controlType = "Chain" Then
+                                            If String.IsNullOrEmpty(controlPosition) Then
+                                                Dim thisAlert As String = String.Format("CONTROL POSITION IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+
+                                            Dim validControlPosition As String() = {"Left", "Right"}
+                                            If Not validControlPosition.Contains(controlPosition) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK YOUR CONTROL POSITION FOR ITEM {0} !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+                                        If controlType = "Wand" OrElse controlType = "N/A" Then
+                                            If Not String.IsNullOrEmpty(controlPosition) Then
+                                                Dim thisAlert As String = String.Format("CONTROL POSITION IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If String.IsNullOrEmpty(controlColour) Then
+                                            If controlType = "Chain" Then controlColour = "Chromed Metal"
+                                            If controlType = "Wand" Then controlColour = colourType
+                                        End If
+
+                                        If controlType = "N/A" AndAlso Not String.IsNullOrEmpty(controlColour) Then
+                                            Dim thisAlert As String = String.Format("CONTROL COLOUR IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If blindType = "Complete Set" Then
+                                            controlLength = "Standard"
+                                            controlLengthValue = Math.Ceiling(drop * 2 / 3)
+                                            If controlType = "Wand" Then
+                                                If controlLengthValue > 1000 Then controlLengthValue = 1000
+                                            End If
+
+                                            If Not String.IsNullOrEmpty(controlLengthText) AndAlso Not controlLengthText.ToLower().Contains("standard") AndAlso Not controlLengthText.ToLower().Contains("std") Then
+                                                controlLength = "Custom"
+                                                controlLengthText = controlLengthText.Replace("mm", "")
+
+                                                If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
+                                                    Dim thisAlert As String = String.Format("PLEASE CHECK YOUR CONTROL LENGTH FOR ITEM {0} !", itemNumber)
+                                                    MessageError(True, thisAlert)
+                                                    Exit For
+                                                End If
+
+                                                If controlType = "Wand" AndAlso controlLengthValue > 1000 Then
+                                                    Dim thisAlert As String = String.Format("MAXIMUM CONTROL / WAND LENGTH IS 1000MM FOR ITEM {0}", itemNumber)
+                                                    MessageError(True, thisAlert)
+                                                    Exit For
+                                                End If
+                                            End If
+                                        End If
+
+                                        If blindType = "Track Only" Then
+                                            controlLength = "Custom"
+                                            controlLengthText = controlLengthText.Replace("mm", "")
+
+                                            If Not Integer.TryParse(controlLengthText, controlLengthValue) OrElse controlLengthValue < 0 Then
+                                                MessageError(True, "PLEASE CHECK YOUR CONTROL LENGTH !")
+                                                Exit For
+                                            End If
+
+                                            If controlType = "Wand" AndAlso controlLengthValue > 1000 Then
+                                                Dim thisAlert As String = String.Format("MAXIMUM CONTROL / WAND LENGTH IS 1000MM FOR ITEM {0}", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If blindType = "Slat Only" Then
+                                            If Not String.IsNullOrEmpty(controlLengthText) Then
+                                                Dim thisAlert As String = String.Format("CONTROL LENGTH IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If blindType = "Complete Set" OrElse blindType = "Slat Only" Then
+                                            If String.IsNullOrEmpty(bottomJoining) Then
+                                                MessageError(True, "BOTTOM JOINING IS REQUIRED !")
+                                                Exit For
+                                            End If
+
+                                            If bottomJoining = "Chain" Then bottomJoining = "With Chain"
+                                            Dim validBottomJoining As String() = {"Chainless", "Sewn", "Sewn In", "With Chain"}
+                                            If Not validBottomJoining.Contains(bottomJoining) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE BOTTOM JOINING FOR ITEM {0}", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If blindType = "Track Only" AndAlso Not String.IsNullOrEmpty(bottomJoining) Then
+                                            Dim thisAlert As String = String.Format("BOTTOM JOINING IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If blindType = "Complete Set" OrElse blindType = "Track Only" Then
+                                            If String.IsNullOrEmpty(bracketExtension) Then
+                                                Dim thisAlert As String = String.Format("BRACKET EXTENSION IS REQUIRED FOR ITEM {0} !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                            Dim validExtension As String() = {"Standard Bracket", "Extension Bracket"}
+                                            If Not validExtension.Contains(bracketExtension) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE BRACKET EXTENSION FOR ITEM {0} !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If blindType = "Slat Only" AndAlso Not String.IsNullOrEmpty(bracketExtension) Then
+                                            Dim thisAlert As String = String.Format("BRACKET EXTENSION IS NOT REQUIRED FOR ITEM {0} AND THIS TYPE !", itemNumber)
+                                            MessageError(True, thisAlert)
+                                            Exit For
+                                        End If
+
+                                        If blindType = "Complete Set" AndAlso Not String.IsNullOrEmpty(sloping) Then
+                                            Dim validSloping As String() = {"No", "Yes"}
+                                            If Not validSloping.Contains(sloping) Then
+                                                Dim thisAlert As String = String.Format("PLEASE CHECK THE SLOPING FOR ITEM {0} !", itemNumber)
+                                                MessageError(True, thisAlert)
+                                                Exit For
+                                            End If
+                                        End If
+
+                                        If msgError.InnerText = "" Then
+                                            Dim totalItems As Integer = 1
+
+                                            If blindType = "Track Only" Then drop = 0
+
+                                            If controlType = "Chain" Then
+                                                chainId = orderClass.GetItemData("SELECT Id FROM Chains WHERE Name='" & controlColour & "'")
+                                                controlColour = String.Empty
+                                            End If
+
+                                            If bracketExtension = "Standard Bracket" Then bracketExtension = String.Empty
+                                            If bracketExtension = "Extension Bracket" Then bracketExtension = "Yes"
+
+                                            wandLengthValue = 0
+                                            If controlType = "Wand" Then wandLengthValue = controlLengthValue
+
+                                            If controlType = "Wand" Then
+                                                If stackPosition = "Left" Then controlPosition = "Right"
+                                                If stackPosition = "Right" Then controlPosition = "Left"
+                                                If stackPosition = "Centre" Then controlPosition = "Right and Left"
+                                                If stackPosition = "Split" Then controlPosition = "Middle"
+                                            End If
+                                            If Not fabricInsert = "Yes" Then fabricInsert = String.Empty
+                                            If bottomJoining = "Sewn" Then bottomJoining = "Sewn In"
+
+                                            If blindType = "Slat Only" Then
+                                                If tubeName = "127mm" Then width = qtyBlade * 115 : If qtyBlade < 6 Then width = 472
+                                                If tubeName = "89mm" Then width = qtyBlade * 79 : If qtyBlade < 5 Then width = 591
+                                            End If
+
+                                            Dim linearMetre As Decimal = width / 1000
+                                            Dim squareMetre As Decimal = width * drop / 1000000
+
+                                            Dim groupName As String = String.Format("Vertical - {0} - {1}", blindType, tubeName)
+                                            Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, designId, priceGroupId)
+
+                                            Dim itemId As String = orderClass.GetNewOrderItemId()
+
+                                            Using thisConn As SqlConnection = New SqlConnection(myConn)
+                                                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, ChainId, PriceProductGroupId, Qty, QtyBlade, Room, Mounting, Width, [Drop], StackPosition, ControlPosition, ControlLength, ControlLengthValue, WandColour, WandLengthValue, FabricInsert, BottomJoining, BracketExtension, Sloping, LinearMetre, SquareMetre, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @ChainId, @PriceProductGroupId, @Qty, @QtyBlade, @Room, @Mounting, @Width, @Drop, @StackPosition, @ControlPosition, @ControlLength, @ControlLengthValue, @WandColour, @WandLengthValue, @FabricInsert, @BottomJoining, @BracketExtension, @Sloping, @LinearMetre, @SquareMetre, 1, @Notes, @MarkUp, 1)", thisConn)
+                                                    thisCmd.Parameters.AddWithValue("@Id", itemId)
+                                                    thisCmd.Parameters.AddWithValue("@HeaderId", headerId)
+                                                    thisCmd.Parameters.AddWithValue("@ProductId", productId)
+                                                    thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(fabricId), CType(DBNull.Value, Object), fabricId))
+                                                    thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(fabricColourId), CType(DBNull.Value, Object), fabricColourId))
+                                                    thisCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(chainId), CType(DBNull.Value, Object), chainId))
+                                                    thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
+                                                    thisCmd.Parameters.AddWithValue("@Qty", "1")
+                                                    thisCmd.Parameters.AddWithValue("@QtyBlade", qtyBlade)
+                                                    thisCmd.Parameters.AddWithValue("@Room", room)
+                                                    thisCmd.Parameters.AddWithValue("@Mounting", sizeType & " " & mounting)
+                                                    thisCmd.Parameters.AddWithValue("@Width", width)
+                                                    thisCmd.Parameters.AddWithValue("@Drop", drop)
+                                                    thisCmd.Parameters.AddWithValue("@FabricInsert", fabricInsert)
+                                                    thisCmd.Parameters.AddWithValue("@StackPosition", stackPosition)
+                                                    thisCmd.Parameters.AddWithValue("@ControlPosition", controlPosition)
+                                                    thisCmd.Parameters.AddWithValue("@ControlLength", controlLength)
+                                                    thisCmd.Parameters.AddWithValue("@ControlLengthValue", controlLengthValue)
+                                                    thisCmd.Parameters.AddWithValue("@WandColour", controlColour)
+                                                    thisCmd.Parameters.AddWithValue("@WandLengthValue", wandLengthValue)
+                                                    thisCmd.Parameters.AddWithValue("@BottomJoining", bottomJoining)
+                                                    thisCmd.Parameters.AddWithValue("@BracketExtension", bracketExtension)
+                                                    thisCmd.Parameters.AddWithValue("@Sloping", sloping)
+                                                    thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
+                                                    thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
+                                                    thisCmd.Parameters.AddWithValue("@Notes", notes)
+                                                    thisCmd.Parameters.AddWithValue("@MarkUp", "0")
+
+                                                    thisConn.Open()
+                                                    thisCmd.ExecuteNonQuery()
+                                                End Using
+                                            End Using
+
+                                            orderClass.ResetPriceDetail(headerId, itemId)
+                                            orderClass.CalculatePrice(headerId, itemId)
+                                            orderClass.FinalCostItem(headerId, itemId)
+
+                                            dataLog = {"OrderDetails", itemId, Session("LoginId").ToString(), "Order Item Added"}
+                                            orderClass.Logs(dataLog)
+                                        End If
+                                    End If
                                 Next
                             End Using
                         End Using
@@ -4505,7 +3909,7 @@ Partial Class Order_Upload
 
                                 Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.VALUE='" & companyDetailId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='" & colourId & "' AND (Status='In Stock' OR Status='Limited Stock')")
                                 If String.IsNullOrEmpty(productId) Then
-                                    Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                    Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
                                     MessageError(True, thisAlert)
                                     Exit For
                                 End If
@@ -4963,7 +4367,7 @@ Partial Class Order_Upload
 
                                 Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.VALUE='" & companyDetailId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='" & colourId & "' AND (Status='In Stock' OR Status='Limited Stock')")
                                 If String.IsNullOrEmpty(productId) Then
-                                    Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                    Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
                                     MessageError(True, thisAlert)
                                     Exit For
                                 End If
@@ -5243,7 +4647,7 @@ Partial Class Order_Upload
 
                                 Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.value='" & companyDetailId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='56' AND (Status='In Stock' OR Status='Limited Stock')")
                                 If String.IsNullOrEmpty(productId) Then
-                                    Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                    Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
                                     MessageError(True, thisAlert)
                                     Exit For
                                 End If
@@ -5628,7 +5032,7 @@ Partial Class Order_Upload
 
                                 Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='56' AND (Status='In Stock' OR Status='Limited Stock')")
                                 If String.IsNullOrEmpty(productId) Then
-                                    Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                    Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
                                     MessageError(True, thisAlert)
                                     Exit For
                                 End If
@@ -6097,14 +5501,14 @@ Partial Class Order_Upload
                                 Dim tubeId As String = "9" : Dim controlId As String = "17"
                                 Dim colourId As String = orderClass.GetItemData("SELECT Id FROM ProductColours WHERE Name='" & colour & "'")
                                 If String.IsNullOrEmpty(colourId) Then
-                                    Dim thisAlert As String = String.Format("THE COLOUR YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                    Dim thisAlert As String = String.Format("THE COLOUR YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
                                     MessageError(True, thisAlert)
                                     Exit For
                                 End If
 
                                 Dim productId As String = orderClass.GetItemData("SELECT Id FROM Products CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyArray WHERE DesignId='" & designId & "' AND BlindId='" & blindId & "' AND companyArray.value='" & companyDetailId & "' AND TubeType='" & tubeId & "' AND ControlType='" & controlId & "' AND ColourType='" & colourId & "' AND (Status='In Stock' OR Status='Limited Stock')")
                                 If String.IsNullOrEmpty(productId) Then
-                                    Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCKS. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
+                                    Dim thisAlert As String = String.Format("THE PRODUCT YOU REQUESTED IS CURRENTLY NOT AVAILABLE IN OUR STOCK. PLEASE REVIEW YOUR ORDER OR CONTACT OUR CUSTOMER SERVICE TEAM FOR ASSISTANCE. ITEM {0} !", itemNumber)
                                     MessageError(True, thisAlert)
                                     Exit For
                                 End If

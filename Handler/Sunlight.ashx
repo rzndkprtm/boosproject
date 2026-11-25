@@ -151,6 +151,7 @@ Public Class Sunlight : Implements IHttpHandler
                     Dim blindName_Fix As String = String.Empty
                     If bracketType = "Single" Then blindName_Fix = "Single Blind"
                     If bracketType = "Double" Then blindName_Fix = "Dual Blinds"
+                    If bracketType = "Linked 2 Blinds (Dep)" Then blindName_Fix = "Link 2 Blinds Dependent"
                     Dim tubeName_Fix As String = String.Format("Gear Reduction {0}mm", tubeType)
                     Dim controlName_Fix As String = controlType
                     Dim colourName_Fix As String = colourType
@@ -190,7 +191,7 @@ Public Class Sunlight : Implements IHttpHandler
                     If chainColour = "Chrome" Then chainColour = "Nickel Plated"
 
                     Dim chainName As String = String.Format("Cont Plastic {0}", chainColour)
-                    If chainName = "Chrome" OrElse chainName = "Stainless Steel" Then
+                    If chainColour = "Nickel Plated" OrElse chainColour = "Stainless Steel" Then
                         chainName = String.Format("Cont {0}", chainColour)
                     End If
 
@@ -198,7 +199,7 @@ Public Class Sunlight : Implements IHttpHandler
                     Dim chainStopper As String = String.Empty
                     Dim controlLength_Fix As String = String.Empty
                     Dim controlLengthValue_Fix As Integer = 0
-                    If controlName_Fix = "Chain" Then
+                    If controlName_Fix = "Chain" AndAlso Not String.IsNullOrEmpty(controlPosition) Then
                         chainId = orderClass.GetItemData("SELECT Id FROM Chains WHERE Name='" & chainName & "'")
                         chainStopper = "No Stopper"
                         If chainLength = 0 Then
@@ -314,17 +315,21 @@ Public Class Sunlight : Implements IHttpHandler
                         widthB = If(IsDBNull(secondData("Width")), 0, Convert.ToInt32(secondData("Width")))
                         dropB = If(IsDBNull(secondData("Drop")), 0, Convert.ToInt32(secondData("Drop")))
 
+                        controlPositionB = secondData("ControlPosition").ToString()
+                        rollB_Fix = secondData("RollDirection").ToString()
+                        If secondData("RollDirection").ToString() = "Reverse Roll" Then rollB_Fix = "Reverse"
+
                         controlType = secondData("ControlType").ToString()
                         chainColour = secondData("ChainColour").ToString()
                         chainLength = If(IsDBNull(secondData("ChainLength")), 0, Convert.ToInt32(secondData("ChainLength")))
                         controlName_Fix = controlType
 
-                        If controlName_Fix = "Chain" Then
+                        If controlName_Fix = "Chain" AndAlso Not String.IsNullOrEmpty(controlPositionB) Then
                             If chainColour = "Birch White" Then chainColour = "Ivory"
                             If chainColour = "Chrome" Then chainColour = "Nickel Plated"
 
                             chainName = String.Format("Cont Plastic {0}", chainColour)
-                            If chainName = "Chrome" OrElse chainName = "Stainless Steel" Then
+                            If chainColour = "Nickel Plated" OrElse chainColour = "Stainless Steel" Then
                                 chainName = String.Format("Cont {0}", chainColour)
                             End If
 
@@ -356,10 +361,6 @@ Public Class Sunlight : Implements IHttpHandler
                         fabricIdB = orderClass.GetItemData("SELECT Id FROM Fabrics WHERE Name='" & fabricTypeB & "'")
                         fabricColourIdB = orderClass.GetItemData("SELECT Id FROM FabricColours WHERE FabricId='" & fabricIdB & "' AND Colour='" & fabricColourB & "'")
                         fabricGroupB = orderClass.GetFabricGroup(fabricIdB)
-
-                        controlPositionB = secondData("ControlPosition").ToString()
-                        rollB_Fix = secondData("RollDirection").ToString()
-                        If secondData("RollDirection").ToString() = "Reverse Roll" Then rollB_Fix = "Reverse"
 
                         trim = secondData("Trim").ToString()
                         bottomType = secondData("BottomType").ToString()

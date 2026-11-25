@@ -1547,6 +1547,8 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
         If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
+        'If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
+
         If String.IsNullOrEmpty(data.blindtype) Then Return "ALUMINIUM TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "COLOUR TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.subtype) Then Return "ALUMINIUM SUB TYPE IS REQUIRED !"

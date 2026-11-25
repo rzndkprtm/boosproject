@@ -1,7 +1,7 @@
 {
-  "OrderId": "SP-3810",
-  "OrderNumber": "PIPIT",
-  "OrderName": "PIPIT",
+  "OrderId": "PIPIT 23",
+  "OrderNumber": "PIPIT 23",
+  "OrderName": "PIPIT 23",
   "OrderNote": "",
   "Details": [
     {
@@ -167,7 +167,7 @@
       "DesignName": "Global Roller Blinds",
       "BlindName": "Gear Reduction",
       "FabricInsert": "",
-      "FabricType": "Nice",
+      "FabricType": "Nice BO",
       "FabricTypeB": "",
       "FabricColour": "Dark Grey",
       "FabricColourB": "",
