@@ -2085,7 +2085,7 @@ Public Class PreviewClass
                     Dim table As New PdfPTable(5)
                     table.WidthPercentage = 100
 
-                    Dim items(40, shutterData.Rows.Count - 1) As String
+                    Dim items(41, shutterData.Rows.Count - 1) As String
 
                     For i As Integer = 0 To shutterData.Rows.Count - 1
                         Dim layoutCode As String = If(shutterData.Rows(i)("LayoutCode").ToString() = "Other", shutterData.Rows(i)("LayoutCodeCustom").ToString(), shutterData.Rows(i)("LayoutCode").ToString())
@@ -2193,29 +2193,30 @@ Public Class PreviewClass
                         items(14, i) = headerLengthText
                         items(15, i) = shutterData.Rows(i)("JoinedPanels").ToString()
                         items(16, i) = layoutCode
-                        items(17, i) = shutterData.Rows(i)("FrameType").ToString()
-                        items(18, i) = shutterData.Rows(i)("FrameLeft").ToString()
-                        items(19, i) = shutterData.Rows(i)("FrameRight").ToString()
-                        items(20, i) = shutterData.Rows(i)("FrameTop").ToString()
-                        items(21, i) = shutterData.Rows(i)("FrameBottom").ToString()
-                        items(22, i) = bottomTrack
-                        items(23, i) = shutterData.Rows(i)("Buildout").ToString()
-                        items(24, i) = shutterData.Rows(i)("BuildoutPosition").ToString()
-                        items(25, i) = shutterData.Rows(i)("SameSizePanel").ToString()
-                        items(26, i) = gapPosition
-                        items(27, i) = horizontalHeight
-                        items(28, i) = shutterData.Rows(i)("HorizontalTPost").ToString()
-                        items(29, i) = shutterData.Rows(i)("TiltrodType").ToString()
-                        items(30, i) = shutterData.Rows(i)("TiltrodSplit").ToString()
-                        items(31, i) = splitHeigth
-                        items(32, i) = shutterData.Rows(i)("ReverseHinged").ToString()
-                        items(33, i) = shutterData.Rows(i)("PelmetFlat").ToString()
-                        items(34, i) = shutterData.Rows(i)("ExtraFascia").ToString()
-                        items(35, i) = shutterData.Rows(i)("HingesLoose").ToString()
-                        items(36, i) = shutterData.Rows(i)("Painting").ToString()
-                        items(37, i) = shutterData.Rows(i)("PaintingColour").ToString()
-                        items(38, i) = Convert.ToDecimal(shutterData.Rows(i)("SquareMetre")).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
-                        items(39, i) = shutterData.Rows(i)("Notes").ToString()
+                        items(17, i) = shutterData.Rows(i)("StileType").ToString()
+                        items(18, i) = shutterData.Rows(i)("FrameType").ToString()
+                        items(19, i) = shutterData.Rows(i)("FrameLeft").ToString()
+                        items(20, i) = shutterData.Rows(i)("FrameRight").ToString()
+                        items(21, i) = shutterData.Rows(i)("FrameTop").ToString()
+                        items(22, i) = shutterData.Rows(i)("FrameBottom").ToString()
+                        items(23, i) = bottomTrack
+                        items(24, i) = shutterData.Rows(i)("Buildout").ToString()
+                        items(25, i) = shutterData.Rows(i)("BuildoutPosition").ToString()
+                        items(26, i) = shutterData.Rows(i)("SameSizePanel").ToString()
+                        items(27, i) = gapPosition
+                        items(28, i) = horizontalHeight
+                        items(29, i) = shutterData.Rows(i)("HorizontalTPost").ToString()
+                        items(30, i) = shutterData.Rows(i)("TiltrodType").ToString()
+                        items(31, i) = shutterData.Rows(i)("TiltrodSplit").ToString()
+                        items(32, i) = splitHeigth
+                        items(33, i) = shutterData.Rows(i)("ReverseHinged").ToString()
+                        items(34, i) = shutterData.Rows(i)("PelmetFlat").ToString()
+                        items(35, i) = shutterData.Rows(i)("ExtraFascia").ToString()
+                        items(36, i) = shutterData.Rows(i)("HingesLoose").ToString()
+                        items(37, i) = shutterData.Rows(i)("Painting").ToString()
+                        items(38, i) = shutterData.Rows(i)("PaintingColour").ToString()
+                        items(39, i) = Convert.ToDecimal(shutterData.Rows(i)("SquareMetre")).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)
+                        items(40, i) = shutterData.Rows(i)("Notes").ToString()
                     Next
 
                     For i As Integer = 0 To items.GetLength(1) - 1 Step 4
@@ -2224,9 +2225,9 @@ Public Class PreviewClass
                         Dim fontHeader As New Font(Font.FontFamily.TIMES_ROMAN, 8, Font.BOLD)
                         Dim fontContent As New Font(Font.FontFamily.TIMES_ROMAN, 8)
 
-                        Dim headers As String() = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Buildout Position", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "", "", "M2", "Special Information"}
+                        Dim headers As String() = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Stile Type", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Buildout Position", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "", "", "M2", "Special Information"}
                         If companyDetailId = "5" OrElse companyDetailId = "6" OrElse companyDetailId = "8" Then
-                            headers = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Buildout Position", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "Painting", "PaintingColour", "M2", "Special Information"}
+                            headers = {"", "Location", "Width (mm)", "Height (mm)", "Mounting", "Colour", "Louvre Size", "Sliding Louvre Position", "Midrail Height (mm)", "Critical Midrail", "Hinge Colour", "Installation Method", "Semi Inside Mount", "Panel Qty", "Custom Header Length (mm)", "Co-joined Panels", "Layout Code", "Stile Type", "Frame Type", "Left Frame", "Right Frame", "Top Frame", "Bottom Frame", "Bottom Track", "Buildout", "Buildout Position", "Same Size Panel", "Gap / T-Post (mm)", "Hor T-Post Height (mm)", "Hor T-Post Required", "Tiltrod Type", "Split Tiltrod Rotation", "Split Height (mm)", "Reverse Hinged", "Pelmet Flat Packed", "Extra Fascia", "Hinges Loose", "Painting", "PaintingColour", "M2", "Special Information"}
                         End If
 
                         For row As Integer = 0 To headers.Length - 1

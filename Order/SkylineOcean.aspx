@@ -616,5 +616,5 @@
             </div>
         </div>
     </div>
-    <script src="/Scripts/Bintang/SkylineOcean.js?v=1.0.0"></script>
+    <script src="/Scripts/Bintang/SkylineOcean.js?v=1.0.1"></script>
 </asp:Content>

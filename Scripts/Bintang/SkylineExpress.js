@@ -68,7 +68,7 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
     try {
         const response = await $.ajax({
             type: "POST",
-            url: "Method.aspx/SkylineDetail",
+            url: "Method.aspx/SkylineExpressDetail",
             data: JSON.stringify({ itemId, companyDetailId, orderStatus, roleAccess, action }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
@@ -582,7 +582,7 @@ function bindLayoutCode(blindType) {
             return;
         }
 
-        const listData = { type: "LayoutCodeSkyline", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "LayoutCodeSkyline_Express", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -936,6 +936,7 @@ function visiblePageDetail(blindType, colourType) {
             "divcustomheaderlength",
             "divlayoutcode",
             "divlayoutcodecustom",
+            "divstiletype",
             "divframetype",
             "divframeleft",
             "divframeright",
@@ -978,7 +979,9 @@ function visiblePageDetail(blindType, colourType) {
         ]).then(([blindName, companyName]) => {
             if (blindName === "Panel Only") {
                 divShow.push("divtiltrodtype", "divtiltrodsplit");
-            } else if (blindName === "Hinged" || blindName === "Hinged Bi-fold") {
+            } else if (blindName === "Hinged") {
+                divShow.push("divhingecolour", "divlayoutcode", "divstiletype", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divhorizontaltpost");
+            } else if (blindName === "Hinged Bi-fold") {
                 divShow.push("divhingecolour", "divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divhorizontaltpost");
             } else if (blindName === "Track Bi-fold") {
                 divShow.push("divhingecolour", "divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divbottomtracktype", "divreversehinged", "divpelmetflat", "divextrafascia");
@@ -1331,7 +1334,7 @@ function controlForm(status, isEditItem, isCopyItem) {
 
     document.getElementById("submit").style.display = status ? "none" : "";
 
-    const inputs = ["blindtype", "colourtype", "qty", "room", "mounting", "width", "drop", "louvresize", "louvreposition", "midrailheight1", "midrailheight2", "midrailcritical", "joinedpanels", "hingecolour", "semiinside", "customheaderlength", "layoutcode", "layoutcodecustom", "frametype", "frameleft", "frameright", "frametop", "framebottom", "bottomtracktype", "bottomtrackrecess", "buildout", "buildoutposition", "samesizepanel", "gap1", "gap2", "gap3", "gap4", "gap5", "horizontaltpostheight", "horizontaltpost", "tiltrodtype", "tiltrodsplit", "splitheight1", "splitheight2", "reversehinged", "pelmetflat", "extrafascia", "hingesloose", "painting", "paintingcolour", "markup", "notes"];
+    const inputs = ["blindtype", "colourtype", "qty", "room", "mounting", "width", "drop", "louvresize", "louvreposition", "midrailheight1", "midrailheight2", "midrailcritical", "joinedpanels", "hingecolour", "semiinside", "customheaderlength", "layoutcode", "layoutcodecustom", "stiletype", "frametype", "frameleft", "frameright", "frametop", "framebottom", "bottomtracktype", "bottomtrackrecess", "buildout", "buildoutposition", "samesizepanel", "gap1", "gap2", "gap3", "gap4", "gap5", "horizontaltpostheight", "horizontaltpost", "tiltrodtype", "tiltrodsplit", "splitheight1", "splitheight2", "reversehinged", "pelmetflat", "extrafascia", "hingesloose", "painting", "paintingcolour", "markup", "notes"];
 
     inputs.forEach(id => {
         const inputElement = document.getElementById(id);
@@ -1366,6 +1369,7 @@ function setFormValues(itemData) {
         customheaderlength: "CustomHeaderLength",
         layoutcode: "LayoutCode",
         layoutcodecustom: "LayoutCodeCustom",
+        stiletype: "StileType",
         frametype: "FrameType",
         frameleft: "FrameLeft",
         frameright: "FrameRight",
@@ -1435,53 +1439,32 @@ function fillSelect(selector, list, selected = null) {
 function cekSameSizePanels(layoutCode) {
     if (layoutCode.length === 0) return false;
     if (layoutCode.includes("T")) {
-        if (
-            layoutCode.includes("B") ||
-            layoutCode.includes("C") ||
-            layoutCode.includes("G")
-        ) {
+        if (layoutCode.includes("B") || layoutCode.includes("C") || layoutCode.includes("G")) {
             return false;
         }
     }
     if (layoutCode.includes("B")) {
-        if (
-            layoutCode.includes("T") ||
-            layoutCode.includes("C") ||
-            layoutCode.includes("G")
-        ) {
+        if (layoutCode.includes("T") || layoutCode.includes("C") || layoutCode.includes("G")) {
             return false;
         }
     }
     if (layoutCode.includes("C")) {
-        if (
-            layoutCode.includes("T") ||
-            layoutCode.includes("B") ||
-            layoutCode.includes("G")
-        ) {
+        if (layoutCode.includes("T") || layoutCode.includes("B") || layoutCode.includes("G")) {
             return false;
         }
     }
     if (layoutCode.includes("G")) {
-        if (
-            layoutCode.includes("T") ||
-            layoutCode.includes("B") ||
-            layoutCode.includes("C")
-        ) {
+        if (layoutCode.includes("T") || layoutCode.includes("B") || layoutCode.includes("C")) {
             return false;
         }
     }
-    return (
-        layoutCode.includes("T") ||
-        layoutCode.includes("B") ||
-        layoutCode.includes("C") ||
-        layoutCode.includes("G")
-    );
+    return (layoutCode.includes("T") || layoutCode.includes("B") || layoutCode.includes("C") || layoutCode.includes("G"));
 }
 function submitProcess() {
     toggleButtonState(true, "Processing...");
 
     const fields = ["blindtype", "colourtype", "qty", "room", "mounting", "width", "drop", "louvresize", "louvreposition", "midrailheight1",
-        "midrailheight2", "midrailcritical", "joinedpanels", "hingecolour", "semiinside", "customheaderlength", "layoutcode", "layoutcodecustom",
+        "midrailheight2", "midrailcritical", "joinedpanels", "hingecolour", "semiinside", "customheaderlength", "layoutcode", "layoutcodecustom", "stiletype",
         "frametype", "frameleft", "frameright", "frametop", "framebottom",
         "bottomtracktype", "bottomtrackrecess",
         "buildout", "buildoutposition", "samesizepanel", "gap1", "gap2", "gap3", "gap4", "gap5",
@@ -1551,6 +1534,19 @@ function updateLinkDetail(myId) {
     if (!link || !headerId) return;
 
     link.href = `/order/detail?orderid=${myId}`;
+}
+
+function showGallery(type) {
+    let info;
+
+    if (type === "Stile") {
+        let urlImage = "https://ordersblindonline.com/assets/images/products/shutter/stile.png";
+
+        info = "<b>Stile Type</b>";
+        info += "<br /><br />";
+        info += `<img src="${urlImage}" alt="Stile Type" style="max-width:100%;height:auto;">`;
+    }
+    document.getElementById("spanInfoGallery").innerHTML = info;
 }
 
 $("#blindtype").on("change", function () {

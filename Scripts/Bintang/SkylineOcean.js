@@ -68,7 +68,7 @@ async function bindItemOrder(itemId, companyDetailId, orderStatus, roleAccess, a
     try {
         const response = await $.ajax({
             type: "POST",
-            url: "Method.aspx/SkylineDetail",
+            url: "Method.aspx/SkylineOceanDetail",
             data: JSON.stringify({ itemId, companyDetailId, orderStatus, roleAccess, action }),
             contentType: "application/json; charset=utf-8",
             dataType: "json"
@@ -581,7 +581,7 @@ function bindLayoutCode(blindType) {
             return;
         }
 
-        const listData = { type: "LayoutCodeSkyline", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "LayoutCodeSkyline_Ocean", blindtype: blindType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",

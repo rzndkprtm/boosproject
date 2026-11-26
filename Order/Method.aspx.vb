@@ -504,6 +504,144 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "FRR-ALLF", .Text = "FRR-ALLF"})
             End If
         End If
+        If type = "LayoutCodeSkyline_Express" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Hinged" Then
+                result.Add(New With {.Value = "L", .Text = "L"})
+                result.Add(New With {.Value = "R", .Text = "R"})
+                result.Add(New With {.Value = "LR", .Text = "LR"})
+                result.Add(New With {.Value = "LD-R", .Text = "LD-R"})
+                result.Add(New With {.Value = "L-DR", .Text = "L-DR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Hinged Bi-fold" Then
+                result.Add(New With {.Value = "LL", .Text = "LL"})
+                result.Add(New With {.Value = "RR", .Text = "RR"})
+                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Track Bi-fold" Then
+                result.Add(New With {.Value = "LL", .Text = "LL"})
+                result.Add(New With {.Value = "RR", .Text = "RR"})
+                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
+                result.Add(New With {.Value = "LLLL", .Text = "LLLL"})
+                result.Add(New With {.Value = "RRRR", .Text = "RRRR"})
+                result.Add(New With {.Value = "LLRRRR", .Text = "LLRRRR"})
+                result.Add(New With {.Value = "LLLLRR", .Text = "LLLLRR"})
+                result.Add(New With {.Value = "LLLLLL", .Text = "LLLLLL"})
+                result.Add(New With {.Value = "RRRRRR", .Text = "RRRRRR"})
+                result.Add(New With {.Value = "LLRRRRRR", .Text = "LLRRRRRR"})
+                result.Add(New With {.Value = "LLLLRRRR", .Text = "LLLLRRRR"})
+                result.Add(New With {.Value = "LLLLLLRR", .Text = "LLLLLLRR"})
+                result.Add(New With {.Value = "LLLLLLLL", .Text = "LLLLLLLL"})
+                result.Add(New With {.Value = "RRRRRRRR", .Text = "RRRRRRRR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Track Sliding" Then
+                result.Add(New With {.Value = "BF", .Text = "BF"})
+                result.Add(New With {.Value = "FB", .Text = "FB"})
+                result.Add(New With {.Value = "BFB", .Text = "BFB"})
+                result.Add(New With {.Value = "FBF", .Text = "FBF"})
+                result.Add(New With {.Value = "BFFB", .Text = "BFFB"})
+                result.Add(New With {.Value = "FBBF", .Text = "FBBF"})
+                result.Add(New With {.Value = "BBFF", .Text = "BBFF"})
+                result.Add(New With {.Value = "FFBB", .Text = "FFBB"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Track Sliding Single Track" Then
+                result.Add(New With {.Value = "F", .Text = "F"})
+                result.Add(New With {.Value = "FF", .Text = "FF"})
+                result.Add(New With {.Value = "FFF", .Text = "FFF"})
+                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Fixed" Then
+                result.Add(New With {.Value = "", .Text = ""})
+                result.Add(New With {.Value = "F", .Text = "F"})
+                result.Add(New With {.Value = "FF", .Text = "FF"})
+                result.Add(New With {.Value = "FFF", .Text = "FFF"})
+                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
+                result.Add(New With {.Value = "FFFFFF", .Text = "FFFFFF"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+        End If
+        If type = "LayoutCodeSkyline_Ocean" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Hinged" Then
+                result.Add(New With {.Value = "L", .Text = "L"})
+                result.Add(New With {.Value = "R", .Text = "R"})
+                result.Add(New With {.Value = "LR", .Text = "LR"})
+                result.Add(New With {.Value = "LD-R", .Text = "LD-R"})
+                result.Add(New With {.Value = "L-DR", .Text = "L-DR"})
+                result.Add(New With {.Value = "LTLR", .Text = "LTLR"})
+                result.Add(New With {.Value = "LRTR", .Text = "LRTR"})
+                result.Add(New With {.Value = "LRTLR", .Text = "LRTLR"})
+                result.Add(New With {.Value = "LTLRTR", .Text = "LTLRTR"})
+                result.Add(New With {.Value = "LD-RTLD-R", .Text = "LD-RTLD-R"})
+                result.Add(New With {.Value = "L-DRTL-DR", .Text = "L-DRTL-DR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Hinged Bi-fold" Then
+                result.Add(New With {.Value = "LL", .Text = "LL"})
+                result.Add(New With {.Value = "RR", .Text = "RR"})
+                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Track Bi-fold" Then
+                result.Add(New With {.Value = "LL", .Text = "LL"})
+                result.Add(New With {.Value = "RR", .Text = "RR"})
+                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
+                result.Add(New With {.Value = "LLLL", .Text = "LLLL"})
+                result.Add(New With {.Value = "RRRR", .Text = "RRRR"})
+                result.Add(New With {.Value = "LLRRRR", .Text = "LLRRRR"})
+                result.Add(New With {.Value = "LLLLRR", .Text = "LLLLRR"})
+                result.Add(New With {.Value = "LLLLLL", .Text = "LLLLLL"})
+                result.Add(New With {.Value = "RRRRRR", .Text = "RRRRRR"})
+                result.Add(New With {.Value = "LLRRRRRR", .Text = "LLRRRRRR"})
+                result.Add(New With {.Value = "LLLLRRRR", .Text = "LLLLRRRR"})
+                result.Add(New With {.Value = "LLLLLLRR", .Text = "LLLLLLRR"})
+                result.Add(New With {.Value = "LLLLLLLL", .Text = "LLLLLLLL"})
+                result.Add(New With {.Value = "RRRRRRRR", .Text = "RRRRRRRR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Track Sliding" Then
+                result.Add(New With {.Value = "BF", .Text = "BF"})
+                result.Add(New With {.Value = "FB", .Text = "FB"})
+                result.Add(New With {.Value = "BFB", .Text = "BFB"})
+                result.Add(New With {.Value = "FBF", .Text = "FBF"})
+                result.Add(New With {.Value = "BFFB", .Text = "BFFB"})
+                result.Add(New With {.Value = "FBBF", .Text = "FBBF"})
+                result.Add(New With {.Value = "BBFF", .Text = "BBFF"})
+                result.Add(New With {.Value = "FFBB", .Text = "FFBB"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Track Sliding Single Track" Then
+                result.Add(New With {.Value = "F", .Text = "F"})
+                result.Add(New With {.Value = "FF", .Text = "FF"})
+                result.Add(New With {.Value = "FFF", .Text = "FFF"})
+                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+
+            If blindName = "Fixed" Then
+                result.Add(New With {.Value = "", .Text = ""})
+                result.Add(New With {.Value = "F", .Text = "F"})
+                result.Add(New With {.Value = "FF", .Text = "FF"})
+                result.Add(New With {.Value = "FFF", .Text = "FFF"})
+                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
+                result.Add(New With {.Value = "FFFFFF", .Text = "FFFFFF"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+        End If
         If type = "MeshDoor" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Safety" Then
@@ -982,7 +1120,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "76mm Valance", .Text = "76mm"})
             End If
         End If
-
         If type = "ValancePosition" Then
             If Not String.IsNullOrEmpty(blindtype) Then
                 result.Add(New With {.Value = "Left", .Text = "Left"})
@@ -990,7 +1127,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Both Sides", .Text = "Both Sides"})
             End If
         End If
-
         If type = "ValancePosition_Part" Then
             If Not String.IsNullOrEmpty(blindtype) Then
                 result.Add(New With {.Value = "Left", .Text = "Left"})
@@ -998,80 +1134,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Both Sides", .Text = "Both Sides"})
             End If
         End If
-
-        If type = "LayoutCodeSkyline" Then
-            Dim blindName As String = orderClass.GetBlindName(blindtype)
-            If blindName = "Hinged" Then
-                result.Add(New With {.Value = "L", .Text = "L"})
-                result.Add(New With {.Value = "R", .Text = "R"})
-                result.Add(New With {.Value = "LR", .Text = "LR"})
-                result.Add(New With {.Value = "LD-R", .Text = "LD-R"})
-                result.Add(New With {.Value = "L-DR", .Text = "L-DR"})
-                result.Add(New With {.Value = "LTLR", .Text = "LTLR"})
-                result.Add(New With {.Value = "LRTR", .Text = "LRTR"})
-                result.Add(New With {.Value = "LRTLR", .Text = "LRTLR"})
-                result.Add(New With {.Value = "LTLRTR", .Text = "LTLRTR"})
-                result.Add(New With {.Value = "LD-RTLD-R", .Text = "LD-RTLD-R"})
-                result.Add(New With {.Value = "L-DRTL-DR", .Text = "L-DRTL-DR"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-
-            If blindName = "Hinged Bi-fold" Then
-                result.Add(New With {.Value = "LL", .Text = "LL"})
-                result.Add(New With {.Value = "RR", .Text = "RR"})
-                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-
-            If blindName = "Track Bi-fold" Then
-                result.Add(New With {.Value = "LL", .Text = "LL"})
-                result.Add(New With {.Value = "RR", .Text = "RR"})
-                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
-                result.Add(New With {.Value = "LLLL", .Text = "LLLL"})
-                result.Add(New With {.Value = "RRRR", .Text = "RRRR"})
-                result.Add(New With {.Value = "LLRRRR", .Text = "LLRRRR"})
-                result.Add(New With {.Value = "LLLLRR", .Text = "LLLLRR"})
-                result.Add(New With {.Value = "LLLLLL", .Text = "LLLLLL"})
-                result.Add(New With {.Value = "RRRRRR", .Text = "RRRRRR"})
-                result.Add(New With {.Value = "LLRRRRRR", .Text = "LLRRRRRR"})
-                result.Add(New With {.Value = "LLLLRRRR", .Text = "LLLLRRRR"})
-                result.Add(New With {.Value = "LLLLLLRR", .Text = "LLLLLLRR"})
-                result.Add(New With {.Value = "LLLLLLLL", .Text = "LLLLLLLL"})
-                result.Add(New With {.Value = "RRRRRRRR", .Text = "RRRRRRRR"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-
-            If blindName = "Track Sliding" Then
-                result.Add(New With {.Value = "BF", .Text = "BF"})
-                result.Add(New With {.Value = "FB", .Text = "FB"})
-                result.Add(New With {.Value = "BFB", .Text = "BFB"})
-                result.Add(New With {.Value = "FBF", .Text = "FBF"})
-                result.Add(New With {.Value = "BFFB", .Text = "BFFB"})
-                result.Add(New With {.Value = "FBBF", .Text = "FBBF"})
-                result.Add(New With {.Value = "BBFF", .Text = "BBFF"})
-                result.Add(New With {.Value = "FFBB", .Text = "FFBB"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-
-            If blindName = "Track Sliding Single Track" Then
-                result.Add(New With {.Value = "F", .Text = "F"})
-                result.Add(New With {.Value = "FF", .Text = "FF"})
-                result.Add(New With {.Value = "FFF", .Text = "FFF"})
-                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-
-            If blindName = "Fixed" Then
-                result.Add(New With {.Value = "", .Text = ""})
-                result.Add(New With {.Value = "F", .Text = "F"})
-                result.Add(New With {.Value = "FF", .Text = "FF"})
-                result.Add(New With {.Value = "FFF", .Text = "FFF"})
-                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
-                result.Add(New With {.Value = "FFFFFF", .Text = "FFFFFF"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-        End If
-
         If type = "FrameTypeSkyline" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
@@ -1106,7 +1168,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "19x19 Light Block", .Text = "19x19 Light Block"})
             End If
         End If
-
         If type = "LeftFrameSkyline" Then
             If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
@@ -1137,7 +1198,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "No", .Text = "No"})
             End If
         End If
-
         If type = "RightFrameSkyline" Then
             If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
@@ -1168,7 +1228,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "No", .Text = "No"})
             End If
         End If
-
         If type = "TopFrameSkyline" Then
             If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
@@ -1201,7 +1260,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "No", .Text = "No"})
             End If
         End If
-
         If type = "BottomFrameSkyline" Then
             If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
@@ -1234,7 +1292,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "No", .Text = "No"})
             End If
         End If
-
         If type = "BottomTrackSkyline" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Track Bi-fold" OrElse blindName = "Track Sliding" OrElse blindName = "Track Sliding Single Track" Then
@@ -1248,7 +1305,6 @@ Partial Class Order_Method
                 End If
             End If
         End If
-
         If type = "LayoutCodeEvolve" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Hinged" Then
@@ -1321,7 +1377,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Other", .Text = "Other"})
             End If
         End If
-
         If type = "FrameTypeEvolve" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
@@ -1356,7 +1411,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "19x19 Light Block", .Text = "19x19 Light Block"})
             End If
         End If
-
         If type = "LeftFrameEvolve" Then
             If customtype = "Beaded L 49mm" OrElse customtype = "Insert L 49mm" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
@@ -1385,7 +1439,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "No", .Text = "No"})
             End If
         End If
-
         If type = "RightFrameEvolve" Then
             If customtype = "Beaded L 49mm" OrElse customtype = "Insert L 49mm" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
@@ -1414,7 +1467,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "No", .Text = "No"})
             End If
         End If
-
         If type = "TopFrameEvolve" Then
             If customtype = "Beaded L 49mm" OrElse customtype = "Insert L 49mm" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
@@ -1444,7 +1496,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "No", .Text = "No"})
             End If
         End If
-
         If type = "BottomFrameEvolve" Then
             If customtype = "Beaded L 49mm" OrElse customtype = "Insert L 49mm" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
@@ -1475,7 +1526,6 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "No", .Text = "No"})
             End If
         End If
-
         If type = "BottomTrackEvolve" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Track Bi-fold" OrElse blindName = "Track Sliding" OrElse blindName = "Track Sliding Single Track" Then
@@ -1547,7 +1597,7 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
         If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
-        'If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "ALUMINIUM TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "COLOUR TYPE IS REQUIRED !"
@@ -2165,6 +2215,8 @@ Partial Class Order_Method
         Dim controllengthvalue As Integer
         Dim markup As Integer
 
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
+
         If String.IsNullOrEmpty(data.blindtype) Then Return "CELLULAR TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PLEASE CONTACT YOUR CUSTOMER SERVICE !"
@@ -2452,7 +2504,6 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemid As String = data.itemid
 
@@ -2482,7 +2533,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@Supply", data.supply)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -2540,25 +2590,28 @@ Partial Class Order_Method
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
         Dim tubeName As String = String.Empty
+        Dim priceGroupId As String = String.Empty
+        Dim factory As String = String.Empty
+        Dim roleName As String = String.Empty
+        Dim orderType As String = String.Empty
+        Dim orderStatus As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
-        If Not String.IsNullOrEmpty(data.tubetype) Then orderClass.GetTubeName(data.tubetype)
+        If Not String.IsNullOrEmpty(data.headerid) Then priceGroupId = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then factory = orderClass.GetFabricFactory(data.fabriccolour)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderType = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderStatus = orderClass.GetOrderStatus(data.headerid)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
-        Dim factory As String = orderClass.GetFabricFactory(data.fabriccolour)
-        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
+        If data.rolename = "Customer" AndAlso Not orderStatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "CURTAIN TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID"
-
         If String.IsNullOrEmpty(data.qty) Then Return "QTY IS REQUIRED !"
         If Not Integer.TryParse(data.qty, qty) OrElse qty <= 0 Then Return "PLEASE CHECK YOUR QTY ORDER !"
-
         If String.IsNullOrEmpty(data.room) OrElse data.room.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.room.Contains("&=") OrElse data.room.Contains("&+") Then
             Return "ROOM / LOCATION IS REQUIRED AND MUST NOT CONTAIN: , & ` ' &= &+"
         End If
-
         If blindName = "Complete Set (Single)" OrElse blindName = "Complete Set (Double)" OrElse blindName = "Curtain Only" OrElse blindName = "Track Only" Then
             If String.IsNullOrEmpty(data.mounting) Then Return "FITTING IS REQUIRED !"
             If String.IsNullOrEmpty(data.heading) Then
@@ -2604,7 +2657,6 @@ Partial Class Order_Method
                 Return "STACK POSITION IS REQUIRED !"
             End If
         End If
-
         If String.IsNullOrEmpty(data.width) Then
             If blindName = "Complete Set (Double)" Then Return "FIRST WIDTH IS REQUIRED !"
             Return "WIDTH IS REQUIRED !"
@@ -2613,7 +2665,6 @@ Partial Class Order_Method
             If blindName = "Complete Set (Double)" Then Return "PLEASE CHECK YOUR FIRST WIDTH ORDER !"
             Return "PLEASE CHECK YOUR WIDTH ORDER !"
         End If
-
         If data.companyid = "2" AndAlso (data.rolename = "Customer" OrElse data.rolename = "Installer") Then
             If width < 600 Then
                 If blindName = "Complete Set (Double)" Then Return "MINIMUM FIRST WIDTH IS 600MM !"
@@ -2887,9 +2938,6 @@ Partial Class Order_Method
             priceAdditionalB = orderClass.GetPriceProductGroupId(trackGroupNameB, data.designid, priceGroupId)
         End If
 
-        Dim orderType As String = orderClass.GetOrderType(data.headerid)
-        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
-
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -2897,71 +2945,53 @@ Partial Class Order_Method
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Curtain", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
-
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
                         thisCmd.Parameters.AddWithValue("@PriceAdditional", If(String.IsNullOrEmpty(priceAdditional), CType(DBNull.Value, Object), priceAdditional))
                         thisCmd.Parameters.AddWithValue("@PriceAdditionalB", If(String.IsNullOrEmpty(priceAdditionalB), CType(DBNull.Value, Object), priceAdditionalB))
-
                         thisCmd.Parameters.AddWithValue("@Qty", 1)
-
                         thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
                         thisCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(data.fabrictypeb), CType(DBNull.Value, Object), data.fabrictypeb))
                         thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(data.fabriccolour), CType(DBNull.Value, Object), data.fabriccolour))
                         thisCmd.Parameters.AddWithValue("@FabricColourIdB", If(String.IsNullOrEmpty(data.fabriccolourb), CType(DBNull.Value, Object), data.fabriccolourb))
-
                         thisCmd.Parameters.AddWithValue("@Room", data.room)
                         thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                         thisCmd.Parameters.AddWithValue("@Width", width)
                         thisCmd.Parameters.AddWithValue("@WidthB", widthb)
                         thisCmd.Parameters.AddWithValue("@Drop", drop)
                         thisCmd.Parameters.AddWithValue("@DropB", dropb)
-
                         thisCmd.Parameters.AddWithValue("@LouvreSize", cutlength)
-
                         thisCmd.Parameters.AddWithValue("@Heading", data.heading)
                         thisCmd.Parameters.AddWithValue("@HeadingB", data.headingb)
-
                         thisCmd.Parameters.AddWithValue("@TrackType", data.tracktype)
                         thisCmd.Parameters.AddWithValue("@TrackTypeB", data.tracktypeb)
-
                         thisCmd.Parameters.AddWithValue("@TrackColour", data.trackcolour)
                         thisCmd.Parameters.AddWithValue("@TrackColourB", data.trackcolourb)
-
                         thisCmd.Parameters.AddWithValue("@TrackDraw", data.trackdraw)
                         thisCmd.Parameters.AddWithValue("@TrackDrawB", data.trackdrawb)
-
                         thisCmd.Parameters.AddWithValue("@StackPosition", data.stackposition)
                         thisCmd.Parameters.AddWithValue("@StackPositionB", data.stackpositionb)
-
                         thisCmd.Parameters.AddWithValue("@ControlColour", data.controlcolour)
                         thisCmd.Parameters.AddWithValue("@ControlColourB", data.controlcolourb)
-
                         thisCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
                         thisCmd.Parameters.AddWithValue("@ControlLengthValueB", controllengthB)
-
                         thisCmd.Parameters.AddWithValue("@ReturnLengthValue", returnLengthValue)
                         thisCmd.Parameters.AddWithValue("@ReturnLengthValueB", returnLengthValueB)
                         thisCmd.Parameters.AddWithValue("@ReturnLengthValueC", returnLengthValueC)
                         thisCmd.Parameters.AddWithValue("@ReturnLengthValueD", returnLengthValueD)
-
                         thisCmd.Parameters.AddWithValue("@Fullness", data.fullness)
                         thisCmd.Parameters.AddWithValue("@BottomHem", data.bottomhem)
                         thisCmd.Parameters.AddWithValue("@Supply", data.tieback)
-
                         thisCmd.Parameters.AddWithValue("@LinearMetre", linearmetre)
                         thisCmd.Parameters.AddWithValue("@LinearMetreB", linearmetreB)
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squaremetre)
                         thisCmd.Parameters.AddWithValue("@SquareMetreB", squaremetreB)
-
                         thisCmd.Parameters.AddWithValue("@TotalItems", totalitems)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -2978,77 +3008,58 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Curtain", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
-
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
                     thisCmd.Parameters.AddWithValue("@PriceAdditional", If(String.IsNullOrEmpty(priceAdditional), CType(DBNull.Value, Object), priceAdditional))
                     thisCmd.Parameters.AddWithValue("@PriceAdditionalB", If(String.IsNullOrEmpty(priceAdditionalB), CType(DBNull.Value, Object), priceAdditionalB))
-
                     thisCmd.Parameters.AddWithValue("@Qty", 1)
-
                     thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
                     thisCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(data.fabrictypeb), CType(DBNull.Value, Object), data.fabrictypeb))
                     thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(data.fabriccolour), CType(DBNull.Value, Object), data.fabriccolour))
                     thisCmd.Parameters.AddWithValue("@FabricColourIdB", If(String.IsNullOrEmpty(data.fabriccolourb), CType(DBNull.Value, Object), data.fabriccolourb))
-
                     thisCmd.Parameters.AddWithValue("@Room", data.room)
                     thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                     thisCmd.Parameters.AddWithValue("@Width", width)
                     thisCmd.Parameters.AddWithValue("@WidthB", widthb)
                     thisCmd.Parameters.AddWithValue("@Drop", drop)
                     thisCmd.Parameters.AddWithValue("@DropB", dropb)
-
                     thisCmd.Parameters.AddWithValue("@LouvreSize", cutlength)
-
                     thisCmd.Parameters.AddWithValue("@Heading", data.heading)
                     thisCmd.Parameters.AddWithValue("@HeadingB", data.headingb)
-
                     thisCmd.Parameters.AddWithValue("@TrackType", data.tracktype)
                     thisCmd.Parameters.AddWithValue("@TrackTypeB", data.tracktypeb)
-
                     thisCmd.Parameters.AddWithValue("@TrackColour", data.trackcolour)
                     thisCmd.Parameters.AddWithValue("@TrackColourB", data.trackcolourb)
-
                     thisCmd.Parameters.AddWithValue("@TrackDraw", data.trackdraw)
                     thisCmd.Parameters.AddWithValue("@TrackDrawB", data.trackdrawb)
-
                     thisCmd.Parameters.AddWithValue("@StackPosition", data.stackposition)
                     thisCmd.Parameters.AddWithValue("@StackPositionB", data.stackpositionb)
-
                     thisCmd.Parameters.AddWithValue("@ControlColour", data.controlcolour)
                     thisCmd.Parameters.AddWithValue("@ControlColourB", data.controlcolourb)
-
                     thisCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
                     thisCmd.Parameters.AddWithValue("@ControlLengthValueB", controllengthB)
-
                     thisCmd.Parameters.AddWithValue("@ReturnLengthValue", returnLengthValue)
                     thisCmd.Parameters.AddWithValue("@ReturnLengthValueB", returnLengthValueB)
                     thisCmd.Parameters.AddWithValue("@ReturnLengthValueC", returnLengthValueC)
                     thisCmd.Parameters.AddWithValue("@ReturnLengthValueD", returnLengthValueD)
-
                     thisCmd.Parameters.AddWithValue("@Fullness", data.fullness)
                     thisCmd.Parameters.AddWithValue("@BottomHem", data.bottomhem)
                     thisCmd.Parameters.AddWithValue("@Supply", data.tieback)
-
                     thisCmd.Parameters.AddWithValue("@LinearMetre", linearmetre)
                     thisCmd.Parameters.AddWithValue("@LinearMetreB", linearmetreB)
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squaremetre)
                     thisCmd.Parameters.AddWithValue("@SquareMetreB", squaremetreB)
-
                     thisCmd.Parameters.AddWithValue("@TotalItems", totalitems)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -3100,6 +3111,8 @@ Partial Class Order_Method
         Dim drop As Integer
         Dim controllengthvalue As Integer
         Dim markup As Integer
+
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
@@ -3226,7 +3239,6 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemid As String = data.itemid
 
@@ -3299,14 +3311,18 @@ Partial Class Order_Method
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
         Dim tubeName As String = String.Empty
+        Dim orderType As String = String.Empty
+        Dim orderStatus As String = String.Empty
+        Dim doorPriceGroupId As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderType = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderStatus = orderClass.GetOrderStatus(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then doorPriceGroupId = orderClass.GetDoorPriceGroupByOrder(data.headerid)
 
-        Dim doorPriceGroupId As String = orderClass.GetDoorPriceGroupByOrder(data.headerid)
-
-        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
+        If data.rolename = "Customer" AndAlso Not orderStatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "DOOR TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "MECHANISM TYPE IS REQUIRED !"
@@ -3472,9 +3488,6 @@ Partial Class Order_Method
         Dim groupName As String = String.Format("{0} - {1} - {2} - {3}", designName, typeDoor, mechanism, factory)
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, doorPriceGroupId)
 
-        Dim orderType As String = orderClass.GetOrderType(data.headerid)
-        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
-
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -3482,7 +3495,6 @@ Partial Class Order_Method
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Door", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -3526,7 +3538,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -3543,14 +3554,12 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Door", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
@@ -3593,7 +3602,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@SquareMetreC", squareMetreC)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -3626,10 +3634,11 @@ Partial Class Order_Method
 
         Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
 
-        Dim designName As String = orderClass.GetDesignName(data.designid)
-        Dim blindName As String = orderClass.GetBlindName(data.blindtype)
-
-        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
+        Dim designName As String = String.Empty
+        Dim blindName As String = String.Empty
+        Dim shutterPriceGroupId As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
 
         Dim width As Integer = 0
         Dim drop As Integer = 0
@@ -3654,6 +3663,14 @@ Partial Class Order_Method
         Dim panelQtyWithHinge As Integer = 0
 
         Dim markup As Integer
+
+        If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
+        If Not String.IsNullOrEmpty(data.designid) Then blindName = orderClass.GetBlindName(data.blindtype)
+        If Not String.IsNullOrEmpty(data.headerid) Then shutterPriceGroupId = orderClass.GetShutterPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
+
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "SHUTTER TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "COLOUR IS REQUIRED !"
@@ -3788,7 +3805,7 @@ Partial Class Order_Method
         panelQty = orderClass.GetPanelQty(datacheckPanelQty)
 
         'DEDUCTIONS
-        If designName = "Evolve Shutter Ocean" AndAlso roleName = "Customer" Then
+        If designName = "Evolve Shutter Ocean" AndAlso data.rolename = "Customer" Then
             Dim dataWidthDeductions As Object() = {blindName, "All", width, data.mounting, layoutCode, data.frametype, data.frameleft, data.frameright, panelQty}
             Dim dataHeightDeductions As String() = {blindName, drop, data.mounting, data.frametype, data.frametop, data.framebottom, data.bottomtracktype, data.horizontaltpost}
 
@@ -3877,7 +3894,7 @@ Partial Class Order_Method
         End If
 
         'GAP POSITION
-        If String.IsNullOrEmpty(data.samesizepanel) AndAlso designName = "Evolve Shutter Ocean" AndAlso roleName = "Customer" Then
+        If String.IsNullOrEmpty(data.samesizepanel) AndAlso designName = "Evolve Shutter Ocean" AndAlso data.rolename = "Customer" Then
             If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
                 Dim pemisah As Char() = {"T"c, "C"c, "B"c, "G"c}
 
@@ -4183,9 +4200,6 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = width * drop / 1000000
         Dim linearMetre As Decimal = width / 1000
 
-        Dim orderType As String = orderClass.GetOrderType(data.headerid)
-        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
-
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -4193,7 +4207,6 @@ Partial Class Order_Method
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Evolve", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -4247,7 +4260,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -4271,7 +4283,6 @@ Partial Class Order_Method
             Using thisConn As SqlConnection = New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Evolve", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
@@ -4324,7 +4335,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -4366,13 +4376,15 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.blindtype) Then blindname = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.headerid) Then pricegroupid = orderClass.GetPriceGroupByOrder(data.headerid)
         If Not String.IsNullOrEmpty(data.headerid) Then orderType = orderClass.GetOrderType(data.headerid)
-        If Not String.IsNullOrEmpty(data.headerid) Then orderStatus = orderClass.GetOrderStatus(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
         Dim qty As Integer
         Dim width As Integer
         Dim drop As Integer = 0
         Dim returnlengthvalue As Integer
         Dim markup As Integer
+
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "VALANCE TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "COLOUR TYPE IS REQUIRED !"
@@ -4409,18 +4421,15 @@ Partial Class Order_Method
                 If Not Integer.TryParse(data.returnlengthvalue, returnlengthvalue) OrElse returnlengthvalue <= 0 Then Return "PLEASE CHECK YOUR RETURN LENGTH VALUE !"
             End If
         End If
-
         If Not String.IsNullOrEmpty(data.notes) Then
             If data.notes.IndexOfAny({","c, "&"c, "`"c, "'"c}) >= 0 OrElse data.notes.Contains("&=") OrElse data.notes.Contains("&+") Then
                 Return "SPECIAL INFORMATION MUST NOT CONTAIN: , & ` ' &= &+"
             End If
             If data.notes.Trim().Length > 1000 Then Return "MAXIMUM 1000 CHARACTERS !"
         End If
-
         If Not String.IsNullOrEmpty(data.markup) Then
             If Not Integer.TryParse(data.markup, markup) OrElse markup < 0 Then Return "PLEASE CHECK YOUR MARK UP !"
         End If
-
         If blindname = "Valance 140mm" Then drop = 140
         If blindname = "Valance 100mm" Then drop = 100
 
@@ -4488,7 +4497,6 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemid As String = data.itemid
 
@@ -4554,12 +4562,18 @@ Partial Class Order_Method
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
         Dim controlName As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
+        Dim pricegroupid As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
+        If Not String.IsNullOrEmpty(data.headerid) Then pricegroupid = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "OUTDOOR TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.controltype) Then Return "CONTROL TYPE IS REQUIRED !"
@@ -4639,7 +4653,6 @@ Partial Class Order_Method
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Outdoor", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -4660,7 +4673,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -4677,14 +4689,12 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Outdoor", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
@@ -4704,7 +4714,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -4743,12 +4752,18 @@ Partial Class Order_Method
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
         Dim tubeName As String = String.Empty
+        Dim pricegroupid As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
+        If Not String.IsNullOrEmpty(data.headerid) Then pricegroupid = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "PANEL SYSTEM IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "PANEL STYLE IS REQUIRED !"
@@ -4881,9 +4896,6 @@ Partial Class Order_Method
 
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
 
-        Dim orderType As String = orderClass.GetOrderType(data.headerid)
-        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
-
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -4891,7 +4903,6 @@ Partial Class Order_Method
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_PG", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -4915,7 +4926,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -4932,14 +4942,12 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" Or data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_PG", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
@@ -4962,7 +4970,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -5015,12 +5022,17 @@ Partial Class Order_Method
 
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
+        Dim pricegroupid As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+        If Not String.IsNullOrEmpty(data.headerid) Then pricegroupid = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
-        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "PELMET TYPE IS REQUIRED !"
@@ -5126,15 +5138,13 @@ Partial Class Order_Method
             priceProductGroupC = priceProductGroup
         End If
 
-        Dim orderType As String = orderClass.GetOrderType(data.headerid)
-        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
-
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As New SqlCommand("INSERT INTO OrderDetails(Id, HeaderId, ProductId, FabricId, FabricColourId, PriceProductGroupId, PriceProductGroupIdB, PriceProductGroupIdC, Qty, Room, Mounting, Width, WidthB, WidthC, [Drop], DropB, DropC, LayoutCode, Batten, ReturnPosition, ReturnLengthValue, ReturnLengthValueB, Supply, LinearMetre, LinearMetreB, LinearMetreC, TotalItems, Notes, MarkUp, Active) VALUES(@Id, @HeaderId, @ProductId, @FabricId, @FabricColourId, @PriceProductGroupId, @PriceProductGroupIdB, @PriceProductGroupIdC, @Qty, @Room, @Mounting, @Width, @WidthB, @WidthC, @Drop, @DropB, @DropC, @LayoutCode, @Batten, @ReturnPosition, @ReturnLengthValue, @ReturnLengthValueB, @Supply, @LinearMetre, @LinearMetreB, @LinearMetreC, @TotalItems, @Notes, @MarkUp, 1)", thisConn)
+                    Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Pelmet", thisConn)
+                        thisCmd.CommandType = CommandType.StoredProcedure
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -5164,7 +5174,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -5186,9 +5195,9 @@ Partial Class Order_Method
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
-                Using thisCmd As New SqlCommand("UPDATE OrderDetails SET ProductId=@ProductId, FabricId=@FabricId, FabricColourId=@FabricColourId, PriceProductGroupId=@PriceProductGroupId, PriceProductGroupIdB=@PriceProductGroupIdB, PriceProductGroupIdC=@PriceProductGroupIdC, Qty=@Qty, Room=@Room, Mounting=@Mounting, Width=@Width, WidthB=@WidthB, WidthC=@WidthC, [Drop]=@Drop, DropB=@DropB, DropC=@DropC, LayoutCode=@LayoutCode, Batten=@Batten, ReturnPosition=@ReturnPosition, ReturnLengthValue=@ReturnLengthValue, ReturnLengthValueB=@ReturnLengthValueB, Supply=@Supply, LinearMetre=@LinearMetre, LinearMetreB=@LinearMetreB, LinearMetreC=@LinearMetreC, TotalItems=@TotalItems, Notes=@Notes, MarkUp=@MarkUp, Active=1 WHERE Id=@Id", thisConn)
+                Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Pelmet", thisConn)
+                    thisCmd.CommandType = CommandType.StoredProcedure
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
-                    thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
                     thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(data.fabriccolour), CType(DBNull.Value, Object), data.fabriccolour))
@@ -5216,7 +5225,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -5257,11 +5265,17 @@ Partial Class Order_Method
 
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
+        Dim pricegroupid As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+        If Not String.IsNullOrEmpty(data.headerid) Then pricegroupid = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "PRIVACY TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PRIVACY COLOUR IS REQUIRED !"
@@ -5322,10 +5336,7 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = width * drop / 1000000
 
         Dim priceProductGroupName As String = String.Format("{0} - {1}", designName, blindName)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, priceGroupId)
-
-        Dim orderType As String = orderClass.GetOrderType(data.headerid)
-        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(priceProductGroupName, data.designid, pricegroupid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -5334,7 +5345,6 @@ Partial Class Order_Method
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Privacy", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -5352,7 +5362,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -5369,14 +5378,12 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Privacy", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
@@ -5393,7 +5400,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -5481,6 +5487,9 @@ Partial Class Order_Method
         Dim controlType As String = String.Empty
         Dim colourId As String = String.Empty
         Dim colourName As String = String.Empty
+        Dim pricegroupid As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
@@ -5490,7 +5499,9 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.colourtype) Then colourId = orderClass.GetItemData("SELECT ColourType FROM Products WHERE Id='" & data.colourtype & "'")
         If Not String.IsNullOrEmpty(colourId) Then colourName = orderClass.GetColourName(colourId)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then pricegroupid = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
         Dim chainLength As String = String.Empty
         Dim chainLengthB As String = String.Empty
@@ -5546,6 +5557,8 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.bottomtyped) Then bottomNameD = orderClass.GetBottomName(data.bottomtyped)
         If Not String.IsNullOrEmpty(data.bottomtypee) Then bottomNameE = orderClass.GetBottomName(data.bottomtypee)
         If Not String.IsNullOrEmpty(data.bottomtypef) Then bottomNameF = orderClass.GetBottomName(data.bottomtypef)
+
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "ROLLER TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "TUBE TYPE IS REQUIRED !"
@@ -6400,7 +6413,7 @@ Partial Class Order_Method
             priceProductGroup = orderClass.GetPriceProductGroupId(priceName, data.designid, priceGroupId)
         End If
 
-        ' Dual Blinds CRUD
+        ' DUAL BLINDS CRUD
         If blindName = "Dual Blinds" Then
             data.fabrictypec = String.Empty : data.fabriccolourc = String.Empty
             data.rollc = String.Empty : data.controlpositionc = String.Empty
@@ -8513,9 +8526,6 @@ Partial Class Order_Method
             priceProductGroupF = orderClass.GetPriceProductGroupId(groupNameDB, data.designid, priceGroupId)
         End If
 
-        Dim orderType As String = orderClass.GetOrderType(data.headerid)
-        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
-
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -8523,113 +8533,96 @@ Partial Class Order_Method
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Roller", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
-
                         thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
                         thisCmd.Parameters.AddWithValue("@FabricIdB", If(String.IsNullOrEmpty(data.fabrictypeb), CType(DBNull.Value, Object), data.fabrictypeb))
                         thisCmd.Parameters.AddWithValue("@FabricIdC", If(String.IsNullOrEmpty(data.fabrictypec), CType(DBNull.Value, Object), data.fabrictypec))
                         thisCmd.Parameters.AddWithValue("@FabricIdD", If(String.IsNullOrEmpty(data.fabrictyped), CType(DBNull.Value, Object), data.fabrictyped))
                         thisCmd.Parameters.AddWithValue("@FabricIdE", If(String.IsNullOrEmpty(data.fabrictypee), CType(DBNull.Value, Object), data.fabrictypee))
                         thisCmd.Parameters.AddWithValue("@FabricIdF", If(String.IsNullOrEmpty(data.fabrictypef), CType(DBNull.Value, Object), data.fabrictypef))
-
                         thisCmd.Parameters.AddWithValue("@FabricColourId", If(String.IsNullOrEmpty(data.fabriccolour), CType(DBNull.Value, Object), data.fabriccolour))
                         thisCmd.Parameters.AddWithValue("@FabricColourIdB", If(String.IsNullOrEmpty(data.fabriccolourb), CType(DBNull.Value, Object), data.fabriccolourb))
                         thisCmd.Parameters.AddWithValue("@FabricColourIdC", If(String.IsNullOrEmpty(data.fabriccolourc), CType(DBNull.Value, Object), data.fabriccolourc))
                         thisCmd.Parameters.AddWithValue("@FabricColourIdD", If(String.IsNullOrEmpty(data.fabriccolourd), CType(DBNull.Value, Object), data.fabriccolourd))
                         thisCmd.Parameters.AddWithValue("@FabricColourIdE", If(String.IsNullOrEmpty(data.fabriccoloure), CType(DBNull.Value, Object), data.fabriccoloure))
                         thisCmd.Parameters.AddWithValue("@FabricColourIdF", If(String.IsNullOrEmpty(data.fabriccolourf), CType(DBNull.Value, Object), data.fabriccolourf))
-
                         thisCmd.Parameters.AddWithValue("@ChainId", If(String.IsNullOrEmpty(data.chaincolour), CType(DBNull.Value, Object), data.chaincolour))
                         thisCmd.Parameters.AddWithValue("@ChainIdB", If(String.IsNullOrEmpty(data.chaincolourb), CType(DBNull.Value, Object), data.chaincolourb))
                         thisCmd.Parameters.AddWithValue("@ChainIdC", If(String.IsNullOrEmpty(data.chaincolourc), CType(DBNull.Value, Object), data.chaincolourc))
                         thisCmd.Parameters.AddWithValue("@ChainIdD", If(String.IsNullOrEmpty(data.chaincolourd), CType(DBNull.Value, Object), data.chaincolourd))
                         thisCmd.Parameters.AddWithValue("@ChainIdE", If(String.IsNullOrEmpty(data.chaincoloure), CType(DBNull.Value, Object), data.chaincoloure))
                         thisCmd.Parameters.AddWithValue("@ChainIdF", If(String.IsNullOrEmpty(data.chaincolourf), CType(DBNull.Value, Object), data.chaincolourf))
-
                         thisCmd.Parameters.AddWithValue("@BottomId", If(String.IsNullOrEmpty(data.bottomtype), CType(DBNull.Value, Object), data.bottomtype))
                         thisCmd.Parameters.AddWithValue("@BottomIdB", If(String.IsNullOrEmpty(data.bottomtypeb), CType(DBNull.Value, Object), data.bottomtypeb))
                         thisCmd.Parameters.AddWithValue("@BottomIdC", If(String.IsNullOrEmpty(data.bottomtypec), CType(DBNull.Value, Object), data.bottomtypec))
                         thisCmd.Parameters.AddWithValue("@BottomIdD", If(String.IsNullOrEmpty(data.bottomtyped), CType(DBNull.Value, Object), data.bottomtyped))
                         thisCmd.Parameters.AddWithValue("@BottomIdE", If(String.IsNullOrEmpty(data.bottomtypee), CType(DBNull.Value, Object), data.bottomtypee))
                         thisCmd.Parameters.AddWithValue("@BottomIdF", If(String.IsNullOrEmpty(data.bottomtypef), CType(DBNull.Value, Object), data.bottomtypef))
-
                         thisCmd.Parameters.AddWithValue("@BottomColourId", If(String.IsNullOrEmpty(data.bottomcolour), CType(DBNull.Value, Object), data.bottomcolour))
                         thisCmd.Parameters.AddWithValue("@BottomColourIdB", If(String.IsNullOrEmpty(data.bottomcolourb), CType(DBNull.Value, Object), data.bottomcolourb))
                         thisCmd.Parameters.AddWithValue("@BottomColourIdC", If(String.IsNullOrEmpty(data.bottomcolourc), CType(DBNull.Value, Object), data.bottomcolourc))
                         thisCmd.Parameters.AddWithValue("@BottomColourIdD", If(String.IsNullOrEmpty(data.bottomcolourd), CType(DBNull.Value, Object), data.bottomcolourd))
                         thisCmd.Parameters.AddWithValue("@BottomColourIdE", If(String.IsNullOrEmpty(data.bottomcoloure), CType(DBNull.Value, Object), data.bottomcoloure))
                         thisCmd.Parameters.AddWithValue("@BottomColourIdF", If(String.IsNullOrEmpty(data.bottomcolourf), CType(DBNull.Value, Object), data.bottomcolourf))
-
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupIdB", If(String.IsNullOrEmpty(priceProductGroupB), CType(DBNull.Value, Object), priceProductGroupB))
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupIdC", If(String.IsNullOrEmpty(priceProductGroupC), CType(DBNull.Value, Object), priceProductGroupC))
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupIdD", If(String.IsNullOrEmpty(priceProductGroupD), CType(DBNull.Value, Object), priceProductGroupD))
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupIdE", If(String.IsNullOrEmpty(priceProductGroupE), CType(DBNull.Value, Object), priceProductGroupE))
                         thisCmd.Parameters.AddWithValue("@PriceProductGroupIdF", If(String.IsNullOrEmpty(priceProductGroupF), CType(DBNull.Value, Object), priceProductGroupF))
-
                         thisCmd.Parameters.AddWithValue("@Qty", 1)
                         thisCmd.Parameters.AddWithValue("@Room", data.room)
                         thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
-
                         thisCmd.Parameters.AddWithValue("@Width", width)
                         thisCmd.Parameters.AddWithValue("@WidthB", widthb)
                         thisCmd.Parameters.AddWithValue("@WidthC", widthc)
                         thisCmd.Parameters.AddWithValue("@WidthD", widthd)
                         thisCmd.Parameters.AddWithValue("@WidthE", widthe)
                         thisCmd.Parameters.AddWithValue("@WidthF", widthf)
-
                         thisCmd.Parameters.AddWithValue("@Drop", drop)
                         thisCmd.Parameters.AddWithValue("@DropB", dropb)
                         thisCmd.Parameters.AddWithValue("@DropC", dropc)
                         thisCmd.Parameters.AddWithValue("@DropD", dropd)
                         thisCmd.Parameters.AddWithValue("@DropE", drope)
                         thisCmd.Parameters.AddWithValue("@DropF", dropf)
-
                         thisCmd.Parameters.AddWithValue("@Roll", data.roll)
                         thisCmd.Parameters.AddWithValue("@RollB", data.rollb)
                         thisCmd.Parameters.AddWithValue("@RollC", data.rollc)
                         thisCmd.Parameters.AddWithValue("@RollD", data.rolld)
                         thisCmd.Parameters.AddWithValue("@RollE", data.rolle)
                         thisCmd.Parameters.AddWithValue("@RollF", data.rollf)
-
                         thisCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
                         thisCmd.Parameters.AddWithValue("@ControlPositionB", data.controlpositionb)
                         thisCmd.Parameters.AddWithValue("@ControlPositionC", data.controlpositionc)
                         thisCmd.Parameters.AddWithValue("@ControlPositionD", data.controlpositiond)
                         thisCmd.Parameters.AddWithValue("@ControlPositionE", data.controlpositione)
                         thisCmd.Parameters.AddWithValue("@ControlPositionF", data.controlpositionf)
-
                         thisCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
                         thisCmd.Parameters.AddWithValue("@ControlLengthB", data.controllengthb)
                         thisCmd.Parameters.AddWithValue("@ControlLengthC", data.controllengthc)
                         thisCmd.Parameters.AddWithValue("@ControlLengthD", data.controllengthd)
                         thisCmd.Parameters.AddWithValue("@ControlLengthE", data.controllengthe)
                         thisCmd.Parameters.AddWithValue("@ControlLengthF", data.controllengthf)
-
                         thisCmd.Parameters.AddWithValue("@ControlLengthValue", controllength)
                         thisCmd.Parameters.AddWithValue("@ControlLengthValueB", controllengthb)
                         thisCmd.Parameters.AddWithValue("@ControlLengthValueC", controllengthc)
                         thisCmd.Parameters.AddWithValue("@ControlLengthValueD", controllengthd)
                         thisCmd.Parameters.AddWithValue("@ControlLengthValueE", controllengthe)
                         thisCmd.Parameters.AddWithValue("@ControlLengthValueF", controllengthf)
-
                         thisCmd.Parameters.AddWithValue("@ChainStopper", data.chainstopper)
                         thisCmd.Parameters.AddWithValue("@ChainStopperB", data.chainstopperb)
                         thisCmd.Parameters.AddWithValue("@ChainStopperC", data.chainstopperc)
                         thisCmd.Parameters.AddWithValue("@ChainStopperD", data.chainstopperd)
                         thisCmd.Parameters.AddWithValue("@ChainStopperE", data.chainstoppere)
                         thisCmd.Parameters.AddWithValue("@ChainStopperF", data.chainstopperf)
-
                         thisCmd.Parameters.AddWithValue("@FlatOption", data.bottomoption)
                         thisCmd.Parameters.AddWithValue("@FlatOptionB", data.bottomoptionb)
                         thisCmd.Parameters.AddWithValue("@FlatOptionC", data.bottomoptionc)
                         thisCmd.Parameters.AddWithValue("@FlatOptionD", data.bottomoptiond)
                         thisCmd.Parameters.AddWithValue("@FlatOptionE", data.bottomoptione)
                         thisCmd.Parameters.AddWithValue("@FlatOptionF", data.bottomoptionf)
-
                         thisCmd.Parameters.AddWithValue("@TopTrack", data.toptrack)
                         thisCmd.Parameters.AddWithValue("@BracketSize", If(String.IsNullOrEmpty(data.bracketsize), CType(DBNull.Value, Object), data.bracketsize))
                         thisCmd.Parameters.AddWithValue("@BracketExtension", data.bracketextension)
@@ -8639,21 +8632,18 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@Charger", data.charger)
                         thisCmd.Parameters.AddWithValue("@ExtensionCable", data.extensioncable)
                         thisCmd.Parameters.AddWithValue("@Supply", data.supply)
-
                         thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                         thisCmd.Parameters.AddWithValue("@LinearMetreB", linearMetreB)
                         thisCmd.Parameters.AddWithValue("@LinearMetreC", linearMetreC)
                         thisCmd.Parameters.AddWithValue("@LinearMetreD", linearMetreD)
                         thisCmd.Parameters.AddWithValue("@LinearMetreE", linearMetreE)
                         thisCmd.Parameters.AddWithValue("@LinearMetreF", linearMetreF)
-
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                         thisCmd.Parameters.AddWithValue("@SquareMetreB", squareMetreB)
                         thisCmd.Parameters.AddWithValue("@SquareMetreC", squareMetreC)
                         thisCmd.Parameters.AddWithValue("@SquareMetreD", squareMetreD)
                         thisCmd.Parameters.AddWithValue("@SquareMetreE", squareMetreE)
                         thisCmd.Parameters.AddWithValue("@SquareMetreF", squareMetreF)
-
                         thisCmd.Parameters.AddWithValue("@Printing", data.printing)
                         thisCmd.Parameters.AddWithValue("@PrintingB", data.printingb)
                         thisCmd.Parameters.AddWithValue("@PrintingC", data.printingc)
@@ -8662,11 +8652,9 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@PrintingF", data.printingf)
                         thisCmd.Parameters.AddWithValue("@PrintingG", data.printingg)
                         thisCmd.Parameters.AddWithValue("@PrintingH", data.printingh)
-
                         thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -8683,14 +8671,12 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Roller", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
@@ -8812,7 +8798,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -9087,6 +9072,9 @@ Partial Class Order_Method
         Dim tubeName As String = String.Empty
         Dim controlName As String = String.Empty
         Dim controlType As String = String.Empty
+        Dim pricegroupid As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
         Dim chainLength As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
@@ -9094,8 +9082,11 @@ Partial Class Order_Method
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlType = orderClass.GetControlType(data.controltype)
         If Not String.IsNullOrEmpty(data.chaincolour) Then chainLength = orderClass.GetChainLength(data.chaincolour)
+        If Not String.IsNullOrEmpty(data.headerid) Then pricegroupid = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "ROMAN STYLE IS REQUIRED !"
@@ -9211,10 +9202,7 @@ Partial Class Order_Method
         End If
 
         Dim groupName As String = String.Format("{0} - {1} - {2}", designName, tubeName, groupFabric)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
-
-        Dim orderType As String = orderClass.GetOrderType(data.headerid)
-        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, pricegroupid)
 
         If data.controllength = "Standard" Then
             If controlName = "Reg Cord Lock" OrElse controlName = "Cord Lock" Then controllength = Math.Ceiling(drop * 2 / 3)
@@ -9245,7 +9233,6 @@ Partial Class Order_Method
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Roman", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -9273,7 +9260,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -9290,14 +9276,12 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Roman", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@FabricId", data.fabrictype)
@@ -9324,7 +9308,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -9363,12 +9346,18 @@ Partial Class Order_Method
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
         Dim productName As String = String.Empty
+        Dim pricegroupid As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.colourtype) Then productName = orderClass.GetProductName(data.colourtype)
+        If Not String.IsNullOrEmpty(data.headerid) Then pricegroupid = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "SAMPLE TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "SAMPLE TYPE IS REQUIRED !"
@@ -9400,7 +9389,6 @@ Partial Class Order_Method
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Sample", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -9409,7 +9397,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@Qty", 1)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -9426,14 +9413,12 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Sample", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
@@ -9441,16 +9426,22 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@Qty", 1)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
-
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If ordertype = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If ordertype = "Builder" AndAlso orderstatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -9475,11 +9466,17 @@ Partial Class Order_Method
 
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
+        Dim pricegroupid As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+        If Not String.IsNullOrEmpty(data.headerid) Then pricegroupid = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "TRACK COLOUR IS REQUIRED !"
@@ -9595,10 +9592,7 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = width * drop / 1000000
 
         Dim groupName As String = String.Format("{0} - {1}", designName, blindName)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
-
-        Dim orderType As String = orderClass.GetOrderType(data.headerid)
-        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, pricegroupid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -9607,7 +9601,6 @@ Partial Class Order_Method
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Saphora", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -9630,7 +9623,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -9647,14 +9639,12 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Saphora", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
@@ -9676,7 +9666,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -9736,10 +9725,17 @@ Partial Class Order_Method
 
         Dim designName As String = String.Empty
         Dim blindName As String = orderClass.GetBlindName(data.blindtype)
-        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
+        Dim shutterPriceGroupId As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.designid) Then blindName = orderClass.GetBlindName(data.blindtype)
+        If Not String.IsNullOrEmpty(data.headerid) Then shutterPriceGroupId = orderClass.GetShutterPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
+
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "SHUTTER TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "COLOUR IS REQUIRED !"
@@ -9774,7 +9770,7 @@ Partial Class Order_Method
             If midrailHeight1 = 0 Then Return "MIDRAIL HEIGHT IS REQUIRED. <br /> MAXIMUM ONE SECTION IS 1500MM !"
         End If
 
-        If roleName = "Customer" Then
+        If data.rolename = "Customer" Then
             If midrailHeight1 > 0 AndAlso midrailHeight2 = 0 Then
                 If midrailHeight1 > 1500 Then Return "MAXIMUM MIDRAIL HEIGHT 1 IS 1500MM !"
                 If drop - midrailHeight1 > 1500 Then Return "MAXIMUM MIDRAIL HEIGHT FOR OTHER SECTIONS IS 1500MM !"
@@ -9838,6 +9834,10 @@ Partial Class Order_Method
                 If InStr(layoutCode, "M") > 0 AndAlso Not data.louvreposition = "Closed" Then Return "LOUVRE POSITION SHOULD BE CLOSED !"
             End If
 
+            If designName = "Skyline Shutter Express" AndAlso blindName = "Hinged" Then
+                If String.IsNullOrEmpty(data.stiletype) Then Return "STILE TYPE IS REQUIRED !"
+            End If
+
             If String.IsNullOrEmpty(data.frametype) Then Return "FRAME TYPE IS REQUIRED !"
             If String.IsNullOrEmpty(data.frameleft) Then Return "LEFT FRAME IS REQUIRED !"
             If String.IsNullOrEmpty(data.frameright) Then Return "RIGHT FRAME IS REQUIRED !"
@@ -9895,7 +9895,7 @@ Partial Class Order_Method
         panelQty = orderClass.GetPanelQty(datacheckPanelQty)
 
         'DEDUCTIONS
-        If designName = "Skyline Shutter Ocean" AndAlso roleName = "Customer" Then
+        If designName = "Skyline Shutter Ocean" AndAlso data.rolename = "Customer" Then
             Dim dataWidthDeductions As Object() = {blindName, "All", width, data.mounting, layoutCode, data.frametype, data.frameleft, data.frameright, panelQty}
             Dim dataHeightDeductions As String() = {blindName, drop, data.mounting, data.frametype, data.frametop, data.framebottom, data.bottomtracktype, data.horizontaltpost}
 
@@ -9984,7 +9984,7 @@ Partial Class Order_Method
         End If
 
         'GAP POSITION
-        If designName = "Skyline Shutter Ocean" AndAlso roleName = "Customer" Then
+        If designName = "Skyline Shutter Ocean" AndAlso data.rolename = "Customer" Then
             If String.IsNullOrEmpty(data.samesizepanel) Then
                 If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
 
@@ -10011,7 +10011,6 @@ Partial Class Order_Method
                     Dim lastPosition As Integer = 0
 
                     For idx As Integer = 0 To sections.Count - 1
-
                         Dim sectionWidth As Integer
 
                         If idx < totalSeparator Then
@@ -10047,47 +10046,23 @@ Partial Class Order_Method
                             Return String.Format("INVALID PANEL CONFIGURATION IN SECTION {0}", idx + 1)
                         End If
 
-                        Dim dataGap As Object() = {
-                            blindName,
-                            "Gap",
-                            sectionWidth,
-                            data.mounting,
-                            section,
-                            data.frametype,
-                            data.frameleft,
-                            data.frameright,
-                            panelCount
-                        }
+                        Dim dataGap As Object() = {blindName, "Gap", sectionWidth, data.mounting, section, data.frametype, data.frameleft, data.frameright, panelCount}
 
                         Dim widthDeduct As Decimal = orderClass.WidthDeductShutter(dataGap)
                         Dim finalPanelWidth As Decimal = widthDeduct / panelCount
 
                         If finalPanelWidth < 200 Then
-                            Return String.Format(
-                                "MINIMUM PANEL WIDTH IS 200MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1}MM !",
-                                idx + 1,
-                                Math.Round(finalPanelWidth, 2)
-                            )
+                            Return String.Format("MINIMUM PANEL WIDTH IS 200MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1}MM !", idx + 1, Math.Round(finalPanelWidth, 2))
                         End If
 
                         If blindName = "Hinged Bi-fold" AndAlso finalPanelWidth > 650 Then
-                            Return String.Format(
-                                "MAXIMUM PANEL WIDTH FOR HINGED BI-FOLD IS 650MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1}MM !",
-                                idx + 1,
-                                Math.Round(finalPanelWidth, 2)
-                            )
+                            Return String.Format("MAXIMUM PANEL WIDTH FOR HINGED BI-FOLD IS 650MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1}MM !", idx + 1, Math.Round(finalPanelWidth, 2))
                         End If
 
                         If finalPanelWidth > 900 Then
-                            Return String.Format(
-                                "MAXIMUM PANEL WIDTH IS 900MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1}MM !",
-                                idx + 1,
-                                Math.Round(finalPanelWidth, 2)
-                            )
+                            Return String.Format("MAXIMUM PANEL WIDTH IS 900MM.<br />FINAL PANEL WIDTH IN SECTION {0} IS {1}MM !", idx + 1, Math.Round(finalPanelWidth, 2))
                         End If
-
                     Next
-
                 End If
             End If
         End If
@@ -10128,6 +10103,7 @@ Partial Class Order_Method
             data.cutout = String.Empty
             data.specialshape = String.Empty
             data.templateprovided = String.Empty
+            data.stiletype = String.Empty
 
             If Not data.tiltrodsplit = "Other" Then
                 splitHeight1 = 0 : splitHeight2 = 0
@@ -10150,6 +10126,13 @@ Partial Class Order_Method
 
             If Not data.layoutcode = "Other" Then
                 data.layoutcodecustom = String.Empty
+            End If
+
+            If designName = "Skyline Shutter Ocean" Then
+                data.stiletype = String.Empty
+            End If
+            If designName = "Skyline Shutter Express" Then
+                If blindName = "Hinged Bi-fold" Then data.stiletype = "Rabbet"
             End If
 
             data.bottomtracktype = String.Empty
@@ -10212,6 +10195,7 @@ Partial Class Order_Method
                 data.layoutcodecustom = String.Empty
             End If
             If data.bottomtracktype = "U Track" Then data.bottomtrackrecess = "Yes"
+            data.stiletype = String.Empty
 
             data.buildout = "" : data.buildoutposition = ""
             data.samesizepanel = String.Empty
@@ -10249,6 +10233,7 @@ Partial Class Order_Method
                 data.hingecolour = ""
                 data.hingesloose = ""
             End If
+            data.stiletype = String.Empty
 
             If Not data.layoutcode = "Other" Then data.layoutcodecustom = ""
 
@@ -10297,6 +10282,7 @@ Partial Class Order_Method
             If Not data.layoutcode = "Other" Then
                 data.layoutcodecustom = ""
             End If
+            data.stiletype = String.Empty
 
             data.buildout = "" : data.buildoutposition = ""
             data.samesizepanel = ""
@@ -10343,6 +10329,7 @@ Partial Class Order_Method
             data.bottomtracktype = "" : data.bottomtrackrecess = ""
             data.buildout = "" : data.buildoutposition = ""
             data.samesizepanel = ""
+            data.stiletype = String.Empty
 
             data.horizontaltpostheight = 0 : data.horizontaltpost = ""
 
@@ -10379,15 +10366,10 @@ Partial Class Order_Method
             End If
         End If
 
-        Dim shutterPriceGroupId As String = orderClass.GetShutterPriceGroupByOrder(data.headerid)
-
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, shutterPriceGroupId)
 
         Dim squareMetre As Decimal = width * drop / 1000000
         Dim linearMetre As Decimal = width / 1000
-
-        Dim orderType As String = orderClass.GetOrderType(data.headerid)
-        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -10396,7 +10378,6 @@ Partial Class Order_Method
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Skyline", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -10415,6 +10396,7 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@MidrailCritical", data.midrailcritical)
                         thisCmd.Parameters.AddWithValue("@LayoutCode", data.layoutcode)
                         thisCmd.Parameters.AddWithValue("@LayoutCodeCustom", data.layoutcodecustom)
+                        thisCmd.Parameters.AddWithValue("@StileType", data.stiletype)
                         thisCmd.Parameters.AddWithValue("@CustomHeaderLength", headerLength)
                         thisCmd.Parameters.AddWithValue("@FrameType", data.frametype)
                         thisCmd.Parameters.AddWithValue("@FrameLeft", data.frameleft)
@@ -10457,7 +10439,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -10474,14 +10455,12 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Skyline", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
@@ -10499,6 +10478,7 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@MidrailCritical", data.midrailcritical)
                     thisCmd.Parameters.AddWithValue("@LayoutCode", data.layoutcode)
                     thisCmd.Parameters.AddWithValue("@LayoutCodeCustom", data.layoutcodecustom)
+                    thisCmd.Parameters.AddWithValue("@StileType", data.stiletype)
                     thisCmd.Parameters.AddWithValue("@CustomHeaderLength", headerLength)
                     thisCmd.Parameters.AddWithValue("@FrameType", data.frametype)
                     thisCmd.Parameters.AddWithValue("@FrameLeft", data.frameleft)
@@ -10541,7 +10521,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@TotalItems", 1)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -10583,13 +10562,19 @@ Partial Class Order_Method
         Dim tubeName As String = String.Empty
         Dim controlName As String = String.Empty
         Dim controlType As String = String.Empty
+        Dim pricegroupid As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlType = orderClass.GetControlType(data.controltype)
+        If Not String.IsNullOrEmpty(data.headerid) Then pricegroupid = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "BLIND TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "ROMAN STYLE IS REQUIRED !"
@@ -10716,9 +10701,6 @@ Partial Class Order_Method
             data.printing = String.Empty
         End If
 
-        Dim orderType As String = orderClass.GetOrderType(data.headerid)
-        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
-
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -10726,7 +10708,6 @@ Partial Class Order_Method
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_SoftRoman", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -10754,7 +10735,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -10771,14 +10751,12 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
             Using thisConn As SqlConnection = New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_SoftRoman", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@FabricId", data.fabrictype)
@@ -10805,7 +10783,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -10891,13 +10868,19 @@ Partial Class Order_Method
         Dim blindName As String = String.Empty
         Dim colourId As String = String.Empty
         Dim colourName As String = String.Empty
+        Dim pricegroupid As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.colourtype) Then colourId = orderClass.GetItemData("SELECT ColourType FROM Products WHERE Id='" & data.colourtype & "'")
         If Not String.IsNullOrEmpty(colourId) Then colourName = orderClass.GetColourName(colourId)
+        If Not String.IsNullOrEmpty(data.headerid) Then pricegroupid = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "VENETIAN TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "VENETIAN COLOUR IS REQUIRED !"
@@ -11535,9 +11518,6 @@ Partial Class Order_Method
         Dim priceProductGroupB As String = String.Empty
         Dim priceProductGroupC As String = String.Empty
 
-        Dim orderType As String = orderClass.GetOrderType(data.headerid)
-        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
-
         If data.subtype.Contains("2 on 1") Then priceProductGroupB = priceProductGroup
         If data.subtype.Contains("3 on 1") Then priceProductGroupB = priceProductGroup : priceProductGroupC = priceProductGroup
 
@@ -11548,7 +11528,6 @@ Partial Class Order_Method
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Venetian", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -11558,22 +11537,18 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@Room", data.room)
                         thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                         thisCmd.Parameters.AddWithValue("@SubType", data.subtype)
-
                         thisCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
                         thisCmd.Parameters.AddWithValue("@ControlPositionB", controlpositionb)
                         thisCmd.Parameters.AddWithValue("@ControlPositionC", controlpositionc)
-
                         thisCmd.Parameters.AddWithValue("@TilterPosition", data.tilterposition)
                         thisCmd.Parameters.AddWithValue("@TilterPositionB", tilterpositionb)
                         thisCmd.Parameters.AddWithValue("@TilterPositionC", tilterpositionc)
-
                         thisCmd.Parameters.AddWithValue("@Width", width)
                         thisCmd.Parameters.AddWithValue("@WidthB", widthb)
                         thisCmd.Parameters.AddWithValue("@WidthC", widthc)
                         thisCmd.Parameters.AddWithValue("@Drop", drop)
                         thisCmd.Parameters.AddWithValue("@DropB", dropb)
                         thisCmd.Parameters.AddWithValue("@DropC", dropc)
-
                         thisCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
                         thisCmd.Parameters.AddWithValue("@ControlLengthB", data.controllengthb)
                         thisCmd.Parameters.AddWithValue("@ControlLengthC", data.controllengthc)
@@ -11581,15 +11556,12 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@ControlLengthValueB", clvalueb)
                         thisCmd.Parameters.AddWithValue("@ControlLengthValueC", clvaluec)
                         thisCmd.Parameters.AddWithValue("@WandLengthValue", data.wandlengthvalue)
-
                         thisCmd.Parameters.AddWithValue("@ValanceType", data.valancetype)
                         thisCmd.Parameters.AddWithValue("@ValanceSize", data.valancesize)
                         thisCmd.Parameters.AddWithValue("@ValanceSizeValue", vsvalue)
-
                         thisCmd.Parameters.AddWithValue("@ReturnPosition", data.returnposition)
                         thisCmd.Parameters.AddWithValue("@ReturnLength", data.returnlength)
                         thisCmd.Parameters.AddWithValue("@ReturnLengthValue", rlvalue)
-
                         thisCmd.Parameters.AddWithValue("@CutOut", data.cutout)
                         thisCmd.Parameters.AddWithValue("@CutTopLeftWidth", cuttopleftwidth)
                         thisCmd.Parameters.AddWithValue("@CutTopLeftHeight", cuttopleftheight)
@@ -11617,21 +11589,17 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@CutBottomLeftHeightC", cutbottomleftheightc)
                         thisCmd.Parameters.AddWithValue("@CutBottomRightWidthC", cutbottomrightwidthc)
                         thisCmd.Parameters.AddWithValue("@CutBottomRightHeightC", cutbottomrightheightc)
-
                         thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                         thisCmd.Parameters.AddWithValue("@LinearMetreB", linearMetreB)
                         thisCmd.Parameters.AddWithValue("@LinearMetreC", linearMetreC)
-
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                         thisCmd.Parameters.AddWithValue("@SquareMetreB", squareMetreB)
                         thisCmd.Parameters.AddWithValue("@SquareMetreC", squareMetreC)
-
                         thisCmd.Parameters.AddWithValue("@Tassel", data.tassel)
                         thisCmd.Parameters.AddWithValue("@Supply", data.supply)
                         thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -11648,14 +11616,12 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Venetian", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
@@ -11664,22 +11630,18 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@Room", data.room)
                     thisCmd.Parameters.AddWithValue("@Mounting", data.mounting)
                     thisCmd.Parameters.AddWithValue("@SubType", data.subtype)
-
                     thisCmd.Parameters.AddWithValue("@ControlPosition", data.controlposition)
                     thisCmd.Parameters.AddWithValue("@ControlPositionB", controlpositionb)
                     thisCmd.Parameters.AddWithValue("@ControlPositionC", controlpositionc)
-
                     thisCmd.Parameters.AddWithValue("@TilterPosition", data.tilterposition)
                     thisCmd.Parameters.AddWithValue("@TilterPositionB", tilterpositionb)
                     thisCmd.Parameters.AddWithValue("@TilterPositionC", tilterpositionc)
-
                     thisCmd.Parameters.AddWithValue("@Width", width)
                     thisCmd.Parameters.AddWithValue("@WidthB", widthb)
                     thisCmd.Parameters.AddWithValue("@WidthC", widthc)
                     thisCmd.Parameters.AddWithValue("@Drop", drop)
                     thisCmd.Parameters.AddWithValue("@DropB", dropb)
                     thisCmd.Parameters.AddWithValue("@DropC", dropc)
-
                     thisCmd.Parameters.AddWithValue("@ControlLength", data.controllength)
                     thisCmd.Parameters.AddWithValue("@ControlLengthB", data.controllengthb)
                     thisCmd.Parameters.AddWithValue("@ControlLengthC", data.controllengthc)
@@ -11687,15 +11649,12 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@ControlLengthValueB", clvalueb)
                     thisCmd.Parameters.AddWithValue("@ControlLengthValueC", clvaluec)
                     thisCmd.Parameters.AddWithValue("@WandLengthValue", data.wandlengthvalue)
-
                     thisCmd.Parameters.AddWithValue("@ValanceType", data.valancetype)
                     thisCmd.Parameters.AddWithValue("@ValanceSize", data.valancesize)
                     thisCmd.Parameters.AddWithValue("@ValanceSizeValue", vsvalue)
-
                     thisCmd.Parameters.AddWithValue("@ReturnPosition", data.returnposition)
                     thisCmd.Parameters.AddWithValue("@ReturnLength", data.returnlength)
                     thisCmd.Parameters.AddWithValue("@ReturnLengthValue", rlvalue)
-
                     thisCmd.Parameters.AddWithValue("@CutOut", data.cutout)
                     thisCmd.Parameters.AddWithValue("@CutTopLeftWidth", cuttopleftwidth)
                     thisCmd.Parameters.AddWithValue("@CutTopLeftHeight", cuttopleftheight)
@@ -11723,21 +11682,17 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@CutBottomLeftHeightC", cutbottomleftheightc)
                     thisCmd.Parameters.AddWithValue("@CutBottomRightWidthC", cutbottomrightwidthc)
                     thisCmd.Parameters.AddWithValue("@CutBottomRightHeightC", cutbottomrightheightc)
-
                     thisCmd.Parameters.AddWithValue("@LinearMetre", linearMetre)
                     thisCmd.Parameters.AddWithValue("@LinearMetreB", linearMetreB)
                     thisCmd.Parameters.AddWithValue("@LinearMetreC", linearMetreC)
-
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                     thisCmd.Parameters.AddWithValue("@SquareMetreB", squareMetreB)
                     thisCmd.Parameters.AddWithValue("@SquareMetreC", squareMetreC)
-
                     thisCmd.Parameters.AddWithValue("@Tassel", data.tassel)
                     thisCmd.Parameters.AddWithValue("@Supply", data.supply)
                     thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -11779,13 +11734,19 @@ Partial Class Order_Method
         Dim blindName As String = String.Empty
         Dim tubeName As String = String.Empty
         Dim controlName As String = String.Empty
+        Dim pricegroupid As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.tubetype) Then tubeName = orderClass.GetTubeName(data.tubetype)
         If Not String.IsNullOrEmpty(data.controltype) Then controlName = orderClass.GetControlName(data.controltype)
+        If Not String.IsNullOrEmpty(data.headerid) Then pricegroupid = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "VERTICAL SYSTEM IS REQUIRED !"
         If String.IsNullOrEmpty(data.tubetype) Then Return "SLAT TYPE IS REQUIRED !"
@@ -11944,10 +11905,7 @@ Partial Class Order_Method
         Dim squareMetre As Decimal = width * drop / 1000000
 
         Dim groupName As String = String.Format("Vertical - {0} - {1}", blindName, tubeName)
-        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, priceGroupId)
-
-        Dim orderType As String = orderClass.GetOrderType(data.headerid)
-        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
+        Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, pricegroupid)
 
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
@@ -11956,7 +11914,6 @@ Partial Class Order_Method
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Vertical", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -11984,7 +11941,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -12001,14 +11957,12 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Vertical", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@FabricId", If(String.IsNullOrEmpty(data.fabrictype), CType(DBNull.Value, Object), data.fabrictype))
@@ -12035,7 +11989,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -12084,11 +12037,18 @@ Partial Class Order_Method
 
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
+        Dim pricegroupid As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
+        Dim doorPriceGroupId As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
+        If Not String.IsNullOrEmpty(data.headerid) Then doorPriceGroupId = orderClass.GetDoorPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
-        Dim roleName As String = orderClass.GetUserRoleName(data.loginid)
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "PRODUCT IS REQUIRED !"
@@ -12184,8 +12144,6 @@ Partial Class Order_Method
         linearMetre = width / 1000
         squareMetre = width * drop / 1000000
 
-        Dim doorPriceGroupId As String = orderClass.GetDoorPriceGroupByOrder(data.headerid)
-
         Dim factory As String = String.Empty
         If data.framecolour.Contains("Express") Then factory = "Express"
         If data.framecolour.Contains("Regular") Then factory = "Regular"
@@ -12199,9 +12157,6 @@ Partial Class Order_Method
         End If
         Dim priceProductGroup As String = orderClass.GetPriceProductGroupId(groupName, data.designid, doorPriceGroupId)
 
-        Dim orderType As String = orderClass.GetOrderType(data.headerid)
-        Dim orderStatus As String = orderClass.GetOrderStatus(data.headerid)
-
         If data.itemaction = "create" OrElse data.itemaction = "copy" Then
             For i As Integer = 1 To qty
                 Dim itemId As String = orderClass.GetNewOrderItemId()
@@ -12209,7 +12164,6 @@ Partial Class Order_Method
                 Using thisConn As New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_Window", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -12237,7 +12191,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -12254,14 +12207,12 @@ Partial Class Order_Method
 
             Return "Success"
         End If
-
         If data.itemaction = "edit" OrElse data.itemaction = "view" Then
             Dim itemId As String = data.itemid
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_Window", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
@@ -12288,7 +12239,6 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@SquareMetre", squareMetre)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
@@ -12338,12 +12288,18 @@ Partial Class Order_Method
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
         Dim productName As String = String.Empty
+        Dim pricegroupid As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.colourtype) Then productName = orderClass.GetProductName(data.colourtype)
+        If Not String.IsNullOrEmpty(data.headerid) Then pricegroupid = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "PART TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "VENETIAN COLOUR IS REQUIRED !"
@@ -12371,7 +12327,6 @@ Partial Class Order_Method
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_AluminiumPart", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -12385,7 +12340,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -12409,7 +12363,6 @@ Partial Class Order_Method
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_AluminiumPart", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
@@ -12422,15 +12375,21 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If ordertype = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If ordertype = "Regular" AndAlso orderstatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -12465,12 +12424,18 @@ Partial Class Order_Method
         Dim designName As String = String.Empty
         Dim blindName As String = String.Empty
         Dim productName As String = String.Empty
+        Dim pricegroupid As String = String.Empty
+        Dim ordertype As String = String.Empty
+        Dim orderstatus As String = String.Empty
 
         If Not String.IsNullOrEmpty(data.designid) Then designName = orderClass.GetDesignName(data.designid)
         If Not String.IsNullOrEmpty(data.blindtype) Then blindName = orderClass.GetBlindName(data.blindtype)
         If Not String.IsNullOrEmpty(data.colourtype) Then productName = orderClass.GetProductName(data.colourtype)
+        If Not String.IsNullOrEmpty(data.headerid) Then pricegroupid = orderClass.GetPriceGroupByOrder(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then ordertype = orderClass.GetOrderType(data.headerid)
+        If Not String.IsNullOrEmpty(data.headerid) Then orderstatus = orderClass.GetOrderStatus(data.headerid)
 
-        Dim priceGroupId As String = orderClass.GetPriceGroupByOrder(data.headerid)
+        If data.rolename = "Customer" AndAlso Not orderstatus = "Unsubmitted" Then Return "THIS ORDER HAS ALREADY BEEN SUBMITTED. YOU ARE UNABLE TO PROCEED WITH THIS ACTION !"
 
         If String.IsNullOrEmpty(data.blindtype) Then Return "PART TYPE IS REQUIRED !"
         If String.IsNullOrEmpty(data.colourtype) Then Return "VENETIAN COLOUR IS REQUIRED !"
@@ -12544,7 +12509,6 @@ Partial Class Order_Method
                 Using thisConn As SqlConnection = New SqlConnection(myConn)
                     Using thisCmd As New SqlCommand("sp_OrderDetails_Insert_VenetianPart", thisConn)
                         thisCmd.CommandType = CommandType.StoredProcedure
-
                         thisCmd.Parameters.AddWithValue("@Id", itemId)
                         thisCmd.Parameters.AddWithValue("@HeaderId", data.headerid)
                         thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
@@ -12563,7 +12527,6 @@ Partial Class Order_Method
                         thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                         thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                         thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                         thisConn.Open()
                         thisCmd.ExecuteNonQuery()
                     End Using
@@ -12587,7 +12550,6 @@ Partial Class Order_Method
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As New SqlCommand("sp_OrderDetails_Update_VenetianPart", thisConn)
                     thisCmd.CommandType = CommandType.StoredProcedure
-
                     thisCmd.Parameters.AddWithValue("@Id", itemId)
                     thisCmd.Parameters.AddWithValue("@ProductId", data.colourtype)
                     thisCmd.Parameters.AddWithValue("@PriceProductGroupId", If(String.IsNullOrEmpty(priceProductGroup), CType(DBNull.Value, Object), priceProductGroup))
@@ -12605,15 +12567,21 @@ Partial Class Order_Method
                     thisCmd.Parameters.AddWithValue("@TotalItems", totalItems)
                     thisCmd.Parameters.AddWithValue("@Notes", data.notes)
                     thisCmd.Parameters.AddWithValue("@MarkUp", markup)
-
                     thisConn.Open()
                     thisCmd.ExecuteNonQuery()
                 End Using
             End Using
 
-            orderClass.ResetPriceDetail(data.headerid, itemId)
-            orderClass.CalculatePrice(data.headerid, itemId)
-            orderClass.FinalCostItem(data.headerid, itemId)
+            If ordertype = "Regular" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
+            If ordertype = "Builder" AndAlso orderstatus = "Unsubmitted" Then
+                orderClass.ResetPriceDetail(data.headerid, itemId)
+                orderClass.CalculatePrice(data.headerid, itemId)
+                orderClass.FinalCostItem(data.headerid, itemId)
+            End If
             orderClass.UpdateOrderFactory(data.headerid)
 
             Dim dataLog As Object() = {"OrderDetails", itemId, data.loginid, "Order Item Updated"}
@@ -13827,7 +13795,7 @@ Partial Class Order_Method
     End Function
 
     <WebMethod()>
-    Public Shared Function SkylineDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
+    Public Shared Function SkylineExpressDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
         Dim orderClass As New OrderClass
 
         Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
@@ -13849,7 +13817,54 @@ Partial Class Order_Method
         Dim blindReq As New JSONList With {.type = "BlindTypeSkyline", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
-        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodeSkyline", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodeSkyline_Express", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim frameTypeReq As New JSONList With {.type = "FrameTypeSkyline", .blindtype = blindId, .customtype = mounting, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim leftFrameReq As New JSONList With {.type = "LeftFrameSkyline", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim rightFrameReq As New JSONList With {.type = "RightFrameSkyline", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim topFrameReq As New JSONList With {.type = "TopFrameSkyline", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim bottomFrameReq As New JSONList With {.type = "BottomFrameSkyline", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim bottomTrackReq As New JSONList With {.type = "BottomTrackSkyline", .blindtype = blindId, .customtype = frameBottom, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+
+        Dim result = New With {
+            .ItemData = itemDetail,
+            .BlindTypes = ListData(blindReq),
+            .ColourTypes = ListData(colourReq),
+            .Mountings = ListData(mountingReq),
+            .LayoutCodes = ListData(layoutCodeReq),
+            .FrameTypes = ListData(frameTypeReq),
+            .LeftFrames = ListData(leftFrameReq),
+            .RightFrames = ListData(rightFrameReq),
+            .TopFrames = ListData(topFrameReq),
+            .BottomFrames = ListData(bottomFrameReq),
+            .BottomTracks = ListData(bottomTrackReq)
+        }
+        Return result
+    End Function
+
+    <WebMethod()>
+    Public Shared Function SkylineOceanDetail(itemId As Integer, companyDetailId As String, orderStatus As String, roleAccess As String, action As String) As Object
+        Dim orderClass As New OrderClass
+
+        Dim detailData As DataRow = orderClass.GetDataRow("SELECT OrderDetails.*, Products.DesignId AS DesignType, Products.BlindId AS BlindType, Products.TubeType AS TubeType, Products.ControlType AS ControlType FROM OrderDetails LEFT JOIN Products ON OrderDetails.ProductId=Products.Id WHERE OrderDetails.Id='" & itemId & "'")
+        If detailData Is Nothing Then Return Nothing
+
+        Dim designId As String = detailData("DesignType").ToString()
+        Dim blindId As String = detailData("BlindType").ToString()
+        Dim tubeId As String = detailData("TubeType").ToString()
+        Dim controlId As String = detailData("ControlType").ToString()
+        Dim mounting As String = detailData("Mounting").ToString()
+        Dim frameType As String = detailData("FrameType").ToString()
+        Dim frameBottom As String = detailData("FrameBottom").ToString()
+
+        Dim itemDetail As New Dictionary(Of String, Object)
+        For Each col As DataColumn In detailData.Table.Columns
+            itemDetail(col.ColumnName) = detailData(col.ColumnName)
+        Next
+
+        Dim blindReq As New JSONList With {.type = "BlindTypeSkyline", .designtype = designId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim colourReq As New JSONList With {.type = "ColourType", .blindtype = blindId, .tubetype = tubeId, .controltype = controlId, .companydetailid = companyDetailId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim mountingReq As New JSONList With {.type = "Mounting", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
+        Dim layoutCodeReq As New JSONList With {.type = "LayoutCodeSkyline_Ocean", .blindtype = blindId, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim frameTypeReq As New JSONList With {.type = "FrameTypeSkyline", .blindtype = blindId, .customtype = mounting, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim leftFrameReq As New JSONList With {.type = "LeftFrameSkyline", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
         Dim rightFrameReq As New JSONList With {.type = "RightFrameSkyline", .customtype = frameType, .orderstatus = orderStatus, .rolename = roleAccess, .action = action}
@@ -14399,6 +14414,7 @@ Public Class ProccessData
     Public Property wandlengthvalueb As String
     Public Property layoutcode As String
     Public Property layoutcodecustom As String
+    Public Property stiletype As String
     Public Property tracktype As String
     Public Property tracktypeb As String
     Public Property trackcolour As String

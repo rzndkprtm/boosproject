@@ -250,6 +250,21 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <div class="row mt-3" id="divstiletype">
+                                                <div class="col-12 col-sm-12 col-lg-3">
+                                                    <label>Stile Type</label>
+                                                </div>
+                                                <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                                    <div class="input-group">
+                                                        <select id="stiletype" class="form-select">
+                                                            <option value=""></option>
+                                                            <option value="Astagral">Astagral</option>
+                                                            <option value="Astagral">Rabbet</option>
+                                                        </select>
+                                                        <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalGallery" onclick="return showGallery('Stile');">Info</a>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div class="row mt-3" id="divframetype">
                                                 <div class="col-12 col-sm-12 col-lg-3">
                                                     <label>Frame Type</label>
@@ -592,7 +607,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <asp:Image runat="server" CssClass="w-100" />
+                    <span id="spanInfoGallery"></span>
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</a>
@@ -600,5 +615,5 @@
             </div>
         </div>
     </div>
-    <script src="/Scripts/Bintang/SkylineExpress.js?v=1.0.1"></script>
+    <script src="/Scripts/Bintang/SkylineExpress.js?v=1.0.2"></script>
 </asp:Content>
