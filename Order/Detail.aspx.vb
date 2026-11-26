@@ -11,7 +11,7 @@ Partial Class Order_Detail
     Dim dataLog As Object() = Nothing
     Dim url As String = String.Empty
     Dim enUS As CultureInfo = New CultureInfo("en-US")
-    Dim idIDR As New CultureInfo("id-ID")
+    Dim idID As New CultureInfo("id-ID")
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -3924,9 +3924,9 @@ Partial Class Order_Detail
             End If
 
             If lblCompanyId.Text = "3" Then
-                lblPriceOrder.Text = "Rp " & priceSell.ToString("N2", idIDR)
-                lblGst.Text = "Rp " & gstSell.ToString("N2", idIDR)
-                lblFinalPriceOrder.Text = "Rp " & totalSell.ToString("N2", idIDR)
+                lblPriceOrder.Text = "Rp " & priceSell.ToString("N2", idID)
+                lblGst.Text = "Rp " & gstSell.ToString("N2", idID)
+                lblFinalPriceOrder.Text = "Rp " & totalSell.ToString("N2", idID)
             End If
 
             If lblCompanyId.Text = "2" Then
@@ -4104,7 +4104,7 @@ Partial Class Order_Detail
 
                 result = String.Format("${0}", thisPrice.ToString("N2", enUS))
                 If lblCompanyId.Text = "3" Then
-                    result = String.Format("Rp{0}", thisPrice.ToString("N2", idIDR))
+                    result = String.Format("Rp{0}", thisPrice.ToString("N2", idID))
                 End If
             End If
         Catch ex As Exception

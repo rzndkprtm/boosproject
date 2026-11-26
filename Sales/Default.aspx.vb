@@ -8,7 +8,7 @@ Partial Class Sales_Default
     Dim salesClass As New SalesClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim enUS As CultureInfo = New CultureInfo("en-US")
-    Dim idIDR As New CultureInfo("id-ID")
+    Dim idID As New CultureInfo("id-ID")
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -156,7 +156,7 @@ Partial Class Sales_Default
     Protected Function BindPrice(price As Decimal) As String
         If price > 0 Then
             If ddlCompany.SelectedValue = "3" Then
-                Return String.Format("Rp {0}", price.ToString("N2", idIDR))
+                Return String.Format("Rp {0}", price.ToString("N2", idID))
             End If
             Return String.Format("$ {0}", price.ToString("N2", enUS))
         End If

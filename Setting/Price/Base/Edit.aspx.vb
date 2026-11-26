@@ -8,7 +8,7 @@ Partial Class Setting_Price_Base_Edit
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim enUS As CultureInfo = New CultureInfo("en-US")
-    Dim idIDR As New CultureInfo("id-ID")
+    Dim idID As New CultureInfo("id-ID")
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -113,7 +113,7 @@ Partial Class Setting_Price_Base_Edit
             txtWidth.Text = myData("Width").ToString()
             txtPrice.Text = Convert.ToDecimal(myData("Price")).ToString("G29", enUS)
             If ddlPriceGroup.SelectedValue = "2" OrElse ddlPriceGroup.SelectedValue = "3" OrElse ddlPriceGroup.SelectedValue = "4" OrElse ddlPriceGroup.SelectedValue = "5" OrElse ddlPriceGroup.SelectedValue = "10" Then
-                txtPrice.Text = Convert.ToDecimal(myData("Price")).ToString("G29", idIDR)
+                txtPrice.Text = Convert.ToDecimal(myData("Price")).ToString("G29", idID)
             End If
         Catch ex As Exception
             MessageError(True, ex.ToString())

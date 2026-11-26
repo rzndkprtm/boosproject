@@ -8,7 +8,7 @@ Partial Class Setting_Price_Base_Default
     Dim settingClass As New SettingClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim enUS As CultureInfo = New CultureInfo("en-US")
-    Dim idIDR As New CultureInfo("id-ID")
+    Dim idID As New CultureInfo("id-ID")
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         Dim pageAccess As Boolean = LoginAccess("Load")
@@ -336,7 +336,7 @@ Partial Class Setting_Price_Base_Default
             If cost >= 0 Then
                 cost = Math.Round(cost, 2)
                 If companyId = "3" Then
-                    Return cost.ToString("N2", idIDR)
+                    Return cost.ToString("N2", idID)
                 End If
                 Return cost.ToString("N2", enUS)
             End If
