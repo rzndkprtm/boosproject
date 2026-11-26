@@ -8,7 +8,7 @@ Imports iTextSharp.text.pdf
 Public Class PackingListClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim enUS As CultureInfo = New CultureInfo("en-US")
-    Dim idIDR As New CultureInfo("id-ID")
+    Dim idID As New CultureInfo("id-ID")
 
     Public Function GetDataRow(thisString As String) As DataRow
         Try
@@ -581,7 +581,7 @@ Public Class PackingListClass
 
             Dim sign As New Paragraph()
             sign.Alignment = Element.ALIGN_RIGHT
-            sign.Add(New Chunk("Serang, " & Date.Today.ToString("dd MMMM yyyy", idIDR), New Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD)))
+            sign.Add(New Chunk("Serang, " & Date.Today.ToString("dd MMMM yyyy", idID), New Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD)))
             sign.Add(Chunk.NEWLINE)
             sign.Add(Chunk.NEWLINE)
             sign.Add(Chunk.NEWLINE)
@@ -967,7 +967,7 @@ Public Class PackingListClass
 
             Dim sign As New Paragraph()
             sign.Alignment = Element.ALIGN_RIGHT
-            sign.Add(New Chunk("Serang, " & Date.Today.ToString("dd MMMM yyyy", idIDR), New Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD)))
+            sign.Add(New Chunk("Serang, " & Date.Today.ToString("dd MMMM yyyy", idID), New Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD)))
             sign.Add(Chunk.NEWLINE)
             sign.Add(Chunk.NEWLINE)
             sign.Add(Chunk.NEWLINE)

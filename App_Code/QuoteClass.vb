@@ -8,7 +8,7 @@ Imports iTextSharp.text.pdf
 Public Class QuoteClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim enUS As CultureInfo = New CultureInfo("en-US")
-    Dim idIDR As New CultureInfo("id-ID")
+    Dim idID As New CultureInfo("id-ID")
 
     Public Function GetDataRow(thisString As String) As DataRow
         Try
@@ -357,9 +357,9 @@ Public Class QuoteClass
             Dim finalTotalText As String = finaltotal.ToString("N2", enUS)
 
             If companyId = "3" Then
-                sumPriceText = sumPrice.ToString("N2", idIDR)
-                gstText = gst.ToString("N2", idIDR)
-                finalTotalText = finaltotal.ToString("N2", idIDR)
+                sumPriceText = sumPrice.ToString("N2", idID)
+                gstText = gst.ToString("N2", idID)
+                finalTotalText = finaltotal.ToString("N2", idID)
             End If
 
             Dim doc As New Document(PageSize.A4, 36, 36, 110, 180)
@@ -651,7 +651,7 @@ Public Class QuoteClass
 
                 Dim finalCostText As String = finalCost.ToString("N2", enUS)
                 If companyId = "3" Then
-                    finalCostText = finalCost.ToString("N2", idIDR)
+                    finalCostText = finalCost.ToString("N2", idID)
                 End If
 
                 table.AddCell(CreateCellDetail(itemDescription))
@@ -1276,7 +1276,7 @@ Public Class QuoteClass
 
                 Dim unitPriceText As String = itemCostMarkUp.ToString("N2", enUS)
                 If companyId = "3" Then
-                    unitPriceText = itemCostMarkUp.ToString("N2", idIDR)
+                    unitPriceText = itemCostMarkUp.ToString("N2", idID)
                 End If
 
                 table.AddCell(CreateCellDetail(room))
@@ -1292,10 +1292,10 @@ Public Class QuoteClass
             Dim quoteInstallationText As String = quoteInstallation.ToString("N2", enUS)
             Dim quoteFreightText As String = quoteFreight.ToString("N2", enUS)
             If companyId = "3" Then
-                quoteDiscountText = String.Format("- {0}", quoteDiscount.ToString("N2", idIDR))
-                quoteMeasureText = quoteCheckMeasure.ToString("N2", idIDR)
-                quoteInstallationText = quoteInstallation.ToString("N2", idIDR)
-                quoteFreightText = quoteFreight.ToString("N2", idIDR)
+                quoteDiscountText = String.Format("- {0}", quoteDiscount.ToString("N2", idID))
+                quoteMeasureText = quoteCheckMeasure.ToString("N2", idID)
+                quoteInstallationText = quoteInstallation.ToString("N2", idID)
+                quoteFreightText = quoteFreight.ToString("N2", idID)
             End If
 
             Dim gst As Decimal = (sumItemPrice - quoteDiscount + quoteCheckMeasure + quoteInstallation + quoteFreight) * 10 / 100
@@ -1308,9 +1308,9 @@ Public Class QuoteClass
             Dim gstText As String = gst.ToString("N2", enUS)
             Dim finalTotalText As String = finaltotal.ToString("N2", enUS)
             If companyId = "3" Then
-                subTotalText = sumItemPrice.ToString("N2", idIDR)
-                gstText = gst.ToString("N2", idIDR)
-                finalTotalText = finaltotal.ToString("N2", idIDR)
+                subTotalText = sumItemPrice.ToString("N2", idID)
+                gstText = gst.ToString("N2", idID)
+                finalTotalText = finaltotal.ToString("N2", idID)
             End If
 
             table.AddCell(CreateCellTotal(String.Empty))
@@ -1912,7 +1912,7 @@ Public Class QuoteClass
                 sumItemPrice = sumItemPrice + itemCostMarkUp
                 Dim unitPriceText As String = itemCostMarkUp.ToString("N2", enUS)
                 If companyId = "3" OrElse companyId = "5" Then
-                    unitPriceText = itemCostMarkUp.ToString("N2", idIDR)
+                    unitPriceText = itemCostMarkUp.ToString("N2", idID)
                 End If
 
                 table.AddCell(CreateCellDetail(detailData.Rows(i)("Room").ToString()))

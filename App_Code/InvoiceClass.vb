@@ -8,7 +8,7 @@ Imports iTextSharp.text.pdf
 Public Class InvoiceClass
     Dim myConn As String = ConfigurationManager.ConnectionStrings("DefaultConnection").ConnectionString
     Dim enUS As CultureInfo = New CultureInfo("en-US")
-    Dim idIDR As New CultureInfo("id-ID")
+    Dim idID As New CultureInfo("id-ID")
 
     Public Function GetDataRow(thisString As String) As DataRow
         Try
@@ -711,10 +711,10 @@ Public Class InvoiceClass
             Dim ppn As Decimal = dpp * 12 / 100
             Dim finaltotal As Decimal = subTotal + ppn
 
-            Dim subTotalText As String = subTotal.ToString("N2", idIDR)
-            Dim dppText As String = dpp.ToString("N2", idIDR)
-            Dim ppnText As String = ppn.ToString("N2", idIDR)
-            Dim finalTotalText As String = finaltotal.ToString("N2", idIDR)
+            Dim subTotalText As String = subTotal.ToString("N2", idID)
+            Dim dppText As String = dpp.ToString("N2", idID)
+            Dim ppnText As String = ppn.ToString("N2", idID)
+            Dim finalTotalText As String = finaltotal.ToString("N2", idID)
 
             Dim doc As New Document(PageSize.A4, 36, 36, 80, 50)
             Dim writer As PdfWriter = PdfWriter.GetInstance(doc, ms)
@@ -961,7 +961,7 @@ Public Class InvoiceClass
 
                 Dim finalCost As Decimal = GetItemData_Decimal("SELECT SUM(SellPrice) FROM OrderCostings WHERE HeaderId='" & headerId & "' AND ItemId='" & itemId & "' AND Number='" & itemNumber & "'")
 
-                Dim finalCostText As String = finalCost.ToString("N2", idIDR)
+                Dim finalCostText As String = finalCost.ToString("N2", idID)
 
                 Dim kodeBarang As String = String.Empty
                 If Not String.IsNullOrEmpty(namaBarang) Then
@@ -1055,7 +1055,7 @@ Public Class InvoiceClass
 
             Dim sign As New Paragraph()
             sign.Alignment = Element.ALIGN_RIGHT
-            sign.Add(New Chunk("Serang, " & Date.Today.ToString("dd MMMM yyyy", idIDR), New Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD)))
+            sign.Add(New Chunk("Serang, " & Date.Today.ToString("dd MMMM yyyy", idID), New Font(Font.FontFamily.TIMES_ROMAN, 11, Font.BOLD)))
             sign.Add(Chunk.NEWLINE)
             sign.Add(Chunk.NEWLINE)
             sign.Add(Chunk.NEWLINE)
