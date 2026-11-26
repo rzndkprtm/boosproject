@@ -467,534 +467,7 @@ Partial Class Order_Method
                 End If
             End If
         End If
-        If type = "LayoutCodeDoor" Then
-            Dim tubeName As String = orderClass.GetTubeName(tubetype)
-            If tubeName = "Hinged Single" Then
-                result.Add(New With {.Value = "L", .Text = "L"})
-                result.Add(New With {.Value = "R", .Text = "R"})
-            End If
-            If tubeName = "Hinged Double" Then
-                result.Add(New With {.Value = "L-RA", .Text = "L-RA"})
-                result.Add(New With {.Value = "AL-R", .Text = "AL-R"})
-            End If
-            If tubeName = "Sliding Single" Then
-                result.Add(New With {.Value = "AL", .Text = "AL"})
-                result.Add(New With {.Value = "RA", .Text = "RA"})
-            End If
-            If tubeName = "Sliding Double" Then
-                result.Add(New With {.Value = "RA-L", .Text = "RA-L"})
-                result.Add(New With {.Value = "R-AL", .Text = "R-AL"})
-            End If
-            If tubeName = "Sliding Stacker" Then
-                result.Add(New With {.Value = "RRA", .Text = "RRA"})
-                result.Add(New With {.Value = "ALL", .Text = "ALL"})
-                result.Add(New With {.Value = "FRA", .Text = "FRA"})
-                result.Add(New With {.Value = "ALF", .Text = "ALF"})
-                result.Add(New With {.Value = "RRRA", .Text = "RRRA"})
-                result.Add(New With {.Value = "ALLL", .Text = "ALLL"})
-                result.Add(New With {.Value = "FRRA", .Text = "FRRA"})
-                result.Add(New With {.Value = "ALLF", .Text = "ALLF"})
-                result.Add(New With {.Value = "RRA-LL", .Text = "RRA-LL"})
-                result.Add(New With {.Value = "RR-ALL", .Text = "RR-ALL"})
-                result.Add(New With {.Value = "FRA-LF", .Text = "FRA-LF"})
-                result.Add(New With {.Value = "FR-ALF", .Text = "FR-ALF"})
-                result.Add(New With {.Value = "RRRA-LLL", .Text = "RRRA-LLL"})
-                result.Add(New With {.Value = "RRR-ALLL", .Text = "RRR-ALLL"})
-                result.Add(New With {.Value = "FRRA-LLF", .Text = "FRRA-LLF"})
-                result.Add(New With {.Value = "FRR-ALLF", .Text = "FRR-ALLF"})
-            End If
-        End If
-        If type = "LayoutCodeSkyline_Express" Then
-            Dim blindName As String = orderClass.GetBlindName(blindtype)
-            If blindName = "Hinged" Then
-                result.Add(New With {.Value = "L", .Text = "L"})
-                result.Add(New With {.Value = "R", .Text = "R"})
-                result.Add(New With {.Value = "LR", .Text = "LR"})
-                result.Add(New With {.Value = "LD-R", .Text = "LD-R"})
-                result.Add(New With {.Value = "L-DR", .Text = "L-DR"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
 
-            If blindName = "Hinged Bi-fold" Then
-                result.Add(New With {.Value = "LL", .Text = "LL"})
-                result.Add(New With {.Value = "RR", .Text = "RR"})
-                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-
-            If blindName = "Track Bi-fold" Then
-                result.Add(New With {.Value = "LL", .Text = "LL"})
-                result.Add(New With {.Value = "RR", .Text = "RR"})
-                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
-                result.Add(New With {.Value = "LLLL", .Text = "LLLL"})
-                result.Add(New With {.Value = "RRRR", .Text = "RRRR"})
-                result.Add(New With {.Value = "LLRRRR", .Text = "LLRRRR"})
-                result.Add(New With {.Value = "LLLLRR", .Text = "LLLLRR"})
-                result.Add(New With {.Value = "LLLLLL", .Text = "LLLLLL"})
-                result.Add(New With {.Value = "RRRRRR", .Text = "RRRRRR"})
-                result.Add(New With {.Value = "LLRRRRRR", .Text = "LLRRRRRR"})
-                result.Add(New With {.Value = "LLLLRRRR", .Text = "LLLLRRRR"})
-                result.Add(New With {.Value = "LLLLLLRR", .Text = "LLLLLLRR"})
-                result.Add(New With {.Value = "LLLLLLLL", .Text = "LLLLLLLL"})
-                result.Add(New With {.Value = "RRRRRRRR", .Text = "RRRRRRRR"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-
-            If blindName = "Track Sliding" Then
-                result.Add(New With {.Value = "BF", .Text = "BF"})
-                result.Add(New With {.Value = "FB", .Text = "FB"})
-                result.Add(New With {.Value = "BFB", .Text = "BFB"})
-                result.Add(New With {.Value = "FBF", .Text = "FBF"})
-                result.Add(New With {.Value = "BFFB", .Text = "BFFB"})
-                result.Add(New With {.Value = "FBBF", .Text = "FBBF"})
-                result.Add(New With {.Value = "BBFF", .Text = "BBFF"})
-                result.Add(New With {.Value = "FFBB", .Text = "FFBB"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-
-            If blindName = "Track Sliding Single Track" Then
-                result.Add(New With {.Value = "F", .Text = "F"})
-                result.Add(New With {.Value = "FF", .Text = "FF"})
-                result.Add(New With {.Value = "FFF", .Text = "FFF"})
-                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-
-            If blindName = "Fixed" Then
-                result.Add(New With {.Value = "", .Text = ""})
-                result.Add(New With {.Value = "F", .Text = "F"})
-                result.Add(New With {.Value = "FF", .Text = "FF"})
-                result.Add(New With {.Value = "FFF", .Text = "FFF"})
-                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
-                result.Add(New With {.Value = "FFFFFF", .Text = "FFFFFF"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-        End If
-        If type = "LayoutCodeSkyline_Ocean" Then
-            Dim blindName As String = orderClass.GetBlindName(blindtype)
-            If blindName = "Hinged" Then
-                result.Add(New With {.Value = "L", .Text = "L"})
-                result.Add(New With {.Value = "R", .Text = "R"})
-                result.Add(New With {.Value = "LR", .Text = "LR"})
-                result.Add(New With {.Value = "LD-R", .Text = "LD-R"})
-                result.Add(New With {.Value = "L-DR", .Text = "L-DR"})
-                result.Add(New With {.Value = "LTLR", .Text = "LTLR"})
-                result.Add(New With {.Value = "LRTR", .Text = "LRTR"})
-                result.Add(New With {.Value = "LRTLR", .Text = "LRTLR"})
-                result.Add(New With {.Value = "LTLRTR", .Text = "LTLRTR"})
-                result.Add(New With {.Value = "LD-RTLD-R", .Text = "LD-RTLD-R"})
-                result.Add(New With {.Value = "L-DRTL-DR", .Text = "L-DRTL-DR"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-
-            If blindName = "Hinged Bi-fold" Then
-                result.Add(New With {.Value = "LL", .Text = "LL"})
-                result.Add(New With {.Value = "RR", .Text = "RR"})
-                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-
-            If blindName = "Track Bi-fold" Then
-                result.Add(New With {.Value = "LL", .Text = "LL"})
-                result.Add(New With {.Value = "RR", .Text = "RR"})
-                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
-                result.Add(New With {.Value = "LLLL", .Text = "LLLL"})
-                result.Add(New With {.Value = "RRRR", .Text = "RRRR"})
-                result.Add(New With {.Value = "LLRRRR", .Text = "LLRRRR"})
-                result.Add(New With {.Value = "LLLLRR", .Text = "LLLLRR"})
-                result.Add(New With {.Value = "LLLLLL", .Text = "LLLLLL"})
-                result.Add(New With {.Value = "RRRRRR", .Text = "RRRRRR"})
-                result.Add(New With {.Value = "LLRRRRRR", .Text = "LLRRRRRR"})
-                result.Add(New With {.Value = "LLLLRRRR", .Text = "LLLLRRRR"})
-                result.Add(New With {.Value = "LLLLLLRR", .Text = "LLLLLLRR"})
-                result.Add(New With {.Value = "LLLLLLLL", .Text = "LLLLLLLL"})
-                result.Add(New With {.Value = "RRRRRRRR", .Text = "RRRRRRRR"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-
-            If blindName = "Track Sliding" Then
-                result.Add(New With {.Value = "BF", .Text = "BF"})
-                result.Add(New With {.Value = "FB", .Text = "FB"})
-                result.Add(New With {.Value = "BFB", .Text = "BFB"})
-                result.Add(New With {.Value = "FBF", .Text = "FBF"})
-                result.Add(New With {.Value = "BFFB", .Text = "BFFB"})
-                result.Add(New With {.Value = "FBBF", .Text = "FBBF"})
-                result.Add(New With {.Value = "BBFF", .Text = "BBFF"})
-                result.Add(New With {.Value = "FFBB", .Text = "FFBB"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-
-            If blindName = "Track Sliding Single Track" Then
-                result.Add(New With {.Value = "F", .Text = "F"})
-                result.Add(New With {.Value = "FF", .Text = "FF"})
-                result.Add(New With {.Value = "FFF", .Text = "FFF"})
-                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-
-            If blindName = "Fixed" Then
-                result.Add(New With {.Value = "", .Text = ""})
-                result.Add(New With {.Value = "F", .Text = "F"})
-                result.Add(New With {.Value = "FF", .Text = "FF"})
-                result.Add(New With {.Value = "FFF", .Text = "FFF"})
-                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
-                result.Add(New With {.Value = "FFFFFF", .Text = "FFFFFF"})
-                result.Add(New With {.Value = "Other", .Text = "Other"})
-            End If
-        End If
-        If type = "MeshDoor" Then
-            Dim blindName As String = orderClass.GetBlindName(blindtype)
-            If blindName = "Safety" Then
-                result.Add(New With {.Value = "304 SS Mesh", .Text = "304 SS Mesh"})
-            End If
-            If blindName = "Diamond Grille" Then
-                result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
-                result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
-                result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
-            End If
-            If blindName = "Security" Then
-                result.Add(New With {.Value = "316 SS Mesh", .Text = "316 SS Mesh"})
-            End If
-            If blindName = "Flyscreen" Then
-                result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
-                result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
-                result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
-            End If
-        End If
-        If type = "MeshWindow" Then
-            Dim blindName As String = orderClass.GetBlindName(blindtype)
-            If blindName = "Safety" Then
-                result.Add(New With {.Value = "304 SS Mesh", .Text = "304 SS Mesh"})
-            End If
-            If blindName = "Diamond Grille" Then
-                result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
-                result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
-                result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
-            End If
-            If blindName = "Security" Then
-                result.Add(New With {.Value = "316 SS Mesh", .Text = "316 SS Mesh"})
-            End If
-            If blindName = "Flyscreen" Then
-                result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
-                result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
-                'result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
-            End If
-        End If
-        If type = "FrameColourDoor" Then
-            Dim blindName As String = orderClass.GetBlindName(blindtype)
-            If blindName = "Safety" Then
-                'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
-                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
-                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
-                result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
-                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
-            End If
-            If blindName = "Diamond Grille" Then
-                'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
-                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
-                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
-                result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
-                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
-            End If
-            If blindName = "Security" Then
-                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
-                'result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
-                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
-                result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
-                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
-            End If
-            If blindName = "Flyscreen" Then
-                'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
-                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
-                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
-                result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
-                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
-            End If
-
-            If Not String.IsNullOrEmpty(blindName) AndAlso (companydetailid = "2" OrElse companydetailid = "3") Then
-                result.Add(New With {.Value = "Apo Grey (Regular)", .Text = "Apo Grey (Regular)"})
-                result.Add(New With {.Value = "Beige (Regular)", .Text = "Beige (Regular)"})
-                result.Add(New With {.Value = "Birch White (Regular)", .Text = "Birch White (Regular)"})
-                result.Add(New With {.Value = "Black (Regular)", .Text = "Black (Regular)"})
-                result.Add(New With {.Value = "Brown (Regular)", .Text = "Brown (Regular)"})
-                result.Add(New With {.Value = "Charcoal (Regular)", .Text = "Charcoal (Regular)"})
-                result.Add(New With {.Value = "Deep Ocean (Regular)", .Text = "Deep Ocean (Regular)"})
-                result.Add(New With {.Value = "Dune (Regular)", .Text = "Dune (Regular)"})
-                result.Add(New With {.Value = "Hawthorne Green (Regular)", .Text = "Hawthorne Green (Regular)"})
-                result.Add(New With {.Value = "Jasper (Regular)", .Text = "Jasper (Regular)"})
-                result.Add(New With {.Value = "Monument (Regular)", .Text = "Monument (Regular)"})
-                result.Add(New With {.Value = "Notre Dame (Regular)", .Text = "Notre Dame (Regular)"})
-                result.Add(New With {.Value = "Pale Eucalypt (Regular)", .Text = "Pale Eucalypt (Regular)"})
-                result.Add(New With {.Value = "Paperbark (Regular)", .Text = "Paperbark (Regular)"})
-                result.Add(New With {.Value = "Primrose (Regular)", .Text = "Primrose (Regular)"})
-                result.Add(New With {.Value = "Silver (Regular)", .Text = "Silver (Regular)"})
-                result.Add(New With {.Value = "Surf Mist (Regular)", .Text = "Surf Mist (Regular)"})
-                result.Add(New With {.Value = "White (Regular)", .Text = "White (Regular)"})
-                result.Add(New With {.Value = "Woodland Grey (Regular)", .Text = "Woodland Grey (Regular)"})
-            End If
-        End If
-        If type = "FrameColourWindow" Then
-            Dim blindName As String = orderClass.GetBlindName(blindtype)
-            If blindName = "Safety" Then
-                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
-                'result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
-                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
-                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
-                result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
-            End If
-            If blindName = "Diamond Grille" Then
-                'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
-                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
-                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
-                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
-                result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
-            End If
-            If blindName = "Security" Then
-                ' result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
-                'result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
-                ' result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
-                ' result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
-                'result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
-            End If
-            If blindName = "Flyscreen" Then
-                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
-                'result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
-                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
-                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
-                result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
-            End If
-
-            If Not String.IsNullOrEmpty(blindName) AndAlso (companydetailid = "2" OrElse companydetailid = "3") Then
-                result.Add(New With {.Value = "Apo Grey (Regular)", .Text = "Apo Grey (Regular)"})
-                result.Add(New With {.Value = "Beige (Regular)", .Text = "Beige (Regular)"})
-                result.Add(New With {.Value = "Birch White (Regular)", .Text = "Birch White (Regular)"})
-                result.Add(New With {.Value = "Black (Regular)", .Text = "Black (Regular)"})
-                result.Add(New With {.Value = "Brown (Regular)", .Text = "Brown (Regular)"})
-                result.Add(New With {.Value = "Charcoal (Regular)", .Text = "Charcoal (Regular)"})
-                result.Add(New With {.Value = "Deep Ocean (Regular)", .Text = "Deep Ocean (Regular)"})
-                result.Add(New With {.Value = "Dune (Regular)", .Text = "Dune (Regular)"})
-                result.Add(New With {.Value = "Hawthorne Green (Regular)", .Text = "Hawthorne Green (Regular)"})
-                result.Add(New With {.Value = "Jasper (Regular)", .Text = "Jasper (Regular)"})
-                result.Add(New With {.Value = "Monument (Regular)", .Text = "Monument (Regular)"})
-                result.Add(New With {.Value = "Notre Dame (Regular)", .Text = "Notre Dame (Regular)"})
-                result.Add(New With {.Value = "Pale Eucalypt (Regular)", .Text = "Pale Eucalypt (Regular)"})
-                result.Add(New With {.Value = "Paperbark (Regular)", .Text = "Paperbark (Regular)"})
-                result.Add(New With {.Value = "Primrose (Regular)", .Text = "Primrose (Regular)"})
-                result.Add(New With {.Value = "Silver (Regular)", .Text = "Silver (Regular)"})
-                result.Add(New With {.Value = "Surf Mist (Regular)", .Text = "Surf Mist (Regular)"})
-                result.Add(New With {.Value = "White (Regular)", .Text = "White (Regular)"})
-                result.Add(New With {.Value = "Woodland Grey (Regular)", .Text = "Woodland Grey (Regular)"})
-            End If
-        End If
-        If type = "InterlockDoor" Then
-            Dim tubeName As String = orderClass.GetTubeName(tubetype)
-            result.Add(New With {.Value = "", .Text = ""})
-            If tubeName = "Sliding Single" Then
-                result.Add(New With {.Value = "HD3 Offset (5mm)", .Text = "HD3 Offset (5mm)"})
-                result.Add(New With {.Value = "HD2 Flat (1.5mm)", .Text = "HD2 Flat (1.5mm)"})
-                result.Add(New With {.Value = "HD10 Large Offset", .Text = "HD10 Large Offset"})
-                result.Add(New With {.Value = "HD9 F Interlock", .Text = "HD9 F Interlock"})
-            End If
-            If tubeName = "Sliding Double" Then
-                result.Add(New With {.Value = "HD9 F Interlock", .Text = "HD9 F Interlock"})
-            End If
-            If tubeName = "Sliding Stacker" Then
-                result.Add(New With {.Value = "HD3 Offset (5 mm) with HD9 F Interlock", .Text = "HD3 Offset (5 mm) with HD9 F Interlock"})
-                result.Add(New With {.Value = "HD2 Flat (1.5 mm) with HD9 F Interlock", .Text = "HD2 Flat (1.5 mm) with HD9 F Interlock"})
-                result.Add(New With {.Value = "HD10 Large Offset with HD9 F Interlock", .Text = "HD10 Large Offset with HD9 F Interlock"})
-            End If
-        End If
-        If type = "PartColour_Skyline" Then
-            Dim designName As String = orderClass.GetDesignName(designtype)
-            Dim blindName As String = orderClass.GetBlindName(blindtype)
-            Dim productName As String = orderClass.GetProductName(colourtype)
-
-            If designName = "Skyline Part Express" Then
-                If blindName = "Extrusion" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Fixed Frame" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Hinged Frame" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Sliding Frame" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Hinges" Then
-                    result.Add(New With {.Value = "Stainless Steel", .Text = "Stainless Steel"})
-                    result.Add(New With {.Value = "White", .Text = "White"})
-                End If
-                If blindName = "Louvres" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                    If productName = "Standard Louvre Pin" OrElse productName = "Repair Louvre Pin" Then
-                        result.Clear()
-                        result.Add(New With {.Value = "White", .Text = "White"})
-                    End If
-                End If
-                If blindName = "Magnets & Strikers" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Misc" Then
-                    result.Add(New With {.Value = "White", .Text = "White"})
-                End If
-                If blindName = "Posts" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-            End If
-            If designName = "Skyline Part Ocean" Then
-                If blindName = "Extrusion" Then
-                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
-                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
-                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Fixed Frame" Then
-                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
-                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
-                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Hinged Frame" Then
-                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
-                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
-                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Sliding Frame" Then
-                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
-                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
-                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Hinges" Then
-                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                    result.Add(New With {.Value = "White", .Text = "White"})
-                    result.Add(New With {.Value = "Stainless Steel", .Text = "Stainless Steel"})
-                End If
-                If blindName = "Louvres" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                    If productName = "Standard Louvre Pin" OrElse productName = "Repair Louvre Pin" Then
-                        result.Clear()
-                        result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
-                        result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
-                        result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                        result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                    End If
-                End If
-                If blindName = "Magnets & Strikers" Then
-                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
-                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
-                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Misc" Then
-                    result.Add(New With {.Value = "White", .Text = "White"})
-                End If
-                If blindName = "Posts" Then
-                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
-                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
-                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-            End If
-        End If
-        If type = "PartColour_Evolve" Then
-            Dim designName As String = orderClass.GetDesignName(designtype)
-            Dim blindName As String = orderClass.GetBlindName(blindtype)
-            Dim productName As String = orderClass.GetProductName(colourtype)
-            If designName = "Evolve Part Express" Then
-                If blindName = "Extrusion" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Fixed Frame" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Hinged Frame" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Sliding Frame" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Hinges" Then
-                    result.Add(New With {.Value = "Stainless Steel", .Text = "Stainless Steel"})
-                    result.Add(New With {.Value = "White", .Text = "White"})
-                End If
-                If blindName = "Louvres" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                    If productName = "Standard Louvre Pin" OrElse productName = "Repair Louvre Pin" Then
-                        result.Clear()
-                        result.Add(New With {.Value = "White", .Text = "White"})
-                    End If
-                End If
-                If blindName = "Magnets & Strikers" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Misc" Then
-                    result.Add(New With {.Value = "White", .Text = "White"})
-                End If
-                If blindName = "Posts" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-            End If
-            If designName = "Evolve Part Ocean" Then
-                If blindName = "Extrusion" Then
-                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
-                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
-                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Fixed Frame" Then
-                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
-                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
-                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Hinged Frame" Then
-                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
-                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
-                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Sliding Frame" Then
-                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
-                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
-                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Hinges" Then
-                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                    result.Add(New With {.Value = "White", .Text = "White"})
-                    result.Add(New With {.Value = "Stainless Steel", .Text = "Stainless Steel"})
-                End If
-                If blindName = "Louvres" Then
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                    If productName = "Standard Louvre Pin" OrElse productName = "Repair Louvre Pin" Then
-                        result.Clear()
-                        result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
-                        result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
-                        result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                        result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                    End If
-                End If
-                If blindName = "Magnets & Strikers" Then
-                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
-                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
-                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-                If blindName = "Misc" Then
-                    result.Add(New With {.Value = "White", .Text = "White"})
-                End If
-                If blindName = "Posts" Then
-                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
-                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
-                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
-                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
-                End If
-            End If
-        End If
         If type = "ValanceRoman" Then
             Dim controlName As String = orderClass.GetControlName(controltype)
             If Not String.IsNullOrEmpty(controlName) Then
@@ -1134,7 +607,171 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Both Sides", .Text = "Both Sides"})
             End If
         End If
+
+        ' SKYLINE
+        If type = "LayoutCodeSkyline_Express" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Hinged" Then
+                result.Add(New With {.Value = "L", .Text = "L"})
+                result.Add(New With {.Value = "R", .Text = "R"})
+                result.Add(New With {.Value = "LR", .Text = "LR"})
+                result.Add(New With {.Value = "LD-R", .Text = "LD-R"})
+                result.Add(New With {.Value = "L-DR", .Text = "L-DR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+            If blindName = "Hinged Bi-fold" Then
+                result.Add(New With {.Value = "LL", .Text = "LL"})
+                result.Add(New With {.Value = "RR", .Text = "RR"})
+                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+            If blindName = "Track Bi-fold" Then
+                result.Add(New With {.Value = "LL", .Text = "LL"})
+                result.Add(New With {.Value = "RR", .Text = "RR"})
+                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
+                result.Add(New With {.Value = "LLLL", .Text = "LLLL"})
+                result.Add(New With {.Value = "RRRR", .Text = "RRRR"})
+                result.Add(New With {.Value = "LLRRRR", .Text = "LLRRRR"})
+                result.Add(New With {.Value = "LLLLRR", .Text = "LLLLRR"})
+                result.Add(New With {.Value = "LLLLLL", .Text = "LLLLLL"})
+                result.Add(New With {.Value = "RRRRRR", .Text = "RRRRRR"})
+                result.Add(New With {.Value = "LLRRRRRR", .Text = "LLRRRRRR"})
+                result.Add(New With {.Value = "LLLLRRRR", .Text = "LLLLRRRR"})
+                result.Add(New With {.Value = "LLLLLLRR", .Text = "LLLLLLRR"})
+                result.Add(New With {.Value = "LLLLLLLL", .Text = "LLLLLLLL"})
+                result.Add(New With {.Value = "RRRRRRRR", .Text = "RRRRRRRR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+            If blindName = "Track Sliding" Then
+                result.Add(New With {.Value = "BF", .Text = "BF"})
+                result.Add(New With {.Value = "FB", .Text = "FB"})
+                result.Add(New With {.Value = "BFB", .Text = "BFB"})
+                result.Add(New With {.Value = "FBF", .Text = "FBF"})
+                result.Add(New With {.Value = "BFFB", .Text = "BFFB"})
+                result.Add(New With {.Value = "FBBF", .Text = "FBBF"})
+                result.Add(New With {.Value = "BBFF", .Text = "BBFF"})
+                result.Add(New With {.Value = "FFBB", .Text = "FFBB"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+            If blindName = "Track Sliding Single Track" Then
+                result.Add(New With {.Value = "F", .Text = "F"})
+                result.Add(New With {.Value = "FF", .Text = "FF"})
+                result.Add(New With {.Value = "FFF", .Text = "FFF"})
+                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+            If blindName = "Fixed" Then
+                result.Add(New With {.Value = "", .Text = ""})
+                result.Add(New With {.Value = "F", .Text = "F"})
+                result.Add(New With {.Value = "FF", .Text = "FF"})
+                result.Add(New With {.Value = "FFF", .Text = "FFF"})
+                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
+                result.Add(New With {.Value = "FFFFFF", .Text = "FFFFFF"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+        End If
+        If type = "LayoutCodeSkyline_Ocean" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Hinged" Then
+                result.Add(New With {.Value = "L", .Text = "L"})
+                result.Add(New With {.Value = "R", .Text = "R"})
+                result.Add(New With {.Value = "LR", .Text = "LR"})
+                result.Add(New With {.Value = "LD-R", .Text = "LD-R"})
+                result.Add(New With {.Value = "L-DR", .Text = "L-DR"})
+                result.Add(New With {.Value = "LTLR", .Text = "LTLR"})
+                result.Add(New With {.Value = "LRTR", .Text = "LRTR"})
+                result.Add(New With {.Value = "LRTLR", .Text = "LRTLR"})
+                result.Add(New With {.Value = "LTLRTR", .Text = "LTLRTR"})
+                result.Add(New With {.Value = "LD-RTLD-R", .Text = "LD-RTLD-R"})
+                result.Add(New With {.Value = "L-DRTL-DR", .Text = "L-DRTL-DR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+            If blindName = "Hinged Bi-fold" Then
+                result.Add(New With {.Value = "LL", .Text = "LL"})
+                result.Add(New With {.Value = "RR", .Text = "RR"})
+                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+            If blindName = "Track Bi-fold" Then
+                result.Add(New With {.Value = "LL", .Text = "LL"})
+                result.Add(New With {.Value = "RR", .Text = "RR"})
+                result.Add(New With {.Value = "LLRR", .Text = "LLRR"})
+                result.Add(New With {.Value = "LLLL", .Text = "LLLL"})
+                result.Add(New With {.Value = "RRRR", .Text = "RRRR"})
+                result.Add(New With {.Value = "LLRRRR", .Text = "LLRRRR"})
+                result.Add(New With {.Value = "LLLLRR", .Text = "LLLLRR"})
+                result.Add(New With {.Value = "LLLLLL", .Text = "LLLLLL"})
+                result.Add(New With {.Value = "RRRRRR", .Text = "RRRRRR"})
+                result.Add(New With {.Value = "LLRRRRRR", .Text = "LLRRRRRR"})
+                result.Add(New With {.Value = "LLLLRRRR", .Text = "LLLLRRRR"})
+                result.Add(New With {.Value = "LLLLLLRR", .Text = "LLLLLLRR"})
+                result.Add(New With {.Value = "LLLLLLLL", .Text = "LLLLLLLL"})
+                result.Add(New With {.Value = "RRRRRRRR", .Text = "RRRRRRRR"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+            If blindName = "Track Sliding" Then
+                result.Add(New With {.Value = "BF", .Text = "BF"})
+                result.Add(New With {.Value = "FB", .Text = "FB"})
+                result.Add(New With {.Value = "BFB", .Text = "BFB"})
+                result.Add(New With {.Value = "FBF", .Text = "FBF"})
+                result.Add(New With {.Value = "BFFB", .Text = "BFFB"})
+                result.Add(New With {.Value = "FBBF", .Text = "FBBF"})
+                result.Add(New With {.Value = "BBFF", .Text = "BBFF"})
+                result.Add(New With {.Value = "FFBB", .Text = "FFBB"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+            If blindName = "Track Sliding Single Track" Then
+                result.Add(New With {.Value = "F", .Text = "F"})
+                result.Add(New With {.Value = "FF", .Text = "FF"})
+                result.Add(New With {.Value = "FFF", .Text = "FFF"})
+                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+            If blindName = "Fixed" Then
+                result.Add(New With {.Value = "", .Text = ""})
+                result.Add(New With {.Value = "F", .Text = "F"})
+                result.Add(New With {.Value = "FF", .Text = "FF"})
+                result.Add(New With {.Value = "FFF", .Text = "FFF"})
+                result.Add(New With {.Value = "FFFF", .Text = "FFFF"})
+                result.Add(New With {.Value = "FFFFFF", .Text = "FFFFFF"})
+                result.Add(New With {.Value = "Other", .Text = "Other"})
+            End If
+        End If
         If type = "FrameTypeSkyline" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
+                result.Add(New With {.Value = "Beaded L 48mm", .Text = "Beaded L 48mm"})
+                result.Add(New With {.Value = "Insert L 50mm", .Text = "Insert L 50mm"})
+                result.Add(New With {.Value = "Insert L 63mm", .Text = "Insert L 63mm"})
+                If customtype = "Inside" Then
+                    result.Add(New With {.Value = "Small Bullnose Z Frame", .Text = "Small Bullnose Z Frame"})
+                    result.Add(New With {.Value = "Large Bullnose Z Frame", .Text = "Large Bullnose Z Frame"})
+                    result.Add(New With {.Value = "Colonial Z Frame", .Text = "Colonial Z Frame"})
+                End If
+                result.Add(New With {.Value = "No Frame", .Text = "No Frame"})
+            End If
+
+            If blindName = "Track Bi-fold" Then
+                result.Add(New With {.Value = "100mm", .Text = "100mm"})
+                result.Add(New With {.Value = "160mm", .Text = "160mm"})
+            End If
+
+            If blindName = "Track Sliding" Then
+                result.Add(New With {.Value = "100mm", .Text = "100mm"})
+                result.Add(New With {.Value = "160mm", .Text = "160mm"})
+                result.Add(New With {.Value = "200mm", .Text = "200mm"})
+            End If
+
+            If blindName = "Track Sliding Single Track" Then
+                result.Add(New With {.Value = "100mm", .Text = "100mm"})
+            End If
+
+            If blindName = "Fixed" Then
+                result.Add(New With {.Value = "U Channel", .Text = "U Channel"})
+                result.Add(New With {.Value = "19x19 Light Block", .Text = "19x19 Light Block"})
+            End If
+        End If
+        If type = "FrameTypeSkyline_Ocean" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Hinged" OrElse blindName = "Hinged Bi-fold" Then
                 result.Add(New With {.Value = "Beaded L 48mm", .Text = "Beaded L 48mm"})
@@ -1198,6 +835,36 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "No", .Text = "No"})
             End If
         End If
+        If type = "LeftFrameSkyline_Ocean" Then
+            If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+            End If
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Z Frame" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+                result.Add(New With {.Value = "Sill Plate (Bullnose Z)", .Text = "Sill Plate (Bullnose Z)"})
+            End If
+            If customtype = "No Frame" Then
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+            End If
+            If customtype = "100mm" OrElse customtype = "160mm" OrElse customtype = "200mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+
+            If customtype = "U Channel" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "L Strip", .Text = "L Strip"})
+            End If
+            If customtype = "19x19 Light Block" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+        End If
         If type = "RightFrameSkyline" Then
             If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
@@ -1228,7 +895,69 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "No", .Text = "No"})
             End If
         End If
+        If type = "RightFrameSkyline_Ocean" Then
+            If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+            End If
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Z Frame" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+                result.Add(New With {.Value = "Sill Plate (Bullnose Z)", .Text = "Sill Plate (Bullnose Z)"})
+            End If
+            If customtype = "No Frame" Then
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+            End If
+            If customtype = "100mm" OrElse customtype = "160mm" OrElse customtype = "200mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+
+            If customtype = "U Channel" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "L Strip", .Text = "L Strip"})
+            End If
+            If customtype = "19x19 Light Block" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+        End If
         If type = "TopFrameSkyline" Then
+            If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+                result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
+            End If
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Z Frame" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+                result.Add(New With {.Value = "Sill Plate (Bullnose Z)", .Text = "Sill Plate (Bullnose Z)"})
+                result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
+            End If
+            If customtype = "No Frame" Then
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
+            End If
+            If customtype = "100mm" OrElse customtype = "160mm" OrElse customtype = "200mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+
+            If customtype = "U Channel" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+            End If
+            If customtype = "19x19 Light Block" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+        End If
+        If type = "TopFrameSkyline_Ocean" Then
             If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
                 result.Add(New With {.Value = "Yes", .Text = "Yes"})
                 result.Add(New With {.Value = "No", .Text = "No"})
@@ -1292,6 +1021,38 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "No", .Text = "No"})
             End If
         End If
+        If type = "BottomFrameSkyline_Ocean" Then
+            If customtype = "Beaded L 48mm" OrElse customtype = "Insert L 50mm" OrElse customtype = "Insert L 63mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+                result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
+            End If
+            If customtype = "Small Bullnose Z Frame" OrElse customtype = "Large Bullnose Z Frame" OrElse customtype = "Colonial Z Frame" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "Sill Plate (9.5mm)", .Text = "Sill Plate (9.5mm)"})
+                result.Add(New With {.Value = "Sill Plate (Bullnose Z)", .Text = "Sill Plate (Bullnose Z)"})
+                result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
+            End If
+            If customtype = "No Frame" Then
+                result.Add(New With {.Value = "Light Block", .Text = "Light Block"})
+                result.Add(New With {.Value = "L Striker Plate", .Text = "L Striker Plate"})
+            End If
+            If customtype = "100mm" OrElse customtype = "160mm" OrElse customtype = "200mm" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+
+            If customtype = "U Channel" Then
+                result.Add(New With {.Value = "Yes", .Text = "Yes"})
+            End If
+            If customtype = "19x19 Light Block" Then
+                result.Add(New With {.Value = "No", .Text = "No"})
+            End If
+        End If
         If type = "BottomTrackSkyline" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Track Bi-fold" OrElse blindName = "Track Sliding" OrElse blindName = "Track Sliding Single Track" Then
@@ -1305,6 +1066,117 @@ Partial Class Order_Method
                 End If
             End If
         End If
+        If type = "BottomTrackSkyline_Ocean" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Track Bi-fold" OrElse blindName = "Track Sliding" OrElse blindName = "Track Sliding Single Track" Then
+                If Not String.IsNullOrEmpty(customtype) Then
+                    result.Add(New With {.Value = "M Track", .Text = "M Track"})
+                    result.Add(New With {.Value = "U Track", .Text = "U Track"})
+                    If customtype = "Yes" Then
+                        result.Clear()
+                        result.Add(New With {.Value = "U Track", .Text = "U Track"})
+                    End If
+                End If
+            End If
+        End If
+        If type = "PartColour_Skyline" Then
+            Dim designName As String = orderClass.GetDesignName(designtype)
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            Dim productName As String = orderClass.GetProductName(colourtype)
+
+            If designName = "Skyline Part Express" Then
+                If blindName = "Extrusion" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Fixed Frame" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinged Frame" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Sliding Frame" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinges" Then
+                    result.Add(New With {.Value = "Stainless Steel", .Text = "Stainless Steel"})
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                End If
+                If blindName = "Louvres" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                    If productName = "Standard Louvre Pin" OrElse productName = "Repair Louvre Pin" Then
+                        result.Clear()
+                        result.Add(New With {.Value = "White", .Text = "White"})
+                    End If
+                End If
+                If blindName = "Magnets & Strikers" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Misc" Then
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                End If
+                If blindName = "Posts" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+            End If
+            If designName = "Skyline Part Ocean" Then
+                If blindName = "Extrusion" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Fixed Frame" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinged Frame" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Sliding Frame" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinges" Then
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                    result.Add(New With {.Value = "Stainless Steel", .Text = "Stainless Steel"})
+                End If
+                If blindName = "Louvres" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                    If productName = "Standard Louvre Pin" OrElse productName = "Repair Louvre Pin" Then
+                        result.Clear()
+                        result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                        result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                        result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                        result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                    End If
+                End If
+                If blindName = "Magnets & Strikers" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Misc" Then
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                End If
+                If blindName = "Posts" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+            End If
+        End If
+
+        ' EVOLVE
         If type = "LayoutCodeEvolve" Then
             Dim blindName As String = orderClass.GetBlindName(blindtype)
             If blindName = "Hinged" Then
@@ -1537,6 +1409,302 @@ Partial Class Order_Method
                         result.Add(New With {.Value = "U Track", .Text = "U Track"})
                     End If
                 End If
+            End If
+        End If
+        If type = "PartColour_Evolve" Then
+            Dim designName As String = orderClass.GetDesignName(designtype)
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            Dim productName As String = orderClass.GetProductName(colourtype)
+            If designName = "Evolve Part Express" Then
+                If blindName = "Extrusion" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Fixed Frame" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinged Frame" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Sliding Frame" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinges" Then
+                    result.Add(New With {.Value = "Stainless Steel", .Text = "Stainless Steel"})
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                End If
+                If blindName = "Louvres" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                    If productName = "Standard Louvre Pin" OrElse productName = "Repair Louvre Pin" Then
+                        result.Clear()
+                        result.Add(New With {.Value = "White", .Text = "White"})
+                    End If
+                End If
+                If blindName = "Magnets & Strikers" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Misc" Then
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                End If
+                If blindName = "Posts" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+            End If
+            If designName = "Evolve Part Ocean" Then
+                If blindName = "Extrusion" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Fixed Frame" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinged Frame" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Sliding Frame" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Hinges" Then
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                    result.Add(New With {.Value = "Stainless Steel", .Text = "Stainless Steel"})
+                End If
+                If blindName = "Louvres" Then
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                    If productName = "Standard Louvre Pin" OrElse productName = "Repair Louvre Pin" Then
+                        result.Clear()
+                        result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                        result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                        result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                        result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                    End If
+                End If
+                If blindName = "Magnets & Strikers" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+                If blindName = "Misc" Then
+                    result.Add(New With {.Value = "White", .Text = "White"})
+                End If
+                If blindName = "Posts" Then
+                    result.Add(New With {.Value = "Bright White", .Text = "Bright White"})
+                    result.Add(New With {.Value = "Classic White", .Text = "Classic White"})
+                    result.Add(New With {.Value = "Off White", .Text = "Off White"})
+                    result.Add(New With {.Value = "Snow White", .Text = "Snow White"})
+                End If
+            End If
+        End If
+
+        ' DOOR & WINDOW
+        If type = "LayoutCodeDoor" Then
+            Dim tubeName As String = orderClass.GetTubeName(tubetype)
+            If tubeName = "Hinged Single" Then
+                result.Add(New With {.Value = "L", .Text = "L"})
+                result.Add(New With {.Value = "R", .Text = "R"})
+            End If
+            If tubeName = "Hinged Double" Then
+                result.Add(New With {.Value = "L-RA", .Text = "L-RA"})
+                result.Add(New With {.Value = "AL-R", .Text = "AL-R"})
+            End If
+            If tubeName = "Sliding Single" Then
+                result.Add(New With {.Value = "AL", .Text = "AL"})
+                result.Add(New With {.Value = "RA", .Text = "RA"})
+            End If
+            If tubeName = "Sliding Double" Then
+                result.Add(New With {.Value = "RA-L", .Text = "RA-L"})
+                result.Add(New With {.Value = "R-AL", .Text = "R-AL"})
+            End If
+            If tubeName = "Sliding Stacker" Then
+                result.Add(New With {.Value = "RRA", .Text = "RRA"})
+                result.Add(New With {.Value = "ALL", .Text = "ALL"})
+                result.Add(New With {.Value = "FRA", .Text = "FRA"})
+                result.Add(New With {.Value = "ALF", .Text = "ALF"})
+                result.Add(New With {.Value = "RRRA", .Text = "RRRA"})
+                result.Add(New With {.Value = "ALLL", .Text = "ALLL"})
+                result.Add(New With {.Value = "FRRA", .Text = "FRRA"})
+                result.Add(New With {.Value = "ALLF", .Text = "ALLF"})
+                result.Add(New With {.Value = "RRA-LL", .Text = "RRA-LL"})
+                result.Add(New With {.Value = "RR-ALL", .Text = "RR-ALL"})
+                result.Add(New With {.Value = "FRA-LF", .Text = "FRA-LF"})
+                result.Add(New With {.Value = "FR-ALF", .Text = "FR-ALF"})
+                result.Add(New With {.Value = "RRRA-LLL", .Text = "RRRA-LLL"})
+                result.Add(New With {.Value = "RRR-ALLL", .Text = "RRR-ALLL"})
+                result.Add(New With {.Value = "FRRA-LLF", .Text = "FRRA-LLF"})
+                result.Add(New With {.Value = "FRR-ALLF", .Text = "FRR-ALLF"})
+            End If
+        End If
+        If type = "MeshDoor" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Safety" Then
+                result.Add(New With {.Value = "304 SS Mesh", .Text = "304 SS Mesh"})
+            End If
+            If blindName = "Diamond Grille" Then
+                result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
+                result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
+                result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
+            End If
+            If blindName = "Security" Then
+                result.Add(New With {.Value = "316 SS Mesh", .Text = "316 SS Mesh"})
+            End If
+            If blindName = "Flyscreen" Then
+                result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
+                result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
+                result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
+            End If
+        End If
+        If type = "MeshWindow" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Safety" Then
+                result.Add(New With {.Value = "304 SS Mesh", .Text = "304 SS Mesh"})
+            End If
+            If blindName = "Diamond Grille" Then
+                result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
+                result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
+                result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
+            End If
+            If blindName = "Security" Then
+                result.Add(New With {.Value = "316 SS Mesh", .Text = "316 SS Mesh"})
+            End If
+            If blindName = "Flyscreen" Then
+                result.Add(New With {.Value = "Fibreglass Mesh", .Text = "Fibreglass Mesh"})
+                result.Add(New With {.Value = "Pawproof", .Text = "Pawproof"})
+                'result.Add(New With {.Value = "SS Mesh", .Text = "SS Mesh"})
+            End If
+        End If
+        If type = "FrameColourDoor" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Safety" Then
+                'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+            End If
+            If blindName = "Diamond Grille" Then
+                'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+            End If
+            If blindName = "Security" Then
+                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                'result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+            End If
+            If blindName = "Flyscreen" Then
+                'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+            End If
+
+            If Not String.IsNullOrEmpty(blindName) AndAlso (companydetailid = "2" OrElse companydetailid = "3") Then
+                result.Add(New With {.Value = "Apo Grey (Regular)", .Text = "Apo Grey (Regular)"})
+                result.Add(New With {.Value = "Beige (Regular)", .Text = "Beige (Regular)"})
+                result.Add(New With {.Value = "Birch White (Regular)", .Text = "Birch White (Regular)"})
+                result.Add(New With {.Value = "Black (Regular)", .Text = "Black (Regular)"})
+                result.Add(New With {.Value = "Brown (Regular)", .Text = "Brown (Regular)"})
+                result.Add(New With {.Value = "Charcoal (Regular)", .Text = "Charcoal (Regular)"})
+                result.Add(New With {.Value = "Deep Ocean (Regular)", .Text = "Deep Ocean (Regular)"})
+                result.Add(New With {.Value = "Dune (Regular)", .Text = "Dune (Regular)"})
+                result.Add(New With {.Value = "Hawthorne Green (Regular)", .Text = "Hawthorne Green (Regular)"})
+                result.Add(New With {.Value = "Jasper (Regular)", .Text = "Jasper (Regular)"})
+                result.Add(New With {.Value = "Monument (Regular)", .Text = "Monument (Regular)"})
+                result.Add(New With {.Value = "Notre Dame (Regular)", .Text = "Notre Dame (Regular)"})
+                result.Add(New With {.Value = "Pale Eucalypt (Regular)", .Text = "Pale Eucalypt (Regular)"})
+                result.Add(New With {.Value = "Paperbark (Regular)", .Text = "Paperbark (Regular)"})
+                result.Add(New With {.Value = "Primrose (Regular)", .Text = "Primrose (Regular)"})
+                result.Add(New With {.Value = "Silver (Regular)", .Text = "Silver (Regular)"})
+                result.Add(New With {.Value = "Surf Mist (Regular)", .Text = "Surf Mist (Regular)"})
+                result.Add(New With {.Value = "White (Regular)", .Text = "White (Regular)"})
+                result.Add(New With {.Value = "Woodland Grey (Regular)", .Text = "Woodland Grey (Regular)"})
+            End If
+        End If
+        If type = "FrameColourWindow" Then
+            Dim blindName As String = orderClass.GetBlindName(blindtype)
+            If blindName = "Safety" Then
+                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                'result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+                result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
+            End If
+            If blindName = "Diamond Grille" Then
+                'result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+                result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
+            End If
+            If blindName = "Security" Then
+                ' result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                'result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                ' result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                ' result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+                'result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
+            End If
+            If blindName = "Flyscreen" Then
+                result.Add(New With {.Value = "Black (Express)", .Text = "Black (Express)"})
+                'result.Add(New With {.Value = "Monument (Express)", .Text = "Monument (Express)"})
+                result.Add(New With {.Value = "Primrose (Express)", .Text = "Primrose (Express)"})
+                result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
+                result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
+            End If
+
+            If Not String.IsNullOrEmpty(blindName) AndAlso (companydetailid = "2" OrElse companydetailid = "3") Then
+                result.Add(New With {.Value = "Apo Grey (Regular)", .Text = "Apo Grey (Regular)"})
+                result.Add(New With {.Value = "Beige (Regular)", .Text = "Beige (Regular)"})
+                result.Add(New With {.Value = "Birch White (Regular)", .Text = "Birch White (Regular)"})
+                result.Add(New With {.Value = "Black (Regular)", .Text = "Black (Regular)"})
+                result.Add(New With {.Value = "Brown (Regular)", .Text = "Brown (Regular)"})
+                result.Add(New With {.Value = "Charcoal (Regular)", .Text = "Charcoal (Regular)"})
+                result.Add(New With {.Value = "Deep Ocean (Regular)", .Text = "Deep Ocean (Regular)"})
+                result.Add(New With {.Value = "Dune (Regular)", .Text = "Dune (Regular)"})
+                result.Add(New With {.Value = "Hawthorne Green (Regular)", .Text = "Hawthorne Green (Regular)"})
+                result.Add(New With {.Value = "Jasper (Regular)", .Text = "Jasper (Regular)"})
+                result.Add(New With {.Value = "Monument (Regular)", .Text = "Monument (Regular)"})
+                result.Add(New With {.Value = "Notre Dame (Regular)", .Text = "Notre Dame (Regular)"})
+                result.Add(New With {.Value = "Pale Eucalypt (Regular)", .Text = "Pale Eucalypt (Regular)"})
+                result.Add(New With {.Value = "Paperbark (Regular)", .Text = "Paperbark (Regular)"})
+                result.Add(New With {.Value = "Primrose (Regular)", .Text = "Primrose (Regular)"})
+                result.Add(New With {.Value = "Silver (Regular)", .Text = "Silver (Regular)"})
+                result.Add(New With {.Value = "Surf Mist (Regular)", .Text = "Surf Mist (Regular)"})
+                result.Add(New With {.Value = "White (Regular)", .Text = "White (Regular)"})
+                result.Add(New With {.Value = "Woodland Grey (Regular)", .Text = "Woodland Grey (Regular)"})
+            End If
+        End If
+        If type = "InterlockDoor" Then
+            Dim tubeName As String = orderClass.GetTubeName(tubetype)
+            result.Add(New With {.Value = "", .Text = ""})
+            If tubeName = "Sliding Single" Then
+                result.Add(New With {.Value = "HD3 Offset (5mm)", .Text = "HD3 Offset (5mm)"})
+                result.Add(New With {.Value = "HD2 Flat (1.5mm)", .Text = "HD2 Flat (1.5mm)"})
+                result.Add(New With {.Value = "HD10 Large Offset", .Text = "HD10 Large Offset"})
+                result.Add(New With {.Value = "HD9 F Interlock", .Text = "HD9 F Interlock"})
+            End If
+            If tubeName = "Sliding Double" Then
+                result.Add(New With {.Value = "HD9 F Interlock", .Text = "HD9 F Interlock"})
+            End If
+            If tubeName = "Sliding Stacker" Then
+                result.Add(New With {.Value = "HD3 Offset (5 mm) with HD9 F Interlock", .Text = "HD3 Offset (5 mm) with HD9 F Interlock"})
+                result.Add(New With {.Value = "HD2 Flat (1.5 mm) with HD9 F Interlock", .Text = "HD2 Flat (1.5 mm) with HD9 F Interlock"})
+                result.Add(New With {.Value = "HD10 Large Offset with HD9 F Interlock", .Text = "HD10 Large Offset with HD9 F Interlock"})
             End If
         End If
 
