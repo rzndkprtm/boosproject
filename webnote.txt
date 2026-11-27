@@ -24,5 +24,3 @@ Face Fit = Outside
 Reveal Fit = Inside
 
 DBCC CHECKIDENT ('OrderDetail_Globals', RESEED, 0);
-
-INSERT INTO Customerss SELECT Id, DebtorCode, 'Regular', Level, PrimaryId, Name, CompanyId, CompanyDetailId, State, Operator, PriceGroupId, ShutterPriceGroupId, DoorPriceGroupId, OnStop, CashSale, Newsletter, Status FROM Customers
