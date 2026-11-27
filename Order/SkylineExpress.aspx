@@ -615,5 +615,5 @@
             </div>
         </div>
     </div>
-    <script src="/Scripts/Bintang/SkylineExpress.js?v=1.0.2"></script>
+    <script src="/Scripts/Bintang/SkylineExpress.js?v=1.0.4"></script>
 </asp:Content>

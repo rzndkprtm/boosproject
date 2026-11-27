@@ -344,29 +344,17 @@ function getFormAction(itemAction) {
     const pageAction = document.getElementById("pageaction");
     const submitButton = document.getElementById("submit");
 
-    const pageActionMap = {
-        create: "Add Item",
-        edit: "Edit Item",
-        view: "View Item",
-        copy: "Copy Item"
-    };
+    const pageActionMap = {create: "Add Item", edit: "Edit Item", view: "View Item", copy: "Copy Item"};
 
     if (pageAction) {
         pageAction.innerText = pageActionMap[itemAction] || "";
     }
-
     if (submitButton) {
         submitButton.innerText = getSubmitButtonText(itemAction);
     }
 }
 function getSubmitButtonText(itemAction) {
-    const actionMap = {
-        create: "Save Item",
-        edit: "Update Item",
-        view: "Update Item",
-        copy: "Save Item (Copy)"
-    };
-
+    const actionMap = {create: "Save Item", edit: "Update Item", view: "Update Item", copy: "Save Item (Copy)"};
     return actionMap[itemAction] || "Submit";
 }
 
@@ -630,7 +618,7 @@ function bindFrameType(blindType, mounting) {
             return;
         }
 
-        const listData = { type: "FrameTypeSkyline", blindtype: blindType, customtype: mounting, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "FrameTypeSkyline_Express", blindtype: blindType, customtype: mounting, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -674,7 +662,7 @@ function bindLeftFrame(frameType) {
             return;
         }
 
-        const listData = { type: "LeftFrameSkyline", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "LeftFrameSkyline_Express", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -718,7 +706,7 @@ function bindRightFrame(frameType) {
             return;
         }
 
-        const listData = { type: "RightFrameSkyline", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "RightFrameSkyline_Express", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -762,7 +750,7 @@ function bindTopFrame(frameType) {
             return;
         }
 
-        const listData = { type: "TopFrameSkyline", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "TopFrameSkyline_Express", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -806,7 +794,7 @@ function bindBottomFrame(frameType) {
             return;
         }
 
-        const listData = { type: "BottomFrameSkyline", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "BottomFrameSkyline_Express", customtype: frameType, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -850,7 +838,7 @@ function bindBottomTrack(blindType, bottomFrame) {
             return;
         }
 
-        const listData = { type: "BottomTrackSkyline", blindtype: blindType, customtype: bottomFrame, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
+        const listData = { type: "BottomTrackSkyline_Express", blindtype: blindType, customtype: bottomFrame, orderstatus: orderStatus, rolename: roleAccess, action: itemAction };
 
         $.ajax({
             type: "POST",
@@ -925,41 +913,7 @@ function visiblePageDetail(blindType, colourType) {
         const detail = document.getElementById("divdetail");
         const markup = document.getElementById("divmarkup");
 
-        const divsToHide = [
-            "divlouvreposition",
-            "divmidrailheight2",
-            "divmidrailcritical",
-            "divjoinedpanels",
-            "divhingecolour",
-            "divhingesloose",
-            "divsemiinside",
-            "divcustomheaderlength",
-            "divlayoutcode",
-            "divlayoutcodecustom",
-            "divstiletype",
-            "divframetype",
-            "divframeleft",
-            "divframeright",
-            "divframetop",
-            "divframebottom",
-            "divbottomtracktype",
-            "divbottomtrackrecess",
-            "divbuildout",
-            "divbuildoutposition",
-            "divsamesizepanel",
-            "divgappost",
-            "divhorizontaltpost",
-            "divhorizontaltpostrequired",
-            "divtiltrodtype",
-            "divtiltrodsplit",
-            "divtiltrodheight",
-            "divreversehinged",
-            "divpelmetflat",
-            "divextrafascia",
-            "divpainting",
-            "divpaintingcolour"
-        ].map(id => document.getElementById(id));
-
+        const divsToHide = ["divlouvreposition", "divmidrailheight2", "divmidrailcritical", "divjoinedpanels", "divhingecolour", "divhingesloose", "divsemiinside", "divcustomheaderlength", "divlayoutcode", "divlayoutcodecustom", "divstiletype", "divframetype", "divframeleft", "divframeright", "divframetop", "divframebottom", "divbottomtracktype", "divbottomtrackrecess", "divbuildout", "divbuildoutposition", "divsamesizepanel", "divgappost", "divhorizontaltpost", "divhorizontaltpostrequired", "divtiltrodtype", "divtiltrodsplit", "divtiltrodheight", "divreversehinged", "divpelmetflat", "divextrafascia", "divpainting", "divpaintingcolour"].map(id => document.getElementById(id));
 
         const toggleDisplay = (el, show) => {
             if (el) el.style.display = show ? "" : "none";
@@ -980,7 +934,7 @@ function visiblePageDetail(blindType, colourType) {
             if (blindName === "Panel Only") {
                 divShow.push("divtiltrodtype", "divtiltrodsplit");
             } else if (blindName === "Hinged") {
-                divShow.push("divhingecolour", "divlayoutcode", "divstiletype", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divhorizontaltpost");
+                divShow.push("divhingecolour", "divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divhorizontaltpost");
             } else if (blindName === "Hinged Bi-fold") {
                 divShow.push("divhingecolour", "divlayoutcode", "divframetype", "divtiltrodtype", "divtiltrodsplit", "divhorizontaltpost");
             } else if (blindName === "Track Bi-fold") {
@@ -1463,12 +1417,7 @@ function cekSameSizePanels(layoutCode) {
 function submitProcess() {
     toggleButtonState(true, "Processing...");
 
-    const fields = ["blindtype", "colourtype", "qty", "room", "mounting", "width", "drop", "louvresize", "louvreposition", "midrailheight1",
-        "midrailheight2", "midrailcritical", "joinedpanels", "hingecolour", "semiinside", "customheaderlength", "layoutcode", "layoutcodecustom", "stiletype",
-        "frametype", "frameleft", "frameright", "frametop", "framebottom",
-        "bottomtracktype", "bottomtrackrecess",
-        "buildout", "buildoutposition", "samesizepanel", "gap1", "gap2", "gap3", "gap4", "gap5",
-        "horizontaltpostheight", "horizontaltpost", "tiltrodtype", "tiltrodsplit", "splitheight1", "splitheight2", "reversehinged", "pelmetflat", "extrafascia", "hingesloose", "painting", "paintingcolour", "markup", "notes"];
+    const fields = ["blindtype", "colourtype", "qty", "room", "mounting", "width", "drop", "louvresize", "louvreposition", "midrailheight1", "midrailheight2", "midrailcritical", "joinedpanels", "hingecolour", "semiinside", "customheaderlength", "layoutcode", "layoutcodecustom", "stiletype", "frametype", "frameleft", "frameright", "frametop", "framebottom", "bottomtracktype", "bottomtrackrecess", "buildout", "buildoutposition", "samesizepanel", "gap1", "gap2", "gap3", "gap4", "gap5", "horizontaltpostheight", "horizontaltpost", "tiltrodtype", "tiltrodsplit", "splitheight1", "splitheight2", "reversehinged", "pelmetflat", "extrafascia", "hingesloose", "painting", "paintingcolour", "markup", "notes"];
 
     const formData = {
         headerid: headerId,
