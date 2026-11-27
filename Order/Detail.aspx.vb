@@ -1931,6 +1931,41 @@ Partial Class Order_Detail
         End Try
     End Sub
 
+    Protected Sub btnMoveItem_Click(sender As Object, e As EventArgs)
+        MessageError(False, String.Empty)
+        Try
+            Dim thisId As String = txtMoveItemId.Text
+            Dim newHeaderId As String = ddlMoveOrderId.SelectedValue
+
+            Using thisConn As New SqlConnection(myConn)
+                Using thisCmd As SqlCommand = New SqlCommand("UPDATE OrderDetails SET HeaderId=@HeaderId WHERE Id=@ItemId; UPDATE OrderCostings SET HeaderId=@HeaderId WHERE ItemId=@ItemId", thisConn)
+                    thisCmd.Parameters.AddWithValue("@ItemId", thisId)
+                    thisCmd.Parameters.AddWithValue("@HeaderId", newHeaderId)
+                    thisConn.Open()
+                    thisCmd.ExecuteNonQuery()
+                End Using
+            End Using
+
+            Dim descLog As String = String.Format("Move Order Item to ID : {0}", newHeaderId)
+
+            dataLog = {"OrderDetails", thisId, Session("LoginId"), descLog}
+            orderClass.Logs(dataLog)
+
+            orderClass.UpdateOrderFactory(lblHeaderId.Text)
+
+            url = String.Format("~/order/detail?orderid={0}", lblHeaderId.Text)
+            Response.Redirect(url, False)
+        Catch ex As Exception
+            MessageError(True, ex.ToString())
+            If Not Session("RoleName") = "Developer" Then
+                MessageError(True, "PLEASE CONTACT IT SUPPORT AT REZA@BIGBLINDS.CO.ID !")
+                If Session("RoleName") = "Customer" Then
+                    MessageError(True, "PLEASE CONTACT YOUR CUSTOMER SERVICE !")
+                End If
+            End If
+        End Try
+    End Sub
+
     Protected Sub BindDataOrder(headerId As String)
         Try
             Dim params As New List(Of SqlParameter) From {
@@ -2124,6 +2159,7 @@ Partial Class Order_Detail
             BindEmailQuote()
             BindEmailInvoice()
             BindDataFile(lblOrderId.Text)
+            BindMoveItem(headerId, lblCustomerId.Text)
 
             btnEditOrder.Visible = False
             aDeleteOrder.Visible = False
@@ -4087,6 +4123,23 @@ Partial Class Order_Detail
         End Try
     End Sub
 
+    Protected Sub BindMoveItem(headerId As String, customerId As String)
+        ddlMoveOrderId.Items.Clear()
+        Try
+            Dim param As New List(Of SqlParameter) From {
+                New SqlParameter("@HeaderId", Convert.ToInt32(headerId)),
+                New SqlParameter("@CustomerId", Convert.ToInt32(customerId)),
+                New SqlParameter("@RoleName", Session("RoleName").ToString())
+            }
+            ddlMoveOrderId.DataSource = orderClass.GetDataTableSP("sp_OrderHeaders_MoveItem", param)
+            ddlMoveOrderId.DataTextField = "OrderData"
+            ddlMoveOrderId.DataValueField = "Id"
+            ddlMoveOrderId.DataBind()
+        Catch ex As Exception
+            ddlMoveOrderId.Items.Clear()
+        End Try
+    End Sub
+
     Protected Function BindProductDescription(itemId As String) As String
         Dim showStock As Boolean = False
         If lblOrderStatus.Text = "Unsubmitted" OrElse lblOrderStatus.Text = "Quoted" OrElse lblOrderStatus.Text = "Waiting Proforma" OrElse lblOrderStatus.Text = "Proforma Sent" OrElse lblOrderStatus.Text = "Payment Received" OrElse lblOrderStatus.Text = "New Order" Then
@@ -4324,6 +4377,69 @@ Partial Class Order_Detail
                 result = True
                 If designId = "16" Then result = False
             End If
+        Catch ex As Exception
+            result = False
+        End Try
+
+        Return result
+    End Function
+
+    Protected Function VisibleMove(productId As String) As Boolean
+        Dim result As Boolean = False
+        Try
+            Dim designId As String = orderClass.GetItemData("SELECT DesignId FROM Products WHERE Id='" & productId & "'")
+
+            If Session("RoleName") = "Developer" Then Return True
+
+            'If Session("RoleName") = "IT" Then
+            '    If lblOrderStatus.Text = "Unsubmitted" Then result = True
+            '    If lblOrderStatus.Text = "Quoted" Then result = True
+            '    If lblOrderStatus.Text = "New Order" Then result = True
+            '    If lblOrderStatus.Text = "In Production" Then result = True
+            '    If lblOrderStatus.Text = "On Hold" Then result = True
+            '    If lblOrderStatus.Text = "Waiting Proforma" Then result = True
+            '    If lblOrderStatus.Text = "Proforma Sent" Then result = True
+            '    If lblOrderStatus.Text = "Payment Received" Then result = True
+
+            '    If designId = "16" Then Return True
+            'End If
+
+            'If Session("RoleName") = "Factory Office" AndAlso (Session("LevelName") = "Leader" OrElse Session("LevelName") = "Member") Then
+            '    If lblOrderStatus.Text = "Unsubmitted" Then result = True
+            '    If lblOrderStatus.Text = "New Order" Then result = True
+            '    If lblOrderStatus.Text = "Waiting Proforma" Then result = True
+            '    If lblOrderStatus.Text = "Proforma Sent" Then result = True
+            '    If lblOrderStatus.Text = "Quoted" Then result = True
+
+            '    If designId = "16" Then Return True
+            'End If
+
+            'If Session("RoleName") = "Sales" Then
+            '    If lblOrderStatus.Text = "Unsubmitted" Then result = True
+            '    If lblOrderStatus.Text = "Quoted" Then result = True
+            '    If lblOrderStatus.Text = "Waiting Proforma" Then result = True
+            'End If
+
+            'If Session("RoleName") = "Account" Then
+            '    If lblOrderStatus.Text = "Unsubmitted" Then result = True
+            '    If lblOrderStatus.Text = "Quoted" Then result = True
+            '    If lblOrderStatus.Text = "Waiting Proforma" Then result = True
+
+            '    If designId = "16" Then Return True
+            'End If
+
+            'If Session("RoleName") = "Data Entry" AndAlso lblCreatedRole.Text = Session("RoleId") Then
+            '    If lblOrderStatus.Text = "Unsubmitted" Then result = True
+            '    If lblOrderStatus.Text = "Quoted" Then result = True
+            '    If lblOrderStatus.Text = "Waiting Proforma" Then result = True
+
+            '    If designId = "16" Then result = False
+            'End If
+
+            'If Session("RoleName") = "Customer" AndAlso lblOrderStatus.Text = "Unsubmitted" Then
+            '    result = True
+            '    If designId = "16" Then result = False
+            'End If
         Catch ex As Exception
             result = False
         End Try

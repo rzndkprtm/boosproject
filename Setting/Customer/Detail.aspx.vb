@@ -1,6 +1,7 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.Globalization
+Imports System.Net.Mail
 Imports System.Web.Services
 
 Partial Class Setting_Customer_Detail
@@ -113,8 +114,23 @@ Partial Class Setting_Customer_Detail
                 Exit Sub
             End If
 
-            Dim mailingClass As New MailingClass
-            mailingClass.CustomerWelcome(lblId.Text, Session("LoginId").ToString())
+            Dim attachments As New List(Of Attachment)
+            Try
+                If fuWelcome.HasFiles Then
+                    For Each uploadedFile As HttpPostedFile In fuWelcome.PostedFiles
+                        If uploadedFile.ContentLength > 0 Then
+                            attachments.Add(New Attachment(uploadedFile.InputStream, IO.Path.GetFileName(uploadedFile.FileName), uploadedFile.ContentType))
+                        End If
+                    Next
+                End If
+
+                Dim mailingClass As New MailingClass
+                mailingClass.CustomerWelcome(lblId.Text, Session("LoginId").ToString(), attachments)
+            Finally
+                For Each attachment As Attachment In attachments
+                    attachment.Dispose()
+                Next
+            End Try
 
             Using thisConn As New SqlConnection(myConn)
                 Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerWelcomes VALUES (NEWID(), @CustomerId)", thisConn)
@@ -129,6 +145,7 @@ Partial Class Setting_Customer_Detail
 
             url = String.Format("~/setting/customer/detail?customerid={0}", lblId.Text)
             Response.Redirect(url, False)
+
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
@@ -357,6 +374,7 @@ Partial Class Setting_Customer_Detail
             End If
 
             lblDebtorCode.Text = thisData("DebtorCode").ToString()
+            lblType.Text = thisData("Type").ToString()
             lblName.Text = thisData("Name").ToString()
             lblCompanyId.Text = thisData("CompanyId").ToString()
             lblCompanyName.Text = thisData("CompanyName").ToString()

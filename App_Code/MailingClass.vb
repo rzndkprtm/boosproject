@@ -570,7 +570,7 @@ Public Class MailingClass
         End Try
     End Sub
 
-    Public Sub CustomerWelcome(customerId As String, loginId As String)
+    Public Sub CustomerWelcome(customerId As String, loginId As String, Optional attachments As List(Of Attachment) = Nothing)
         Try
             Dim settingClass As New SettingClass
 
@@ -578,6 +578,7 @@ Public Class MailingClass
 
             Dim customerData As DataRow = GetDataRow("SELECT Customers.*, Companys.Name AS CompanyName FROM Customers LEFT JOIN Companys ON Customers.CompanyId=Companys.Id WHERE Customers.Id='" & customerId & "'")
             If customerData Is Nothing Then Exit Sub
+
             Dim companyId As String = customerData("CompanyId").ToString()
             Dim customerName As String = customerData("Name").ToString()
             Dim companyName As String = customerData("CompanyName").ToString()
@@ -587,6 +588,7 @@ Public Class MailingClass
 
             Dim contactData As DataRow = GetDataRow("SELECT * FROM CustomerContacts WHERE CustomerId='" & customerId & "' AND [Primary]=1")
             If contactData Is Nothing Then Exit Sub
+
             Dim contactName As String = contactData("Name").ToString()
             Dim contactEmail As String = contactData("Email").ToString()
 
@@ -595,6 +597,7 @@ Public Class MailingClass
 
             Dim actionData As DataRow = GetDataRow("SELECT Logins.*, LoginRoles.Name AS RoleName FROM Logins LEFT JOIN LoginRoles ON Logins.RoleId=LoginRoles.Id WHERE Logins.Id='" & loginId & "'")
             If actionData Is Nothing Then Exit Sub
+
             Dim actionName As String = actionData("FullName").ToString()
             Dim actionEmail As String = actionData("Email").ToString()
 
@@ -604,7 +607,6 @@ Public Class MailingClass
             Dim mailServer As String = mailData("Server").ToString()
             Dim mailHost As String = mailData("Host").ToString()
             Dim mailPort As Integer = mailData("Port")
-
             Dim mailAccount As String = mailData("Account").ToString()
             Dim mailPassword As String = mailData("Password").ToString()
             Dim mailAlias As String = mailData("Alias").ToString()
@@ -625,14 +627,12 @@ Public Class MailingClass
             mailBody &= "<br /><br /><br />"
             mailBody &= "Hi <b>" & contactName & "</b>,"
             mailBody &= "<br /><br />"
-
             mailBody &= "Welcome and thank you for choosing us! 🎉"
             mailBody &= "<br />"
             mailBody &= "We’re excited to have you as our new customer."
             mailBody &= "<br /><br />"
             mailBody &= "Below are your details and login access to our system:"
             mailBody &= "<br /><br />"
-
             mailBody &= "</span>"
 
             mailBody &= "<span style='font-family: Cambria; font-size: 16px;'>"
@@ -664,9 +664,10 @@ Public Class MailingClass
                 mailBody &= "</tr>"
                 no += 1
             Next
-            mailBody &= "</table>"
 
+            mailBody &= "</table>"
             mailBody &= "<br />"
+
             mailBody &= "<span style='font-family: Cambria; font-size: 16px;'>"
             mailBody &= "Please access your account using the following website:"
             mailBody &= "<br />"
@@ -674,6 +675,7 @@ Public Class MailingClass
             mailBody &= "</span>"
 
             mailBody &= "<span style='font-family: Cambria; font-size: 16px;'>"
+
             If companyId = "2" Then
                 mailBody &= "<br /><br />"
                 mailBody &= "For security reasons, you will be required to change your password after your first login."
@@ -685,15 +687,17 @@ Public Class MailingClass
                 mailBody &= "<b>Sales / Orders:</b>"
                 mailBody &= "<ul>"
                 mailBody &= "<li>Matt McCamey - matt@jpmdirect.com.au</li>"
+
                 Dim operatorData As DataTable = GetDataTable("SELECT * FROM Logins WHERE Id IN (SELECT CAST(value AS INT) FROM STRING_SPLIT('" & customerOperator & "', ','))")
+
                 If operatorData.Rows.Count > 0 Then
                     For i As Integer = 0 To operatorData.Rows.Count - 1
                         Dim operatorName As String = operatorData.Rows(i)("FullName").ToString()
                         Dim operatorEmail As String = operatorData.Rows(i)("Email").ToString()
-
                         mailBody &= "<li>" & operatorName & " - " & operatorEmail & "</li>"
                     Next
                 End If
+
                 mailBody &= "</ul>"
                 mailBody &= "<br />"
 
@@ -707,7 +711,6 @@ Public Class MailingClass
                 mailBody &= "<li>Fariz - fariz@jpmdirect.com.au</li>"
                 mailBody &= "<li>Rosye - accounts@jpmdirect.com.au</li>"
                 mailBody &= "</ul>"
-
                 mailBody &= "<br />"
             End If
 
@@ -722,61 +725,73 @@ Public Class MailingClass
             mailBody &= "</ul>"
             mailBody &= "<br />"
 
+            If attachments IsNot Nothing AndAlso attachments.Count > 0 Then
+                mailBody &= "We have also attached the relevant documents for your reference."
+                mailBody &= "<br /><br /><br />"
+            End If
+
             mailBody &= "We look forward to a long and prosperous relationship."
             mailBody &= "</span>"
 
             mailBody &= "<br /><br /><br />"
-
             mailBody &= "<span style='font-family: Cambria; font-size:16px;'>Kind Regards,</span>"
             mailBody &= "<br /><br />"
             mailBody &= "<span style='font-family: Cambria; font-size:16px;font-weight: bold;'>" & actionName & "</span>"
             mailBody &= "<br /><br /><br />"
             mailBody &= "<span style='font-family: Cambria; font-size:16px; font-weight: bold;'>" & companyName.ToUpper() & "</span>"
 
-            Dim myMail As New MailMessage()
-            myMail.Subject = mailSubject
-            myMail.From = New MailAddress(mailServer, mailAlias)
+            Using myMail As New MailMessage()
+                myMail.Subject = mailSubject
+                myMail.From = New MailAddress(mailServer, mailAlias)
+                myMail.To.Add(contactEmail)
 
-            myMail.To.Add(contactEmail)
-            For Each thisMail In mailCc.Split(";"c)
-                If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.CC.Add(thisMail.Trim())
-            Next
-            If companyId = "2" Then
-                Dim operatorEmail As String = GetItemData("SELECT ISNULL(STRING_AGG(Logins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN Logins ON Logins.Id = TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & customerId & "';")
+                For Each thisMail In mailCc.Split(";"c)
+                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.CC.Add(thisMail.Trim())
+                Next
 
-                If Not String.IsNullOrEmpty(operatorEmail) Then
-                    Dim emailList() As String = operatorEmail.Split(";"c)
+                If companyId = "2" Then
+                    Dim operatorEmail As String = GetItemData("SELECT ISNULL(STRING_AGG(Logins.Email, ';'), '') FROM Customers OUTER APPLY STRING_SPLIT(Customers.Operator, ',') operatorArray LEFT JOIN Logins ON Logins.Id=TRY_CAST(operatorArray.value AS INT) WHERE Customers.Id='" & customerId & "';")
 
-                    For Each email As String In emailList
-                        If Not String.IsNullOrWhiteSpace(email) Then
-                            myMail.CC.Add(email.Trim())
-                        End If
+                    If Not String.IsNullOrEmpty(operatorEmail) Then
+                        For Each email As String In operatorEmail.Split(";"c)
+                            If Not String.IsNullOrWhiteSpace(email) Then myMail.CC.Add(email.Trim())
+                        Next
+                    End If
+                End If
+
+                If Not String.IsNullOrEmpty(mailBcc) Then
+                    For Each thisMail In mailBcc.Split(";"c)
+                        If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.Bcc.Add(thisMail.Trim())
                     Next
                 End If
-            End If
-            If Not String.IsNullOrEmpty(mailBcc) Then
-                For Each thisMail In mailBcc.Split(";"c)
-                    If Not String.IsNullOrEmpty(thisMail.Trim()) Then myMail.Bcc.Add(thisMail.Trim())
-                Next
-            End If
 
-            myMail.Body = mailBody
-            myMail.IsBodyHtml = True
-            Dim smtpClient As New SmtpClient()
-            smtpClient.Host = mailHost
-            smtpClient.Port = mailPort
-            smtpClient.EnableSsl = mailEnableSSL
-            smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
-            smtpClient.Timeout = 120000
+                ' Attach uploaded files directly without saving to server.
+                If attachments IsNot Nothing Then
+                    For Each attachment As Attachment In attachments
+                        myMail.Attachments.Add(attachment)
+                    Next
+                End If
 
-            If mailNetworkCredentials Then
-                smtpClient.UseDefaultCredentials = False
-                smtpClient.Credentials = New NetworkCredential(mailAccount, mailPassword)
-            Else
-                smtpClient.UseDefaultCredentials = mailDefaultCredentials
-            End If
+                myMail.Body = mailBody
+                myMail.IsBodyHtml = True
 
-            smtpClient.Send(myMail)
+                Using smtpClient As New SmtpClient()
+                    smtpClient.Host = mailHost
+                    smtpClient.Port = mailPort
+                    smtpClient.EnableSsl = mailEnableSSL
+                    smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network
+                    smtpClient.Timeout = 120000
+
+                    If mailNetworkCredentials Then
+                        smtpClient.UseDefaultCredentials = False
+                        smtpClient.Credentials = New NetworkCredential(mailAccount, mailPassword)
+                    Else
+                        smtpClient.UseDefaultCredentials = mailDefaultCredentials
+                    End If
+
+                    smtpClient.Send(myMail)
+                End Using
+            End Using
         Catch ex As Exception
         End Try
     End Sub

@@ -192,6 +192,8 @@ Partial Class Order_Add
             divOrderContact.Visible = False
             divOrderAddress.Visible = False
 
+            'Dim customerType As String = orderClass.GetCustomerType(customerId)
+
             Dim companyDetailName As String = String.Empty
             If Not String.IsNullOrEmpty(customerId) Then
                 companyDetailName = orderClass.GetCompanyDetailNameByCustomer(ddlCustomer.SelectedValue)
@@ -199,6 +201,9 @@ Partial Class Order_Add
 
             If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Data Entry" Then
                 divCustomer.Visible = True
+                'If customerType = "Builder" Then
+                '    divOrderType.Visible = True
+                'End If
                 If companyDetailName = "JPMD BP" Then divOrderType.Visible = True
             End If
 

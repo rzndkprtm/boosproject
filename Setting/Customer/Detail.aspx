@@ -157,6 +157,12 @@
                                     </div>
                                 </div>
                                 <div class="row mb-2">
+                                    <div class="col-4 text-muted">Type</div>
+                                    <div class="col-8 fw-semibold">
+                                        <asp:Label runat="server" ID="lblType"></asp:Label>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
                                     <div class="col-4 text-muted">Status</div>
                                     <div class="col-8 fw-semibold">
                                         <asp:Label runat="server" ID="lblStatus"></asp:Label>
@@ -714,13 +720,21 @@
         </div>
     </div>
     <div class="modal modal-blur fade" id="modalWelcome" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-success">
                     <h5 class="modal-title white">Send Welcome Email</h5>
                 </div>
-                <div class="modal-body text-center py-4">
-                    Hi <b><%: Session("FullName") %></b>,<br />All login details will be sent to the primary contact email address.<br /><br />Are you sure you would like to do this?
+                <div class="modal-body">
+                    Hi <b><%: Session("FullName") %></b>,<br />All login details will be sent to the primary contact email address.<br /><br />
+
+                    <div class="row mb-3">
+                        <div class="col-12 form-group">
+                            <label class="form-label">Attachment File (Additional)</label>
+                            <asp:FileUpload ID="fuWelcome" runat="server" CssClass="form-control" AllowMultiple="true" />
+                        </div>
+                    </div>
+                    Are you sure you would like to do this?
                 </div>
                 <div class="modal-footer">
                     <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>

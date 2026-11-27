@@ -51,6 +51,10 @@ Partial Class Setting_Customer_Add
                 MessageError(True, "CUSTOMER NAME IS REQUIRED !")
                 Exit Sub
             End If
+            If ddlType.SelectedValue = "" Then
+                MessageError(True, "TYPE IS REQUIRED !")
+                Exit Sub
+            End If
             If ddlCompany.SelectedValue = "" Then
                 MessageError(True, "COMPANY IS REQUIRED !")
                 Exit Sub
@@ -97,9 +101,10 @@ Partial Class Setting_Customer_Add
                 Dim dataProductAccess As String = settingClass.GetProductAccess(ddlCompany.SelectedValue)
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Customers VALUES (@Id, @DebtorCode, @Level, @PrimaryId, @Name, @Company, @CompanyDetail, @State, @Operator, @PriceGroup, @ShutterPriceGroup, @DoorPriceGroup, @OnStop, @CashSale, @Newsletter, @Status); INSERT INTO CustomerQuotes(Id, Logo) VALUES (@Id, @Logo); INSERT INTO CustomerProductAccess VALUES (@Id, @DesignId)", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO Customers VALUES (@Id, @DebtorCode, @Type, @Level, @PrimaryId, @Name, @Company, @CompanyDetail, @State, @Operator, @PriceGroup, @ShutterPriceGroup, @DoorPriceGroup, @OnStop, @CashSale, @Newsletter, @Status); INSERT INTO CustomerQuotes(Id, Logo) VALUES (@Id, @Logo); INSERT INTO CustomerProductAccess VALUES (@Id, @DesignId)", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", thisId)
                         thisCmd.Parameters.AddWithValue("@DebtorCode", txtDebtorCode.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Level", ddlLevel.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@PrimaryId", If(String.IsNullOrEmpty(primaryId), CType(DBNull.Value, Object), primaryId))
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())

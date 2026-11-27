@@ -460,6 +460,9 @@
                                                     <li runat="server" visible='<%# VisibleDelete(Eval("ProductId").ToString()) %>'>
                                                         <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalDeleteItem" onclick='<%# String.Format("return dataDeleteItem(`{0}`);", Eval("Id").ToString()) %>'>Delete</a>
                                                     </li>
+                                                    <li runat="server" visible='<%# VisibleMove(Eval("ProductId").ToString()) %>'>
+                                                        <a class="dropdown-item" href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#modalMoveItem" onclick='<%# String.Format("return dataMoveItem(`{0}`);", Eval("Id").ToString()) %>'>Move</a>
+                                                    </li>
                                                     <li runat="server" visible='<%# VisiblePrinting(Eval("Id").ToString()) %>'><hr class="dropdown-divider" /></li>
                                                     <li runat="server" visible='<%# VisiblePrinting(Eval("Id").ToString()) %>'>
                                                         <asp:LinkButton runat="server" CssClass="dropdown-item" ID="linkPrinting" Text="Printing Fabric" CommandName="Printing" CommandArgument='<%# Eval("Id") %>'></asp:LinkButton>
@@ -1758,6 +1761,28 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modalMoveItem" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title white">Move Item Order</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 form-group">
+                            <label class="form-label required">MOVE ITEM TO ORDER #</label>
+                            <asp:DropDownList runat="server" ID="ddlMoveOrderId" CssClass="choices form-select"></asp:DropDownList>
+                        </div>
+                    </div>
+                    <asp:TextBox runat="server" ID="txtMoveItemId" style="display:none;"></asp:TextBox>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:void(0);" class="btn btn-light-secondary" data-bs-dismiss="modal">Cancel</a>
+                    <asp:Button runat="server" ID="btnMoveItem" CssClass="btn btn-danger" Text="Confirm" OnClick="btnMoveItem_Click" OnClientClick="return showWaiting();" />
+                </div>
+            </div>
+        </div>
+    </div>    
     <div class="modal fade text-center" id="modalDeleteItem" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
@@ -1842,7 +1867,7 @@
             "modalSendInvoice", "modalReceivePayment", "modalDownloadInvoice", "modalDownloadInvoiceCSV", "modalInvoiceNumber", "modalInvoiceData", "modalDownloadPL",
             "modalDetailQuote", "modalDownloadQuote", "modalSendQuote",
             "modalConvertOrder", "modalReConvertOrder", "modalDataJob", "modalUpdateJobData",
-            "modalAddProduct", "modalAddPart", "modalAddService", "modalDeleteItem", "modalCosting",
+            "modalAddProduct", "modalAddPart", "modalAddService", "modalDeleteItem", "modalMoveItem", "modalCosting",
             "modalOriginalOrder", "modalOrderDelivery"
         ].forEach(id => {
             document.getElementById(id).addEventListener("hide.bs.modal", () => {
@@ -2087,6 +2112,9 @@
         }
         function dataDeleteItem(id) {
             document.getElementById("<%=txtDeleteItemId.ClientID %>").value = id;
+        }
+        function dataMoveItem(id) {
+            document.getElementById("<%=txtMoveItemId.ClientID %>").value = id;
         }
         function showWaiting(hideModal = null) {
             $("#modalWaiting").modal("show");

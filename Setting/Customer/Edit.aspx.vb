@@ -59,6 +59,10 @@ Partial Class Setting_Customer_Edit
                 MessageError(True, "CUSTOMER NAME IS REQUIRED !")
                 Exit Sub
             End If
+            If ddlType.SelectedValue = "" Then
+                MessageError(True, "TYPE IS REQUIRED !")
+                Exit Sub
+            End If
             If ddlCompany.SelectedValue = "" Then
                 MessageError(True, "COMPANY IS REQUIRED !")
                 Exit Sub
@@ -98,9 +102,10 @@ Partial Class Setting_Customer_Edit
                 If ddlLevel.SelectedValue = "Primary" OrElse ddlLevel.SelectedValue = "Standard" Then primaryId = String.Empty
 
                 Using thisConn As New SqlConnection(myConn)
-                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET DebtorCode=@DebtorCode, Name=@Name, Level=@Level, PrimaryId=@PrimaryId, CompanyId=@Company, CompanyDetailId=@CompanyDetail, State=@State, Operator=@Operator, PriceGroupId=@PriceGroup, ShutterPriceGroupId=@ShutterPriceGroup, DoorPriceGroupId=@DoorPriceGroupId WHERE Id=@Id", thisConn)
+                    Using thisCmd As SqlCommand = New SqlCommand("UPDATE Customers SET DebtorCode=@DebtorCode, Type=@Type, Name=@Name, Level=@Level, PrimaryId=@PrimaryId, CompanyId=@Company, CompanyDetailId=@CompanyDetail, State=@State, Operator=@Operator, PriceGroupId=@PriceGroup, ShutterPriceGroupId=@ShutterPriceGroup, DoorPriceGroupId=@DoorPriceGroupId WHERE Id=@Id", thisConn)
                         thisCmd.Parameters.AddWithValue("@Id", lblId.Text)
                         thisCmd.Parameters.AddWithValue("@DebtorCode", txtDebtorCode.Text.Trim())
+                        thisCmd.Parameters.AddWithValue("@Type", ddlType.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@Level", ddlLevel.SelectedValue)
                         thisCmd.Parameters.AddWithValue("@PrimaryId", If(String.IsNullOrEmpty(primaryId), CType(DBNull.Value, Object), primaryId))
                         thisCmd.Parameters.AddWithValue("@Name", txtName.Text.Trim())

@@ -44,6 +44,16 @@
                                                 <asp:TextBox runat="server" ID="txtDebtorCode" CssClass="form-control" placeholder="Debtor Code ..." autocomplete="off"></asp:TextBox>
                                             </div>
                                         </div>
+                                        <div class="row mb-2">
+                                            <div class="col-12 col-sm-8 col-lg-4 form-group">
+                                                <label class="form-label">Type</label>
+                                                <asp:DropDownList runat="server" ID="ddlType" CssClass="choices form-select">
+                                                    <asp:ListItem Value="" Text=""></asp:ListItem>
+                                                    <asp:ListItem Value="Retail" Text="Retail"></asp:ListItem>
+                                                    <asp:ListItem Value="Builder" Text="Builder"></asp:ListItem>
+                                                </asp:DropDownList>
+                                            </div>
+                                        </div>
                                         <div class="row mt-3">
                                             <div class="col-12">
                                                 <div class="divider">
