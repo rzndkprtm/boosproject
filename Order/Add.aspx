@@ -90,9 +90,9 @@
                                             </div>
                                         </div>
                                         <div class="row mb-2" runat="server" id="divOrderType">
-                                            <div class="col-12 col-sm-12 col-lg-5 form-group">
+                                            <div class="col-12 col-sm-12 col-lg-4 form-group">
                                                 <label class="form-label">Order Type</label>
-                                                <asp:DropDownList runat="server" ID="ddlOrderType" CssClass="form-select">
+                                                <asp:DropDownList runat="server" ID="ddlOrderType" CssClass="choices form-select">
                                                     <asp:ListItem Value="Regular" Text="Regular"></asp:ListItem>
                                                     <asp:ListItem Value="Builder" Text="Builder"></asp:ListItem>
                                                 </asp:DropDownList>
