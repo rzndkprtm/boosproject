@@ -96,7 +96,7 @@ Partial Class Setting_Customer_Detail
             dataLog = {"Customers", lblId.Text, Session("LoginId").ToString(), "Customer Deleted"}
             settingClass.Logs(dataLog)
 
-            Response.Redirect("~/setting/customer", False)
+            Response.Redirect("~/setting/customer/list", False)
         Catch ex As Exception
             MessageError(True, ex.ToString())
             If Not Session("RoleName") = "Developer" Then
