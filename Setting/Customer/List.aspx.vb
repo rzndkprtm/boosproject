@@ -19,7 +19,6 @@ Partial Class Setting_Customer_List
         If Not IsPostBack Then
             MessageError(False, String.Empty)
             txtSearch.Text = Session("SearchCustomer")
-
             BindCompany()
             BindData(txtSearch.Text, ddlCompany.SelectedValue, ddlStatus.SelectedValue)
         End If
@@ -192,11 +191,10 @@ Partial Class Setting_Customer_List
             gvList.Columns(1).Visible = LoginAccess("Visible ID") ' ID
             gvList.Columns(2).Visible = LoginAccess("Visible Debtor Code") ' DEBTOR CODE
             gvList.Columns(5).Visible = LoginAccess("Visible Company") ' COMPANY
-            gvList.Columns(6).Visible = LoginAccess("Visible Company Detail") ' COMPANY DETAIL
-            gvList.Columns(7).Visible = LoginAccess("Visible State") ' STATE
-            gvList.Columns(8).Visible = LoginAccess("Visible Sales") ' OPERATOR
-            gvList.Columns(9).Visible = LoginAccess("Visible Cash Sale") ' CASH SALE
-            gvList.Columns(10).Visible = LoginAccess("Visible On Stop") ' ON STOP
+            gvList.Columns(6).Visible = LoginAccess("Visible State") ' STATE
+            gvList.Columns(7).Visible = LoginAccess("Visible Sales") ' OPERATOR
+            gvList.Columns(8).Visible = LoginAccess("Visible Cash Sale") ' CASH SALE
+            gvList.Columns(9).Visible = LoginAccess("Visible On Stop") ' ON STOP
 
             btnAdd.Visible = LoginAccess("Add")
             btnMultiple.Visible = LoginAccess("Multiple Change")

@@ -307,12 +307,8 @@ Partial Class Order_Edit
             divOrderAddress.Visible = False
             divOrderContainer.Visible = False
 
-            'Dim customerType As String = orderClass.GetCustomerType(customerId)
-
-            Dim companyDetailName As String = String.Empty
-            If Not String.IsNullOrEmpty(customerId) Then
-                companyDetailName = orderClass.GetCompanyDetailNameByCustomer(ddlCustomer.SelectedValue)
-            End If
+            Dim customerType As String = orderClass.GetCustomerType(customerId)
+            Dim companyAliasName As String = orderClass.GetCompanyAliasByCustomer(customerId)
 
             If Session("RoleName") = "Developer" Then
                 divOrderId.Visible = True
@@ -322,14 +318,13 @@ Partial Class Order_Edit
             If Session("RoleName") = "Developer" OrElse Session("RoleName") = "IT" OrElse Session("RoleName") = "Factory Office" OrElse Session("RoleName") = "Sales" OrElse Session("RoleName") = "Data Entry" Then
                 divCustomer.Visible = True
                 divOrderFactory.Visible = True
-                If companyDetailName = "JPMD BP" Then divOrderType.Visible = True
 
-                'If customerType = "Builder" Then
-                '    divOrderType.Visible = True
-                'End If
+                If customerType = "Builder" Then
+                    divOrderType.Visible = True
+                End If
             End If
 
-            If companyDetailName = "JPMD" OrElse companyDetailName = "CWS" OrElse companyDetailName = "SP" Then
+            If companyAliasName = "JPMD" OrElse companyAliasName = "SP" Then
                 divOrderDelivery.Visible = True
                 If orderDelivery = "Special" Then
                     divOrderContact.Visible = True

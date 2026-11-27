@@ -24,3 +24,23 @@ Face Fit = Outside
 Reveal Fit = Inside
 
 DBCC CHECKIDENT ('OrderDetail_Globals', RESEED, 0);
+
+DECLARE @RemoveId VARCHAR(20) = '3';
+
+UPDATE Blinds SET CompanyDetailId = (SELECT STRING_AGG(TRIM(value), ',') FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) <> @RemoveId) WHERE CompanyDetailId IS NOT NULL AND EXISTS (SELECT 1 FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) = @RemoveId);
+
+UPDATE Bottoms SET CompanyDetailId = (SELECT STRING_AGG(TRIM(value), ',') FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) <> @RemoveId) WHERE CompanyDetailId IS NOT NULL AND EXISTS (SELECT 1 FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) = @RemoveId);
+
+UPDATE Chains SET CompanyDetailId = (SELECT STRING_AGG(TRIM(value), ',') FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) <> @RemoveId) WHERE CompanyDetailId IS NOT NULL AND EXISTS (SELECT 1 FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) = @RemoveId);
+
+UPDATE Fabrics SET CompanyDetailId = (SELECT STRING_AGG(TRIM(value), ',') FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) <> @RemoveId) WHERE CompanyDetailId IS NOT NULL AND EXISTS (SELECT 1 FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) = @RemoveId);
+
+UPDATE FabricColours SET CompanyDetailId = (SELECT STRING_AGG(TRIM(value), ',') FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) <> @RemoveId) WHERE CompanyDetailId IS NOT NULL AND EXISTS (SELECT 1 FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) = @RemoveId);
+
+UPDATE JobSheetDetails SET CompanyDetailId = (SELECT STRING_AGG(TRIM(value), ',') FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) <> @RemoveId) WHERE CompanyDetailId IS NOT NULL AND EXISTS (SELECT 1 FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) = @RemoveId);
+
+UPDATE PriceServices SET CompanyDetailId = (SELECT STRING_AGG(TRIM(value), ',') FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) <> @RemoveId) WHERE CompanyDetailId IS NOT NULL AND EXISTS (SELECT 1 FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) = @RemoveId);
+
+UPDATE Products SET CompanyDetailId = (SELECT STRING_AGG(TRIM(value), ',') FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) <> @RemoveId) WHERE CompanyDetailId IS NOT NULL AND EXISTS (SELECT 1 FROM STRING_SPLIT(CompanyDetailId, ',') WHERE TRIM(value) = @RemoveId);
+
+UPDATE Customers SET Type='Builder', CompanyDetailId = '2' WHERE CompanyDetailId = '3'

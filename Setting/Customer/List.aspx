@@ -74,7 +74,6 @@
                                             <asp:BoundField DataField="Name" HeaderText="Name" />
                                             <asp:BoundField DataField="Type" HeaderText="Type" />
                                             <asp:BoundField DataField="CompanyAlias" HeaderText="Company" />
-                                            <asp:BoundField DataField="CompanyDetailName" HeaderText="Sub Company" />
                                             <asp:BoundField DataField="State" HeaderText="State" />
                                             <asp:BoundField DataField="OperatorName" HeaderText="Sales" />
                                             <asp:BoundField DataField="CustomerCashSale" HeaderText="Cash Sale" />

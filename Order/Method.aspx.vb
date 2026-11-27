@@ -357,7 +357,7 @@ Partial Class Order_Method
 
         If type = "CurtainTrackType" Then
             result.Clear()
-            If companydetailid = "2" OrElse companydetailid = "3" OrElse companydetailid = "4" Then
+            If companydetailid = "2" OrElse companydetailid = "4" Then
                 result.Clear()
                 result.Add(New With {.Value = "Express Track", .Text = "Express Track"})
                 result.Add(New With {.Value = "Styletrack", .Text = "Styletrack"})
@@ -1622,7 +1622,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "White Birch (Express)", .Text = "White Birch (Express)"})
             End If
 
-            If Not String.IsNullOrEmpty(blindName) AndAlso (companydetailid = "2" OrElse companydetailid = "3") Then
+            If Not String.IsNullOrEmpty(blindName) AndAlso companydetailid = "2" Then
                 result.Add(New With {.Value = "Apo Grey (Regular)", .Text = "Apo Grey (Regular)"})
                 result.Add(New With {.Value = "Beige (Regular)", .Text = "Beige (Regular)"})
                 result.Add(New With {.Value = "Birch White (Regular)", .Text = "Birch White (Regular)"})
@@ -1675,7 +1675,7 @@ Partial Class Order_Method
                 result.Add(New With {.Value = "Pearl White (Express)", .Text = "Pearl White (Express)"})
             End If
 
-            If Not String.IsNullOrEmpty(blindName) AndAlso (companydetailid = "2" OrElse companydetailid = "3") Then
+            If Not String.IsNullOrEmpty(blindName) AndAlso companydetailid = "2" Then
                 result.Add(New With {.Value = "Apo Grey (Regular)", .Text = "Apo Grey (Regular)"})
                 result.Add(New With {.Value = "Beige (Regular)", .Text = "Beige (Regular)"})
                 result.Add(New With {.Value = "Birch White (Regular)", .Text = "Birch White (Regular)"})

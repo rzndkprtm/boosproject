@@ -126,22 +126,24 @@ Partial Class Setting_Customer_Add
                     End Using
                 End Using
 
-                Dim dataService As DataTable = settingClass.GetDataTable("SELECT Id FROM PriceServices CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE companyDetailArray.VALUE='" & ddlCompanyDetail.SelectedValue & "' AND AutoCreate=1 AND Status='Active'")
-                If Not dataService.Rows.Count = 0 Then
-                    For i As Integer = 0 To dataService.Rows.Count - 1
-                        Dim serviceId As String = dataService.Rows(i)("Id").ToString()
-                        Dim custServiceId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerServices ORDER BY Id DESC")
+                If ddlType.SelectedValue = "Retail" Then
+                    Dim dataService As DataTable = settingClass.GetDataTable("SELECT Id FROM PriceServices CROSS APPLY STRING_SPLIT(CompanyDetailId, ',') AS companyDetailArray WHERE companyDetailArray.VALUE='" & ddlCompanyDetail.SelectedValue & "' AND AutoCreate=1 AND Status='Active'")
+                    If Not dataService.Rows.Count = 0 Then
+                        For i As Integer = 0 To dataService.Rows.Count - 1
+                            Dim serviceId As String = dataService.Rows(i)("Id").ToString()
+                            Dim custServiceId As String = settingClass.CreateId("SELECT TOP 1 Id FROM CustomerServices ORDER BY Id DESC")
 
-                        Using thisConn As New SqlConnection(myConn)
-                            Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerServices SELECT @Id, @CustomerId, @ServiceId, AllowCustom, Type, DefaultSellPrice, DefaultBuyPrice, DefaultFactoryPrice, [Parameter], Operator, SellValue, BuyValue, FactoryValue, MinValue, MaxValue, State, Description FROM PriceServices WHERE Id=@ServiceId", thisConn)
-                                thisCmd.Parameters.AddWithValue("@Id", custServiceId)
-                                thisCmd.Parameters.AddWithValue("@CustomerId", thisId)
-                                thisCmd.Parameters.AddWithValue("@ServiceId", serviceId)
-                                thisConn.Open()
-                                thisCmd.ExecuteNonQuery()
+                            Using thisConn As New SqlConnection(myConn)
+                                Using thisCmd As SqlCommand = New SqlCommand("INSERT INTO CustomerServices SELECT @Id, @CustomerId, @ServiceId, AllowCustom, Type, DefaultSellPrice, DefaultBuyPrice, DefaultFactoryPrice, [Parameter], Operator, SellValue, BuyValue, FactoryValue, MinValue, MaxValue, State, Description FROM PriceServices WHERE Id=@ServiceId", thisConn)
+                                    thisCmd.Parameters.AddWithValue("@Id", custServiceId)
+                                    thisCmd.Parameters.AddWithValue("@CustomerId", thisId)
+                                    thisCmd.Parameters.AddWithValue("@ServiceId", serviceId)
+                                    thisConn.Open()
+                                    thisCmd.ExecuteNonQuery()
+                                End Using
                             End Using
-                        End Using
-                    Next
+                        Next
+                    End If
                 End If
 
                 Dim dataLog As Object() = {"Customers", thisId, Session("LoginId").ToString(), "Customer Created"}
