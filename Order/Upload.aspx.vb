@@ -1,7 +1,6 @@
 ﻿Imports System.Data
 Imports System.Data.SqlClient
 Imports System.IO
-Imports System.Windows
 Imports OfficeOpenXml
 
 Partial Class Order_Upload
@@ -1324,6 +1323,10 @@ Partial Class Order_Upload
                                                 If returnLeft > 0 Then returnPosition = "Left"
                                                 If returnRight > 0 Then returnPosition = "Right"
                                                 If returnLeft > 0 AndAlso returnRight > 0 Then returnPosition = "Both Sides"
+
+                                                If mounting = "Reveal Fit" Then
+                                                    notes &= notes & " [DUSTCOVER NO RETURN]"
+                                                End If
                                             End If
 
                                             Dim priceProductGroupName As String = String.Format("{0} - Without Battens", designName_Fix)
