@@ -1320,9 +1320,9 @@ Partial Class Order_Upload
                                                 returnRight = 0
                                             End If
                                             If returnPosition = "Dustcover" Then
-                                                If returnLeft > 0 Then returnPosition = "Left"
-                                                If returnRight > 0 Then returnPosition = "Right"
-                                                If returnLeft > 0 AndAlso returnRight > 0 Then returnPosition = "Both Sides"
+                                                If returnLeft > 0 Then returnPosition_Fix = "Left"
+                                                If returnRight > 0 Then returnPosition_Fix = "Right"
+                                                If returnLeft > 0 AndAlso returnRight > 0 Then returnPosition_Fix = "Both Sides"
 
                                                 If mounting = "Reveal Fit" Then
                                                     notes &= notes & " [DUSTCOVER NO RETURN]"
